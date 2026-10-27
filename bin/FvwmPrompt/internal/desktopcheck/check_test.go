@@ -205,3 +205,32 @@ func TestReadPreservesSymlinkParentTraversal(t *testing.T) {
 		t.Fatal("entry path was lexically cleaned")
 	}
 }
+
+func TestDynamicGrammarCorpusNeverExecutesOrReadsGeneratedSource(t *testing.T) {
+	r, write := fixture(t)
+	marker := filepath.Join(r.Userdir, "executed")
+	write("generated", "*FvwmDesktop: palette invalid\n")
+	lines := []string{
+		"Exec touch " + marker,
+		"PipeRead 'touch " + marker + "; echo Read generated'",
+		"Module /bin/sh -c 'touch " + marker + "'",
+		"AddToFunc TestFunction I Exec touch " + marker,
+		"+ I Read generated",
+		"TestFunction",
+		"Silent Read generated",
+		"Read $[env.FVWM_TEST_SOURCE]",
+		"Read `echo generated`",
+		"Read generated Extra",
+		"Read \"generated\\name\"",
+		"*FvwmDesktop: palette $[env.FVWM_TEST_PALETTE]",
+		"*OtherModule: Read generated",
+	}
+	write("config", strings.Join(lines, "\n")+"\n")
+	v := checked(t, r)
+	if v.Errors != 0 || v.Unchecked != len(lines) || v.CheckedDirectives != 0 || len(v.Files) != 1 {
+		t.Fatalf("dynamic grammar claimed coverage: %+v", v)
+	}
+	if _, err := os.Stat(marker); !os.IsNotExist(err) {
+		t.Fatal("checker executed input", err)
+	}
+}

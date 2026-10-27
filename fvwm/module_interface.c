@@ -292,6 +292,25 @@ void SendName(
 	return;
 }
 
+void send_config_source(fmodule *module, unsigned long key,
+	const char *source, const char *config)
+{
+	unsigned long source_body[FvwmPacketMaxSize];
+	unsigned long config_body[FvwmPacketMaxSize];
+	int source_length, config_length;
+
+	/* Copy borrowed list data before synchronous module callbacks can remove
+	 * its entry. The new metadata must not introduce an intervening callback. */
+	source_length = make_named_packet(source_body, MX_CONFIG_SOURCE,
+		source, 3, key, 0UL, 0UL);
+	config_length = make_named_packet(config_body, M_CONFIG_INFO,
+		config, 3, key, 0UL, 0UL);
+	module_output_enqueue(module, source_body,
+		source_length * sizeof(unsigned long));
+	PositiveWrite(module, config_body,
+		config_length * sizeof(unsigned long));
+}
+
 void BroadcastName(
 	unsigned long event_type,
 	unsigned long data1, unsigned long data2, unsigned long data3,

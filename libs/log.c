@@ -36,6 +36,15 @@ static char	*log_file_name;
 static FILE	*log_file;
 static bool	 inherited_log_seen;
 int	lib_log_level = 0;
+static const char *log_context;
+
+const char *log_exchange_context(const char *context)
+{
+	const char *previous = log_context;
+	log_context = context;
+	return previous;
+}
+
 
 int
 log_get_fd(void)
@@ -203,8 +212,9 @@ log_vwrite(const char *func, const char *msg, va_list ap)
 		exit(1);
 
 	gettimeofday(&tv, NULL);
-	if (fprintf(log_file, "[%lld.%06d] %s%s %s", (long long)tv.tv_sec,
-	    (int)tv.tv_usec, func, sep, fmt) < 0)
+	if (fprintf(log_file, "[%lld.%06d] %s%s %s%s%s", (long long)tv.tv_sec,
+	    (int)tv.tv_usec, func, sep, log_context ? log_context : "",
+	    log_context ? " " : "", fmt) < 0)
 	{
 		goto failed;
 	}

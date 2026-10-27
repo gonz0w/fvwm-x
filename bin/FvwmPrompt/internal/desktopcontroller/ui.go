@@ -6,8 +6,10 @@
 package desktopcontroller
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"reflect"
@@ -16,6 +18,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
 )
@@ -64,8 +67,40 @@ func (d *Controller) form(alias string, lines []string, retire bool) {
 func (d *Controller) button(name, text string) {
 	d.emit("SendToModule SlateBar ChangeButton " + name + " Title " + quote(text))
 }
+
+// Literal diagnostics preserve punctuation and escape controls visibly. Each
+// row is bounded independently of the source's path and logical line length.
+func diagnosticText(lines []string, text string) []string {
+	var escaped strings.Builder
+	for _, r := range text {
+		if unicode.IsControl(r) {
+			quoted := strconv.QuoteRune(r)
+			escaped.WriteString(quoted[1 : len(quoted)-1])
+		} else {
+			escaped.WriteRune(r)
+		}
+	}
+	runes := []rune(escaped.String())
+	for i := 0; i < max(1, len(runes)); i += 72 {
+		lines = append(lines, "Line left", "TextHex x"+hex.EncodeToString([]byte(string(runes[min(i, len(runes)):min(i+72, len(runes))]))))
+	}
+	return lines
+}
 func (d *Controller) notice(text string) {
-	d.form("SlateNoticeForm", []string{`Title "FVWM-X"`, "Line left", "Text " + quote(text), "Line right", `Button quit "Dismiss" ^[`, "Command Nop", `Timeout 80 Nop ""`}, true)
+	if len(text) > 8192 {
+		text = "Diagnostic text exceeds the display limit; context unavailable"
+	}
+	lines := []string{`Title "FVWM-X"`}
+	for _, row := range strings.Split(text, "\n") {
+		lines = diagnosticText(lines, row)
+	}
+	lines = append(lines, "Line right", `Button quit "Dismiss" ^[`, "Command Nop", `Timeout 80 Nop ""`)
+	d.form("SlateNoticeForm", lines, true)
+}
+func (d *Controller) configurationError(err error, source *configSource) {
+	text := err.Error() + "\n" + source.text()
+	fmt.Fprintln(os.Stderr, "FvwmDesktop: "+text)
+	d.notice(text)
 }
 
 // Build the whole projection before publication or retained-wallpaper mutation.
@@ -239,35 +274,53 @@ func (d *Controller) systemMenu() {
 	d.menu(desktopsettings.Menu{Name: "SlateSession", Title: "Session", Rows: []desktopsettings.Row{{"Lock", lock}, {"Log out...", "SendToModule FvwmDesktop confirm logout"},
 		{"Restart FVWM", "Restart"}, {"Power off...", "SendToModule FvwmDesktop confirm poweroff"}, {"Reboot...", "SendToModule FvwmDesktop confirm reboot"}}})
 }
+
+// Page by rendered rows, not diagnostics: one complete include chain can be
+// taller than a window. Continuations retain every source byte and row order.
+const reportRowsPerPage = 12
+
+func reportPages(result desktopcheck.Result) [][]string {
+	var lines []string
+	if len(result.Diagnostics) == 0 {
+		lines = diagnosticText(lines, "No errors in the supported literal settings subset.")
+	}
+	for _, item := range result.Diagnostics {
+		span := strconv.Itoa(item.Line)
+		if item.EndLine != item.Line {
+			span += "-" + strconv.Itoa(item.EndLine)
+		}
+		lines = diagnosticText(lines, item.Path+":"+span)
+		lines = diagnosticText(lines, item.Severity+": "+item.Message)
+		for _, parent := range item.IncludedFrom {
+			span := strconv.Itoa(parent.Line)
+			if parent.EndLine != parent.Line {
+				span += "-" + strconv.Itoa(parent.EndLine)
+			}
+			lines = diagnosticText(lines, "Read from "+parent.Path+":"+span)
+		}
+	}
+	pages := [][]string{}
+	for len(lines) > 0 {
+		n := min(len(lines), reportRowsPerPage*2)
+		pages = append(pages, lines[:n])
+		lines = lines[n:]
+	}
+	return pages
+}
+
 func (d *Controller) showReport(token string, page int) error {
 	if d.report == nil || d.report.token != token {
 		return errors.New("Configuration report is stale; run the check again")
 	}
 	result := d.report.result
-	pages := max(1, (len(result.Diagnostics)+3)/4)
+	content := reportPages(result)
+	pages := len(content)
 	if page < 0 || page >= pages {
 		return errors.New("Invalid configuration report page")
 	}
 	lines := []string{`Title "Configuration check"`, "Colorset 2", "ItemColorset 12", "Line left", `Text "Desktop settings subset - configuration was not executed"`,
 		"Line left", "Text " + quote(fmt.Sprintf("%d errors, %d unchecked; page %d/%d", result.Errors, result.Unchecked, page+1, pages))}
-	if len(result.Diagnostics) == 0 {
-		lines = append(lines, "Line left", `Text "No errors in the supported literal settings subset."`)
-	}
-	for _, item := range result.Diagnostics[page*4 : min(page*4+4, len(result.Diagnostics))] {
-		path := []rune(item.Path)
-		if len(path) > 80 {
-			path = append([]rune("..."), path[len(path)-77:]...)
-		}
-		span := strconv.Itoa(item.Line)
-		if item.EndLine != item.Line {
-			span += "-" + strconv.Itoa(item.EndLine)
-		}
-		lines = append(lines, "Line left", "Text "+quote(string(path)+":"+span), "Line left", "Text "+quote(item.Severity+": "+item.Message))
-		if len(item.IncludedFrom) > 0 {
-			parent := item.IncludedFrom[len(item.IncludedFrom)-1]
-			lines = append(lines, "Line left", "Text "+quote("Read from "+filepath.Base(parent.Path)+":"+strconv.Itoa(parent.Line)))
-		}
-	}
+	lines = append(lines, content[page]...)
 	lines = append(lines, "Line left", `Text "Other FVWM syntax and effective runtime state are not validated."`, "Line expand", `Button quit "Close" ^[`, "Command Nop")
 	for _, direction := range []struct {
 		label, key string

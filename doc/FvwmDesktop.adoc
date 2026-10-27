@@ -437,6 +437,47 @@ bounded worker pool and retains one result snapshot. Source walking and
 diagnostics use the shared Go settings registry in the private worker; complete
 reports are validated before the resident controller presents them.
 
+== RUNTIME CONFIGURATION DIAGNOSTICS
+
+Invalid registered *FvwmDesktop settings and unknown desktop options produce a
+native notice and a stderr diagnostic during initial configuration, retained
+configuration replay and live configuration delivery. The notice uses the
+existing FvwmForm viewer (title "FVWM-X"). Initial configuration applies valid
+settings through the existing override and settings-generation rules. After
+startup, newly delivered options are validated for diagnostics only: they do
+not change overrides, effective settings or terminal selection. Valid configured
+changes still require restarting FvwmDesktop to take effect.
+
+When the core supplies a file context, the diagnostic shows its complete path
+and physical first-last line span, followed by the complete root-first nested
+Read chain and each caller's span. Generated configuration and invocation
+context are identified explicitly. Their optional location is the nearest known
+enclosing invocation and may be an outer call; intervening dynamic steps are
+not reconstructed. It is not an exact direct inner call or definition location.
+Missing or rejected metadata displays "Source context unavailable".
+This is diagnostic context for a delivered desktop option, not an inventory of
+effective bindings or theme origins. Aggregate settings errors without a
+single attributable option do not claim a source location.
+
+FvwmDesktop selects live configuration delivery with M_SENDCONFIG and the
+optional native MX_CONFIG_SOURCE extended packet alongside existing core replies.
+It accepts one version-1 source record of at most 1536 UTF-8 bytes and sixteen include callers. Only the immediately
+following configuration packet with the same nonzero opaque key can consume
+that record. Intervening packets, mismatches, malformed/ambiguous fields,
+invalid Unicode, controls in source fields, and exhausted bounds discard the
+context. Source text is never executed, replayed as a command or offered as an
+editable action. Modules that do not select this packet retain their ordinary
+configuration stream.
+
+Native notices and configuration-check source rows use literal TextHex text,
+wrapped at 72 Unicode characters. Quotes, dollar signs, percent signs,
+backslashes and non-ASCII paths are preserved. The checker displays complete
+paths and include chains across continuation pages of at most twelve wrapped
+source/message rows, keeping Close and navigation controls within the viewer.
+Controls in checker paths are visibly escaped. The
+offline text report also preserves continuation spans on included callers;
+JSON schema_version remains 1.
+
 == DESKTOP SERVICES
 
 The resident desktop controller is a Go executable. It owns preference-file

@@ -294,8 +294,10 @@ static fmodule *do_execute_module(
 		/* add these pipes to fvwm's active pipe list */
 		MOD_WRITEFD(module) = fvwm_to_app[1];
 		MOD_READFD(module) = app_to_fvwm[0];
-		msg_mask_set(
-			&MOD_PIPEMASK(module), DEFAULT_MASK, DEFAULT_MASK);
+		/* Preserve legacy default delivery; source metadata requires an
+		 * explicit extended SET_MASK rather than inheriting bit 11. */
+		msg_mask_set(&MOD_PIPEMASK(module), DEFAULT_MASK,
+			DEFAULT_MASK & ~MX_CONFIG_SOURCE);
 		if (DoingCommandLine)
 		{
 			/* add to the list of command line modules */

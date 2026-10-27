@@ -26,7 +26,7 @@ func TestSessionPowerHasIndependentBoundedAdmission(t *testing.T) {
 	if err := d.handle("session", "reboot"); err != nil {
 		t.Fatal(err)
 	}
-	if len(d.queue) != 1 || !strings.Contains(strings.Join((*commands)[before:], "\n"), "already pending") {
+	if len(d.queue) != 1 || !strings.Contains(literalCommands(t, (*commands)[before:]), "already pending") {
 		t.Fatal("duplicate power request not explicitly refused")
 	}
 	d.jobs["other"] = &job{}
@@ -35,7 +35,7 @@ func TestSessionPowerHasIndependentBoundedAdmission(t *testing.T) {
 	d.jobs["full"] = &job{}
 	before = len(*commands)
 	_ = d.handle("session", "reboot")
-	if !strings.Contains(strings.Join((*commands)[before:], "\n"), "busy") {
+	if !strings.Contains(literalCommands(t, (*commands)[before:]), "busy") {
 		t.Fatal("full admission silently dropped power action")
 	}
 	before = len(d.queue)
@@ -64,7 +64,7 @@ func TestLockerExitIsOwnedByEventLoopAndAllowsRetry(t *testing.T) {
 	}
 	before := len(*commands)
 	_ = d.handle("lock", "")
-	if !strings.Contains(strings.Join((*commands)[before:], "\n"), "already pending") {
+	if !strings.Contains(literalCommands(t, (*commands)[before:]), "already pending") {
 		t.Fatal("duplicate locker not refused")
 	}
 	if err := os.WriteFile(gate, nil, 0600); err != nil {
@@ -75,7 +75,7 @@ func TestLockerExitIsOwnedByEventLoopAndAllowsRetry(t *testing.T) {
 		d.pollLocker()
 		time.Sleep(time.Millisecond)
 	}
-	if d.lockerPending || !strings.Contains(strings.Join(*commands, "\n"), "protection is unconfirmed") {
+	if d.lockerPending || !strings.Contains(literalCommands(t, *commands), "protection is unconfirmed") {
 		t.Fatal("locker failure lost")
 	}
 	data, _ := os.ReadFile(marker)
@@ -86,14 +86,14 @@ func TestLockerExitIsOwnedByEventLoopAndAllowsRetry(t *testing.T) {
 		t.Fatal(err)
 	}
 	_ = d.handle("lock", "")
-	if !strings.Contains(strings.Join(*commands, "\n"), "NOT been locked") {
+	if !strings.Contains(literalCommands(t, *commands), "NOT been locked") {
 		t.Fatal("missing locker not explicit")
 	}
 	if err := os.WriteFile(locker, []byte("#!/no-such-interpreter\n"), 0700); err != nil {
 		t.Fatal(err)
 	}
 	_ = d.handle("lock", "")
-	if d.lockerPending || len(d.spawnSlots) != 0 || !strings.Contains(strings.Join(*commands, "\n"), "Could not start locker") {
+	if d.lockerPending || len(d.spawnSlots) != 0 || !strings.Contains(literalCommands(t, *commands), "Could not start locker") {
 		t.Fatal("construction refusal leaked ownership")
 	}
 }
@@ -106,7 +106,7 @@ func TestPowerPublicationNeverUsesAudioFallback(t *testing.T) {
 	if err := d.publishJob(job{key: "power", result: "Power request denied by the system."}); err != nil {
 		t.Fatal(err)
 	}
-	if !strings.Contains(strings.Join(*commands, "\n"), "Power request denied") {
+	if !strings.Contains(literalCommands(t, *commands), "Power request denied") {
 		t.Fatal("power response was not published")
 	}
 }
@@ -118,7 +118,7 @@ func TestDisabledCaptureRefusesBeforeJobAdmission(t *testing.T) {
 	if len(d.jobs) != 0 || len(d.queue) != 0 {
 		t.Fatal("disabled capture started a helper job")
 	}
-	if !strings.Contains(strings.Join(*commands, "\n"), "PNG support is disabled") {
+	if !strings.Contains(literalCommands(t, *commands), "PNG support is disabled") {
 		t.Fatal("disabled capture did not explain unavailability")
 	}
 }

@@ -4,6 +4,6 @@
 #define FVWM_MODCONF_H
 
 
-void ModuleConfig(char *action);
+void ModuleConfig(char *action, const exec_context_t *exc);
 
 #endif /* FVWM_MODCONF_H */

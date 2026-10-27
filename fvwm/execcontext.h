@@ -5,6 +5,7 @@
 
 /* ---------------------------- included header files ---------------------- */
 #include "fvwm.h"
+#include "libs/config_origin.h"
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -58,6 +59,7 @@ typedef struct
 	x_context_t x;
 	window_context_t w;
 	module_context_t m;
+	const fvwm_config_origin *source;
 	/* for internal use *only*. *Never* acces this from outside! */
 	exec_context_privileged_t private_data;
 } exec_context_t;
@@ -69,7 +71,8 @@ typedef enum
 	ECC_FW = 0x4,
 	ECC_W = 0x8,
 	ECC_WCONTEXT = 0x10,
-	ECC_MODULE = 0x20
+	ECC_MODULE = 0x20,
+	ECC_SOURCE = 0x40
 } exec_context_change_mask_t;
 
 typedef struct
@@ -78,6 +81,7 @@ typedef struct
 	x_context_t x;
 	window_context_t w;
 	module_context_t m;
+	const fvwm_config_origin *source;
 } exec_context_changes_t;
 
 /* ---------------------------- forward declarations ----------------------- */

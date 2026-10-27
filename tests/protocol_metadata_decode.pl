@@ -22,7 +22,7 @@ local $/;
 my $bytes = <STDIN>;
 my @expected = qw(MX_VISIBLE_ICON_NAME MX_ENTER_WINDOW MX_LEAVE_WINDOW
 	MX_PROPERTY_CHANGE MX_MONITOR_ENABLED MX_MONITOR_DISABLED
-	MX_MONITOR_CHANGED MX_MONITOR_FOCUS MX_ECHO MX_REPLY);
+	MX_MONITOR_CHANGED MX_MONITOR_FOCUS MX_ECHO MX_REPLY MX_CONFIG_SOURCE);
 my @decoded;
 my $mask = 0;
 for my $name (@expected) {
@@ -37,15 +37,16 @@ for my $name (@expected) {
 	die "wrong event $name\n" unless event_name($type) eq $name;
 	my $args = event_args($type, event_arg_values($type, $body));
 	$module->invoke_handler(FVWM::Event->new($type, $body));
-	my @keys = $name eq 'MX_PROPERTY_CHANGE' ? qw(type value win_id) :
+	my @keys = $name eq 'MX_CONFIG_SOURCE' ? qw(correlation reserved1 reserved2) :
+		$name eq 'MX_PROPERTY_CHANGE' ? qw(type value win_id) :
 		qw(win_id frame_id ptr);
-	my @numbers = (11, 22, 33);
+	my @numbers = $name eq 'MX_CONFIG_SOURCE' ? (11, 0, 0) : (11, 22, 33);
 	for my $key (@keys) {
 		die "wrong native word $key\n" unless $args->{$key} == shift @numbers;
 	}
 	if ($name ne 'MX_ENTER_WINDOW' && $name ne 'MX_LEAVE_WINDOW') {
 		my $key = $name eq 'MX_ECHO' ? 'message' :
-			$name =~ /(?:PROPERTY_CHANGE|REPLY)$/ ? 'text' : 'name';
+			$name =~ /(?:PROPERTY_CHANGE|REPLY|CONFIG_SOURCE)$/ ? 'text' : 'name';
 		die "wrong native string\n" unless $args->{$key} eq 'native text';
 	}
 	$mask |= $type & ~M_EXTENDED_MSG;
@@ -53,5 +54,5 @@ for my $name (@expected) {
 }
 die "trailing bytes or mask mismatch\n" if length($bytes) || $mask != MAX_XMSG_MASK;
 die "extended handlers crossed categories\n" unless $calls{echo} == 1
-	&& $calls{reply} == 1 && $calls{all} == 10;
+	&& $calls{reply} == 1 && $calls{all} == 11;
 print encode_json(\@decoded), "\n";

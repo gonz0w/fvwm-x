@@ -258,12 +258,9 @@ func (d *Controller) inspectionControl(argument string) error {
 	return errors.New("Unknown inspector control")
 }
 func inspectionText(lines []string, text string) []string {
-	runes := []rune(text)
-	for i := 0; i < max(1, len(runes)); i += 72 {
-		lines = append(lines, "Line left", "TextHex x"+hex.EncodeToString([]byte(string(runes[min(i, len(runes)):min(i+72, len(runes))]))))
-	}
-	return lines
+	return diagnosticText(lines, text)
 }
+
 func (d *Controller) showInspection() error {
 	view := d.inspection
 	if view == nil {

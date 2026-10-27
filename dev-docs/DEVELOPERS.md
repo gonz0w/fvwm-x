@@ -48,6 +48,17 @@ ownership explicit across callbacks, recursive commands, X window destruction
 and module death-row cleanup. A count/time budget cannot preempt a blocking
 handler; identify that limitation when changing scheduling.
 
+
+Configuration diagnostics use [immutable source snapshots](../libs/config_origin.h)
+owned by [execution contexts](../fvwm/execcontext.h), with the
+[span reader](../libs/config_line.h) preserving physical continuation ranges.
+Follow the [source/protocol contract](decisions/CONFIGURATION-DIAGNOSTICS-2026-10-26.md):
+never infer origin from current-Read globals, truncate an include chain as exact,
+or reuse metadata across native packet pairs. Keep source storage alive across
+synchronous callbacks; module config deletion unlinks immediately and retires
+storage after borrowing replay/broadcast traversals unwind. Shared logging
+accepts a borrowed scoped string without a dependency on core state.
+
 ## Coding conventions
 
 - C is C11. Include generated `config.h` as the first non-comment line of each

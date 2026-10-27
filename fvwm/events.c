@@ -3739,8 +3739,8 @@ InitEventHandlerJumpTable(void)
 }
 
 /* handle a single X event */
-void
-dispatch_event(XEvent *e)
+static void
+dispatch_event_without_source(XEvent *e)
 {
 	Window			  w = e->xany.window;
 	FvwmWindow		 *fw;
@@ -3817,6 +3817,17 @@ dispatch_event(XEvent *e)
 		(*event_group->jump_table[e->type - event_group->base])(&ea);
 		exc_destroy_context(ea.exc);
 	}
+}
+
+/* Nested event servicing has no relationship to a suspended Read command.
+ * Commands dispatched by the event install their own immutable context. */
+void
+dispatch_event(XEvent *e)
+{
+	const char *saved_source = log_exchange_context(NULL);
+
+	dispatch_event_without_source(e);
+	log_exchange_context(saved_source);
 }
 
 /* ewmh configure request */
@@ -4084,7 +4095,11 @@ My_XNextEvent(Display *disp, XEvent *event)
 {
 	/* Wait commands retain their caller's resources. Readiness/transport is
 	 * safe here; starts and owner commits require HandleEvents. */
-	return events_next_event(disp, event, False);
+	const char *saved_source = log_exchange_context(NULL);
+	int result = events_next_event(disp, event, False);
+
+	log_exchange_context(saved_source);
+	return result;
 }
 
 static int

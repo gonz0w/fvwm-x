@@ -58,13 +58,66 @@
 struct moduleInfoList
 {
 	char *data;
+	char *source;
 	unsigned char alias_len;
 	struct moduleInfoList *next;
+	struct moduleInfoList *retired_next;
+	Bool retired;
 };
 
 struct moduleInfoList *modlistroot = NULL;
 
-static struct moduleInfoList *AddToModList(char *tline);
+/* Retained provenance cannot grow with an unbounded configuration list.
+ * Exhaustion preserves config text and sends explicit unavailable metadata. */
+#define MODULE_SOURCE_STORAGE_MAX (1024U * 1024U)
+static size_t module_source_bytes;
+static unsigned long module_source_key;
+static unsigned int module_config_traversals;
+static struct moduleInfoList *module_config_retired;
+
+/* Synchronous M_CONFIG_INFO callbacks can destroy the current or a later
+ * entry, or recursively replay the list. Unlink immediately, but retain its
+ * data and original next link until every borrowing traversal has returned. */
+static void free_module_config_entry(struct moduleInfoList *entry)
+{
+	if (entry->source != NULL)
+	{
+		module_source_bytes -= strlen(entry->source) + 1;
+		free(entry->source);
+	}
+	free(entry->data);
+	free(entry);
+}
+
+static void retire_module_config_entry(struct moduleInfoList *entry)
+{
+	entry->retired = True;
+	if (module_config_traversals == 0)
+	{
+		free_module_config_entry(entry);
+		return;
+	}
+	entry->retired_next = module_config_retired;
+	module_config_retired = entry;
+}
+
+static void finish_module_config_traversal(void)
+{
+	if (--module_config_traversals == 0)
+	{
+		while (module_config_retired != NULL)
+		{
+			struct moduleInfoList *entry = module_config_retired;
+
+			module_config_retired = entry->retired_next;
+			free_module_config_entry(entry);
+		}
+	}
+}
+
+
+static struct moduleInfoList *AddToModList(
+	char *tline, const exec_context_t *source_exc);
 static void SendConfigToModule(
 	fmodule *module, const struct moduleInfoList *entry, char *match,
 	int match_len);
@@ -79,7 +132,7 @@ static void SendConfigToModule(
  * Some modules request that module config commands be sent to them
  * as the commands are entered.  Send to modules that want it.
  */
-void ModuleConfig(char *action)
+void ModuleConfig(char *action, const exec_context_t *exc)
 {
 	int end;
 	fmodule_list_itr moditr;
@@ -97,7 +150,9 @@ fprintf(stderr, "%s: action '%s'\n", __func__, (action) ? action : "(nil)");
 	if (action[end] == '\n')
 		action[end] = '\0';
 	/* save for config request */
-	new_entry = AddToModList(action);
+	new_entry = AddToModList(action, exc);
+	/* Pin the entry across all receivers, including synchronous callbacks. */
+	module_config_traversals++;
 	/* look at all possible pipes */
 	module_list_itr_init(&moditr);
 	while ( (module = module_list_itr_next(&moditr)) != NULL)
@@ -118,11 +173,13 @@ fprintf(stderr, "%s: action '%s'\n", __func__, (action) ? action : "(nil)");
 			free(modstring);
 		}
 	}
+	finish_module_config_traversal();
 
 	return;
 }
 
-static struct moduleInfoList *AddToModList(char *tline)
+static struct moduleInfoList *AddToModList(
+	char *tline, const exec_context_t *source_exc)
 {
 	struct moduleInfoList *t, *prev, *this;
 	char *rline = tline;
@@ -141,6 +198,18 @@ static struct moduleInfoList *AddToModList(char *tline)
 
 	this = fxmalloc(sizeof(struct moduleInfoList));
 
+	this->retired = False;
+	this->retired_next = NULL;
+	this->source = NULL;
+	{
+		const char *json = fvwm_config_origin_json(source_exc->source);
+		size_t size = strlen(json) + 1;
+		if (size <= MODULE_SOURCE_STORAGE_MAX - module_source_bytes)
+		{
+			this->source = fxstrdup(json);
+			module_source_bytes += size;
+		}
+	}
 	this->alias_len = 0;
 	if (alias_end && alias_end[0] == MODULE_CONFIG_DELIM)
 	{
@@ -244,8 +313,6 @@ void CMD_DestroyModuleConfig(F_CMD_ARGS)
 		     alias_len == current->alias_len) &&
 		    matchWildcards(info, mi+1))
 		{
-			free(current->data);
-			free(current);
 			if( prev )
 			{
 				prev->next = next;
@@ -254,6 +321,7 @@ void CMD_DestroyModuleConfig(F_CMD_ARGS)
 			{
 				modlistroot = next;
 			}
+			retire_module_config_entry(current);
 		}
 		else
 		{
@@ -409,10 +477,12 @@ void CMD_Send_ConfigInfo(F_CMD_ARGS)
 	{
 		match_len = strlen(match);
 	}
+	module_config_traversals++;
 	for (t = modlistroot; t != NULL; t = t->next)
 	{
 		SendConfigToModule(mod, t, match, match_len);
 	}
+	finish_module_config_traversal();
 	send_desktop_names(mod);
 	send_ignore_modifiers(mod);
 	SendPacket(
@@ -426,6 +496,8 @@ static void SendConfigToModule(
 	fmodule *module, const struct moduleInfoList *entry, char *match,
 	int match_len)
 {
+	if (entry->retired)
+		return;
 	if (match)
 	{
 		if (match_len == 0)
@@ -442,7 +514,20 @@ static void SendConfigToModule(
 			return;
 		}
 	}
-	SendName(module, M_CONFIG_INFO, 0, 0, 0, entry->data);
+	if (IS_MESSAGE_SELECTED(module, MX_CONFIG_SOURCE) &&
+	    IS_MESSAGE_SELECTED(module, M_CONFIG_INFO))
+	{
+		/* Native ABI correlation, unrelated to X window identities. */
+		if (++module_source_key == 0)
+			++module_source_key;
+		send_config_source(module, module_source_key,
+			entry->source ? entry->source :
+			fvwm_config_origin_json(NULL), entry->data);
+	}
+	else
+	{
+		SendName(module, M_CONFIG_INFO, 0, 0, 0, entry->data);
+	}
 
 	return;
 }

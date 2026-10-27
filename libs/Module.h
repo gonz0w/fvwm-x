@@ -124,10 +124,11 @@ typedef struct
 #define MX_MONITOR_FOCUS	  ((1UL<<8) | M_EXTENDED_MSG)
 #define MX_ECHO			  ((1UL<<9) | M_EXTENDED_MSG)
 #define MX_REPLY		  ((1UL<<10) | M_EXTENDED_MSG)
-#define MAX_EXTENDED_MESSAGES     10
+#define MX_CONFIG_SOURCE         ((1UL<<11) | M_EXTENDED_MSG)
+#define MAX_EXTENDED_MESSAGES     11
 #define DEFAULT_XMSG_MASK         0x00000000
 /* All named extended event bits, excluding the category marker. */
-#define MAX_XMSG_MASK             0x000007fe
+#define MAX_XMSG_MASK             0x00000ffe
 
 #define MAX_TOTAL_MESSAGES   (MAX_MESSAGES + MAX_EXTENDED_MESSAGES)
 

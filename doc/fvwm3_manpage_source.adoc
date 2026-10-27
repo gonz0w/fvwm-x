@@ -1019,6 +1019,35 @@ menu or bound to a mouse button or a keyboard key. It is left as an
 exercise for the user to decide which function make sense for
 initialization and which ones make sense for run-time.
 
+=== Runtime Configuration Diagnostics
+
+When logging is enabled, unknown-command messages and existing argument or
+option errors sent through fvwm's shared logger carry a source JSON prefix.
+A file source gives the opened absolute pathname, the inclusive physical line
+range and the complete nested *Read* chain, oldest first. A continued command
+can therefore name several physical lines. Logging is controlled by the
+existing *-v* and *-o* options; diagnostic context does not change command
+execution order or the existing *Silent* behavior.
+
+A source marked _generated_ identifies *PipeRead* output. A source marked
+_invocation_ identifies function execution whose definition location is
+unavailable. An optional location is the nearest known enclosing invocation;
+it may be an outer call rather than the direct inner call. Intervening dynamic
+steps are not reconstructed. The location does not identify a file containing
+the generated output or function definition. Events, module commands and
+scheduled actions do not
+inherit whichever configuration file happens to be open. A *Read* started from
+a fresh event or module context can establish a new file root. A *Read* beneath
+a generated, function-invocation or unavailable source cannot claim an exact
+literal include chain.
+
+Source metadata is limited to 1536 UTF-8 bytes and 16 include frames. Invalid
+text or an origin beyond these bounds is marked _unavailable_, without claiming
+a truncated chain as exact. An invalid or excessive input line stops its stream
+and reports that its source span is unavailable; earlier completed commands
+remain applied. Runtime diagnostics describe the command being processed and
+do not establish the definition of an effective binding or theme.
+
 === Supplied Configuration
 
 A sample configuration file, is supplied with the fvwm distribution. It
@@ -8411,8 +8440,10 @@ section *Conditional Commands* for the meaning of return codes).
 Before reading commands, fvwm services a bounded part of the queued redraws.
 A large redraw queue can remain pending when *Read* returns.
 +
-*Read* and *PipeRead* keep each logical command line complete, up to 1 MiB
-excluding the final newline. A backslash immediately before a newline joins
+*Read* and *PipeRead* keep each logical command line complete. Each command
+has a 1 MiB text bound and a separate 1 MiB consumed-input bound. The input
+bound counts physical continuation and final newline bytes. A backslash
+immediately before a newline joins
 the next physical line. A final backslash without a newline remains literal.
 An embedded NUL, I/O error or excessive line stops the stream; the partial
 line is not executed. Commands completed before that failure remain applied.

@@ -56,6 +56,7 @@ libfvwm3_sources = files(
     'Rectangles.c',
     'Strings.c',
     'config_line.c',
+    'config_origin.c',
     'System.c',
     'Target.c',
     'WinMagic.c',

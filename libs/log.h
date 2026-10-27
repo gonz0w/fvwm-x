@@ -19,6 +19,9 @@ bool	log_set_fd(int);
 /* Adopt fork-time metadata at most once, including disabled/failed adoption.
  * Later broadcasts do not transfer a new descriptor into this process. */
 bool	log_adopt_inherited_fd(int);
+/* Borrowed scoped context, restored by the caller across recursion. No core
+ * dependency; the single-threaded command engine owns the snapshot lifetime. */
+const char *log_exchange_context(const char *context);
 void printflike(2, 3) fvwm_debug(const char *, const char *, ...);
 
 #endif

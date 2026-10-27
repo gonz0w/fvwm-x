@@ -10,21 +10,21 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
-	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 	"golang.org/x/sys/unix"
 )
 
 const (
-	newDesk       = 1 << 1
-	configInfo    = 1 << 18
-	endConfigInfo = 1 << 19
-	stringMessage = 1 << 22
-	coreReply     = (1 << 31) | (1 << 10)
-	queueLimit    = 1024 * 1024
+	newDesk             = 1 << 1
+	configInfo          = 1 << 18
+	endConfigInfo       = 1 << 19
+	stringMessage       = 1 << 22
+	sendConfig          = 1 << 27
+	coreReply           = (1 << 31) | (1 << 10)
+	configSourceMessage = (1 << 31) | (1 << 11)
+	queueLimit          = 1024 * 1024
 )
 
 type frame struct {
@@ -84,10 +84,11 @@ func Run(options Options) error {
 		return err
 	}
 	defer d.Close()
-	d.emit(fmt.Sprintf("SET_MASK %d", stringMessage|newDesk|configInfo|endConfigInfo))
-	d.emit(fmt.Sprintf("SET_MASK %d", coreReply))
+	d.emit(fmt.Sprintf("SET_MASK %d", stringMessage|newDesk|configInfo|endConfigInfo|sendConfig))
+	d.emit(fmt.Sprintf("SET_MASK %d", coreReply|configSourceMessage))
 	d.emit("Send_ConfigInfo *FvwmDesktop")
 	buffer := []byte{}
+	var source sourcePair
 	started := false
 	lastStatus := time.Time{}
 	chunk := make([]byte, 65536)
@@ -149,6 +150,7 @@ func Run(options Options) error {
 			if n == 0 {
 				break
 			}
+			context := source.consume(packet)
 			switch packet.kind {
 			case stringMessage, configInfo, coreReply:
 				if len(packet.body) < 24 {
@@ -160,14 +162,12 @@ func Run(options Options) error {
 					d.Handle(text)
 				} else if packet.kind == coreReply {
 					d.preview.reply(text)
-				} else if key, value, ok := desktopConfiguration(text); ok {
-					if _, known := desktopsettings.Registry()[key]; known {
-						if err := d.configure(key, value); err != nil {
-							fmt.Fprintln(os.Stderr, "FvwmDesktop: "+err.Error())
-						}
-					} else if key == "terminal" {
-						d.terminal = detectTerminal(value)
+				} else {
+					mode := validateConfiguration
+					if !started {
+						mode = applyConfiguration
 					}
+					d.configureMessage(text, context, mode)
 				}
 			case newDesk:
 				if len(packet.body) >= 8 {

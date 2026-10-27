@@ -57,6 +57,7 @@
 #include "screen.h"
 #include "builtins.h"
 #include "module_list.h"
+#include "module_interface.h"
 #include "monitor_scale_config.h"
 #include "colorset.h"
 #include "events.h"
@@ -2379,7 +2380,8 @@ int main(int argc, char **argv)
 			free(cfg_loc[nl]);
 	}
 	exc_destroy_context(exc);
-	(void)monitor_scale_config_finalize_initial();
+	if (monitor_scale_config_finalize_initial())
+		broadcast_monitor_ui_scale();
 
 	if (Pdepth<2)
 	{

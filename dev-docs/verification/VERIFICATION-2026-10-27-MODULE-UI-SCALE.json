@@ -1,0 +1,301 @@
+{
+  "owner": "Cam",
+  "base": "69dda71d290c8a02842ab27b7d326a64136615b3",
+  "candidate": "codex/r1-form-scaling",
+  "status": "focused Linux foundation passed; broader consumer qualification pending",
+  "references_remain_open": [
+    51,
+    69
+  ],
+  "closes": [],
+  "source": {
+    "frozen_files": 1534,
+    "aggregate_sha256": "bd39e1be29c261dc0a585af89455f5c26239a612124f030c9d565437a975ac51",
+    "compiled_sha256": {
+      "fvwm/fvwm3.c": "5c714a95f8b2d48b99bb46b3b7745ca54cc219ee21c3629b84ecb52336159d74",
+      "fvwm/module_interface.c": "0e632f0d7684f8f7dfd3766fc23b838a2601cb3bc88b7ea94fe76db5b50b2ab6",
+      "fvwm/module_interface.h": "52579bf60f0c755b33e5b88b34e436d330360f487b2acf8a820703999b6963d5",
+      "libs/module_ui_scale.c": "05dfe406b0ad5f81423eec89d96f89723b10fceceb9f122a2b96994e33aff988",
+      "libs/module_ui_scale.h": "133dc6b8a973075d63432ea850238a8f53fee5b08466b40d67eeb8489dce6dad",
+      "libs/meson.build": "7735e047f3c62e8dc8e2f936c14d4e67a7548a137cedec3f4504f39b70359778",
+      "tests/test_module_ui_scale.c": "edcbac6a224622d526c87c24f4a6ac42b7ee8f0b97645915f6dfbca8445facc4",
+      "tests/module_ui_scale_probe.c": "efe7267fd7de6c5b8817b877a88d5df487620b048d8103b0a8ace599cafc87c7",
+      "tests/meson.build": "c66b64ac170dfdbec6f123ed7a246611ae5d847618c65cd20e5852aa32d0ebfc"
+    },
+    "final_driver": {
+      "driver": {
+        "path": "tests/live_x/module_ui_scale_live.py",
+        "sha256": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812"
+      },
+      "probe_c_sha256": "efe7267fd7de6c5b8817b877a88d5df487620b048d8103b0a8ace599cafc87c7"
+    },
+    "compiled_policy_inputs_unchanged": true
+  },
+  "linux": {
+    "status": "passed",
+    "platform": "Linux-6.18.10-200.fc43.aarch64-aarch64-with-glibc2.39",
+    "architecture": "aarch64",
+    "binaries": {
+      "fvwm3": {
+        "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bytes": 5539656
+      },
+      "tests/module-ui-scale-probe": {
+        "sha256": "e91d7eb17f748346bedb64998ffa144bfb061584f55f0f4c16f7c201d6710557",
+        "bytes": 347512
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "sha256": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bytes": 1643048
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "sha256": "de385e9ce18aa2868ff25bc2e6f5d7c5a2c893d95c9fc86ee6b1f9603fc2fc2d",
+        "bytes": 444488
+      }
+    },
+    "source_after": "all frozen bytes exact",
+    "commands": 7
+  },
+  "commands": [
+    {
+      "name": "compiler-version",
+      "command": [
+        "cc",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.005286818000001858,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "compiler-version.log"
+    },
+    {
+      "name": "configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.085696798000015,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "configure.log"
+    },
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "fvwm3",
+        "tests/module-ui-scale-probe",
+        "tests/test-module-ui-scale",
+        "tests/test-module-monitor",
+        "tests/test-monitor-ownership",
+        "tests/test-monitor-scale",
+        "tests/test-monitor-scale-config",
+        "tests/test-monitor-topology"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.0064634529999807,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-module-scale-checkpoint/policy",
+        "module-ui-scale",
+        "module-monitor",
+        "monitor-ownership",
+        "monitor-scale",
+        "monitor-scale-config",
+        "monitor-topology"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.12662707599997702,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "asan-configure",
+      "command": [
+        "meson",
+        "setup",
+        "--reconfigure",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "/tmp/fvwm-module-waits-20261015/source"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 1.0724321499999974,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-configure.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "tests/test-module-ui-scale"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.1601068639999994,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-module-scale-checkpoint/sanitizer",
+        "module-ui-scale"
+      ],
+      "cwd": "/tmp/fvwm-module-waits-20261015/source",
+      "seconds": 0.12295039200000701,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer.log"
+    }
+  ],
+  "manual": {
+    "command": "LD_LIBRARY_PATH=/tmp/fvwm-deps/libpng-1.6.59/lib asciidoctor -b manpage -a fvwm3 -o /tmp/fvwm-module-waits-20261015/r1-module-scale-checkpoint/fvwm3.1 /tmp/fvwm-module-waits-20261015/source/doc/fvwm3.adoc",
+    "exit": 0,
+    "seconds": 0.1896041250001872,
+    "source_sha256": "59588121d61ac2adae108c7bfe4af1dbbd46df49f902dd4c7ca7d4b2ad4f4da6",
+    "diagnostics": ""
+  },
+  "native": {
+    "status": "passed",
+    "startup_factors": [
+      1,
+      1.25,
+      1.5,
+      2
+    ],
+    "early_startup_query_before_scale_finalization": true,
+    "post_finalization_automatic_delivery": true,
+    "independent_server_atoms": true,
+    "actual_root_pixel_geometry": true,
+    "automatic_factor_change": [
+      1,
+      2
+    ],
+    "mixed_monitor_movement": true,
+    "monitor_removal": true,
+    "complete_replay_unchanged": true,
+    "omitted_real_end_retains_last_good": true,
+    "explicit_abort_recovery": true,
+    "fresh_consumer": true,
+    "sync_gate": 0.15,
+    "module_child_waits": 11,
+    "all_module_child_exit_codes_zero": true,
+    "all_harness_children_exit_codes_zero": true,
+    "unexpected_x_errors": [],
+    "cleanup_failures": [],
+    "seconds": 1.2087188750010682
+  },
+  "archives": {
+    "linux-final": {
+      "status": "passed",
+      "files": 19,
+      "archive": {
+        "sha256": "fd4f142b79361e8011e2284f2ce862a324185d3219cd43a5d96e5fe3ba2bf388",
+        "bytes": 2880741
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-module-scale-checkpoint",
+      "gzip_crc": true
+    },
+    "native-final": {
+      "status": "passed",
+      "files": 72,
+      "archive": {
+        "sha256": "b04d39707f49f2fd7492df7fbebd72367fb52badeb7515ea8840804d44f74e36",
+        "bytes": 32166
+      },
+      "source_root": "/dev/shm/module-ui-scale-final/module-ui-scale-s_3jxtmk",
+      "gzip_crc": true
+    },
+    "native-initial": {
+      "status": "passed",
+      "files": 60,
+      "archive": {
+        "sha256": "bb0ad6e763bd842ee987417dffdf1fdb1cc1d35da24d38c1abb2570a4adf0481",
+        "bytes": 21597
+      },
+      "source_root": "/dev/shm/module-ui-scale-final",
+      "gzip_crc": true
+    }
+  },
+  "cleanup": {
+    "status": "passed",
+    "retired": [
+      "/dev/shm/module-ui-scale-final",
+      "/tmp/fvwm-module-waits-20261015/r1-module-scale-checkpoint"
+    ],
+    "files": 151,
+    "bytes": 6930374,
+    "frozen_source_equal": true,
+    "final_native_fixture_equal": true,
+    "preserved": "source/build caches, install stages, VM disks and performance references"
+  },
+  "resources": {
+    "machine": "podman-machine-default",
+    "machine_stopped": true,
+    "container": "fvwm-x-linux-arm64-svg",
+    "container_stopped": true,
+    "native_children_all_reaped": true,
+    "verified_duplicates_retired": true
+  },
+  "cost": {
+    "core_delta_bytes": 18152,
+    "form_binary_unchanged": true,
+    "mfl_binary_unchanged": true,
+    "new_default_resident": false,
+    "new_dependency": false,
+    "new_installed_artifact": false,
+    "performance_counter": "2/5 after PR271; 3/5 on this merge; comparison not due"
+  },
+  "limits": [
+    "Form/browser rendering and scale adoption remain pending",
+    "No new UI/theme screenshot qualification",
+    "No fresh six-target/default-X/install matrix",
+    "No physical hardware or native-CPU sanitizer release qualification",
+    "Initial placement fixture failure preserved, not relabeled passed",
+    "Native named-role selection unavailable; explicit requested model/instructions routes, backend identity unattested"
+  ],
+  "review": {
+    "status": "no remaining actionable scoped blocker",
+    "scope": "separate source/docs and saved build/policy/sanitizer/native evidence review",
+    "source_freeze_verified": true,
+    "original_failure_preserved": true,
+    "native_identity_and_geometry_oracles_causal": true,
+    "human_approval": false,
+    "requested_role": "temper_reviewer",
+    "native_role_selector": "unavailable; explicit Sol/high model/instructions mapping",
+    "backend_identity": "unattested"
+  }
+}

@@ -3940,6 +3940,15 @@ module_monitor_test = executable(
 )
 test('module-monitor', module_monitor_test)
 
+module_ui_scale_test = executable(
+    'test-module-ui-scale', 'test_module_ui_scale.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('module-ui-scale', module_ui_scale_test)
+
 pager_monitor_test = executable(
     'test-pager-monitor',
     ['test_pager_monitor.c', '../modules/FvwmPager/fpmonitor.c'],
@@ -4354,3 +4363,23 @@ config_origin_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('config-origin', config_origin_test)
+
+# Native consumer of the finalized monitor UI handoff; never installed.
+module_ui_scale_probe = executable(
+    'module-ui-scale-probe', 'module_ui_scale_probe.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+if get_option('live-x-tests') and host_machine.system() == 'linux'
+    test('module-ui-scale-xorg-dummy', py,
+        args: [files('live_x/module_ui_scale_live.py'),
+            '--build', meson.project_build_root(),
+            '--probe', module_ui_scale_probe,
+            '--xorg-config', files('live_x/xorg-dummy.conf'),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-ui-scale'],
+        depends: [fvwm3, fvwm_mfl, module_ui_scale_probe],
+        suite: 'live-x', is_parallel: false, timeout: 180,
+    )
+endif

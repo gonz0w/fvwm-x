@@ -27,6 +27,8 @@ void BroadcastPropertyChange(
 void BroadcastColorset(int n);
 void BroadcastConfigInfoString(char *string);
 void BroadcastMonitorList(fmodule *);
+/* Publish finalized UI scale without legacy DesktopSize side effects. */
+void broadcast_monitor_ui_scale(void);
 void BroadcastDesktopConfiguration(fmodule *);
 void broadcast_ignore_modifiers(void);
 void SendPacket(

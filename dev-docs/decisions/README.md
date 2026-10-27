@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Module UI scale metadata handoff](MODULE-UI-SCALE-HANDOFF-2026-10-27.md): bounded #51 foundation and existing consumer inventory; #51 and #69 remain open.
+
 - [Browser continuity and action closeout](BROWSER-CONTINUITY-2026-10-27.md): generation-checked native layout publication, retained controls/drafts, Alt mnemonics and finite #65/#69 acceptance boundaries.
 
 - [Shared native action palette](ACTION-PALETTE-2026-10-27.md): four baseline providers, core snapshot/action ownership, bounded native refresh and focus/recovery.

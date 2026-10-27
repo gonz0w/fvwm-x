@@ -3064,6 +3064,7 @@ static void OpenWindows(void)
   } else {
     FScreenCenterOnScreen(
       NULL, FSCREEN_CURRENT, &x, &y, CF.max_width, CF.total_height);
+    form_scale_startup_position();
   }
   /* hack to prevent mapping on wrong screen with StartsOnScreen */
   FScreenMangleScreenIntoUSPosHints(FSCREEN_CURRENT, &sh);

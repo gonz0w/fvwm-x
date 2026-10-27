@@ -39,11 +39,26 @@ bool form_scale_cell(unsigned int quarters, int logical_font, int actual_font,
 	int units, bool grid, const form_scale_metrics *metrics,
 	int *cell, int *row_height);
 
+typedef struct
+{
+	int width, height;
+} form_scale_size;
+
+/* Preferred startup geometry is separate from the one-row legal minimum.
+ * An available physical span may reduce preference, never readable minima. */
+bool form_scale_initial_size(int logical_width, int rows,
+	unsigned int quarters, int fixed, int row_height, int border,
+	const form_scale_size *minimum, const form_scale_size *available,
+	form_scale_size *size);
+bool form_scale_startup_axis(int origin, int extent, int bound_origin,
+	int bound_extent, int *position);
+
 void form_scale_configure(char *text);
 bool form_scale_message(const char *text);
 void form_scale_end_config(void);
 void form_scale_capture(const char *module_name);
 void form_scale_initialize(const char *module_name);
+void form_scale_startup_position(void);
 void form_scale_retry(void);
 bool form_scale_holds_view(void);
 void form_scale_cleanup(void);

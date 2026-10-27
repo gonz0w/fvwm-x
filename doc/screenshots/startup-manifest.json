@@ -1,0 +1,355 @@
+{
+  "base": "48eff197b9390901cf80ea7a49e789a4c3642e82",
+  "issues": [
+    51,
+    69
+  ],
+  "source_aggregate_sha256": "d4faa7429dec604873b850331bdfe796c611fd7e93190a85eb6d094f353a709e",
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+      "bytes": 5539656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "de146884f65949d61c2e071d9c076d7fa19289ac11a0f06daec5cb1212fb53a6",
+      "bytes": 1783704
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+      "bytes": 5720923
+    }
+  },
+  "archive": {
+    "status": "passed",
+    "files": 339,
+    "archive": {
+      "sha256": "058600dabff46e84749d1cb55c166a48a1a6a7834d4146b72f1c46f68b1259af",
+      "bytes": 5534475
+    },
+    "source_root": "/dev/shm/form-startup-native",
+    "gzip_crc": true
+  },
+  "images": [
+    {
+      "path": "startup-dune.png",
+      "profile": "dune-light",
+      "scale": "1",
+      "font": "Sans 10",
+      "config_sha256": "78fd52bf3b7cd756d99198e3920798626e6c4e66e7f4faf6f637bbe259a6bb47",
+      "driver_sha256": {
+        "tests/live_x/browser_disclosure_live.py": "b20eac228fdd3ceb3bfcacfdd34f1aaa80b555049d36a4fde64c92196991c760",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go": "ef8ded3b98a64e6a89e0deb876fb177edc2fa6f3e2f3dd3ee0c6df9689db71a0",
+        "modules/FvwmForm/FvwmForm.c": "169bf66a28903d6b4e74583f7a9b127b2560a5ef65fd5d5debdad7ae38c5b347",
+        "modules/FvwmForm/ReadXServer.c": "09fe2d540a46ae85bb091b4e1b539620b6840ca84b1421e643109ec6b4fec169",
+        "modules/FvwmForm/form_list.c": "3daa5cf57012afc8eedf93a455304756a912e99d917ea992bf7e5e7a2d0bab2d",
+        "modules/FvwmForm/form_scale.c": "5ed515b696a932dae043aca46d78378bcf19c43bd2a15eaf21ec570bc9577e8e",
+        "modules/FvwmForm/form_scale_policy.c": "11d55dda8dac18e5e07e316003facdeee7c796b031dd777427723b567d985f10",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "46af35037172c7710fce0f9dce041081d5a98c73f427140d4e5e35918c6ebf39",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "cdd9d83270c9f01cc6045e523e1a18e686ab2c0d76a63fb64833945ce89fa1e4"
+      },
+      "evidence_sha256": "993367103b336feffc2bc72993680e06b2cb34078c8d8b1467c3f348b0a62c3b",
+      "capture": {
+        "path": "/dev/shm/form-startup-native/browser-disclosure-cx_27tu5/dune-light/startup-details-first-ready.png",
+        "windows": {
+          "File browser": {
+            "window": 10485767,
+            "client": [
+              977,
+              762,
+              614,
+              699
+            ],
+            "frame": [
+              973,
+              730,
+              622,
+              735
+            ]
+          },
+          "File browser details": {
+            "window": 14680071,
+            "client": [
+              1081,
+              950,
+              405,
+              324
+            ],
+            "frame": [
+              1077,
+              918,
+              413,
+              360
+            ]
+          }
+        },
+        "sha256": "9510640e97d325b29051ffae2cd6a61cb6cfd83fd499dd7b4a25dade451af68c",
+        "pixels": [
+          2560,
+          2160
+        ],
+        "published_rectangles": {
+          "FvwmFiles-c03a37ecee7341a7bca7ed445ea35eb2-2-ready": {
+            "client": [
+              977,
+              762,
+              614,
+              699
+            ],
+            "frame": [
+              973,
+              730,
+              622,
+              735
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 10485767,
+            "alias": "FvwmFiles-c03a37ecee7341a7bca7ed445ea35eb2-2-ready"
+          },
+          "FvwmFiles-c03a37ecee7341a7bca7ed445ea35eb2-details-1-1": {
+            "client": [
+              1081,
+              950,
+              405,
+              324
+            ],
+            "frame": [
+              1077,
+              918,
+              413,
+              360
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 14680071,
+            "alias": "FvwmFiles-c03a37ecee7341a7bca7ed445ea35eb2-details-1-1"
+          }
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "startup-classic.png",
+      "profile": "classic-large",
+      "scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "978f6316368ca32bc57d80da7e3e84e9cd957f0c8fabb049a136635313f8afa5",
+      "driver_sha256": {
+        "tests/live_x/browser_disclosure_live.py": "b20eac228fdd3ceb3bfcacfdd34f1aaa80b555049d36a4fde64c92196991c760",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go": "ef8ded3b98a64e6a89e0deb876fb177edc2fa6f3e2f3dd3ee0c6df9689db71a0",
+        "modules/FvwmForm/FvwmForm.c": "169bf66a28903d6b4e74583f7a9b127b2560a5ef65fd5d5debdad7ae38c5b347",
+        "modules/FvwmForm/ReadXServer.c": "09fe2d540a46ae85bb091b4e1b539620b6840ca84b1421e643109ec6b4fec169",
+        "modules/FvwmForm/form_list.c": "3daa5cf57012afc8eedf93a455304756a912e99d917ea992bf7e5e7a2d0bab2d",
+        "modules/FvwmForm/form_scale.c": "5ed515b696a932dae043aca46d78378bcf19c43bd2a15eaf21ec570bc9577e8e",
+        "modules/FvwmForm/form_scale_policy.c": "11d55dda8dac18e5e07e316003facdeee7c796b031dd777427723b567d985f10",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "46af35037172c7710fce0f9dce041081d5a98c73f427140d4e5e35918c6ebf39",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "cdd9d83270c9f01cc6045e523e1a18e686ab2c0d76a63fb64833945ce89fa1e4"
+      },
+      "evidence_sha256": "fcca4ca4b4e5496d0b59b26d2ab2032c84f469d934ee0e29b515497e2d525f0f",
+      "capture": {
+        "path": "/dev/shm/form-startup-native/browser-disclosure-xjmpeuga/classic-large/startup-details-first-ready.png",
+        "windows": {
+          "File browser": {
+            "window": 10485767,
+            "client": [
+              268,
+              70,
+              2284,
+              2082
+            ],
+            "frame": [
+              260,
+              0,
+              2300,
+              2160
+            ]
+          },
+          "File browser details": {
+            "window": 14680071,
+            "client": [
+              844,
+              903,
+              1708,
+              986
+            ],
+            "frame": [
+              836,
+              833,
+              1724,
+              1064
+            ]
+          }
+        },
+        "sha256": "41f2251ff491bcc582c5e38deb060d91ec3b78ad5894d94b616add079b026e30",
+        "pixels": [
+          2560,
+          2160
+        ],
+        "published_rectangles": {
+          "FvwmFiles-9086ce79491684a6c40d4fe65b0e4e7c-2-ready": {
+            "client": [
+              268,
+              70,
+              2284,
+              2082
+            ],
+            "frame": [
+              260,
+              0,
+              2300,
+              2160
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 10485767,
+            "alias": "FvwmFiles-9086ce79491684a6c40d4fe65b0e4e7c-2-ready"
+          },
+          "FvwmFiles-9086ce79491684a6c40d4fe65b0e4e7c-details-1-1": {
+            "client": [
+              844,
+              903,
+              1708,
+              986
+            ],
+            "frame": [
+              836,
+              833,
+              1724,
+              1064
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 14680071,
+            "alias": "FvwmFiles-9086ce79491684a6c40d4fe65b0e4e7c-details-1-1"
+          }
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "startup-slate.png",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "362541c82f2580bac5809bb3e84ea1e4048bde4780cf6eec669c4ece3fb8fe8b",
+      "driver_sha256": {
+        "tests/live_x/browser_disclosure_live.py": "b20eac228fdd3ceb3bfcacfdd34f1aaa80b555049d36a4fde64c92196991c760",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go": "ef8ded3b98a64e6a89e0deb876fb177edc2fa6f3e2f3dd3ee0c6df9689db71a0",
+        "modules/FvwmForm/FvwmForm.c": "169bf66a28903d6b4e74583f7a9b127b2560a5ef65fd5d5debdad7ae38c5b347",
+        "modules/FvwmForm/ReadXServer.c": "09fe2d540a46ae85bb091b4e1b539620b6840ca84b1421e643109ec6b4fec169",
+        "modules/FvwmForm/form_list.c": "3daa5cf57012afc8eedf93a455304756a912e99d917ea992bf7e5e7a2d0bab2d",
+        "modules/FvwmForm/form_scale.c": "5ed515b696a932dae043aca46d78378bcf19c43bd2a15eaf21ec570bc9577e8e",
+        "modules/FvwmForm/form_scale_policy.c": "11d55dda8dac18e5e07e316003facdeee7c796b031dd777427723b567d985f10",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "46af35037172c7710fce0f9dce041081d5a98c73f427140d4e5e35918c6ebf39",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "cdd9d83270c9f01cc6045e523e1a18e686ab2c0d76a63fb64833945ce89fa1e4"
+      },
+      "evidence_sha256": "9300a0522e8a62fe7aa78fe9e80f674e45c834e1086faade70f6ed0a730f5d13",
+      "capture": {
+        "path": "/dev/shm/form-startup-native/browser-disclosure-yid6pfso/slate-dark/startup-details-first-ready.png",
+        "windows": {
+          "File browser": {
+            "window": 10485767,
+            "client": [
+              978,
+              770,
+              776,
+              887
+            ],
+            "frame": [
+              973,
+              730,
+              786,
+              932
+            ]
+          },
+          "File browser details": {
+            "window": 14680071,
+            "client": [
+              1082,
+              958,
+              508,
+              411
+            ],
+            "frame": [
+              1077,
+              918,
+              518,
+              456
+            ]
+          }
+        },
+        "sha256": "724a73efd52462a3ea2eec2c2d111e66bcd8a543ed2e3f139203fe57feb21ce3",
+        "pixels": [
+          2560,
+          2160
+        ],
+        "published_rectangles": {
+          "FvwmFiles-519049f376d34fc4e2f66801bcee232b-2-ready": {
+            "client": [
+              978,
+              770,
+              776,
+              887
+            ],
+            "frame": [
+              973,
+              730,
+              786,
+              932
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 10485767,
+            "alias": "FvwmFiles-519049f376d34fc4e2f66801bcee232b-2-ready"
+          },
+          "FvwmFiles-519049f376d34fc4e2f66801bcee232b-details-1-1": {
+            "client": [
+              1082,
+              958,
+              508,
+              411
+            ],
+            "frame": [
+              1077,
+              918,
+              518,
+              456
+            ],
+            "monitor": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "window": 14680071,
+            "alias": "FvwmFiles-519049f376d34fc4e2f66801bcee232b-details-1-1"
+          }
+        }
+      },
+      "unmodified": true
+    }
+  ]
+}

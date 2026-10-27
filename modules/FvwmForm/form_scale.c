@@ -4,6 +4,8 @@
 #include "config.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
+#include "libs/FScreen.h"
+#include "libs/WinMagic.h"
 #include "libs/flocale_font_types.h"
 #include "libs/module_ui_scale.h"
 #include "libs/wm_ui_metrics.h"
@@ -32,7 +34,11 @@ typedef struct
 
 static struct
 {
-	bool requested, captured, initialized;
+	bool requested, captured, initialized, adopted, ready;
+	bool startup_position, startup_observed, startup_move_pending;
+	rectangle startup_monitor, startup_frame;
+	int preferred_width, preferred_rows;
+	int move_x, move_y;
 	const char *module;
 	const char *state;
 	module_ui_scale_receiver receiver;
@@ -100,6 +106,7 @@ void form_scale_capture(const char *module_name)
 	    CF.padVText < 0)
 		goto unsupported;
 	scale.logical_pad = CF.padVText;
+	scale.preferred_rows = CF.viewport->list.state->rows;
 	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
 	{
 		unsigned int font = 0;
@@ -163,10 +170,46 @@ void form_scale_initialize(const char *module_name)
 	    CF.viewport->list.line->n == 1)
 	{
 		CF.ui_scale_enabled = true;
+		scale.preferred_width = CF.max_width;
 		scale.initialized = true;
 	}
 	else if (scale.requested)
 		scale.state = "unsupported";
+}
+
+/* Capture the same physical screen as automatic centering, before mapping.
+ * Explicit Position/Geometry never enter this one-time placement policy. */
+void form_scale_startup_position(void)
+{
+	if (scale.initialized && !CF.have_geom)
+		scale.startup_position = FScreenGetScrRect(NULL, FSCREEN_CURRENT,
+			&scale.startup_monitor.x, &scale.startup_monitor.y,
+			&scale.startup_monitor.width, &scale.startup_monitor.height);
+}
+
+static bool form_scale_frame(rectangle *frame)
+{
+	XWindowAttributes attributes;
+	Window child, outer;
+	int x = 0, y = 0;
+
+	outer = FGetFrameWindow(dpy, CF.frame, &x, &y);
+	if (outer == None || outer == CF.frame ||
+	    !XGetWindowAttributes(dpy, outer, &attributes) ||
+	    !XTranslateCoordinates(dpy, outer, root, 0, 0, &x, &y, &child) ||
+	    attributes.border_width < 0 ||
+	    (int64_t)attributes.width + 2LL * attributes.border_width > 32767 ||
+	    (int64_t)attributes.height + 2LL * attributes.border_width > 32767 ||
+	    (int64_t)x - attributes.border_width < -32768 ||
+	    (int64_t)x - attributes.border_width > 32767 ||
+	    (int64_t)y - attributes.border_width < -32768 ||
+	    (int64_t)y - attributes.border_width > 32767)
+		return false;
+	*frame = (rectangle){x - attributes.border_width,
+		y - attributes.border_width,
+		attributes.width + 2 * attributes.border_width,
+		attributes.height + 2 * attributes.border_width};
+	return frame->width > 0 && frame->height > 0;
 }
 
 bool form_scale_list_geometry(int units, int columns, int *cell, int *height)
@@ -275,11 +318,12 @@ void form_scale_retry(void)
 	int line_heights[FORM_SCALE_ITEMS] = {0};
 	XWindowAttributes attributes;
 	Window child;
-	rectangle rect;
+	rectangle rect, outer = {0};
+	form_scale_size target, minimum_size, available;
 	const module_ui_scale_row *monitor;
 	Item *list = CF.viewport;
 	int cell = 0, row_height = 0, minimum, min_height, fixed;
-	int list_font = -1;
+	int list_font = -1, startup_x = 0, startup_y = 0;
 	ui_layout_grid_result grid;
 	unsigned int generation =
 		wm_ui_resource_generation_current().generation;
@@ -295,8 +339,27 @@ void form_scale_retry(void)
 	if (rect.width < 1 || rect.width > 32767 ||
 	    rect.height < 1 || rect.height > 32767)
 		goto refused;
-	monitor = module_ui_scale_select(&scale.receiver.published, &rect,
-		scale.atom);
+	if (!scale.ready && scale.startup_position &&
+	    rect.width == CF.max_width && rect.height == CF.total_height)
+	{
+		if (!form_scale_frame(&outer))
+		{
+			scale.state = "waiting";
+			return;
+		}
+		/* An independently observed move relinquishes automatic placement.
+		 * Our own resize keeps the frame origin; no later recentering runs. */
+		if (scale.startup_observed && !scale.startup_move_pending &&
+		    (outer.x != scale.startup_frame.x ||
+		     outer.y != scale.startup_frame.y))
+			scale.startup_position = false;
+		if (!scale.startup_move_pending)
+			scale.startup_frame = outer;
+		scale.startup_observed = true;
+	}
+	monitor = module_ui_scale_select(&scale.receiver.published,
+		!scale.ready && scale.startup_position ?
+		&scale.startup_monitor : &rect, scale.atom);
 	if (monitor == NULL)
 	{
 		scale.state = "waiting";
@@ -322,7 +385,15 @@ void form_scale_retry(void)
 		scale.state = "waiting";
 		return;
 	}
-	if (scale.quarters == monitor->quarters &&
+	if (!scale.ready && scale.startup_position)
+	{
+		if (!form_scale_startup_axis(outer.x, outer.width,
+			monitor->rect.x, monitor->rect.width, &startup_x) ||
+		    !form_scale_startup_axis(outer.y, outer.height,
+			monitor->rect.y, monitor->rect.height, &startup_y))
+			goto refused;
+	}
+	if (scale.adopted && scale.quarters == monitor->quarters &&
 	    scale.resource_generation == generation)
 		goto observed;
 	if (!form_scale_metrics_prepare(monitor->quarters, scale.logical_pad,
@@ -386,23 +457,44 @@ void form_scale_retry(void)
 		goto refused;
 	scale.required_width = minimum;
 	scale.required_height = min_height;
-	if (rect.width < minimum || rect.height < min_height)
+	minimum_size = (form_scale_size){minimum, min_height};
+	target = (form_scale_size){rect.width > minimum ? rect.width : minimum,
+		rect.height > min_height ? rect.height : min_height};
+	if (!scale.ready)
+	{
+		form_scale_size *limit = NULL;
+
+		if (scale.startup_position)
+		{
+			available = (form_scale_size){
+				monitor->rect.width - (outer.width - rect.width),
+				monitor->rect.height - (outer.height - rect.height)};
+			/* Decorations can consume the whole screen. Keep legal minima. */
+			if (available.width < 1)
+				available.width = 1;
+			if (available.height < 1)
+				available.height = 1;
+			limit = &available;
+		}
+		if (!form_scale_initial_size(scale.preferred_width,
+			scale.preferred_rows, monitor->quarters, fixed, row_height,
+			2 * metrics.box, &minimum_size, limit, &target))
+			goto refused;
+	}
+	if (rect.width != target.width || rect.height != target.height)
 	{
 		scale.state = "waiting";
 		if (scale.request_atom != monitor->name_atom ||
 		    scale.request_quarters != monitor->quarters ||
-		    scale.request_width != minimum ||
-		    scale.request_height != min_height)
+		    scale.request_width != target.width ||
+		    scale.request_height != target.height)
 		{
 			scale.request_atom = monitor->name_atom;
 			scale.request_quarters = monitor->quarters;
-			scale.request_width = minimum;
-			scale.request_height = min_height;
+			scale.request_width = target.width;
+			scale.request_height = target.height;
 			form_viewport_set_minimum(minimum, min_height);
-			XResizeWindow(dpy, CF.frame,
-				rect.width > minimum ? rect.width : minimum,
-				rect.height > min_height ?
-				rect.height : min_height);
+			XResizeWindow(dpy, CF.frame, target.width, target.height);
 		}
 		goto release;
 	}
@@ -460,6 +552,7 @@ void form_scale_retry(void)
 		FlocaleUnloadFont(dpy, old[i]);
 	scale.quarters = monitor->quarters;
 	scale.resource_generation = generation;
+	scale.adopted = true;
 observed:
 	if (scale.request_atom != None)
 		form_viewport_set_minimum(CF.viewport_min_width,
@@ -469,6 +562,35 @@ observed:
 	scale.atom = scale.desired_atom;
 	scale.required_width = CF.viewport_min_width;
 	scale.required_height = CF.viewport_min_height;
+	if (!scale.ready && scale.startup_position)
+	{
+		if (scale.startup_move_pending)
+		{
+			/* One command only; a subsequent user move is never chased. */
+			if (outer.x == scale.startup_frame.x &&
+			    outer.y == scale.startup_frame.y &&
+			    (outer.x != scale.move_x || outer.y != scale.move_y))
+			{
+				scale.state = "waiting";
+				return;
+			}
+		}
+		else if (startup_x != outer.x || startup_y != outer.y)
+		{
+			char command[96];
+
+			snprintf(command, sizeof(command),
+				"Silent Move w%+dp w%+dp ewmhiwa",
+				startup_x - outer.x, startup_y - outer.y);
+			scale.move_x = startup_x;
+			scale.move_y = startup_y;
+			scale.startup_move_pending = true;
+			SendText(Channel, command, CF.frame);
+			scale.state = "waiting";
+			return;
+		}
+	}
+	scale.ready = true;
 	scale.state = "ready";
 	return;
 refused:

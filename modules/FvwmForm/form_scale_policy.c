@@ -9,6 +9,60 @@
 #include <stdint.h>
 #include <string.h>
 
+bool form_scale_initial_size(int logical_width, int rows,
+	unsigned int quarters, int fixed, int row_height, int border,
+	const form_scale_size *minimum, const form_scale_size *available,
+	form_scale_size *size)
+{
+	form_scale_size candidate;
+	int64_t height = (int64_t)fixed + (int64_t)rows * row_height + border;
+
+	*size = (form_scale_size){0};
+	if (minimum == NULL || minimum->width < 1 || minimum->width > 32767 ||
+	    minimum->height < 1 || minimum->height > 32767 ||
+	    logical_width < 1 || rows < 1 ||
+	    rows > 32 || fixed < 0 || row_height < 1 || border < 0 ||
+	    height < 1 || height > 32767 ||
+	    !form_scale_extent(logical_width, minimum->width,
+		quarters, &candidate.width))
+		return false;
+	candidate.height = height > minimum->height ? height : minimum->height;
+	if (available != NULL)
+	{
+		if (available->width < 1 || available->height < 1)
+			return false;
+		if (candidate.width > available->width)
+			candidate.width = available->width;
+		if (candidate.height > available->height)
+			candidate.height = available->height;
+		if (candidate.width < minimum->width)
+			candidate.width = minimum->width;
+		if (candidate.height < minimum->height)
+			candidate.height = minimum->height;
+	}
+	*size = candidate;
+	return true;
+}
+
+bool form_scale_startup_axis(int origin, int extent, int bound_origin,
+	int bound_extent, int *position)
+{
+	int64_t end = (int64_t)bound_origin + bound_extent - extent;
+	int64_t candidate = origin;
+
+	*position = 0;
+	if (extent < 1 || extent > 32767 || bound_extent < 1)
+		return false;
+	if (extent >= bound_extent || candidate < bound_origin)
+		candidate = bound_origin;
+	else if (candidate > end)
+		candidate = end;
+	if (candidate < -32768 || candidate > 32767)
+		return false;
+	*position = candidate;
+	return true;
+}
+
 bool form_scale_extent(int logical, int required, unsigned int quarters,
 	int *extent)
 {

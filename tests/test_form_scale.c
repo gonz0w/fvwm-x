@@ -25,6 +25,7 @@ static void test_metrics(void)
 		assert(metrics.thumb_inset == (int)(2 * quarters + 2) / 4);
 		assert(metrics.thumb_min == (int)quarters);
 		assert(metrics.pad_text == (int)(7 * quarters + 2) / 4);
+		assert(metrics.stroke == (int)(quarters + 2) / 4);
 	}
 	before = metrics;
 	assert(!form_scale_metrics_prepare(3, 7, &metrics));
@@ -88,9 +89,170 @@ static void test_cells(void)
 		NULL, &cell, &height));
 }
 
+static void test_label_geometry(void)
+{
+	int width;
+	int minimum;
+
+	assert(form_scale_extent(100, 0, 6, &minimum) && minimum == 150);
+	for (int i = 0; i < 100; i++)
+	{
+		assert(form_label_viewport_width(minimum, 1000, 15, &width));
+		assert(width == 970 && minimum == 150);
+		assert(form_label_viewport_width(minimum, 180, 15, &width));
+		assert(width == 150 && minimum == 150);
+	}
+	assert(!form_label_viewport_width(minimum, 179, 15, &width));
+	assert(width == 0 && minimum == 150);
+	assert(!form_label_viewport_width(INT_MAX, 32767, 10, &width));
+	assert(!form_label_viewport_width(1, INT_MAX, 10, &width));
+	assert(!form_label_viewport_width(1, 32767, INT_MAX, &width));
+	assert(!form_label_viewport_width(1, 32767, -1, &width));
+	assert(!form_label_viewport_width(0, 100, 1, &width));
+	assert(form_label_viewport_width(32767, 32767, 0, &width));
+	assert(width == 32767);
+}
+
+typedef struct
+{
+	int high_bytes, calls;
+	bool kern, refuse;
+} label_measurement;
+
+/* Test boundaries deliberately include a non-UTF-8 two-byte font encoding. */
+static int label_next(void *context, const char *text)
+{
+	label_measurement *measurement = context;
+
+	return (unsigned char)*text >= 128 ? measurement->high_bytes : 1;
+}
+
+static int label_width(void *context, const char *text, int length)
+{
+	label_measurement *measurement = context;
+	int width = 0;
+
+	measurement->calls++;
+	if (measurement->refuse)
+		return -1;
+	for (int i = 0; i < length; )
+	{
+		int next = label_next(context, text + i);
+
+		if (next < 1)
+			return 10;
+		i += next;
+		width += 10;
+	}
+	/* A longer shaped prefix can fit after a shorter prefix failed. */
+	if (measurement->kern && length == 5 && memcmp(text, "ab...", 5) == 0)
+		width = 35;
+	return width;
+}
+
+static void test_label_text(void)
+{
+	label_measurement measurement = {.high_bytes = 2};
+	char display[FORM_LABEL_BYTES + 4];
+	char source[FORM_LABEL_BYTES + 2];
+	int length;
+
+	assert(form_label_fit("abcdef", 6, 60, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 6 && strcmp(display, "abcdef") == 0);
+	assert(form_label_fit("abcdef", 6, 50, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 5 && strcmp(display, "ab...") == 0);
+	assert(form_label_fit("abcdef", 6, 30, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 3 && strcmp(display, "...") == 0);
+	assert(form_label_fit("abcdef", 6, 29, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 0 && display[0] == '\0');
+	measurement.kern = true;
+	assert(form_label_fit("abcdef", 6, 35, &measurement,
+		label_next, label_width, display, &length));
+	assert(length >= 3 && label_width(&measurement, display, length) <= 35);
+	measurement.kern = false;
+	/* One complete legacy font character, then the suffix. */
+	assert(form_label_fit("\x81\x82" "abcd", 6, 40, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 5 && memcmp(display, "\x81\x82...", 6) == 0);
+	measurement.high_bytes = 3;
+	assert(form_label_fit("\xe2\x82\xac" "abcd", 7, 40, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 6 && memcmp(display, "\xe2\x82\xac...", 7) == 0);
+	measurement.high_bytes = 4;
+	assert(form_label_fit("\xf0\x9f\x98\x80" "abcd", 8, 40, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 7 && memcmp(display, "\xf0\x9f\x98\x80...", 8) == 0);
+	/* A bad boundary cannot publish a partial character or stale buffer. */
+	assert(!form_label_fit("\x81", 1, 0, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 0 && display[0] == '\0');
+	measurement.high_bytes = 0;
+	assert(!form_label_fit("\x81", 1, 0, &measurement,
+		label_next, label_width, display, &length));
+	measurement.high_bytes = 2;
+	assert(form_label_fit("", 0, 0, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 0 && display[0] == '\0');
+	memset(source, 'a', sizeof(source));
+	source[FORM_LABEL_BYTES] = '\0';
+	measurement.calls = 0;
+	assert(form_label_fit(source, FORM_LABEL_BYTES, 50, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 5 && strcmp(display, "aa...") == 0);
+	assert(measurement.calls <= 12);
+	assert(source[0] == 'a' && source[FORM_LABEL_BYTES - 1] == 'a');
+	assert(!form_label_fit(source, FORM_LABEL_BYTES + 1, 50, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 0 && display[0] == '\0');
+	assert(!form_label_fit(source, -1, 50, &measurement,
+		label_next, label_width, display, &length));
+	assert(!form_label_fit(source, 1, -1, &measurement,
+		label_next, label_width, display, &length));
+	measurement.refuse = true;
+	assert(!form_label_fit(source, 1, 100, &measurement,
+		label_next, label_width, display, &length));
+	assert(length == 0 && display[0] == '\0');
+}
+
+static void test_focus_geometry(void)
+{
+	form_caret_rectangle rectangle;
+
+	assert(form_focus_stroke(0, 100, 20) == 1);
+	assert(form_focus_stroke(2, 100, 20) == 2);
+	assert(form_focus_stroke(INT_MAX, 100, 20) == 4);
+	assert(form_focus_stroke(4, 1, 20) == 1);
+	assert(form_focus_stroke(4, 2, 20) == 1);
+	assert(form_focus_stroke(4, 3, 20) == 2);
+	assert(form_focus_stroke(4, 0, 20) == 0);
+	assert(form_focus_stroke(4, 100, -1) == 0);
+	assert(form_caret_geometry(5, 100, 24, 3, 1, &rectangle));
+	assert(rectangle.x == 5 && rectangle.y == 3 &&
+		rectangle.width == 1 && rectangle.height == 18);
+	assert(form_caret_geometry(5, 100, 24, 3, 2, &rectangle));
+	assert(rectangle.x == 5 && rectangle.width == 2);
+	assert(form_caret_geometry(INT_MAX, 100, 24, 3, 4, &rectangle));
+	assert(rectangle.x == 93 && rectangle.width == 4);
+	assert(form_caret_geometry(INT_MIN, 100, 24, 3, 4, &rectangle));
+	assert(rectangle.x == 3);
+	assert(form_caret_geometry(5, 7, 24, 3, 4, &rectangle));
+	assert(rectangle.x == 3 && rectangle.width == 1);
+	assert(!form_caret_geometry(5, 6, 24, 3, 4, &rectangle));
+	assert(rectangle.width == 0 && rectangle.height == 0);
+	assert(!form_caret_geometry(5, 100, 24, INT_MAX, 4, &rectangle));
+	assert(!form_caret_geometry(5, 100, 24, -1, 4, &rectangle));
+}
+
 int main(void)
 {
 	test_metrics();
 	test_cells();
+	test_label_geometry();
+	test_label_text();
+	test_focus_geometry();
 	return 0;
 }

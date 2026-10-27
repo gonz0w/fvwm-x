@@ -402,11 +402,33 @@ For example, `TextHex x24286669656c64292025` displays `$(field) %` literally.
   at most 1024 source bytes. Text is clipped to its fixed rectangle; later
   updates neither resize the Form nor create another X child.
 
+**FvwmForm: LabelViewport ``_name_``*::
+  Opt a previously declared named Label into available parent width. The Label
+  must be alone on its Line, and the Form must have one ListViewport. Its
+  configured width remains the minimum; resizing can expand and shrink the
+  current width. When text overflows, the actual font measures a complete-character
+  prefix followed by `...`. The original value remains available for later
+  resizing or replacement. Ordinary Labels retain fixed clipping, including at
+  1x. For example:
++
+----
+*MyForm: Line left
+*MyForm: Label status 40 "Ready"
+*MyForm: LabelViewport status
+*MyForm: Line left
+*MyForm: List items 40 8
+*MyForm: ListViewport 18 1
+----
++
+  If font preparation fails during scaling, the previous complete view remains;
+  bitmap aliases can retain their native glyph size. Scalable fonts provide
+  fractional text sizing.
+
 **FvwmForm: SetLabel ``_name_ _string_``*::
   Replace a running Label's quoted presentation text, using the same text bound.
   Send `SendToModule MyForm SetLabel status "Folder refreshed"` to its exact
-  alias. The old text rectangle is cleared before painting the new clipped
-  value. Unknown/ambiguous names, plain Text items and malformed values refuse
+  alias. The old text rectangle is cleared before painting the new value,
+  clipped or fitted according to the Label configuration. Unknown/ambiguous names, plain Text items and malformed values refuse
   without changing the label. Label owns its name/value until replacement/exit.
   This is nonsensitive metadata, not a private-content delivery channel.
 

@@ -94,6 +94,8 @@ typedef union _item {
     int n;                 /* string length */
     bool fixed;            /* named clipped Label; owns name and value */
     bool value_owned;      /* literal TextHex owns its decoded value */
+	bool viewport;         /* dedicated LabelViewport line, validated at startup */
+	int minimum_width;     /* admitted configured width, never stretched width */
     char *value;           /* string to display */
     unsigned long color;                /* color of text */
   } text;
@@ -289,6 +291,7 @@ void ReadXServer(void);                  /* ReadXServer.c */
 /* Returned encoded field is owned by the caller. */
 char *form_encoded_value(const Item *item);
 void RedrawText(Item *item);             /* FvwmForm.c */
+void form_draw_caret(Item *item, int x);
 void RedrawTimeout(Item *item);          /* FvwmForm.c */
 void RedrawItem (
 	Item *item, int click, XEvent *pev); /* FvwmForm.c */

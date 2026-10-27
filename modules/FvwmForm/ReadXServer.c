@@ -457,7 +457,7 @@ void ReadXServer (void)
 	}
       redraw:
 	{
-	  int len, cn, x, dy;
+	  int len, cn, x;
 	  char *bstr, *estr;
 	  if (CF.cur_input->input.n - CF.cur_input->input.left >
 	    CF.cur_input->input.width) {
@@ -495,12 +495,9 @@ void ReadXServer (void)
 		  FlocaleTextWidth(CF.cur_input->header.dt_ptr->dt_Ffont,
 				   bstr, len)
 		  - 1;
-	  dy = CF.cur_input->header.size_y - 1;
-	  XDrawLine(dpy, CF.cur_input->header.win,
-		    CF.cur_input->header.dt_ptr->dt_item_GC,
-		    x, BOX_SPC, x, dy - BOX_SPC);
+	  form_draw_caret(CF.cur_input, x);
 	  myfprintf((stderr,"Line %d/%d - %d/%d (char)\n",
-		     x, BOX_SPC, x, dy - BOX_SPC));
+		     x, BOX_SPC, x, CF.cur_input->header.size_y - 1 - BOX_SPC));
 	}
       no_redraw:
 	break;  /* end of case KeyPress */

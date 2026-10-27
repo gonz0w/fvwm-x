@@ -1,0 +1,1105 @@
+{
+  "base": "abc38b68341f1bfdbd4fdaeabc525fa43517fa19",
+  "issues": [
+    51,
+    69
+  ],
+  "native_archive": {
+    "sha256": "41d1d78ac335999174077eb4512999fcce15971ecb30db0c53650ba8627e1e81",
+    "bytes": 6813430
+  },
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "status": "passed",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "71472d51cbc4d1de1cce76a786f45702057b063912d23c534d3d5fbff959389c",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "b141acc3224b7d1c76374ef07ded36e644910e0cd4d4c3fba7134c0b61616723",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "d55197b230a5f6af251023995f612cfe33fe8abc9c040e475ab28e68c3ad75fb",
+        "modules/FvwmForm/ReadXServer.c": "fae32b0e0c2d6d7624ff6bf0fd1fe283c3bc37025a69d121421957151ad70a0e",
+        "modules/FvwmForm/form_scale.c": "a2853bdaf7f36f005eb995fdb39ab3919bc3b2372945f820edc5e4e84f47ee2d",
+        "modules/FvwmForm/form_scale_policy.c": "dd8df973dedadb746d13844be3597ff779415aebba9009509abb295e9dde82d6",
+        "modules/FvwmForm/list_widget.c": "c47522c4cd657d8bb40770d1987378c50aba8208de6960751900b699343ba223",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "ae0e7562c49f74b6529b195791a5d70f818fe4e462b8e176bec5316d68bf821c",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "e8465a119ba978a6b954fe7d18524dd9f20ec07a50c037112799b84a2f278603"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "67af50604fcfd09fd7499a365da27ba8fe028f66a730e7b3307dc19c9eba11ca",
+        "bin/FvwmPrompt/fvwm-file-browser": "2a1c7ebb7dfb43078ac5628a43d44cdf30ee7d9e8a3f908fd8ee8fd4429650e0"
+      },
+      "fault_binary_sha256": "9a525a0bcf5208e8a2cb545be3cdafc268f7aa1602cd4707725ff2967a5b0584",
+      "evidence_payload_sha256": "9a0d66ad298778e85d5d86f72dc150378aea3cef9dd974bbd29c58ba9e0260ac",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "readability-wide-2x.png",
+        "readability-narrow-unselected-focus-2x.png",
+        "readability-narrow-selected-focus-2x.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-readability-narrow-2x.png",
+        "browser-readability-wide-2x.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 15,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-1795": 0,
+        "xrandr-1799": 0,
+        "xrandr-1800": 0,
+        "xrandr-1801": 0,
+        "xrandr-1802": 0,
+        "xrandr-1803": 0,
+        "xrandr-1804": 0,
+        "core-1806": 0,
+        "xrandr-1841": 0,
+        "xrandr-1842": 0,
+        "xrandr-1843": 0,
+        "xrandr-1844": 0,
+        "xrandr-1846": 0,
+        "xrandr-1853": 0,
+        "xrandr-1854": 0,
+        "xrandr-1855": 0,
+        "xrandr-1860": 0,
+        "xrandr-1861": 0,
+        "xrandr-1862": 0,
+        "xrandr-1863": 0,
+        "xrandr-1866": 0,
+        "xrandr-1867": 0,
+        "xrandr-1868": 0,
+        "xrandr-1869": 0,
+        "xrandr-1881": 0,
+        "xrandr-1882": 0,
+        "xrandr-1883": 0,
+        "xrandr-1884": 0,
+        "xrandr-1886": 0,
+        "xrandr-1887": 0,
+        "xrandr-1888": 0,
+        "xrandr-1889": 0,
+        "xrandr-1897": 0,
+        "xrandr-1898": 0,
+        "xrandr-1899": 0,
+        "xrandr-1900": 0,
+        "xrandr-1902": 0,
+        "xrandr-1903": 0,
+        "xrandr-1904": 0,
+        "xrandr-1905": 0,
+        "xrandr-1918": 0,
+        "xrandr-1919": 0,
+        "xrandr-1920": 0,
+        "xrandr-1921": 0,
+        "xrandr-1923": 0,
+        "xrandr-1924": 0,
+        "xrandr-1925": 0,
+        "xrandr-1926": 0,
+        "xrandr-1928": 0,
+        "xrandr-1929": 0,
+        "xrandr-1930": 0,
+        "xrandr-1931": 0,
+        "xrandr-1933": 0,
+        "xrandr-1934": 0,
+        "xrandr-1935": 0,
+        "xrandr-1936": 0,
+        "xrandr-1944": 0,
+        "xrandr-1945": 0,
+        "xrandr-1946": 0,
+        "xrandr-1947": 0,
+        "browser-1955": 0,
+        "xrandr-1979": 0,
+        "xrandr-1980": 0,
+        "xrandr-1981": 0,
+        "xrandr-1982": 0,
+        "xrandr-1984": 0,
+        "xrandr-1985": 0,
+        "xrandr-1986": 0,
+        "xrandr-1987": 0,
+        "xrandr-1990": 0,
+        "xrandr-1991": 0,
+        "xrandr-1992": 0,
+        "xrandr-1993": 0,
+        "xrandr-2004": 0,
+        "xrandr-2005": 0,
+        "xrandr-2006": 0,
+        "xrandr-2007": 0,
+        "xrandr-2009": 0,
+        "xrandr-2010": 0,
+        "xrandr-2011": 0,
+        "xrandr-2012": 0,
+        "xrandr-2040": 0,
+        "xrandr-2041": 0,
+        "xrandr-2042": 0,
+        "xrandr-2043": 0,
+        "browser-successor-2053": 0
+      },
+      "input_heights": {
+        "4": 43,
+        "5": 55,
+        "6": 67,
+        "8": 86
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true,
+      "readability_cases": [
+        {
+          "alias": "ScaleReadable",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        },
+        {
+          "alias": "ScaleReadableBitmap",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        }
+      ],
+      "browser_readability_widths": [
+        {
+          "name": "narrow",
+          "status": {
+            "alias": "FvwmFiles-4d8b5ae9e3f7a4b017c9f2b21866243a-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE s91264876b68a6572 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 2284 1676 2284 1676",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 2284,
+            "min_h": 1676,
+            "required_w": 2284,
+            "required_h": 1676,
+            "root_rect": [
+              2666,
+              153,
+              2284,
+              1676
+            ]
+          },
+          "collection": [
+            20,
+            668,
+            2244,
+            80
+          ]
+        },
+        {
+          "name": "wide",
+          "status": {
+            "alias": "FvwmFiles-4d8b5ae9e3f7a4b017c9f2b21866243a-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE s6c3c817c194a621e 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 2284 1676 2284 1676",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 2284,
+            "min_h": 1676,
+            "required_w": 2284,
+            "required_h": 1676,
+            "root_rect": [
+              2666,
+              153,
+              2400,
+              1676
+            ]
+          },
+          "collection": [
+            20,
+            668,
+            2360,
+            80
+          ]
+        },
+        {
+          "name": "shrink",
+          "status": {
+            "alias": "FvwmFiles-4d8b5ae9e3f7a4b017c9f2b21866243a-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE s147e6613f58ec377 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 2284 1676 2284 1676",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 2284,
+            "min_h": 1676,
+            "required_w": 2284,
+            "required_h": 1676,
+            "root_rect": [
+              2666,
+              153,
+              2284,
+              1676
+            ]
+          },
+          "collection": [
+            20,
+            668,
+            2244,
+            80
+          ]
+        }
+      ],
+      "browser_input_carets": [
+        {
+          "field": 8388618,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 16777200
+          },
+          "typed": {
+            "columns": [
+              40,
+              41
+            ],
+            "background": 16777200
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 16777200
+          },
+          "geometry": [
+            696,
+            86
+          ]
+        },
+        {
+          "field": 8388637,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 16777200
+          },
+          "typed": {
+            "columns": [
+              40,
+              41
+            ],
+            "background": 16777200
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 16777200
+          },
+          "geometry": [
+            920,
+            86
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "dune-light",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "40b3ceca1748f5274345c750bf4beb9e09fa1af33e034c07e2050714eafd0af8",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "b141acc3224b7d1c76374ef07ded36e644910e0cd4d4c3fba7134c0b61616723",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "d55197b230a5f6af251023995f612cfe33fe8abc9c040e475ab28e68c3ad75fb",
+        "modules/FvwmForm/ReadXServer.c": "fae32b0e0c2d6d7624ff6bf0fd1fe283c3bc37025a69d121421957151ad70a0e",
+        "modules/FvwmForm/form_scale.c": "a2853bdaf7f36f005eb995fdb39ab3919bc3b2372945f820edc5e4e84f47ee2d",
+        "modules/FvwmForm/form_scale_policy.c": "dd8df973dedadb746d13844be3597ff779415aebba9009509abb295e9dde82d6",
+        "modules/FvwmForm/list_widget.c": "c47522c4cd657d8bb40770d1987378c50aba8208de6960751900b699343ba223",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "ae0e7562c49f74b6529b195791a5d70f818fe4e462b8e176bec5316d68bf821c",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "e8465a119ba978a6b954fe7d18524dd9f20ec07a50c037112799b84a2f278603"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "67af50604fcfd09fd7499a365da27ba8fe028f66a730e7b3307dc19c9eba11ca",
+        "bin/FvwmPrompt/fvwm-file-browser": "2a1c7ebb7dfb43078ac5628a43d44cdf30ee7d9e8a3f908fd8ee8fd4429650e0"
+      },
+      "fault_binary_sha256": "9a525a0bcf5208e8a2cb545be3cdafc268f7aa1602cd4707725ff2967a5b0584",
+      "evidence_payload_sha256": "97555302ead0e2b9677f0382b7944b84faddb51e332c7efaf304a06ea8753dbc",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "readability-wide-2x.png",
+        "readability-narrow-unselected-focus-2x.png",
+        "readability-narrow-selected-focus-2x.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-readability-narrow-2x.png",
+        "browser-readability-wide-2x.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 15,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-1521": 0,
+        "xrandr-1525": 0,
+        "xrandr-1526": 0,
+        "xrandr-1527": 0,
+        "xrandr-1528": 0,
+        "xrandr-1529": 0,
+        "xrandr-1530": 0,
+        "core-1532": 0,
+        "xrandr-1567": 0,
+        "xrandr-1568": 0,
+        "xrandr-1569": 0,
+        "xrandr-1570": 0,
+        "xrandr-1572": 0,
+        "xrandr-1573": 0,
+        "xrandr-1574": 0,
+        "xrandr-1581": 0,
+        "xrandr-1586": 0,
+        "xrandr-1587": 0,
+        "xrandr-1588": 0,
+        "xrandr-1589": 0,
+        "xrandr-1592": 0,
+        "xrandr-1593": 0,
+        "xrandr-1594": 0,
+        "xrandr-1595": 0,
+        "xrandr-1607": 0,
+        "xrandr-1608": 0,
+        "xrandr-1609": 0,
+        "xrandr-1610": 0,
+        "xrandr-1612": 0,
+        "xrandr-1613": 0,
+        "xrandr-1614": 0,
+        "xrandr-1615": 0,
+        "xrandr-1623": 0,
+        "xrandr-1624": 0,
+        "xrandr-1625": 0,
+        "xrandr-1626": 0,
+        "xrandr-1628": 0,
+        "xrandr-1629": 0,
+        "xrandr-1630": 0,
+        "xrandr-1631": 0,
+        "xrandr-1638": 0,
+        "xrandr-1639": 0,
+        "xrandr-1640": 0,
+        "xrandr-1641": 0,
+        "xrandr-1649": 0,
+        "xrandr-1650": 0,
+        "xrandr-1651": 0,
+        "xrandr-1652": 0,
+        "xrandr-1654": 0,
+        "xrandr-1655": 0,
+        "xrandr-1656": 0,
+        "xrandr-1657": 0,
+        "xrandr-1659": 0,
+        "xrandr-1660": 0,
+        "xrandr-1661": 0,
+        "xrandr-1662": 0,
+        "xrandr-1664": 0,
+        "xrandr-1665": 0,
+        "xrandr-1666": 0,
+        "xrandr-1667": 0,
+        "browser-1681": 0,
+        "xrandr-1705": 0,
+        "xrandr-1706": 0,
+        "xrandr-1707": 0,
+        "xrandr-1708": 0,
+        "xrandr-1710": 0,
+        "xrandr-1711": 0,
+        "xrandr-1712": 0,
+        "xrandr-1713": 0,
+        "xrandr-1716": 0,
+        "xrandr-1717": 0,
+        "xrandr-1718": 0,
+        "xrandr-1719": 0,
+        "xrandr-1724": 0,
+        "xrandr-1725": 0,
+        "xrandr-1726": 0,
+        "xrandr-1727": 0,
+        "xrandr-1729": 0,
+        "xrandr-1730": 0,
+        "xrandr-1731": 0,
+        "xrandr-1732": 0,
+        "xrandr-1765": 0,
+        "xrandr-1766": 0,
+        "xrandr-1767": 0,
+        "xrandr-1768": 0,
+        "browser-successor-1772": 0
+      },
+      "input_heights": {
+        "4": 30,
+        "5": 39,
+        "6": 48,
+        "8": 60
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true,
+      "readability_cases": [
+        {
+          "alias": "ScaleReadable",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        },
+        {
+          "alias": "ScaleReadableBitmap",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        }
+      ],
+      "browser_readability_widths": [
+        {
+          "name": "narrow",
+          "status": {
+            "alias": "FvwmFiles-c0e686e9b7c2aa607a5f8a579945f30d-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE sf5486875b2956faf 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1229,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1189,
+            54
+          ]
+        },
+        {
+          "name": "wide",
+          "status": {
+            "alias": "FvwmFiles-c0e686e9b7c2aa607a5f8a579945f30d-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE s97ae23aedd2ede05 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1729,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1689,
+            54
+          ]
+        },
+        {
+          "name": "shrink",
+          "status": {
+            "alias": "FvwmFiles-c0e686e9b7c2aa607a5f8a579945f30d-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE sbdbe28b0c3aec2e9 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1229,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1189,
+            54
+          ]
+        }
+      ],
+      "browser_input_carets": [
+        {
+          "field": 8388618,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 15656409
+          },
+          "typed": {
+            "columns": [
+              19,
+              20
+            ],
+            "background": 15656409
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 15656409
+          },
+          "geometry": [
+            384,
+            60
+          ]
+        },
+        {
+          "field": 8388637,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 15656409
+          },
+          "typed": {
+            "columns": [
+              19,
+              20
+            ],
+            "background": 15656409
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 15656409
+          },
+          "geometry": [
+            504,
+            60
+          ]
+        }
+      ]
+    },
+    {
+      "profile": "slate-dark",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "8c560e61ddf29c2b9995e65410b3ccf226ae684a2068699be8b70d062d9208d2",
+      "source_sha256": {
+        "tests/live_x/viewport_scale_live.py": "b141acc3224b7d1c76374ef07ded36e644910e0cd4d4c3fba7134c0b61616723",
+        "tests/live_x/native_bindings_live.py": "80d3389bebc38c8021c6575364b74f1c306fde9ddc0c83314e0420b04b4eb164",
+        "tests/live_x/module_ui_scale_live.py": "49e97f7a64082bc80e79b7c833c310e9b38d55811d1fb70eed2738e2a64b1812",
+        "modules/FvwmForm/FvwmForm.c": "d55197b230a5f6af251023995f612cfe33fe8abc9c040e475ab28e68c3ad75fb",
+        "modules/FvwmForm/ReadXServer.c": "fae32b0e0c2d6d7624ff6bf0fd1fe283c3bc37025a69d121421957151ad70a0e",
+        "modules/FvwmForm/form_scale.c": "a2853bdaf7f36f005eb995fdb39ab3919bc3b2372945f820edc5e4e84f47ee2d",
+        "modules/FvwmForm/form_scale_policy.c": "dd8df973dedadb746d13844be3597ff779415aebba9009509abb295e9dde82d6",
+        "modules/FvwmForm/list_widget.c": "c47522c4cd657d8bb40770d1987378c50aba8208de6960751900b699343ba223",
+        "tests/form_scale_refuse_probe.c": "d10780ab274dbba4df12d4db8953e0852df648ce452aa15e5f66b39e6fd35e30",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "ae0e7562c49f74b6529b195791a5d70f818fe4e462b8e176bec5316d68bf821c",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "e8465a119ba978a6b954fe7d18524dd9f20ec07a50c037112799b84a2f278603"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "modules/FvwmForm/FvwmForm": "67af50604fcfd09fd7499a365da27ba8fe028f66a730e7b3307dc19c9eba11ca",
+        "bin/FvwmPrompt/fvwm-file-browser": "2a1c7ebb7dfb43078ac5628a43d44cdf30ee7d9e8a3f908fd8ee8fd4429650e0"
+      },
+      "fault_binary_sha256": "9a525a0bcf5208e8a2cb545be3cdafc268f7aa1602cd4707725ff2967a5b0584",
+      "evidence_payload_sha256": "ca8756a9def239054b8bc83f0beeb96d65e0f5750ebbdaa5001dd984a9bbfafc",
+      "display_geometry": "5120x2160x24 (two 2560x2160 actual outputs)",
+      "screenshots": [
+        "scale-pending-latest.png",
+        "scale-minimum-real-configure.png",
+        "ScaleUnsupported-fallback.png",
+        "ScaleBitmap-fallback.png",
+        "readability-wide-2x.png",
+        "readability-narrow-unselected-focus-2x.png",
+        "readability-narrow-selected-focus-2x.png",
+        "scale-font-refused.png",
+        "scale-font-recovered.png",
+        "browser-first-map-1.25.png",
+        "browser-scale-6-2.png",
+        "browser-readability-narrow-2x.png",
+        "browser-readability-wide-2x.png",
+        "browser-scale-8-3.png",
+        "browser-scale-8-5.png",
+        "browser-scaled-grid-refresh.png",
+        "browser-after-removal.png"
+      ],
+      "actual_module_waits": 15,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xorg-dummy-1240": 0,
+        "xrandr-1244": 0,
+        "xrandr-1245": 0,
+        "xrandr-1246": 0,
+        "xrandr-1247": 0,
+        "xrandr-1248": 0,
+        "xrandr-1249": 0,
+        "core-1251": 0,
+        "xrandr-1286": 0,
+        "xrandr-1287": 0,
+        "xrandr-1288": 0,
+        "xrandr-1289": 0,
+        "xrandr-1291": 0,
+        "xrandr-1298": 0,
+        "xrandr-1299": 0,
+        "xrandr-1300": 0,
+        "xrandr-1305": 0,
+        "xrandr-1306": 0,
+        "xrandr-1307": 0,
+        "xrandr-1308": 0,
+        "xrandr-1311": 0,
+        "xrandr-1312": 0,
+        "xrandr-1313": 0,
+        "xrandr-1314": 0,
+        "xrandr-1326": 0,
+        "xrandr-1327": 0,
+        "xrandr-1328": 0,
+        "xrandr-1329": 0,
+        "xrandr-1337": 0,
+        "xrandr-1338": 0,
+        "xrandr-1339": 0,
+        "xrandr-1340": 0,
+        "xrandr-1342": 0,
+        "xrandr-1343": 0,
+        "xrandr-1344": 0,
+        "xrandr-1345": 0,
+        "xrandr-1347": 0,
+        "xrandr-1348": 0,
+        "xrandr-1349": 0,
+        "xrandr-1350": 0,
+        "xrandr-1357": 0,
+        "xrandr-1358": 0,
+        "xrandr-1359": 0,
+        "xrandr-1360": 0,
+        "xrandr-1368": 0,
+        "xrandr-1369": 0,
+        "xrandr-1370": 0,
+        "xrandr-1371": 0,
+        "xrandr-1373": 0,
+        "xrandr-1374": 0,
+        "xrandr-1375": 0,
+        "xrandr-1376": 0,
+        "xrandr-1378": 0,
+        "xrandr-1379": 0,
+        "xrandr-1380": 0,
+        "xrandr-1381": 0,
+        "xrandr-1383": 0,
+        "xrandr-1384": 0,
+        "xrandr-1385": 0,
+        "xrandr-1386": 0,
+        "browser-1400": 0,
+        "xrandr-1425": 0,
+        "xrandr-1426": 0,
+        "xrandr-1427": 0,
+        "xrandr-1428": 0,
+        "xrandr-1430": 0,
+        "xrandr-1431": 0,
+        "xrandr-1432": 0,
+        "xrandr-1433": 0,
+        "xrandr-1436": 0,
+        "xrandr-1437": 0,
+        "xrandr-1438": 0,
+        "xrandr-1439": 0,
+        "xrandr-1444": 0,
+        "xrandr-1445": 0,
+        "xrandr-1446": 0,
+        "xrandr-1447": 0,
+        "xrandr-1455": 0,
+        "xrandr-1456": 0,
+        "xrandr-1457": 0,
+        "xrandr-1458": 0,
+        "xrandr-1484": 0,
+        "xrandr-1485": 0,
+        "xrandr-1486": 0,
+        "xrandr-1487": 0,
+        "browser-successor-1491": 0
+      },
+      "input_heights": {
+        "4": 30,
+        "5": 39,
+        "6": 48,
+        "8": 60
+      },
+      "limits": {
+        "entries": 4096,
+        "children": 64,
+        "physical_or_assistive_qualified": false
+      },
+      "restart_xid_reused": true,
+      "readability_cases": [
+        {
+          "alias": "ScaleReadable",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        },
+        {
+          "alias": "ScaleReadableBitmap",
+          "samples": 4,
+          "quarters": [
+            4,
+            5,
+            6,
+            8
+          ],
+          "bitmap_glyph_growth_claimed": false
+        }
+      ],
+      "browser_readability_widths": [
+        {
+          "name": "narrow",
+          "status": {
+            "alias": "FvwmFiles-179e9e10af8764bee3d835e1b2730433-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE sb5835ef9845db18e 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1229,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1189,
+            54
+          ]
+        },
+        {
+          "name": "wide",
+          "status": {
+            "alias": "FvwmFiles-179e9e10af8764bee3d835e1b2730433-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE sd8bb552c170224a0 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1729,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1689,
+            54
+          ]
+        },
+        {
+          "name": "shrink",
+          "status": {
+            "alias": "FvwmFiles-179e9e10af8764bee3d835e1b2730433-2-ready",
+            "raw": "FVWM_FORM_UI_SCALE sfb1cf2c3044a68a3 1 ready 8 8 0000000000000010 0000000000000010 231 231 1 1229 1104 1229 1104",
+            "enabled": 1,
+            "state": "ready",
+            "current_q": 8,
+            "desired_q": 8,
+            "current_epoch": "0000000000000010",
+            "desired_epoch": "0000000000000010",
+            "current_atom": 231,
+            "desired_atom": 231,
+            "resource_gen": 1,
+            "min_w": 1229,
+            "min_h": 1104,
+            "required_w": 1229,
+            "required_h": 1104,
+            "root_rect": [
+              2666,
+              148,
+              1229,
+              1104
+            ]
+          },
+          "collection": [
+            20,
+            434,
+            1189,
+            54
+          ]
+        }
+      ],
+      "browser_input_carets": [
+        {
+          "field": 8388618,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 2503741
+          },
+          "typed": {
+            "columns": [
+              19,
+              20
+            ],
+            "background": 2503741
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 2503741
+          },
+          "geometry": [
+            384,
+            60
+          ]
+        },
+        {
+          "field": 8388637,
+          "quarters": 8,
+          "stroke": 2,
+          "redraw": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 2503741
+          },
+          "typed": {
+            "columns": [
+              19,
+              20
+            ],
+            "background": 2503741
+          },
+          "cleared": {
+            "columns": [
+              11,
+              12
+            ],
+            "background": 2503741
+          },
+          "geometry": [
+            504,
+            60
+          ]
+        }
+      ]
+    }
+  ],
+  "published": [
+    {
+      "file": "readability-slate-wide.png",
+      "profile": "slate-dark",
+      "original": "./viewport-scale-vyi3zhgv/slate-dark/browser-readability-wide-2x.png",
+      "sha256": "c2d51b36535da0c09c0dca7fabda185afca4ba1565a64f03b344a3aa5653b114",
+      "bytes": 201646,
+      "width": 5120,
+      "height": 2160,
+      "modified": false
+    },
+    {
+      "file": "readability-dune-wide.png",
+      "profile": "dune-light",
+      "original": "./viewport-scale-vyi3zhgv/dune-light/browser-readability-wide-2x.png",
+      "sha256": "8668e25fe0c3ca014706e6fb94662b17fc97a7d6b35c5faf8f34365fc7be803b",
+      "bytes": 201627,
+      "width": 5120,
+      "height": 2160,
+      "modified": false
+    },
+    {
+      "file": "readability-classic-wide.png",
+      "profile": "classic-large",
+      "original": "./viewport-scale-vyi3zhgv/classic-large/browser-readability-wide-2x.png",
+      "sha256": "5bef596a9e0b2029aad898658d8387ff01f38bfbe02dee3091499c6a449fcc6c",
+      "bytes": 336244,
+      "width": 5120,
+      "height": 2160,
+      "modified": false
+    },
+    {
+      "file": "readability-classic-focus.png",
+      "profile": "classic-large",
+      "original": "./viewport-scale-vyi3zhgv/classic-large/readability-narrow-selected-focus-2x.png",
+      "sha256": "8726d8d6b0513e00719a8d09c121e34b90f9ff4fdab28994fbe48e901e9480cd",
+      "bytes": 103070,
+      "width": 5120,
+      "height": 2160,
+      "modified": false
+    }
+  ],
+  "observed_limits": [
+    "Overflow intentionally abbreviated; full-text disclosure remains open.",
+    "Summary labels reflect the controller last admitted callback, which may trail native selection.",
+    "Some configured-font synthetic CJK glyphs are missing.",
+    "Physical/assistive and broader six-target acceptance remain open."
+  ]
+}

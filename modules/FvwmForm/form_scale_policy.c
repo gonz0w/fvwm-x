@@ -7,6 +7,7 @@
 
 #include <limits.h>
 #include <stdint.h>
+#include <string.h>
 
 bool form_scale_extent(int logical, int required, unsigned int quarters,
 	int *extent)
@@ -35,9 +36,128 @@ bool form_scale_metrics_prepare(unsigned int quarters, int logical_pad,
 	    !form_scale_extent(10, 1, quarters, &candidate.thumb_width) ||
 	    !form_scale_extent(2, 1, quarters, &candidate.thumb_inset) ||
 	    !form_scale_extent(4, 1, quarters, &candidate.thumb_min) ||
+	    !form_scale_extent(1, 1, quarters, &candidate.stroke) ||
 	    !form_scale_extent(logical_pad, 0, quarters, &candidate.pad_text))
 		return false;
 	*metrics = candidate;
+	return true;
+}
+
+bool form_label_viewport_width(int minimum, int parent, int margin, int *width)
+{
+	*width = 0;
+	if (minimum < 1 || parent < 1 || parent > 32767 || margin < 0 ||
+	    2LL * margin + minimum > parent)
+		return false;
+	*width = parent - 2 * margin;
+	return true;
+}
+
+bool form_label_fit(const char *source, int length, int available,
+	void *context, int (*next_character)(void *, const char *),
+	int (*measure)(void *, const char *, int),
+	char display[FORM_LABEL_BYTES + 4], int *display_length)
+{
+	int offsets[FORM_LABEL_BYTES + 1];
+	int full, count = 0, best = 0, low, high, measured;
+
+	*display_length = 0;
+	display[0] = '\0';
+	if (source == NULL || length < 0 || length > FORM_LABEL_BYTES ||
+	    available < 0 || next_character == NULL || measure == NULL)
+		return false;
+	full = measure(context, source, length);
+	if (full < 0)
+		return false;
+	if (full <= available)
+	{
+		memcpy(display, source, length);
+		display[length] = '\0';
+		*display_length = length;
+		return true;
+	}
+	offsets[0] = 0;
+	for (int prefix = 0; prefix < length; )
+	{
+		int next = next_character(context, source + prefix);
+
+		if (next < 1 || next > length - prefix)
+			goto invalid;
+		prefix += next;
+		offsets[++count] = prefix;
+	}
+	memcpy(display, "...", 4);
+	measured = measure(context, display, 3);
+	if (measured < 0)
+		goto invalid;
+	if (measured > available)
+	{
+		display[0] = '\0';
+		return true;
+	}
+	/* At most 12 font measurements for 1024 bytes. Shaping/kerning may be
+	 * nonmonotonic, so this search can choose a shorter prefix than optimal.
+	 * Every admitted candidate, including the suffix, is actually measured. */
+	low = 1;
+	high = count - 1;
+	while (low <= high)
+	{
+		int middle = low + (high - low) / 2;
+		int prefix = offsets[middle];
+
+		memcpy(display, source, prefix);
+		memcpy(display + prefix, "...", 4);
+		measured = measure(context, display, prefix + 3);
+		if (measured < 0)
+			goto invalid;
+		if (measured <= available)
+		{
+			best = prefix;
+			low = middle + 1;
+		}
+		else
+			high = middle - 1;
+	}
+	memcpy(display, source, best);
+	memcpy(display + best, "...", 4);
+	*display_length = best + 3;
+	return true;
+invalid:
+	display[0] = '\0';
+	return false;
+}
+
+int form_focus_stroke(int requested, int width, int height)
+{
+	int edge = width < height ? width : height;
+	int limit;
+
+	if (edge < 1)
+		return 0;
+	limit = edge / 2 + edge % 2;
+	if (limit > 4)
+		limit = 4;
+	return requested < 1 ? 1 : requested > limit ? limit : requested;
+}
+
+bool form_caret_geometry(int x, int width, int height, int inset, int stroke,
+	form_caret_rectangle *rectangle)
+{
+	*rectangle = (form_caret_rectangle){0};
+	if (inset < 0 || 2LL * inset >= width || 2LL * inset >= height)
+		return false;
+	if (stroke < 1)
+		stroke = 1;
+	if (stroke > 4)
+		stroke = 4;
+	if (stroke > width - 2 * inset)
+		stroke = width - 2 * inset;
+	if (x < inset)
+		x = inset;
+	if (x > width - inset - stroke)
+		x = width - inset - stroke;
+	*rectangle = (form_caret_rectangle){
+		x, inset, stroke, height - 2 * inset};
 	return true;
 }
 

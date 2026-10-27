@@ -146,7 +146,7 @@ func iconName(kind string) string {
 }
 
 func (b *browser) updateLayout() (err error) {
-	const refused = "View unchanged: enlarge the browser window and retry View (F7)."
+	const refused = "View unchanged; enlarge and retry F7."
 	mode := b.requestedView()
 	if mode == b.renderView {
 		return nil
@@ -360,10 +360,10 @@ func (b *browser) projectionTextMode(mode string) string {
 	if b.reverse {
 		direction = "descending"
 	}
-	return fmt.Sprintf("View: %s; filter: %s; sort: %s %s", mode, b.model.Filter(), b.ordering(), direction)
+	return fmt.Sprintf("View: %s; sort: %s %s; filter: %s", mode, b.ordering(), direction, b.model.Filter())
 }
 func (b *browser) countText() string {
-	return fmt.Sprintf("%d/%d visible; %d selected (%d filtered out, limit %d)", b.model.VisibleCount(), len(b.model.Entries), len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected)
+	return fmt.Sprintf("Selected %d; hidden %d; limit %d; visible %d/%d", len(b.model.Selected), b.model.HiddenSelectedCount(), collection.MaxSelected, b.model.VisibleCount(), len(b.model.Entries))
 }
 func (b *browser) inspectorLabels() []nativeLabel {
 	labels := []nativeLabel{{"inspector", "Properties (F2): select entries to inspect observed metadata."}, {"detail1", ""}, {"detail2", ""}, {"detail3", ""}}

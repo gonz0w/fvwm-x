@@ -74,7 +74,10 @@ instant termination. The WM and browser control loop do not perform those calls.
 Over-limit folders are refused as a whole, including hidden entries in the
 budget; there is no silent truncation before sorting.
 
-The progress label reports an unknown total while the worker checks or
+Browser status and metadata labels use the available parent width and show a
+complete-character prefix with `...` when text still overflows. Selection and
+hidden counts, the selection limit, action availability and refresh or retry
+guidance precede variable detail where applicable. The progress label reports an unknown total while the worker checks or
 enumerates a target. A successful snapshot reports the loaded entry count;
 there is no estimated percentage. The action-readiness label reports openable
 visible items and observed properties, terminal and configured-action readiness.

@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Browser continuity and action closeout](BROWSER-CONTINUITY-2026-10-27.md): generation-checked native layout publication, retained controls/drafts, Alt mnemonics and finite #65/#69 acceptance boundaries.
+
 - [Shared native action palette](ACTION-PALETTE-2026-10-27.md): four baseline providers, core snapshot/action ownership, bounded native refresh and focus/recovery.
 
 - [Responsive native layout](NATIVE-LAYOUT-2026-10-26.md): bounded measured panel and collection viewports using existing owners; explicit compression, identity and legacy-geometry boundaries.

@@ -142,6 +142,51 @@ static void test_button_preparation(void)
 	assert(!args.quoted_text && strcmp(args.key, "F1") == 0);
 }
 
+static void test_button_alt_shortcuts(void)
+{
+	const char *bad[] = {
+		"", "A", "Al", "Alt", "Alt-", "Alt-aa", "Alt-F extra",
+		"Alt-F;", "Alt- F", "Alt-_", "Alt-!", "Alt-\xc3\xa9",
+		" Alt-F", "Alt-F1", "^F", "F1", "Meta-F", "Alt--"
+	};
+	form_button_args args;
+	int key;
+
+	assert(form_parse_button("continue \"Filter (Alt-F)\" Alt-F", &args));
+	assert(form_button_alt_key(args.key, &key));
+	assert(key == FORM_BUTTON_ALT_BASE + 'f');
+	assert(form_parse_button("continue Alt-1", &args));
+	assert(!args.quoted_text && form_button_alt_key(args.key, &key));
+	assert(key == FORM_BUTTON_ALT_BASE + '1');
+	assert(form_button_alt_key("aLt-Z \t", &key));
+	assert(key == FORM_BUTTON_ALT_BASE + 'z');
+	for (unsigned long c = 0; c < 256; c++)
+	{
+		bool valid = (c >= 'a' && c <= 'z') ||
+			(c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9');
+		unsigned long normalized = c >= 'A' && c <= 'Z' ?
+			c + 'a' - 'A' : c;
+		char token[] = "Alt-X";
+
+		assert(form_button_alt_code(c) == (valid ?
+			FORM_BUTTON_ALT_BASE + (int)normalized : -1));
+		if (valid)
+		{
+			token[4] = c;
+			assert(form_button_alt_key(token, &key));
+			assert(key == form_button_alt_code(c) && key > 291);
+		}
+	}
+	assert(form_button_alt_code(ULONG_MAX) == -1);
+	assert(form_button_alt_code(0x1000066) == -1);
+	assert(!form_button_alt_key(NULL, &key) && key == -1);
+	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
+	{
+		key = 1234;
+		assert(!form_button_alt_key(bad[i], &key) && key == -1);
+	}
+}
+
 static void test_argument_cursor(void)
 {
 	const char empty[] = "", final[] = "10", trailing[] = "10 \t\n";
@@ -443,6 +488,7 @@ int main(void)
 	test_text_ownership();
 	test_timeout_preparation();
 	test_button_preparation();
+	test_button_alt_shortcuts();
 	test_argument_cursor();
 	test_copy_excludes_following_fields();
 	test_data_preparation();

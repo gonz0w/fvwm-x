@@ -1,0 +1,274 @@
+{
+  "base": "fe6318d1d032a1b726eef060aa1b78f8f22cc3c6",
+  "issues": [
+    65,
+    69
+  ],
+  "native_archive": {
+    "sha256": "872acc10bb1677b053a2da3ad64521a3d454cfbe6b1fd80eda55d2078493c4f6",
+    "bytes": 5090035
+  },
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "font": "DejaVu Sans Mono 18",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "486a73e85fdbc59d54f479e0d2cd211b1fdaf1b7f359943c9b23db25a3059e47",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "ef9031edd22cc765162a34ea40adc5b593459d04e52700e50c722acb5fd2b7d8",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    },
+    {
+      "profile": "dune-light",
+      "font": "Sans 10",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "eef31524a0b841cccebff1f9c3e5243d5139fa5c79405f74db0417689d9d8266",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "5fa8befff1ab5019fe4c6f27451d063e65154ecfc5945ca49395f42df501ed3e",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    },
+    {
+      "profile": "slate-dark",
+      "font": "Sans 10",
+      "status": "passed",
+      "source_sha256": {
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/native_bindings_live.py": "9926ca2f40194c7f138c71abe820093dced4ef31ff72d9b95337c4b2ba5d9cb0",
+        "modules/FvwmForm/FvwmForm.c": "f7e4424f1127b8bd26fe486cfed3638696dd2d538e5067bc07fab71bb6fc0652",
+        "modules/FvwmForm/form_list.c": "0085875d4b11be2540df49fdedbdf97eccdcfe1a78336da601f144a6a56f9934",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "47b170d23a5832e34eecbeeba77a2d08f43ec495cdabc44831fb90052067809f",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "649119ddadaea861ba509f74f4cca3736c4fe854419c8b175c4af513fb677acd"
+      },
+      "binary_sha256": {
+        "fvwm3": "a8287453527fa46a0572f1c0c8692b77984bf05da81242770a9e1bb7175a258f",
+        "modules/FvwmForm/FvwmForm": "ad379ad7e1d0b6d4e4639d7e9941626f6a87a130dbee4dbc3942ac45cf6c5eff",
+        "bin/FvwmPrompt/fvwm-file-browser": "a761f6ce7c80d2a8525549b8207639bb29cc61c59af93a7102ec59691acde94f"
+      },
+      "config_sha256": "1083989d8828958554d6885e6270e5c1139a7e2588ffb1267f97f6d85e889f89",
+      "display_geometry": "1920x1800x24",
+      "children": 27,
+      "switches": 14,
+      "keyboard_actions": 24,
+      "actual_module_waits": 6,
+      "module_returncodes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "direct_children": {
+        "Xvfb": 0,
+        "core": 0,
+        "browser": 0,
+        "browser-successor": 0
+      },
+      "limits": {
+        "entries": 4096,
+        "native_children": 64,
+        "worker_gate_seconds": 1.5,
+        "physical_display_or_assistive_technology_qualified": false,
+        "automatic_module_scaling_qualified": false
+      },
+      "evidence_sha256": "08d307443cb62178d2f633daed1e566b69ebc88ecd2d144d4db9c9c8b1e4a7d8",
+      "screenshots": [
+        "continuity-list-4096.png",
+        "continuity-grid-range.png",
+        "continuity-resized.png",
+        "continuity-small-layout-refused.png",
+        "continuity-unavailable.png",
+        "continuity-recovered.png",
+        "continuity-successor.png"
+      ],
+      "scenarios": [
+        "range_anchor_survives",
+        "top_grid_to_list",
+        "top_list_to_grid",
+        "generation_bound_target_pages",
+        "hidden_multiple_selection",
+        "resize_then_f7",
+        "small_layout_refusal_retry",
+        "unsubmitted_drafts_and_input_focus",
+        "failure_recovery",
+        "missing_custom_program",
+        "incremental_vanished_entry",
+        "refused_browser_layouts",
+        "pending_layout_refusal",
+        "layout_during_refresh",
+        "producer_teardown_restart"
+      ]
+    }
+  ],
+  "screenshots": [
+    {
+      "path": "doc/screenshots/continuity-slate-grid.png",
+      "profile": "slate-dark",
+      "source": "continuity-grid-range.png",
+      "sha256": "892bc11f3dab5846cff35ad0db185b6d8ce274c81d9394f162453663e4fb951e",
+      "bytes": 105051
+    },
+    {
+      "path": "doc/screenshots/continuity-dune-refused.png",
+      "profile": "dune-light",
+      "source": "continuity-small-layout-refused.png",
+      "sha256": "eb77d5299a702c00b1e117ab03029c0a2254f3ba33e38bfed264814b265ca2d2",
+      "bytes": 106790
+    },
+    {
+      "path": "doc/screenshots/continuity-large-resized.png",
+      "profile": "classic-large",
+      "source": "continuity-resized.png",
+      "sha256": "9309087864b34e4e560460cbbbb0828d61488058b9c05e3b10cab133e2ba54c1",
+      "bytes": 210542
+    },
+    {
+      "path": "doc/screenshots/continuity-slate-unavailable.png",
+      "profile": "slate-dark",
+      "source": "continuity-unavailable.png",
+      "sha256": "030d34f3225ec34dc15e011d9693a403540c20a5bd46b7dbb4dcd0628ce792d9",
+      "bytes": 111603
+    },
+    {
+      "path": "doc/screenshots/continuity-dune-recovered.png",
+      "profile": "dune-light",
+      "source": "continuity-recovered.png",
+      "sha256": "3b66ea361231c2ffc52735ad54a3bb358ffb1ff0f9c72aa5bb0fec95d3da2cce",
+      "bytes": 111024
+    },
+    {
+      "path": "doc/screenshots/continuity-large-successor.png",
+      "profile": "classic-large",
+      "source": "continuity-successor.png",
+      "sha256": "06d93456f2fdd2a0684d1951aa42099c9e3566234a4a5199c43659b211eb84f7",
+      "bytes": 203505
+    }
+  ],
+  "scope": "Unmodified actual Xvfb captures; synthetic directory/application fixtures; 1920x1800 root; enlarged font is not module-scale qualification"
+}

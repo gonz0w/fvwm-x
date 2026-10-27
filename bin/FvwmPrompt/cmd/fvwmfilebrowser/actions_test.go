@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -13,6 +15,7 @@ import (
 	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
 func TestConfiguredActionOptionsAreBoundedLiteralPrograms(t *testing.T) {
@@ -136,5 +139,134 @@ func TestConfiguredActionUsesCurrentSelectionAndRefusesBusyWork(t *testing.T) {
 		}
 	case <-time.After(3 * time.Second):
 		t.Fatal("cancelled action worker not reaped")
+	}
+}
+
+func TestUnavailableProgramsFailCorrelatedWorkAndAllowRefreshRetry(t *testing.T) {
+	for _, operation := range []string{"open", "terminal", "custom"} {
+		for _, unavailable := range []string{"missing", "nonexecutable"} {
+			t.Run(operation+"/"+unavailable, func(t *testing.T) {
+				executable, err := os.Executable()
+				if err != nil {
+					t.Fatal(err)
+				}
+				root, programs := t.TempDir(), t.TempDir()
+				path := filepath.Join(root, "unchanged file")
+				if err := os.WriteFile(path, []byte("unchanged bytes"), 0600); err != nil {
+					t.Fatal(err)
+				}
+				snapshot, err := filemodel.Scan(root, false)
+				if err != nil || len(snapshot.Items) != 1 {
+					t.Fatal("valid target setup failed", err)
+				}
+				report := filepath.Join(programs, "launch-report")
+				t.Setenv("FVWM_TEST_LAUNCH_REPORT", report)
+				program := filepath.Join(programs, unavailable)
+				script := []byte("#!/bin/sh\nprintf 'started\\n' >> \"$FVWM_TEST_LAUNCH_REPORT\"\n")
+				if unavailable == "nonexecutable" {
+					if err := os.WriteFile(program, script, 0600); err != nil {
+						t.Fatal(err)
+					}
+				}
+				left, right := net.Pipe()
+				t.Cleanup(func() { left.Close(); right.Close() })
+				go io.Copy(io.Discard, right)
+				b := browser{instance: "unavailable", session: transport.New(left), executable: executable,
+					snapshot: snapshot, results: make(chan completedWork, 1), opener: program, terminal: program,
+					actions: actionFlags{{Label: "Test action", Program: program}}}
+				if err := b.model.Replace(snapshot.Entries()); err != nil {
+					t.Fatal(err)
+				}
+				id := snapshot.Items[0].ID
+				if err := b.model.SelectIDs(b.model.Generation, []string{id}); err != nil {
+					t.Fatal(err)
+				}
+				values := `{}`
+				if operation == "open" {
+					values = `{"id":"` + id + `"}`
+				} else if operation == "custom" {
+					values = `{"index":0}`
+				}
+				admit := func(op, fields, serial string) fileQuery {
+					t.Helper()
+					query := actionQuery(&b, op, fields)
+					query.Serial = serial
+					action, err := decodeProviderAction(query)
+					if err != nil {
+						t.Fatal(err)
+					}
+					if code := b.applyProviderAction(query, action); code != "" || !b.active ||
+						b.providerWork.ID != serial || b.providerWork.Operation != op || b.providerWork.Status != "accepted" {
+						t.Fatal("work admission/correlation failed", code, b.providerWork)
+					}
+					return query
+				}
+				complete := func(want string, query fileQuery) completedWork {
+					t.Helper()
+					select {
+					case event := <-b.results:
+						if !b.active || event.work.serial != b.serial || event.result.Schema != 1 || event.result.Status != want {
+							t.Fatal("worker result/owned slot mismatch", event.result, b.active)
+						}
+						if err := b.completed(event); err != nil {
+							t.Fatal(err)
+						}
+						if b.active || b.cancel != nil || b.activeSerial != 0 || b.pending != nil ||
+							b.providerWork.ID != query.Serial || b.providerWork.Operation != query.Operation || b.providerWork.Status != want {
+							t.Fatal("reaped result did not retire its correlated slot", b.providerWork)
+						}
+						return event
+					case <-time.After(5 * time.Second):
+						t.Fatal("worker was not reaped")
+						return completedWork{}
+					}
+				}
+				query := admit(operation, values, "0000000000000001")
+				event := complete("failed", query)
+				if event.result.Error != "Could not start the configured application" || event.result.ActionCount != 0 || b.providerWork.Detail == "" || b.dataReady() {
+					t.Fatal("missing/nonexecutable application claimed a handoff", event.result, b.providerWork)
+				}
+				if _, err := os.Stat(report); !os.IsNotExist(err) {
+					t.Fatal("failed application produced side effects", err)
+				}
+				if current, kind, err := snapshot.Validate(id); err != nil || current != path || kind != "file" {
+					t.Fatal("launch test used a stale/invalid target", err)
+				}
+				if current, err := snapshot.RootPath(); err != nil || current != root {
+					t.Fatal("terminal test used a stale/invalid root", err)
+				}
+				refresh := admit("refresh", `{}`, "0000000000000002")
+				complete("loaded", refresh)
+				if !b.dataReady() || !b.model.Selected[id] {
+					t.Fatal("explicit refresh did not restore usable retained selection")
+				}
+				if _, err := os.Stat(report); !os.IsNotExist(err) {
+					t.Fatal("refresh launched the refused application", err)
+				}
+				working := filepath.Join(programs, "working")
+				if err := os.WriteFile(working, script, 0700); err != nil {
+					t.Fatal(err)
+				}
+				b.opener, b.terminal, b.actions[0].Program = working, working, working
+				retry := admit(operation, values, "0000000000000003")
+				complete("started", retry)
+				deadline := time.Now().Add(3 * time.Second)
+				for {
+					if data, err := os.ReadFile(report); err == nil {
+						if string(data) != "started\n" {
+							t.Fatal("retry did not launch exactly once", string(data))
+						}
+						break
+					}
+					if time.Now().After(deadline) {
+						t.Fatal("valid retry did not start the application")
+					}
+					time.Sleep(time.Millisecond)
+				}
+				if data, err := os.ReadFile(path); err != nil || string(data) != "unchanged bytes" {
+					t.Fatal("application failure/retry mutated the target", err)
+				}
+			})
+		}
 	}
 }

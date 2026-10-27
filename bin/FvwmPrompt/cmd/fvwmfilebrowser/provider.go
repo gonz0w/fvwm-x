@@ -130,18 +130,24 @@ func (b *browser) answerProvider(query fileQuery) (bool, error) {
 				// split model/native state as an applied operation.
 				return false, err
 			}
-			if query.Operation == "present" {
+			if query.Operation == "view" && b.viewing() != action.mode {
+				// An exact unchanged native observation is a normal layout
+				// refusal. Keep the view usable without claiming an edit.
+				code = "operation_refused"
+			} else if query.Operation == "present" {
 				selector := "All (FvwmFiles-" + b.instance + "-*) "
 				if err := b.sendCommands([]string{selector + "Iconify false", selector + "Focus", selector + "Raise"}); err != nil {
 					return false, err
 				}
 			}
-			applied = true
-			stateQuery := fileQuery{Version: 1, Provider: b.instance,
-				Serial: query.Serial, Scope: "state", Limit: providerPageMax}
-			result, code = b.providerResult(stateQuery)
 			if code == "" {
-				result["scope"], result["operation"], result["applied"] = "action", query.Operation, true
+				applied = true
+				stateQuery := fileQuery{Version: 1, Provider: b.instance,
+					Serial: query.Serial, Scope: "state", Limit: providerPageMax}
+				result, code = b.providerResult(stateQuery)
+				if code == "" {
+					result["scope"], result["operation"], result["applied"] = "action", query.Operation, true
+				}
 			}
 		}
 	} else if code == "" {

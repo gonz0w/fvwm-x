@@ -90,6 +90,23 @@ static void process_paste_request (XEvent *event, Item *item);
 static void ToggleChoice (Item *item);
 static void ResizeFrame (void);
 
+/* Keyboard activations use the same first-defined button and command path. */
+static Bool form_activate_button_key(int keypress)
+{
+	for (Item *item = root_item_ptr; item != NULL; item = item->header.next)
+	{
+		if (item->type == I_BUTTON && item->button.keypress == keypress)
+		{
+			RedrawItem(item, 1, NULL);
+			usleep(MICRO_S_FOR_10MS);
+			RedrawItem(item, 0, NULL);
+			DoCommand(item);
+			return True;
+		}
+	}
+	return False;
+}
+
 /* read an X event */
 void ReadXServer (void)
 {
@@ -220,6 +237,15 @@ void ReadXServer (void)
 	break;
       case KeyPress:  /* we do text input here */
 	n = XLookupString(&event.xkey, (char *)buf, sizeof(buf), &ks, NULL);
+	/* Only configured Alt shortcuts preempt collection or input editing. */
+	if ((event.xkey.state & Mod1Mask) &&
+	    !(event.xkey.state & (ControlMask | Mod4Mask)))
+	{
+		int alt_key = form_button_alt_code(ks);
+
+		if (alt_key >= 0 && form_activate_button_key(alt_key))
+			goto no_redraw;
+	}
 	if (form_list_key(ks, event.xkey.state))
 	  break;
 	if (n >= sizeof(buf)/sizeof(char)) {
@@ -281,16 +307,8 @@ void ReadXServer (void)
 	  break;
 	}
 	if (!CF.cur_input) {  /* no text input fields */
-	  for (item = root_item_ptr; item != 0;
-	       item = item->header.next) {/* all items */
-	    if (item->type == I_BUTTON && item->button.keypress == keypress) {
-	      RedrawItem(item, 1, NULL);
-	      usleep(MICRO_S_FOR_10MS);
-	      RedrawItem(item, 0, NULL);
-	      DoCommand(item);
-	      goto no_redraw;
-	    }
-	  }
+	  if (form_activate_button_key(keypress))
+	    goto no_redraw;
 	  break;
 	} else if (CF.cur_input == CF.cur_input->input.next_input) {
 	  /* 1 ip field */
@@ -416,19 +434,8 @@ void ReadXServer (void)
 	    goto redraw_newcursor;
 	  }
 	  /* unrecognized key press, check for buttons */
-	  for (item = root_item_ptr; item != 0; item = item->header.next)
-	  {
-	    /* all items */
-	    myfprintf((stderr, "Button: keypress==%d\n",
-		    item->button.keypress));
-	    if (item->type == I_BUTTON && item->button.keypress == keypress) {
-	      RedrawItem(item, 1, NULL);
-	      usleep(MICRO_S_FOR_10MS);  /* .1 seconds */
-	      RedrawItem(item, 0, NULL);
-	      DoCommand(item);
-	      goto no_redraw;
-	    }
-	  }
+	  if (form_activate_button_key(keypress))
+	    goto no_redraw;
 	  break;
 	}
       redraw_newcursor:
@@ -677,18 +684,8 @@ static int process_tabtypes(unsigned char * buf) {
     }
   }
   /* end of all text input fields, check for buttons */
-  for (item = root_item_ptr; item != 0;
-       item = item->header.next) {/* all items */
-    myfprintf((stderr, "Button: keypress==%d vs buf %d\n",
-	       item->button.keypress, buf[0]));
-    if (item->type == I_BUTTON && item->button.keypress == buf[0]) {
-      RedrawItem(item, 1, NULL);
-      usleep(MICRO_S_FOR_10MS);
-      RedrawItem(item, 0, NULL);
-      DoCommand(item);
-      return (0);                       /* cause no_redraw */
-    }
-  }
+  if (form_activate_button_key(buf[0]))
+    return (0);                         /* cause no_redraw */
   /* goto the first text input field */
   for (item = root_item_ptr; item != 0;
        item = item->header.next) {/* all items */

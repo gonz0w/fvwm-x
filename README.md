@@ -18,7 +18,7 @@ Recent work:
 - A keyboard-first window/app/desktop/action palette with bounded native refresh.
 - Optional browser: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.
-  Live updates retain drafts and selection; opt-in watching refreshes folders.
+  List/grid switches and live updates retain drafts/selection; watching refreshes folders.
 
 Slate dark: list/properties.
 

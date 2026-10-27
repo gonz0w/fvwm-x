@@ -139,15 +139,21 @@ def module_proxy(real, directory, arguments):
     except (KeyboardInterrupt, BrokenPipeError):
         return 0
     finally:
-        terminate(child)
-        for fd in (outgoing, incoming, from_child, to_child):
-            try:
-                os.close(fd)
-            except OSError:
-                pass
-        atomic_json(root / ('stopped-' + token + '.json'),
-            {'child': child.pid, 'returncode': child.returncode})
-        signal.signal(signal.SIGTERM, saved)
+        # KillModule can begin teardown before the fixture stops the core's
+        # whole process group. A repeated TERM must not interrupt the real
+        # child Wait or its receipt after ownership has entered this unwind.
+        signal.signal(signal.SIGTERM, signal.SIG_IGN)
+        try:
+            terminate(child)
+            for fd in (outgoing, incoming, from_child, to_child):
+                try:
+                    os.close(fd)
+                except OSError:
+                    pass
+            atomic_json(root / ('stopped-' + token + '.json'),
+                {'child': child.pid, 'returncode': child.returncode})
+        finally:
+            signal.signal(signal.SIGTERM, saved)
 
 
 def worker_proxy(real, directory, browser=False):

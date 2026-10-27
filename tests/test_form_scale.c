@@ -3,10 +3,183 @@
  * the Free Software Foundation; either version 2, or any later version. */
 #include "config.h"
 #include "modules/FvwmForm/form_scale.h"
+#include "modules/FvwmForm/form_workarea.h"
 
 #include <assert.h>
 #include <limits.h>
+#include <stdio.h>
 #include <string.h>
+
+static void test_workarea(void)
+{
+	module_ui_scale_snapshot snapshot = {.epoch = 1, .count = 2,
+		.rows = {{.name_atom = 1, .quarters = 5, .primary = true,
+			.rect = {-800, 100, 800, 600}, .name = "left display"},
+			{.name_atom = 2, .quarters = 8,
+			.rect = {0, 0, 1200, 900}, .name = "right"}}};
+	form_workarea_state state = {0};
+	module_monitor_area area;
+	form_scale_size minimum = {150, 80}, available, size;
+	char line[MODULE_UI_SCALE_LINE_MAX];
+	int position;
+	int values[MODULE_MONITOR_VALUES] = {0};
+
+	form_workarea_sync(&state, &snapshot);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == -800 && area.y == 100);
+	assert(area.width == 800 && area.height == 600);
+	values[10] = 10;
+	values[11] = 20;
+	values[12] = 40;
+	values[13] = 30;
+	assert(module_monitor_format(line, sizeof(line), "left display", values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_ADMITTED);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == -790 && area.y == 140);
+	assert(area.width == 770 && area.height == 530);
+	/* Client preference reserves actual frame decorations from this area. */
+	available = (form_scale_size){area.width - 8, area.height - 32};
+	assert(form_scale_initial_size(800, 32, 5, 50, 30, 6,
+		&minimum, &available, &size));
+	assert(size.width == 762 && size.height == 498);
+	assert(form_scale_startup_axis(100, size.width + 8,
+		area.x, area.width, &position) && position == -790);
+	assert(form_scale_startup_axis(0, size.height + 32,
+		area.y, area.height, &position) && position == 140);
+	/* Malformed input retains only a last good sample in this topology. */
+	values[10] = -1;
+	assert(module_monitor_format(line, sizeof(line), "left display", values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_REFUSED);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == -790 && area.width == 770);
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor right 0 0") == FORM_WORKAREA_REFUSED);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[1], &area));
+	assert(area.x == 0 && area.width == 1200 && area.height == 900);
+	assert(form_workarea_receive(&state, &snapshot,
+		"MonitorUI 1 END 0000000000000001 2") == FORM_WORKAREA_IGNORED);
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor unknown 0 0 0 0 0 0 0 0 0 0 0 0 0 0") ==
+		FORM_WORKAREA_REFUSED);
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor right 0 0 0 0 0 0 0 0 0 0 0 0 0 0 junk") ==
+		FORM_WORKAREA_REFUSED);
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor right 0 0 0 0 0 0 0 0 0 0 0 0 0 1x") ==
+		FORM_WORKAREA_REFUSED);
+	/* A changed publication invalidates even a matching name; legacy rows
+	 * cannot certify freshness across a topology or scale epoch change. */
+	snapshot.epoch++;
+	snapshot.rows[0].rect = (rectangle){100, 50, 800, 600};
+	form_workarea_sync(&state, &snapshot);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == 100 && area.y == 50 && area.height == 600);
+	values[10] = 0;
+	values[11] = INT_MAX;
+	assert(module_monitor_format(line, sizeof(line), "left display", values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_REFUSED);
+	values[11] = 800;
+	assert(module_monitor_format(line, sizeof(line), "left display", values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_REFUSED);
+	/* A valid later sample recovers without a request, poll or new packet. */
+	values[11] = 0;
+	values[12] = 550;
+	values[13] = 0;
+	assert(module_monitor_format(line, sizeof(line), "left display", values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_ADMITTED);
+	form_workarea_sync(&state, &snapshot);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == 100 && area.y == 600 && area.height == 50);
+	available = (form_scale_size){area.width, area.height};
+	assert(form_scale_initial_size(800, 8, 6, 50, 30, 6,
+		&minimum, &available, &size));
+	assert(size.height == minimum.height);
+	assert(form_scale_startup_axis(10, size.height + 32,
+		area.y, area.height, &position) && position == 600);
+	/* Removal/name reuse never reuses an index's reservation. */
+	snapshot.epoch++;
+	snapshot.count = 1;
+	snapshot.rows[0] = snapshot.rows[1];
+	form_workarea_sync(&state, &snapshot);
+	assert(form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == 0 && area.height == 900);
+	snapshot.rows[0].rect.x = INT_MAX;
+	assert(!form_workarea_bounds(&state, &snapshot, &snapshot.rows[0], &area));
+	assert(area.x == 0 && area.height == 0);
+	memset(line, 'x', sizeof(line));
+	memcpy(line, "Monitor ", 8);
+	line[sizeof(line) - 1] = '\0';
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_REFUSED);
+}
+
+static void test_workarea_limits(void)
+{
+	module_ui_scale_snapshot snapshot = {.epoch = 1,
+		.count = MODULE_UI_SCALE_MAX};
+	form_workarea_state state = {0};
+	module_monitor_area area;
+	module_ui_scale_row *row = &snapshot.rows[MODULE_UI_SCALE_MAX - 1];
+	char line[MODULE_UI_SCALE_LINE_MAX + 1];
+	int values[MODULE_MONITOR_VALUES] = {0};
+
+	for (unsigned int i = 0; i < snapshot.count; i++)
+	{
+		snapshot.rows[i] = (module_ui_scale_row){.name_atom = i + 1,
+			.quarters = 4, .rect = {0, 0, 800, 600}};
+		snprintf(snapshot.rows[i].name, sizeof(snapshot.rows[i].name),
+			"display-%u", i);
+	}
+	/* The longest admitted name can double in size when escaped. */
+	memset(row->name, '\'', MODULE_UI_SCALE_NAME_MAX);
+	row->name[MODULE_UI_SCALE_NAME_MAX] = '\0';
+	values[12] = 40;
+	assert(module_monitor_format(line, sizeof(line), row->name, values));
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_ADMITTED);
+	assert(state.valid[MODULE_UI_SCALE_MAX - 1]);
+	assert(form_workarea_bounds(&state, &snapshot, row, &area));
+	assert(area.y == 40 && area.height == 560);
+	/* An unchanged replay retains a sample; an unassociated epoch cannot. */
+	form_workarea_sync(&state, &snapshot);
+	assert(form_workarea_bounds(&state, &snapshot, row, &area));
+	assert(area.y == 40);
+	snapshot.epoch++;
+	assert(form_workarea_bounds(&state, &snapshot, row, &area));
+	assert(area.y == 0 && area.height == 600);
+	for (unsigned int i = 10; i < MODULE_MONITOR_VALUES; i++)
+	{
+		memset(values, 0, sizeof(values));
+		values[i] = -1;
+		assert(module_monitor_format(line, sizeof(line), row->name, values));
+		assert(form_workarea_receive(&state, &snapshot, line) ==
+			FORM_WORKAREA_REFUSED);
+		assert(!state.valid[MODULE_UI_SCALE_MAX - 1]);
+		values[i] = INT_MAX;
+		assert(module_monitor_format(line, sizeof(line), row->name, values));
+		assert(form_workarea_receive(&state, &snapshot, line) ==
+			FORM_WORKAREA_REFUSED);
+	}
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor display-0 0 0 0 0 0 0 0 0 0 0 2147483648 0 0 0") ==
+		FORM_WORKAREA_REFUSED);
+	memset(line, 'x', sizeof(line));
+	memcpy(line, "Monitor ", 8);
+	line[sizeof(line) - 1] = '\0';
+	assert(form_workarea_receive(&state, &snapshot, line) ==
+		FORM_WORKAREA_REFUSED);
+	snapshot.count++;
+	assert(!form_workarea_bounds(&state, &snapshot, row, &area));
+	assert(area.width == 0 && area.height == 0);
+	assert(form_workarea_receive(&state, &snapshot,
+		"Monitor display-0 0 0 0 0 0 0 0 0 0 0 0 0 0 0") ==
+		FORM_WORKAREA_REFUSED);
+}
 
 static void test_initial_size(void)
 {
@@ -304,6 +477,8 @@ static void test_focus_geometry(void)
 
 int main(void)
 {
+	test_workarea();
+	test_workarea_limits();
 	test_initial_size();
 	test_startup_position();
 	test_metrics();

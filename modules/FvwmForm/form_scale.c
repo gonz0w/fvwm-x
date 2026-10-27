@@ -11,6 +11,7 @@
 #include "libs/wm_ui_metrics.h"
 #include "libs/ui_layout.h"
 #include "FvwmForm.h"
+#include "form_workarea.h"
 
 #include <inttypes.h>
 #include <limits.h>
@@ -42,6 +43,7 @@ static struct
 	const char *module;
 	const char *state;
 	module_ui_scale_receiver receiver;
+	form_workarea_state workarea;
 	unsigned int quarters, desired, resource_generation;
 	uint64_t epoch, desired_epoch;
 	Atom atom, desired_atom;
@@ -71,18 +73,40 @@ bool form_scale_message(const char *text)
 		text);
 
 	if (status == MODULE_UI_SCALE_IGNORED)
-		return false;
+	{
+		form_workarea_status area_status = form_workarea_receive(
+			&scale.workarea, &scale.receiver.published, text);
+
+		if (area_status == FORM_WORKAREA_IGNORED)
+			return false;
+		if (area_status == FORM_WORKAREA_REFUSED)
+			fprintf(stderr, "FvwmForm: refused Monitor work area\n");
+		else if (!scale.ready)
+			form_scale_retry();
+		return true;
+	}
 	if (status == MODULE_UI_SCALE_REFUSED)
 		fprintf(stderr, "FvwmForm: refused MonitorUI snapshot\n");
 	if (status == MODULE_UI_SCALE_PUBLISHED ||
 	    status == MODULE_UI_SCALE_UNCHANGED)
-		form_scale_retry();
+	{
+		form_workarea_sync(&scale.workarea, &scale.receiver.published);
+		/* MonitorUI END precedes the legacy reservation rows. Initial
+		 * replay finishes before mapping; later topology updates use a
+		 * checked physical fallback until matching rows arrive. No legacy
+		 * sample or end-of-config proves atomic work-area freshness. */
+		if (scale.ready)
+			form_scale_retry();
+	}
 	return true;
 }
 
 void form_scale_end_config(void)
 {
 	module_ui_scale_abort(&scale.receiver);
+	/* Retry retained checked facts or physical fallback, without treating
+	 * the reader's boundary (which can also be EOF) as a fresh snapshot. */
+	form_scale_retry();
 }
 
 void form_scale_cleanup(void)
@@ -320,6 +344,7 @@ void form_scale_retry(void)
 	Window child;
 	rectangle rect, outer = {0};
 	form_scale_size target, minimum_size, available;
+	module_monitor_area bounds;
 	const module_ui_scale_row *monitor;
 	Item *list = CF.viewport;
 	int cell = 0, row_height = 0, minimum, min_height, fixed;
@@ -387,13 +412,17 @@ void form_scale_retry(void)
 	}
 	if (!scale.ready && scale.startup_position)
 	{
+		if (outer.width < rect.width || outer.height < rect.height ||
+		    !form_workarea_bounds(&scale.workarea,
+			&scale.receiver.published, monitor, &bounds))
+			goto refused;
 		if (!form_scale_startup_axis(outer.x, outer.width,
-			monitor->rect.x, monitor->rect.width, &startup_x) ||
+			bounds.x, bounds.width, &startup_x) ||
 		    !form_scale_startup_axis(outer.y, outer.height,
-			monitor->rect.y, monitor->rect.height, &startup_y))
+			bounds.y, bounds.height, &startup_y))
 			goto refused;
 	}
-	if (scale.adopted && scale.quarters == monitor->quarters &&
+	if (scale.ready && scale.adopted && scale.quarters == monitor->quarters &&
 	    scale.resource_generation == generation)
 		goto observed;
 	if (!form_scale_metrics_prepare(monitor->quarters, scale.logical_pad,
@@ -467,8 +496,8 @@ void form_scale_retry(void)
 		if (scale.startup_position)
 		{
 			available = (form_scale_size){
-				monitor->rect.width - (outer.width - rect.width),
-				monitor->rect.height - (outer.height - rect.height)};
+				bounds.width - (outer.width - rect.width),
+				bounds.height - (outer.height - rect.height)};
 			/* Decorations can consume the whole screen. Keep legal minima. */
 			if (available.width < 1)
 				available.width = 1;

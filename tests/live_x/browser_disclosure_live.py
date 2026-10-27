@@ -8,6 +8,9 @@
 Transparent native proxies retain original commands and actual Form callbacks.
 No module packets, worker data or metadata replies are synthesized. Runs the
 three representative themes; optional real RandR DPI selects one focused scale.
+--startup-workarea uses stable initial core Monitor reservations. Optional
+secondary-monitor and oversized cases use genuine RandR/EwmhBaseStruts inputs;
+malformed metadata and atomic strut/hotplug freshness are outside native scope.
 """
 import argparse
 import base64
@@ -56,7 +59,10 @@ def run(args, profile, run_root):
     inputs = ['tests/live_x/browser_disclosure_live.py', 'tests/live_x/native_bindings_live.py', 'bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go',
         'modules/FvwmForm/FvwmForm.c', 'modules/FvwmForm/ReadXServer.c',
         'modules/FvwmForm/form_list.c', 'modules/FvwmForm/form_scale.c',
-        'modules/FvwmForm/form_scale_policy.c', 'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
+        'modules/FvwmForm/form_scale_policy.c', 'modules/FvwmForm/form_scale.h',
+        'modules/FvwmForm/form_workarea.h',
+        'libs/module_monitor.c', 'libs/module_ui_scale.c',
+        'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
         'bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go']
     evidence = dict(status='running', profile=profile, screenshots=[], failures=[], cleanup_failures=[],
         source_sha256={name: hashlib.sha256((source / name).read_bytes()).hexdigest() for name in inputs},
@@ -65,6 +71,8 @@ def run(args, profile, run_root):
                       build / 'bin/FvwmPrompt/fvwm-file-browser',
                       build / 'bin/fvwm-desktop-capture')},
         operations=[], requested_scale=args.scale, startup_continuity=args.startup_continuity,
+        startup_workarea=args.startup_workarea, startup_monitor=args.startup_monitor,
+        startup_oversized=args.startup_oversized,
         limits={'entries': ENTRIES, 'native_children': 64,
                 'physical_display_or_assistive_technology_qualified': False,
                 'automatic_module_scaling_qualified': bool(args.xorg_config)}, display_geometry='1920x1800x24')
@@ -95,6 +103,30 @@ def run(args, profile, run_root):
                         v['monitors'].get('DUMMY0', {}).get('mm_height') == height_mm,
                     time.monotonic() + 6, 'disclosure-scale')
                 evidence['display_geometry'] = '2560x2160x24'
+                if args.startup_monitor == 'DUMMY1':
+                    # Keep DUMMY0 primary, at a different scale. Selection
+                    # must follow the real current monitor at a nonzero origin.
+                    primary_mm = (339, 271) if args.scale != '1' else (170, 135)
+                    run_required_xrandr(runtime, display,
+                        ['--addmode', 'DUMMY1', '2560x2160'],
+                        'startup-second-mode', evidence['operations'])
+                    run_required_xrandr(runtime, display, ['--output', 'DUMMY0',
+                        '--mode', '1280x1024', '--pos', '0x0', '--primary',
+                        '--set', 'WIDTH_MM', str(primary_mm[0]),
+                        '--set', 'HEIGHT_MM', str(primary_mm[1]),
+                        '--output', 'DUMMY1', '--mode', '2560x2160', '--pos', '1280x0',
+                        '--set', 'WIDTH_MM', str(width_mm),
+                        '--set', 'HEIGHT_MM', str(height_mm), '--fb', '3840x2160'],
+                        'startup-mixed-monitors', evidence['operations'])
+                    evidence['randr'] = wait_for_authoritative_state(runtime, display,
+                        'real nonzero mixed-scale startup monitor', lambda v:
+                            v['monitors'].get('DUMMY1', {}).get('x') == 1280 and
+                            v['monitors']['DUMMY1']['mm_width'] == width_mm and
+                            v['monitors']['DUMMY1']['mm_height'] == height_mm and
+                            v['monitors'].get('DUMMY0', {}).get('width') == 1280 and
+                            v['monitors']['DUMMY0']['mm_width'] == primary_mm[0],
+                        time.monotonic() + 6, 'startup-mixed-monitors')
+                    evidence['display_geometry'] = '3840x2160x24'
             else:
                 _, display = start_display_server(runtime, 'Xvfb',
                     ['Xvfb', '-screen', '0', '1920x1800x24', '-noreset'],
@@ -189,6 +221,13 @@ def run(args, profile, run_root):
 
             evidence['theme_settings'] = wait_for_predicate('requested real desktop palette applied',
                 configured_theme, time.monotonic() + 12, process=core)
+            if args.startup_monitor == 'DUMMY1':
+                # A deliberately large genuine reservation makes the usable
+                # top binding even for a centered Details Form. This is a
+                # configuration case, not an observed physical panel height.
+                command('EwmhBaseStruts screen DUMMY1 11 13 1200 19')
+                evidence['secondary_reservation_command'] = \
+                    'EwmhBaseStruts screen DUMMY1 11 13 1200 19'
 
             def rpc(scope='state', method='query', **fields):
                 nonlocal serial
@@ -217,10 +256,6 @@ def run(args, profile, run_root):
                     '--opener', '/bin/true', '--terminal', '/bin/true']
                 return runtime.start(name, arguments, name + '.log', env)
 
-            browser = start_browser('browser')
-            listed = wait_for_predicate('initial browser provider registered',
-                lambda: rpc()['providers'], time.monotonic() + 8, process=browser)
-            provider = listed[0]['provider']
             client = connect_client(display)
             errors = SessionXErrors(client, evidence).install()
             view = NativeView(client, errors, core)
@@ -236,6 +271,13 @@ def run(args, profile, run_root):
                 ('XCheckTypedWindowEvent', [C.c_void_p, C.c_ulong, C.c_int, C.POINTER(Event)], C.c_int),
             ]:
                 getattr(x, name).argtypes, getattr(x, name).restype = arguments, result
+
+            if args.startup_monitor == 'DUMMY1':
+                pointer.motion(1400, 200)
+            browser = start_browser('browser')
+            listed = wait_for_predicate('initial browser provider registered',
+                lambda: rpc()['providers'], time.monotonic() + 8, process=browser)
+            provider = listed[0]['provider']
 
             def state():
                 return rpc(provider=provider)
@@ -289,7 +331,8 @@ def run(args, profile, run_root):
                     raw = receipt('FVWM_FORM_UI_SCALE ' + token + ' ')
                     fields = raw.split()
                     assert len(fields) == 15, raw
-                    value = dict(raw=raw, state=fields[3], current_q=int(fields[4]),
+                    value = dict(raw=raw, window=target, alias=name,
+                        state=fields[3], current_q=int(fields[4]),
                         desired_q=int(fields[5]), current_epoch=fields[6], desired_epoch=fields[7],
                         current_atom=int(fields[8]), desired_atom=int(fields[9]),
                         resource_generation=int(fields[10]),
@@ -346,13 +389,58 @@ def run(args, profile, run_root):
                     if previous is None: os.environ.pop('DISPLAY', None)
                     else: os.environ['DISPLAY'] = previous
 
-            def published_view_contained(target, name):
-                monitor = evidence.get('randr', {}).get('monitors', {}).get('DUMMY0')
+            def published_view_contained(target, name, oversized=False):
+                monitor = evidence.get('randr', {}).get('monitors', {}).get(args.startup_monitor)
                 if monitor is None:
                     root_attributes = view.attributes(client.root)
                     bounds = [0, 0, root_attributes.width, root_attributes.height]
                 else:
                     bounds = [monitor[key] for key in ('x', 'y', 'width', 'height')]
+                reservation = None
+                if args.startup_workarea:
+                    # Observe original core packets from the transparent
+                    # native relay. Root _NET_WORKAREA is not per-monitor
+                    # policy, and a MonitorUI row alone has no reservations.
+                    samples = [s for s in evidence['scale_samples']
+                        if s['state'] == 'ready' and s['alias'] == name]
+                    current = samples[-1] if samples else scale_ready(target, name)
+                    atom = current['current_atom']
+                    incoming = [r['text'] for r in rows(native) if r['direction'] == 'in']
+                    ui = [line.split() for line in incoming if line.startswith('MonitorUI 1 ROW ')]
+                    selected = [fields for fields in ui if int(fields[5]) == atom][-1]
+                    monitor_name = bytes.fromhex(selected[12]).decode()
+                    bounds = list(map(int, selected[8:12]))
+                    if args.xorg_config:
+                        assert monitor_name == args.startup_monitor, (name, selected)
+                        fact = evidence['randr']['monitors'][monitor_name]
+                        assert bounds == [fact[k] for k in ('x', 'y', 'width', 'height')], \
+                            (selected, fact)
+                    if args.startup_monitor == 'DUMMY1':
+                        primary = [fields for fields in ui
+                            if bytes.fromhex(fields[12]).decode() == 'DUMMY0'][-1]
+                        assert int(primary[7]) == 1 and int(selected[7]) == 0 and \
+                            int(primary[6]) != int(selected[6]), (primary, selected)
+                        evidence['mixed_monitor_selection'] = dict(primary=primary,
+                            selected=selected, selected_name=monitor_name,
+                            real_randr=evidence['randr'],
+                            nonzero_origin=bounds[:2], different_scale=True)
+                    legacy = [shlex.split(line) for line in incoming if line.startswith('Monitor ')]
+                    matching = [fields for fields in legacy if fields[1] == monitor_name]
+                    assert matching, (monitor_name, legacy)
+                    raw = matching[-1]
+                    assert len(raw) == 16, raw
+                    left, right, top, bottom = map(int, raw[12:16])
+                    assert min(left, right, top, bottom) >= 0, raw
+                    if args.startup_monitor == 'DUMMY1' and not oversized:
+                        assert [left, right, top, bottom] == [11, 13, 1200, 19], raw
+                    usable = [bounds[0] + left, bounds[1] + top,
+                        bounds[2] - left - right, bounds[3] - top - bottom]
+                    assert min(usable[2:]) > 0, (bounds, raw)
+                    reservation = dict(name=monitor_name, physical=bounds,
+                        usable=usable, insets=[left, right, top, bottom],
+                        core_monitor_record=raw, core_ui_record=selected,
+                        stable_initial_config_only=True)
+                    bounds = usable
                 outer = target
                 for _ in range(8):
                     parent = client.parent(outer)
@@ -362,8 +450,33 @@ def run(args, profile, run_root):
                 else:
                     raise AssertionError('owned Form frame exceeds parent depth')
                 rectangles = dict(client=root_rectangle(target), frame=root_rectangle(outer),
-                    monitor=bounds, window=target, alias=name)
+                    monitor=bounds, reservation=reservation, window=target, alias=name)
+                if args.startup_workarea:
+                    hints, supplied = SizeHints(), C.c_long()
+                    assert x.XGetWMNormalHints(d, target, C.byref(hints), C.byref(supplied))
+                    rectangles['minimum'] = [hints.min_width, hints.min_height]
+                    rectangles['oversized_axes'] = []
+
                 def contained(value):
+                    if oversized:
+                        # A readable minimum may exceed one or both axes.
+                        # Every such axis must anchor at the usable start;
+                        # an ordinary fitting frame must remain contained.
+                        for axis in range(2):
+                            actual = value['frame'][axis + 2]
+                            available = bounds[axis + 2]
+                            if actual > available:
+                                decoration = actual - value['client'][axis + 2]
+                                minimum = value['minimum'][axis]
+                                if not (minimum + decoration > available and
+                                        value['client'][axis + 2] == minimum and
+                                        value['frame'][axis] == bounds[axis]):
+                                    return False
+                                value['oversized_axes'].append(axis)
+                            elif not (value['frame'][axis] >= bounds[axis] and
+                                    value['frame'][axis] + actual <= bounds[axis] + available):
+                                return False
+                        return bool(value['oversized_axes'])
                     return all(box[0] >= bounds[0] and box[1] >= bounds[1] and
                         box[0]+box[2] <= bounds[0]+bounds[2] and
                         box[1]+box[3] <= bounds[1]+bounds[3]
@@ -373,15 +486,21 @@ def run(args, profile, run_root):
                 # No fixture Move can qualify product startup containment.
                 published = evidence.setdefault('published_view_rectangles', {})
                 assert len(published) < 64 or name in published
+                accepted = contained(rectangles)
                 published[name] = rectangles
                 atomic_json(out / 'published-view-rectangles.json', published)
-                if not contained(rectangles):
+                if not accepted:
                     native_capture('automatic-containment-failed.png')
-                assert contained(rectangles), rectangles
+                assert accepted, rectangles
                 return rectangles
 
             evidence['browser_first_ready'] = scale_ready(window, alias)
-            published_view_contained(window, alias)
+            first_bounds = published_view_contained(window, alias)
+            if args.startup_workarea:
+                assert first_bounds['reservation']['insets'][2] > 0, first_bounds
+                evidence['reservation_negative_native_qualified'] = False
+                evidence['reservation_negative_coverage'] = \
+                    'Malformed/missing core metadata belongs to pure admission tests; no native packets injected.'
             ordered_children = view.children(window)
             children = sorted(ordered_children)
             assert 3 <= len(children) <= 64, children
@@ -511,6 +630,9 @@ def run(args, profile, run_root):
                 # observer's XSync is a cross-channel native paint fence.
                 producer_quiet()
                 native_capture(name)
+
+            if args.startup_workarea:
+                capture('startup-browser-usable-first-ready.png')
 
             def same_identity():
                 assert view.named('File browser') == window
@@ -747,6 +869,8 @@ def run(args, profile, run_root):
                             ' "row-%02d"' % i for i in range(32)], 'ListFocus 8']
                     for line in lines:
                         control.send(('*' + name + ': ' + line + '\n').encode())
+                    if args.startup_monitor == 'DUMMY1':
+                        pointer.motion(1400, 200)
                     command('Module FvwmForm ' + name)
                     target = view.wait(name)
                     capture_titles.add(name)
@@ -867,16 +991,23 @@ def run(args, profile, run_root):
                 # Startup containment and every screenshot above have already
                 # passed. This explicit command is intentional user movement,
                 # never a placement correction for a startup overhang.
-                command('WindowId %d Move 100p 120p' % probe['window'])
+                monitor_x = first_bounds['reservation']['physical'][0] if args.startup_workarea else 0
+                # Normal Move honors the working area. Keep this secondary
+                # scene's requested destination below its large reservation.
+                user_y = first_bounds['reservation']['usable'][1] + 120 \
+                    if args.startup_monitor == 'DUMMY1' else 120
+                user_origin = [monitor_x + 100, user_y]
+                user_move = 'Move %dp %dp' % tuple(user_origin)
+                command('WindowId %d %s' % (probe['window'], user_move))
                 moved_origin = wait_for_predicate('intentional managed user movement',
-                    lambda: (p if (p := frame_origin(probe['window'])) == [100, 120] else None),
+                    lambda: (p if (p := frame_origin(probe['window'])) == user_origin else None),
                     time.monotonic() + 6, process=core)
                 user_resize = resize_form(probe,
                     [original['client'][2], minimum[1] + 2 * row_height])
                 assert frame_origin(probe['window']) == moved_origin
                 assert form_status(probe)['packet'] == offscreen['packet']
                 assert view.children(probe['window']) == probe['children']
-                evidence['post_startup_user_ownership'] = dict(command='Move 100p 120p',
+                evidence['post_startup_user_ownership'] = dict(command=user_move,
                     moved_origin=moved_origin, after_resize=user_resize,
                     after_resize_origin=frame_origin(probe['window']))
                 close_form(probe)
@@ -905,6 +1036,47 @@ def run(args, profile, run_root):
                     close_form(placed)
                 evidence['explicit_placement'] = explicit
                 evidence['negative_explicit_placement_freshly_qualified'] = False
+                if args.startup_oversized:
+                    # Exercise genuine producer facts before this Form's
+                    # first configuration replay. Existing ready Forms retain
+                    # user geometry; no live atomic-freshness claim is made.
+                    reservation = first_bounds['reservation']
+                    physical = reservation['physical']
+                    before = dict(client=root_rectangle(window),
+                        origin=frame_origin(window), packet=status(),
+                        scale=scale_ready(window, alias), children=view.children(window))
+                    left, top = 31, 97
+                    width = max(1, probe['ready']['minimum'][0] // 2)
+                    height = max(1, probe['ready']['minimum'][1] // 2)
+                    insets = [left, physical[2] - left - width,
+                        top, physical[3] - top - height]
+                    assert min(insets) >= 0, (physical, insets)
+                    reserve = 'EwmhBaseStruts screen %s %d %d %d %d' % \
+                        (reservation['name'], *insets)
+                    restore = 'EwmhBaseStruts screen %s %d %d %d %d' % \
+                        (reservation['name'], *reservation['insets'])
+                    command(reserve)
+                    try:
+                        large = configured_form('StartupOversized')
+                        actual = published_view_contained(large['window'], large['alias'], oversized=True)
+                        assert actual['reservation']['insets'] == insets, actual
+                        assert actual['oversized_axes'] == [0, 1], actual
+                        capture('startup-readable-minimum-usable-anchor.png')
+                        evidence['oversized_startup'] = dict(command=reserve,
+                            form=large, actual=actual, restore_command=restore)
+                        close_form(large)
+                    finally:
+                        command(restore)
+                    after = dict(client=root_rectangle(window),
+                        origin=frame_origin(window), packet=status(),
+                        scale=scale_ready(window, alias), children=view.children(window))
+                    assert after['client'] == before['client'] and \
+                        after['origin'] == before['origin'] and \
+                        after['packet']['packet'] == before['packet']['packet'] and \
+                        after['children'] == before['children'] and \
+                        after['scale']['resource_generation'] == before['scale']['resource_generation'], \
+                        (before, after)
+                    evidence['oversized_startup']['ready_parent_preserved'] = dict(before=before, after=after)
                 # Continue the existing complete disclosure contract below
                 # on the retained original browser and native child identities.
                 same_identity()
@@ -1207,9 +1379,19 @@ def main():
     parser.add_argument('--scale', choices=('1', '1.25', '2'), default='1')
     parser.add_argument('--startup-continuity', action='store_true',
         help='also check startup sizing, containment and viewport continuity')
+    parser.add_argument('--startup-workarea', action='store_true',
+        help='assert automatic startup against real per-monitor reservation packets')
+    parser.add_argument('--startup-monitor', choices=('DUMMY0', 'DUMMY1'), default='DUMMY0',
+        help='DUMMY1 adds a nonzero secondary monitor with a different primary scale')
+    parser.add_argument('--startup-oversized', action='store_true',
+        help='also check a genuine reserved area smaller than the readable Form minimum')
     args = parser.parse_args()
     if args.scale != '1' and not args.xorg_config:
         parser.error('--scale requires --xorg-config for real RandR millimetres')
+    if args.startup_monitor == 'DUMMY1' and not (args.xorg_config and args.startup_workarea):
+        parser.error('--startup-monitor DUMMY1 requires --xorg-config and --startup-workarea')
+    if args.startup_oversized and not (args.startup_workarea and args.startup_continuity):
+        parser.error('--startup-oversized requires --startup-workarea and --startup-continuity')
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     run_root = Path(tempfile.mkdtemp(prefix='browser-disclosure-', dir=args.artifacts_dir.resolve()))
     for profile in args.profiles:

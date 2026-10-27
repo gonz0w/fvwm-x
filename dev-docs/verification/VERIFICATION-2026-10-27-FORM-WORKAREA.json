@@ -1,0 +1,1066 @@
+{
+  "base": "12b492c91fa1a13e9d6aa22fd94829b470a1c184",
+  "issues": [
+    51,
+    69
+  ],
+  "status": "focused checkpoint passed; broader owners open",
+  "source_files": 1546,
+  "source_aggregate_sha256": "0ce73ccb15f5d29080b5bc16ab1e7896bf96e3fa1bf85357a163fbe0ba8ddff0",
+  "drivers_final": {
+    "tests/live_x/browser_disclosure_live.py": {
+      "sha256": "8b1d806f9337f1a1c1aad48c9f457b2f612797d8c2f2228bf066e4f5407ca914",
+      "bytes": 81946
+    },
+    "tests/live_x/form_transport_live.py": {
+      "sha256": "1653a83853d7eced1d563d16c06f3d3a49e5f667c632d5718ea16e372883d177",
+      "bytes": 49012
+    },
+    "tests/live_x/viewport_scale_live.py": {
+      "sha256": "92b2d94655f5b5515d097d4eb9c463da17b24e71f30dc52f6307dfd40121d60f",
+      "bytes": 97489
+    }
+  },
+  "drivers_primary": {
+    "tests/live_x/browser_disclosure_live.py": {
+      "sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "bytes": 81652
+    },
+    "tests/live_x/form_transport_live.py": {
+      "sha256": "1653a83853d7eced1d563d16c06f3d3a49e5f667c632d5718ea16e372883d177",
+      "bytes": 49012
+    },
+    "tests/live_x/viewport_scale_live.py": {
+      "sha256": "92b2d94655f5b5515d097d4eb9c463da17b24e71f30dc52f6307dfd40121d60f",
+      "bytes": 97489
+    }
+  },
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+      "bytes": 5539656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "4febe8484a6058e47c84c41e9e003cc0388e395f4feba6a6ae913f7b2b7fe119",
+      "bytes": 1795656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+      "bytes": 5720923
+    }
+  },
+  "commands": [
+    {
+      "name": "build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "modules/FvwmForm/FvwmForm",
+        "tests/test-form-scale"
+      ],
+      "seconds": 0.25842562399998315,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "build.log"
+    },
+    {
+      "name": "policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-workarea-checkpoint/policy",
+        "form-scale"
+      ],
+      "seconds": 0.19790169999998852,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "policy.log"
+    },
+    {
+      "name": "native-geometry",
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/form_transport_live.py",
+        "--geometry-only",
+        "--module",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "--artifacts-dir",
+        "/dev/shm/form-workarea-legacy/geometry"
+      ],
+      "seconds": 2.1502175480000005,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "native-geometry.log"
+    },
+    {
+      "name": "asan-build",
+      "command": [
+        "ninja",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "tests/test-form-scale"
+      ],
+      "seconds": 0.25225208900008056,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "asan-build.log"
+    },
+    {
+      "name": "sanitizer-policy",
+      "command": [
+        "meson",
+        "test",
+        "-C",
+        "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+        "--no-rebuild",
+        "--print-errorlogs",
+        "--logbase",
+        "/tmp/fvwm-module-waits-20261015/r1-form-workarea-checkpoint/sanitizer",
+        "form-scale"
+      ],
+      "seconds": 0.1363715070000353,
+      "exit": 0,
+      "env_overrides": {
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1"
+      },
+      "log": "sanitizer-policy.log"
+    },
+    {
+      "name": "manual",
+      "command": [
+        "asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-module-waits-20261015/r1-form-workarea-checkpoint/FvwmForm.1",
+        "/tmp/fvwm-module-waits-20261015/source/doc/FvwmForm.adoc"
+      ],
+      "seconds": 0.0969217239999125,
+      "exit": 0,
+      "env_overrides": {},
+      "log": "manual.log"
+    }
+  ],
+  "build_profiles": {
+    "build-gcc": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debugoptimized",
+        "b_asneeded": true,
+        "b_lundef": true,
+        "b_sanitize": "none",
+        "c_args": [],
+        "c_link_args": [],
+        "png": "enabled",
+        "svg": "enabled"
+      }
+    },
+    "build-module-waits-asan": {
+      "config_sha256": "3da185d0c9f5a11282dd0e18c460cb6625eea5fda9416b24abdfbce7b78c8042",
+      "config_bytes": 4473,
+      "selected_options": {
+        "buildtype": "debug",
+        "b_asneeded": true,
+        "b_lundef": true,
+        "b_sanitize": "address,undefined",
+        "c_args": [],
+        "c_link_args": [
+          "-rtlib=compiler-rt"
+        ],
+        "png": "auto",
+        "svg": "auto"
+      }
+    },
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+  },
+  "archives": {
+    "baseline-evidence": {
+      "status": "passed",
+      "files": 26,
+      "archive": {
+        "sha256": "19c2a1a43355831e82a42a2ca9b5b6f1788e0c468ea0266c538bce35f7af6390",
+        "bytes": 345578
+      },
+      "source_root": "/dev/shm/form-workarea-baseline",
+      "gzip_crc": true
+    },
+    "native-inventory-failure": {
+      "status": "passed",
+      "files": 0,
+      "archive": {
+        "sha256": "45bfe7ce0c4a7118082b6f66987cf3f144fbac8fc6c7555abf66d6efa1fabab6",
+        "bytes": 173
+      },
+      "source_root": "/dev/shm/form-workarea-native",
+      "gzip_crc": true
+    },
+    "native-nonzero-move-failure": {
+      "status": "passed",
+      "files": 43,
+      "archive": {
+        "sha256": "b63ef6e9c9b1dd306431376a556f5d935ad9ad1c17fa0713e2ea51649db9fc7d",
+        "bytes": 727310
+      },
+      "source_root": "/dev/shm/form-workarea-nonzero",
+      "gzip_crc": true
+    },
+    "native-primary-final": {
+      "status": "passed",
+      "files": 346,
+      "archive": {
+        "sha256": "ca0395abc590e249e15f4db0e63dc1a91312c5a9e917187c82f4625109e1b2a2",
+        "bytes": 6187219
+      },
+      "source_root": "/dev/shm/form-workarea-native",
+      "gzip_crc": true
+    },
+    "native-nonzero-final": {
+      "status": "passed",
+      "files": 119,
+      "archive": {
+        "sha256": "00b4dea4689e1646a5c6b3551abf8ac40e445c7fb61f91f7993c73853c32dd2e",
+        "bytes": 1244619
+      },
+      "source_root": "/dev/shm/form-workarea-nonzero",
+      "gzip_crc": true
+    },
+    "legacy-final": {
+      "status": "passed",
+      "files": 5,
+      "archive": {
+        "sha256": "f63f00eed80b29fc4efc1caf3de0f52bb4d219d146e8f4995f8005dd3945d814",
+        "bytes": 1021
+      },
+      "source_root": "/dev/shm/form-workarea-legacy",
+      "gzip_crc": true
+    },
+    "checkpoint-profile-final": {
+      "status": "passed",
+      "files": 22,
+      "archive": {
+        "sha256": "00cf0515f29282062f12d6adaff41460440474c9f891230cd7626cefda5ddd7f",
+        "bytes": 208167
+      },
+      "source_root": "/tmp/fvwm-module-waits-20261015/r1-form-workarea-checkpoint",
+      "gzip_crc": true
+    }
+  },
+  "profiles": [
+    {
+      "case": "slate-dark",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "status": "passed",
+      "config_sha256": "344783231669b4cdc69f8852fb03232eb1a4fa533566d42793e0227b92c232f4",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "archive": "native-primary-final",
+      "evidence_path": "browser-disclosure-2qpj986e/slate-dark/evidence.json",
+      "evidence_sha256": "7a5288f122197238434a5e5fcc917e9e8bd9f79deaa9a1963f715e96e31539f3",
+      "captures": 10,
+      "module_waits_zero": 29,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "first_ready": {
+        "client": [
+          978,
+          770,
+          776,
+          887
+        ],
+        "frame": [
+          973,
+          730,
+          786,
+          932
+        ],
+        "usable": [
+          0,
+          36,
+          2560,
+          2124
+        ],
+        "reservation": {
+          "name": "DUMMY0",
+          "physical": [
+            0,
+            0,
+            2560,
+            2160
+          ],
+          "usable": [
+            0,
+            36,
+            2560,
+            2124
+          ],
+          "insets": [
+            0,
+            0,
+            36,
+            0
+          ],
+          "core_monitor_record": [
+            "Monitor",
+            "DUMMY0",
+            "8",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "0",
+            "0",
+            "36",
+            "0"
+          ],
+          "core_ui_record": [
+            "MonitorUI",
+            "1",
+            "ROW",
+            "0000000000000001",
+            "0",
+            "230",
+            "5",
+            "1",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "44554d4d5930"
+          ],
+          "stable_initial_config_only": true
+        },
+        "minimum": [
+          776,
+          698
+        ]
+      },
+      "details_rows": {
+        "configured_rows": 4,
+        "first_list": [
+          13,
+          87,
+          482,
+          116
+        ],
+        "one_row_list": [
+          13,
+          87,
+          482,
+          35
+        ],
+        "row_height": 27
+      },
+      "visible_focus_retained": true,
+      "intentional_offscreen_focus_retained": true,
+      "user_movement": {
+        "command": "Move 100p 120p",
+        "moved_origin": [
+          100,
+          120
+        ],
+        "after_resize_origin": [
+          100,
+          120
+        ]
+      },
+      "explicit_placement": [
+        {
+          "directive": "Position 2400 1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        },
+        {
+          "directive": "Geometry +2400+1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        }
+      ],
+      "oversized": {
+        "command": "EwmhBaseStruts screen DUMMY0 31 2234 97 2014",
+        "actual": {
+          "client": [
+            36,
+            137,
+            591,
+            98
+          ],
+          "frame": [
+            31,
+            97,
+            601,
+            143
+          ],
+          "monitor": [
+            31,
+            97,
+            295,
+            49
+          ],
+          "reservation": {
+            "name": "DUMMY0",
+            "physical": [
+              0,
+              0,
+              2560,
+              2160
+            ],
+            "usable": [
+              31,
+              97,
+              295,
+              49
+            ],
+            "insets": [
+              31,
+              2234,
+              97,
+              2014
+            ],
+            "core_monitor_record": [
+              "Monitor",
+              "DUMMY0",
+              "8",
+              "1",
+              "1",
+              "0",
+              "0",
+              "0",
+              "0",
+              "0",
+              "2560",
+              "2160",
+              "31",
+              "2234",
+              "97",
+              "2014"
+            ],
+            "core_ui_record": [
+              "MonitorUI",
+              "1",
+              "ROW",
+              "0000000000000001",
+              "0",
+              "230",
+              "5",
+              "1",
+              "0",
+              "0",
+              "2560",
+              "2160",
+              "44554d4d5930"
+            ],
+            "stable_initial_config_only": true
+          },
+          "window": 14680070,
+          "alias": "StartupOversized",
+          "minimum": [
+            591,
+            98
+          ],
+          "oversized_axes": [
+            0,
+            1
+          ]
+        },
+        "restored": "EwmhBaseStruts screen DUMMY0 0 0 36 0",
+        "parent_state_preserved": true
+      }
+    },
+    {
+      "case": "classic-large",
+      "profile": "classic-large",
+      "scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "status": "passed",
+      "config_sha256": "359b62bca6b50e7585a2811bd937279cf8dfa67706eef2c8ebcad4f7e6bdb39f",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "archive": "native-primary-final",
+      "evidence_path": "browser-disclosure-i_86r2hi/classic-large/evidence.json",
+      "evidence_sha256": "d603866bc212432dc85d7c6c29dd7d142bd0ed0deaabfa75e617126e420ffea9",
+      "captures": 9,
+      "module_waits_zero": 28,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "first_ready": {
+        "client": [
+          268,
+          106,
+          2284,
+          2046
+        ],
+        "frame": [
+          260,
+          36,
+          2300,
+          2124
+        ],
+        "usable": [
+          0,
+          36,
+          2560,
+          2124
+        ],
+        "reservation": {
+          "name": "DUMMY0",
+          "physical": [
+            0,
+            0,
+            2560,
+            2160
+          ],
+          "usable": [
+            0,
+            36,
+            2560,
+            2124
+          ],
+          "insets": [
+            0,
+            0,
+            36,
+            0
+          ],
+          "core_monitor_record": [
+            "Monitor",
+            "DUMMY0",
+            "8",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "0",
+            "0",
+            "36",
+            "0"
+          ],
+          "core_ui_record": [
+            "MonitorUI",
+            "1",
+            "ROW",
+            "0000000000000001",
+            "0",
+            "230",
+            "8",
+            "1",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "44554d4d5930"
+          ],
+          "stable_initial_config_only": true
+        },
+        "minimum": [
+          2284,
+          1676
+        ]
+      },
+      "details_rows": {
+        "configured_rows": 4,
+        "first_list": [
+          20,
+          218,
+          1668,
+          284
+        ],
+        "one_row_list": [
+          20,
+          218,
+          1668,
+          80
+        ],
+        "row_height": 68
+      },
+      "visible_focus_retained": true,
+      "intentional_offscreen_focus_retained": true,
+      "user_movement": {
+        "command": "Move 100p 120p",
+        "moved_origin": [
+          100,
+          120
+        ],
+        "after_resize_origin": [
+          100,
+          120
+        ]
+      },
+      "explicit_placement": [
+        {
+          "directive": "Position 2400 1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        },
+        {
+          "directive": "Geometry +2400+1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        }
+      ]
+    },
+    {
+      "case": "dune-light",
+      "profile": "dune-light",
+      "scale": "1",
+      "font": "Sans 10",
+      "status": "passed",
+      "config_sha256": "a346f6620be5cafa5720cf3b55ca0098ac202f2d23e9bd1e6c91de23e7f8f576",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "archive": "native-primary-final",
+      "evidence_path": "browser-disclosure-mxn1uypp/dune-light/evidence.json",
+      "evidence_sha256": "468fe91850747bd8cc0e962189540fb351e01842b177759e49136e98d6f0c8bf",
+      "captures": 9,
+      "module_waits_zero": 28,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "first_ready": {
+        "client": [
+          977,
+          762,
+          614,
+          699
+        ],
+        "frame": [
+          973,
+          730,
+          622,
+          735
+        ],
+        "usable": [
+          0,
+          36,
+          2560,
+          2124
+        ],
+        "reservation": {
+          "name": "DUMMY0",
+          "physical": [
+            0,
+            0,
+            2560,
+            2160
+          ],
+          "usable": [
+            0,
+            36,
+            2560,
+            2124
+          ],
+          "insets": [
+            0,
+            0,
+            36,
+            0
+          ],
+          "core_monitor_record": [
+            "Monitor",
+            "DUMMY0",
+            "8",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "0",
+            "0",
+            "36",
+            "0"
+          ],
+          "core_ui_record": [
+            "MonitorUI",
+            "1",
+            "ROW",
+            "0000000000000001",
+            "0",
+            "230",
+            "4",
+            "1",
+            "0",
+            "0",
+            "2560",
+            "2160",
+            "44554d4d5930"
+          ],
+          "stable_initial_config_only": true
+        },
+        "minimum": [
+          614,
+          552
+        ]
+      },
+      "details_rows": {
+        "configured_rows": 4,
+        "first_list": [
+          10,
+          70,
+          385,
+          90
+        ],
+        "one_row_list": [
+          10,
+          70,
+          385,
+          27
+        ],
+        "row_height": 21
+      },
+      "visible_focus_retained": true,
+      "intentional_offscreen_focus_retained": true,
+      "user_movement": {
+        "command": "Move 100p 120p",
+        "moved_origin": [
+          100,
+          120
+        ],
+        "after_resize_origin": [
+          100,
+          120
+        ]
+      },
+      "explicit_placement": [
+        {
+          "directive": "Position 2400 1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        },
+        {
+          "directive": "Geometry +2400+1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        }
+      ]
+    },
+    {
+      "case": "nonzero",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "status": "passed",
+      "config_sha256": "b83d3fc28543badbd590e45cacc64f9ccc7a55049604e400b7f3230bdd4add52",
+      "driver_sha256": "8b1d806f9337f1a1c1aad48c9f457b2f612797d8c2f2228bf066e4f5407ca914",
+      "archive": "native-nonzero-final",
+      "evidence_path": "browser-disclosure-3cn26fd9/slate-dark/evidence.json",
+      "evidence_sha256": "2437795d5a8d935a04f2571b234c400d0a2a44188b07587c45057a50350b19c4",
+      "captures": 9,
+      "module_waits_zero": 28,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "first_ready": {
+        "client": [
+          2258,
+          1240,
+          776,
+          887
+        ],
+        "frame": [
+          2253,
+          1200,
+          786,
+          932
+        ],
+        "usable": [
+          1291,
+          1200,
+          2536,
+          941
+        ],
+        "reservation": {
+          "name": "DUMMY1",
+          "physical": [
+            1280,
+            0,
+            2560,
+            2160
+          ],
+          "usable": [
+            1291,
+            1200,
+            2536,
+            941
+          ],
+          "insets": [
+            11,
+            13,
+            1200,
+            19
+          ],
+          "core_monitor_record": [
+            "Monitor",
+            "DUMMY1",
+            "0",
+            "1",
+            "1",
+            "0",
+            "0",
+            "0",
+            "0",
+            "0",
+            "3840",
+            "2160",
+            "11",
+            "13",
+            "1200",
+            "19"
+          ],
+          "core_ui_record": [
+            "MonitorUI",
+            "1",
+            "ROW",
+            "0000000000000001",
+            "1",
+            "231",
+            "5",
+            "0",
+            "1280",
+            "0",
+            "2560",
+            "2160",
+            "44554d4d5931"
+          ],
+          "stable_initial_config_only": true
+        },
+        "minimum": [
+          776,
+          698
+        ]
+      },
+      "details_rows": {
+        "configured_rows": 4,
+        "first_list": [
+          13,
+          87,
+          482,
+          116
+        ],
+        "one_row_list": [
+          13,
+          87,
+          482,
+          35
+        ],
+        "row_height": 27
+      },
+      "visible_focus_retained": true,
+      "intentional_offscreen_focus_retained": true,
+      "user_movement": {
+        "command": "Move 1380p 1320p",
+        "moved_origin": [
+          1380,
+          1320
+        ],
+        "after_resize_origin": [
+          1380,
+          1320
+        ]
+      },
+      "explicit_placement": [
+        {
+          "directive": "Position 2400 1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        },
+        {
+          "directive": "Geometry +2400+1800",
+          "reference_origin": [
+            2400,
+            1800
+          ],
+          "scaled_origin": [
+            2400,
+            1800
+          ],
+          "after_resize_origin": [
+            2400,
+            1800
+          ]
+        }
+      ]
+    }
+  ],
+  "totals": {
+    "captures": 37,
+    "actual_module_waits_zero": 113,
+    "direct_children_zero": 16
+  },
+  "limits": [
+    "stable initial reservation samples only, not atomic or fresh through pre-ready panel/topology changes",
+    "missing/malformed metadata and negative origins covered by pure policy; not injected into native producer",
+    "full six-target consumer, physical, assistive, multilingual and release acceptance remains open",
+    "PR281 performance reference 2/5 after PR285, 3/5 on merge; no comparison due"
+  ],
+  "routing": {
+    "requested_roles": {
+      "temper_workflow": "gpt-6-luna/medium",
+      "temper_analyst": "gpt-6-astra/high",
+      "temper_implementer": "gpt-6.1-sol/high",
+      "temper_reviewer": "gpt-6.1-sol/high"
+    },
+    "named_role_requests": "accepted by current spawn tool",
+    "backend_identity": "unattested",
+    "models_unavailable": []
+  },
+  "cleanup": {
+    "lab_stopped": {
+      "records": [
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "final_state": "stopped"
+    },
+    "controller": "released after stop",
+    "retired": [
+      {
+        "retired": "/dev/shm/form-workarea-baseline",
+        "files": 26,
+        "bytes": 551322
+      },
+      {
+        "retired": "/tmp/fvwm-module-waits-20261015/r1-form-workarea-checkpoint",
+        "files": 22,
+        "bytes": 705672
+      },
+      {
+        "retired": "/dev/shm/form-workarea-legacy",
+        "files": 5,
+        "bytes": 2790
+      },
+      {
+        "retired": "/dev/shm/form-workarea-native",
+        "files": 0,
+        "bytes": 0
+      },
+      {
+        "retired": "/dev/shm/form-workarea-nonzero",
+        "files": 119,
+        "bytes": 3112351
+      },
+      {
+        "retired": "/dev/shm/form-workarea-nonzero",
+        "files": 43,
+        "bytes": 1282780
+      },
+      {
+        "retired": "/dev/shm/form-workarea-native",
+        "files": 346,
+        "bytes": 12105834
+      }
+    ]
+  }
+}

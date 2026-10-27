@@ -291,17 +291,23 @@ the preferred size with the prepared fonts and controls. Legal minimum-size hint
 still reserve only one row. Later user resizing, ListLayout and monitor-scale
 changes use the actual window size without restoring the startup preference.
 +
-Automatic startup placement uses the physical monitor selected for initial
-centering. The module measures the managed outer frame, reduces the preferred
-size to fit that monitor where possible, and moves an overhanging frame inside
-it once. Readable control and one-row minima take precedence: an oversized frame
-anchors at the monitor's top or left edge on each oversized axis. Explicit
+Automatic startup placement uses the monitor selected for initial centering.
+The module uses the core's available area on that monitor, excluding its reserved
+edges, when matching valid monitor metadata is available. Otherwise it uses the
+physical monitor bounds. It measures the managed outer frame, reduces the
+preferred size to fit that area where possible, and moves an overhanging frame
+inside it once. Readable control and one-row minima take precedence: an oversized
+frame anchors at the area's top or left edge on each oversized axis. Explicit
 Position and Geometry placement remain authoritative. An independently observed
 move during initial admission relinquishes automatic placement. This starts with
 the first managed-frame observation; earlier moves are treated as initial
 window-manager placement. After the first ready view, layout and scale changes
-never recenter the Form. Placement is checked against physical monitor bounds,
-without a reserved work-area guarantee.
+never recenter the Form. Reservation metadata has no shared update generation
+with monitor topology. This policy covers stable initial configuration; it does
+not guarantee fresh reservations during topology or panel changes before the
+first ready view. New topology discards previous reservations. Missing or invalid
+samples use physical bounds unless a valid sample for the current monitor is
+already retained; a later valid sample can recover before startup completes.
 +
 If the actual window cannot contain the prepared size, the module requests
 the required absolute window size and retains its previous complete view

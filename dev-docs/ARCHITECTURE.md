@@ -668,8 +668,14 @@ without changing collection generations. Insufficient actual parent size or a
 pending list snapshot defers publication; unsupported compositions retain 1x.
 The [browser renderer](../bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go) opts in on
 each Form creation. Core MonitorUI remains the scale authority; native Form
-owns reflow, draft/anchor preservation and status. Fixed bitmap font fallback
-does not promise scalable glyphs. Other module consumers and qualification
+owns reflow, draft/anchor preservation and status. Its bounded Form-local
+`form_workarea.h` policy associates existing Monitor14 reservation samples with
+the published MonitorUI topology for automatic startup sizing and frame placement.
+New topology discards those samples; missing or invalid data retains checked
+physical bounds or a valid sample in the same topology. Legacy reservations have
+no epoch, so this is stable-initial-configuration policy, not atomic freshness
+through panel/hotplug changes. Explicit placement and post-ready user movement
+remain authoritative. Fixed bitmap font fallback does not promise scalable glyphs. Other module consumers and qualification
 remain with their owning tracker contracts.
 
 Pager monitor hit testing uses wide endpoints and excludes disabled regions.

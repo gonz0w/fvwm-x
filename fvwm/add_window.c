@@ -45,6 +45,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "palette_policy.h"
 #include "fvwm/icon_boxes.h"
 #include "libs/FProperty.h"
 #include <assert.h>
@@ -218,6 +219,7 @@ static int MappedNotOverride(
 static void setup_window_structure(
 	FvwmWindow **pfw, Window w, FvwmWindow *ReuseWin)
 {
+	static uint64_t next_palette_identity = 1;
 	FvwmWindow save_state;
 	FvwmWindow *savewin = NULL;
 
@@ -234,6 +236,11 @@ static void setup_window_structure(
 	}
 
 	memset(*pfw, 0, sizeof(FvwmWindow));
+	if (savewin)
+		(*pfw)->palette_identity = savewin->palette_identity;
+	else
+		palette_next_identity(&next_palette_identity,
+			&(*pfw)->palette_identity);
 	FW_W(*pfw) = w;
 	if (savewin != NULL)
 	{

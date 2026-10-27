@@ -348,7 +348,7 @@ test('property-policy', property_policy_test)
 test('desktop-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-count=1', '-mod=vendor',
         './internal/desktopcontroller', './internal/viewbinding',
-        './cmd/fvwmdesktop'],
+        './internal/actionpalette', './cmd/fvwmdesktop'],
     env: prompt_test_env, timeout: 90)
 test('desktop-assets', py, args: [files('test_desktop.py')])
 test('responsiveness-profile-evidence', py,
@@ -911,6 +911,25 @@ preview_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('preview-policy', preview_policy_test)
+
+palette_policy_test = executable(
+    'test-palette-policy',
+    ['test_palette_policy.c', '../fvwm/palette_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('palette-policy', palette_policy_test)
+
+action_palette_test = executable(
+    'test-action-palette',
+    ['test_action_palette.c', '../fvwm/action_palette.c',
+     '../fvwm/palette_policy.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('action-palette-snapshots', action_palette_test)
 
 query_json_test = executable(
     'test-query-json', ['test_query_json.c', '../fvwm/query_json.c'],
@@ -4150,6 +4169,16 @@ endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     if libpng.found()
+        test('action-palette-xvfb', py,
+            args: [files('live_x/action_palette_live.py'),
+                '--build', meson.project_build_root(),
+                '--artifacts-dir', meson.project_build_root() / 'live-x-action-palette'],
+            depends: [fvwm3, fvwm_mfl, fvwm_form, fvwm_desktop,
+                fvwm_desktop_worker, fvwm_desktop_capture,
+                fvwm_backer, fvwm_buttons, fvwm_event],
+            timeout: 480,
+            is_parallel: false,
+        )
         test('native-bindings-xvfb', py,
             args: [files('live_x/native_bindings_live.py'),
                 '--build', meson.project_build_root(),

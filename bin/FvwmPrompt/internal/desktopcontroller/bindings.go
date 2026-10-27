@@ -171,6 +171,7 @@ func (d *Controller) retireMenuJob(j *job) {
 }
 
 func (d *Controller) menuJobFailed(key string) {
+	defer func() { _ = d.paletteProviders() }()
 	b := d.menuBinding(key)
 	if b == nil || d.closed {
 		return

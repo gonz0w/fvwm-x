@@ -413,6 +413,8 @@ typedef struct window_g
  */
 typedef struct FvwmWindow
 {
+	/* Managed allocation identity; preserved on same-record recapture only. */
+	uint64_t palette_identity;
 	/* name of the window */
 	FlocaleNameString name;
 	/* name of the icon */

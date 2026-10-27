@@ -273,7 +273,7 @@ func (d *Controller) applicationMenus(query *string) []desktopsettings.Menu {
 		}
 		return append(menus, desktopsettings.Menu{Name: "SlateSearchResults", Title: "Search: " + *query, Rows: rows})
 	}
-	rows = append(rows, desktopsettings.Row{"", "Nop"}, desktopsettings.Row{"Terminal", "SendToModule FvwmDesktop terminal"},
+	rows = append(rows, desktopsettings.Row{"", "Nop"}, desktopsettings.Row{"Action palette...", "SendToModule FvwmDesktop palette"}, desktopsettings.Row{"Terminal", "SendToModule FvwmDesktop terminal"},
 		desktopsettings.Row{"Search applications...", "Module FvwmForm SlateSearchForm"}, desktopsettings.Row{"Run command...", "Module FvwmForm SlateRunForm"},
 		desktopsettings.Row{"Files", "SendToModule FvwmDesktop files"}, desktopsettings.Row{"Workspaces", "Module FvwmPager 0 3"},
 		desktopsettings.Row{"Appearance", "Popup SlateAppearance"}, desktopsettings.Row{"System", "Popup SlateSystem"}, desktopsettings.Row{"Session", "Popup SlateSession"})

@@ -53,6 +53,7 @@
 #include "module_queue.h"
 #include "query_json.h"
 #include "appearance_preview.h"
+#include "action_palette.h"
 #include "colorset.h"
 #include "menustyle.h"
 #include "libs/vpacket.h"
@@ -1022,6 +1023,8 @@ void CMD_Send_Query(F_CMD_ARGS)
 	else if (strcmp(spec.resource, "topology") == 0)
 		result = fvwm_query_topology(
 			FScreenGetTopologySnapshot(), &error);
+	else if (strcmp(spec.resource, "palette") == 0)
+		result = action_palette_query(module, &spec, &error);
 	else if (strcmp(spec.resource, "workspaces") == 0)
 		result = fvwm_query_workspaces(&monitor_q,
 			monitor_get_all_widths(), monitor_get_all_heights(),
@@ -1072,6 +1075,56 @@ void CMD_Send_Preview(F_CMD_ARGS)
 	if (!module || !preview_request_parse(action, &request))
 		return;
 	result = appearance_preview_request(module, &request, &error);
+	send_query_result(module, request.cookie, request.serial, result, error);
+}
+
+void CMD_Send_Palette(F_CMD_ARGS)
+{
+	struct palette_request request;
+	struct palette_row row;
+	char id[PALETTE_ID_MAX + 1], command[128];
+	const char *error = NULL;
+	cJSON *result = NULL;
+	fmodule *module = exc->m.module;
+
+	if (!module || !palette_request_parse(action, &request))
+		return;
+	if (!action_palette_target(module, &request, &row, id, &error))
+		goto reply;
+	result = cJSON_CreateObject();
+	error = "allocation_failed";
+	if (!result ||
+	    !cJSON_AddBoolToObject(result, "applied", !request.release) ||
+	    !cJSON_AddStringToObject(result, "action", request.release ?
+		"release" : row.kind == PALETTE_WINDOW ? "focus" : "desktop") ||
+	    !cJSON_AddStringToObject(result, "target", id))
+		goto fail;
+	if (!request.release)
+	{
+		unsigned int steps = row.kind == PALETTE_WINDOW ? 3 : 1;
+
+		/* Revalidate allocation identity before each fixed operation.
+		 * No borrowed FvwmWindow survives a recursive engine call. */
+		for (unsigned int step = 0; step < steps; step++)
+		{
+			if (!action_palette_command(&row, step, command,
+				sizeof(command), &error))
+				goto fail;
+			execute_function_override_window(NULL, exc, command, NULL,
+				FUNC_DONT_EXPAND_COMMAND, NULL);
+			if (MOD_IS_RETIRED(module))
+			{
+				cJSON_Delete(result);
+				return;
+			}
+		}
+	}
+	error = NULL;
+	goto reply;
+fail:
+	cJSON_Delete(result);
+	result = NULL;
+reply:
 	send_query_result(module, request.cookie, request.serial, result, error);
 }
 

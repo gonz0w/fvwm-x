@@ -1,6 +1,7 @@
 #include "config.h"
 #include "fvwm/module_records.h"
 #include "fvwm/appearance_preview.h"
+#include "fvwm/action_palette.h"
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -13,6 +14,8 @@ static unsigned allocation_attempts;
 static Bool observe_owner_notifications;
 static fmodule *expected_preview_owner;
 static unsigned owner_notifications;
+static unsigned palette_notifications;
+static Bool palette_owner_retired;
 static Bool notified_owner_retired;
 
 /* The preview subsystem is omitted from this fixture. Observe only the
@@ -24,6 +27,18 @@ void appearance_preview_owner_gone(struct fmodule *owner)
 		assert(owner == expected_preview_owner);
 		owner_notifications++;
 		notified_owner_retired = MOD_IS_RETIRED(owner);
+	}
+}
+
+/* Snapshot reclamation is covered by test_action_palette. This isolated
+ * transport fixture observes the cleanup hook before and after retirement. */
+void action_palette_owner_gone(struct fmodule *owner)
+{
+	if (observe_owner_notifications)
+	{
+		assert(owner == expected_preview_owner);
+		palette_notifications++;
+		palette_owner_retired = MOD_IS_RETIRED(owner);
 	}
 }
 
@@ -119,27 +134,34 @@ static void test_owner_notifications(void)
 	module->xinputRefs = 1;
 	expected_preview_owner = module;
 	owner_notifications = 0;
+	palette_notifications = 0;
 	observe_owner_notifications = True;
 	module_kill(module);
 	assert(owner_notifications == 1 && !notified_owner_retired);
+	assert(palette_notifications == 1 && !palette_owner_retired);
 	assert(MOD_IS_RETIRED(module));
 	module_kill(module);
 	assert(owner_notifications == 1);
+	assert(palette_notifications == 1);
 	module_cleanup();
 	assert(owner_notifications == 1);
+	assert(palette_notifications == 1);
 	module->xinputRefs = 0;
 	module_cleanup();
 	/* Final destruction notifies again; preview recovery handles duplicates. */
 	assert(owner_notifications == 2 && notified_owner_retired);
+	assert(palette_notifications == 2 && palette_owner_retired);
 	observe_owner_notifications = False;
 	expected_preview_owner = NULL;
 
 	module = module_create();
 	expected_preview_owner = module;
 	owner_notifications = 0;
+	palette_notifications = 0;
 	observe_owner_notifications = True;
 	module_destroy(module);
 	assert(owner_notifications == 1 && !notified_owner_retired);
+	assert(palette_notifications == 1 && !palette_owner_retired);
 	observe_owner_notifications = False;
 	expected_preview_owner = NULL;
 }

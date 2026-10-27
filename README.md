@@ -15,8 +15,7 @@ Recent work:
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware runtime errors and non-executing, paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- Shared bounded native view bindings, stale-menu recovery and browser progress/
-  action-readiness labels.
+- A keyboard-first window/app/desktop/action palette with bounded native refresh.
 - Optional browser: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.
   Live updates retain drafts and selection; opt-in watching refreshes folders.

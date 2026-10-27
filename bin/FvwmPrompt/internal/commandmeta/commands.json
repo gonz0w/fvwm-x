@@ -792,6 +792,12 @@
     "descr": "Internal, used for module communication"
   },
   {
+    "name": "Send_Palette",
+    "cursor": "",
+    "window": 0,
+    "descr": "Internal, guarded palette actions and snapshot release"
+  },
+  {
     "name": "Send_Preview",
     "cursor": "",
     "window": 0,

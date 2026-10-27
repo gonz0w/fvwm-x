@@ -5,12 +5,16 @@
 # (at your option) any later version.
 """Observe Form input servicing while its ordinary configured timer runs."""
 import argparse
+import base64
+from collections import Counter
+import hashlib
 import ctypes
 import ctypes.util
 import json
 import fcntl
 import resource
 import signal
+import shlex
 import os
 from pathlib import Path
 import selectors
@@ -123,6 +127,39 @@ def run(args):
                     config.extend(['*FormTransportButton continue "Busy" F12',
                         '*FormTransportButton continue "Done" F11',
                         '*FormTransportCommand Nop form-service-done'])
+                readonly_value = 'abc' if args.readonly_short else (
+                    'é' + 'readonly-value-' * 90 + '終')
+                editable_initial = 'editable-' * 20 if args.readonly_short else 'initial'
+                readonly_values = runtime.root / 'readonly-values.txt'
+                if args.readonly_only:
+                    config.extend(['*FormTransportInputFont fixed',
+                        # This private peer sends no core Colorset inventory.
+                        # Explicit colors keep its pixels observable.
+                        '*FormTransportItemFore black',
+                        '*FormTransportItemBack white',
+                        '*FormTransportInput locked 12 "' + readonly_value[0] + '"',
+                        '*FormTransportInputAppend "' + readonly_value[1:] + '"',
+                        '*FormTransportInputReadonly locked',
+                        '*FormTransportInputReadonly',
+                        '*FormTransportInputReadonly missing',
+                        '*FormTransportInputReadonly locked trailing'])
+                    if args.readonly_multi:
+                        config.append('*FormTransportInput editable 12 "' + editable_initial + '"')
+                        if not args.readonly_short:
+                            config.extend(['*FormTransportInput duplicate 1 "a"',
+                                '*FormTransportInput duplicate 1 "b"',
+                                '*FormTransportInput duplicate 1 "c"',
+                                '*FormTransportInputReadonly duplicate'])
+                    config.extend(['*FormTransportButton restart "Restart" F11',
+                        '*FormTransportCommand Nop form-readonly-restart',
+                        '*FormTransportButton continue "Read" F12',
+                        # Existing local command execution avoids the native
+                        # 1000-byte outbound command limit. Only safe Base64
+                        # substitutions enter this fixed printf shell source.
+                        "*FormTransportCommand !printf '%s\\n' '$(locked:Base64)' " +
+                        ("'$(editable:Base64)' " if args.readonly_multi else '') +
+                        '> ' + shlex.quote(str(readonly_values)),
+                        '*FormTransportCommand Nop form-readonly-observed'])
                 if args.history_only:
                     config.extend(['*FormTransportInputFont fixed',
                         '*FormTransportInput first 10 "fixed"',
@@ -325,6 +362,210 @@ def run(args):
                     results['queued-X-continuation-without-new-input'] = 'passed'
                     results['queued_keys'] = 257
                     results['queued_exposes'] = 80
+                if args.readonly_only:
+                    x.XKeysymToKeycode.argtypes = [P, W]
+                    x.XKeysymToKeycode.restype = ctypes.c_uint
+                    x.XSendEvent.argtypes = [P, W, ctypes.c_int,
+                        ctypes.c_long, ctypes.POINTER(Event)]
+                    x.XStoreBuffer.argtypes = [P, ctypes.c_char_p,
+                        ctypes.c_int, ctypes.c_int]
+                    x.XGetImage.argtypes = [P, W, ctypes.c_int, ctypes.c_int,
+                        ctypes.c_uint, ctypes.c_uint, W, ctypes.c_int]
+                    x.XGetImage.restype = P
+                    x.XGetPixel.argtypes = [P, ctypes.c_int, ctypes.c_int]
+                    x.XGetPixel.restype = W
+                    x.XDestroyImage.argtypes = [P]
+
+                    x.XLookupString.argtypes = [ctypes.POINTER(Key), ctypes.c_char_p,
+                        ctypes.c_int, ctypes.POINTER(W), P]
+                    key_serial = 0
+
+                    def key(symbol, state=0):
+                        nonlocal key_serial
+                        event = Event()
+                        event.key.type = 2
+                        event.key.display = connection
+                        event.key.window = shown
+                        event.key.root = root
+                        event.key.keycode = x.XKeysymToKeycode(connection, symbol)
+                        event.key.same_screen = 1
+                        event.key.state = state
+                        assert event.key.keycode
+                        resolved, text = W(), ctypes.create_string_buffer(10)
+                        length = x.XLookupString(ctypes.byref(event.key), text, len(text),
+                            ctypes.byref(resolved), None)
+                        key_serial += 1
+                        assert key_serial <= 256
+                        with (args.artifacts_dir / 'native-keys.jsonl').open('a') as log:
+                            log.write(json.dumps(dict(serial=key_serial, requested=symbol,
+                                keycode=event.key.keycode, state=state, keysym=resolved.value,
+                                bytes=bytes(text.raw[:length]).hex())) + '\n')
+                        assert x.XSendEvent(connection, shown, 0, 1, ctypes.byref(event))
+                        x.XSync(connection, 0)
+
+                    def observe(editable=None):
+                        editable = editable_initial if editable is None else editable
+                        previous = commands.count('Nop form-readonly-observed')
+                        key(0xffc9)
+                        receive(lambda: commands.count('Nop form-readonly-observed') > previous)
+                        assert readonly_values.stat().st_size <= 16384
+                        encoded = readonly_values.read_text().splitlines()
+                        assert len(encoded) == (2 if args.readonly_multi else 1), encoded
+                        actual = [base64.urlsafe_b64decode(value + '===').decode('utf-8')
+                            for value in encoded]
+                        assert actual == [readonly_value] + (
+                            [editable] if args.readonly_multi else []), actual
+                        return actual
+
+                    rr, parent = W(), W()
+                    children, count = ctypes.POINTER(W)(), ctypes.c_uint()
+                    assert x.XQueryTree(connection, shown, ctypes.byref(rr),
+                        ctypes.byref(parent), ctypes.byref(children), ctypes.byref(count))
+                    try:
+                        controls = sorted(children[:count.value])
+                        prefix = '*FormTransport'
+                        schema = [line[len(prefix):].split()[:2] for line in config
+                            if line.startswith(prefix) and line[len(prefix):].split()[0]
+                                in ('Input', 'InputHex', 'Button', 'List')]
+                        assert len(schema) == len(controls), (schema, controls)
+                        names = {parts[1]: target for parts, target in zip(schema, controls)
+                            if parts[0] in ('Input', 'InputHex', 'List')}
+                        locked = names['locked']
+                        editable = names.get('editable')
+                        roles = []
+                        for parts, target in zip(schema, controls):
+                            a = WindowAttributes()
+                            assert x.XGetWindowAttributes(connection, target, ctypes.byref(a))
+                            roles.append(dict(kind=parts[0], name=parts[1], window=target,
+                                box=[a.x, a.y, a.width, a.height]))
+                        (args.artifacts_dir / 'native-controls.json').write_text(
+                            json.dumps(roles, indent=2) + '\n')
+                    finally:
+                        if children: x.XFree(children)
+
+                    def raw_pixels():
+                        a = WindowAttributes()
+                        assert x.XGetWindowAttributes(connection, locked, ctypes.byref(a))
+                        image = x.XGetImage(connection, locked, 0, 0,
+                            a.width, a.height, W(-1).value, 2)
+                        assert image
+                        try:
+                            return [x.XGetPixel(image, px, py)
+                                for py in range(2, a.height-2)
+                                for px in range(2, a.width-2)]
+                        finally:
+                            x.XDestroyImage(image)
+
+                    def pixels():
+                        # The button's real command receipt proves key dispatch.
+                        # Wait for a stable observed server image as well: an
+                        # observer XSync cannot flush the producer's connection.
+                        previous, since = None, time.monotonic()
+
+                        def settled():
+                            nonlocal previous, since
+                            actual = raw_pixels()
+                            if actual != previous:
+                                previous, since = actual, time.monotonic()
+                                return None
+                            return actual if time.monotonic() - since >= .05 else None
+
+                        actual = wait_for_predicate('settled native input pixels', settled,
+                            time.monotonic() + 1, process=process)
+                        colors = Counter(actual)
+                        digest = hashlib.sha256(struct.pack('>%dI' % len(actual), *actual)).hexdigest()
+                        with (args.artifacts_dir / 'native-pixels.jsonl').open('a') as log:
+                            log.write(json.dumps(dict(window=locked, samples=len(actual),
+                                sha256=digest, colors=dict(colors))) + '\n')
+                        assert len(colors) >= 2, 'native input has no contrasting pixels'
+                        return actual
+
+                    def paste(target, value):
+                        data = value.encode()
+                        x.XStoreBuffer(connection, data, len(data), 0)
+                        event = Event()
+                        event.button.type = 4
+                        event.button.display = connection
+                        event.button.window = target
+                        event.button.root = root
+                        event.button.same_screen = 1
+                        event.button.button = 2
+                        a = WindowAttributes()
+                        assert x.XGetWindowAttributes(connection, target, ctypes.byref(a))
+                        event.button.x = a.width - 3
+                        event.button.y = 5
+                        assert x.XSendEvent(connection, target, 0, 1 << 2,
+                            ctypes.byref(event))
+                        x.XSync(connection, 0)
+
+                    observe()
+                    key(0xff50)  # Home; real button round trip drains prior input.
+                    observe()
+                    head = pixels()
+                    key(0xff57)
+                    observe()
+                    tail = pixels()
+                    assert head != tail, 'readonly End did not expose the tail'
+                    if args.readonly_short:
+                        key(0xff09)
+                        key(0xff57)
+                        key(0xff09)
+                        observe()
+                        assert pixels() == tail, 'long editable wrap retained out-of-range cursor'
+                    key(0xff51)
+                    key(0xff53)
+                    observe()
+                    assert pixels() == tail
+                    key(0xff50)
+                    observe()
+                    assert pixels() == head, 'readonly Home did not restore the head'
+                    for symbol, state in [(ord('x'), 0), (0xffff, 0),
+                            (0xff08, 0), *[(ord(c), 4) for c in 'dhku'],
+                            (ord(','), 9), (ord('.'), 9)]:
+                        key(symbol, state)
+                    if not args.readonly_multi:
+                        key(0xff52)
+                        key(0xff54)
+                    observe()
+                    paste(locked, 'MUST-NOT-PASTE')
+                    observe()
+                    if args.readonly_multi:
+                        key(0xff09)  # editable; leave readonly and return below.
+                        key(ord('u'), 4)
+                        key(ord('z'))
+                        observe('z')
+                        # Existing paste Tab falls through and traverses two
+                        # fields per byte: editable(1) -> duplicate(3) ->
+                        # readonly(0), in the five-input ring. Home below must
+                        # act on that actual readonly destination.
+                        paste(editable, 'a\rMUST-NOT-PASTE' if args.readonly_short
+                            else 'a\tb\tMUST-NOT-PASTE')
+                        observe('za')
+                        key(0xff50)
+                        observe('za')
+                        assert pixels() == head
+                    else:
+                        key(0xff09)
+                        # Single-input wrap retains a valid cursor. Home is
+                        # the explicit navigation that restores the head.
+                        key(0xff50)
+                        observe()
+                        assert pixels() == head
+                    previous = commands.count('Nop form-readonly-restart')
+                    key(0xffc8)
+                    receive(lambda: commands.count('Nop form-readonly-restart') > previous)
+                    observe()
+                    log = (runtime.root / 'form.log').read_text()
+                    assert log.count('invalid InputReadonly declared-input-name') >= (
+                        4 if args.readonly_multi and not args.readonly_short else 3), log
+                    results['unchanged_complete_utf8_value'] = readonly_value
+                    results['readonly_navigation_and_focus_reentry'] = 'passed'
+                    results['typing_delete_history_and_direct_paste_refused'] = 'passed'
+                    results['editable_default_and_paste_traversal'] = (
+                        'passed' if args.readonly_multi else 'not applicable: single input')
+                    results['restart_restores_input_append_initial_value'] = 'passed'
+                    results['malformed_unknown_ambiguous_target_diagnostics'] = (
+                        4 if args.readonly_multi and not args.readonly_short else 3)
                 if args.history_only:
                     x.XKeysymToKeycode.argtypes = [P, W]
                     x.XKeysymToKeycode.restype = ctypes.c_uint
@@ -544,6 +785,9 @@ def run(args):
                 x.XCloseDisplay(connection)
             for p in runtime.root.glob('*.log'):
                 shutil.copy2(p, args.artifacts_dir / p.name)
+            values = runtime.root / 'readonly-values.txt'
+            if values.exists():
+                shutil.copy2(values, args.artifacts_dir / values.name)
     (args.artifacts_dir / 'evidence.json').write_text(json.dumps(results, indent=2) + '\n')
 
 
@@ -561,6 +805,7 @@ if __name__ == '__main__':
     parser.add_argument('--geometry-only', action='store_true')
     parser.add_argument('--command-only', action='store_true')
     parser.add_argument('--history-only', action='store_true')
+    parser.add_argument('--readonly-only', action='store_true')
     parser.add_argument('--service-only', action='store_true')
     parser.add_argument('--partial-only', action='store_true')
     args = parser.parse_args()
@@ -568,8 +813,8 @@ if __name__ == '__main__':
     can_high = old_limit[1] == resource.RLIM_INFINITY or old_limit[1] > 4096
     summary = {}
     try:
-        labels = ['partial-idle', 'partial-timer'] if args.partial_only else ['service-idle', 'service-timer'] if args.service_only else ['history'] if args.history_only else ['command'] if args.command_only else ['geometry'] if args.geometry_only else ['arrays'] if args.arrays_only else ['data'] if args.data_only else ['fields'] if args.fields_only else ['button'] if args.button_only else ['input'] if args.input_only else ['timer'] if args.legacy_timer_control else ['timer', 'idle-eof', 'idle-term']
-        if not args.legacy_timer_control and not args.input_only and not args.button_only and not args.fields_only and not args.data_only and not args.arrays_only and not args.geometry_only and not args.command_only and not args.history_only and not args.service_only and not args.partial_only:
+        labels = ['readonly-single', 'readonly-multi', 'readonly-short'] if args.readonly_only else ['partial-idle', 'partial-timer'] if args.partial_only else ['service-idle', 'service-timer'] if args.service_only else ['history'] if args.history_only else ['command'] if args.command_only else ['geometry'] if args.geometry_only else ['arrays'] if args.arrays_only else ['data'] if args.data_only else ['fields'] if args.fields_only else ['button'] if args.button_only else ['input'] if args.input_only else ['timer'] if args.legacy_timer_control else ['timer', 'idle-eof', 'idle-term']
+        if not args.legacy_timer_control and not args.input_only and not args.button_only and not args.fields_only and not args.data_only and not args.arrays_only and not args.geometry_only and not args.command_only and not args.history_only and not args.service_only and not args.partial_only and not args.readonly_only:
             if can_high:
                 if old_limit[0] <= 4096:
                     resource.setrlimit(resource.RLIMIT_NOFILE, (4097, old_limit[1]))
@@ -579,6 +824,8 @@ if __name__ == '__main__':
         root = args.artifacts_dir
         for label in labels:
             args.idle_only = label not in ('timer', 'input', 'button', 'fields', 'data', 'arrays', 'geometry', 'command', 'service-timer', 'partial-timer')
+            args.readonly_short = label == 'readonly-short'
+            args.readonly_multi = label in ('readonly-multi', 'readonly-short')
             args.high_descriptor = label == 'high-descriptor'
             args.terminate = label == 'idle-term'
             args.artifacts_dir = root / label

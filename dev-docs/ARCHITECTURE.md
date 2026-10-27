@@ -568,6 +568,21 @@ Form Input borrows parsed name/initial views, prepares its draw table and comput
 
 Form command construction matches normalized source name views, uses checked character capacity and returns NULL for incomplete/unsupported lengths or cancellation. Button commands skip refusal; timeout publication withdraws only after command preparation succeeds. Stored substitution bytes remain unchanged. The retained recursive conditional and shell/transport owners are separate. [Evidence](verification/VERIFICATION-2026-10-08-FORM-COMMAND.md).
 
+Form `InputReadonly name` is a startup-only modifier on a unique declared input.
+`ReadXServer.c` retains cursor/focus navigation but refuses editing, history and
+paste, including insertion into a readonly destination reached during paste.
+Readonly cursor/viewport normalization clamps a stale traversal cursor without
+changing ordinary editable-input behavior. Setup, InputAppend and Restart retain
+the existing value owner.
+
+The browser's [details snapshot](../bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go)
+uses the same Form viewport and literal read-only inputs. Complete escaped values
+are bounded before expansion, split between encoding tokens, and frozen per
+snapshot. A separate correlated acknowledgement gate and typed lifetime/page
+callbacks keep detail navigation out of parent projection publication. Parent
+replacement/exit retires the owned detail alias; no filesystem or content work
+is added by inspection.
+
 Form recall/editing now shares per-field value replacement in FvwmForm.c and
 bounded history/insertion policy in form_input.c. ReadXServer.c owns the finite
 X dispatch/coalescing pass; MainLoop owns queued continuations, libevent and pipe

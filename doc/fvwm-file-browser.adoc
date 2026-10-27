@@ -200,6 +200,51 @@ area updates without replacing input or collection windows. Refresh updates
 the observation; if any inspected identity disappears, the old panel clears.
 Opening a file still uses the isolated worker's separate identity validation.
 
+== COMPLETE VALUE DETAILS
+
+Details (F1) opens one read-only snapshot of the admitted browser values:
+Path, Status, Watcher, Progress, Readiness, Counts, Projection and the four
+Properties panel fields. When available, it also includes the complete focused
+filename and single inspected filename from the original filename bytes. The
+single-entry Properties name is complete here even when its ordinary label was
+shortened. Multiple-entry Properties retain their observed aggregate fields.
+No filesystem query or file-content read runs to open or navigate Details.
+
+Tab to the section chooser, use its arrows and press Read (Enter) to display
+that field. The value field permits focus, Left/Right and Home/End horizontal
+navigation; typing, deletion, paste and history replacement are disabled.
+Previous part (F9) and Next part (F10) show the complete value in consecutive
+parts, with the field name and part count. Paging retains chooser focus and
+continues the displayed field until Read chooses another field. Close (Escape)
+or the window manager closes only Details. Reopening F1 replaces the snapshot.
+The Details window follows the same monitor scaling policy as the browser.
+
+Values use an unambiguous ASCII display representation: non-ASCII Unicode,
+controls, expansion characters and literal brackets become `[U+XXXX]` escapes;
+invalid UTF-8 bytes become `[BYTE+XX]`. Concatenating every part gives the entire
+escaped value without shortened prefixes. This representation is metadata for
+inspection, not file content or a clipboard transfer. Each part has at most
+400 ASCII bytes and ends between escape tokens; InputHex installs it literally.
+One snapshot admits at most 13 fields, 128 KiB of source bytes, 512 KiB of
+escaped text and 1024 parts. Exceeding any bound displays an explicit refusal
+instead of a partial snapshot.
+
+Opening, reading and paging Details preserve the browser's native window,
+selection, focus, input drafts and model/render/binding generations. Opening
+uses the last admitted browser model; it does not capture pending native edits.
+The snapshot labels its parent/model/native generations and remains frozen
+during same-folder refresh, status changes and local selection changes. Reopen
+F1 for the latest admitted values. A replacement parent view or browser exit
+retires its Details window and configuration. Retired parent, snapshot, page
+and invocation callbacks are ignored.
+
+Accepted Details commands renew the browser's five-minute idle lease. Merely
+moving through the chooser or value does not renew the browser lease. Each
+Details page also has an independent five-minute native orphan timeout; browser
+idle expiry can close it sooner. Details cannot keep a browser alive through
+read-only arrow navigation alone. This snapshot adds no metadata freshness or
+file-action authority beyond the browser's existing admitted observations.
+
 == CONFIGURED SELECTION ACTIONS
 
 Repeat `--action 'Label=executable'` up to four times to add named native buttons.

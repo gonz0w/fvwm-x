@@ -366,6 +366,8 @@ void ReadXServer (void)
 	  goto redraw_newcursor;
 	  break;
 	case '\010':  /* ^H */
+	  if (CF.cur_input->input.read_only)
+	    goto no_redraw;
 	  if (CF.rel_cursor > 0) {
 	    cn = CF.rel_cursor - 1;
 	    dp = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
@@ -388,6 +390,8 @@ void ReadXServer (void)
 	  break;
 	case '\177':  /* DEL */
 	case '\004':  /* ^D */
+	  if (CF.cur_input->input.read_only)
+	    goto no_redraw;
 	  if (CF.rel_cursor < CF.cur_input->input.n) {
 	    cn = CF.rel_cursor;
 	    dp = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
@@ -400,6 +404,8 @@ void ReadXServer (void)
 	  }
 	  break;
 	case '\013':  /* ^K */
+	  if (CF.cur_input->input.read_only)
+	    goto no_redraw;
 	  if (CF.rel_cursor >= CF.cur_input->input.n)
 	    goto redraw_newcursor;
 	  cn = CF.rel_cursor;
@@ -409,6 +415,8 @@ void ReadXServer (void)
 	  CF.cur_input->input.size = (int)(dp - CF.cur_input->input.value);
 	  goto redraw_newcursor;
 	case '\025':  /* ^U */
+	  if (CF.cur_input->input.read_only)
+	    goto no_redraw;
 	  CF.cur_input->input.value[0] = '\0';
 	  CF.cur_input->input.size = 0;
 	  CF.cur_input->input.n = CF.cur_input->input.left = 0;
@@ -443,6 +451,8 @@ void ReadXServer (void)
 	  break;
 	}
       redraw_newcursor:
+	if (CF.cur_input->input.read_only)
+	  goto redraw;
 	{
 	  XSetForeground(dpy, CF.cur_input->header.dt_ptr->dt_item_GC,
 			 CF.cur_input->header.dt_ptr->dt_colors[c_item_bg]);
@@ -459,7 +469,23 @@ void ReadXServer (void)
 	{
 	  int len, cn, x;
 	  char *bstr, *estr;
-	  if (CF.cur_input->input.n - CF.cur_input->input.left >
+	  if (CF.cur_input->input.read_only) {
+	    /* Inspect from the cursor, rather than forcing the value's tail.
+	     * Field traversal may reset or retain another field's cursor. */
+	    if (CF.rel_cursor < 0)
+	      CF.rel_cursor = 0;
+	    else if (CF.rel_cursor > CF.cur_input->input.n)
+	      CF.rel_cursor = CF.cur_input->input.n;
+	    if (CF.rel_cursor < CF.cur_input->input.left)
+	      CF.cur_input->input.left = CF.rel_cursor;
+	    else if (CF.rel_cursor - CF.cur_input->input.left >
+	        CF.cur_input->input.width)
+	      CF.cur_input->input.left =
+	        CF.rel_cursor - CF.cur_input->input.width;
+	    CF.abs_cursor = CF.rel_cursor - CF.cur_input->input.left;
+	    RedrawItem(CF.cur_input, 0, NULL);
+	    goto no_redraw;
+	  } else if (CF.cur_input->input.n - CF.cur_input->input.left >
 	    CF.cur_input->input.width) {
 	      CF.cur_input->input.left =
 	        CF.cur_input->input.n - CF.cur_input->input.width;
@@ -643,6 +669,7 @@ void ReadXServer (void)
 static void process_history(int direction) {
   int count;
   if (!CF.cur_input                     /* no input fields */
+      || CF.cur_input->input.read_only
       || !CF.cur_input->input.value_history_ptr) { /* or no history */
     return;                             /* bail out */
   }
@@ -704,6 +731,9 @@ static int process_tabtypes(unsigned char * buf) {
 static void process_regular_char_input(unsigned char *buf, int num, size_t len) {
   char *sp, *dp, *ep;
   int n, capacity, bytes, characters;
+  /* Recheck the current destination, including fields reached during paste. */
+  if (CF.cur_input == NULL || CF.cur_input->input.read_only)
+    return;
   /* size is the space actually used
      buf is the size of the buffer in bytes
      width is the size of the field on the screen */
@@ -744,6 +774,8 @@ static void process_paste_request (XEvent *event, Item *item) {
   char *c;
   int num, len;
 
+  if (item->input.read_only)
+    return;
   FPropertyResult result = FPropertyRead(dpy, DefaultRootWindow(dpy),
       XA_CUT_BUFFER0, XA_STRING, limits, &data, &bytes);
   if (result != FPROPERTY_OK) {

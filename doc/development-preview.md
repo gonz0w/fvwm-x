@@ -37,6 +37,38 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Complete value details
+
+Details (F1) opens a read-only snapshot of the browser's complete admitted
+values. Choose a field with the keyboard and Read (Enter). Home/End and arrows
+scroll its value; Previous/Next part (F9/F10) cover long values. Opening, paging
+and closing retain the main browser's selection, drafts and native windows.
+Reopen F1 to capture later state; the existing snapshot stays frozen.
+
+![Slate browser Details showing a long path at 1.25x](screenshots/details-slate-path.png)
+
+![Dune browser Details showing complete observed-name metadata](screenshots/details-dune-name.png)
+
+![Enlarged Classic read-only value scrolled horizontally at 2x](screenshots/details-classic-end.png)
+
+Values use reversible ASCII escapes, including explicit invalid filename bytes.
+They are observed metadata, not file content or a clipboard transfer. Bounded
+admission refuses oversized snapshots explicitly. Personal Forms can reuse the
+additive `InputReadonly name` modifier. Existing editable Inputs keep their
+behavior. The native regression also repairs right-edge redraw residue during
+read-only scrolling.
+
+These unmodified captures use Slate, Dune and an enlarged 18pt Classic config
+with actual RandR scales. The fixture moves fitting Classic windows into the
+capture area without changing font, scale, dimensions or IDs; this does not
+qualify default placement on every screen. The chooser viewport can compress
+to one visible row; arrows still reach every field.
+[Capture/source manifest](screenshots/details-manifest.json),
+[manual](fvwm-file-browser.adoc#complete-value-details) and
+[results/remaining acceptance](../dev-docs/verification/VERIFICATION-2026-10-27-BROWSER-DISCLOSURE.md).
+Broader module/support, physical, assistive and multilingual acceptance remains
+in development under #51/#69.
+
 ## Live native selection feedback
 
 Selecting, extending a range, moving focus or scrolling now updates the browser's
@@ -65,8 +97,8 @@ That sampling did not reproduce the anomaly; broader rendering acceptance stays
 open. [Capture/source manifest](screenshots/feedback-manifest.json),
 [verification and limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-FEEDBACK.md)
 and [periodic performance comparison](../dev-docs/verification/PERFORMANCE-2026-10-27-FORM-FEEDBACK.md).
-Full-text disclosure, multilingual fonts and physical/assistive acceptance remain
-in development under #51/#69.
+These earlier feedback captures predate Complete value details above.
+Multilingual fonts and physical/assistive acceptance remain in development.
 
 ## Scaled labels and keyboard focus
 
@@ -74,7 +106,7 @@ The browser's single-line status labels now use available width. Essential
 selection and action state appears first, and text that still cannot fit ends
 with `...`. Widening can reveal more of the retained value; shrinking restores
 the narrow view without increasing its minimum size. This adds no text wrapping
-or extra list rows. Full-text disclosure remains separate work.
+or extra list rows. These earlier captures predate Complete value details above.
 
 ![Slate browser with expanded status labels at 2x](screenshots/readability-slate-wide.png)
 

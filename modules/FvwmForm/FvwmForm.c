@@ -192,6 +192,7 @@ static void ct_Input(char *);
 static void ct_InputAppend(char *);
 static void ct_InputFont(char *);
 static void ct_input_hex(char *);
+static void ct_input_readonly(char *);
 static void ct_ItemBack(char *);
 static void ct_ItemFore(char *);
 static void ct_Line(char *);
@@ -267,6 +268,7 @@ static struct CommandTable ct_table[] =
   {"InputPointer",ct_InputPointer},
   {"InputPointerBack",ct_InputPointerBack},
   {"InputPointerFore",ct_InputPointerFore},
+  {"InputReadonly",ct_input_readonly},
   {"ItemBack",ct_ItemBack},
   {"ItemColorset",ct_ItemColorset},
   {"ItemFore",ct_ItemFore},
@@ -2375,6 +2377,8 @@ void RedrawItem (Item *item, int click, XEvent *pev)
   XRectangle r,inter;
   Region region = None;
   Bool text_inter = True;
+  Bool readonly_input, saved_clip = False;
+  Region saved_region = None;
   DrawTable *dt_ptr;
 
   if (item == NULL)
@@ -2385,12 +2389,21 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     return;
   }
   dt_ptr = item->header.dt_ptr;
+  readonly_input = item->type == I_INPUT && item->input.read_only;
 
   /* Init intersection to size of the item. */
   inter.x = BOX_SPC + TEXT_SPC - 1;
   inter.y = BOX_SPC;
   inter.width = item->header.size_x - (2 * BOX_SPC) - 2 - TEXT_SPC;
   inter.height = (item->header.size_y - 1) - 2 * BOX_SPC + 1;
+  if (readonly_input)
+  {
+    /* Clear and clip the same complete interior, including the caret's
+     * rightmost stroke. Repaint it once even for a partial expose. */
+    inter.x = inter.y = BOX_SPC;
+    inter.width = item->header.size_x - 2 * BOX_SPC;
+    inter.height = item->header.size_y - 2 * BOX_SPC;
+  }
 
   myfprintf((stderr,"%s: RedrawItem expose x=%d/y=%d h=%d/w=%d\n",module->name,
 	     (int)pev->xexpose.x,
@@ -2399,7 +2412,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
 	     (int)pev->xexpose.height));
 
   /* This is a slightly altered expose event from ReadXServer. */
-  if (pev)
+  if (pev && !readonly_input)
   {
 	  r.x = pev->xexpose.x;
 	  r.y =	 pev->xexpose.y;
@@ -2419,7 +2432,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
 	  r.width = inter.width;
 	  r.height = inter.height;
   }
-  if (pev && text_inter && dt_ptr && dt_ptr->dt_Fstr)
+  if (pev && !readonly_input && text_inter && dt_ptr && dt_ptr->dt_Fstr)
   {
 	  region = XCreateRegion();
 	  XUnionRectWithRegion (&r, region, region);
@@ -2483,6 +2496,18 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     XDrawSegments(dpy, item->header.win, item->header.dt_ptr->dt_item_GC,
 		  xsegs, 4);
 
+    if (readonly_input)
+    {
+      saved_clip = dt_ptr->dt_Fstr->flags.has_clip_region;
+      saved_region = dt_ptr->dt_Fstr->clip_region;
+      region = XCreateRegion();
+      XUnionRectWithRegion(&inter, region, region);
+      /* Core/fontset text and the caret use the GC; Xft uses the string
+       * region. Draw-table GCs have no persistent clip outside a paint. */
+      XSetRegion(dpy, dt_ptr->dt_item_GC, region);
+      dt_ptr->dt_Fstr->flags.has_clip_region = True;
+      dt_ptr->dt_Fstr->clip_region = region;
+    }
     len = item->input.left;
     bstr = find_nth_UTF8_char(item->input.value, NULL, &len, NULL);
     len = CF.abs_cursor;
@@ -2656,7 +2681,13 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     RedrawSeparator(item);
     break;
   }
-  if (dt_ptr && dt_ptr->dt_Fstr)
+  if (readonly_input)
+  {
+    XSetClipMask(dpy, dt_ptr->dt_item_GC, None);
+    dt_ptr->dt_Fstr->flags.has_clip_region = saved_clip;
+    dt_ptr->dt_Fstr->clip_region = saved_region;
+  }
+  else if (dt_ptr && dt_ptr->dt_Fstr)
   {
 	  dt_ptr->dt_Fstr->flags.has_clip_region = False;
   }
@@ -3738,6 +3769,21 @@ static Item *form_named_target(const char *cp, const char **tail, int type)
 static Item *form_update_target(const char *cp, const char **tail)
 {
 	return form_named_target(cp, tail, I_LIST);
+}
+
+/* Startup modifier: keep the input ring and configured value unchanged. */
+static void ct_input_readonly(char *cp)
+{
+	const char *tail;
+	Item *p = form_named_target(cp, &tail, I_INPUT);
+
+	if (p == NULL || *tail != '\0')
+	{
+		fprintf(stderr, "%s: invalid InputReadonly declared-input-name\n",
+			module->name);
+		return;
+	}
+	p->input.read_only = true;
 }
 
 static void am_list_begin(char *cp)

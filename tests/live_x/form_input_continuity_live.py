@@ -50,20 +50,28 @@ def prefix_comparison(reference, candidate):
         first_mismatches=[[i % width, i // width] for i in differences[:64]])
 
 
-def continuity_config(font):
+def continuity_config(font, case="all"):
     lines = ['Position 0', 'InputFont ' + font,
         'ItemFore black', 'ItemBack white']
-    for name, value in zip(NAMES, INITIAL):
+    initial = INITIAL[:1] if case == "paste-single" else INITIAL
+    ordered = NAMES[:1] if case == "paste-single" else NAMES
+    for name, value in zip(ordered, initial):
         lines.extend(['Line left', 'Input ' + name + ' 12 "' + value + '"'])
-    lines.extend(['InputReadonly locked', 'Line left',
+    if case != 'paste-single':
+        lines.append('InputReadonly locked')
+    lines.extend(['Line left',
         'Button restart "Restart" F11', 'Command Nop input-restarted',
         'Button continue "Observe" F12',
-        'Command Nop input-values ' + ' '.join('x$(' + name + ':Base64)' for name in NAMES)])
+        'Command Nop input-values ' + ' '.join('x$(' + name + ':Base64)' for name in ordered)])
+    if case == 'paste-single':
+        lines.extend(['Button continue "Tab action" ^I', 'Command Nop paste-tab-action'])
     return ['*FormTransport' + line for line in lines]
 
 
 def check_continuity(x, d, root, shown, process, config, commands,
         receive, args, results):
+    initial = INITIAL[:1] if args.editable_case == "paste-single" else INITIAL
+    ordered = NAMES[:1] if args.editable_case == "paste-single" else NAMES
     P, W = C.c_void_p, C.c_ulong
     x.XKeysymToKeycode.argtypes = [P, W]
     x.XKeysymToKeycode.restype = C.c_uint
@@ -88,11 +96,12 @@ def check_continuity(x, d, root, shown, process, config, commands,
     schema = [line[len('*FormTransport'):].split()[:2] for line in config
         if line.startswith('*FormTransport') and line[len('*FormTransport'):].split()[0]
         in ('Input', 'InputHex', 'Button', 'List')]
-    assert len(schema) == len(controls) == 7, (schema, controls)
+    expected_controls = len(ordered) + (3 if args.editable_case == "paste-single" else 2)
+    assert len(schema) == len(controls) == expected_controls, (schema, controls)
     names = {parts[1]: target for parts, target in zip(schema, controls) if parts[0] == 'Input'}
     evidence = dict(status='running', module_sha256=hashlib.sha256(args.module.read_bytes()).hexdigest(),
         case=args.editable_case, input_font=args.input_font,
-        controls=dict(zip(NAMES, [names[n] for n in NAMES])), samples=[], values=[], checks=[],
+        controls=dict(zip(ordered, [names[n] for n in ordered])), samples=[], values=[], checks=[],
         source_sha256={name: hashlib.sha256((Path(__file__).parent / name).read_bytes()).hexdigest()
             for name in ('form_transport_live.py', 'form_input_continuity_live.py')},
         limits=dict(keys=512, pixel_width=800, pixel_height=200,
@@ -137,7 +146,7 @@ def check_continuity(x, d, root, shown, process, config, commands,
         receive(lambda: commands.count('Nop input-restarted') > before)
         for _ in range(destination):
             key(0xff09)
-        observe(INITIAL, 'restart')
+        observe(initial, 'restart')
 
     def raster(target, label):
         previous, since = None, time.monotonic()
@@ -169,6 +178,54 @@ def check_continuity(x, d, root, shown, process, config, commands,
         save()
         return actual
 
+    def click_input(target, px, button=1, text=None):
+        if text is not None:
+            data = text.encode()
+            x.XStoreBuffer(d, data, len(data), 0)
+        event = Event()
+        event.button.type, event.button.display = 4, d
+        event.button.window, event.button.root = target, root
+        event.button.same_screen, event.button.button = 1, button
+        event.button.x, event.button.y = px, 5
+        assert x.XSendEvent(d, target, 0, 1 << 2, C.byref(event))
+        x.XSync(d, 0)
+
+    def caret_boundary(target, label):
+        # Find the first interior foreground scanline, above the text ink.
+        # Its only run is the filled caret; the text boundary is one pixel
+        # to its right in this unscaled Form fixture. Do not infer advances
+        # from requested font names or from nominal character-cell widths.
+        image = raster(target, label)
+        width, height, pixels = image
+        background = pixels[2 * width + 2]
+        rows = [(py, [px for px in range(3, width-2)
+            if pixels[py * width + px] != background]) for py in range(2, height-2)]
+        scanline, columns = next((py, cols) for py, cols in rows if cols)
+        assert columns == list(range(min(columns), max(columns)+1))
+        assert len(columns) == 1, (label, columns)
+        boundary = columns[0] + 1
+        evidence.setdefault('caret_boundaries', []).append(dict(label=label,
+            window=target, scanline=scanline, caret_columns=columns, boundary_x=boundary))
+        save()
+        return boundary
+
+    def expose_equal(target, label):
+        before = raster(target, label + '-before-expose')
+        x.XClearArea(d, target, 0, 0, 0, 0, 1)
+        x.XSync(d, 0)
+        # The real command receipt fences event dispatch without changing the
+        # Input value or cursor. The current Input is not repainted by F12.
+        prefix = 'Nop input-values '
+        previous = sum(c.startswith(prefix) for c in commands)
+        key(0xffc9)
+        receive(lambda: sum(c.startswith(prefix) for c in commands) > previous)
+        after = raster(target, label + '-after-expose')
+        equal = before == after
+        evidence.setdefault('paste_paint', []).append(dict(label=label,
+            window=target, equal=equal))
+        save()
+        assert equal, label + ': immediate paste pixels differ from Expose'
+
     def passed(label):
         evidence['checks'].append(label)
         save()
@@ -178,14 +235,14 @@ def check_continuity(x, d, root, shown, process, config, commands,
         if args.editable_case in ('home', 'all'):
             restart(3)
             key(0xff50)
-            observe(INITIAL, 'reference-home')
+            observe(initial, 'reference-home')
             reference = raster(names['reference'], 'reference-home')
             key(0xff09)
             key(0xff57)
-            observe(INITIAL, 'long-end')
+            observe(initial, 'long-end')
             tail = raster(names['long'], 'long-end')
             key(0xff50)
-            observe(INITIAL, 'long-home')
+            observe(initial, 'long-home')
             head = raster(names['long'], 'long-home')
             width, height = head[:2]
             evidence['prefix_oracle'] = prefix_comparison(reference, head)
@@ -201,18 +258,18 @@ def check_continuity(x, d, root, shown, process, config, commands,
             for _ in range(3):
                 key(0xff57)
                 key(0xff50)
-            observe(INITIAL, 'home-restored')
+            observe(initial, 'home-restored')
             restored = raster(names['long'], 'home-restored')
             assert restored == head, 'full Home interior/right-edge restoration differs'
             assert borders(tail) == borders(head)
             x.XClearArea(d, names['long'], 0, 0, 0, 0, 1)
             x.XSync(d, 0)
-            observe(INITIAL, 'after-real-expose')
+            observe(initial, 'after-real-expose')
             assert raster(names['long'], 'after-real-expose') == head, 'keyboard/expose paints differ'
             assert raster(names['locked'], 'neighbor-after') == neighbor
             passed('full-interior-right-edge-expose-borders-neighbor')
             key(ord('x'))
-            edited = INITIAL[:-1] + ['x' + LONG]
+            edited = initial[:-1] + ['x' + LONG]
             observe(edited, 'home-insert')
             key(0xff50)
             key(0xff53)
@@ -261,12 +318,12 @@ def check_continuity(x, d, root, shown, process, config, commands,
                 key(0xff57)
                 key(symbol, state)
                 key(0xff08)
-                observe(INITIAL, label + '-home-backspace-noop')
+                observe(initial, label + '-home-backspace-noop')
                 # Bytes alone miss a decremented n with unchanged bytes. End
                 # plus insertion exposes that stale count in native output.
                 key(0xff57)
                 key(ord('x'))
-                expected = ['abcx'] + INITIAL[1:]
+                expected = ['abcx'] + initial[1:]
                 observe(expected, label + '-short-end-insert')
                 key(symbol, state)
                 key(0xff08)
@@ -290,18 +347,90 @@ def check_continuity(x, d, root, shown, process, config, commands,
                 key(symbol, state)
                 key(0xff08)
                 key(ord('z'))
-                observe(['z'] + INITIAL[1:], label + '-empty-first-wrap-edit')
+                observe(['z'] + initial[1:], label + '-empty-first-wrap-edit')
                 key(symbol, state)  # empty second field
                 key(symbol, state)  # readonly third field
                 key(0xff57)
                 key(0xff08)
                 key(0xffff)
                 key(ord('x'))
-                observe(['z'] + INITIAL[1:], label + '-readonly-destination-refuses-edits')
+                observe(['z'] + initial[1:], label + '-readonly-destination-refuses-edits')
                 key(0xff52)  # backward from readonly to empty editable
                 key(ord('r'))
-                observe(['z', 'r'] + INITIAL[2:], label + '-readonly-backward-to-editable')
+                observe(['z', 'r'] + initial[2:], label + '-readonly-backward-to-editable')
                 passed(label + '-forward-backward-wrap-short-empty-readonly-ring')
+        if args.editable_case in ('pointer', 'all'):
+            restart()
+            key(0xff50)
+            start = caret_boundary(names['first'], 'pointer-start-boundary')
+            key(0xff53)
+            first = caret_boundary(names['first'], 'pointer-first-boundary')
+            assert first - start >= 4
+            checks = [(first, 1, 'exact-first-edge'),
+                (start + (first-start)//4, 0, 'nearer-left'),
+                (first - (first-start)//4, 1, 'nearer-right'),
+                (-20, 0, 'negative-clamp')]
+            a = WindowAttributes()
+            assert x.XGetWindowAttributes(d, names['first'], C.byref(a))
+            checks.append((a.width+20, 3, 'right-clamp-short-value'))
+            for px, index, label in checks:
+                restart()
+                click_input(names['first'], px)
+                key(ord('x'))
+                observe(['abc'[:index] + 'x' + 'abc'[index:]] + initial[1:], label)
+                passed('pointer-' + label)
+            restart(4)
+            key(0xff57)
+            for _ in range(3):
+                key(0xff51)
+            boundary = caret_boundary(names['long'], 'pointer-scrolled-boundary')
+            click_input(names['long'], boundary)
+            key(ord('x'))
+            index = len(LONG)-3
+            observe(initial[:-1] + [LONG[:index] + 'x' + LONG[index:]],
+                'pointer-scrolled-exact-edge')
+            passed('pointer-scrolled-exact-edge')
+            restart()
+            key(ord('u'), 4)
+            click_input(names['first'], -20, 2, 'é終Q')
+            key(0xff50)
+            key(0xff53)
+            boundary = caret_boundary(names['first'], 'pointer-multibyte-boundary')
+            click_input(names['first'], boundary)
+            key(ord('x'))
+            observe(['éx終Q'] + initial[1:], 'pointer-multibyte-exact-edge')
+            passed('pointer-multibyte-exact-edge')
+        if args.editable_case in ('paste', 'all'):
+            restart()
+            click_input(names['first'], -20, 2, 'A\tB')
+            expected = ['Aabc', 'B'] + initial[2:]
+            observe(expected, 'paste-tab-one-destination')
+            passed('paste-tab-advances-exactly-once')
+            # One more Tab reaches the read-only field, refuses its bytes,
+            # then another Tab reaches the next editable field exactly once.
+            restart()
+            click_input(names['first'], -20, 2, 'A\tB\tREFUSED\tC')
+            expected = ['Aabc', 'B', 'LOCKED', 'C' + PREFIX, LONG]
+            observe(expected, 'paste-readonly-and-next-editable')
+            passed('paste-readonly-refusal-and-continuation')
+        if args.editable_case in ('paste-paint', 'all'):
+            restart()
+            # CR already traversed once before the repair. This isolates
+            # final-destination paint from the separate Tab fallthrough bug.
+            click_input(names['first'], -20, 2, 'A\rB')
+            expected = ['Aabc', 'B'] + initial[2:]
+            observe(expected, 'paste-cr-correct-bytes-before-paint')
+            expose_equal(names['empty'], 'paste-final-destination')
+            expose_equal(names['first'], 'paste-original-source')
+            passed('paste-source-and-final-destination-match-expose')
+        if args.editable_case == 'paste-single':
+            restart()
+            before = commands.count('Nop paste-tab-action')
+            click_input(names['first'], -20, 2, 'A\tB')
+            observe(['A Babc'], 'paste-single-tab-is-space')
+            assert commands.count('Nop paste-tab-action') == before, commands
+            expose_equal(names['first'], 'paste-single-destination')
+            passed('single-field-tab-space-without-button-action')
         evidence['status'] = 'passed'
         results['editable-continuity'] = evidence['checks']
     except BaseException as failure:

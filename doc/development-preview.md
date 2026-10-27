@@ -38,6 +38,24 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Pointer and paste continuity
+
+Input clicks now choose the nearest visible character boundary using the rendered
+font metrics. Middle-button cut-buffer paste advances once per field separator;
+a single-field Tab inserts a space. The final destination displays its text and
+cursor immediately. These native Slate, Dune and enlarged Classic captures show
+`A` pasted into Path and `B` into the filter draft after one Tab. The applied filter
+label remains `axbc` until the separate Filter action submits the new draft.
+
+![Slate browser after pointer editing and paste](screenshots/pointer-slate.png)
+![Dune browser after pointer editing and paste](screenshots/pointer-dune.png)
+![Classic browser after pointer editing and paste](screenshots/pointer-classic.png)
+
+[Capture identities](screenshots/pointer-manifest.json) and
+[focused verification](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-POINTER-PASTE.md)
+retain exact editing, repaint and scale results. Development is still in progress;
+this adds no clipboard-history service or IME/shaping qualification.
+
 ## Editable input continuity
 
 Long Path and filter drafts now keep Home/End and editing aligned with the visible

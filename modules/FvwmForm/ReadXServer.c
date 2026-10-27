@@ -112,7 +112,7 @@ static void form_sync_input_cursor(void)
 {
 	if (CF.cur_input != NULL)
 		form_input_cursor(CF.cur_input->input.n,
-			CF.cur_input->input.width, &CF.rel_cursor,
+			CF.cur_input->input.n, &CF.rel_cursor,
 			&CF.cur_input->input.left, &CF.abs_cursor);
 }
 
@@ -489,38 +489,12 @@ void ReadXServer (void)
 	    old_item = CF.cur_input;
 	    CF.cur_input = item;
 	    RedrawItem(old_item, 1, NULL);
-	    {
-	      char *bstr, *estr;
-
-	      cn = item->input.left;
-	      bstr = estr = find_nth_UTF8_char(CF.cur_input->input.value, NULL, &cn, NULL);
-
-	      for (CF.abs_cursor = 0; CF.abs_cursor < item->input.width - 1; CF.abs_cursor++)
-	      {
-		cn = 0; /* take one char */
-		estr = find_nth_UTF8_char(estr, NULL, &cn, &ln);
-		if (FlocaleTextWidth(item->header.dt_ptr->dt_Ffont,
-				     bstr, (int)(estr - bstr)) >=
-				event.xbutton.x - BOX_SPC - TEXT_SPC)
-		{
-		  if (CF.abs_cursor > 0) {
-		    CF.abs_cursor--; /* mouse click left behind, so move one step back */
-		  }
-		  break;
-		}
-		if (cn < 0) /* end of the line */
-		    break;
-		estr += ln;
-	      }
-	    }
-	    CF.rel_cursor = CF.abs_cursor + item->input.left;
-	    if (CF.rel_cursor > item->input.n)
-	      CF.rel_cursor = item->input.n;
+	    form_input_click(item, event.xbutton.x);
 	    form_sync_input_cursor();
 	    if (event.xbutton.button == Button2) { /* if paste request */
 	      process_paste_request (&event, item);
 	    }
-	    RedrawItem(item, 0, NULL);
+	    RedrawItem(CF.cur_input, 0, NULL);
 	  }
 	  if (item->type == I_CHOICE)
 	    ToggleChoice(item);
@@ -698,7 +672,8 @@ static void process_paste_request (XEvent *event, Item *item) {
 	} else {
 	  process_tabtypes((unsigned char *)c);          /* jump to the next field */
 	}
-    case '\015':                      /* LINEFEED */
+	break;
+    case '\015':                      /* RETURN */
     case '\016':                      /* ^N */
 	process_tabtypes((unsigned char *)c);            /* jump to the next field */
 	break;

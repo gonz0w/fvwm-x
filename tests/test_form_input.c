@@ -425,6 +425,55 @@ static void test_input_cursor(void)
 	assert(strlen(value) == 10);
 }
 
+static int input_boundary_width(void *context, int characters)
+{
+	const int *widths = context;
+
+	return widths[characters];
+}
+
+static int input_boundary_large(void *context, int characters)
+{
+	int *calls = context;
+
+	(*calls)++;
+	return characters;
+}
+
+static void test_input_pointer_boundary(void)
+{
+	/* Unequal glyph advances distinguish nearest boundaries from cells. */
+	int widths[] = {0, 4, 14, 20, 21};
+	const struct
+	{
+		int pointer, available, expected;
+	} cases[] = {
+		{INT_MIN, 21, 0}, {-1, 21, 0}, {0, 21, 0},
+		{1, 21, 0}, {2, 21, 1}, {4, 21, 1},
+		{8, 21, 1}, {9, 21, 2}, {14, 21, 2},
+		{16, 21, 2}, {17, 21, 3}, {20, 21, 3},
+		{21, 21, 4}, {INT_MAX, 21, 4},
+		/* A partially visible next glyph has no visible end boundary. */
+		{13, 13, 1}, {INT_MAX, 13, 1}, {21, 20, 3},
+		{21, 0, 0}, {21, -1, 0},
+	};
+
+	for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		assert(form_input_hit(4, cases[i].pointer, cases[i].available,
+			input_boundary_width, widths) == cases[i].expected);
+	}
+	assert(form_input_hit(0, 3, 20, input_boundary_width, widths) == 0);
+	assert(form_input_hit(-1, 3, 20, input_boundary_width, widths) == 0);
+	assert(form_input_hit(4, 3, 20, NULL, widths) == 0);
+	/* Search work depends logarithmically on the admitted character count. */
+	int calls = 0;
+
+	assert(form_input_hit(INT_MAX, INT_MAX - 1, INT_MAX,
+		input_boundary_large, &calls) == INT_MAX - 1);
+	assert(calls <= 34);
+}
+
 static void test_input_insertion_capacity(void)
 {
 	int capacity, bytes, characters;
@@ -574,6 +623,7 @@ int main(void)
 	test_input_dimensions();
 	test_history_navigation();
 	test_input_cursor();
+	test_input_pointer_boundary();
 	test_input_insertion_capacity();
 	assert(form_readiness_timeout(false, false) == -1);
 	assert(form_readiness_timeout(false, true) == 100);

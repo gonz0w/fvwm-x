@@ -503,7 +503,11 @@ The input dimensions must fit the X11 size range, from 1 to 65535 pixels.
 An invalid Input line does not add a field.
 Later valid Input lines remain usable.
 +
-You can mouse paste into an editable input field using button 2. Buttons 1 and 3
+You can mouse paste into an editable input field using button 2. A pasted Tab
+advances once to the next field; with one field it inserts a space without
+activating a Tab button shortcut. Pasted Return and Line-feed retain their
+field-navigation and configured button behavior. Every changed field is repainted
+when the paste completes. Buttons 1 and 3
 move the cursor in an input field. Pasting reads a complete STRING/8 cut
 buffer of at most 64 KiB. Missing, malformed, or oversized buffers leave
 all input fields unchanged.
@@ -530,6 +534,8 @@ fields starts the cursor at the beginning of the destination, including when
 navigation wraps from the last field to the first. Editing uses character
 boundaries while retaining the complete value, even when only part is visible.
 Configured button shortcuts keep their usual priority at the end of the form.
+A pointer click selects the nearest visible character boundary using the current
+font and scroll position; a midpoint chooses the boundary to its right.
 +
 When a restart button runs, each nonempty changed input value is saved in
 that field's history. Each field can store 50 values. The fields then

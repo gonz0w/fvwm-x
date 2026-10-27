@@ -672,7 +672,10 @@ owns reflow, draft/anchor preservation and status. Editable and read-only Inputs
 share the complete-interior painter for keyboard, expose and reflow. The pure
 `form_input_cursor` helper reconciles character indices before mutation and on
 field transitions; pixel measurement can adjust the visible start while preserving
-the logical cursor. This does not add grapheme/IME or clipboard-service semantics.
+the logical cursor. Pointer placement shares the painter's measured interior
+and uses the pure `form_input_hit` nearest-boundary policy. Cut-buffer separator
+traversal preserves the existing action path and repaints the final destination.
+This does not add grapheme/IME or clipboard-service semantics.
 Its bounded Form-local
 `form_workarea.h` policy associates existing Monitor14 reservation samples with
 the published MonitorUI topology for automatic startup sizing and frame placement.

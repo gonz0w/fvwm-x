@@ -83,6 +83,10 @@ bool form_history_position(char *const *values, int slots, int current,
  * Keep the cursor inside the existing viewport unless it must move to fit. */
 void form_input_cursor(int characters, int width, int *cursor, int *left,
 	int *visible);
+/* Nearest fully visible character boundary; midpoint ties choose the right.
+ * measure supplies nonnegative, nondecreasing prefix widths from boundary 0. */
+int form_input_hit(int characters, int pointer, int available,
+	int (*measure)(void *context, int characters), void *context);
 /* Prepare insertion counts/capacity before changing the owned input value. */
 bool form_input_growth(int capacity, int bytes, int characters,
 	size_t added_bytes, int added_characters, int *new_capacity,

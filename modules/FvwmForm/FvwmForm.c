@@ -2367,6 +2367,54 @@ void RedrawTimeout(Item *item)
   return;
 }
 
+/* The caret and pointer share the complete interior's actual-pixel bounds. */
+static int form_input_available(Item *item)
+{
+	form_caret_rectangle caret;
+	int available;
+
+	if (!form_caret_geometry(0, item->header.size_x, item->header.size_y,
+		BOX_SPC, CF.ui_metrics.stroke, &caret))
+		return 0;
+	available = item->header.size_x - 2 * BOX_SPC - TEXT_SPC + 1 -
+		caret.width;
+	return available > 0 ? available : 0;
+}
+
+typedef struct
+{
+	Item *item;
+	char *begin;
+} form_input_measure;
+
+static int form_input_prefix_width(void *context, int characters)
+{
+	form_input_measure *input = context;
+	char *end = find_nth_UTF8_char(input->begin, NULL, &characters, NULL);
+
+	return FlocaleTextWidth(input->item->header.dt_ptr->dt_Ffont,
+		input->begin, (int)(end - input->begin));
+}
+
+/* Hit the already painted viewport before the active cursor can reflow it. */
+void form_input_click(Item *item, int x)
+{
+	int left = item->input.left;
+	int origin = BOX_SPC + TEXT_SPC;
+	form_input_measure input = {item, NULL};
+
+	if (left < 0)
+		left = 0;
+	else if (left > item->input.n)
+		left = item->input.n;
+	item->input.left = left;
+	input.begin = find_nth_UTF8_char(item->input.value, NULL, &left, NULL);
+	CF.abs_cursor = form_input_hit(item->input.n - item->input.left,
+		x <= origin ? 0 : x - origin, form_input_available(item),
+		form_input_prefix_width, &input);
+	CF.rel_cursor = item->input.left + CF.abs_cursor;
+}
+
 /* Character indices own navigation; actual font metrics keep the caret inside
  * the painted interior. Binary search bounds measurement work for wide glyphs.
  * Inactive fields retain their viewport without borrowing the active cursor. */
@@ -2375,7 +2423,7 @@ static void form_input_view(Item *item, char **begin, char **end)
 	int cursor = item == CF.cur_input ? CF.rel_cursor : item->input.left;
 	int visible, index;
 
-	form_input_cursor(item->input.n, item->input.width, &cursor,
+	form_input_cursor(item->input.n, item->input.n, &cursor,
 		&item->input.left, &visible);
 	index = cursor;
 	*end = find_nth_UTF8_char(item->input.value, NULL, &index, NULL);
@@ -2383,17 +2431,8 @@ static void form_input_view(Item *item, char **begin, char **end)
 	*begin = find_nth_UTF8_char(item->input.value, NULL, &index, NULL);
 	if (item == CF.cur_input)
 	{
-		form_caret_rectangle caret;
-		int available = 0;
+		int available = form_input_available(item);
 
-		if (form_caret_geometry(0, item->header.size_x,
-			item->header.size_y, BOX_SPC, CF.ui_metrics.stroke, &caret))
-		{
-			available = item->header.size_x - 2 * BOX_SPC -
-				TEXT_SPC + 1 - caret.width;
-			if (available < 0)
-				available = 0;
-		}
 		if (FlocaleTextWidth(item->header.dt_ptr->dt_Ffont, *begin,
 			(int)(*end - *begin)) > available)
 		{

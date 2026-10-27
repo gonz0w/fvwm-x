@@ -277,7 +277,7 @@ class ToolTests(unittest.TestCase):
         (source_root / 'libs').mkdir(parents=True)
         header = (ROOT / 'libs/Module.h').read_text()
         (source_root / 'libs/Module.h').write_text(
-            header.replace('0x000007fe', '0x0000001f'))
+            header.replace('0x00000ffe', '0x0000001f'))
         with self.assertRaisesRegex(ValueError, 'named events'):
             generate.metadata(source_root, self.root / 'output', 0)
         self.assertFalse((self.root / 'output').exists())

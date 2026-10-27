@@ -218,7 +218,9 @@ $EVENTS_INFO = {
 	&M_CONFIG_INFO          => {
 		format => "L!3a*",
 		fields => [
-			win_id       => window,
+			# Zero for legacy receivers; opaque correlation key when
+			# MX_CONFIG_SOURCE is selected. Never an X window identity.
+			win_id       => number,
 			frame_id     => window,
 			ptr          => number,
 			text         => string,
@@ -438,6 +440,16 @@ $EVENTS_INFO = {
 		info => {
 			type_names => [ qw(NONE BACKGROUND SWALLOW) ],
 		},
+	},
+
+	&MX_CONFIG_SOURCE       => {
+		format => "L!3a*",
+		fields => [
+			correlation  => number,
+			reserved1    => number,
+			reserved2    => number,
+			text         => string,
+		],
 	},
 
 	&MX_REPLY               => {

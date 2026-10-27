@@ -55,6 +55,14 @@ test('resource-profile-report', py, args: [files('test_profile_report.py')],
     timeout: 60)
 
 if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('config-origin-xvfb', py,
+        args: [files('live_x/config_origin_live.py'), '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'config-origin'],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop, fvwm_desktop_worker,
+            fvwm_form, fvwm_desktop_capture, fvwm_backer, fvwm_buttons,
+            fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 240)
     test('native-layout-xvfb', py,
         args: [files('live_x/native_layout_live.py'), '--build', meson.project_build_root(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'native-layout'],
@@ -4286,3 +4294,12 @@ ui_layout_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('ui-layout', ui_layout_test)
+
+config_origin_test = executable(
+    'test-config-origin', 'test_config_origin.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('config-origin', config_origin_test)

@@ -461,6 +461,8 @@ static void _execute_command_line(
 	/* needed to be able to avoid resize to use moved windows for base */
 	Window dummy_w;
 	int rc;
+	const char *saved_source = log_exchange_context(
+		fvwm_config_origin_json(exc->source));
 
 	set_silent = 0;
 	/* generate a parsing context; this *must* be destroyed before
@@ -737,7 +739,11 @@ static void _execute_command_line(
 		ecc.w.fw = exc->w.fw;
 		ecc.w.w = w;
 		ecc.w.wcontext = exc->w.wcontext;
+		ecc.source = fvwm_config_origin_derive(exc->source, "invocation",
+			"function definition source unavailable; invocation site");
+		mask |= ECC_SOURCE;
 		exc2 = exc_clone_context(exc, &ecc, mask);
+		fvwm_config_origin_release(ecc.source);
 		execute_complex_function(
 			func_rc, exc2, &pc, complex_function,
 			has_ref_window_moved);
@@ -762,7 +768,7 @@ static void _execute_command_line(
 		/* process a module config command */
 		if (pc.expline)
 		{
-			ModuleConfig(pc.expline);
+			ModuleConfig(pc.expline, exc);
 		}
 		goto fn_exit;
 	case CP_EXECTYPE_UNKNOWN:
@@ -790,6 +796,7 @@ static void _execute_command_line(
 		Scr.flags.are_functions_silent = 0;
 	}
 	cmdparser_hooks->destroy_context(&pc);
+	log_exchange_context(saved_source);
 
 	return;
 }

@@ -84,7 +84,17 @@ func check(ctx context.Context, args []string, out, stderr io.Writer) int {
 		fmt.Fprintln(stderr, "FvwmDesktop: "+err.Error())
 		return 1
 	}
-	if *jsonOutput {
+	printReport(out, result, *jsonOutput)
+	if result.Errors > 0 {
+		return 1
+	}
+	if result.Unchecked > 0 {
+		return 2
+	}
+	return 0
+}
+func printReport(out io.Writer, result desktopcheck.Result, jsonOutput bool) {
+	if jsonOutput {
 		data, _ := json.Marshal(result)
 		fmt.Fprintln(out, string(data))
 	} else {
@@ -99,19 +109,17 @@ func check(ctx context.Context, args []string, out, stderr io.Writer) int {
 			for i := len(item.IncludedFrom) - 1; i >= 0; i-- {
 				parent := item.IncludedFrom[i]
 				path, _ := json.Marshal(parent.Path)
-				fmt.Fprintf(out, "  Read from %s:%d\n", path, parent.Line)
+				span := strconv.Itoa(parent.Line)
+				if parent.EndLine != parent.Line {
+					span += "-" + strconv.Itoa(parent.EndLine)
+				}
+				fmt.Fprintf(out, "  Read from %s:%s\n", path, span)
 			}
 		}
 		fmt.Fprintf(out, "%s: %d checked directives, %d errors, %d unchecked\n", result.Status, result.CheckedDirectives, result.Errors, result.Unchecked)
 	}
-	if result.Errors > 0 {
-		return 1
-	}
-	if result.Unchecked > 0 {
-		return 2
-	}
-	return 0
 }
+
 func run(ctx context.Context, args []string) error {
 	if len(args) < 5 {
 		return fmt.Errorf("FvwmDesktop must be started with Module FvwmDesktop.")

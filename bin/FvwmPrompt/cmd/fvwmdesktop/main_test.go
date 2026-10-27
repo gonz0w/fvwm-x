@@ -8,6 +8,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"encoding/json"
+	"strings"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"os"
 	"path/filepath"
 	"testing"
@@ -48,5 +52,23 @@ func TestBuildAndInstalledHelperLookup(t *testing.T) {
 	}
 	if got := helperBeside(bin, name); got != adjacent {
 		t.Fatalf("adjacent helper did not win: %s", got)
+	}
+}
+
+func TestOfflineReportPreservesSchemaAndPhysicalIncludeSpans(t *testing.T) {
+	result := desktopcheck.Result{SchemaVersion: 1, Coverage: "desktop-settings-literals-and-Read-v1", Errors: 1,
+		Diagnostics: []desktopcheck.Diagnostic{{Location: desktopcheck.Location{Source: desktopcheck.Source{Path: "/tmp/a\t$\"%", Line: 2, EndLine: 4}, IncludedFrom: []desktopcheck.Source{{Path: "/root", Line: 7, EndLine: 9}}}, Severity: "error", Message: "Invalid value for palette"}}}
+	var out bytes.Buffer
+	printReport(&out, result, false)
+	for _, want := range []string{`"/tmp/a\t$\"%":2-4`, `Read from "/root":7-9`} {
+		if !strings.Contains(out.String(), want) {
+			t.Fatal("text source context lost", out.String(), want)
+		}
+	}
+	out.Reset()
+	printReport(&out, result, true)
+	var got desktopcheck.Result
+	if err := json.Unmarshal(out.Bytes(), &got); err != nil || got.SchemaVersion != 1 || got.Diagnostics[0].IncludedFrom[0].EndLine != 9 || got.Diagnostics[0].Path != result.Diagnostics[0].Path {
+		t.Fatal("schema 1 source context lost", out.String(), err)
 	}
 }

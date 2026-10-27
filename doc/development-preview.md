@@ -299,3 +299,46 @@ The [handoff image manifest](screenshots/handoff-manifest.json) records unmodifi
 1440×1000, scale-1 captures and source/configuration/archive identities. This
 remains in-progress development. File jobs/mutation, default folder roles,
 FileManager1 and protected clipboard delivery remain separate.
+
+
+## Source-aware configuration diagnostics
+
+Runtime command errors now carry an owned source path, physical continuation
+span and literal Read chain when available. Selected FvwmDesktop option errors
+show the same context at startup, replay and live delivery. Generated commands,
+nearest known enclosing invocation sites and unavailable origins are labelled
+explicitly;
+these are not inferred definition locations. Valid configuration overrides
+still require a controller restart; live delivery adds diagnostics.
+
+Slate dark: a live invalid palette spans two physical lines. The notice retains
+the full source location and dismisses through its native button.
+
+![Slate runtime error identifying the source file and continued lines 2–3](screenshots/diagnostics-slate-runtime.png)
+
+The existing checker continues to inspect registered literal settings and Read
+without executing configuration. Unsupported dynamic syntax stays unchecked.
+For example, the offline CLI accepts:
+
+```sh
+FvwmDesktop --check-config "$HOME/.fvwm/local.config" --json
+```
+
+The native `SendToModule FvwmDesktop check-config` action uses the same supported
+subset. Dune light: the first page distinguishes three invalid options from four
+unchecked constructs; the source files and action markers are unchanged.
+
+![Dune checker report showing source spans, include callers and Next navigation](screenshots/diagnostics-dune-checker.png)
+
+Enlarged 18pt monospace configuration: a seven-file long-path chain continues
+across three pages. Each page contains at most twelve wrapped source/message
+rows, preserving the complete paths and leaving Close and navigation visible.
+
+![Enlarged native checker with complete source rows continuing across three pages](screenshots/diagnostics-classic-long-chain.png)
+
+The [image manifest](screenshots/diagnostics-manifest.json) records these
+unmodified 1440×1200 captures, source inputs and archive identities. All fifteen
+captures from the three configurations were inspected. Notice dismissal uses
+actual XTest pointer clicks; report navigation exercises native Form key
+handlers. This is in-progress development, with broader effective-value/origin
+inspection, text/assistive and release acceptance retaining their own scope.

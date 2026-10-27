@@ -7,13 +7,14 @@ We target simpler code, responsiveness, safer resources and FVWM 3.x
 configuration/theme compatibility. No compositor or Wayland backend.
 
 **Status:** in development toward R1, a highly configurable, fast, low-memory
-desktop lite. All currently planned features target R1; further maintenance
+desktop lite. Planned features target R1; maintenance
 is scoped into R2/R3. Builds require Go; installed utilities need no compiler
 or Python packages. [Build/upgrade notes](INSTALL.md).
-Recent work:
+Recent additions:
 
 - Icons, scaling, wallpapers, high contrast and configuration inspection.
-- Atomic button updates, responsive layout, settings/editor and configuration checking.
+- Atomic button updates, responsive layout and settings/editor.
+- Source-aware runtime errors and non-executing, paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
 - An optional native file-browser prototype: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.

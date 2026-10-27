@@ -41,6 +41,10 @@ void SendName(
 	struct fmodule *module, unsigned long event_type, unsigned long data1,
 	unsigned long data2, unsigned long data3, const char *name);
 
+/* The source packet is never a separate synchronization barrier; enqueue the
+ * complete pair before honoring the existing config-info synchronization. */
+void send_config_source(struct fmodule *module, unsigned long key,
+	const char *source, const char *config);
 
 /* command queue - module input */
 

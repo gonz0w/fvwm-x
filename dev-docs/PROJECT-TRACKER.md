@@ -277,8 +277,10 @@ and [decision](decisions/NATIVE-INSPECTOR-2026-10-26.md).
 ## R1 responsive native panel and collection layout — 2026-10-26
 
 Owner: Cam; `codex/r1-native-layout`; LAYOUT-01 #212, FILE-VIEW-01 #69 and
-THEME-01 #75 native adoption. Status: ready for PR review; focused checkpoint
-and separate final source/evidence review pass. Reuse existing
+THEME-01 #75 native adoption. Status: merged in PR267 as
+`5bfcc3e5a394d8ed22e7a8bc8e5e21c7f81fc3dc`; reviewed tree
+`923005dfcf0bf4b1e9260480d74dcbc3684d97e1`, canonical signature and author DCO
+verified; branch retired and Project Done. Broader owners remain In progress. Reuse existing
 font measurement, Buttons state/command ownership and Form collection identities.
 Five related outcomes: checked axis/grid policy; opt-in measured flat Buttons
 row; reflow after accepted single/grouped dynamic updates; one expanding native
@@ -315,6 +317,56 @@ and the retained-position enlarged resize capture limit explicit. Exact failed
 fixture assumptions and corrected passes, costs and scoped observations are in
 the [report](verification/VERIFICATION-2026-10-26-NATIVE-LAYOUT.md) and
 [decision](decisions/NATIVE-LAYOUT-2026-10-26.md). No broader owner closure.
+
+## R1 configuration diagnostics closeout — 2026-10-26
+
+Owner: Cam; `codex/r1-config-diagnostics`; CFG-02 #61 with the existing #218
+native report consumer. Status: locally qualified for review; #61 closes on
+merge. User selection:
+finish existing issue acceptance and include genuine closure in the next PR.
+Target full #61 closure; no #218/#60/#70 closure is inferred from diagnostics.
+
+Source-aware runtime diagnostics provide exact physical/continued logical spans,
+nested include context, explicit generated/invocation/unavailable origins,
+command-context ownership through recursion/event servicing/deferred work, and
+selected FvwmDesktop module-setting errors retained through configuration replay.
+Bounded source metadata uses the existing native module transport, preserving
+legacy configuration syntax and ordinary command order. Native producer,
+selected consumer and installed Perl packet metadata are updated together. Runtime origins
+are distinct from non-executing literal candidate observations.
+
+Keep the existing registered-settings/literal-Read checker grammar and clearly
+unchecked dynamic forms. Retain offline text/JSON and native paged source reports,
+negative no-execution tests, byte/depth/diagnostic bounds and accepted PR153/Go
+port evidence. Source text is data; use literal native rendering for diagnostics.
+No full-language interpreter, arbitrary configuration replay, source-based action
+execution or effective binding/theme provenance claim. Parked work stays excluded.
+
+Acceptance: one coherent owner closeout, with affected native Linux policy/race/
+scoped sanitizers and real source/error/replay/recursion/loss checks, three actual
+report configurations/screenshots, and missing affected six-target/profile
+qualification once at this combined owner checkpoint. Reuse applicable accepted
+receipts and do not repeat unaffected suites/install campaigns. Link every #61
+criterion to exact outcomes before adding closure keywords. Broader release and
+unrelated owner gates stay separate. PR264 periodic counter is 3/5 after PR267,
+4/5 on this runtime merge; no periodic comparison is due.
+
+All five frozen #61 criteria now have linked results in the
+[closeout report](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md)
+and [acceptance receipt](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.json).
+Eight affected profiles on six targets pass 64 selected policy executions,
+eighteen actual-OS Go package executions, scoped Linux sanitizer and native-X
+checks. Three actual UI configurations pass; all fifteen captures inspected,
+with three [published examples](../doc/development-preview.md#source-aware-configuration-diagnostics).
+Generated/function locations name the nearest known enclosing invocation,
+possibly an outer call, without inventing inner dynamic steps or definitions.
+Live Desktop delivery validates errors without changing effective state.
+
+Initial fixture failures, the source-bit/live subscription repairs, row-based
+pagination and callback retirement are retained. Exact implementation hashes
+match the frozen candidate. Two manuals render at 60/80 columns; mandoc lint
+retains the same diagnostic families as the merged base, not a clean-lint claim.
+No broader #218/#60/#70, full R1 or physical/assistive/release closure is claimed.
 
 ## Library evaluation issue scope — 2026-10-25
 
@@ -2779,7 +2831,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
-| CFG-02 | P2 / first subset in review; general runtime diagnostics open | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Report file/line/include context and explicitly identify unchecked dynamic constructs. Never implement validation by executing Read/PipeRead/Exec. See the configuration/module backlog below. |
+| CFG-02 | P2 / finite R1 acceptance qualified; closes #61 on merge | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / queued, default product scope approved | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / queued, optional contribution scope approved | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
@@ -2983,6 +3035,10 @@ needed.
   See [shared contracts](decisions/DESKTOP-EXPLORATION-2026-10-06.md).
 
 ### CFG-02: source-aware diagnostics and safe checking
+
+Finite R1 acceptance is locally qualified; #61 closes on this checkpoint’s
+merge. [Criterion map and actual results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md).
+Broader effective-value/rule origins retain #218 ownership.
 
 - Carry source filename, logical line and nested include context into diagnostics
   for unknown commands, malformed arguments/options and module configuration.

@@ -12,7 +12,8 @@ int main(void)
 	const unsigned long events[] = {
 		MX_VISIBLE_ICON_NAME, MX_ENTER_WINDOW, MX_LEAVE_WINDOW,
 		MX_PROPERTY_CHANGE, MX_MONITOR_ENABLED, MX_MONITOR_DISABLED,
-		MX_MONITOR_CHANGED, MX_MONITOR_FOCUS, MX_ECHO, MX_REPLY
+		MX_MONITOR_CHANGED, MX_MONITOR_FOCUS, MX_ECHO, MX_REPLY,
+		MX_CONFIG_SOURCE
 	};
 	unsigned long packet[16];
 	unsigned long mask = 0;
@@ -28,6 +29,8 @@ int main(void)
 		packet[4] = 11;
 		packet[5] = 22;
 		packet[6] = 33;
+		if (events[i] == MX_CONFIG_SOURCE)
+			packet[5] = packet[6] = 0;
 		if (events[i] != MX_ENTER_WINDOW &&
 		    events[i] != MX_LEAVE_WINDOW)
 		{

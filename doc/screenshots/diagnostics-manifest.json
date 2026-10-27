@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "capture_date": "2026-10-26",
+  "source_base": "5bfcc3e5a394d8ed22e7a8bc8e5e21c7f81fc3dc",
+  "source_archive_sha256": "1cabcfc3b412142c9fddd5501f8f2937ecebf3e5a5d6b05c71fdc4a2f508a3f6",
+  "capture_archive_sha256": "9ae0d1e75e8338f9813010b2443a30e96aac38d3b4b61c8875498ea8ff48ff17",
+  "target": "Linux ARM64 guest, Xvfb native-X integration",
+  "geometry": [
+    1440,
+    1200
+  ],
+  "ui_scale": 1,
+  "verification_report": "../../dev-docs/verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md",
+  "pixel_edits": false,
+  "synthetic_files": true,
+  "files": [
+    {
+      "path": "diagnostics-slate-runtime.png",
+      "profile": "slate-dark",
+      "capture_member": "v11-source-x/slate-dark/runtime-live-source.png",
+      "bytes": 27120,
+      "sha256": "4a24610d65e69fa2a0eada56a8c7bfcd746ec4e64f5d2027f8a33f0be53d942e"
+    },
+    {
+      "path": "diagnostics-dune-checker.png",
+      "profile": "dune-light",
+      "capture_member": "v11-source-x/dune-light/checker-source-page-1.png",
+      "bytes": 75180,
+      "sha256": "a026e4346047a083c3547725793091986f17fd7382f3daaaa002e9584e2b72a3"
+    },
+    {
+      "path": "diagnostics-classic-long-chain.png",
+      "profile": "classic-large",
+      "capture_member": "v11-source-x/classic-large/checker-long-chain.png",
+      "bytes": 103586,
+      "sha256": "4eb10da3f4a740b19d4b624ea46689ba41a7c2b50407a3037ecaec6a82e93453"
+    }
+  ]
+}

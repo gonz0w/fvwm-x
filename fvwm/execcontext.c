@@ -53,6 +53,12 @@ static void _exc_change_context(
 	exec_context_t *exc, exec_context_changes_t *ecc,
 	exec_context_change_mask_t mask)
 {
+	if (mask & ECC_SOURCE)
+	{
+		fvwm_config_origin_retain(ecc->source);
+		fvwm_config_origin_release(exc->source);
+		exc->source = ecc->source;
+	}
 	if (mask & ECC_TYPE)
 	{
 		exc->type = ecc->type;
@@ -157,6 +163,7 @@ const exec_context_t *exc_clone_context(
 		fvwm_debug(__func__, "%p\n", exc);
 	}
 	memcpy(exc, excin, sizeof(*exc));
+	fvwm_config_origin_retain(exc->source);
 	/* A clone owns its triggering event, even when no override is supplied.
 	 * Window/module references and the live last-event pointer stay borrowed. */
 	exc->private_data.te = *excin->x.etrigger;
@@ -179,6 +186,7 @@ void exc_destroy_context(
 		for(i=0;i<nx;i++) fvwm_debug(__func__, "  ");
 		fvwm_debug(__func__, "%p\n", exc);
 	}
+	fvwm_config_origin_release(exc->source);
 	free((exec_context_t *)exc);
 
 	return;

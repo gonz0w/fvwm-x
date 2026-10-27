@@ -21,7 +21,8 @@ extern const char *get_current_read_dir(void);
  * cond_rc_t is passed thru in case piperead is running in a function.
  **/
 void run_command_stream(
-	cond_rc_t *cond_rc, FILE *f, const exec_context_t *exc);
+	cond_rc_t *cond_rc, FILE *f, const exec_context_t *exc,
+	cmdparser_context_t *pc);
 
 
 /**

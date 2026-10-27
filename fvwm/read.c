@@ -22,6 +22,7 @@
 #include "libs/config_line.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
 #endif
@@ -114,13 +115,16 @@ const char *get_current_read_dir(void)
 /*
  * Read and execute each line from stream.
  */
-void run_command_stream(
+static void run_command_stream_origin(
 	cond_rc_t *cond_rc, FILE *f, const exec_context_t *exc,
-	cmdparser_context_t *pc)
+	cmdparser_context_t *pc, const char *path)
 {
 	char *tline;
 	char *line = NULL;
 	size_t capacity = 0;
+	size_t next_line = 1, first, last;
+	const exec_context_t *line_exc;
+	exec_context_changes_t ecc;
 	int status = 0;
 	int count;
 
@@ -141,7 +145,8 @@ void run_command_stream(
 
 	for (count = 0; count < MAX_READ_ITEMS; count++)
 	{
-		status = fvwm_config_line(f, &line, &capacity);
+		status = fvwm_config_line_span(f, &line, &capacity,
+			&next_line, &first, &last);
 		if (status <= 0)
 			break;
 		tline=line;
@@ -149,7 +154,14 @@ void run_command_stream(
 		{
 			tline++;
 		}
-		execute_function(cond_rc, exc, tline, pc, 0);
+		ecc.source = path ? fvwm_config_origin_file(
+			path, first, last, exc->source) :
+			fvwm_config_origin_derive(exc->source, "generated",
+				"PipeRead generated command; invocation site");
+		line_exc = exc_clone_context(exc, &ecc, ECC_SOURCE);
+		fvwm_config_origin_release(ecc.source);
+		execute_function(cond_rc, line_exc, tline, pc, 0);
+		exc_destroy_context(line_exc);
 	}
 	if (count == MAX_READ_ITEMS)
 	{
@@ -159,13 +171,26 @@ void run_command_stream(
 	}
 	else if (status < 0)
 	{
-		fvwm_debug(__func__, "Invalid, excessive or unreadable configuration line");
+		const char *saved_source = log_exchange_context(
+			fvwm_config_origin_json(NULL));
+		fvwm_debug(__func__, "Invalid, excessive or unreadable configuration "
+			"line (stream '%s'; source span unavailable)",
+			path ? path : "generated");
+		log_exchange_context(saved_source);
 		if (cond_rc != NULL)
 			cond_rc->rc = COND_RC_ERROR;
 	}
 	free(line);
 
 	return;
+}
+
+
+void run_command_stream(
+	cond_rc_t *cond_rc, FILE *f, const exec_context_t *exc,
+	cmdparser_context_t *pc)
+{
+	run_command_stream_origin(cond_rc, f, exc, pc, NULL);
 }
 
 
@@ -213,6 +238,8 @@ int run_command_file(
 	char *filename, const exec_context_t *exc, cmdparser_context_t *pc)
 {
 	char *full_filename;
+	char *source_filename;
+	const char *opened_filename;
 	FILE *f = NULL;
 
 	/* We attempt to open the filename by doing the following:
@@ -255,24 +282,35 @@ int run_command_file(
 		}
 	}
 
-	if ((f == NULL) &&
-		(f = fopen(filename, "r")) == NULL) {
-
-		/* We really couldn't open the file. */
-		free(full_filename);
-		return 0;
+	opened_filename = full_filename;
+	if (f == NULL)
+	{
+		f = fopen(filename, "r");
+		if (f == NULL)
+		{
+			free(full_filename);
+			return 0;
+		}
+		opened_filename = filename;
 	}
+	/* Diagnostic identity is independent of the existing current-read
+	 * expansion variables. Keep their lookup/spelling behavior unchanged. */
+	source_filename = realpath(opened_filename, NULL);
+	if (source_filename == NULL)
+		source_filename = fxstrdup(opened_filename);
 
 	if (push_read_file(full_filename) == 0)
 	{
 		free(full_filename);
+		free(source_filename);
 		fclose(f);
 		return 0;
 	}
-	run_command_stream(NULL, f, exc, pc);
+	run_command_stream_origin(NULL, f, exc, pc, source_filename);
 	fclose(f);
 	pop_read_file();
 
+	free(source_filename);
 	free(full_filename);
 
 	return 1;

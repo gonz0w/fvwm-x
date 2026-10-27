@@ -30,7 +30,7 @@ def run(probe, perl, module_library):
             [perl, '-I' + str(ROOT / 'perllib'), str(ROOT / 'tests/protocol_metadata_decode.pl'),
              str(module_library.resolve())],
             input=packets)
-        assert len(json.loads(result)) == 10
+        assert len(json.loads(result)) == 11
         print(result.decode().strip())
 
 

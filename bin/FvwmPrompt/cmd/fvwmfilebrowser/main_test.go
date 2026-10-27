@@ -297,7 +297,7 @@ func TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection(t *testing.T) {
 	next := *s
 	next.Items = append([]filemodel.Item(nil), s.Items[1:]...)
 	next.Items[11].Name = []byte("renamed")
-	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
+	if err := completeBoundSnapshot(t, &b, workResult{Status: "loaded", Snapshot: &next}); err != nil {
 		t.Fatal(err)
 	}
 	if b.model.Focus != "id12" || !b.model.Selected["id12"] {
@@ -305,7 +305,7 @@ func TestRefreshKeepsFocusedIdentityAndDropsRemovedSelection(t *testing.T) {
 	}
 
 	next.Items = next.Items[:10]
-	if err := b.completed(completedWork{result: workResult{Status: "loaded", Snapshot: &next}}); err != nil {
+	if err := completeBoundSnapshot(t, &b, workResult{Status: "loaded", Snapshot: &next}); err != nil {
 		t.Fatal(err)
 	}
 	if b.model.Focus == "id12" || len(b.model.SelectedIDs()) != 0 {
@@ -433,7 +433,7 @@ func TestCompletedRefreshPreservesNeighborsAndReportsChanges(t *testing.T) {
 		t.Fatal(b.status, b.model.Focus, b.model.Selected, b.inspected)
 	}
 	generation := b.model.Generation
-	if err := b.completed(event); err != nil || b.model.Generation != generation || b.status != "Refreshed: no entry metadata changes." {
+	if err := completeBoundSnapshot(t, &b, event.result); err != nil || b.model.Generation != generation || b.status != "Refreshed: no entry metadata changes." {
 		t.Fatal(err, b.status)
 	}
 	// A superseded scan cannot publish a removed selection or old observation.

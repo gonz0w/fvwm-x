@@ -45,7 +45,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'transport.test',
         'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
-        'commandmeta.test', 'desktopinspect.test',
+        'commandmeta.test', 'desktopinspect.test', 'viewbinding.test',
     ],
     input: fvwmprompt_files,
     command: [

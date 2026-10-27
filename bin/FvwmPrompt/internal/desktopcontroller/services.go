@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"reflect"
 	"strconv"
 	"strings"
 	"syscall"
@@ -160,6 +161,10 @@ func (d *Controller) pollLocker() {
 	}
 }
 func (d *Controller) power(action string) {
+	if d.closed || d.systemBinding.lost {
+		d.notice("Power control is unavailable; wait for a fresh desktop status result.")
+		return
+	}
 	if _, pending := d.jobs["power"]; pending {
 		d.notice("A power request is already pending; no additional request was sent.")
 		return
@@ -328,12 +333,21 @@ func checkedReport(value any) (desktopcheck.Result, error) {
 	return v, nil
 }
 func (d *Controller) publishJob(result job) error {
+	if d.closed {
+		return errors.New("Desktop controller is closed")
+	}
 	switch result.key {
 	case "apps":
 		apps, err := checkedApps(result.result)
 		if err != nil {
 			return err
 		}
+		// A mapped native menu may outlive a refused DestroyMenu. Its rows
+		// must never reinterpret an old index against a different snapshot.
+		if d.appGeneration == "" || !reflect.DeepEqual(d.apps, apps) {
+			d.appGeneration = newID(16)
+		}
+		d.appBinding.known, d.appBinding.lost = true, false
 		d.apps = apps
 		d.applicationMenu(nil)
 	case "status":
@@ -341,6 +355,7 @@ func (d *Controller) publishJob(result job) error {
 		if err != nil {
 			return err
 		}
+		d.systemBinding.known, d.systemBinding.lost = true, false
 		d.status = status
 		cpu := "--"
 		if status.CPU != nil && d.lastCPU != nil {
@@ -358,7 +373,7 @@ func (d *Controller) publishJob(result job) error {
 		if status.Battery != nil && d.width >= 1600 {
 			text += "  BAT " + strconv.Itoa(*status.Battery) + "%"
 		}
-		d.button("status", text)
+		d.statusButton(text)
 		d.systemMenu()
 	case "files":
 		records, err := resultAs[[]desktopworker.FileMenuEntry](result.result)
@@ -409,6 +424,10 @@ func (d *Controller) pollJobs() {
 		select {
 		case result := <-d.completed:
 			d.active--
+			if result.origin != nil && result.origin != d.jobs[result.key] {
+				d.retireMenuJob(result.origin)
+				continue
+			}
 			delete(d.jobs, result.key)
 			if result.key == "inspection" {
 				d.finishInspection(result)
@@ -417,11 +436,21 @@ func (d *Controller) pollJobs() {
 			record := d.operationJobs[result.key]
 			delete(d.operationJobs, result.key)
 			if record != nil && record.cancelRequested {
+				d.retireMenuJob(result.origin)
 				d.operationChanged(record, "cancelled")
 				continue
 			}
 			err := result.err
-			publication := err == nil
+			if d.menuBinding(result.key) != nil {
+				err = d.completeMenuJob(result)
+				if errors.Is(err, errMenuSuperseded) {
+					if record != nil {
+						d.operationChanged(record, "cancelled")
+					}
+					continue
+				}
+			}
+			publication := result.err == nil
 			if err == nil {
 				err = d.publishJob(result)
 			}
@@ -455,6 +484,8 @@ func (d *Controller) pollJobs() {
 			for _, r := range d.operations {
 				d.announceOperation(r)
 			}
+			d.startMenuJob("apps")
+			d.startMenuJob("status")
 			d.startJobs()
 			return
 		}

@@ -1,0 +1,1430 @@
+{
+  "owner": "Cam",
+  "issue": 213,
+  "base": "f336d638285d722eecda9faa8927ad0a9e44882b",
+  "candidate": "codex/r1-native-bindings",
+  "status": "all finite criteria qualified; closes on merge",
+  "criteria": {
+    "1": "passed; see corresponding frozen-acceptance table row",
+    "2": "passed; see corresponding frozen-acceptance table row",
+    "3": "passed; see corresponding frozen-acceptance table row",
+    "4": "passed; see corresponding frozen-acceptance table row",
+    "5": "passed; see corresponding frozen-acceptance table row"
+  },
+  "linux": {
+    "status": "passed",
+    "archive": {
+      "sha256": "aeff7750507b84dc43f39385ce51ed3be5c1d6b2894bee645ff29bfce1e84544",
+      "bytes": 5847625,
+      "mode": 420
+    },
+    "verified_payloads": 790,
+    "capture_count": 21,
+    "final_native_root": "native/run-ydgdxzuu",
+    "source_files": 754,
+    "full_gzip_crc": true
+  },
+  "linux_binaries": {
+    "fvwm3": {
+      "sha256": "25cc98a899bdd6368d792cb32ded51e1b127f774f08c250ab276e5112e9dec6f",
+      "bytes": 5479448,
+      "mode": 493
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "sha256": "de385e9ce18aa2868ff25bc2e6f5d7c5a2c893d95c9fc86ee6b1f9603fc2fc2d",
+      "bytes": 444488,
+      "mode": 493
+    },
+    "modules/FvwmForm/FvwmForm": {
+      "sha256": "89c0f18bea1c0f7c181242bbedcce44053fe45e92e46a815fa2150a7cd318a33",
+      "bytes": 1636240,
+      "mode": 493
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "sha256": "92ecd6dda7a0dd1548ebe4703f1537cd7d627d30164165ee30127ae21ca7ce16",
+      "bytes": 2211368,
+      "mode": 493
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "be1123883c427c4941454c526a5a5dc00d42c4b02585343a8d04163b522f3879",
+      "bytes": 5580640,
+      "mode": 493
+    },
+    "bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "6db5a9f13afa241e78f1fee4202a919683f80a59a620b891e9603ef7ca710439",
+      "bytes": 5634701,
+      "mode": 493
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "sha256": "4fc1b84dbc7f26d507290684a91d142febd00da4f527a3a5fa51600afb7ab9ea",
+      "bytes": 5810081,
+      "mode": 493
+    },
+    "bin/FvwmPrompt/FvwmCommand": {
+      "sha256": "6e3b1e047fe5db826e3d45e1652bcd200e1c9e12a54959a5ee56708df02db4e5",
+      "bytes": 4690217,
+      "mode": 493
+    },
+    "bin/fvwm-desktop-capture": {
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608,
+      "mode": 493
+    }
+  },
+  "linux_native": {
+    "slate-dark": {
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "d013616894c05e0e4172d439e3da6d0ab6889fcf9143913a0ce71026c5ad21a8",
+      "elapsed_seconds": 8.26088898199987,
+      "screenshots": [
+        "menu-unavailable.png",
+        "menu-recovered.png",
+        "menu-mapped-old-publication.png",
+        "menu-reopened-latest.png",
+        "browser-progress-unknown.png",
+        "browser-ready.png",
+        "browser-unavailable.png"
+      ],
+      "observer_unexpected_x_errors": [],
+      "desktop_burst_delta": {
+        "invalidations": 17,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "browser_intent_burst_before": {
+        "state": "loading",
+        "sources": 1,
+        "identity_bytes": 39,
+        "in_flight": true,
+        "pending": false,
+        "invalidations": 3,
+        "started": 3,
+        "published": 2,
+        "rejected": 0
+      },
+      "browser_intent_burst_after": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 19,
+        "started": 9,
+        "published": 3,
+        "rejected": 6
+      },
+      "idle": {
+        "seconds": 3.0086101990000316,
+        "desktop_before": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "desktop_after": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "browser_before": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "browser_after": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "proc_before": [
+          {
+            "pid": 3714,
+            "cpu_ticks": 15,
+            "rss": "VmRSS:\t    7704 kB"
+          },
+          {
+            "pid": 3859,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    6916 kB"
+          },
+          {
+            "pid": 3721,
+            "cpu_ticks": 1,
+            "rss": "VmRSS:\t    8848 kB"
+          }
+        ],
+        "proc_after": [
+          {
+            "pid": 3714,
+            "cpu_ticks": 15,
+            "rss": "VmRSS:\t    7704 kB"
+          },
+          {
+            "pid": 3859,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    6948 kB"
+          },
+          {
+            "pid": 3721,
+            "cpu_ticks": 2,
+            "rss": "VmRSS:\t    8856 kB"
+          }
+        ],
+        "kernel_wakeups_measured": false
+      },
+      "literal_application_label_did_not_execute": true,
+      "raw_full_result": "native/run-ydgdxzuu/slate-dark/result.json"
+    },
+    "dune-light": {
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "747c813b12709c2e1fd2adf1af28fdf807db0483d7eb6761c7ee9aff5ed58f9a",
+      "elapsed_seconds": 8.31988543999978,
+      "screenshots": [
+        "menu-unavailable.png",
+        "menu-recovered.png",
+        "menu-mapped-old-publication.png",
+        "menu-reopened-latest.png",
+        "browser-progress-unknown.png",
+        "browser-ready.png",
+        "browser-unavailable.png"
+      ],
+      "observer_unexpected_x_errors": [],
+      "desktop_burst_delta": {
+        "invalidations": 17,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "browser_intent_burst_before": {
+        "state": "loading",
+        "sources": 1,
+        "identity_bytes": 39,
+        "in_flight": true,
+        "pending": false,
+        "invalidations": 3,
+        "started": 3,
+        "published": 2,
+        "rejected": 0
+      },
+      "browser_intent_burst_after": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 19,
+        "started": 10,
+        "published": 3,
+        "rejected": 7
+      },
+      "idle": {
+        "seconds": 3.0115146840003035,
+        "desktop_before": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "desktop_after": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "browser_before": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "browser_after": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "proc_before": [
+          {
+            "pid": 3888,
+            "cpu_ticks": 19,
+            "rss": "VmRSS:\t   13968 kB"
+          },
+          {
+            "pid": 4031,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    6996 kB"
+          },
+          {
+            "pid": 3895,
+            "cpu_ticks": 2,
+            "rss": "VmRSS:\t    9440 kB"
+          }
+        ],
+        "proc_after": [
+          {
+            "pid": 3888,
+            "cpu_ticks": 19,
+            "rss": "VmRSS:\t   13968 kB"
+          },
+          {
+            "pid": 4031,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    7028 kB"
+          },
+          {
+            "pid": 3895,
+            "cpu_ticks": 2,
+            "rss": "VmRSS:\t    9456 kB"
+          }
+        ],
+        "kernel_wakeups_measured": false
+      },
+      "literal_application_label_did_not_execute": true,
+      "raw_full_result": "native/run-ydgdxzuu/dune-light/result.json"
+    },
+    "classic-large": {
+      "status": "passed",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "e9f24b2a17048f04879b1f07a8e51b2df6a0449d64113fd713269c716c36dcb6",
+      "elapsed_seconds": 8.281264459999875,
+      "screenshots": [
+        "menu-unavailable.png",
+        "menu-recovered.png",
+        "menu-mapped-old-publication.png",
+        "menu-reopened-latest.png",
+        "browser-progress-unknown.png",
+        "browser-ready.png",
+        "browser-unavailable.png"
+      ],
+      "observer_unexpected_x_errors": [],
+      "desktop_burst_delta": {
+        "invalidations": 17,
+        "started": 2,
+        "published": 1,
+        "rejected": 1
+      },
+      "browser_intent_burst_before": {
+        "state": "loading",
+        "sources": 1,
+        "identity_bytes": 39,
+        "in_flight": true,
+        "pending": false,
+        "invalidations": 3,
+        "started": 3,
+        "published": 2,
+        "rejected": 0
+      },
+      "browser_intent_burst_after": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 19,
+        "started": 12,
+        "published": 4,
+        "rejected": 8
+      },
+      "idle": {
+        "seconds": 3.009853002,
+        "desktop_before": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "desktop_after": {
+          "settings": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 72,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 5,
+              "started": 3,
+              "published": 3,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 14
+          },
+          "apps": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 1,
+              "started": 1,
+              "published": 1,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 1
+          },
+          "system": {
+            "policy": {
+              "state": "current",
+              "sources": 1,
+              "identity_bytes": 39,
+              "in_flight": false,
+              "pending": false,
+              "invalidations": 2,
+              "started": 2,
+              "published": 2,
+              "rejected": 0
+            },
+            "known": true,
+            "lost": false,
+            "menus": 3
+          }
+        },
+        "browser_before": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "browser_after": {
+          "intent": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 39,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 1,
+            "started": 1,
+            "published": 1,
+            "rejected": 0
+          },
+          "projection": {
+            "state": "current",
+            "sources": 1,
+            "identity_bytes": 69,
+            "in_flight": false,
+            "pending": false,
+            "invalidations": 4,
+            "started": 2,
+            "published": 2,
+            "rejected": 0
+          },
+          "watch_timer_active": false
+        },
+        "proc_before": [
+          {
+            "pid": 4060,
+            "cpu_ticks": 17,
+            "rss": "VmRSS:\t    7548 kB"
+          },
+          {
+            "pid": 4209,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    7000 kB"
+          },
+          {
+            "pid": 4067,
+            "cpu_ticks": 1,
+            "rss": "VmRSS:\t    8620 kB"
+          }
+        ],
+        "proc_after": [
+          {
+            "pid": 4060,
+            "cpu_ticks": 17,
+            "rss": "VmRSS:\t    7548 kB"
+          },
+          {
+            "pid": 4209,
+            "cpu_ticks": 0,
+            "rss": "VmRSS:\t    7032 kB"
+          },
+          {
+            "pid": 4067,
+            "cpu_ticks": 2,
+            "rss": "VmRSS:\t    8628 kB"
+          }
+        ],
+        "kernel_wakeups_measured": false
+      },
+      "literal_application_label_did_not_execute": true,
+      "raw_full_result": "native/run-ydgdxzuu/classic-large/result.json"
+    }
+  },
+  "delegated_go_support": {
+    "status": "passed",
+    "scope": "Five delegated default support targets; four affected Go packages and two direct Go builds each. No C/module/native-X/full-install rebuild.",
+    "source": {
+      "archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+      "base": "f336d638285d722eecda9faa8927ad0a9e44882b",
+      "files": 2654,
+      "go_files": 608,
+      "go_inventory_sha256": "4f05e53afc15e9eae383aa10d0c8d619488da3575d9413d2af903d537584964e",
+      "packages": [
+        "internal/viewbinding",
+        "internal/desktopcontroller",
+        "cmd/fvwmfilebrowser",
+        "cmd/fvwmdesktop"
+      ],
+      "native_scope": "none; existing PR268 C/eight-profile native receipts retained",
+      "lead_go_freeze": {
+        "menu_bindings_sha256": "18103704c03efa635a55e84cdae6fa23e126f12069ad251f44b9c3699b2bfed0",
+        "menu_bindings_test_sha256": "dfb7d81a5131ae98f381fe5ba75160e21376bc2a0cbff07fe937c2c4cd556e5a"
+      }
+    },
+    "targets": {
+      "linux-amd64": {
+        "status": "passed",
+        "archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/linux-amd64/default/evidence.tgz",
+          "sha256": "789c7e55628e905e6b7bb4c72e82ab1c01f57ccbce99026fb0e8d9dd853cd77d",
+          "bytes": 6970249,
+          "mode": 420
+        },
+        "files_verified_excluding_manifest": 18,
+        "payloads_including_manifest": 19,
+        "gzip_crc_to_eof": true,
+        "tested_source_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+        "actual_os_uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "sdk_binary": {
+          "sha256": "548d3c32f83fa81152f543eb1526be7884cfe0526eb5e9ce29d3eca14786e7e0",
+          "bytes": 17164055,
+          "mode": 493
+        },
+        "sdk_version": "go version go1.27.2 linux/amd64",
+        "binaries": {
+          "FvwmDesktop": {
+            "sha256": "7b0313ccfc1aa536a7b037b4044ff33b46dd96eb005438540f629224fd69a474",
+            "bytes": 5916153,
+            "mode": 493
+          },
+          "fvwm-file-browser": {
+            "sha256": "6c05d7cc54c7239e2de9270cb8a85120e48d46dc2de750285039750c7b0b87cf",
+            "bytes": 5997095,
+            "mode": 493
+          }
+        },
+        "commands": [
+          {
+            "label": "sdk-version",
+            "status": 0,
+            "seconds": 0.124,
+            "command": [
+              "go",
+              "version"
+            ]
+          },
+          {
+            "label": "go-environment",
+            "status": 0,
+            "seconds": 0.071,
+            "command": [
+              "go",
+              "env",
+              "GOOS",
+              "GOARCH",
+              "CGO_ENABLED",
+              "GOFLAGS",
+              "GOVERSION"
+            ]
+          },
+          {
+            "label": "go-policy",
+            "status": 0,
+            "seconds": 21.346,
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/viewbinding",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-FvwmDesktop",
+            "status": 0,
+            "seconds": 3.011,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-ldflags",
+              "-X main.pngEnabled=true",
+              "-o",
+              "/root/fvwm-module-waits-20261015/r1-bindings-default-checkpoint/FvwmDesktop",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-fvwm-file-browser",
+            "status": 0,
+            "seconds": 5.372,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/root/fvwm-module-waits-20261015/r1-bindings-default-checkpoint/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ]
+          }
+        ]
+      },
+      "freebsd-arm64": {
+        "status": "passed",
+        "archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/freebsd-arm64/default/evidence.tgz",
+          "sha256": "e02603968d745cdf63e455d2abc7454988a4e8807154c8bc3fa41507e09f4761",
+          "bytes": 6227956,
+          "mode": 420
+        },
+        "files_verified_excluding_manifest": 18,
+        "payloads_including_manifest": 19,
+        "gzip_crc_to_eof": true,
+        "tested_source_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+        "actual_os_uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "sdk_binary": {
+          "sha256": "ffdf9f966da8b37903ac1d1f95dd5aa8c8ff2212e693a797d5076f4a42b5a64a",
+          "bytes": 15722528,
+          "mode": 493
+        },
+        "sdk_version": "go version go1.27.2 freebsd/arm64",
+        "binaries": {
+          "FvwmDesktop": {
+            "sha256": "a1ab146ce5119f3b2035c1d54a8bcb1a073b5b7d1f6360b2114f1e6b0ed594ac",
+            "bytes": 5486001,
+            "mode": 493
+          },
+          "fvwm-file-browser": {
+            "sha256": "b5c9f58cdf00c1b03c15509de3802fa98e86a9f01db1d6b63252cf6b0e9d213c",
+            "bytes": 5525836,
+            "mode": 493
+          }
+        },
+        "commands": [
+          {
+            "label": "sdk-version",
+            "status": 0,
+            "seconds": 0.004,
+            "command": [
+              "go",
+              "version"
+            ]
+          },
+          {
+            "label": "go-environment",
+            "status": 0,
+            "seconds": 0.004,
+            "command": [
+              "go",
+              "env",
+              "GOOS",
+              "GOARCH",
+              "CGO_ENABLED",
+              "GOFLAGS",
+              "GOVERSION"
+            ]
+          },
+          {
+            "label": "go-policy",
+            "status": 0,
+            "seconds": 6.369,
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/viewbinding",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-FvwmDesktop",
+            "status": 0,
+            "seconds": 0.17,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-ldflags",
+              "-X main.pngEnabled=true",
+              "-o",
+              "/root/fvwm-module-waits-20261015/r1-bindings-default-checkpoint/FvwmDesktop",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-fvwm-file-browser",
+            "status": 0,
+            "seconds": 0.27,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/root/fvwm-module-waits-20261015/r1-bindings-default-checkpoint/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ]
+          }
+        ]
+      },
+      "freebsd-amd64": {
+        "status": "passed",
+        "archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/freebsd-amd64/default/evidence.tgz",
+          "sha256": "2d411babad32ea339ad5e8b9dc3996b02bd19bb2152e6be29a743a2bcdc5b38a",
+          "bytes": 6791997,
+          "mode": 420
+        },
+        "files_verified_excluding_manifest": 18,
+        "payloads_including_manifest": 19,
+        "gzip_crc_to_eof": true,
+        "tested_source_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+        "actual_os_uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ],
+        "sdk_binary": {
+          "sha256": "7d519639b2c3582f3d9a8f3b38beb7d9b899c5282020fafe999a2631a51df06b",
+          "bytes": 17088097,
+          "mode": 493
+        },
+        "sdk_version": "go version go1.27.2 freebsd/amd64",
+        "binaries": {
+          "FvwmDesktop": {
+            "sha256": "492f188a1ca49b4ac6ffbcef01d12ca7ea8588c2f33055d96d58f73a93aec53e",
+            "bytes": 5774713,
+            "mode": 493
+          },
+          "fvwm-file-browser": {
+            "sha256": "da19d1629d30300458fbed40e2fc41e4cb0663bf93b176445e83e5c0c02f0319",
+            "bytes": 5882217,
+            "mode": 493
+          }
+        },
+        "commands": [
+          {
+            "label": "sdk-version",
+            "status": 0,
+            "seconds": 0.137,
+            "command": [
+              "go",
+              "version"
+            ]
+          },
+          {
+            "label": "go-environment",
+            "status": 0,
+            "seconds": 0.029,
+            "command": [
+              "go",
+              "env",
+              "GOOS",
+              "GOARCH",
+              "CGO_ENABLED",
+              "GOFLAGS",
+              "GOVERSION"
+            ]
+          },
+          {
+            "label": "go-policy",
+            "status": 0,
+            "seconds": 23.019,
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/viewbinding",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-FvwmDesktop",
+            "status": 0,
+            "seconds": 3.699,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-ldflags",
+              "-X main.pngEnabled=true",
+              "-o",
+              "/root/fvwm-style-simplification-recovery-20261016/r1-bindings-default-checkpoint/FvwmDesktop",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-fvwm-file-browser",
+            "status": 0,
+            "seconds": 5.509,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/root/fvwm-style-simplification-recovery-20261016/r1-bindings-default-checkpoint/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ]
+          }
+        ]
+      },
+      "openbsd-arm64": {
+        "status": "passed",
+        "archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/bsd/openbsd-arm64-job/r1-bindings-default-evidence.tgz",
+          "sha256": "c7aea3954f5fbe391b50221e7842013c7bc6849a2f8100391d0ac86086eba584",
+          "bytes": 6203697,
+          "mode": 420
+        },
+        "files_verified_excluding_manifest": 18,
+        "payloads_including_manifest": 19,
+        "gzip_crc_to_eof": true,
+        "tested_source_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+        "actual_os_uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ],
+        "sdk_binary": {
+          "sha256": "f99b830b964c9486ec0c52eedbfa5db227369b06874af8e2eaca8d36d64ae376",
+          "bytes": 15791960,
+          "mode": 448
+        },
+        "sdk_version": "go version go1.27.2 openbsd/arm64",
+        "binaries": {
+          "FvwmDesktop": {
+            "sha256": "a44d33c3c3b431191c64e5de517c22ff609c61eab8d0465975b0203aad7640a6",
+            "bytes": 5485598,
+            "mode": 493
+          },
+          "fvwm-file-browser": {
+            "sha256": "5bf53b4f15391439c0aceae4447efb633d3a39fb4bd8b1ba49bab53015a7e21e",
+            "bytes": 5518888,
+            "mode": 493
+          }
+        },
+        "commands": [
+          {
+            "label": "sdk-version",
+            "status": 0,
+            "seconds": 0.027,
+            "command": [
+              "go",
+              "version"
+            ]
+          },
+          {
+            "label": "go-environment",
+            "status": 0,
+            "seconds": 0.021,
+            "command": [
+              "go",
+              "env",
+              "GOOS",
+              "GOARCH",
+              "CGO_ENABLED",
+              "GOFLAGS",
+              "GOVERSION"
+            ]
+          },
+          {
+            "label": "go-policy",
+            "status": 0,
+            "seconds": 4.717,
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/viewbinding",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-FvwmDesktop",
+            "status": 0,
+            "seconds": 0.338,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-ldflags",
+              "-X main.pngEnabled=true",
+              "-o",
+              "/home/fvwm-ci/r1-bindings-default-checkpoint/FvwmDesktop",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-fvwm-file-browser",
+            "status": 0,
+            "seconds": 0.527,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/home/fvwm-ci/r1-bindings-default-checkpoint/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ]
+          }
+        ]
+      },
+      "openbsd-amd64": {
+        "status": "passed",
+        "archive": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/bsd/openbsd-amd64-job/r1-bindings-default-evidence.tgz",
+          "sha256": "6c0f48d8d8fec54e418e1bfae4815d64ed75d977e22d4bbbbe6402b807ab0968",
+          "bytes": 6758217,
+          "mode": 420
+        },
+        "files_verified_excluding_manifest": 18,
+        "payloads_including_manifest": 19,
+        "gzip_crc_to_eof": true,
+        "tested_source_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+        "actual_os_uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "sdk_binary": {
+          "sha256": "d31495212ad7b67ee9044938f583ff3542756d87c60e6c7d73ef07ac26da4e66",
+          "bytes": 17041868,
+          "mode": 448
+        },
+        "sdk_version": "go version go1.27.2 openbsd/amd64",
+        "binaries": {
+          "FvwmDesktop": {
+            "sha256": "06b6a597c7cd3115fcacb2c495c7c3a021ffb2f61006527bf719d8cbe5b6d8dd",
+            "bytes": 5767606,
+            "mode": 493
+          },
+          "fvwm-file-browser": {
+            "sha256": "f09a4563a277ff4d88af4db57703714ea7606c4029a0568a895c88e69d2bd82c",
+            "bytes": 5875573,
+            "mode": 493
+          }
+        },
+        "commands": [
+          {
+            "label": "sdk-version",
+            "status": 0,
+            "seconds": 0.21,
+            "command": [
+              "go",
+              "version"
+            ]
+          },
+          {
+            "label": "go-environment",
+            "status": 0,
+            "seconds": 0.1,
+            "command": [
+              "go",
+              "env",
+              "GOOS",
+              "GOARCH",
+              "CGO_ENABLED",
+              "GOFLAGS",
+              "GOVERSION"
+            ]
+          },
+          {
+            "label": "go-policy",
+            "status": 0,
+            "seconds": 63.057,
+            "command": [
+              "go",
+              "test",
+              "-mod=vendor",
+              "-count=1",
+              "./internal/viewbinding",
+              "./internal/desktopcontroller",
+              "./cmd/fvwmfilebrowser",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-FvwmDesktop",
+            "status": 0,
+            "seconds": 4.099,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-ldflags",
+              "-X main.pngEnabled=true",
+              "-o",
+              "/home/fvwm-ci/r1-bindings-default-checkpoint/FvwmDesktop",
+              "./cmd/fvwmdesktop"
+            ]
+          },
+          {
+            "label": "build-fvwm-file-browser",
+            "status": 0,
+            "seconds": 6.19,
+            "command": [
+              "go",
+              "build",
+              "-mod=vendor",
+              "-o",
+              "/home/fvwm-ci/r1-bindings-default-checkpoint/fvwm-file-browser",
+              "./cmd/fvwmfilebrowser"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "source_guard": {
+    "linux_final_sha256": "c7f146aef6885b24c7b563b4b97b87b9006da091561d3deb03a3806ee1f01772",
+    "final_implementation_files": 754,
+    "extra_go_files": 0,
+    "platform_two_literal_delta": {
+      "tested_archive_sha256": "93d5a8787a9d3460b54c0ee58f3d4e467f00c5afd2d3392f4dc5ce210801f248",
+      "tested_base": "f336d638285d722eecda9faa8927ad0a9e44882b",
+      "status": "passed-reviewed-deltas",
+      "claim": "All compiled Go inputs equal tested platform bytes except exactly two reviewed browser display literals; no blanket final byte-identity claim.",
+      "reviewed_ui_replacements": [
+        [
+          "; refresh to obtain a current snapshot.",
+          "; Refresh for a current snapshot."
+        ],
+        [
+          "Actions: Open %d; Properties %s; Terminal %s; Custom %s.",
+          "Open %d; Properties %s; Terminal %s; Custom %s"
+        ]
+      ],
+      "browser_tested_sha256": "9ee68dde7853922a1d2c9f4ec53aeac3984891987b5da46f7f57c4515008f594",
+      "browser_final_sha256": "4044d2b4601eb78d0c5326a2b7cd74fb80b43497f9ca6d4eaa28bc364f4bf1cd",
+      "unexpected": []
+    },
+    "other_changes": "Documentation/gallery, Meson registration, and native/regression fixture-only changes; no other compiled Go delta."
+  },
+  "gallery": {
+    "doc/screenshots/bindings-slate-ready.png": {
+      "capture": "slate-dark/browser-ready.png",
+      "sha256": "a1016bfbfdc3aca6d0d1a4c42e45349bd67e15ddbd045f3326100de5e3fe2552",
+      "bytes": 83931
+    },
+    "doc/screenshots/bindings-dune-loading.png": {
+      "capture": "dune-light/browser-progress-unknown.png",
+      "sha256": "a60cf93d5fd7d353b7ec6c6d23f01c107fef574b7e655fe8399b290b602a7479",
+      "bytes": 85333
+    },
+    "doc/screenshots/bindings-large-unavailable.png": {
+      "capture": "classic-large/browser-unavailable.png",
+      "sha256": "e387693d282b5a9d09069ec7530ac525c23a0f355d83aa73a3b1d616d4995db3",
+      "bytes": 155244
+    },
+    "doc/screenshots/bindings-dune-menu-unavailable.png": {
+      "capture": "dune-light/menu-unavailable.png",
+      "sha256": "809086b15114080591c187345fdd8fa84ce8bfba54255586d529fa22e4c802f5",
+      "bytes": 39084
+    },
+    "doc/screenshots/bindings-large-menu-latest.png": {
+      "capture": "classic-large/menu-reopened-latest.png",
+      "sha256": "8876f94f24f0be427c6a5eba9f4afe8fd5134c513f739f2d5e590e5afe97dc26",
+      "bytes": 58694
+    },
+    "doc/screenshots/bindings-large-ready.png": {
+      "capture": "classic-large/browser-ready.png",
+      "sha256": "be6b8294ea83f15857d03c9dfa275a88245a678c1dafc990ad370b37014d3358",
+      "bytes": 155165
+    }
+  },
+  "cleanup": {
+    "linux": {
+      "container_stopped": "fvwm-x-linux-arm64-svg",
+      "other_running_containers": "",
+      "machine_stopped": true
+    },
+    "linux_guest_evidence_retirement": {
+      "returncode": 0,
+      "stdout": "{\"removed_only\": \"byte-verified r1-bindings guest evidence duplicates\", \"files\": 790, \"retained\": \"source/builds/disks/performance references\"}\n",
+      "stderr": ""
+    },
+    "other_targets": {
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/bsd/openbsd-arm64-job/disk.qcow2": {
+        "status": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-26/r1-native-bindings/platform/bsd/openbsd-amd64-job/disk.qcow2": {
+        "status": 1,
+        "stdout": "",
+        "stderr": ""
+      },
+      "persistent_ports": {
+        "status": 1,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  },
+  "limits": [
+    "Only changed Go default support gates are fresh; unchanged C/eight-profile native results retained from PR268",
+    "Three-second counters observe binding activity; kernel/whole-process wakeups unmeasured",
+    "Classic enlarged older status/properties hints can clip; new labels fit",
+    "No physical/assistive/compositor/full-release qualification",
+    "Performance worker/Script cases are not frontend or full-WM speed claims"
+  ],
+  "review": {
+    "source": "independent Sol/high requested; no remaining blocker",
+    "screenshots": "21 final actual captures independently inspected",
+    "model_routing": "requested routing, not independently attested actual model"
+  }
+}

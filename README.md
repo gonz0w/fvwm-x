@@ -3,20 +3,21 @@
 FVWM-X is an X11 window manager from FVWM3, for Linux, FreeBSD Xorg
 and OpenBSD Xenocara on AMD64 and ARM64.
 
-We target simpler code, responsiveness, safer resources and FVWM 3.x
-configuration/theme compatibility. No compositor or Wayland backend.
+We target responsive, maintainable code and FVWM configuration/theme compatibility.
+No compositor or Wayland backend.
 
-**Status:** in development toward R1, a highly configurable, fast, low-memory
-desktop lite. Planned features target R1; maintenance
-is scoped into R2/R3. Builds require Go; installed utilities need no compiler
-or Python packages. [Build/upgrade notes](INSTALL.md).
-Recent additions:
+**Status:** in development toward R1: a configurable, fast, low-memory desktop
+lite. Features target R1; maintenance is scoped into R2/R3. Builds require Go;
+installed utilities need no compiler or Python packages. [Build/upgrade notes](INSTALL.md).
+Recent work:
 
 - Icons, scaling, wallpapers, high contrast and configuration inspection.
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware runtime errors and non-executing, paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- An optional native file-browser prototype: scrolling list/grid, multi-selection,
+- Shared bounded native view bindings, stale-menu recovery and browser progress/
+  action-readiness labels.
+- Optional browser: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.
   Live updates retain drafts and selection; opt-in watching refreshes folders.
 
@@ -29,8 +30,8 @@ Dune light: grid with 4096 entries.
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
-Full file-manager workflows, protected clipboard handoff, broader accessibility and release qualification
-remain open. Existing folder menus remain the default. OpenBSD follows new
+File-manager workflows, protected clipboard, accessibility and release qualification
+remain open. Folder menus remain the default. OpenBSD follows new
 releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
 
 Next: [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)

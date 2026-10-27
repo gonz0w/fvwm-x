@@ -708,12 +708,33 @@ def run(args):
             window=ready(window)
             assert sort_frame == (window, sorted(children(window)))
             evidence['live_sort_preserves_path_draft_and_windows'] = True
+            # A failed path lookup retains the last snapshot but intentionally
+            # makes actions unavailable until an explicit successful refresh.
+            # Recover before the next test tries to activate a directory.
+            failed = rpc(provider=provider, scope='state')['result']
+            assert failed['bindings']['intent']['state'] == 'failed', failed
+            assert not failed['availability']['ready'] and not failed['busy'], failed
+            assert base64.b64decode(failed['path_bytes']) == os.fsencode(root), failed
+            key(window, b'F5')
+            assert callback().split()[3] == 'refresh'
+            window = ready(window)
+            recovered = rpc(provider=provider, scope='state')['result']
+            assert recovered['bindings']['intent']['state'] == 'current', recovered
+            assert recovered['availability']['ready'], recovered
+            assert base64.b64decode(recovered['path_bytes']) == os.fsencode(root), recovered
+            evidence['failed_path_explicit_refresh_recovery'] = True
             # Clear the entire native selection, navigate to the first directory
             # using focus alone, then use the native Up button.
             click(row_groups()[0][1][1]); callback(); window = ready(window)
             enter_list(); key(window, b'Home'); key(window, b'Return')
             callback(); window = ready(window)
+            entered = rpc(provider=provider, scope='state')['result']
+            assert base64.b64decode(entered['path_bytes']) == os.fsencode(root / '00-folder'), entered
+            assert entered['availability']['ready'], entered
             click(row_groups()[1][1][1]); callback(); window = ready(window)
+            returned = rpc(provider=provider, scope='state')['result']
+            assert base64.b64decode(returned['path_bytes']) == os.fsencode(root), returned
+            assert returned['availability']['ready'], returned
             evidence['focused_folder_activation_and_parent'] = True
             # Select the directory, then filter it away. Hidden selection survives
             # the new generation without admitting nonexistent bitmap bits.
@@ -863,6 +884,16 @@ def run(args):
             assert cancelled['work']['status'] == 'cancelling' and cancelled['busy'], cancelled
             window = ready(window); work_done(ticket, 'cancelled')
             capture('file-browser-ipc-cancelled.png')
+            # Cancelled work also leaves last-good data unavailable to effects.
+            state = rpc(provider=provider, scope='state')['result']
+            assert not state['availability']['ready'], state
+            denied = rpc(method='action', controlled=True, provider=provider,
+                generation=state['generation'], operation='custom', values={'index':0})
+            assert denied['error']['code'] == 'not_ready', denied
+            ticket = work_request('refresh', {})
+            window = ready(window)
+            assert work_done(ticket, 'loaded')['availability']['ready']
+            evidence['cancelled_work_refuses_effect_until_refresh'] = True
             # Configured programs stay local; a client supplies only an index.
             apply_control('selection', {'mode':'replace','ids':[named[b'file-00']]})
             report.unlink(missing_ok=True)

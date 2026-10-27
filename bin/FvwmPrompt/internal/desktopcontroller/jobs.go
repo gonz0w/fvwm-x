@@ -20,6 +20,7 @@ import (
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
+	"github.com/fvwmorg/FvwmPrompt/internal/viewbinding"
 	"golang.org/x/sys/unix"
 )
 
@@ -253,6 +254,9 @@ func resultAs[T any](value any) (T, error) {
 }
 
 type job struct {
+	binding *menuBinding
+	ticket  viewbinding.Ticket
+	origin  *job
 	key     string
 	running bool
 	result  any
@@ -261,7 +265,7 @@ type job struct {
 }
 
 func (d *Controller) submit(key string, run func(context.Context) (any, error)) bool {
-	if _, ok := d.jobs[key]; ok || len(d.jobs) >= 4 {
+	if _, ok := d.jobs[key]; d.closed || ok || len(d.jobs) >= 4 {
 		return false
 	}
 	j := &job{key: key, run: run}
@@ -270,16 +274,28 @@ func (d *Controller) submit(key string, run func(context.Context) (any, error)) 
 	return true
 }
 func (d *Controller) workerJob(key, operation string, args values) bool {
+	if d.menuBinding(key) != nil {
+		if _, exists := d.jobs[key]; exists || len(d.jobs) >= 4 {
+			return false
+		}
+		return d.requestMenuJob(key)
+	}
 	helper := d.worker
 	return d.submit(key, func(ctx context.Context) (any, error) { return worker(ctx, helper, operation, args) })
 }
 func (d *Controller) startJobs() {
+	if d.closed {
+		return
+	}
 	for d.active < 2 && len(d.queue) > 0 {
 		j := d.queue[0]
 		d.queue = d.queue[1:]
 		j.running = true
 		d.active++
-		go func() { value, err := j.run(d.ctx); d.completed <- job{key: j.key, result: value, err: err} }()
+		go func() {
+			value, err := j.run(d.ctx)
+			d.completed <- job{key: j.key, result: value, err: err, origin: j, binding: j.binding, ticket: j.ticket}
+		}()
 	}
 }
 func (d *Controller) cancelQueued(key string) bool {
@@ -287,6 +303,7 @@ func (d *Controller) cancelQueued(key string) bool {
 		if j.key == key {
 			d.queue = append(d.queue[:i], d.queue[i+1:]...)
 			delete(d.jobs, key)
+			d.retireMenuJob(j)
 			return true
 		}
 	}

@@ -82,16 +82,20 @@ func (b *browser) providerGeneration() string {
 	// A snapshot token binds metadata/projection plus current native selection
 	// and focus. Draft inputs and file content never enter the public snapshot.
 	data, _ := json.Marshal(struct {
-		Collection   uint64
-		Selected     []string
-		Focus        string
-		View         string
-		Inspected    []string
-		Work         *providerWork
-		Busy         bool
-		Hidden       bool
-		WatchEnabled bool
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled})
+		Collection       uint64
+		Selected         []string
+		Focus            string
+		View             string
+		Inspected        []string
+		Work             *providerWork
+		Busy             bool
+		Hidden           bool
+		WatchEnabled     bool
+		Intent           uint64
+		IntentState      string
+		Opener, Terminal string
+		Actions          actionFlags
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled, b.serial, b.progress().State, b.opener, b.terminal, b.actions})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }

@@ -61,6 +61,12 @@ func (w *directoryWatch) desire(snapshot *filemodel.Snapshot, retry bool) {
 	}
 }
 
+// The 100ms browser sampler is only needed while a watch is active or can
+// start. Failed/off idle browsers have no watch timer wakeups.
+func (w *directoryWatch) needsTick() bool {
+	return w != nil && (w.active || !w.failed && w.desired != nil)
+}
+
 func (w *directoryWatch) tick(now time.Time, executable string) bool {
 	if !w.active && !w.failed && w.desired != nil {
 		if w.serial == ^uint64(0) {

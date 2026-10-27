@@ -321,8 +321,10 @@ the [report](verification/VERIFICATION-2026-10-26-NATIVE-LAYOUT.md) and
 ## R1 configuration diagnostics closeout — 2026-10-26
 
 Owner: Cam; `codex/r1-config-diagnostics`; CFG-02 #61 with the existing #218
-native report consumer. Status: locally qualified for review; #61 closes on
-merge. User selection:
+native report consumer. Status: merged in PR268 as
+`f336d638285d722eecda9faa8927ad0a9e44882b`, closing #61. Reviewed tree
+`5bca40e260f9293cc45b429aeb9a3589e3e84e71`, canonical signature and
+author DCO verified; branch retired and PR/issue/Project Done. User selection:
 finish existing issue acceptance and include genuine closure in the next PR.
 Target full #61 closure; no #218/#60/#70 closure is inferred from diagnostics.
 
@@ -367,6 +369,54 @@ pagination and callback retirement are retained. Exact implementation hashes
 match the frozen candidate. Two manuals render at 60/80 columns; mandoc lint
 retains the same diagnostic families as the merged base, not a clean-lint claim.
 No broader #218/#60/#70, full R1 or physical/assistive/release closure is claimed.
+
+## R1 committed native view bindings — 2026-10-26
+
+Owner: Cam; `codex/r1-native-bindings`; BIND-01 #213. Status: ready for review;
+all five frozen criteria qualified, closes on candidate merge. This checkpoint
+batches shared committed-revision/lifetime policy, bounded refresh coalescing,
+desktop menu actions, browser collection/progress/readiness and combined evidence.
+Two independent existing consumers adopt the same pure bounded policy. Existing
+settings/model/worker/MFL/native-ACK authorities remain; no store, transport,
+dependency, additional resident or per-control polling shell is introduced.
+
+[Contract and authority inventory](decisions/NATIVE-VIEW-BINDINGS-2026-10-26.md),
+[verification and exact acceptance map](verification/VERIFICATION-2026-10-26-NATIVE-BINDINGS.md)
+and [six public captures](../doc/development-preview.md#committed-native-bindings-and-recovery).
+The pure owner has fixed source-to-view edges, <=8 sources/2,560 identity bytes,
+one active ticket and one pending refresh. Three menu domains and two browser
+owners retain existing bounded jobs/data/native lifetimes. Generated application
+callbacks refuse changed controller/full-data identities; mapped menu updates
+converge after popdown without treating desired caches as native acknowledgements.
+Loss retains last-good views with unavailable effects; explicit retry restores
+readiness. Unknown progress totals never imply a fabricated percentage.
+
+Linux incremental build/full affected Go policy/race/vet, seven independent
+worker-peer cases, complete existing browser integration (including watching,
+handoff, drafts/selection and 4,096 entries) and three native configurations pass.
+All 21 final screenshots are inspected, including enlarged 18pt monospace. The
+six actual-OS default Go gates pass, retaining exact unchanged C/native PR268
+qualification without another all-module/full-install matrix. Two shortened UI
+literals after visual review are explicit reviewed platform deltas and pass final
+Linux build/policy/native checks. Initial failures are preserved, with effects
+refused after failed/cancelled work and explicit refresh added to old fixture
+preconditions. No frozen criterion is weakened or split for closure.
+
+Three-second quiet observations show stable binding counters and no off-watcher
+ticker. Bindings add no periodic source; shared Desktop polling/status sampling
+continues. Kernel/whole-process wakeups, leak freedom, physical/assistive and full
+release acceptance are not inferred. Older enlarged fixed-width hints can clip;
+new binding labels fit. #60/#70/#218 and file/clipboard owners remain open;
+parked Backer/pathname work stays excluded. Separate source/evidence/capture
+review has no remaining blocker; requested model routing is not independently
+attested. All owned guests stop after verified retrieval; only verified guest
+evidence duplicates are retired, retaining caches/disks/performance references.
+
+The due [PR264 comparison](verification/PERFORMANCE-2026-10-26-NATIVE-BINDINGS.md)
+is complete with preserved binaries and alternating pairs. It establishes no
+speed gain and keeps memory aggregates separate. Counter is 4/5 after merged
+PR268 and resets to 0/5 on this candidate's merge. Preserve the actual
+`m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
 ## Library evaluation issue scope — 2026-10-25
 
@@ -2831,7 +2881,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
-| CFG-02 | P2 / finite R1 acceptance qualified; closes #61 on merge | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
+| CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / queued, default product scope approved | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / queued, optional contribution scope approved | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
@@ -2877,7 +2927,7 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | GRAPHICS-01 | P2 / Backlog; F2 Native UI | [#210](https://github.com/gonz0w/fvwm-x/issues/210). Implement the already approved native graphics baseline using existing X11 drawing/resource owners, before adding another direct renderer. |
 | GRAPHICS-02 | P2 / Backlog; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Compare a bounded direct Cairo module prototype with GRAPHICS-01. Existing SVG/Cairo linkage is not proof of a general UI renderer. |
 | LAYOUT-01 | P2 / Backlog; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Deliver the existing native-layout-first direction for panels and collection consumers; preserve configured legacy geometry. |
-| BIND-01 | P2 / Backlog; F1 Shared contracts | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
+| BIND-01 | P2 / Review; closes on candidate merge; F1 Shared contracts | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |

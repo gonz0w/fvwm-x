@@ -347,7 +347,8 @@ test('property-policy', property_policy_test)
 
 test('desktop-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-count=1', '-mod=vendor',
-        './internal/desktopcontroller', './cmd/fvwmdesktop'],
+        './internal/desktopcontroller', './internal/viewbinding',
+        './cmd/fvwmdesktop'],
     env: prompt_test_env, timeout: 90)
 test('desktop-assets', py, args: [files('test_desktop.py')])
 test('responsiveness-profile-evidence', py,
@@ -4148,6 +4149,18 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    if libpng.found()
+        test('native-bindings-xvfb', py,
+            args: [files('live_x/native_bindings_live.py'),
+                '--build', meson.project_build_root(),
+                '--artifacts-dir', meson.project_build_root() / 'live-x-native-bindings'],
+            depends: [fvwm3, fvwm_mfl, fvwm_form, fvwm_desktop,
+                fvwm_desktop_worker, fvwm_file_browser, fvwmcommand,
+                fvwm_desktop_capture, fvwm_backer, fvwm_buttons, fvwm_event],
+            timeout: 480,
+            is_parallel: false,
+        )
+    endif
     test('file-browser-xvfb', py,
         args: [files('live_x/file_browser_live.py'),
             '--fvwm', fvwm3, '--mfl', fvwm_mfl,

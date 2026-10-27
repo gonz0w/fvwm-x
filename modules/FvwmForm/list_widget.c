@@ -2,6 +2,8 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or any later version. */
 #include "config.h"
+#include <stdio.h>
+#include "libs/Module.h"
 #include "libs/fvwmlib.h"
 #include "libs/Colorset.h"
 #include "FvwmForm.h"
@@ -166,10 +168,23 @@ static void list_focus_item(Item *next)
 	RedrawItem(next, 0, NULL);
 }
 
+static void list_watch_change(Item *list, const form_list_state *before)
+{
+	char command[sizeof("Echo FVWM_FORM_CHANGED ") + 65];
+
+	if (!form_list_watch_changed(&list->list.watch, before,
+	    list->list.state))
+		return;
+	snprintf(command, sizeof(command), "Echo FVWM_FORM_CHANGED %s",
+		list->list.watch.token);
+	SendText(Channel, command, 0);
+}
+
 Bool form_list_key(KeySym key, unsigned int modifiers)
 {
 	Item *list = CF.cur_list;
 	form_list_state *s;
+	form_list_state before;
 	int target, columns;
 	bool has_list = false;
 
@@ -208,6 +223,7 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 	if (list == NULL)
 		return False;
 	s = list->list.state;
+	before = *s;
 	columns = form_list_columns(s);
 	target = s->focus;
 	switch (key)
@@ -242,6 +258,7 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 		break;
 	case XK_space:
 		form_list_toggle(s, s->focus);
+		list_watch_change(list, &before);
 		RedrawItem(list, 0, NULL);
 		return True;
 	default:
@@ -251,6 +268,7 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 		form_list_extend(s, target);
 	else
 		form_list_focus(s, target);
+	list_watch_change(list, &before);
 	RedrawItem(list, 0, NULL);
 	return True;
 }
@@ -258,6 +276,7 @@ Bool form_list_key(KeySym key, unsigned int modifiers)
 void form_list_click(Item *item, XButtonEvent *event)
 {
 	form_list_state *s = item->list.state;
+	form_list_state before = *s;
 	int columns = form_list_columns(s);
 	int cell_width = (item->header.size_x - 2 * BOX_SPC -
 		LIST_GUTTER) / columns;
@@ -293,5 +312,6 @@ void form_list_click(Item *item, XButtonEvent *event)
 			}
 		}
 	}
+	list_watch_change(item, &before);
 	RedrawItem(item, 0, NULL);
 }

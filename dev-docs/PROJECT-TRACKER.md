@@ -10,7 +10,7 @@ Current findings and verification gaps are summarized in
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
 Owner: the finite Temper adoption lead; mirror [issue #282](https://github.com/gonz0w/fvwm-x/issues/282).
-Status: prepared source, verification and separate final review pending. The owner
+Status: source acceptance complete after checks and separate review. The owner
 selected this bounded adoption on 2026-10-27 under agent-temper#32; it does not
 change R1/R2/R3 product scope or advance a runtime/performance checkpoint.
 
@@ -29,11 +29,12 @@ adoption evidence, not a product regression. All six external contract cases the
 passed GREEN: valid, missing dependency, conflict, cycle, expired date and unsafe
 path. The actual selected manifest reports no errors and leaves authority unverified.
 `make check`, affected source/link/anchor and working-diff whitespace checks pass;
-final candidate review and staged checks remain pending. Runtime/build/platform
+separate final source review and staged checks pass. Runtime/build/platform
 qualification remains separate.
 Integration requires the owner-authorized reviewed PR and existing signature/DCO
-and canonical-source gates. Next: complete source checks and separate final review,
-record exact candidate/results, then reconcile this checkpoint and its issue mirror.
+and canonical-source gates. [PR #283](https://github.com/gonz0w/fvwm-x/pull/283)
+delivers this checkpoint; issue #282 records the canonical source/signature/DCO
+receipt after merge. This source record does not claim an unobserved merge.
 
 ## Three-release target — 2026-10-26
 
@@ -447,10 +448,84 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 continuous native collection feedback — 2026-10-27
+
+Owner: Cam; `codex/r1-form-feedback`; #51/#69. Status: finite batch implemented,
+focused checkpoint passed; [PR281](https://github.com/gonz0w/fvwm-x/pull/281)
+ready for maintainer review. Implementation `282081b4746d01ee689eac711f12fe8a7997c9a2`,
+tree `9437f41f7729fe4945b257b53c69844bcbc9dbb1`, canonical signature/author DCO
+verified. Separate source/evidence/pixel/final-document review has no remaining
+actionable finding. Owned lab stopped and verified guest duplicates retired;
+canonical evidence, builds/disks and performance references retained. Four related outcomes: opt-in native interactive change
+notification with one outstanding latch; exact atomic acknowledge-and-snapshot;
+browser label-only feedback via a distinct bounded/coalescing ingress; continuity
+and stale/lost producer recovery. Preserve startup-only ListNotify and ordinary
+ListStatus semantics. ListWatch token follows a versioned List; runtime
+ListWatchStatus name watch_token request_token verifies the exact subscription,
+reports current versioned selection and clears its latch in one native handler.
+Only actual user focus-index/selection/scroll changes emit FVWM_FORM_CHANGED;
+programmatic updates, redraw/status and unchanged/clamped input stay silent.
+
+Watch token binds browser instance/Form lifetime; correlated snapshot requests
+use fresh bounded tokens/deadlines. Keep unsolicited signals out of the existing
+single-slot correlated reply channel. Reconcile only the current acknowledged
+mapping, preserve hidden IDs and refuse combined-selection overflow without
+rebuilding or overwriting native selection. Retain last admitted model, show
+unavailable/refusal feedback and recover on later valid input. Label feedback
+must not invoke actions/workers/render/publication or advance generations. Genuine
+interaction may renew the existing idle lease; automatic scale/publication may
+not. No polling, new resident, toolkit or protocol packet type is selected.
+
+Acceptance: focused C latch/validation and Go routing/admission/continuity tests,
+one reused Linux affected build/policy/vet/scoped sanitizer and package race
+gate (new bounded channel); extend actual-X interaction coverage once across
+Slate/Dune/enlarged Classic. Check burst coalescing until exact ACK, latest-state
+snapshot/post-ACK wakeup, ordinary-status non-rearming, legacy silence, malformed/
+retired tokens, hidden+visible limit refusal/recovery, state retention, no action/
+generation churn and teardown. Capture/inspect new immediate-selection UI.
+Full-text disclosure, glyph/assistive/physical and broader support acceptance
+remain explicit later #69/#51 work; park #257/#258 unchanged.
+
+Run the due PR269 comparison using preserved
+m5-performance-bindings-20261026/{core,script,browser}, not the historical PR131
+reference. Verify all baseline/current identities; use the existing 4096-file
+worker scan and standalone Script workload, warmup plus five alternating pairs
+in the quiet owned Linux profile. This is an observation, not a timing gate or
+measurement of native Form interaction, whole-session wakeups or hardware.
+Record all results/variance/size costs; no unmeasured speed or agent savings claim.
+Lead owns resources/tracker/integration and separate final review. Explicit
+configured Temper routes are requested; backend identity remains unattested.
+
+Completed evidence: [focused results](verification/VERIFICATION-2026-10-27-FORM-FEEDBACK.md),
+[receipt](verification/VERIFICATION-2026-10-27-FORM-FEEDBACK.json),
+[screenshots](../doc/development-preview.md#live-native-selection-feedback) and
+[PR269 comparison](verification/PERFORMANCE-2026-10-27-FORM-FEEDBACK.md).
+One reused Linux profile passes compilation, four C policies, browser package/
+race/vet, scoped list/scale sanitizers, four legacy actual-X checks and manuals.
+Separate review finds and resolves late timed-out watch reply admission; only
+changed Go checks repeat. The final three-theme run passes 63 captures and 51
+actual module Wait0 receipts. A stale-generation fixture setup failure remains
+preserved with the explicit clear/render acknowledgement correction. Original
+Classic static-glyph damage remains archived; a bounded Classic-only follow-up
+passes equal pre/post/quiet header rasters and all six images inspect clean.
+The anomaly is not reproduced in quiet captures; universal paint completion is
+not inferred. Its separate fixture/archive identities appear in the receipt.
+Broader #51/#69 acceptance remains open; no broad owner closes in this batch.
+
+The due PR269 comparison is complete on the final runtime candidate. Worker and
+Script timings overlap the reference; no speed gain is established. Memory,
+debug-file growth and unexplained Script private-dirty variance stay separate.
+Reset to 0/5 on this batch's merge and retain the exact next reference
+`m5-performance-feedback-final-20261027/{core,script,browser,form}`. Form is a
+qualified retained artifact, not part of the paired benchmark workload.
+
 ## R1 scaled Form/browser readability and focus — 2026-10-27
 
-Owner: Cam; `codex/r1-scale-followup`; #51/#69. Status: focused Linux/native
-checkpoint ready for review, following merged PR276. Four related outcomes: additive
+Owner: Cam; `codex/r1-scale-followup`; #51/#69. Status: merged in PR280 as
+`c5c9dfff12fb79aa4d0f0cf03b2bee9646ab7f2f`; composed tree
+`ccdc4bf1cf22944dfbfa84b662c587e185537488` matches the reviewed feature plus
+concurrent Temper/tracker documentation. Canonical signature and author DCO
+verified; branch retired and Project Done. Four related outcomes: additive
 `LabelViewport name` for a dedicated-line fixed Label to use available actual
 parent width; actual-font measured complete-character prefix plus `...` on
 remaining overflow, retaining original value; compact browser state with
@@ -473,8 +548,8 @@ keyboard focus. Capture/inspect Slate, Dune and enlarged Classic from this
 combined run. Do not repeat successful unrelated phases or full OS/install/race
 matrices merely for publication. #51/#69 retain broader six-target, full-text,
 physical/assistive/release acceptance. Parked #257/#258 stay excluded.
-PR269's performance reference is now 4/5 after PR276; this merge becomes 5/5,
-so the next periodic comparison becomes due then. Source/readability feature
+PR269's performance reference is now 5/5 after PR280; the periodic comparison
+is due in the following batch. Source/readability feature
 work does not claim a speed improvement. Lead owns resources/integration/tracker;
 selected Temper implementer/product routes own bounded edits and separate Sol
 review remains independent. Native named-role loading/backend identity remain

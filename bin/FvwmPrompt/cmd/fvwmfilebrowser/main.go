@@ -77,6 +77,11 @@ type browser struct {
 	view                       string
 	reverse                    bool
 	native                     chan string
+	nativeChanges              chan nativeChange
+	nativeWatchReplies         *nativeWatchReplyGate
+	feedbackSerial             uint64
+	feedbackError              string
+	feedbackLabels             map[string]string
 	nativeGeneration           uint32
 	viewEntries                []collection.Entry
 	renderPath, renderView     string
@@ -344,6 +349,7 @@ func (b *browser) action(message string) (bool, error) {
 		b.replaceSelection = true
 		return false, err
 	}
+	b.feedbackError = ""
 	b.lastControl = ticket
 	path := ""
 	if b.snapshot != nil {
@@ -511,7 +517,7 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1)}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
 		b.closeBindings()
@@ -566,12 +572,11 @@ func run(o options) error {
 					return errors.New("browser acknowledgement queue is full")
 				}
 			}
-			if strings.HasPrefix(event.Echo.Message, "FVWM_FORM_LIST "+b.instance+"_") {
-				select {
-				case b.native <- event.Echo.Message:
-				default:
-					return errors.New("native collection reply queue is full")
-				}
+			if change, ok := parseNativeChange(event.Echo.Message, b.instance); ok {
+				offerNativeChange(b.nativeChanges, change)
+			}
+			if err := b.routeNativeReply(event.Echo.Message); err != nil {
+				return err
 			}
 			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_3 "+b.instance+" ") {
 				select {
@@ -640,6 +645,9 @@ func run(o options) error {
 				return err
 			}
 			if applied {
+				if err := b.renewNativeIdle(); err != nil {
+					return err
+				}
 				renewIdle()
 			}
 		case event := <-b.results:
@@ -665,13 +673,27 @@ func run(o options) error {
 					return err
 				}
 			}
+		case change := <-b.nativeChanges:
+			current, err := b.nativeFeedback(change)
+			if err != nil {
+				return err
+			}
+			if current {
+				renewIdle()
+			}
 		case message := <-events:
+			previousControl := b.lastControl
 			close, err := b.action(message)
 			if close {
 				return nil
 			}
 			if err != nil {
 				b.status = err.Error()
+			}
+			if b.lastControl != previousControl {
+				if err := b.renewNativeIdle(); err != nil {
+					return err
+				}
 			}
 			renewIdle()
 			if err := b.show(); err != nil {

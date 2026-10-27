@@ -4,6 +4,7 @@
 #include "config.h"
 #include <assert.h>
 #include <limits.h>
+#include <stdio.h>
 #include <string.h>
 #include "modules/FvwmForm/form_list.h"
 
@@ -254,8 +255,149 @@ static void test_live_choices_and_status(void)
 	assert(!form_list_update_commit(&s, &u));
 }
 
+static void test_watch_validation(void)
+{
+	form_list_state s = {.rows = 3};
+	form_list_watch watch = {0}, saved;
+	char request[65], longest[65], oversized[66], command[140];
+	const char *bad[] = {"", " token", "token selection", "has space",
+		"x;echo", "x/y", "x\xc3\xa9", "x selection extra"};
+
+	assert(!form_list_watch_begin(&watch, &s, "a"));
+	assert(watch.token[0] == '\0' && !watch.outstanding);
+	s.generation = 1;
+	assert(form_list_watch_begin(&watch, &s, "a"));
+	assert(strcmp(watch.token, "a") == 0 && !watch.outstanding);
+	memset(longest, 'Z', 64);
+	longest[64] = '\0';
+	assert(form_list_watch_begin(&watch, &s, longest));
+	assert(strcmp(watch.token, longest) == 0);
+	memset(oversized, 'Z', 65);
+	oversized[65] = '\0';
+	watch.outstanding = true;
+	saved = watch;
+	assert(!form_list_watch_begin(&watch, &s, oversized));
+	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
+		assert(!form_list_watch_begin(&watch, &s, bad[i]));
+	assert(strcmp(watch.token, saved.token) == 0 && watch.outstanding);
+	s.refused = true;
+	assert(!form_list_watch_begin(&watch, &s, "replacement"));
+	s.refused = false;
+	assert(form_list_watch_begin(&watch, &s, "owner_2-u"));
+	watch.outstanding = true;
+	const char *bad_requests[] = {"", "owner_2-u", "wrong request",
+		"owner_2-u request selection", "owner_2-u request extra",
+		"owner_2-u has;command", "owner_2-u x\xc3\xa9"};
+	for (size_t i = 0;
+	     i < sizeof(bad_requests) / sizeof(bad_requests[0]); i++)
+	{
+		assert(!form_list_watch_request(&watch, &s, bad_requests[i],
+			request));
+		assert(request[0] == '\0' && watch.outstanding);
+	}
+	snprintf(command, sizeof(command), "owner_2-u %s", oversized);
+	assert(!form_list_watch_request(&watch, &s, command, request));
+	snprintf(command, sizeof(command), "owner_2-u %s  ", longest);
+	assert(form_list_watch_request(&watch, &s, command, request));
+	assert(strcmp(request, longest) == 0 && watch.outstanding);
+	s.refused = true;
+	assert(!form_list_watch_request(&watch, &s, command, request));
+	assert(request[0] == '\0' && watch.outstanding);
+	s.refused = false;
+	s.generation = 0;
+	assert(!form_list_watch_request(&watch, &s, command, request));
+	s.generation = 1;
+	watch = (form_list_watch){0};
+	assert(!form_list_watch_request(&watch, &s, command, request));
+}
+
+static void test_watch_mutations(void)
+{
+	form_list_state s = {.rows = 3, .generation = 1}, before;
+	form_list_watch watch = {0};
+	form_list_update update;
+	char request[65];
+	bool selection;
+	unsigned char packet[FORM_LIST_PACKET_MAX];
+
+	for (int i = 0; i < 20; i++)
+		assert(form_list_add(&s, i == 0));
+	before = s;
+	form_list_focus(&s, 1);
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	assert(form_list_watch_begin(&watch, &s, "watch"));
+	/* Ignore anchor/layout/generation; observe interactive content. */
+	before = s;
+	before.anchor = 12;
+	before.rows = 10;
+	before.columns = 2;
+	before.generation = 42;
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	before = s;
+	form_list_focus(&s, 1);
+	form_list_scroll(&s, INT_MIN);
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	before = s;
+	form_list_focus(&s, 2);
+	assert(form_list_watch_changed(&watch, &before, &s));
+	before = s;
+	assert(form_list_toggle(&s, 3));
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	/* Ordinary status and validation cannot release the marker. */
+	assert(form_list_status_token("probe selection", request, &selection));
+	assert(selection && watch.outstanding);
+	assert(form_list_watch_request(&watch, &s, "watch latest", request));
+	assert(watch.outstanding && strcmp(request, "latest") == 0);
+	assert(form_list_packet(&s, packet) == 9);
+	assert(packet[3] == 1 && packet[5] == 2 && packet[6] == 9);
+	/* Publication may remap every ordinal while the marker is latched. */
+	assert(form_list_update_begin(&update, &s, 1, 2));
+	for (int i = 20; i > 0; i--)
+		assert(form_list_update_add(&update, i));
+	assert(form_list_update_commit(&s, &update));
+	assert(form_list_watch_request(&watch, &s, "watch remapped", request));
+	assert(form_list_packet(&s, packet) == 9);
+	assert(packet[3] == 2 && packet[5] == 17 && s.selected == 2);
+	assert(s.bits[2] == 9 && watch.outstanding);
+	/* The native handler clears only after it sends this current report. */
+	watch.outstanding = false;
+	before = s;
+	form_list_scroll(&s, INT_MIN);
+	assert(form_list_watch_changed(&watch, &before, &s));
+	watch.outstanding = false;
+	before = s;
+	form_list_scroll(&s, INT_MIN);
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	before = s;
+	assert(form_list_toggle(&s, 16));
+	assert(form_list_toggle(&s, 15));
+	assert(s.selected == before.selected);
+	assert(form_list_watch_changed(&watch, &before, &s));
+	watch.outstanding = false;
+	before = s;
+	assert(form_list_toggle(&s, 1));
+	assert(form_list_watch_changed(&watch, &before, &s));
+	/* Empty/clamped input and refused ranges publish no mutation. */
+	s = (form_list_state){.rows = 3, .generation = 2};
+	watch.outstanding = false;
+	before = s;
+	form_list_focus(&s, INT_MAX);
+	assert(!form_list_toggle(&s, 0));
+	assert(!form_list_extend(&s, 0));
+	form_list_scroll(&s, INT_MAX);
+	assert(!form_list_watch_changed(&watch, &before, &s));
+	for (int i = 0; i < 300; i++)
+		assert(form_list_add(&s, i < FORM_LIST_SELECTED));
+	before = s;
+	assert(!form_list_extend(&s, 299));
+	assert(!form_list_toggle(&s, 299));
+	assert(!form_list_watch_changed(&watch, &before, &s));
+}
+
 int main(void)
 {
+	test_watch_validation();
+	test_watch_mutations();
 	test_viewport();
 	test_grid_ranges();
 	test_versioned_focus();

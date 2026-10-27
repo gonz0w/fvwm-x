@@ -126,6 +126,7 @@ typedef union _item {
     form_list_entry *pending;
     int pending_capacity, update_serial;
     char notify[65];
+    form_list_watch watch;
     struct _line *line;
   } list;
   struct {                 /* I_SELECT */

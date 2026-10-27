@@ -696,6 +696,46 @@ rules. Bound waits and handle module loss or missing replies explicitly.
   handshake; it does not activate an application. Preload forms retain their
   existing unmapped startup behavior.
 
+**FvwmForm: ListWatch ``_watch_token_``*::
+  After ListVersioned, opt the current list into interactive change notification.
+  The token follows the ListStatus token grammar (1..64 ASCII letters/digits,
+  hyphen or underscore). Watching is off by default. When user input actually
+  changes focus index, selection or viewport position, the Form sends
+  `Echo FVWM_FORM_CHANGED watch_token` once and latches further notifications.
+  Programmatic changes, redraws, status queries and unchanged or clamped input
+  do not emit a notification. The marker is an invalidation, not a selection
+  packet or authority to perform an action.
+
+**FvwmForm: ListWatchStatus ``_name_ _watch_token_ _request_token_``*::
+  Ask the named versioned list for its current status and selection, and rearm
+  its watch in the same native handler. Both tokens use the ListStatus grammar;
+  the watch token must match the configured subscription exactly. The reply is
+  `FVWM_FORM_LIST request_token published pending refused xpacket`, with the
+  same fields and URL-base64 selection packet as `ListStatus ... selection`.
+  Changes before this handler are included in its snapshot; a subsequent user
+  change can emit a new marker. Malformed requests, wrong tokens and failed
+  reports do not rearm. Ordinary ListStatus and startup-only ListNotify do not
+  rearm either.
++
+A consumer should bind the watch token to the Form lifetime, coalesce markers,
+request a fresh correlated snapshot and resolve indices only through the current
+acknowledged generation. Bound the wait and handle missing replies or module
+loss; a marker alone does not prove delivery of a snapshot. Retire old tokens
+when the Form closes or is replaced. Consumers that do not configure ListWatch
+can continue to use ListNotify and explicit ListStatus queries.
++
+For example, configure a versioned list and acknowledge each change:
++
+----
+*MyFiles: List picks 64 6
+*MyFiles: ListVersioned
+*MyFiles: ListWatch my_form_1
+*MyFiles: ListItem off "First" file
+Module FvwmForm MyFiles
+# On FVWM_FORM_CHANGED my_form_1, request a fresh correlated snapshot:
+SendToModule MyFiles ListWatchStatus picks my_form_1 request_1
+----
+
 For example, start a two-entry live list, then reorder it and insert a new row:
 
 ----

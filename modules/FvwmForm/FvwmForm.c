@@ -202,17 +202,19 @@ static void ct_ListGrid(char *);
 static void ct_list_viewport(char *);
 static void ct_list_versioned(char *);
 static void ct_list_notify(char *);
+static void ct_list_watch(char *);
 static void ct_label(char *);
 static void ct_label_viewport(char *);
 static void form_label_viewports_prepare(void);
 static void am_set_label(char *);
 static void am_renew_timeout(char *);
-static void form_list_report(Item *, const char *, bool);
+static bool form_list_report(Item *, const char *, bool);
 static void am_list_begin(char *);
 static void am_list_entry(char *);
 static void am_list_commit(char *);
 static void am_list_abort(char *);
 static void am_list_status(char *);
+static void am_list_watch_status(char *);
 static void am_list_focus(char *);
 static void am_list_layout(char *);
 static Item *form_current_list;
@@ -278,6 +280,7 @@ static struct CommandTable ct_table[] =
   {"ListNotify",ct_list_notify},
   {"ListVersioned",ct_list_versioned},
   {"ListViewport",ct_list_viewport},
+  {"ListWatch",ct_list_watch},
   {"Message",ct_Message},
   {"PadVText",ct_padVText},
   {"Position",ct_Position},
@@ -3274,6 +3277,7 @@ static struct CommandTable am_table[] =
   {"ListFocus",am_list_focus},
   {"ListLayout",am_list_layout},
   {"ListStatus",am_list_status},
+  {"ListWatchStatus",am_list_watch_status},
   {"Map",am_Map},
   {"RenewTimeout",am_renew_timeout},
   {"SetLabel",am_set_label},
@@ -3291,6 +3295,7 @@ static bool form_native_message(char *buf)
 		{"ListFocus", am_list_focus},
 		{"ListLayout", am_list_layout},
 		{"ListStatus", am_list_status},
+		{"ListWatchStatus", am_list_watch_status},
 		{"RenewTimeout", am_renew_timeout}, {"SetLabel", am_set_label},
 		{"UIScaleStatus", form_scale_status}
 	};
@@ -3944,7 +3949,7 @@ static void am_list_abort(char *cp)
 
 
 /* A native reply observes actual startup/publication and pending refusal. */
-static void form_list_report(Item *p, const char *token, bool selection)
+static bool form_list_report(Item *p, const char *token, bool selection)
 {
 	char reply[1024];
 	char *packet = selection ? form_encoded_value(p) : NULL;
@@ -3963,9 +3968,10 @@ static void form_list_report(Item *p, const char *token, bool selection)
 		goto invalid;
 	XFlush(dpy);
 	SendText(Channel, reply, 0);
-	return;
+	return true;
 invalid:
 	fprintf(stderr, "%s: refused collection report\n", module->name);
+	return false;
 }
 
 static void am_list_status(char *cp)
@@ -3982,6 +3988,32 @@ static void am_list_status(char *cp)
 		return;
 	}
 	form_list_report(p, token, selection);
+}
+
+/* The snapshot and rearm share this single-threaded handler. Input before it
+ * is included; the next interactive mutation can send a fresh invalidation. */
+static void am_list_watch_status(char *cp)
+{
+	const char *tail;
+	Item *p = form_update_target(cp, &tail);
+	char request[65];
+
+	if (p == NULL || !form_list_watch_request(&p->list.watch,
+	    p->list.state, tail, request))
+	{
+		fprintf(stderr, "%s: refused ListWatchStatus\n", module->name);
+		return;
+	}
+	if (form_list_report(p, request, true))
+		p->list.watch.outstanding = false;
+}
+
+static void ct_list_watch(char *cp)
+{
+	if (form_current_list == NULL ||
+	    !form_list_watch_begin(&form_current_list->list.watch,
+	    form_current_list->list.state, cp))
+		fprintf(stderr, "%s: refused ListWatch\n", module->name);
 }
 
 static void ct_list_notify(char *cp)

@@ -32,9 +32,41 @@ platform and consistency limits.
 Limits include 4096 loaded entries and 256 selected entries. Larger folders are
 refused as a whole. Properties describe the last admitted metadata snapshot;
 they do not read file contents or calculate recursive folder sizes. The prototype
-closes after five minutes without a callback or accepted external control. The
+closes after five minutes without a callback, accepted external control or
+current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
+
+## Live native selection feedback
+
+Selecting, extending a range, moving focus or scrolling now updates the browser's
+selected counts and action readiness without waiting for another action. Hidden
+selection survives filtering. Feedback uses a bounded change notification and a
+fresh native snapshot; it does not rebuild the view, invoke an action or discard
+input drafts. Actions still validate their own current selection.
+
+![Slate browser updating selection counts and readiness](screenshots/feedback-slate-selected.png)
+
+![Dune browser updating a selected range](screenshots/feedback-dune-range.png)
+
+The 256-entry combined selection limit includes hidden entries. When native input
+would exceed it, the browser retains its admitted state and reports unavailable.
+Adjusting the selection restores counts and readiness without reopening it.
+
+![Enlarged Classic browser refusing 257 combined entries](screenshots/feedback-classic-refused.png)
+
+![Enlarged Classic browser recovering at 256 combined entries](screenshots/feedback-classic-recovered.png)
+
+These are unmodified Slate, Dune and enlarged Classic captures. An initial Classic
+image showed incomplete static glyphs; it remains in the evidence archive. The
+published Classic pair comes from a bounded follow-up with equal quiet status
+rasters before and after a producer round trip, and clean manual inspection.
+That sampling did not reproduce the anomaly; broader rendering acceptance stays
+open. [Capture/source manifest](screenshots/feedback-manifest.json),
+[verification and limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-FEEDBACK.md)
+and [periodic performance comparison](../dev-docs/verification/PERFORMANCE-2026-10-27-FORM-FEEDBACK.md).
+Full-text disclosure, multilingual fonts and physical/assistive acceptance remain
+in development under #51/#69.
 
 ## Scaled labels and keyboard focus
 
@@ -66,8 +98,8 @@ unmodified captures, not font-size simulation.
 [browser reference](fvwm-file-browser.adoc) and
 [results/limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-READABILITY.md).
 This remains development work; broader #51/#69 and physical/assistive acceptance
-are open. Summary labels reflect the controller's last admitted callback;
-native selection can change before the next callback updates those labels.
+are open. These earlier PR280 captures predate live native selection feedback
+above; their summary labels reflect the controller's last admitted callback.
 Some synthetic CJK characters show missing-glyph boxes with the configured font;
 these captures do not qualify multilingual glyph coverage.
 

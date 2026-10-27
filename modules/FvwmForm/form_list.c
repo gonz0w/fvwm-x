@@ -357,3 +357,55 @@ bool form_list_status_token(const char *text, char token[65], bool *selection)
 	token[n] = '\0';
 	return true;
 }
+
+
+bool form_list_watch_begin(form_list_watch *watch,
+	const form_list_state *state, const char *text)
+{
+	char token[65];
+	bool selection;
+
+	if (state->generation <= 0 || state->refused ||
+	    !form_list_status_token(text, token, &selection) || selection)
+		return false;
+	memcpy(watch->token, token, strlen(token) + 1);
+	watch->outstanding = false;
+	return true;
+}
+
+bool form_list_watch_changed(form_list_watch *watch,
+	const form_list_state *before, const form_list_state *after)
+{
+	if (watch->token[0] == '\0' || watch->outstanding ||
+	    after->generation <= 0 || after->refused ||
+	    (before->focus == after->focus && before->top == after->top &&
+	     before->selected == after->selected &&
+	     memcmp(before->bits, after->bits, sizeof(after->bits)) == 0))
+		return false;
+	watch->outstanding = true;
+	return true;
+}
+
+bool form_list_watch_request(const form_list_watch *watch,
+	const form_list_state *state, const char *text, char request[65])
+{
+	char token[65];
+	const char *tail = text;
+	size_t length;
+	bool selection;
+
+	request[0] = '\0';
+	while (*tail && !isspace((unsigned char)*tail)) tail++;
+	length = tail - text;
+	if (length == 0 || length > 64)
+		return false;
+	memcpy(token, text, length);
+	token[length] = '\0';
+	while (isspace((unsigned char)*tail)) tail++;
+	if (state->generation <= 0 || state->refused ||
+	    watch->token[0] == '\0' || strcmp(token, watch->token) != 0 ||
+	    !form_list_status_token(tail, token, &selection) || selection)
+		return false;
+	memcpy(request, token, strlen(token) + 1);
+	return true;
+}

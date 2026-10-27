@@ -3,8 +3,9 @@
 FVWM-X is in active development. These examples show the optional native
 file-browser prototype and the shared controls behind it, not a completed file
 manager or clipboard application. The [project tracker](../dev-docs/PROJECT-TRACKER.md)
-owns current status; [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) contains
-the live-update checkpoint shown here.
+owns current status. The original live-update checkpoint in
+[PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
+theme examples; newer sections record their own source identities.
 
 ## What is available
 
@@ -23,9 +24,9 @@ the view and reset drafts; list/grid switches keep the existing controls.
 
 Newer development adds opt-in directory watching (`--watch auto`, or F8), with
 coalesced native invalidations, periodic reconciliation and explicit manual
-fallback. F5 remains available; Cancel work disables watching. The first four
-captures below retain their PR173 source identity and predate that watch
-status/control; the watching examples show the newer checkpoint.
+fallback. F5 remains available; Cancel work disables watching. The four original
+[Slate/Dune/Classic captures](#slate-dark-list-and-live-refresh) retain their
+PR173 source identity and predate that watch status/control; the watching examples show the newer checkpoint.
 See the [browser manual](fvwm-file-browser.adoc#directory-watching) for current
 platform and consistency limits.
 
@@ -36,6 +37,33 @@ closes after five minutes without a callback, accepted external control or
 current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
+
+## Reserved-area startup
+
+Automatic scaled Forms now use the selected monitor's available area when valid
+reservation metadata arrives during startup. Preferred rows fit around reserved
+edges; readable control minima take precedence if the available area is smaller. Explicit
+Position/Geometry and later user movement keep their authority.
+
+![Slate fractional browser inside the monitor's available area](screenshots/workarea-slate.png)
+
+![Dune browser inside the monitor's available area](screenshots/workarea-dune.png)
+
+![Enlarged Classic browser title now below the reserved desktop panel](screenshots/workarea-classic.png)
+
+The real desktop reserves 36px at the top in these three scenes. The enlarged
+Classic title is now fully below that panel. A separate real mixed-scale scene
+uses a second monitor at a nonzero origin and a deliberately large configured
+reservation, demonstrating that its own available area governs startup:
+
+![Slate browser on a nonzero-origin second monitor with a large configured reservation](screenshots/workarea-nonzero.png)
+
+This remains in-progress development. Existing Monitor reservations have no
+shared generation with topology, so stable initial configuration is qualified;
+live reservation freshness through pre-ready panel/hotplug changes is not.
+[Unmodified capture/source manifest](screenshots/workarea-manifest.json),
+[Form configuration](FvwmForm.adoc) and
+[verification and limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-WORKAREA.md).
 
 ## Scaled Form startup
 
@@ -52,9 +80,9 @@ Drafts, selections and native windows survive those changes.
 
 Automatic initial sizing measures the managed frame and keeps fitting Forms
 inside the physical monitor, without a screenshot-fixture move. Later user
-movement and explicit Position/Geometry remain authoritative. The enlarged
-Classic browser reaches the physical top edge and can overlap the desktop panel;
-reserved work-area placement remains unqualified. First-ready geometry can follow
+movement and explicit Position/Geometry remain authoritative. These earlier captures predate reserved-area adoption above. Their enlarged
+Classic browser reaches the physical top edge and overlaps the desktop panel;
+the current stable-startup correction is shown above. First-ready geometry can follow
 the first mapped frame; this remains in-progress development.
 
 [Unmodified capture/source manifest](screenshots/startup-manifest.json),
@@ -460,7 +488,7 @@ also remain separate work. Reusable metadata/selection primitives do not provide
 clipboard payload protection. Wider theme, assistive technology, hardware and
 release checks retain their own gates.
 
-The first four unmodified PNGs come from the PR173 Linux ARM64 native-X theme run
+The four original Slate/Dune/Classic PNGs come from the PR173 Linux ARM64 native-X theme run
 at 1440×1000 and UI scale 1. They reuse the existing source-bound checkpoint,
 without another runtime or matrix run. The [image manifest](screenshots/manifest.json)
 records hashes, profiles, source identity and the canonical capture archive.

@@ -448,10 +448,61 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 Form reserved-area startup — 2026-10-27
+
+Owner: Cam; `codex/r1-form-workarea`; #51/#69. Status: implemented; combined
+focused Linux and three-theme/nonzero-monitor checkpoint passed after PR285. Complete one bounded startup slice: size preferred
+viewport geometry within the selected monitor's available area; place the managed
+outer frame inside that same area once; validate/reconcile existing reservation
+metadata and retain a safe physical fallback when usable reservations are missing
+or invalid. No new protocol/epoch, core placement engine, resident or polling.
+
+Consume existing core-produced Monitor14 insets alongside MonitorUI topology/scale
+facts. Match monitor names; keep storage/work bounded and validate geometry before
+publication. Legacy reservations have no epoch: qualify stable initial config,
+not atomic freshness through hotplug or strut changes before readiness. Invalidate
+unmatched/stale-by-topology input and define fallback/recovery conservatively.
+Readable minima win over containment; oversized frames anchor at the usable
+area's top/left. Preserve explicit Position/Geometry and post-ready user position,
+input bytes/cursors, selection/anchors, native windows and generations.
+
+Acceptance: pure admission/geometry cases plus one combined incremental Linux
+actual-X checkpoint with real reserved-area facts, fractional/enlarged themes,
+nonzero-origin/mixed-monitor selection and meaningful minimum/oversized fallback
+where feasible. Capture three themes from the same run, including enlarged
+Classic's previously overlapped title. Establish the prior panel-overlap failure
+against retained PR285 binaries. Reuse unchanged policy/control evidence; scope
+sanitizers to changed ownership and repeat only affected checks after correction.
+Full consumer/six-target, physical/assistive/multilingual/release qualification
+remains explicit; do not close broad #51/#69 or touch #257/#258.
+
+PR281 performance reference is 2/5 after PR285, 3/5 on this merge; no comparison
+is due. Lead owns tracker/resources/integration and separate final review. Native
+Temper role selection is now exposed and requested by role; backend identity
+remains unattested. All five configured routes retain their selected models.
+
+Completed [focused report](verification/VERIFICATION-2026-10-27-FORM-WORKAREA.md),
+[receipts](verification/VERIFICATION-2026-10-27-FORM-WORKAREA.json) and
+[three-theme/mixed-monitor screenshots](../doc/development-preview.md#reserved-area-startup)
+record the reproduced PR285 panel overlap and sampled available-area correction.
+One normal policy/sanitizer/legacy geometry/manual checkpoint passes; no product
+inputs change afterward. Three primary themes and one nonzero mixed-scale scene
+pass 37 captures, 113 module Wait0 and 16 direct zero exits. Only affected fixture
+scenes repeat after provenance/move-expectation corrections. Separate runtime/
+evidence/visual review has no remaining finding; final document/candidate review
+retains the ordinary maintainer merge gate. Coverage-debt review keeps six-target/consumer and broader release
+acceptance explicit, without an automatic OS matrix. No broad owner closes.
+Owned lab stopped and controller released; verified guest evidence duplicates
+retired while canonical host archives and reusable source/build/caches/disks/
+performance references remain.
+
 ## R1 Form startup and viewport continuity — 2026-10-27
 
-Owner: Cam; `codex/r1-form-startup`; #51/#69. Status: implemented; combined focused Linux
-and three-theme startup checkpoint passed after merged PR284. Three related outcomes: preserve already
+Owner: Cam; `codex/r1-form-startup`; #51/#69. Status: merged in
+[PR285](https://github.com/gonz0w/fvwm-x/pull/285) at
+`12b492c91fa1a13e9d6aa22fd94829b470a1c184`; canonical signature, author DCO
+and exact reviewed tree verified; branch retired and Project Done. Combined
+focused Linux and three-theme checkpoint passed. Three related outcomes: preserve already
 visible list focus across viewport/layout reflow without undoing intentional
 wheel scrolling; retain configured preferred rows and width at the first ready
 scaled startup view while keeping one-row resize minima; keep ordinary automatic

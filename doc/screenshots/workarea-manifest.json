@@ -1,0 +1,156 @@
+{
+  "base": "12b492c91fa1a13e9d6aa22fd94829b470a1c184",
+  "source_aggregate_sha256": "0ce73ccb15f5d29080b5bc16ab1e7896bf96e3fa1bf85357a163fbe0ba8ddff0",
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+      "bytes": 5539656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "4febe8484a6058e47c84c41e9e003cc0388e395f4feba6a6ae913f7b2b7fe119",
+      "bytes": 1795656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+      "bytes": 5720923
+    }
+  },
+  "images": [
+    {
+      "path": "workarea-slate.png",
+      "case": "slate-dark",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "344783231669b4cdc69f8852fb03232eb1a4fa533566d42793e0227b92c232f4",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "evidence_sha256": "7a5288f122197238434a5e5fcc917e9e8bd9f79deaa9a1963f715e96e31539f3",
+      "archive_sha256": "ca0395abc590e249e15f4db0e63dc1a91312c5a9e917187c82f4625109e1b2a2",
+      "sha256": "b2bbff7d7029d5a5a020f9f0521bc13d35af33884d310e7da721444bc41ce6e2",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            978,
+            770,
+            776,
+            887
+          ],
+          "frame": [
+            973,
+            730,
+            786,
+            932
+          ]
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "workarea-classic.png",
+      "case": "classic-large",
+      "profile": "classic-large",
+      "scale": "2",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "359b62bca6b50e7585a2811bd937279cf8dfa67706eef2c8ebcad4f7e6bdb39f",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "evidence_sha256": "d603866bc212432dc85d7c6c29dd7d142bd0ed0deaabfa75e617126e420ffea9",
+      "archive_sha256": "ca0395abc590e249e15f4db0e63dc1a91312c5a9e917187c82f4625109e1b2a2",
+      "sha256": "e2416ab229d14f2e252c0b402ab8f9df066c47b54d2a58cc0394dd93bd8c9c5e",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            268,
+            106,
+            2284,
+            2046
+          ],
+          "frame": [
+            260,
+            36,
+            2300,
+            2124
+          ]
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "workarea-dune.png",
+      "case": "dune-light",
+      "profile": "dune-light",
+      "scale": "1",
+      "font": "Sans 10",
+      "config_sha256": "a346f6620be5cafa5720cf3b55ca0098ac202f2d23e9bd1e6c91de23e7f8f576",
+      "driver_sha256": "2fbad58b9326aa87786076c23792881164904a91c3057bed9aba4cedf603980b",
+      "evidence_sha256": "468fe91850747bd8cc0e962189540fb351e01842b177759e49136e98d6f0c8bf",
+      "archive_sha256": "ca0395abc590e249e15f4db0e63dc1a91312c5a9e917187c82f4625109e1b2a2",
+      "sha256": "9868e76a3d0c6f69524e4d460d671cb08a52cc49e32b6099e73804e918af7caf",
+      "pixels": [
+        2560,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            977,
+            762,
+            614,
+            699
+          ],
+          "frame": [
+            973,
+            730,
+            622,
+            735
+          ]
+        }
+      },
+      "unmodified": true
+    },
+    {
+      "path": "workarea-nonzero.png",
+      "case": "nonzero",
+      "profile": "slate-dark",
+      "scale": "1.25",
+      "font": "Sans 10",
+      "config_sha256": "b83d3fc28543badbd590e45cacc64f9ccc7a55049604e400b7f3230bdd4add52",
+      "driver_sha256": "8b1d806f9337f1a1c1aad48c9f457b2f612797d8c2f2228bf066e4f5407ca914",
+      "evidence_sha256": "2437795d5a8d935a04f2571b234c400d0a2a44188b07587c45057a50350b19c4",
+      "archive_sha256": "00b4dea4689e1646a5c6b3551abf8ac40e445c7fb61f91f7993c73853c32dd2e",
+      "sha256": "35896f788b139959b81fc9ec305e9dc4b054784e71704744530250e4afd24ecf",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "windows": {
+        "File browser": {
+          "window": 12582919,
+          "client": [
+            2258,
+            1240,
+            776,
+            887
+          ],
+          "frame": [
+            2253,
+            1200,
+            786,
+            932
+          ]
+        }
+      },
+      "unmodified": true
+    }
+  ]
+}

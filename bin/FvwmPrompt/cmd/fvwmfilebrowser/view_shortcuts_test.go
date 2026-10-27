@@ -79,3 +79,66 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		t.Fatal("not every browser action is keyboard-accessible", err, seen)
 	}
 }
+
+func TestBrowserLabelViewportsAndSummary(t *testing.T) {
+	b, peer := layoutBrowser(t, "list")
+	b.renderPath = "/old-folder"
+	labels := make(map[string]bool)
+	pending, notify := "", ""
+	_, err := layoutScript(t, b, peer, b.show, func(command string) string {
+		if pending != "" {
+			if !strings.HasSuffix(command, ": LabelViewport "+pending) {
+				t.Fatalf("label %s lacks its viewport: %s", pending, command)
+			}
+			labels[pending] = true
+			pending = ""
+		} else if _, value, ok := strings.Cut(command, ": Label "); ok {
+			pending = strings.Fields(value)[0]
+		}
+		if strings.Contains(command, ": ListNotify ") {
+			notify = strings.Fields(command)[2]
+		}
+		if strings.HasPrefix(command, "Module FvwmForm ") {
+			return layoutReply("SendToModule unused ListStatus picks "+notify+" selection", 1, 0, []byte{0, 1, 1})
+		}
+		return ""
+	})
+	if err != nil || pending != "" || len(labels) != 11 {
+		t.Fatal(err, pending, labels)
+	}
+	for _, name := range []string{"path-label", "status", "watcher", "projection", "progress", "readiness", "counts", "inspector", "detail1", "detail2", "detail3"} {
+		if !labels[name] {
+			t.Fatal("missing viewport", name)
+		}
+	}
+	if !strings.HasPrefix(b.countText(), "Selected ") || !strings.Contains(b.countText(), "; hidden ") || !strings.Contains(b.countText(), "; limit ") {
+		t.Fatal(b.countText())
+	}
+	projection := b.projectionText()
+	if strings.Index(projection, "; sort:") > strings.Index(projection, "; filter:") {
+		t.Fatal(projection)
+	}
+}
+
+func TestLiveSummaryUsesSameFormatting(t *testing.T) {
+	b, peer := layoutBrowser(t, "list")
+	commands, err := layoutScript(t, b, peer, b.show, func(command string) string {
+		if strings.Contains(command, " ListStatus ") {
+			return layoutReply(command, 7, 0, []byte{0, 1, 1})
+		}
+		return ""
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for name, value := range map[string]string{"counts": b.countText(), "projection": b.projectionText(), "readiness": b.readinessText(), "status": b.status} {
+		want := "SendToModule " + b.alias + " SetLabel " + name + " \"" + displayText(value, 120) + "\""
+		found := false
+		for _, command := range commands {
+			found = found || command == want
+		}
+		if !found {
+			t.Fatal("missing live summary", want, commands)
+		}
+	}
+}

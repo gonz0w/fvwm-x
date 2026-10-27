@@ -123,8 +123,16 @@ void form_list_draw(Item *item)
 		}
 		FlocaleDrawString(dpy, dt->dt_Ffont, str, FWS_HAVE_LENGTH);
 		if (CF.cur_list == item && index == s->focus)
-			XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
-				x, y, cell_width - 1, height - 1);
+		{
+			int stroke = form_focus_stroke(CF.ui_metrics.stroke,
+				cell_width, height);
+
+			for (int inset = 0; inset < stroke; inset++)
+				XDrawRectangle(dpy, item->header.win,
+					dt->dt_item_GC, x + inset, y + inset,
+					cell_width - 1 - 2 * inset,
+					height - 1 - 2 * inset);
+		}
 		str->flags.has_clip_region = False;
 		XDestroyRegion(region);
 	}

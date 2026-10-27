@@ -10,7 +10,25 @@ typedef struct
 {
 	int text, box, horizontal, vertical, gutter;
 	int thumb_width, thumb_inset, thumb_min, pad_text;
+	int stroke;
 } form_scale_metrics;
+
+#define FORM_LABEL_BYTES 1024
+
+/* Measurement includes the suffix; locale character boundaries come from the
+ * same actual font as measurement. The original value is never modified. */
+bool form_label_fit(const char *source, int length, int available,
+	void *context, int (*next_character)(void *, const char *),
+	int (*measure)(void *, const char *, int),
+	char display[FORM_LABEL_BYTES + 4], int *display_length);
+bool form_label_viewport_width(int minimum, int parent, int margin, int *width);
+int form_focus_stroke(int requested, int width, int height);
+typedef struct
+{
+	int x, y, width, height;
+} form_caret_rectangle;
+bool form_caret_geometry(int x, int width, int height, int inset, int stroke,
+	form_caret_rectangle *rectangle);
 
 /* Exact logical sources and actual returned font metrics are independent. */
 bool form_scale_metrics_prepare(unsigned int quarters, int logical_pad,

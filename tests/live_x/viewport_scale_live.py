@@ -66,7 +66,9 @@ def run(args, profile, destination):
             ['tests/live_x/viewport_scale_live.py', 'tests/live_x/native_bindings_live.py',
              'tests/live_x/module_ui_scale_live.py',
              'modules/FvwmForm/FvwmForm.c', 'modules/FvwmForm/ReadXServer.c',
-             'modules/FvwmForm/form_scale.c', 'tests/form_scale_refuse_probe.c',
+             'modules/FvwmForm/form_scale.c', 'modules/FvwmForm/form_scale_policy.c',
+             'modules/FvwmForm/list_widget.c', 'tests/form_scale_refuse_probe.c',
+             'bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go',
              'bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go']},
         binary_sha256={str(p.relative_to(build)): hashlib.sha256(p.read_bytes()).hexdigest() for p in
             [build/'fvwm3', build/'modules/FvwmForm/FvwmForm', build/'bin/FvwmPrompt/fvwm-file-browser']})
@@ -166,6 +168,10 @@ def run(args, profile, destination):
                 ('XSetInputFocus',[C.c_void_p,C.c_ulong,C.c_int,C.c_ulong],C.c_int),
                 ('XMoveWindow',[C.c_void_p,C.c_ulong,C.c_int,C.c_int],C.c_int),
                 ('XGetClassHint',[C.c_void_p,C.c_ulong,C.POINTER(ClassHint)],C.c_int),
+                ('XGetImage',[C.c_void_p,C.c_ulong,C.c_int,C.c_int,C.c_uint,C.c_uint,
+                    C.c_ulong,C.c_int],C.c_void_p),
+                ('XGetPixel',[C.c_void_p,C.c_int,C.c_int],C.c_ulong),
+                ('XDestroyImage',[C.c_void_p],C.c_int),
                 ('XInternAtom',[C.c_void_p,C.c_char_p,C.c_int],C.c_ulong),
                 ('XTranslateCoordinates',[C.c_void_p,C.c_ulong,C.c_ulong,C.c_int,C.c_int,
                     C.POINTER(C.c_int),C.POINTER(C.c_int),C.POINTER(C.c_ulong)],C.c_int),
@@ -324,9 +330,81 @@ def run(args, profile, destination):
                     if previous is None: os.environ.pop('DISPLAY',None)
                     else: os.environ['DISPLAY']=previous
 
-            def form(alias,extra=(),enabled=True,binary='FvwmForm'):
+            def pixels(window,left,top,width,height):
+                # Read the real server drawable. Small focus strips and the
+                # two label lines are bounded independently of desktop size.
+                assert 0<width<=2560 and 0<height<=256 and width*height<=524288
+                image=x.XGetImage(d,window,left,top,width,height,C.c_ulong(-1).value,2)
+                assert image
+                try:
+                    return tuple(x.XGetPixel(image,a,b)
+                        for b in range(height) for a in range(width))
+                finally:
+                    x.XDestroyImage(image)
+
+            def caret_pixels(window,field,q):
+                box=(3*q+2)//4; stroke=(q+2)//4
+                width,height=geometry(field)[2:]
+                def observed():
+                    line=pixels(field,box,height//2,width-2*box,1)
+                    background=line[-1]
+                    ink=[i+box for i,p in enumerate(line) if p!=background]
+                    return dict(columns=ink,background=background) if len(ink)==stroke and \
+                        ink==list(range(ink[0],ink[0]+stroke)) else None
+                click(field); key(window,'u',control_key=True)
+                # Tab away/back exercises RedrawItem's caret path. Inserting
+                # a space exercises the KeyPress path without glyph pixels.
+                key(window,'Tab'); key(window,'Tab',shift=True)
+                redraw=wait_for_predicate('actual redraw caret stroke',observed,
+                    time.monotonic()+5,process=core)
+                key(window,'space')
+                typed=wait_for_predicate('actual typed caret stroke and advance',lambda:
+                    (s if s and s['columns'][0]>redraw['columns'][0] else None)
+                    if (s:=observed()) else None,time.monotonic()+5,process=core)
+                key(window,'u',control_key=True)
+                cleared=wait_for_predicate('actual cleared caret pixels',lambda:
+                    (s if s==redraw else None) if (s:=observed()) else None,
+                    time.monotonic()+5,process=core)
+                return dict(field=field,quarters=q,stroke=stroke,redraw=redraw,
+                    typed=typed,cleared=cleared,geometry=[width,height])
+
+            def focus_pixels(alias,window,field,collection,q):
+                box=(3*q+2)//4; stroke=(q+2)//4
+                # The first cell's top margin contains no label/icon ink.
+                # Compare focused/unfocused pixels at the same selection,
+                # so palette inversion cannot imitate a focus indicator.
+                sample_x=geometry(collection)[2]//2
+                def strip(): return pixels(collection,sample_x,box,1,stroke+1)
+                click(field); key(window,'Tab'); key(window,'Home')
+                initial=list_status(alias)
+                assert initial['focus']==0 and not initial['selected'],initial
+                samples=[]
+                for selected in (False,True):
+                    status=wait_for_predicate('actual selection before focus pixels',lambda:
+                        (s if s['focus']==0 and s['selected']==([0] if selected else []) else None)
+                        if (s:=list_status(alias)) else None,time.monotonic()+5,process=core)
+                    active=wait_for_predicate('actual list focus top stroke',lambda:
+                        (p if len(set(p:=strip()))==2 and len(set(p[:stroke]))==1 and
+                            p[0]!=p[-1] and (not selected or p[-1]!=samples[0]['active'][-1])
+                            else None),time.monotonic()+5,process=core)
+                    assert status['focus']==0 and status['selected']==([0] if selected else []),status
+                    if alias=='ScaleReadable' and q==8:
+                        capture('readability-narrow-'+('selected' if selected else 'unselected')+'-focus-2x.png')
+                    key(window,'Tab',shift=True)
+                    inactive=wait_for_predicate('actual list focus removed',lambda:
+                        (p if len(set(p:=strip()))==1 else None),time.monotonic()+5,process=core)
+                    assert all(a!=b for a,b in zip(active[:stroke],inactive[:stroke]))
+                    assert active[-1]==inactive[-1]
+                    samples.append(dict(selected=selected,status=status,active=active,
+                        inactive=inactive,origin=[sample_x,box],stroke=stroke))
+                    key(window,'Tab'); key(window,'space')
+                assert list_status(alias)['packet']==initial['packet']
+                return samples
+
+            def form(alias,extra=(),enabled=True,binary='FvwmForm',label_viewport=False):
                 lines=['Title "'+alias+'"']+(['UIScale monitor'] if enabled else [])+list(extra)+[
-                    'Line left','Label title 32 "Literal viewport scale test"','Line left',
+                    'Line left','Label title 32 "Literal viewport scale test"',
+                    *(['LabelViewport title'] if label_viewport else []),'Line left',
                     'Input draft 24 ""','Button continue "Observe (Alt-F)" Alt-F',
                     'Command Echo VIEWPORT_DRAFT '+alias+' x$(draft:Base64) x$(picks:Base64)',
                     'Button continue "Replay (F9)" F9','Command Send_ConfigInfo',
@@ -337,6 +415,46 @@ def run(args, profile, destination):
                 window=view.wait(alias); ids=sorted(view.children(window)); assert len(ids)<=64
                 owners.update({child:window for child in [window,*ids]})
                 return window,ids
+
+            def label_raster(window,field,committed=None):
+                actual_width=geometry(window)[2]; height=geometry(field)[1]
+                width=actual_width if committed is None else committed['width']
+                if committed is not None:
+                    # Core-owned parent enlargement can precede adoption.
+                    # Compare the complete old label region at its committed
+                    # coordinates, including its old blank area; held fonts
+                    # and child geometry must not follow the parent's size.
+                    assert actual_width>=width and height==committed['height']
+                return dict(width=width,height=height,sha256=hashlib.sha256(
+                    b''.join(int(p).to_bytes(8,'little')
+                        for p in pixels(window,0,0,width,height))).hexdigest())
+
+            def label_pixels(window,field):
+                width=geometry(window)[2]; height=geometry(field)[1]
+                data=pixels(window,0,0,width,height)
+                background=data[0]
+                occupied=[y for y in range(height)
+                    if any(p!=background for p in data[y*width:(y+1)*width])]
+                assert occupied,'actual label glyphs missing'
+                # Two dedicated Label lines share a font. The largest blank
+                # gap between their ink rows separates them without predicting
+                # glyph dimensions or substituting a font measurement.
+                gaps=[(b-a,a,b) for a,b in zip(occupied,occupied[1:])]
+                gap,above,below=max(gaps)
+                assert gap>1,(height,occupied)
+                bands=[]
+                for top,bottom in [(occupied[0],above),(below,occupied[-1])]:
+                    ink=[(i%width,i//width+top) for i,p in
+                        enumerate(data[top*width:(bottom+1)*width]) if p!=background]
+                    left,right=min(p[0] for p in ink),max(p[0] for p in ink)
+                    bands.append(dict(bounds=[left,top,right,bottom],
+                        ink_sha256=hashlib.sha256(b''.join(int(p).to_bytes(8,'little')
+                            for y in range(top,bottom+1)
+                            for p in data[y*width+left:y*width+right+1])).hexdigest(),
+                        sha256=hashlib.sha256(b''.join(int(p).to_bytes(8,'little')
+                            for p in data[top*width:(bottom+1)*width])).hexdigest()))
+                return dict(width=width,height=height,bands=bands,background=background,
+                    sha256=hashlib.sha256(b''.join(int(p).to_bytes(8,'little') for p in data)).hexdigest())
 
             def kill_form(alias,binary='FvwmForm'):
                 command('KillModule '+binary+' '+alias)
@@ -393,8 +511,12 @@ def run(args, profile, destination):
 
             # A genuine pending collection prevents font publication; only its
             # latest desired monitor factor can adopt after the real Abort.
-            pending,pending_ids=form('ScalePending')
+            pending,pending_ids=form('ScalePending',label_viewport=True)
             initial=ready('ScalePending',pending,4,'DUMMY0'); packet=list_status('ScalePending')
+            pending_field=view.children(pending)[0]
+            pending_labels=label_raster(pending,pending_field)
+            pending_parent=geometry(pending)
+            pending_boxes={i:geometry(i) for i in pending_ids}
             command('SendToModule ScalePending ListBegin picks 1 2')
             physical(8); move(pending,'DUMMY1')
             deferred8=wait_for_predicate('pending collection defers 2x',lambda:
@@ -407,6 +529,9 @@ def run(args, profile, destination):
             assert deferred8['resource_gen']==deferred5['resource_gen']==initial['resource_gen']
             assert int(deferred5['desired_epoch'],16)>int(deferred8['desired_epoch'],16)
             assert deferred5['current_epoch']==deferred8['current_epoch']==initial['current_epoch']
+            assert label_raster(pending,pending_field,pending_labels)==pending_labels
+            assert {i:geometry(i) for i in pending_ids}==pending_boxes
+            deferred_parent=geometry(pending)
             command('SendToModule ScalePending ListAbort picks 2')
             adopted=ready('ScalePending',pending,5,'DUMMY1')
             assert list_status('ScalePending')['packet']==packet['packet']
@@ -422,7 +547,9 @@ def run(args, profile, destination):
             command('SendToModule ScalePending ListLayout picks 1 3 18 8')
             assert list_status('ScalePending')['generation']==3
             evidence['pending_latest_target']=dict(initial=initial,deferred8=deferred8,deferred5=deferred5,
-                adopted=adopted,replayed=replayed,collection_generation_preserved=True,next_layout_generation=3)
+                adopted=adopted,replayed=replayed,collection_generation_preserved=True,next_layout_generation=3,
+                label_viewport_deferred_raster=pending_labels,
+                before_parent_geometry=pending_parent,deferred_parent_geometry=deferred_parent)
             capture('scale-pending-latest.png')
             kill_form('ScalePending')
 
@@ -431,10 +558,13 @@ def run(args, profile, destination):
             # remain real X events, and no ConfigureNotify is synthesized.
             command('Style ScaleWaiting Unmanaged')
             waiting,waiting_ids=form('ScaleWaiting',['Geometry +100+100','Line left',
-                'Label wide 90 "A wide fixed label requires a larger actual parent before adoption"'])
+                'Label wide 90 "A wide fixed label requires a larger actual parent before adoption"'],
+                label_viewport=True)
             waiting_before=ready('ScaleWaiting',waiting,4,'DUMMY0')
             assert client.parent(waiting)==client.root
             waiting_boxes={i:geometry(i) for i in waiting_ids}
+            waiting_field=view.children(waiting)[0]
+            waiting_labels=label_raster(waiting,waiting_field)
             waiting_packet=list_status('ScaleWaiting'); old_geometry=geometry(waiting)
             old_mask=view.attributes(waiting).your_event_mask
             before_errors=len(errors.unexpected)
@@ -476,6 +606,7 @@ def run(args, profile, destination):
                 assert latest['height']==max(old_geometry[3],waiting6['required_h'])
                 assert geometry(waiting)[2:]==old_geometry[2:]
                 assert {i:geometry(i) for i in waiting_ids}==waiting_boxes
+                assert label_raster(waiting,waiting_field,waiting_labels)==waiting_labels
                 assert list_status('ScaleWaiting')['packet']==waiting_packet['packet']
                 assert waiting6['resource_gen']==waiting_before['resource_gen']
                 for held in (waiting5,waiting6):
@@ -496,6 +627,7 @@ def run(args, profile, destination):
                 evidence['minimum_waiting_latest']=dict(unmanaged_fixture=True,before=waiting_before,
                     held5=waiting5,held6=waiting6,actual_resize_requests=held_requests,
                     quiet_seconds=.15,adopted=waiting_adopted,synthetic_configure_events=False)
+                evidence['minimum_waiting_latest']['label_viewport_held_raster']=waiting_labels
                 capture('scale-minimum-real-configure.png')
             finally:
                 x.XSelectInput(d,waiting,old_mask); x.XSync(d,0)
@@ -525,6 +657,90 @@ def run(args, profile, destination):
                 if state_name in ('unsupported','ready'): capture(alias+'-fallback.png')
                 kill_form(alias)
 
+            # One existing viewport Form, with an opted-in Label followed by
+            # the ordinary fixed Label control. Actual resize/Configure cycles
+            # must expand only the opted-in raster and must never ratchet the
+            # configured minimum. Keep source text longer than narrow space.
+            ascii_label='READABLE '+('Wm-12345 '*24)+'original-tail'
+            unicode_label='READABLE '+('café Δ 漢字 '*24)+'original-tail'
+            for alias,fonts in [('ScaleReadable',[]),('ScaleReadableBitmap',
+                ['Font fixed','InputFont fixed','ButtonFont fixed'])]:
+                command('Style '+alias+' PositionPlacement screen DUMMY0 100p 100p, StartsOnScreen DUMMY0')
+                window,ids=form(alias,[*fonts,'Line left',
+                    'Label fit 12 "'+ascii_label+'"','LabelViewport fit'])
+                ordered=view.children(window)
+                assert len(ordered)==4,ordered
+                field,collection=ordered[0],ordered[-1]
+                assert geometry(field)[1]<geometry(collection)[1]
+                packet=list_status(alias)
+                samples=[]
+                for q in (4,5,6,8):
+                    move(window,'DUMMY0'); ready(alias,window,4,'DUMMY0')
+                    physical(q); move(window,'DUMMY1')
+                    initial=ready(alias,window,q,'DUMMY1')
+                    minimum=[initial['min_w'],initial['min_h']]
+                    # A fresh same-q baseline follows actual minimum sizing,
+                    # since the preceding larger factor may own a larger frame.
+                    x.XResizeWindow(d,window,*minimum); x.XSync(d,0)
+                    wait_for_predicate('actual narrow label parent',lambda:
+                        geometry(window)[2:]==minimum,time.monotonic()+5,process=core)
+                    narrow_status=ready(alias,window,q,'DUMMY1')
+                    narrow_boxes={i:geometry(i) for i in ids}
+                    values=[]
+                    for value in (ascii_label,unicode_label):
+                        previous=label_pixels(window,field)
+                        command('SendToModule '+alias+' SetLabel fit "'+value+'"')
+                        # Changing the ordinary Label supplies a default-off
+                        # control with the same long source and font.
+                        command('SendToModule '+alias+' SetLabel title "'+value+'"')
+                        scale(alias)  # Ordered public reply after both updates.
+                        narrow=wait_for_predicate('actual narrow label repaint',lambda:
+                            (s if s!=previous else None) if (s:=label_pixels(window,field)) else None,
+                            time.monotonic()+5,process=core)
+                        wide_size=[min(2400,minimum[0]+900),minimum[1]]
+                        assert wide_size[0]>minimum[0]+200,(minimum,wide_size)
+                        x.XResizeWindow(d,window,*wide_size); x.XSync(d,0)
+                        wait_for_predicate('actual wide label parent',lambda:
+                            geometry(window)[2:]==wide_size,time.monotonic()+5,process=core)
+                        wide=wait_for_predicate('available parent width reaches label raster',lambda:
+                            (s if s['bands'][0]['bounds'][2]>narrow['bands'][0]['bounds'][2]+100
+                                else None) if (s:=label_pixels(window,field)) else None,
+                            time.monotonic()+5,process=core)
+                        assert wide['bands'][1]['bounds']==narrow['bands'][1]['bounds'],(narrow,wide)
+                        assert wide['bands'][1]['ink_sha256']==narrow['bands'][1]['ink_sha256']
+                        margin=(10*q+2)//4
+                        assert wide['bands'][0]['bounds'][2]<wide_size[0]-margin,wide
+                        wide_status=ready(alias,window,q,'DUMMY1')
+                        assert [wide_status['min_w'],wide_status['min_h']]==minimum
+                        if alias=='ScaleReadable' and value==unicode_label and q==8:
+                            capture('readability-wide-2x.png')
+                        x.XResizeWindow(d,window,*minimum); x.XSync(d,0)
+                        wait_for_predicate('actual original parent shrink',lambda:
+                            geometry(window)[2:]==minimum,time.monotonic()+5,process=core)
+                        shrunk=wait_for_predicate('same-q retained text raster after shrink',lambda:
+                            (s if s==narrow else None) if (s:=label_pixels(window,field)) else None,
+                            time.monotonic()+5,process=core)
+                        assert {i:geometry(i) for i in ids}==narrow_boxes
+                        values.append(dict(source_utf8_sha256=hashlib.sha256(value.encode()).hexdigest(),
+                            source_bytes=len(value.encode()),narrow=narrow,wide=wide,shrunk=shrunk,
+                            wide_status=wide_status))
+                    final=ready(alias,window,q,'DUMMY1')
+                    assert final['resource_gen']==narrow_status['resource_gen']
+                    assert [final['min_w'],final['min_h']]==minimum
+                    assert list_status(alias)['packet']==packet['packet']
+                    assert sorted(view.children(window))==ids
+                    caret=caret_pixels(window,field,q)
+                    focus=focus_pixels(alias,window,field,collection,q)
+                    assert list_status(alias)['packet']==packet['packet']
+                    samples.append(dict(quarters=q,status=final,minimum=minimum,
+                        labels=values,caret=caret,focus=focus,children=ids,packet=packet))
+                evidence.setdefault('readability',[]).append(dict(alias=alias,samples=samples,
+                    bitmap_glyph_growth_claimed=False,
+                    ellipsis_identity='pure actual-font fit policy plus separate manual capture review',
+                    source_retention='same-q original-width raster restoration after SetLabel and real resize'))
+                kill_form(alias)
+            physical(5)
+
             if args.fault_form:
                 assert not arm.exists()
                 unsupported,unsupported_ids=form('ScaleUnsupportedASAN',['Line left',
@@ -540,11 +756,19 @@ def run(args, profile, destination):
                 kill_form('ScaleUnsupportedASAN','ViewportScaleFaultForm')
 
             if args.fault_form:
+                # The preceding real focus probes leave the pointer on the
+                # scaled output. This fixture's baseline explicitly owns 1x.
+                command('Style ScaleFontFault PositionPlacement screen DUMMY0 100p 100p, StartsOnScreen DUMMY0')
                 fault,ids=form('ScaleFontFault',['Font "xft:Sans:size=10"',
                     'InputFont "xft:DejaVu Sans Mono:size=11"','ButtonFont "xft:Sans:size=12"'],
-                    binary='ViewportScaleFaultForm')
+                    binary='ViewportScaleFaultForm',label_viewport=True)
+                fault_first_map=scale('ScaleFontFault')
+                # Placement hints do not establish the actual starting monitor.
+                # The fault proof begins only after this observed baseline move.
+                move(fault,'DUMMY0')
                 old=ready('ScaleFontFault',fault,4,'DUMMY0'); boxes={i:geometry(i) for i in ids}
                 field=min(ids,key=lambda i:geometry(i)[1]); type_text(fault,field,'retained-font-draft')
+                fault_labels=label_raster(fault,field)
                 fault_packet=list_status('ScaleFontFault')
                 arm.touch(); move(fault,'DUMMY1')
                 refused=wait_for_predicate('injected acquisition failure is atomic',lambda:
@@ -555,6 +779,7 @@ def run(args, profile, destination):
                 refused_packet=list_status('ScaleFontFault')
                 assert refused_boxes==boxes,(boxes,refused_boxes)
                 assert refused_packet['packet']==fault_packet['packet'],(fault_packet,refused_packet)
+                assert label_raster(fault,field,fault_labels)==fault_labels
                 injected=json.loads(Path(str(arm)+'.failed').read_text()); assert injected['attempt']==2
                 owned=[json.loads(p.read_text()) for p in native.glob('module-*.json')
                     if 'ScaleFontFault' in json.loads(p.read_text())['arguments']]
@@ -566,9 +791,11 @@ def run(args, profile, destination):
                 move(fault,'DUMMY1'); recovered=ready('ScaleFontFault',fault,5,'DUMMY1')
                 assert sorted(view.children(fault))==ids
                 evidence['font_acquisition_failure']=dict(before=old,refused=refused,injection=injected,
+                    first_map_status=fault_first_map,baseline_move='actual root-pixel move to DUMMY0',
                     draft_receipt=raw,recovered=recovered,parent_dimensions_core_owned=True,
                     before_child_geometry=boxes,refused_child_geometry=refused_boxes,
-                    before_packet=fault_packet,refused_packet=refused_packet)
+                    before_packet=fault_packet,refused_packet=refused_packet,
+                    label_viewport_refused_raster=fault_labels)
                 capture('scale-font-recovered.png'); kill_form('ScaleFontFault','ViewportScaleFaultForm')
             else:
                 evidence['font_acquisition_failure']={'status':'not-run','reason':'no test wrapper supplied'}
@@ -645,6 +872,30 @@ def run(args, profile, destination):
                 heights[q]=geometry(filter_input)[3]
                 evidence.setdefault('browser_moves',[]).append(dict(status=current,server=server,
                     filter_geometry=geometry(filter_input),list_geometry=geometry(list_window)))
+                if q==8 and len(evidence['browser_moves'])==3:
+                    original_size=geometry(window)[2:]
+                    original_boxes={i:geometry(i) for i in ids}
+                    narrow_size=[current['min_w'],original_size[1]]
+                    wide_size=[min(2400,narrow_size[0]+500),original_size[1]]
+                    assert wide_size[0]>narrow_size[0]+100,(narrow_size,wide_size)
+                    sizes=[]
+                    for name,size in [('narrow',narrow_size),('wide',wide_size),('shrink',original_size)]:
+                        x.XResizeWindow(d,window,*size); x.XSync(d,0)
+                        wait_for_predicate('actual browser '+name+' width',lambda:
+                            geometry(window)[2:]==size,time.monotonic()+5,process=browser)
+                        observed=ready(alias,window,q,'DUMMY1')
+                        assert observed['min_w']==current['min_w'] and observed['min_h']==current['min_h']
+                        assert observed['resource_gen']==current['resource_gen']
+                        assert list_status(alias)['packet']==before_range['packet']
+                        assert sorted(view.children(window))==ids
+                        sizes.append(dict(name=name,status=observed,collection=geometry(list_window)))
+                        if name!='shrink': capture('browser-readability-'+name+'-2x.png')
+                    assert {i:geometry(i) for i in ids}==original_boxes
+                    evidence['browser_readability_widths']=sizes
+                    evidence['browser_input_carets']=[caret_pixels(window,field,q)
+                        for field in (filter_input,path_input)]
+                    click(filter_input); key(window,'Tab')
+                    assert list_status(alias)['packet']==before_range['packet']
                 if q in (6,8): capture('browser-scale-'+str(q)+'-'+str(len(evidence['browser_moves']))+'.png')
             assert heights[4]<heights[5]<heights[6]<heights[8],heights
             key(window,'Up',shift=True)

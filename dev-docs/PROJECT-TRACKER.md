@@ -419,10 +419,62 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 scaled Form/browser readability and focus — 2026-10-27
+
+Owner: Cam; `codex/r1-scale-followup`; #51/#69. Status: focused Linux/native
+checkpoint ready for review, following merged PR276. Four related outcomes: additive
+`LabelViewport name` for a dedicated-line fixed Label to use available actual
+parent width; actual-font measured complete-character prefix plus `...` on
+remaining overflow, retaining original value; compact browser state with
+selected/hidden counts, refusal/retry and action availability before variable
+detail; scale-derived collection focus and input caret strokes.
+
+Ordinary Labels/Forms retain existing defaults. Keep each configured label
+minimum independent of its expanded current width, so enlarge/shrink cycles
+cannot ratchet minimum hints. No wrapping, extra rows/windows, timers, parent
+text-driven resizing, generation changes or new dependency. Preserve the
+existing staged scale publication/refusal, native XIDs, drafts/cursor and
+collection selection/range/top identities. Use existing locale boundaries and
+actual returned fonts; a bitmap alias is not proof of larger glyphs.
+
+Acceptance: bounded pure geometry/text/focus policies and affected browser
+format tests, one reused incremental Linux compile/test/vet/scoped sanitizer
+checkpoint, then extend the existing actual RandR fixture for narrow/wide/shrink,
+long labels, SetLabel, 1/1.25/1.5/2x, bitmap fallback, atomic refusal/deferral and
+keyboard focus. Capture/inspect Slate, Dune and enlarged Classic from this
+combined run. Do not repeat successful unrelated phases or full OS/install/race
+matrices merely for publication. #51/#69 retain broader six-target, full-text,
+physical/assistive/release acceptance. Parked #257/#258 stay excluded.
+PR269's performance reference is now 4/5 after PR276; this merge becomes 5/5,
+so the next periodic comparison becomes due then. Source/readability feature
+work does not claim a speed improvement. Lead owns resources/integration/tracker;
+selected Temper implementer/product routes own bounded edits and separate Sol
+review remains independent. Native named-role loading/backend identity remain
+unattested; explicit configured model/effort settings are requested.
+
+One affected Linux checkpoint passes compilation, four policies, browser tests/
+vet, scoped ASan/UBSan, four legacy actual-X regressions and manual rendering.
+The actual RandR checkpoint passes all three profiles, with 51 saved captures,
+45 actual module child Wait0 receipts, all direct children0 and no final observer/
+cleanup failures. Four unmodified examples are in the
+[gallery](../doc/development-preview.md#scaled-labels-and-keyboard-focus);
+[source-bound results and limits](verification/VERIFICATION-2026-10-27-FORM-READABILITY.md).
+The ordinary-label raster control exposes a pre-existing core/fontset clipping
+bug; a balanced Form-local GC region now enforces its documented rectangle,
+with the original failure retained. A late one-file admission delta is explicitly
+reconciled; only affected Form targets rebuild. Other passed phases keep their
+actual source scope. Seven verified host archives preserve failures/results;
+32.95 MB of guest duplicates are retired, caches/disks preserved and lab stopped.
+Continuous native-selection feedback versus last-callback summary labels,
+full-text disclosure and configured glyph/physical/assistive/support acceptance
+remain explicit #69/#51 work; this checkpoint closes neither broad owner.
+
 ## R1 viewport Form/browser scale adoption — 2026-10-27
 
-Owner: Cam; `codex/r1-viewport-scaling`; #51/#69. Status: focused Linux consumer
-checkpoint ready for review. [Accepted outcome](decisions/VIEWPORT-SCALE-2026-10-27.md),
+Owner: Cam; `codex/r1-viewport-scaling`; #51/#69. Status: merged in PR276 as
+`abc38b68341f1bfdbd4fdaeabc525fa43517fa19`; reviewed tree
+`fc9048c1888110c80d9c7b8aaa1ce628c50d4cb2`, canonical signature and author
+DCO verified. Branch retired and Project Done. [Accepted outcome](decisions/VIEWPORT-SCALE-2026-10-27.md),
 [results and limits](verification/VERIFICATION-2026-10-27-VIEWPORT-SCALE.md).
 Batch native opt-in viewport scaling, stable logical metrics/font ownership,
 atomic real-geometry publication, minimum-size deferral/recovery, browser
@@ -432,7 +484,7 @@ idle-close timer. No parent dimension double scaling or new polling source.
 Use one combined affected Linux gate and actual RandR/theme/capture checkpoint;
 only affected checks repeat after corrections. #51's broader consumers and six-
 target qualification remain open; no #69 closure without all frozen rows.
-PR269's performance reference is 3/5 after PR275, becoming 4/5 on this merge.
+PR269's performance reference is now 4/5 after PR276.
 Terra is at capacity; the recorded Sol implementer fallback handles bounded
 browser/docs work explicitly. Core/native fixture implementation and separate
 review retain their configured routes; backend identities are not attested.

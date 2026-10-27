@@ -37,17 +37,23 @@ func (b *browser) render() error {
 	if b.snapshot != nil {
 		path = string(b.snapshot.Path)
 	}
-	line(`Label path-label 56 "` + displayText(path, 90) + `"`)
+	label := func(name, value string) {
+		line(`Label ` + name + ` 56 "` + displayText(value, 120) + `"`)
+		line("LabelViewport " + name)
+	}
+	label("status", b.status)
 	line(`Line left`)
-	line(`Label status 56 "` + displayText(b.status, 120) + `"`)
+	label("watcher", b.watchText())
 	line(`Line left`)
-	line(`Label watcher 56 "` + displayText(b.watchText(), 120) + `"`)
+	label("progress", b.progressText())
 	line(`Line left`)
-	line(`Label projection 56 "` + displayText(b.projectionTextMode(mode), 120) + `"`)
+	label("readiness", b.readinessText())
 	line(`Line left`)
-	line(`Label progress 56 "` + displayText(b.progressText(), 120) + `"`)
+	label("counts", b.countText())
 	line(`Line left`)
-	line(`Label readiness 56 "` + displayText(b.readinessText(), 120) + `"`)
+	label("projection", b.projectionTextMode(mode))
+	line(`Line left`)
+	label("path-label", path)
 	line("Line left")
 	line(`Input filter 24 ""`)
 	button("Filter (Alt-F)", "Alt-F", "filter", "x$(filter:Base64)")
@@ -86,14 +92,12 @@ func (b *browser) render() error {
 	}
 	line("ListNotify " + b.nativeTag("start"))
 	line("Line left")
-	line(`Label counts 56 "` + b.countText() + `"`)
-	line("Line left")
 	button("Select visible (Alt-A)", "Alt-A", "select-visible", "-")
 	button("Clear selection (Alt-D)", "Alt-D", "clear-selection", "-")
 	button("Properties (F2)", "F2", "properties", "-")
-	for _, label := range b.inspectorLabels() {
+	for _, item := range b.inspectorLabels() {
 		line("Line left")
-		line("Label " + label.name + " 56 \"" + displayText(label.value, 120) + "\"")
+		label(item.name, item.value)
 	}
 	line("Line left")
 	button("Home (Alt-H)", "Alt-H", "home", "-")

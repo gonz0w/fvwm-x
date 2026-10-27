@@ -36,6 +36,41 @@ closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Scaled labels and keyboard focus
+
+The browser's single-line status labels now use available width. Essential
+selection and action state appears first, and text that still cannot fit ends
+with `...`. Widening can reveal more of the retained value; shrinking restores
+the narrow view without increasing its minimum size. This adds no text wrapping
+or extra list rows. Full-text disclosure remains separate work.
+
+![Slate browser with expanded status labels at 2x](screenshots/readability-slate-wide.png)
+
+![Dune browser with expanded status labels at 2x](screenshots/readability-dune-wide.png)
+
+![Enlarged Classic browser with expanded labels at 2x](screenshots/readability-classic-wide.png)
+
+Collection focus and input carets use a bounded scale-derived stroke. The
+synthetic native control fixture below shows selected keyboard focus and long
+label overflow. It is a primitive test Form, not a file-manager workflow.
+
+![Enlarged Classic native controls with selected keyboard focus](screenshots/readability-classic-focus.png)
+
+Personal Forms may add `LabelViewport name` after a named Label, on its own
+Line in a single-ListViewport Form. Ordinary Labels retain fixed bounds; a
+core/fontset drawing repair now enforces those documented bounds consistently
+with Xft. The three-profile checkpoint uses actual RandR scale changes and
+unmodified captures, not font-size simulation.
+[Capture/source manifest](screenshots/readability-manifest.json),
+[Form reference](FvwmForm.adoc),
+[browser reference](fvwm-file-browser.adoc) and
+[results/limits](../dev-docs/verification/VERIFICATION-2026-10-27-FORM-READABILITY.md).
+This remains development work; broader #51/#69 and physical/assistive acceptance
+are open. Summary labels reflect the controller's last admitted callback;
+native selection can change before the next callback updates those labels.
+Some synthetic CJK characters show missing-glyph boxes with the configured font;
+these captures do not qualify multilingual glyph coverage.
+
 ## Native monitor scaling
 
 The browser now follows committed per-monitor UI scales, including fractional

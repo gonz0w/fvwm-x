@@ -19,7 +19,7 @@ Recent work:
 - Optional browser: scrolling list/grid, multi-selection,
   filtering, sorting, observed properties and configured application actions.
   List/grid switches and live updates retain drafts/selection; watching refreshes folders.
-  Controls follow fractional per-monitor scaling.
+  Labels resize; scaled focus stays visible.
 
 Slate dark: list/properties.
 

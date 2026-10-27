@@ -203,6 +203,8 @@ static void ct_list_viewport(char *);
 static void ct_list_versioned(char *);
 static void ct_list_notify(char *);
 static void ct_label(char *);
+static void ct_label_viewport(char *);
+static void form_label_viewports_prepare(void);
 static void am_set_label(char *);
 static void am_renew_timeout(char *);
 static void form_list_report(Item *, const char *, bool);
@@ -267,6 +269,7 @@ static struct CommandTable ct_table[] =
   {"ItemColorset",ct_ItemColorset},
   {"ItemFore",ct_ItemFore},
   {"Label",ct_label},
+  {"LabelViewport",ct_label_viewport},
   {"Line",ct_Line},
   {"List",ct_List},
   {"ListFocus",ct_ListFocus},
@@ -1810,7 +1813,10 @@ static bool form_viewport_reflow(int width, int height, int cell,
 		if (line != list->list.line)
 		{
 			for (int i = 0; i < line->n; i++)
-				fixed += line->items[i]->header.size_x;
+				fixed += line->items[i]->type == I_TEXT &&
+					line->items[i]->text.viewport ?
+					line->items[i]->text.minimum_width :
+					line->items[i]->header.size_x;
 			if (fixed > minimum)
 				minimum = fixed;
 		}
@@ -1827,6 +1833,15 @@ static bool form_viewport_reflow(int width, int height, int cell,
 		width = minimum;
 	if (height < min_height)
 		height = min_height;
+	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
+	{
+		int span;
+
+		if (p->type == I_TEXT && p->text.viewport &&
+		    !form_label_viewport_width(p->text.minimum_width,
+			width, ITEM_HSPC, &span))
+			return false;
+	}
 	content_width = width - 2 * ITEM_HSPC - 2 * BOX_SPC - LIST_GUTTER;
 	list_height = height - CF.viewport_fixed_height;
 	if (!ui_layout_grid(content_width, list_height - 2 * BOX_SPC,
@@ -1863,7 +1878,14 @@ static bool form_viewport_reflow(int width, int height, int cell,
 		int x = ITEM_HSPC, gap = ITEM_HSPC;
 
 		for (int i = 0; i < line->n; i++)
-			line_width += line->items[i]->header.size_x;
+		{
+			Item *p = line->items[i];
+
+			/* All opted spans were admitted before publishing the view. */
+			if (p->type == I_TEXT && p->text.viewport)
+				p->header.size_x = width - 2 * ITEM_HSPC;
+			line_width += p->header.size_x;
+		}
 		if (line != list->list.line)
 		{
 			if (line->justify == L_RIGHT)
@@ -1948,7 +1970,10 @@ static void form_viewport_prepare(void)
 		if (line != list->list.line)
 		{
 			for (int i = 0; i < line->n; i++)
-				fixed += line->items[i]->header.size_x;
+				fixed += line->items[i]->type == I_TEXT &&
+					line->items[i]->text.viewport ?
+					line->items[i]->text.minimum_width :
+					line->items[i]->header.size_x;
 			if (fixed > minimum)
 				minimum = fixed;
 		}
@@ -2172,9 +2197,33 @@ void RedrawFrame(XEvent *pev)
 	}
 }
 
+static int form_label_next_character(void *context, const char *text)
+{
+	return FlocaleStringNumberOfBytes(context, text);
+}
+
+static int form_label_measure(void *context, const char *text, int length)
+{
+	return FlocaleTextWidth(context, (char *)text, length);
+}
+
+/* Filled rectangles leave the shared GC line attributes untouched. Both the
+ * input redraw and incremental key path use the same bounded interior stroke. */
+void form_draw_caret(Item *item, int x)
+{
+	form_caret_rectangle rectangle;
+
+	if (form_caret_geometry(x, item->header.size_x, item->header.size_y,
+		BOX_SPC, CF.ui_metrics.stroke, &rectangle))
+		XFillRectangle(dpy, item->header.win,
+			item->header.dt_ptr->dt_item_GC, rectangle.x, rectangle.y,
+			rectangle.width, rectangle.height);
+}
+
 void RedrawText(Item *item)
 {
   char *p;
+  char display[FORM_LABEL_BYTES + 4];
   Region region = NULL;
 
   CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */
@@ -2185,6 +2234,19 @@ void RedrawText(Item *item)
   item->header.dt_ptr->dt_Fstr->win = CF.frame;
   item->header.dt_ptr->dt_Fstr->gc  = item->header.dt_ptr->dt_GC;
   item->header.dt_ptr->dt_Fstr->str = item->text.value;
+  if (item->text.viewport)
+  {
+    int available = item->header.size_x - 2 * TEXT_SPC;
+    int length = 0;
+
+    if (!form_label_fit(item->text.value, item->text.n,
+        available > 0 ? available : 0, item->header.dt_ptr->dt_Ffont,
+        form_label_next_character, form_label_measure, display, &length))
+      fprintf(stderr, "%s: refused LabelViewport text measurement\n",
+        module->name);
+    item->header.dt_ptr->dt_Fstr->str = display;
+    item->header.dt_ptr->dt_Fstr->len = length;
+  }
   item->header.dt_ptr->dt_Fstr->x   = item->header.pos_x + TEXT_SPC;
   item->header.dt_ptr->dt_Fstr->y   = item->header.pos_y + ( CF.padVText / 2 ) +
     item->header.dt_ptr->dt_Ffont->ascent;
@@ -2201,6 +2263,9 @@ void RedrawText(Item *item)
     XClearArea(dpy, CF.frame, clip.x, clip.y, clip.width, clip.height, False);
     region = XCreateRegion();
     XUnionRectWithRegion(&clip, region, region);
+    /* Core/fontset drawing uses the GC clip; Xft uses the string region.
+     * Form draw-table GCs have no persistent clip outside this paint. */
+    XSetRegion(dpy, item->header.dt_ptr->dt_GC, region);
     item->header.dt_ptr->dt_Fstr->flags.has_clip_region = True;
     item->header.dt_ptr->dt_Fstr->clip_region = region;
   }
@@ -2209,6 +2274,7 @@ void RedrawText(Item *item)
 		    item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
   if (region != NULL)
   {
+    XSetClipMask(dpy, item->header.dt_ptr->dt_GC, None);
     item->header.dt_ptr->dt_Fstr->flags.has_clip_region = False;
     item->header.dt_ptr->dt_Fstr->clip_region = NULL;
     item->header.dt_ptr->dt_Fstr->str = NULL;
@@ -2424,8 +2490,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
 	      FlocaleTextWidth(item->header.dt_ptr->dt_Ffont, bstr, len) - 1;
       XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
 		     item->header.dt_ptr->dt_colors[c_item_bg]);
-      XDrawLine(dpy, item->header.win, item->header.dt_ptr->dt_item_GC,
-		x, BOX_SPC, x, dy - BOX_SPC);
+      form_draw_caret(item, x);
       myfprintf((stderr,"Line %d/%d - %d/%d (first)\n",
 		     x, BOX_SPC, x, dy - BOX_SPC));
     }
@@ -2462,8 +2527,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
       len = (int)(estr - bstr);
       x = BOX_SPC + TEXT_SPC +
 	FlocaleTextWidth(item->header.dt_ptr->dt_Ffont, bstr, len) - 1;
-      XDrawLine(dpy, item->header.win, item->header.dt_ptr->dt_item_GC,
-		x, BOX_SPC, x, dy - BOX_SPC);
+      form_draw_caret(item, x);
       myfprintf((stderr,"Line %d/%d - %d/%d\n",
 		 x, BOX_SPC, x, dy - BOX_SPC));
     }
@@ -3583,6 +3647,7 @@ int main (int argc, char **argv)
 
   ReadConfig();				/* get config from fvwm */
 
+  form_label_viewports_prepare();
   form_scale_capture(module->name);
   MassageConfig();			/* add data, calc window x/y */
   form_viewport_prepare();
@@ -3968,12 +4033,60 @@ static void ct_label(char *cp)
 	item->header.size_x = width;
 	item->header.size_y = height;
 	item->text.fixed = true;
+	item->text.minimum_width = width;
 	item->text.value = form_copy_quoted(args.initial + 1);
 	item->text.n = strlen(item->text.value);
 	AddToLine(item);
 	return;
 invalid:
 	fprintf(stderr, "%s: invalid Label name width quoted-text\n", module->name);
+}
+
+/* The modifier follows an already declared Label. Final validation waits for
+ * the complete Form, so later items cannot silently share its dedicated line. */
+static void ct_label_viewport(char *cp)
+{
+	const char *tail;
+	Item *p = form_named_target(cp, &tail, I_TEXT);
+
+	if (p == NULL || !p->text.fixed || *tail != '\0')
+	{
+		fprintf(stderr, "%s: invalid LabelViewport declared-label-name\n",
+			module->name);
+		return;
+	}
+	p->text.viewport = true;
+}
+
+static void form_label_viewports_prepare(void)
+{
+	Line *line = &root_line;
+	int lists = 0;
+	bool supported;
+
+	for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
+		if (p->type == I_LIST)
+			lists++;
+	supported = lists == 1 && CF.viewport != NULL &&
+		CF.viewport->list.line->n == 1;
+	do
+	{
+		for (int i = 0; i < line->n; i++)
+		{
+			Item *p = line->items[i];
+
+			if (p->type != I_TEXT || !p->text.viewport)
+				continue;
+			if (!supported || line->n != 1)
+			{
+				fprintf(stderr, "%s: LabelViewport %s needs a "
+					"dedicated Line in one ListViewport Form\n",
+					module->name, p->header.name);
+				p->text.viewport = false;
+			}
+		}
+		line = line->next;
+	} while (line != &root_line);
 }
 
 static void am_set_label(char *cp)

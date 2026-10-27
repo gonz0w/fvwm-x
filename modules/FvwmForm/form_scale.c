@@ -130,7 +130,9 @@ void form_scale_capture(const char *module_name)
 			scale.fonts++;
 		}
 		scale.items[scale.count++] = (form_scale_item_source){
-			p, p->header.size_x, p->header.size_y, font
+			p, p->type == I_TEXT && p->text.viewport ?
+				p->text.minimum_width : p->header.size_x,
+			p->header.size_y, font
 		};
 	}
 	do
@@ -433,6 +435,9 @@ void form_scale_retry(void)
 	for (unsigned int i = 0; i < scale.count; i++)
 		if (scale.items[i].item != list)
 		{
+			if (scale.items[i].item->type == I_TEXT &&
+			    scale.items[i].item->text.viewport)
+				scale.items[i].item->text.minimum_width = widths[i];
 			scale.items[i].item->header.size_x = widths[i];
 			scale.items[i].item->header.size_y = heights[i];
 		}

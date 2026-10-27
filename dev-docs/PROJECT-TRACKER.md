@@ -5199,5 +5199,13 @@ preserved. Follow documentation-only make check, staged/working whitespace,
 exact bundle/manifest/links/auditor, signed actual-author DCO and separate final
 review before owner-authorized PR merge. Stop on source drift or failed gates.
 No guest/build/matrix, protection change or runtime qualification is authorized.
-State: in progress. Completion requires canonical source verification after merge.
+State: complete. [PR #278](https://github.com/gonz0w/fvwm-x/pull/278) merged at
+`1282da9040b597036134552c28ceefd0d8790013`; canonical source tree/signature and
+contributor DCO preservation were verified. The auditor compared all nine files
+and five explicit roles with no errors; source/link/role preservation, make check
+and whitespace checks passed. Separate source/policy review resolved provenance
+links and approved the exact candidate. Actions remain disabled; runtime routing,
+product/native qualification and measured benefits remain unverified. This
+record-only reconciliation changes no payload or acceptance boundary and follows
+normal checks, signatures/DCO and separate review. Issue #277 retains full evidence.
 This finite method update does not reorder product work.

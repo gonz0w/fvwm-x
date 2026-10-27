@@ -2,12 +2,12 @@
 
 Repository: https://github.com/gonz0w/agent-temper
 
-Revision: `c07af93dc99e770bf4f3ec6f30a0536cb2ae14c5`
+Revision: `fcfb819f62d1a1091010db1df8fc5b7560cd1b8a`
 
-Source: https://github.com/gonz0w/agent-temper/tree/c07af93dc99e770bf4f3ec6f30a0536cb2ae14c5
+Source: https://github.com/gonz0w/agent-temper/tree/fcfb819f62d1a1091010db1df8fc5b7560cd1b8a
 
 Local selection: [project policy](../dev-docs/PROJECT.md); only Codex is selected.
-Update work: https://github.com/gonz0w/fvwm-x/issues/196
+Update work: https://github.com/gonz0w/fvwm-x/issues/272
 
 Nine upstream files retain their original bytes and complete BSD-3-Clause
 [license](LICENSE). Existing project licensing and external-source terms remain.

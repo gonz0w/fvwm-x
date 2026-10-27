@@ -5048,3 +5048,19 @@ reader results are separate from the subsequent interpreter/file work.
   six completed profiles. #183 awaits review/merge closure; #46 comparison and
   broader image/advisory/release gates remain separate. Performance stays PR204
   2/5, 3/5 on merge. [Report](verification/VERIFICATION-2026-10-25-M4-SVG.md).
+
+## Agent Temper Terra product routing — MAINT-02/TEMPER-03
+
+Owner-requested on 2026-10-27; GitHub mirror [issue #272](https://github.com/gonz0w/fvwm-x/issues/272).
+Scope: add Terra/medium product role, explicit Sol/high fallback and reviewed
+immutable method/profile pin; retain all existing role settings and local gates.
+No CI, runtime, product or qualification change.
+
+Acceptance: coherent bundle/provenance, local policy and role configuration;
+source/link/syntax checks and separate final review; signed/DCO PR integration
+under the existing process. Runtime routing remains unverified unless observed.
+
+Status: candidate prepared. This checkpoint completes only when its reviewed PR
+merges after the applicable checks and canonical source verification; until then,
+integration is pending. Issue #272 records exact evidence and canonical identity.
+This finite owner-requested workflow update does not reorder product work.

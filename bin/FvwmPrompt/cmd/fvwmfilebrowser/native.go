@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/collection"
+	"github.com/fvwmorg/FvwmPrompt/internal/viewbinding"
 )
 
 func nativePacket(value string, generation uint32) ([]byte, error) {
@@ -208,7 +209,7 @@ func (b *browser) update() error {
 			return b.render()
 		}
 	}
-	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}}
+	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.status}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}, {"progress", b.progressText()}, {"readiness", b.readinessText()}}
 	labels = append(labels, b.inspectorLabels()...)
 	commands := make([]string, 0, len(labels))
 	for _, label := range labels {
@@ -220,13 +221,36 @@ func (b *browser) update() error {
 	_, err := b.snapshotNative("painted", b.nativeGeneration, 0)
 	return err
 }
-func (b *browser) show() error {
+func (b *browser) show() (err error) {
+	if err = b.ensureBindings(); err != nil {
+		return err
+	}
+	if err = b.projectionBinding.Observe("model", viewbinding.Version{
+		Producer: b.bindingProducer(), Revision: b.providerGeneration()}); err != nil {
+		return err
+	}
+	// Explicit native resnapshot: selection/focus can change locally even when
+	// collection contents compare equal. Keep the existing ACK transaction.
+	if err = b.projectionBinding.Invalidate(); err != nil {
+		return err
+	}
+	ticket, ok := b.projectionBinding.Begin()
+	if !ok {
+		return errors.New("browser projection is unavailable")
+	}
+	defer func() {
+		if !b.projectionBinding.Complete(ticket, err == nil) && err == nil {
+			err = errors.New("browser projection was invalidated")
+		}
+		if err != nil {
+			b.closeBindings()
+		}
+	}()
 	if b.renderSerial == ^uint64(0) {
 		return errors.New("render generation exhausted")
 	}
 	b.renderSerial++
 	b.renderDeadline = time.Now().Add(workerLimit)
-	var err error
 	if b.alias == "" || b.native == nil || b.renderPath != b.currentPath() || b.renderView != b.viewing() || b.nativeGeneration >= 2147483647 {
 		err = b.render()
 	} else {

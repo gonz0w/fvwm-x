@@ -183,7 +183,6 @@ func (d *Controller) theme(force bool) error {
 	for name, color := range palette {
 		d.lastThemeColors[name] = color
 	}
-	d.menu(desktopsettings.AppearanceMenu(d.effective))
 	if err := d.settingsMenu("all"); err != nil {
 		return err
 	}
@@ -200,59 +199,102 @@ func (d *Controller) highlightDesk() {
 	}
 }
 func (d *Controller) applicationMenu(query *string) {
+	if d.closed {
+		return
+	}
+	if query != nil {
+		runes := []rune(*query)
+		text := string(runes[:min(80, len(runes))])
+		d.appQuery = &text
+	}
+	menus := d.applicationMenus(nil)
+	if d.appQuery != nil {
+		menus = append(menus, d.applicationMenus(d.appQuery)...)
+	}
+	changed := !reflect.DeepEqual(d.appBinding.menus, menus)
+	d.publishMenus(d.appBinding, menus)
+	if changed {
+		d.emit("ChangeMenuStyle SlateLauncherStyle SlateLauncherMenu")
+	}
+	if query != nil {
+		d.emit("Menu SlateSearchResults Monitor c c")
+	}
+}
+
+// Both the launcher and the most recent submitted search retain bounded native
+// projections. A worker loss updates their Greyed rows without reopening a menu.
+func (d *Controller) applicationMenus(query *string) []desktopsettings.Menu {
+	menus := []desktopsettings.Menu{}
+	available := d.appBinding.known && !d.appBinding.lost
 	indexes := []int{}
 	for i, app := range d.apps {
 		if query == nil || strings.Contains(fold(app.Name), fold(*query)) {
 			indexes = append(indexes, i)
 		}
 	}
-	rows := []desktopsettings.Row{}
 	itemsFor := func(indexes []int) []desktopsettings.Row {
 		items := []desktopsettings.Row{}
 		for _, i := range indexes {
-			items = append(items, desktopsettings.Row{d.apps[i].Name, fmt.Sprintf("SendToModule FvwmDesktop launch %d", i)})
+			action := "Greyed"
+			if available {
+				action = "SendToModule FvwmDesktop launch-bound " +
+					d.instance + " " + d.appGeneration + " " +
+					strconv.Itoa(i)
+			}
+			items = append(items, desktopsettings.Row{d.apps[i].Name, action})
 		}
 		return items
 	}
-	for page := 0; page < len(indexes); page += 20 {
-		group := indexes[page:min(page+20, len(indexes))]
-		name := "SlateApps"
-		if query != nil {
-			name = "SlateResults"
-		}
-		name += strconv.Itoa(page / 20)
-		d.menu(desktopsettings.Menu{Name: name, Title: "Applications", Rows: itemsFor(group)})
-		rows = append(rows, desktopsettings.Row{d.apps[group[0]].Name + " ...", "Popup " + name})
-	}
-	if query != nil {
-		items := rows
-		if len(indexes) <= 20 {
-			items = itemsFor(indexes)
-		}
-		if len(items) == 0 {
-			items = []desktopsettings.Row{{"No matching applications", "Greyed"}}
-		}
-		d.menu(desktopsettings.Menu{Name: "SlateSearchResults", Title: "Search: " + *query, Rows: items})
-		d.emit("Menu SlateSearchResults Monitor c c")
-		return
-	}
+	rows := []desktopsettings.Row{}
 	if len(indexes) <= 20 {
 		rows = itemsFor(indexes)
+	} else {
+		for page := 0; page < len(indexes); page += 20 {
+			group := indexes[page:min(page+20, len(indexes))]
+			name := "SlateApps"
+			if query != nil {
+				name = "SlateResults"
+			}
+			name += strconv.Itoa(page / 20)
+			menus = append(menus, desktopsettings.Menu{Name: name, Title: "Applications", Rows: itemsFor(group)})
+			rows = append(rows, desktopsettings.Row{d.apps[group[0]].Name + " ...", "Popup " + name})
+		}
+	}
+	if !available {
+		label := "Application discovery pending"
+		if d.appBinding.lost {
+			label = "Application discovery unavailable; discover again"
+		}
+		rows = append([]desktopsettings.Row{{label, "Greyed"}}, rows...)
+	}
+	if query != nil {
+		if len(rows) == 0 {
+			rows = []desktopsettings.Row{{"No matching applications", "Greyed"}}
+		}
+		return append(menus, desktopsettings.Menu{Name: "SlateSearchResults", Title: "Search: " + *query, Rows: rows})
 	}
 	rows = append(rows, desktopsettings.Row{"", "Nop"}, desktopsettings.Row{"Terminal", "SendToModule FvwmDesktop terminal"},
 		desktopsettings.Row{"Search applications...", "Module FvwmForm SlateSearchForm"}, desktopsettings.Row{"Run command...", "Module FvwmForm SlateRunForm"},
 		desktopsettings.Row{"Files", "SendToModule FvwmDesktop files"}, desktopsettings.Row{"Workspaces", "Module FvwmPager 0 3"},
 		desktopsettings.Row{"Appearance", "Popup SlateAppearance"}, desktopsettings.Row{"System", "Popup SlateSystem"}, desktopsettings.Row{"Session", "Popup SlateSession"})
-	d.menu(desktopsettings.Menu{Name: "SlateLauncherMenu", Title: "Applications", Rows: rows})
-	d.emit("ChangeMenuStyle SlateLauncherStyle SlateLauncherMenu")
+	return append(menus, desktopsettings.Menu{Name: "SlateLauncherMenu", Title: "Applications", Rows: rows})
 }
 func (d *Controller) systemMenu() {
+	if d.closed {
+		return
+	}
+	menus := []desktopsettings.Menu{}
+	available := d.workerAvailable()
 	battery := "not reported"
 	if d.status.Battery != nil {
 		battery = strconv.Itoa(*d.status.Battery) + "%"
 	}
-	d.menu(desktopsettings.Menu{Name: "SlateSystem", Title: "System", Rows: []desktopsettings.Row{
-		{"Network: " + d.status.Network, "SendToModule FvwmDesktop network"}, {"Sound", "Popup SlateSound"}, {"Battery: " + battery, "Nop"},
+	network := d.status.Network
+	if !available {
+		network = "unavailable (last: " + network + ")"
+	}
+	menus = append(menus, desktopsettings.Menu{Name: "SlateSystem", Title: "System", Rows: []desktopsettings.Row{
+		{"Network: " + network, "SendToModule FvwmDesktop network"}, {"Sound", "Popup SlateSound"}, {"Battery: " + battery, "Nop"},
 		{"Calendar", "SendToModule FvwmDesktop calendar"}, {"Display information", "SendToModule FvwmDesktop displays"},
 		{"Screenshot", "SendToModule FvwmDesktop screenshot"}, {"System monitor", "SendToModule FvwmDesktop monitor"}}})
 	backend := "amixer"
@@ -263,16 +305,25 @@ func (d *Controller) systemMenu() {
 		backend = "mixer"
 	}
 	rows := []desktopsettings.Row{{"No sound control backend is available", "Greyed"}}
-	if found(backend) != "" {
+	if available && found(backend) != "" {
 		rows = []desktopsettings.Row{{"Volume up", "SendToModule FvwmDesktop volume up"}, {"Volume down", "SendToModule FvwmDesktop volume down"}, {"Mute / unmute", "SendToModule FvwmDesktop volume mute"}}
 	}
-	d.menu(desktopsettings.Menu{Name: "SlateSound", Title: "Sound", Rows: rows})
+	if !available {
+		rows = []desktopsettings.Row{{"Sound control unavailable; waiting for desktop worker", "Greyed"}}
+	}
+	menus = append(menus, desktopsettings.Menu{Name: "SlateSound", Title: "Sound", Rows: rows})
 	lock := "Greyed"
 	if found("xlock") != "" || found("slock") != "" {
 		lock = "SendToModule FvwmDesktop lock"
 	}
-	d.menu(desktopsettings.Menu{Name: "SlateSession", Title: "Session", Rows: []desktopsettings.Row{{"Lock", lock}, {"Log out...", "SendToModule FvwmDesktop confirm logout"},
-		{"Restart FVWM", "Restart"}, {"Power off...", "SendToModule FvwmDesktop confirm poweroff"}, {"Reboot...", "SendToModule FvwmDesktop confirm reboot"}}})
+	poweroff, reboot := "Greyed", "Greyed"
+	if available {
+		poweroff = "SendToModule FvwmDesktop confirm poweroff"
+		reboot = "SendToModule FvwmDesktop confirm reboot"
+	}
+	menus = append(menus, desktopsettings.Menu{Name: "SlateSession", Title: "Session", Rows: []desktopsettings.Row{{"Lock", lock}, {"Log out...", "SendToModule FvwmDesktop confirm logout"},
+		{"Restart FVWM", "Restart"}, {"Power off...", poweroff}, {"Reboot...", reboot}}})
+	d.publishMenus(d.systemBinding, menus)
 }
 
 // Page by rendered rows, not diagnostics: one complete include chain can be

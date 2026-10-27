@@ -61,6 +61,9 @@ type Controller struct {
 	lastTheme                                []any
 	lastWallpaper                            [2]string
 	apps                                     []desktopworker.Application
+	statusLabel                              string
+	appGeneration                            string
+	appQuery                                 *string
 	status                                   desktopworker.Status
 	lastCPU                                  *[2]int64
 	desk, width                              int
@@ -76,6 +79,10 @@ type Controller struct {
 	operations                               []*operation
 	operationJobs                            map[string]*operation
 	spawnSlots                               chan struct{}
+	settingsBinding                          *menuBinding
+	appBinding                               *menuBinding
+	systemBinding                            *menuBinding
+	closed                                   bool
 	lockerPending                            bool
 	lockerResult                             chan error
 }
@@ -86,6 +93,9 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 		instance: newID(16), generation: newID(16), overrides: values{}, width: 1440,
 		ctx: ctx, cancel: cancel, jobs: map[string]*job{}, completed: make(chan job, 4),
 		operationJobs: map[string]*operation{}, spawnSlots: make(chan struct{}, 256), lockerResult: make(chan error, 1)}
+	d.settingsBinding = newMenuBinding("settings")
+	d.appBinding = newMenuBinding("intent")
+	d.systemBinding = newMenuBinding("intent")
 	d.preview.desktop = d
 	file, err := os.Open(filepath.Join(root, "palettes.json"))
 	if err != nil {
@@ -114,6 +124,10 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	return d, nil
 }
 func (d *Controller) Close() {
+	d.closed = true
+	d.settingsBinding.policy.Close()
+	d.appBinding.policy.Close()
+	d.systemBinding.policy.Close()
 	d.cancel()
 	deadline := time.NewTimer(2 * time.Second)
 	defer deadline.Stop()
@@ -249,6 +263,7 @@ func (d *Controller) reloadSettings() error {
 	generation := newID(16)
 	d.saved, d.effective, d.revision = saved, effective, revision
 	d.persistenceError = ""
+	d.resetWorkerMenus()
 	d.changed(generation)
 	d.preview.constrain()
 	return d.theme(true)
@@ -313,12 +328,8 @@ func (d *Controller) editorValues(argument string) (*editor, values, error) {
 	return e, changes, nil
 }
 func (d *Controller) settingsMenu(scope string) error {
-	menus, err := desktopsettings.Menus(d.snapshot(nil, nil), scope)
-	if err != nil {
+	if _, err := desktopsettings.Scope(scope); err != nil {
 		return err
 	}
-	for _, menu := range menus {
-		d.menu(menu)
-	}
-	return d.fatal
+	return d.boundSettingsMenus(scope)
 }

@@ -27,6 +27,7 @@ import (
 	"github.com/fvwmorg/FvwmPrompt/internal/collection"
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
 	"github.com/fvwmorg/FvwmPrompt/internal/runtimepath"
+	"github.com/fvwmorg/FvwmPrompt/internal/viewbinding"
 	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
@@ -47,6 +48,7 @@ type pendingWork struct {
 	serial     uint64
 	request    workRequest
 	navigation string
+	ticket     viewbinding.Ticket
 }
 type completedWork struct {
 	work   pendingWork
@@ -83,7 +85,11 @@ type browser struct {
 	revealFocus                bool
 	renderDeadline             time.Time
 	watch                      *directoryWatch
+	watchTimerActive           bool
 	providerWork               *providerWork
+	intentBinding              *viewbinding.Binding
+	projectionBinding          *viewbinding.Binding
+	activeSerial               uint64
 }
 
 func (b *browser) viewing() string {
@@ -133,7 +139,13 @@ func displayText(value string, limit int) string {
 	return out.String()
 }
 
-func (b *browser) start(work pendingWork) {
+func (b *browser) start(work pendingWork) error {
+	ticket, ok := b.intentBinding.Begin()
+	if !ok {
+		return errors.New("browser intent is unavailable")
+	}
+	work.ticket = ticket
+	b.activeSerial = work.serial
 	b.active = true
 	ctx, cancel := context.WithTimeout(context.Background(), workerLimit)
 	b.cancel = cancel
@@ -141,6 +153,7 @@ func (b *browser) start(work pendingWork) {
 		defer cancel()
 		b.results <- completedWork{work, startWorker(ctx, b.executable, work.request)}
 	}()
+	return nil
 }
 
 func (b *browser) queue(request workRequest, navigation string) error {
@@ -150,8 +163,14 @@ func (b *browser) queue(request workRequest, navigation string) error {
 	if b.active && request.Operation != "scan" {
 		return errors.New("file worker is busy")
 	}
+	if request.Operation != "scan" && request.Operation != "locate" && !b.dataReady() {
+		return errors.New("file actions unavailable; refresh the folder first")
+	}
+	if err := b.observeIntent(b.serial + 1); err != nil {
+		return err
+	}
 	b.serial++
-	work := pendingWork{b.serial, request, navigation}
+	work := pendingWork{serial: b.serial, request: request, navigation: navigation}
 	b.status = "Loading or checking target; Cancel work remains available"
 	if b.active {
 		if b.providerWork != nil && b.providerWork.Status == "accepted" {
@@ -160,7 +179,7 @@ func (b *browser) queue(request workRequest, navigation string) error {
 		b.cancel()
 		b.pending = &work
 	} else {
-		b.start(work)
+		return b.start(work)
 	}
 	return nil
 }
@@ -176,9 +195,22 @@ func (b *browser) navigate(path, navigation string) error {
 }
 
 func (b *browser) completed(event completedWork) error {
+	current := event.work.serial == b.serial
+	if b.intentBinding != nil {
+		if !b.active || event.work.serial != b.activeSerial {
+			return nil
+		}
+		success := event.result.Status == "loaded" && event.result.Snapshot != nil || event.result.Status == "started"
+		current = b.intentBinding.Complete(event.work.ticket, success) && current
+		b.activeSerial = 0
+	}
 	b.active = false
 	b.cancel = nil
-	if event.work.serial == b.serial {
+	if b.intentBinding != nil && b.intentBinding.State() == viewbinding.Closed {
+		return nil
+	}
+	// A current failed result may update diagnostics, but retains the last data.
+	if current || event.work.serial == b.serial && b.intentBinding != nil && b.intentBinding.State() == viewbinding.Failed {
 		result := event.result
 		if result.Status == "loaded" && result.Snapshot != nil && event.work.request.Operation == "locate" {
 			if err := b.publishLocated(result, event.work.navigation); err != nil {
@@ -261,7 +293,9 @@ func (b *browser) completed(event completedWork) error {
 	if b.pending != nil {
 		work := *b.pending
 		b.pending = nil
-		b.start(work)
+		if err := b.start(work); err != nil {
+			return err
+		}
 	}
 	return b.show()
 }
@@ -409,6 +443,11 @@ func (b *browser) action(message string) (bool, error) {
 		if b.serial == ^uint64(0) {
 			return false, errors.New("request generation exhausted")
 		}
+		if b.active || b.pending != nil {
+			if err := b.invalidateIntent(); err != nil {
+				return false, err
+			}
+		}
 		b.serial++
 		b.pending = nil
 		if b.cancel != nil {
@@ -466,6 +505,7 @@ func run(o options) error {
 		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), results: make(chan completedWork, 1)}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
+		b.closeBindings()
 		if b.cancel != nil {
 			b.cancel()
 		}
@@ -551,8 +591,13 @@ func run(o options) error {
 		idle.Reset(idleLimit)
 	}
 
-	watchTick := time.NewTicker(100 * time.Millisecond)
-	defer watchTick.Stop()
+	var watchTick *time.Ticker
+	var watchTicks <-chan time.Time
+	defer func() {
+		if watchTick != nil {
+			watchTick.Stop()
+		}
+	}()
 	navigation := "push"
 	if o.properties {
 		navigation = "properties"
@@ -564,6 +609,15 @@ func run(o options) error {
 		return err
 	}
 	for {
+		needsTick := b.watch.needsTick()
+		if needsTick && watchTick == nil {
+			watchTick = time.NewTicker(100 * time.Millisecond)
+			watchTicks = watchTick.C
+		} else if !needsTick && watchTick != nil {
+			watchTick.Stop()
+			watchTick, watchTicks = nil, nil
+		}
+		b.watchTimerActive = watchTick != nil
 		select {
 		case <-ctx.Done():
 			return nil
@@ -589,7 +643,7 @@ func run(o options) error {
 					return err
 				}
 			}
-		case now := <-watchTick.C:
+		case now := <-watchTicks:
 			changed := b.watch.tick(now, b.executable)
 			if request := b.watch.takeRefresh(now, b.active || b.pending != nil); request != nil {
 				if err := b.navigate(string(request.Path), "watch"); err != nil {

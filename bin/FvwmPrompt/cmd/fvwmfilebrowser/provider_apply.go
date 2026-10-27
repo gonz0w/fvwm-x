@@ -15,6 +15,9 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		return b.cancelProviderWork(action.id)
 	}
 	if providerWorkerAction(query.Operation) {
+		if query.Operation != "navigate" && query.Operation != "refresh" && query.Operation != "hidden" && query.Operation != "reveal" && query.Operation != "inspect" && !b.dataReady() {
+			return "not_ready"
+		}
 		return b.startProviderWork(query, action)
 	}
 	// Collection policy publishes new slices/maps only after full admission.

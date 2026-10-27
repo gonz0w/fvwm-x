@@ -282,7 +282,7 @@ func TestOperationAdmissionCancelAndRetainedCompletion(t *testing.T) {
 	d.queue = nil
 	d.active = 1
 	d.operationRequest(values{"resource": "operations", "operation": "cancel", "provider": d.instance, "target": record.id, "generation": record.generation})
-	d.completed <- job{key: "apps", result: []any{values{"name": "discarded", "argv": []any{"/bin/true"}, "cwd": nil, "terminal": false}}}
+	d.completed <- job{key: "apps", origin: d.jobs["apps"], binding: d.jobs["apps"].binding, ticket: d.jobs["apps"].ticket, result: []any{values{"name": "discarded", "argv": []any{"/bin/true"}, "cwd": nil, "terminal": false}}}
 	d.pollJobs()
 	if record.state != "cancelled" || len(d.apps) != 0 || d.active != 0 {
 		t.Fatal("late worker result published")
@@ -299,7 +299,7 @@ func TestOperationFailureHidesWorkerDetails(t *testing.T) {
 	record := d.operations[0]
 	d.queue = nil
 	d.active = 1
-	d.completed <- job{key: "status", err: errors.New("secret worker content")}
+	d.completed <- job{key: "status", origin: d.jobs["status"], binding: d.jobs["status"].binding, ticket: d.jobs["status"].ticket, err: errors.New("secret worker content")}
 	d.pollJobs()
 	if record.state != "failed" || record.err != "worker_failed" || record.application != "not-submitted" {
 		t.Fatal("worker failure exposed")
@@ -392,10 +392,12 @@ func TestBusyFileCommitPreservesEditor(t *testing.T) {
 func TestUnicodeSearchRetainsFullCasefold(t *testing.T) {
 	d, commands := fixture(t)
 	d.apps = []desktopworker.Application{{Name: "Straße", Argv: []string{"/bin/true"}}}
+	d.appBinding.known = true
+	d.appGeneration = newID(16)
 	*commands = nil
 	query := "STRASSE"
 	d.applicationMenu(&query)
-	if !strings.Contains(strings.Join(*commands, "\n"), `"Straße" SendToModule FvwmDesktop launch 0`) {
+	if !strings.Contains(strings.Join(*commands, "\n"), `"Straße" SendToModule FvwmDesktop launch-bound `+d.instance+" "+d.appGeneration+" 0") {
 		t.Fatal("full Unicode caseless search lost the existing match")
 	}
 }

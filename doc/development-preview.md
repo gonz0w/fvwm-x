@@ -36,6 +36,42 @@ closes after five minutes without a callback or accepted external control. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Committed native bindings and recovery
+
+BIND-01 adds shared bounded revision/lifetime policy for desktop menus and the
+optional browser. These are actual captures of the same source in Slate dark,
+Dune light and enlarged 18pt monospace configurations. Work is still in progress
+toward R1; this does not complete a file manager or clipboard application.
+[Contract](../dev-docs/decisions/NATIVE-VIEW-BINDINGS-2026-10-26.md) and
+[results](../dev-docs/verification/VERIFICATION-2026-10-26-NATIVE-BINDINGS.md).
+
+The browser distinguishes unknown totals during work from the committed loaded
+count. It reports action readiness while retaining last-good entries after loss;
+Refresh obtains a new current snapshot. Buttons retain their visual appearance,
+and actions still revalidate immediately before effects.
+
+![Slate dark browser with committed progress and action-readiness labels](screenshots/bindings-slate-ready.png)
+
+![Dune light browser showing unknown progress while a real worker is held](screenshots/bindings-dune-loading.png)
+
+![Enlarged browser retaining last-good entries after an injected worker failure](screenshots/bindings-large-unavailable.png)
+
+Desktop application menus use actual Greyed rows after producer loss. Old mapped
+application actions carry their snapshot identity and cannot launch a different
+application after discovery reorders the list. Closing and reopening converges
+to the current menu; the example names are synthetic test applications.
+
+![Dune application menu with an unavailable Greyed application](screenshots/bindings-dune-menu-unavailable.png)
+
+![Enlarged application menu reopened with the latest discovery snapshot](screenshots/bindings-large-menu-latest.png)
+
+![Enlarged browser with complete progress and readable action readiness](screenshots/bindings-large-ready.png)
+
+No per-control polling shell, additional resident, GUI toolkit or persistence
+store was added. Directory watching remains opt-in; when off, its ticker stops.
+Existing desktop polling/status sampling continues. The observed binding idle
+interval and bounds do not establish whole-desktop wakeup or release budgets.
+
 ## Slate dark: list and live refresh
 
 The native scrolling list uses the shipped desktop's fonts and Form colors.

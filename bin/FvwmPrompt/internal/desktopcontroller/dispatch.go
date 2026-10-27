@@ -96,6 +96,10 @@ func (d *Controller) handle(command, argument string) error {
 		}
 	case "ipc-request":
 		d.ipc(argument)
+	case "binding-menu-popdown":
+		return d.bindingMenuPopdown(argument)
+	case "bindings":
+		return d.bindingStats(argument)
 	case "barrier":
 		if identifier(argument) {
 			d.emit("Echo " + argument)
@@ -199,28 +203,28 @@ func (d *Controller) handle(command, argument string) error {
 			d.width = width
 		}
 		d.clock = ""
+		// The bar may have been recreated; its next status projection must
+		// be submitted even when the sampled text has not changed.
+		d.statusLabel = ""
 		return d.theme(true)
 	case "discover":
-		d.workerJob("apps", "apps", values{})
+		d.requestMenuJob("apps")
 	case "search":
 		runes := []rune(argument)
 		query := string(runes[:min(80, len(runes))])
 		d.applicationMenu(&query)
+	case "launch-bound":
+		words, err := wordCount(argument, 3)
+		if err != nil {
+			return err
+		}
+		if words[0] != d.instance || words[1] != d.appGeneration ||
+			d.appGeneration == "" {
+			return errors.New("Application menu is stale; close it and refresh applications")
+		}
+		return d.launchApplication(words[2])
 	case "launch":
-		index, err := strconv.Atoi(argument)
-		if err != nil || index < 0 || index >= len(d.apps) {
-			return errors.New("Application selection is out of range")
-		}
-		app := d.apps[index]
-		cwd := ""
-		if app.Cwd != nil {
-			cwd = *app.Cwd
-		}
-		if app.Terminal {
-			d.term(app.Argv, cwd)
-		} else {
-			d.spawn(app.Argv, cwd)
-		}
+		return d.launchApplication(argument)
 	case "terminal":
 		d.term(nil, "")
 	case "run":
@@ -292,6 +296,9 @@ func (d *Controller) handle(command, argument string) error {
 	case "lock":
 		d.lock()
 	case "volume":
+		if d.systemBinding.lost || d.closed {
+			return errors.New("Sound control is unavailable; wait for a fresh desktop status result")
+		}
 		if argument == "up" || argument == "down" || argument == "mute" {
 			d.workerJob("volume", "volume", values{"system": d.system, "action": argument})
 		}
@@ -323,4 +330,25 @@ func (d *Controller) tick() {
 		}
 	}
 	d.pollJobs()
+}
+
+func (d *Controller) launchApplication(argument string) error {
+	if err := d.requireApplications(); err != nil {
+		return err
+	}
+	index, err := strconv.Atoi(argument)
+	if err != nil || index < 0 || index >= len(d.apps) {
+		return errors.New("Application selection is out of range")
+	}
+	app := d.apps[index]
+	cwd := ""
+	if app.Cwd != nil {
+		cwd = *app.Cwd
+	}
+	if app.Terminal {
+		d.term(app.Argv, cwd)
+	} else {
+		d.spawn(app.Argv, cwd)
+	}
+	return d.fatal
 }

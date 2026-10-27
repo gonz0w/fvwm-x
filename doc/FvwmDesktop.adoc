@@ -525,8 +525,37 @@ it does not invoke a shell. Each job caps directory roots at 64, enumeration at
 8192 entries, depth at 16, candidates at 2048 per root and results at 512.
 Depth and candidate/application count caps limit the selected list. Enumeration
 or encoded-result overflow reports a failed refresh; a failed refresh preserves
-the previous published snapshot.
+the previous published snapshot. Application rows in both the launcher and the
+last submitted search become Greyed until a fresh discovery succeeds; the search
+menu is updated without reopening it. Repeated discover requests during a job
+retain one latest pending request and discard the superseded result.
 The existing explicit Run command/shell behavior is unchanged.
+
+Settings, applications and system menus use three fixed in-process bindings.
+Settings follow the controller's committed generation. Worker bindings track
+admitted request intents; admission alone does not establish data availability.
+Only a validated result from the current request and controller lifetime can
+replace the working snapshot. Equal rendered menus emit no replacement commands;
+obsolete application pages are retired. Generated application rows carry the
+controller lifetime and published application generation. A delayed row from an
+older or reordered snapshot is refused rather than launching its former index
+against new data. Module-owned menus install a bounded popdown callback before
+their first display. If core refused an update while the menu was mapped, closing
+the menu retries its latest desired projection (or retires an obsolete page).
+An unchanged projection needs no retry. This uses the existing native popdown
+action and adds no polling timer. The public
+*launch index* command remains available. Narrow settings scopes change the
+settings root while retaining the complete bounded submenu inventory used by
+Appearance and other settings popups. Reload closes the worker bindings and
+requests fresh snapshots, so delayed results cannot revive a prior lifetime.
+
+Before the first status result, and after status collection fails, the system
+menu reports unavailable status and disables worker-backed sound and power
+controls. Last working status remains available as explicitly old data. Lock,
+logout and other independent local actions retain their own availability checks.
+A fresh status result restores the worker-backed controls; it does not establish
+that a later sound or power action succeeded. The existing shared five-second
+status sampler remains active; bindings add no polling timer or settings service.
 
 The installed helper is next to FvwmDesktop; build-tree consumers use the sibling
 Go output. Developers may set FVWM_DESKTOP_WORKER to an explicit helper path for
@@ -634,6 +663,17 @@ helper belongs to one FVWM session and has no network listener. barrier emits
 Echo token after earlier helper commands reach FVWM. Tokens contain at most
 64 letters, digits, underscores or hyphens. This orders command application;
 independent modules may still be repainting.
+
+The explicit diagnostic command *bindings token* emits three
+*Echo FVWM_BINDINGS_1 token domain hex-json* records, one each for the fixed
+settings/apps/system domains. Every record fits the 1000-byte native command
+limit, and all three records are validated before any are submitted. The token
+follows the same bounded identifier syntax as barrier. Decoding each domain's
+hexadecimal JSON yields its binding policy state, counters, pending/in-flight flags,
+source/identity bounds, data availability and retained menu counts. It contains
+no settings values or application data. Reading the diagnostic does not refresh,
+invalidate or publish a view, and normal operation emits no diagnostic records.
+The shared status sampler can still advance its domain every five seconds.
 
 settings opens the native configuration-center menu for the requested scope.
 edit-settings opens the grouped saved-preference editor for the same scopes.

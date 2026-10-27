@@ -70,6 +70,10 @@ func (b *browser) providerResult(query fileQuery) (map[string]any, string) {
 		result["reverse"], result["view"] = b.reverse, b.viewing()
 		result["busy"], result["watch"] = b.active, b.watch.state()
 		result["page_max"], result["selection_limit"] = providerPageMax, collection.MaxSelected
+		result["progress"] = b.progress()
+		result["availability"] = b.availability()
+		result["availability_generation"] = generation
+		result["bindings"] = b.bindingStats()
 		result["actions"] = true
 		result["file_actions"] = true
 		result["work"] = b.providerWork

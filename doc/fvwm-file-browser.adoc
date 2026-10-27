@@ -60,6 +60,19 @@ instant termination. The WM and browser control loop do not perform those calls.
 Over-limit folders are refused as a whole, including hidden entries in the
 budget; there is no silent truncation before sorting.
 
+The progress label reports an unknown total while the worker checks or
+enumerates a target. A successful snapshot reports the loaded entry count;
+there is no estimated percentage. The action-readiness label reports openable
+visible items and observed properties, terminal and configured-action readiness.
+These labels describe the current admitted model and provider generation.
+Buttons retain their existing appearance; readiness is enforced again by the
+backend, including current filesystem identity/type checks before a file action.
+During work, after cancellation or after a failed refresh, previous working
+entries remain visible but file actions stay unavailable until a fresh snapshot
+succeeds. Refresh/navigation can recover without discarding the last working data.
+Repeated refresh intents retain one latest pending request; a cancelled or stale
+completion cannot replace the current collection or restore action readiness.
+
 == CONTROLS
 
 Tab and Shift-Tab move among the filter, collection and path fields. In the list,
@@ -196,6 +209,12 @@ Notifications are advisory. The browser performs a complete rescan after watch
 registration and every 30 seconds while watching, including when no native event
 arrives. This covers missed changes and child metadata changes not reported by a
 BSD directory vnode filter. No per-entry or recursive watches are opened.
+While an observer is active or restarting, the browser samples its bounded
+state every 100 milliseconds for startup, debounce, lease and reconciliation
+work. This sampler stops when watching is off and the observer has exited, or
+when an unavailable observer has exited into manual fallback. It produces no
+watch timer wakeups for an idle browser in those states. The existing five-minute
+idle-close timer remains.
 Linux event-queue overflow requests a complete rescan. Changes can still occur
 during an observation; explicit Refresh and separate action revalidation remain
 available. Watching is not a filesystem journal or a path-identity lease.
@@ -396,6 +415,23 @@ base64 path/name bytes, decimal-string sizes/timestamps and paging generations.
 The current native selection is captured without requiring a button callback,
 including selection made since the last browser action. Queries preserve the
 native windows, input drafts and the helper's existing idle limit.
+State also exposes typed `progress` (`state`, `known`, `completed`, nullable
+`total`) and fixed `availability` metadata (`ready`, `open_visible`, `properties`,
+`terminal`, `custom`, `cancel`). `availability_generation` is the current state
+query generation. Unknown totals are null, not invented percentages. Availability
+counts follow the current filter/selection; executable configuration, worker
+intent and readiness transitions also invalidate the generation. Readiness is
+advisory observed metadata and does not replace action admission or worker
+identity validation.
+
+An explicit state query also returns read-only `bindings` diagnostics: `intent`
+and `projection` contain the fixed source/identity-byte counts, current state,
+one-in-flight/one-pending flags and invalidated/started/published/rejected counters.
+`watch_timer_active` reports whether the browser loop currently owns its watch
+sampler. Reading this metadata does not trigger binding work or change counters.
+It creates no polling service or UI control. Stable counters between explicit
+queries can show that no unsolicited binding work ran; they do not measure
+kernel wakeups or replace the observer/idle timer limits described above.
 
 Writable clients may also apply generation-checked selection edits, literal
 filtering, observed sort, list/grid presentation and observed-properties controls.
@@ -436,7 +472,10 @@ keeps the worker slot until reap, suppresses late directory publication and cann
 undo a process handoff. Native navigation can supersede external work. IPC wait
 cancellation only discards the wait. No file content is exposed. Metadata and selection/focus changes invalidate
 page tokens. Discovery is limited to eight producers, with one active query per
-producer; a busy/unavailable instance yields an explicit error. Old browser/MFL
+producer; a busy/unavailable instance yields an explicit error. Loss of the
+provider connection closes its binding/view lifetime. Start a fresh browser to
+register a new provider and obtain a full snapshot; old tickets and uncertain
+application handoffs are never replayed. Old browser/MFL
 combinations cannot register: build and update these shipped consumers together.
 Clipboard payload ownership/protection, file mutation
 and FileManager1 remain separate work. No SQLite dependency is introduced.

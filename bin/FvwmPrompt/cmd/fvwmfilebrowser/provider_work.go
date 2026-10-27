@@ -112,6 +112,9 @@ func (b *browser) cancelProviderWork(id string) string {
 		return "operation_refused"
 	}
 	// Kill is best effort. Retain the worker slot until Wait, even after cancel.
+	if b.invalidateIntent() != nil {
+		return "operation_refused"
+	}
 	b.serial++
 	b.cancel()
 	work.Status = "cancelling"

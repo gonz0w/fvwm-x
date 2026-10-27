@@ -28,6 +28,7 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		"Alt-B": {"Back (Alt-B)", "back", "-"},
 		"Alt-G": {"Go (Alt-G)", "path", "x$(path:Base64)"},
 		"Alt-X": {"Cancel (Alt-X)", "cancel", "-"},
+		"F1":    {"Details (F1)", "details", "-"},
 		"F2":    {"Properties (F2)", "properties", "-"},
 		"F3":    {"Selected (F3)", "selected", "-"},
 		"F4":    {"Terminal (F4)", "terminal", "-"},
@@ -60,6 +61,9 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 			}
 			seen[key] = true
 			pending = fmt.Sprintf("Command Echo FVWM_FILES_3 %s %d %s %s x$(picks:Base64) $(FormJob:Token)", b.instance, b.form, entry.action, entry.argument)
+			if key == "F1" {
+				pending = fmt.Sprintf("Command Echo FVWM_FILES_DETAILS_OPEN_1 %s %d $(FormJob:Token)", b.instance, b.form)
+			}
 		}
 		if strings.Contains(command, `: Text "Alt-letter/digit: labeled actions; Ctrl-U: clear input."`) {
 			helped = true

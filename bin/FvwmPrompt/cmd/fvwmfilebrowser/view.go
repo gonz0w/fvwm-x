@@ -11,6 +11,9 @@ import (
 )
 
 func (b *browser) render() error {
+	if err := b.retireDetails(); err != nil {
+		return err
+	}
 	if b.form == ^uint64(0) {
 		return errors.New("form generation exhausted")
 	}
@@ -98,6 +101,8 @@ func (b *browser) render() error {
 	button("Select visible (Alt-A)", "Alt-A", "select-visible", "-")
 	button("Clear selection (Alt-D)", "Alt-D", "clear-selection", "-")
 	button("Properties (F2)", "F2", "properties", "-")
+	line(`Button continue "Details (F1)" F1`)
+	line("Command Echo FVWM_FILES_DETAILS_OPEN_1 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " $(FormJob:Token)")
 	for _, item := range b.inspectorLabels() {
 		line("Line left")
 		label(item.name, item.value)

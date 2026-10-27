@@ -38,33 +38,46 @@ func (b *browser) nativeTag(phase string) string {
 	return fmt.Sprintf("%s_%x_%s", b.instance, b.renderSerial, phase)
 }
 func (b *browser) sendCommands(commands []string) error {
-	deadline := time.NewTimer(time.Until(b.renderDeadline))
+	return b.sendCommandBatch(commands, "FVWM_FILES_SYNC", b.renderSerial, b.acks, nil, b.renderDeadline)
+}
+
+func (b *browser) sendCommandBatch(commands []string, prefix string, serial uint64, replies <-chan string, gate *nativeWatchReplyGate, until time.Time) error {
+	deadline := time.NewTimer(time.Until(until))
 	defer deadline.Stop()
 	for i, command := range commands {
 		if err := b.session.Send(command); err != nil {
 			return err
 		}
-		if b.acks != nil && (i%32 == 31 || i == len(commands)-1) {
-			tag := fmt.Sprintf("FVWM_FILES_SYNC %s %d %d", b.instance, b.renderSerial, i)
-			if err := b.session.Send("Echo " + tag); err != nil {
+		if (replies != nil || gate != nil) && (i%32 == 31 || i == len(commands)-1) {
+			tag := fmt.Sprintf("%s %s %d %d", prefix, b.instance, serial, i)
+			if err := b.awaitCommandAck(tag, replies, gate, deadline.C); err != nil {
 				return err
 			}
-			for {
-				select {
-				case value := <-b.acks:
-					if value == tag {
-						goto acknowledged
-					}
-				case <-b.session.Done():
-					return net.ErrClosed
-				case <-deadline.C:
-					return errors.New("native collection configuration timed out")
-				}
-			}
-		acknowledged:
 		}
 	}
 	return nil
+}
+
+func (b *browser) awaitCommandAck(tag string, replies <-chan string, gate *nativeWatchReplyGate, deadline <-chan time.Time) error {
+	if gate != nil {
+		replies = gate.begin(tag)
+		defer gate.retire(tag)
+	}
+	if err := b.session.Send("Echo " + tag); err != nil {
+		return err
+	}
+	for {
+		select {
+		case value := <-replies:
+			if value == tag {
+				return nil
+			}
+		case <-b.session.Done():
+			return net.ErrClosed
+		case <-deadline:
+			return errors.New("native collection configuration timed out")
+		}
+	}
 }
 func (b *browser) waitNative(token string, published uint32, pending uint32) ([]byte, error) {
 	packet, _, err := b.waitNativeGeneration(token, published, pending, 0)

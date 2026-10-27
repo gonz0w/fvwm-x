@@ -1,0 +1,156 @@
+{
+  "base": "798acfb8ed0ffc9c0f44976a68b4a7f173dced6f",
+  "issues": [
+    51,
+    69
+  ],
+  "source_aggregate_sha256": "c7b1180ee480ee47e1b91a2d9f4e0e5197c17d4167a49cf8b29d92e012239b6d",
+  "binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+      "bytes": 5539656
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "e60d861f4a791897011a3afcb285f0f723c079562ba58746b3c8e738dad5c93d",
+      "bytes": 1766160
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+      "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87",
+      "bytes": 5720923
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmForm/FvwmForm": {
+      "sha256": "3b92e99aaf7d369e759099c1ba886be005c4ce89334a8aa213198efd0b43c994",
+      "bytes": 9300128
+    }
+  },
+  "profiles": [
+    {
+      "profile": "slate-dark",
+      "actual_randr_scale": "1.25",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "dc37560ebb3b718e7557ddcb8afc097e8f7b4ce465412c05c1e49b05c3a04647",
+      "driver_sha256": "f5c742d11168bcb1b23249b738d3e040d2fd7d7eb69c22591c1593377fb29a85",
+      "evidence_sha256": "62a02cf50c580de0ac8f29f656ee052f1898f820dd6549cc846344c4aded91a1",
+      "archive": {
+        "sha256": "9e44320e8d19c9702f2710a9e9e72c02eab8ab7191558910c960c2902c37509c",
+        "bytes": 911929
+      },
+      "captures": 3,
+      "actual_module_waits_zero": 22,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "exact_home_restoration_difference_pixels": 0,
+      "numeric_xid_reused_for_new_parent": true,
+      "parent_old_wait": {
+        "child": 2347,
+        "returncode": 0
+      },
+      "parent_new_wait": {
+        "child": 2405,
+        "returncode": 0
+      }
+    },
+    {
+      "profile": "dune-light",
+      "actual_randr_scale": "1",
+      "status": "passed",
+      "font": "Sans 10",
+      "config_sha256": "498160570a49490708ef606b92de33fb01c6e65f5ed4c9c125314c5b2747148c",
+      "driver_sha256": "f5c742d11168bcb1b23249b738d3e040d2fd7d7eb69c22591c1593377fb29a85",
+      "evidence_sha256": "25a73edb1ec6feff0fc1210d96ada356b1a0bcd40b372a06136e3dd3dbda18f8",
+      "archive": {
+        "sha256": "9e44320e8d19c9702f2710a9e9e72c02eab8ab7191558910c960c2902c37509c",
+        "bytes": 911929
+      },
+      "captures": 3,
+      "actual_module_waits_zero": 22,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "exact_home_restoration_difference_pixels": 0,
+      "numeric_xid_reused_for_new_parent": true,
+      "parent_old_wait": {
+        "child": 2469,
+        "returncode": 0
+      },
+      "parent_new_wait": {
+        "child": 2526,
+        "returncode": 0
+      }
+    },
+    {
+      "profile": "classic-large",
+      "actual_randr_scale": "2",
+      "status": "passed",
+      "font": "DejaVu Sans Mono 18",
+      "config_sha256": "0ff6585dca2bb67f63f7703dbd8669a5126c31c87a1fe161d3a37a1262534916",
+      "driver_sha256": "7d8b2bd14896855cee67eb92bcdbafa7c487608d9a7e76046b4cbec29ca77372",
+      "evidence_sha256": "1dc7ad1c26aaf8ee900d9b1e2e8b7556aee4a60d7255b39c75f239cdee6309f9",
+      "archive": {
+        "sha256": "84920cdd505825f1c301d2f1528380aa276cef29b84a0d4184d72f4fa7d46f5a",
+        "bytes": 1171983
+      },
+      "captures": 3,
+      "actual_module_waits_zero": 22,
+      "direct_children_zero": 4,
+      "unexpected_x_errors": 0,
+      "cleanup_failures": 0,
+      "exact_home_restoration_difference_pixels": 0,
+      "numeric_xid_reused_for_new_parent": true,
+      "parent_old_wait": {
+        "child": 2661,
+        "returncode": 0
+      },
+      "parent_new_wait": {
+        "child": 2719,
+        "returncode": 0
+      }
+    }
+  ],
+  "published": [
+    {
+      "file": "details-slate-path.png",
+      "profile": "slate-dark",
+      "original": "./browser-disclosure-38dkop4i/slate-dark/details-path-first.png",
+      "bytes": 141120,
+      "sha256": "f95cea3941e5fb2db2f0133a5367728ed655c813f48806522f401b97e2fdef37",
+      "width": 2560,
+      "height": 2160,
+      "modified": false,
+      "driver_sha256": "f5c742d11168bcb1b23249b738d3e040d2fd7d7eb69c22591c1593377fb29a85",
+      "archive_sha256": "9e44320e8d19c9702f2710a9e9e72c02eab8ab7191558910c960c2902c37509c"
+    },
+    {
+      "file": "details-dune-name.png",
+      "profile": "dune-light",
+      "original": "./browser-disclosure-7g81guvi/dune-light/details-observed-filename.png",
+      "bytes": 131805,
+      "sha256": "57207cb22ed64785f7b2a37c3d59d81abc0c3c0d970aed918efd33d643f96077",
+      "width": 2560,
+      "height": 2160,
+      "modified": false,
+      "driver_sha256": "f5c742d11168bcb1b23249b738d3e040d2fd7d7eb69c22591c1593377fb29a85",
+      "archive_sha256": "9e44320e8d19c9702f2710a9e9e72c02eab8ab7191558910c960c2902c37509c"
+    },
+    {
+      "file": "details-classic-end.png",
+      "profile": "classic-large",
+      "original": "./browser-disclosure-ya_9cu3k/classic-large/details-path-horizontal-end.png",
+      "bytes": 331991,
+      "sha256": "42106bc1409b3f14bf9c658fa9250b000b5a56e1d7abacf705fad6af4f06a2a3",
+      "width": 2560,
+      "height": 2160,
+      "modified": false,
+      "driver_sha256": "7d8b2bd14896855cee67eb92bcdbafa7c487608d9a7e76046b4cbec29ca77372",
+      "archive_sha256": "84920cdd505825f1c301d2f1528380aa276cef29b84a0d4184d72f4fa7d46f5a"
+    }
+  ],
+  "scope": "Unmodified native captures. Same product binaries across profiles; per-image driver/archive identity preserved.",
+  "placement": "Slate/Dune already contained. Classic fixture moves only owned fitting Forms through core Move; root rectangles and unchanged dimensions/IDs are verified. This does not qualify default or physical placement.",
+  "limits": [
+    "Frozen admitted metadata, not raw content, live freshness or action authority.",
+    "Configured Unicode glyph, physical, assistive, affected support/release and other consumer acceptance remain open."
+  ]
+}

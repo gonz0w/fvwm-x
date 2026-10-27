@@ -205,6 +205,7 @@ The following commands are accepted before the form is displayed:
  InputFont
  InputHex
  InputPointer
+ InputReadonly
  ItemBack
  ItemColorset
  ItemFore
@@ -446,6 +447,26 @@ For example, `TextHex x24286669656c64292025` displays `$(field) %` literally.
   The decoded value is not processed as a quoted string or executable command.
   Restart restores that exact initial value. Invalid input adds no field.
 
+**FvwmForm: InputReadonly ``_name_``*::
+  Make an already declared Input or InputHex read-only. The name must match
+  exactly one declared input; missing, ambiguous or malformed names and extra
+  arguments are refused. This startup modifier takes no effect on other fields.
+  Inputs remain editable by default.
++
+The read-only field retains focus, mouse cursor placement, horizontal navigation
+(Left/Right, Home/End, Control-a/b/e/f), and Tab/Shift-Tab navigation. Up/Down and
+Control-p/n still move between multiple fields. Button shortcuts and commands
+remain available. Typing, character deletion, Control-k/u, history recall
+(including Meta-</> and single-field Up/Down or Control-p/n), and middle-button
+paste cannot change the value. A paste starting in another field also cannot
+insert text into a read-only field.
++
+Initial values, InputAppend and other programmatic setup retain their usual
+behavior. Restart restores the configured initial value. For example,
+`InputHex detail 40 x61202262225c` followed by `InputReadonly detail` displays
+the literal value `a "b"\` with horizontal cursor navigation. The modifier
+does not add a selection or clipboard-copy interface.
+
 **FvwmForm: Input ``_name_ _size_ _init_string_``*::
   Specifies a text input item with name _name_. A sub window of _size_
   characters in width is used for editing. If _init_string_ is present,
@@ -457,12 +478,12 @@ The input dimensions must fit the X11 size range, from 1 to 65535 pixels.
 An invalid Input line does not add a field.
 Later valid Input lines remain usable.
 +
-You can mouse paste into an input field using button 2. Buttons 1 and 3
+You can mouse paste into an editable input field using button 2. Buttons 1 and 3
 move the cursor in an input field. Pasting reads a complete STRING/8 cut
 buffer of at most 64 KiB. Missing, malformed, or oversized buffers leave
 all input fields unchanged.
 +
-Input fields are always in insert mode, overtyping is not supported.
+Editable input fields are always in insert mode, overtyping is not supported.
 +
 Emacs type keystrokes are supported.
 +

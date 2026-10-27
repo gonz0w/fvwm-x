@@ -448,11 +448,65 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 browser full-text disclosure — 2026-10-27
+
+Owner: Cam; `codex/r1-browser-disclosure`; #51/#69. Status: implemented; focused
+Linux and three-theme checkpoint passed, preparing final reviewed PR. Complete clipped-value inspection with four related
+outcomes: an additive opt-in native read-only Input using existing horizontal
+navigation; an F1 Details snapshot of complete browser values through literal
+fields; bounded section/chunk navigation without rewriting browser picks/drafts;
+parent-owned teardown/replacement and stale disclosure callback refusal.
+
+Use existing FvwmForm/InputHex, current configuration and single-threaded
+controller/command owners. Retain exact native input limits and safely expose
+complete presentation values without 120-byte truncation. Explicitly label the
+snapshot and escaped display representation; this is not raw file content,
+a clipboard channel, a live metadata freshness guarantee or new action authority.
+Read-only prevents typing, deletion, history replacement and paste while keeping
+focus and navigation. Defaults, existing editable Inputs and programmatic setup
+remain compatible. No new toolkit, process service, filesystem read or polling
+source; orphan cleanup reuses the existing native Form timeout mechanism.
+
+Keep opening/page navigation observational: preserve the main browser's native
+windows, collection/model/render/binding generations, input drafts and current
+selection. One owned disclosure window at a time; parent change/exit retires it.
+Test exact literals, complete long-value reconstruction, bounds, stale lifetime/
+page requests and cleanup. One combined affected Linux build/policy/browser
+race/vet and native read-only/disclosure checkpoint in Slate/Dune/enlarged Classic
+with actual interaction and screenshots. Reuse successful unchanged C/scale/
+legacy/support evidence; repeat only affected checks after a correction.
+Full multilingual/assistive/physical, consumer/six-target and release acceptance
+stay explicit. No broad owner closes merely for this slice. Park #257/#258.
+
+PR281 resets periodic performance to 0/5 with preserved final feedback binaries;
+this implementation becomes 1/5 on merge. No comparison is due. Lead owns tracker,
+resources, integration and separate final review. Configured Temper mappings
+are requested; native named-role loading unavailable, backend identity unattested.
+
+Completed [focused evidence](verification/VERIFICATION-2026-10-27-BROWSER-DISCLOSURE.md),
+[receipt](verification/VERIFICATION-2026-10-27-BROWSER-DISCLOSURE.json) and
+[three-theme screenshots](../doc/development-preview.md#complete-value-details)
+close this finite full-value inspection gap, not the broad issue owners. One
+reused Linux build/package/race/vet/policy/manual checkpoint passes; native
+readonly, editable-control and scoped sanitizer checks pass. A strict Xft raster
+check finds and fixes readonly right-edge residue; only affected C/native checks
+repeat. Final Slate1.25/Dune1/Classic2 have9 captures,66 actual module Wait0 and
+12 direct children0, with no unexpected X/cleanup failure. Exact pixel restoration,
+full bytes, retained parent state, fresh aliases and teardown are observed.
+Fixture failures and the pre-fix product/binaries remain preserved; final captures
+verify actual containment and document Classic's fixture-owned move. No full
+OS/install matrix repeats. Separate source/evidence/pixel/final-document review
+has no remaining actionable finding. Owned lab stopped and controller released; only
+verified guest duplicates retired, preserving canonical evidence and reusable
+source/build/stages/disks/references.
+
 ## R1 continuous native collection feedback — 2026-10-27
 
 Owner: Cam; `codex/r1-form-feedback`; #51/#69. Status: finite batch implemented,
-focused checkpoint passed; [PR281](https://github.com/gonz0w/fvwm-x/pull/281)
-ready for maintainer review. Implementation `282081b4746d01ee689eac711f12fe8a7997c9a2`,
+merged in [PR281](https://github.com/gonz0w/fvwm-x/pull/281) as
+`798acfb8ed0ffc9c0f44976a68b4a7f173dced6f`; exact reviewed final tree
+`d046451568697de73f56588abede8c2291426287`, canonical signature/author DCO
+verified; branch retired and Project Done. Implementation `282081b4746d01ee689eac711f12fe8a7997c9a2`,
 tree `9437f41f7729fe4945b257b53c69844bcbc9dbb1`, canonical signature/author DCO
 verified. Separate source/evidence/pixel/final-document review has no remaining
 actionable finding. Owned lab stopped and verified guest duplicates retired;

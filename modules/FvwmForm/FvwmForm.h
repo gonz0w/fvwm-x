@@ -110,6 +110,7 @@ typedef union _item {
     int size;              /* value size in bytes */
     int width;             /* input field width */
     int left;              /* position of the left-most displayed char */
+    bool read_only;        /* refuse human edits; setup/reset still set value */
     union _item *next_input;            /* a ring of input fields */
     union _item *prev_input;            /* for tabbing */
     int value_history_count;            /* count of input history */

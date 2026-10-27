@@ -95,6 +95,11 @@ type browser struct {
 	intentBinding              *viewbinding.Binding
 	projectionBinding          *viewbinding.Binding
 	activeSerial               uint64
+
+	details                        *detailView
+	detailSerial, detailSendSerial uint64
+	detailEvents                   chan detailCallback
+	detailAckReplies               *nativeWatchReplyGate
 }
 
 func (b *browser) viewing() string {
@@ -517,10 +522,11 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1)}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
 		b.closeBindings()
+		b.retireDetails()
 		if b.cancel != nil {
 			b.cancel()
 		}
@@ -565,6 +571,10 @@ func run(o options) error {
 					return errors.New("file provider query queue is full")
 				}
 			}
+			if err := b.routeDetailCallback(event.Echo.Message); err != nil {
+				return err
+			}
+			b.routeDetailAck(event.Echo.Message)
 			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_SYNC "+b.instance+" ") {
 				select {
 				case b.acks <- event.Echo.Message:
@@ -679,6 +689,23 @@ func run(o options) error {
 				return err
 			}
 			if current {
+				renewIdle()
+			}
+		case callback := <-b.detailEvents:
+			var accepted bool
+			var err error
+			if callback.action == "open" {
+				accepted, err = b.acceptDetailOpen(callback)
+			} else {
+				accepted, err = b.detailAction(callback)
+			}
+			if err != nil {
+				return err
+			}
+			if accepted {
+				if err := b.renewNativeIdle(); err != nil {
+					return err
+				}
 				renewIdle()
 			}
 		case message := <-events:

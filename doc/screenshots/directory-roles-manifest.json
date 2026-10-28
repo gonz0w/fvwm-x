@@ -1,0 +1,12 @@
+{
+  "status": "unmodified native development captures",
+  "source_freeze": "06",
+  "archive_sha256": "9854bd7f13fd2ff15176aa093bd5330bbee8dcda73a1c02071292b3e662cdb03",
+  "dimensions": [1440, 1200],
+  "captures": [
+    {"profile": "slate-dark", "original": "directory-default-chooser.png", "file": "directory-roles-slate-dark.png", "sha256": "2b21c495530e1d0b9feeae7636acd6765c1edbe5c8a7991161058eeb4e9e8964"},
+    {"profile": "dune-light", "original": "directory-stale-handler.png", "file": "directory-roles-dune-light.png", "sha256": "528681759a9f44e57d504bee14f457cf076ca145ddef75aa121f9a4a611c7330"},
+    {"profile": "classic-large", "original": "directory-recovered-chooser.png", "file": "directory-roles-classic-large.png", "sha256": "4baffbdcaeb6d71e0e2ecec278987f691ffac9751c64a58ab82179d1c11d0f97"}
+  ],
+  "limits": "Synthetic fixture names; whole-guest panel counters are not a performance comparison."
+}

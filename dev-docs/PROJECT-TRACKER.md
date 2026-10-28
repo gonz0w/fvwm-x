@@ -7,9 +7,9 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [XDG menu parity](#r1-xdg-menu-parity--2026-10-28)
-follows merged PR293 under #56. Broader #56/#67 remain open; the faster focused
-cadence and deferred release gates remain explicit.
+Current feature checkpoint: [portable application roles](#r1-portable-application-roles--2026-10-28)
+follows merged PR294 under #56/#67. Desktop-entry consumer acceptance is complete;
+remaining role/service/platform acceptance stays open with the focused cadence.
 
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
@@ -452,12 +452,87 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 portable application roles — 2026-10-28
+
+Owner: Cam; `codex/r1-application-roles`; XDG-01 #56, related portable
+FILE-INTEGRATION-01 #67. Base merged PR294
+`32e0727aab28615a73910d67ab6e8d39e7651b99`. Status: four related outcomes implemented; focused verification and separate final integrated review passed. Review candidate ready; merge remains pending. Selected before implementation: read-only directory
+application/default discovery; an explicit current-folder native chooser; validated
+literal handoff; and the same captured admission/results for typed browser clients.
+The first #56 Desktop Entry row is complete through verified PR293/294. No whole
+issue closes: MIME/startup notification, wider icon/installed-platform and #67's
+adapter/support acceptance remain open.
+
+Adopt MIME Applications 1.0.1 sections 2–4 for exactly inode/directory, using the
+existing Desktop Entry/Exec, XDG paths, bounded acquisition, worker and process
+primitives. [Finite policy/launch contract](decisions/DIRECTORY-APPLICATION-ROLES-2026-10-28.md)
+freezes location ordering, directory-scoped Added/Removed associations, defaults,
+eligibility, wire limits and freshness. Installed metadata participates ordinarily;
+no automatic association write or personal-default takeover.
+
+Acceptance: discovery preserves config/data and desktop-specific priority, effective
+first desktop-ID ownership/Hidden tombstones and directory-rank removal scope.
+Default IDs require installed associated eligible entries; missing IDs fall through
+in order, then deterministic first association. NoDisplay/OnlyShowIn/NotShowIn do
+not disqualify a role. Exec/TryExec/Path/Terminal and absent executable/terminal
+behavior are explicit. Missing sources are empty; malformed/unreadable/over-budget
+sources produce visible failure instead of a fabricated default. Acquire bounded
+metadata in the existing isolated worker: 64 roots / 16 desktop components,
+1,152 settings sources, 64 KiB/read, 16 MiB total, 8,192 items/depth 16, 2,048 desktop
+candidates, 128 handlers and 1 MiB conservative metadata/wire accounting. Keep raw folder bytes as existing identities/base64 on the wire.
+
+The browser's explicit Open folder with… chooser targets only the displayed
+folder, initially selects the effective default, and offers associated alternatives
+with Launch/Refresh/Close. Enter/navigation/custom actions and saved defaults
+retain behavior. Capture folder identity, chooser/view generation, desktop ID and
+selected metadata fingerprint; worker rereads/revalidates folder and association/
+entry before expanding/launching. A changed default cannot change the explicit
+selected application. Refuse changed/removed targets/applications until refresh.
+Expand one raw path for %f/%F and its existing encoded local URI for %u/%U;
+no shell or implicit target appending. Parent Path wins, otherwise cwd is the
+captured folder. Terminal uses the browser's existing literal terminal executable
+plus -e; absent terminal cannot fall back to a nonterminal launch. Process Start
+means started, not application/window completion. Preserve existing bounded busy,
+cancel, result and cleanup lifetimes. Typed provider clients share this admission through directory_roles paging and
+compact generation/choice tokens. The existing MFL C operation/scope whitelist
+and request unit cases change with Go producers/consumers; packet framing/ABI
+remain unchanged. F12/Enter/F5/Escape make the new controls keyboard accessible.
+
+Non-goals: arbitrary-file MIME detection/sniffing/database generation, association
+writes, D-Bus/FileManager1/startup-notification implementation, new dependencies or
+services, full #56/#67/release closure. Lead owns scope/tracker/operations/integration;
+policy/acquisition and browser integration receive disjoint implementer ownership,
+independent fixtures and separate final review. One combined focused Linux unit/
+worker/provider/incremental/native checkpoint includes Slate/Dune/enlarged Classic
+chooser/handoff captures and installed browser reuse. New-policy unit tests express
+expected outcomes before implementation; old worker/consumer missing functionality
+is captured without treating absent new APIs as a compiler regression. Broader
+six-target/default-X/native CPU/hardware/assistive/release acceptance stays open.
+#257/#258 remain parked.
+
+[Focused report](verification/VERIFICATION-2026-10-28-APPLICATION-ROLES.md):
+706 Go cases/5 packages, matching race pass, floor 639/3, vet, affected incremental
+build, native C request plus scoped guest sanitizer and 18 CLI cases pass.
+Installed Slate/Dune/enlarged Classic pass 14 case groups each; nine captures
+inspected, three public examples. Four fixture-only synchronization failures are
+preserved; all runtime sources retain their passing freeze. Verified 721-member
+host archive precedes guest duplicate retirement and normal owned-lab shutdown.
+Man-page renders and repository checks retain explicit lint/host-tool limits.
+No whole issue closes. Continue with the remaining #56 MIME/startup and #67
+adapter/support criteria after this reviewed checkpoint; do not extend this batch.
+
+The current performance reference is `m5-performance-xdg-20261028`, 1/5 after
+PR294; the next runtime merge reaches 2/5. No comparison is due. Use one combined
+affected Linux checkpoint and targeted platform checks only for changed contracts;
+new UI gets Slate/Dune/enlarged Classic screenshots. Wider release gates remain.
+
 ## R1 XDG menu parity — 2026-10-28
 
 Owner: Cam; `codex/r1-xdg-menu-parity`; XDG-01 #56. Base merged PR293
-`d6e49462baa00100ea90a0285429fd6724d304f5`. Status: implementation, focused Linux/installed native three-theme checks and
-all nine capture inspections and separate final integrated review pass. Its PR
-is being prepared; runtime/fixture identities remain unchanged. Four related
+`d6e49462baa00100ea90a0285429fd6724d304f5`. Status: merged in PR294 as `32e0727aab28615a73910d67ab6e8d39e7651b99`;
+canonical signature/actual-author DCO and identical reviewed tree verified. Branch
+retired; Project Done. Focused Linux/installed three-theme checks, all nine capture
+inspections and separate final integrated review pass. Four related
 outcomes selected before
 implementation:
 (1) declared Desktop Action rows in the standalone menu, grouped with their
@@ -493,7 +568,7 @@ contract is selected; wider six-target/install/release gates remain outstanding.
 Lead owns execution/tracker/Git/GitHub and evidence. Temper implementers own
 bounded source/test edits; a separate reviewer examines the final candidate.
 
-Complete this existing consumer before checking #56's first acceptance row.
+This existing consumer completes #56's first acceptance row after merge.
 No MIME resolver, role-query UI, session bus or startup-notification implementation
 is implicitly selected. Broader #56/#67 remain open; #257/#258 stay parked.
 
@@ -502,7 +577,7 @@ and [new gallery](../doc/development-preview.md#localized-xdg-menu-actions)
 record eight frozen Go files, independent CLI/native effects and all nine captures.
 All 190 canonical archive members/modes/hashes/gzip CRC pass before guest duplicates
 retire. The owned lab stops normally; source/build/stage/cache/disks and measured
-reference images remain. #56's first row can complete on parity merge; whole
+reference images remain. #56's first row is complete after parity merge; whole
 #56/#67 stay open. No complete issue closes from this subset.
 
 The due 5/5 [periodic observation](verification/PERFORMANCE-2026-10-28-XDG-MENUS.md)
@@ -510,7 +585,7 @@ is complete after PR293, reusing retained PR288 artifacts and the current built
 images. Worker timing ranges overlap; core/Script images are identical, with
 Script private-dirty variation explicit. No speedup or leak cause is inferred.
 Preserve `m5-performance-xdg-20261028` as the next measured reference. Counter
-resets 0/5 after PR293; the next runtime merge reaches 1/5. This is not whole-WM
+resets 0/5 after PR293; PR294 advances it to 1/5. This is not whole-WM
 latency, native CPU, physical hardware or release-budget qualification. No benchmark
 rebuild, all-OS matrix or second comparison is due for this candidate.
 

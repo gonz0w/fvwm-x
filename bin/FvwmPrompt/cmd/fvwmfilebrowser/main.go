@@ -101,6 +101,11 @@ type browser struct {
 	detailEvents                   chan detailCallback
 	detailAckReplies               *nativeWatchReplyGate
 
+	roles                      *directoryRoleView
+	roleSerial, roleSendSerial uint64
+	roleEvents                 chan directoryRoleCallback
+	roleAckReplies             *nativeWatchReplyGate
+
 	job                           *jobState
 	jobs                          *jobView
 	jobSerial, jobViewSerial      uint64
@@ -191,8 +196,13 @@ func (b *browser) queue(request workRequest, navigation string) error {
 	if b.active && request.Operation != "scan" {
 		return errors.New("file worker is busy")
 	}
-	if request.Operation != "scan" && request.Operation != "locate" && !b.dataReady() {
+	if request.Operation != "scan" && request.Operation != "locate" && request.Operation != "directory-roles" && !b.dataReady() {
 		return errors.New("file actions unavailable; refresh the folder first")
+	}
+	if request.Operation != "directory-roles" && request.Operation != "directory-role-launch" && b.roles != nil {
+		if err := b.retireDirectoryRoles(); err != nil {
+			return err
+		}
 	}
 	if err := b.observeIntent(b.serial + 1); err != nil {
 		return err
@@ -229,6 +239,9 @@ func (b *browser) completed(event completedWork) error {
 			return nil
 		}
 		success := event.result.Status == "loaded" && event.result.Snapshot != nil || event.result.Status == "started"
+		if event.work.request.Operation == "directory-roles" || event.work.request.Operation == "directory-role-launch" {
+			success = b.directoryRolePreservesCollection(event)
+		}
 		current = b.intentBinding.Complete(event.work.ticket, success) && current
 		b.activeSerial = 0
 	}
@@ -240,7 +253,16 @@ func (b *browser) completed(event completedWork) error {
 	// A current failed result may update diagnostics, but retains the last data.
 	if current || event.work.serial == b.serial && b.intentBinding != nil && b.intentBinding.State() == viewbinding.Failed {
 		result := event.result
-		if result.Status == "loaded" && result.Snapshot != nil && event.work.request.Operation == "locate" {
+		if event.work.request.Operation == "directory-roles" {
+			if result.Status == "roles" && result.RoleFolderValid && validDirectoryRoleResult(result.Roles) {
+				b.status = "Folder application choices loaded"
+			} else {
+				b.status = result.Error
+			}
+			if err := b.acceptDirectoryRoles(event); err != nil {
+				return err
+			}
+		} else if result.Status == "loaded" && result.Snapshot != nil && event.work.request.Operation == "locate" {
 			if err := b.publishLocated(result, event.work.navigation); err != nil {
 				return err
 			}
@@ -307,7 +329,9 @@ func (b *browser) completed(event completedWork) error {
 			}
 		} else if result.Status == "started" {
 			b.status = "Application started; the browser cannot confirm that the file opened"
-			if event.work.request.Operation == "custom" {
+			if event.work.request.Operation == "directory-role-launch" {
+				b.status = "Folder application started; completion is not tracked"
+			} else if event.work.request.Operation == "custom" {
 				b.status = fmt.Sprintf("Application started with %d selected paths; completion is not tracked.", result.ActionCount)
 			}
 		} else {
@@ -315,6 +339,11 @@ func (b *browser) completed(event completedWork) error {
 			if b.watch != nil && event.work.navigation == "watch" {
 				b.watch.fail("Automatic refresh failed")
 			}
+		}
+	}
+	if event.work.request.Operation == "directory-role-launch" && current {
+		if err := b.finishDirectoryRole(event); err != nil {
+			return err
 		}
 	}
 	b.finishProviderWork(event)
@@ -403,6 +432,8 @@ func (b *browser) action(message string) (bool, error) {
 		}
 	case "jobs":
 		err = b.openJobs()
+	case "directory-roles":
+		err = b.beginDirectoryRoles(true)
 	case "properties":
 		ids := b.model.SelectedIDs()
 		if b.snapshot == nil {
@@ -533,13 +564,14 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}, jobEvents: make(chan jobNotice, 16), jobProgress: make(chan jobNotice, 1), jobCallbacks: make(chan jobCallback, 16), jobAckReplies: &nativeWatchReplyGate{}, jobListReplies: &nativeWatchReplyGate{}}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}, jobEvents: make(chan jobNotice, 16), jobProgress: make(chan jobNotice, 1), jobCallbacks: make(chan jobCallback, 16), jobAckReplies: &nativeWatchReplyGate{}, jobListReplies: &nativeWatchReplyGate{}, roleEvents: make(chan directoryRoleCallback, 16), roleAckReplies: &nativeWatchReplyGate{}}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
 		b.shutdownJob()
 		b.retireJobs()
 		b.closeBindings()
 		b.retireDetails()
+		b.retireDirectoryRoles()
 		if b.cancel != nil {
 			b.cancel()
 		}
@@ -592,6 +624,7 @@ func run(o options) error {
 				return err
 			}
 			b.routeDetailAck(event.Echo.Message)
+			b.routeDirectoryRole(event.Echo.Message)
 			if strings.HasPrefix(event.Echo.Message, "FVWM_FILES_SYNC "+b.instance+" ") {
 				select {
 				case b.acks <- event.Echo.Message:
@@ -759,6 +792,17 @@ func run(o options) error {
 				return err
 			}
 			if accepted {
+				renewIdle()
+			}
+		case callback := <-b.roleEvents:
+			accepted, err := b.directoryRoleAction(callback)
+			if err != nil {
+				return err
+			}
+			if accepted {
+				if err := b.renewNativeIdle(); err != nil {
+					return err
+				}
 				renewIdle()
 			}
 		case callback := <-b.detailEvents:

@@ -247,6 +247,50 @@ idle expiry can close it sooner. Details cannot keep a browser alive through
 read-only arrow navigation alone. This snapshot adds no metadata freshness or
 file-action authority beyond the browser's existing admitted observations.
 
+== OPEN THE CURRENT FOLDER WITH AN APPLICATION
+
+Press F12 to open the folder application chooser. It always targets the folder
+currently displayed by this browser, not the selected entries. The initial
+selection is the effective default directory application. Choose an associated
+alternative, then press Launch (Enter) for one handoff. Refresh (F5) rereads
+applications and associations; Close (Escape) dismisses the chooser.
+
+This reads existing XDG application metadata and MIME Applications 1.0.1
+association/default settings for inode/directory for this handoff. It does not
+classify or sniff arbitrary files, change personal defaults, write associations,
+or use a session bus. Default IDs must name installed associated usable
+applications; unavailable defaults fall through in order. Menu-only visibility
+settings such as NoDisplay do not disqualify directory handlers. Hidden desktop
+entries still mask lower-priority copies. Missing optional sources are empty;
+malformed, unreadable or over-limit sources report failure rather than an
+invented default. A missing executable, terminal or working directory makes a
+handler unavailable; a bus-only entry without Exec is unavailable. No eligible
+handler is reported explicitly.
+
+A launch rechecks the captured folder and selected application's metadata and
+association. Changed or removed choices are refused until refreshed. Changing
+the configured default never substitutes another application for an explicit
+choice. Folder revalidation observes RootPath at launch; it is not a descriptor
+lease against a later rename. Filenames retain their original bytes; Desktop Entry file/URI field
+codes receive one literal local folder. No shell evaluation or automatic target
+argument is added. An explicit application working directory wins; otherwise
+its working directory is the captured folder. Terminal applications use the
+existing configured literal terminal executable and -e; a missing terminal does
+not cause a nonterminal fallback.
+
+The result reports process creation, not that a new folder window appeared or
+an application operation completed. Existing busy/cancel/refusal behavior applies;
+inspect the result before retrying an uncertain handoff. Selecting the installed
+FVWM file-browser entry uses its ordinary reuse request. Folder navigation,
+Enter on an entry, Open selected, configured selection actions and personal
+association defaults retain their existing behavior.
+
+A failed role operation remains failed until refreshed. The existing folder
+collection can remain current only while the same chooser retains its captured
+folder and that folder is revalidated. Other file-work intents, including
+navigation and scheduled watch refreshes, or chooser/parent retirement invalidate
+the retained capture. Reopen or refresh the chooser for a new set.
+
 == CONFIGURED SELECTION ACTIONS
 
 Repeat `--action 'Label=executable'` up to four times to add named native buttons.

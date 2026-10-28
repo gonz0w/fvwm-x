@@ -551,7 +551,7 @@ static bool files_values(const char *operation, const cJSON *values)
 	const cJSON *mode = NULL, *ids = NULL, *text = NULL;
 	const cJSON *key = NULL, *reverse = NULL;
 	const cJSON *id = NULL, *path = NULL, *index = NULL;
-	const cJSON *paths = NULL, *enabled = NULL;
+	const cJSON *paths = NULL, *enabled = NULL, *generation = NULL;
 	unsigned int count = 0;
 
 	if (!cJSON_IsObject(values))
@@ -584,6 +584,8 @@ static bool files_values(const char *operation, const cJSON *values)
 			paths = item;
 		else if (strcmp(item->string, "enabled") == 0)
 			enabled = item;
+		else if (strcmp(item->string, "generation") == 0)
+			generation = item;
 		else
 			return false;
 	}
@@ -660,6 +662,9 @@ static bool files_values(const char *operation, const cJSON *values)
 	}
 	if (strcmp(operation, "open") == 0)
 		return count == 1 && settings_token(id);
+	if (strcmp(operation, "directory-role-launch") == 0)
+		return count == 2 && settings_token(id) &&
+			settings_token(generation);
 	if (strcmp(operation, "custom") == 0)
 		return count == 1 && cJSON_IsNumber(index) &&
 			index->valuedouble >= 0 && index->valuedouble < 4 &&
@@ -672,7 +677,9 @@ static bool files_values(const char *operation, const cJSON *values)
 	return count == 0 && (strcmp(operation, "properties") == 0 ||
 		strcmp(operation, "refresh") == 0 ||
 		strcmp(operation, "terminal") == 0 ||
-		strcmp(operation, "present") == 0);
+		strcmp(operation, "present") == 0 ||
+		strcmp(operation, "directory-roles") == 0 ||
+		strcmp(operation, "directory-roles-close") == 0);
 }
 
 static bool files_action(struct mfl_request *request,
@@ -683,7 +690,7 @@ static bool files_action(struct mfl_request *request,
 	char *text;
 	size_t length;
 
-	if (seen != fields || !bounded_string(values[6], 10) ||
+	if (seen != fields || !bounded_string(values[6], 32) ||
 	    !settings_token(values[7]) || !settings_token(values[9]) ||
 	    !files_values(values[6]->valuestring, values[8]))
 		return false;
@@ -739,7 +746,8 @@ static bool files_request(struct mfl_request *request,
 		return false;
 	scope = values[5]->valuestring;
 	if (strcmp(scope, "state") != 0 && strcmp(scope, "items") != 0 &&
-	    strcmp(scope, "selection") != 0 && strcmp(scope, "properties") != 0)
+	    strcmp(scope, "selection") != 0 && strcmp(scope, "properties") != 0 &&
+	    strcmp(scope, "directory_roles") != 0)
 		return false;
 	if ((strcmp(scope, "state") == 0 || strcmp(scope, "properties") == 0) &&
 	    (values[11] || values[12]))

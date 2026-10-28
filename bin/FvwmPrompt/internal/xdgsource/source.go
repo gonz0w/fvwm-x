@@ -238,7 +238,11 @@ func (s *Source) desktop(path string) (*xdgmenu.Desktop, error) {
 }
 
 func (s *Source) walk(root, path string, depth int, active map[string]bool, visit func(string) error) error {
-	if depth >= xdgmenu.MaxDepth {
+	return s.walkLimited(root, path, depth, xdgmenu.MaxDepth, active, visit)
+}
+
+func (s *Source) walkLimited(root, path string, depth, maxDepth int, active map[string]bool, visit func(string) error) error {
+	if depth >= maxDepth {
 		return errors.New("application directory exceeds depth limit")
 	}
 	if err := s.ctx.Err(); err != nil {
@@ -270,7 +274,7 @@ func (s *Source) walk(root, path string, depth int, active map[string]bool, visi
 			return err
 		}
 		if info.IsDir() {
-			if err = s.walk(root, filename, depth+1, active, visit); err != nil {
+			if err = s.walkLimited(root, filename, depth+1, maxDepth, active, visit); err != nil {
 				return err
 			}
 		} else if strings.HasSuffix(entry.Name(), ".desktop") {

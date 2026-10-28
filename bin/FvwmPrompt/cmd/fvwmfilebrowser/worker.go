@@ -19,23 +19,27 @@ import (
 
 // Private parent/worker data. Raw paths are base64 JSON bytes, never commands.
 type workRequest struct {
-	Operation string              `json:"operation"`
-	Targets   [][]byte            `json:"target_bytes,omitempty"`
-	Path      []byte              `json:"path_bytes,omitempty"`
-	Hidden    bool                `json:"hidden"`
-	Snapshot  *filemodel.Snapshot `json:"snapshot,omitempty"`
-	ID        string              `json:"id,omitempty"`
-	IDs       []string            `json:"ids,omitempty"`
-	Program   string              `json:"program,omitempty"`
+	Operation       string              `json:"operation"`
+	Targets         [][]byte            `json:"target_bytes,omitempty"`
+	Path            []byte              `json:"path_bytes,omitempty"`
+	Hidden          bool                `json:"hidden"`
+	Snapshot        *filemodel.Snapshot `json:"snapshot,omitempty"`
+	ID              string              `json:"id,omitempty"`
+	IDs             []string            `json:"ids,omitempty"`
+	Program         string              `json:"program,omitempty"`
+	RoleID          string              `json:"role_id,omitempty"`
+	RoleFingerprint string              `json:"role_fingerprint,omitempty"`
 }
 
 type workResult struct {
-	Schema      int                 `json:"schema_version"`
-	Selected    []string            `json:"selected_ids,omitempty"`
-	Status      string              `json:"status"`
-	Snapshot    *filemodel.Snapshot `json:"snapshot,omitempty"`
-	Error       string              `json:"error,omitempty"`
-	ActionCount int                 `json:"action_count,omitempty"`
+	Schema          int                  `json:"schema_version"`
+	Selected        []string             `json:"selected_ids,omitempty"`
+	Status          string               `json:"status"`
+	Snapshot        *filemodel.Snapshot  `json:"snapshot,omitempty"`
+	Error           string               `json:"error,omitempty"`
+	ActionCount     int                  `json:"action_count,omitempty"`
+	Roles           *directoryRoleResult `json:"directory_roles,omitempty"`
+	RoleFolderValid bool                 `json:"role_folder_valid,omitempty"`
 }
 
 func decode(data []byte, value any) error {
@@ -56,6 +60,9 @@ func decode(data []byte, value any) error {
 func perform(request workRequest) (result workResult) {
 	result.Schema = 1
 	result.Status = "failed"
+	if request.Operation == "directory-roles" || request.Operation == "directory-role-launch" {
+		return performDirectoryRole(request)
+	}
 	if request.Operation == "locate" {
 		snapshot, ids, err := filemodel.Locate(request.Targets, request.Hidden)
 		if err != nil {

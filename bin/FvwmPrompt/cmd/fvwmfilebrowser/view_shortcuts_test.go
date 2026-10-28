@@ -37,6 +37,7 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		"F7":    {"View (F7)", "view", "-"},
 		"F8":    {"Watch (F8)", "watch", "-"},
 		"F9":    {"Jobs (F9)", "jobs", "-"},
+		"F12":   {"Open folder with (F12)", "directory-roles", "-"},
 		"^M":    {"Open (Enter)", "focused", "-"},
 		"^[":    {"Close (Esc)", "close", "-"},
 	}

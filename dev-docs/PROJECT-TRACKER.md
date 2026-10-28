@@ -448,10 +448,75 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 bounded file-operation jobs — FILE-JOBS-01 #68
+
+Owner: Cam; `codex/r1-file-jobs`; base merged PR288. Status: implementation
+and scoped checks prepared for review on 2026-10-27; required owner coverage
+remains incomplete. This follows the owner's larger-PR direction.
+Complete one substantial owner slice with create-folder, rename, recursive copy,
+move, links, trash/restore and explicit permanent delete, sharing typed targets,
+bounded helper ownership, progress/conflicts/cancellation and a native browser
+consumer. This replaces repeated small Form-polish pickups; #51/#69 retain their
+remaining consumer/support acceptance without blocking independent jobs.
+
+Dependencies: accepted #65/#66 byte-preserving snapshots/identity/actions and #70
+operation/result ownership. Keep browsing database-independent; no SQLite, D-Bus,
+clipboard-storage, archive/undo engine, default resident or new mandatory toolkit.
+No #257/#258/Daybreak work. Keep WM X state single-threaded; all filesystem work
+belongs to an owned isolated helper, independent of navigation worker supersession.
+
+Freeze one internal request/event/control contract before worker/UI coding. Use
+opened handles and anchored directory operations, checking source/destination
+identities and generations before mutation. No unconditional atomic race-free
+claim against concurrent same-user writers. Conflict choices are skip, choose a
+new name or cancel; do not overwrite existing objects. Exclusive directory copy
+plus removal is an explicitly non-atomic fallback where no portable safe rename
+exists. Never remove a source after failed copy, silently follow a source symlink,
+claim rollback or convert unavailable trash into deletion. Adopt the finite FDO
+Trash 1.0 storage subset with explicit filesystem/private-area capability refusal.
+Document metadata, cross-filesystem and partial-cleanup guarantees precisely.
+
+Acceptance: bounded policy/identity/worker/consumer regressions; native filesystem
+fixtures for tree/link/conflict/stale/replaced/full/read-only/cross-filesystem/
+interruption cases; job lifetime through close/helper loss and WM restart;
+real-X progress/decision/cancel with unrelated input responsive, exact outcome
+bytes and three-theme screenshots. Combine affected builds/race/native/support
+checks once after this coherent implementation; check new platform-sensitive
+filesystem APIs early on affected targets. Reuse existing caches and required
+valid evidence; no per-operation all-OS or full install repetition. Close #68 only
+when its frozen criteria have linked results; unavailable required coverage stays
+open rather than becoming a claimed pass. Lead owns tracker/resources/integration;
+backend and browser implementers have separate file ownership, followed by separate
+final review. PR288's measured reference is 0/5; comparison is not due this batch.
+
+[Results and remaining coverage](verification/VERIFICATION-2026-10-27-FILE-JOBS.md)
+and [three-theme captures](../doc/development-preview.md#bounded-file-operation-jobs)
+record all eight operations, Linux policy/race/minimum-SDK checks, 51 real native
+jobs and 12 inspected captures. Linux AMD64, both FreeBSD targets and both
+OpenBSD targets have actual cross-filesystem/replacement/full/read-only and
+unprivileged-permission results. OpenBSD ARM64 uses composed original policy
+coverage plus a reviewed six-subcase test-only supplement; the failed original
+package receipt stays visible. Test fixture/cache/setup failures are retained.
+Product Go/C/build/manual bytes remain frozen; later changes are two test-only
+files and docs/gallery, with exact before/after receipts.
+
+#68 remains In progress: the Linux ARM64 container refused native filesystem
+fixture setup before those assertions ran, and fast real-X copies completed
+between progress samples. Pure progress policy and actual conflict/input/cancel
+checks pass; no captured copy-progress view or missing filesystem case is
+called a pass. Finish those bounded acceptance rows before #68 closure; the
+tracker's following feature owner is DESKTOP-ICONS-01 #64. Broader #51/#69/#70
+release and consumer obligations remain separate. All finished owned labs are
+stopped; verified guest duplicates and about 47.2 GB of this batch's obsolete
+disposable disk/image duplicates are retired. Source/build/reference/canonical
+cache inputs and other owners' resources remain. PR288's periodic counter
+advances from 0/5 to 1/5 on this implementation's merge.
+
 ## R1 Form pointer and paste continuity — 2026-10-27
 
-Owner: Cam; `codex/r1-form-pointer-paste`; #51/#69. Status: implemented and focused Linux-qualified
-after merged PR287; separate final review before the next PR. Complete three related existing Input outcomes:
+Owner: Cam; `codex/r1-form-pointer-paste`; #51/#69. Status: merged in [PR288](https://github.com/gonz0w/fvwm-x/pull/288)
+at `ce1583a1b4e6c459efd404929c645c4b81567bc0`; exact reviewed tree,
+canonical signature and author DCO verified; branch retired and Project Done. Complete three related existing Input outcomes:
 map pointer x to the nearest measured character boundary within the painted
 viewport; advance exactly once for each cut-buffer field separator (single-field
 Tab inserts one space without firing a Tab button); repaint each changed source
@@ -3454,7 +3519,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
 | FILE-ACTION-01 | P2 / Review; all five criteria qualified, closes on merge | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
-| FILE-JOBS-01 | P2 / queued, scope approved | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
+| FILE-JOBS-01 | P2 / In progress; full job/UI slice prepared for review, exact remaining coverage open | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
 | DESKTOP-ICONS-01 | P2 / queued, scope approved | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
 | FILE-INTEGRATION-01 | P2 / queued, scope approved | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
 | FILE-ADVANCED-01 | P2 / deferred candidates | Thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo require individually bounded adoption decisions and prerequisite gates. Reuse qualified collection/jobs/image/process contracts and optional providers; no autorun, mandatory desktop stack or aggregate rewrite. Not a prerequisite for the initial primitive/config handoff or earlier file-manager checkpoints. See file-manager scope. |

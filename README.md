@@ -16,10 +16,10 @@ Recent work:
 - Source-aware runtime errors and non-executing, paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
 - A keyboard-first window/app/desktop/action palette with bounded native refresh.
-- Optional browser: scrolling list/grid, multi-selection,
-  filtering, sorting, observed properties and configured application actions.
-  List/grid switches and live updates retain drafts/selection; watching refreshes folders.
-  F1 exposes complete, read-only snapshot details.
+- Optional browser: list/grid, selection, filter/sort, watching, properties and
+  application actions; live updates retain drafts/selection.
+- File jobs: folders, rename, copy/move, links, trash/restore, delete;
+  progress, conflicts and cancellation.
 
 Slate dark: list/properties.
 

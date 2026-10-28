@@ -32,11 +32,42 @@ platform and consistency limits.
 
 Limits include 4096 loaded entries and 256 selected entries. Larger folders are
 refused as a whole. Properties describe the last admitted metadata snapshot;
-they do not read file contents or calculate recursive folder sizes. The prototype
+they do not read file contents or calculate recursive folder sizes. When no mutation job is active, the prototype
 closes after five minutes without a callback, accepted external control or
 current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
+
+## Bounded file-operation jobs
+
+F9 opens the browser's job editor for its captured selection. Create a folder,
+rename, copy, move, link, trash, restore or explicitly delete items. One isolated
+worker reports progress and per-item results while browsing remains responsive.
+Conflicts offer Skip, New name or Cancel; existing destinations are never
+overwritten. Closing the owner cancels active work. Cancellation can leave
+partial results and does not undo completed operations.
+
+Slate dark at 1.25x: a real copy conflict waits for a decision.
+
+![Slate file-job conflict with skip, new-name and cancel controls](screenshots/jobs-slate-conflict.png)
+
+Dune light at 1x: completed results remain visible in the job window.
+
+![Dune file jobs showing completed per-item results](screenshots/jobs-dune-completed.png)
+
+Enlarged Classic at 2x: permanent deletion previews the captured target names
+before the separate F10 confirmation. The Classic controls use an explicit
+legacy palette over the Slate desktop.
+
+![Enlarged Classic permanent-delete preview with two target names](screenshots/jobs-classic-delete.png)
+
+[Capture identities](screenshots/jobs-manifest.json) and
+[verification and remaining coverage](../dev-docs/verification/VERIFICATION-2026-10-27-FILE-JOBS.md)
+retain the three configurations, all twelve captures and filesystem limits.
+See the [job manual](fvwm-file-browser.adoc#_file_jobs) before use:
+trash can refuse unsupported locations, move is not universally atomic, and
+partial results require inspection. Development and broader file-manager and
+clipboard integration remain in progress.
 
 ## Pointer and paste continuity
 

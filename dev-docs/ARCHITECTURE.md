@@ -686,6 +686,15 @@ through panel/hotplug changes. Explicit placement and post-ready user movement
 remain authoritative. Fixed bitmap font fallback does not promise scalable glyphs. Other module consumers and qualification
 remain with their owning tracker contracts.
 
+The browser's [job controller](../bin/FvwmPrompt/cmd/fvwmfilebrowser/jobs.go)
+owns one independently reaped mutation child and the generation-bound
+[job Form](../bin/FvwmPrompt/cmd/fvwmfilebrowser/jobs_view.go). Navigation keeps its
+existing separate acquisition worker. The [filejobs backend](../bin/FvwmPrompt/internal/filejobs/types.go)
+owns bounded typed requests, descriptor-based source/destination observations,
+exclusive publication, partial outcomes and the private home-trash subset. Native
+callbacks never derive filesystem targets from labels; owner loss cancels and
+waits without replaying unknown mutations. See the [job contract](decisions/FILE-JOBS-2026-10-27.md).
+
 Pager monitor hit testing uses wide endpoints and excludes disabled regions.
 IconMan numeric/property fields and Pager desk/style selectors use checked
 conversion before publication. Pager style setters accept local size_t/offsetof

@@ -34,6 +34,15 @@ func testControl(b *browser, action, argument string, packet []byte) string {
 }
 
 func TestMain(m *testing.M) {
+	if len(os.Args) == 2 && os.Args[1] == "--job-worker" {
+		if mode := os.Getenv("FVWM_TEST_JOB_WORKER"); mode != "" {
+			os.Exit(jobProcessFixture(mode))
+		}
+		if runJobWorker() != nil {
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
 	if path := os.Getenv("FVWM_TEST_ACTION_REPORT"); path != "" && len(os.Args) > 1 && os.Args[1] != "--worker" && os.Args[1] != "--watch-worker" {
 		args := make([][]byte, 0, len(os.Args)-1)
 		for _, arg := range os.Args[1:] {

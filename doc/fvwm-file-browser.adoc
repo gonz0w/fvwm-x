@@ -732,6 +732,19 @@ fvwm-file-browser --reuse --reveal '/home/user/Work files/report.txt'
 fvwm-file-browser --reuse --properties '/home/user/Work files/report.txt'
 ....
 
+== DESKTOP FILES-MENU HANDOFF
+
+In FvwmDesktop(1), choose *Open this folder in browser* from the Files menu.
+The action uses the same *--reuse* folder request described above. Matching
+idle browsers refresh and present their current window; a new independent
+browser opens when no eligible provider exists. Existing folder-menu navigation
+and MIME preferences remain in effect.
+
+An uncertain submitted request never triggers a second launch. Inspect the
+existing browser after a handoff failure. A launch or admission receipt does
+not mean directory loading has completed; the browser keeps its ordinary
+loading and error indicators. This portable action needs no session bus.
+
 == EXIT STATUS
 
 Zero means the consumer closed normally or inspection loaded. Nonzero means

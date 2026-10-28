@@ -72,3 +72,43 @@ func TestOfflineReportPreservesSchemaAndPhysicalIncludeSpans(t *testing.T) {
 		t.Fatal("schema 1 source context lost", out.String(), err)
 	}
 }
+
+func TestBrowserPeerLookupIsOptionalAndPreservesExplicitOverride(t *testing.T) {
+	directory := t.TempDir()
+	commands := t.TempDir()
+	t.Setenv("PATH", commands)
+	missing := filepath.Join(directory, "fvwm-file-browser")
+	if got := helperBeside(directory, "fvwm-file-browser"); got != missing {
+		t.Fatal("absent optional peer unexpectedly changed resolution", got)
+	}
+	if _, err := os.Stat(missing); !os.IsNotExist(err) {
+		t.Fatal("test optional peer exists", err)
+	}
+	installed := filepath.Join(commands, "fvwm-file-browser")
+	if err := os.WriteFile(installed, nil, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if got := helperBeside(directory, "fvwm-file-browser"); got != installed {
+		t.Fatal("installed bindir browser was not discovered through PATH", got)
+	}
+	if err := os.WriteFile(missing, nil, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if got := helperBeside(directory, "fvwm-file-browser"); got != missing {
+		t.Fatal("adjacent build browser did not win over PATH", got)
+	}
+	// Optional application lookup must not become PATH discovery for self-workers.
+	worker := filepath.Join(commands, "fvwm-desktop-worker")
+	if err := os.WriteFile(worker, nil, 0700); err != nil {
+		t.Fatal(err)
+	}
+	if got := helperBeside(directory, "fvwm-desktop-worker"); got != filepath.Join(directory, "fvwm-desktop-worker") {
+		t.Fatal("self-worker lookup unexpectedly searched PATH", got)
+	}
+	literal := filepath.Join(directory, "browser $[]; with spaces")
+	t.Setenv("FVWM_FILE_BROWSER", literal)
+	got, err := adjacent("fvwm-file-browser", "FVWM_FILE_BROWSER")
+	if err != nil || got != literal {
+		t.Fatal("explicit optional browser override was expanded or rejected", got, err)
+	}
+}

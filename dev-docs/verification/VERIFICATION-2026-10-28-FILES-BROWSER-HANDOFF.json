@@ -1,0 +1,310 @@
+{
+  "status": "focused checks and separate integrated source/evidence review passed",
+  "owner": "FILE-INTEGRATION-01 #67 / R1 Major portable consumer adoption",
+  "base": "14e4b2cdf435bd6ba86d4af409aa14ba5b18d553",
+  "previous_merge": {
+    "pr": 291,
+    "sha": "14e4b2cdf435bd6ba86d4af409aa14ba5b18d553",
+    "closed_issue": 64,
+    "already_closed": [
+      65,
+      68
+    ],
+    "tree_signature_author_dco_verified": true,
+    "branch_retired": true
+  },
+  "source_files": {
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": {
+      "sha256": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+      "bytes": 3278
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": {
+      "sha256": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+      "bytes": 10235
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": {
+      "sha256": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+      "bytes": 4966
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": {
+      "sha256": "b651ad17ed02c943e50f592c8052d5d07c0f1d48a343e23abe8837eb130498bb",
+      "bytes": 11176
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": {
+      "sha256": "5ca5c4e29b2392638a7e01272ac9111f4836ea825c9df989fbf694f5f4fd3e59",
+      "bytes": 10282
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/module.go": {
+      "sha256": "7757311470d2d9587597ce4170851a9dd8dcd79c1e628f8187f2fc040b3bb890",
+      "bytes": 6641
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": {
+      "sha256": "2161611566d3a27067e26b22092fa676b03bb9c2d14175ecc3765935b305ff26",
+      "bytes": 15497
+    },
+    "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": {
+      "sha256": "7bccdbf534fc485ce43861e4843b4330811686ac3aa7a0bfdc4e2f4e39c431b3",
+      "bytes": 5798
+    },
+    "bin/FvwmPrompt/cmd/fvwmdesktop/main_test.go": {
+      "sha256": "b4d9b021b1579ae1c08a10dc3ae9b5bc6f27574911814c9f0a48164e7eda74aa",
+      "bytes": 4290
+    },
+    "tests/live_x/browser_handoff_live.py": {
+      "sha256": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+      "bytes": 37943
+    }
+  },
+  "source_guards": {
+    "files": 1852,
+    "go_files": 586,
+    "closure_sha256": "e584538d49465d9ef1b27b2535d64d08234d9379c4697f741e69a3fd18efbe2d",
+    "scope": "freeze excludes dev-docs/doc/screenshots; later README/gallery prose and tracking are metadata-only; runtime and fixture hashes remain exact"
+  },
+  "canonical_evidence": {
+    "status": "passed",
+    "files": 465,
+    "archive_sha256": "5b5f6a4c8f16324856af64f8ff17555dcc4f5b8b071663e00a366687f0b15f3c",
+    "archive_bytes": 5024265,
+    "exact_members_modes_hashes": true,
+    "gzip_crc": true
+  },
+  "environment": {
+    "kernel": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux",
+    "sdk": "go version go1.27.2 linux/arm64",
+    "minimum_sdk": "unchanged qualified Go1.26.9 profile",
+    "execution": "owned virtualized Linux ARM64 development container; no fresh native-CPU or hardware claim"
+  },
+  "tests": {
+    "controller04": {
+      "normal": 150,
+      "race": 150,
+      "minimum_sdk": 150,
+      "count_type": "JSON passes with Test name, including subcases"
+    },
+    "main03": {
+      "normal": 4,
+      "race": 4,
+      "minimum_sdk": 4
+    },
+    "unchanged_browser": {
+      "normal02": 130,
+      "race03": 130
+    },
+    "unchanged_runtimepath": {
+      "normal02": 2,
+      "race03": 2
+    },
+    "go_vet": "affected four packages03 plus controller04 passed",
+    "manuals": "both affected Asciidoctor manpages generated without stderr"
+  },
+  "native_themes": [
+    {
+      "profile": "dune-light",
+      "evidence_member": "ui02/themes/browser-handoff-9l1yvg1v/dune-light/result.json",
+      "evidence_sha256": "5af1acdf04cd7a1098734ed6c426283373816e0f7b27f80b9002564d6e42b180",
+      "fixture_sha256": "f7d11701f8b1a603e882fe97d05c6d8ed2378285c09fbfdd38b577749515a938",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 548,
+        "y": 499,
+        "width": 344,
+        "height": 202,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "cases": [
+        "open_literal_folder",
+        "reuse_deiconify",
+        "stale-token",
+        "missing-browser",
+        "start-failure",
+        "injected-nonzero-exit",
+        "literal_bytes_no_execution"
+      ],
+      "screenshots": 8,
+      "launcher_wait_receipts": [
+        {
+          "child": 3243,
+          "returncode": 0
+        },
+        {
+          "returncode": 23,
+          "injected_failure": true
+        },
+        {
+          "child": 3221,
+          "returncode": 0
+        }
+      ]
+    },
+    {
+      "profile": "classic-large",
+      "evidence_member": "ui02/themes/browser-handoff-9l1yvg1v/classic-large/result.json",
+      "evidence_sha256": "894e368f9379920f26bddaae1eefb6675be3a88a6b67360bc5f585b85c5c1307",
+      "fixture_sha256": "f7d11701f8b1a603e882fe97d05c6d8ed2378285c09fbfdd38b577749515a938",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 359,
+        "y": 460,
+        "width": 722,
+        "height": 280,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "cases": [
+        "open_literal_folder",
+        "reuse_deiconify",
+        "stale-token",
+        "missing-browser",
+        "start-failure",
+        "injected-nonzero-exit",
+        "literal_bytes_no_execution"
+      ],
+      "screenshots": 8,
+      "launcher_wait_receipts": [
+        {
+          "child": 3367,
+          "returncode": 0
+        },
+        {
+          "returncode": 23,
+          "injected_failure": true
+        },
+        {
+          "child": 3345,
+          "returncode": 0
+        }
+      ]
+    },
+    {
+      "profile": "slate-dark",
+      "evidence_member": "ui02/themes/browser-handoff-9l1yvg1v/slate-dark/result.json",
+      "evidence_sha256": "77bac66237b28e9f0b4a21fc8efed7966dffe43fc5f34fd3dbffc898a0bda748",
+      "fixture_sha256": "f7d11701f8b1a603e882fe97d05c6d8ed2378285c09fbfdd38b577749515a938",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 547,
+        "y": 499,
+        "width": 346,
+        "height": 202,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "cases": [
+        "open_literal_folder",
+        "reuse_deiconify",
+        "stale-token",
+        "missing-browser",
+        "start-failure",
+        "injected-nonzero-exit",
+        "literal_bytes_no_execution"
+      ],
+      "screenshots": 8,
+      "launcher_wait_receipts": [
+        {
+          "child": 3119,
+          "returncode": 0
+        },
+        {
+          "returncode": 23,
+          "injected_failure": true
+        },
+        {
+          "child": 3097,
+          "returncode": 0
+        }
+      ]
+    }
+  ],
+  "installed": {
+    "status": "passed",
+    "evidence_member": "installed03/installed/browser-handoff-jdrg8p48/slate-dark/result.json",
+    "evidence_sha256": "7bc0ddad6a8cddee5ca5942bbef2b36fe3d8a35a022b2eb171334321cbcee235",
+    "fixture_sha256": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+    "exact_child": {
+      "child": 3565,
+      "parent": 3515,
+      "starttime": 192262,
+      "argv_bytes": [
+        "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9yMS1maWxlLWludGVncmF0aW9uLXN0YWdlL3Vzci9sb2NhbC9iaW4vZnZ3bS1maWxlLWJyb3dzZXI=",
+        "LS1yZXVzZQ==",
+        "LS0=",
+        "L3Jvb3QvMDAwLWZ2d20tYnJvd3Nlci1oYW5kb2ZmLWNvb2lxemdzL2xpdGVyYWwgc3BhY2UgOyAkKHRvdWNoIG11c3Qtbm90LWV4ZWN1dGUtY29vaXF6Z3MpIGB0b3VjaCBtdXN0LW5vdC1leGVjdXRlLWNvb2lxemdzYCAkW2V4ZWMudG91Y2hdICUgIiBxdW90ZQ=="
+      ]
+    },
+    "child_thread_ids": [
+      "3519"
+    ],
+    "main_thread_children": [],
+    "cases": [
+      "open_literal_folder",
+      "reuse_deiconify",
+      "stale-token",
+      "override_failures",
+      "literal_bytes_no_execution"
+    ],
+    "parent_alive_after_reap": true,
+    "child_reaped_core_alive": true,
+    "entries": {
+      "FvwmDesktop": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-file-integration-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "sha256": "07050f193853feb79e99decc0147b1bb9091d86968bb7b6bf727fcc6581aaec1",
+        "bytes": 5742596,
+        "mode": 493
+      },
+      "fvwm-desktop-worker": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-file-integration-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "sha256": "afb9030a499697aebdc4b923e96d47782d3a0aa24bfd142de6bc681296e6dcfb",
+        "bytes": 5809953,
+        "mode": 493
+      },
+      "fvwm-file-browser": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-file-integration-stage/usr/local/bin/fvwm-file-browser",
+        "sha256": "46dc5bf59a44bc7b423e71771177ed45ed972c176833a0d24aafac87428cb1f0",
+        "bytes": 6091518,
+        "mode": 493
+      },
+      "desktop-role": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-file-integration-stage/usr/local/share/applications/fvwm-file-browser.desktop",
+        "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c"
+      }
+    },
+    "scope": "real scoped desktop-controller/file-browser Meson stage; build core/native modules and source theme data; no full system/default-role adoption"
+  },
+  "retained_failures": [
+    "build01 test execution attempted on noexec /dev/shm; product tests did not execute",
+    "unit02 diagnostic oracle split unknown/outcome at72-rune wrap; fixed with3shortlines",
+    "ui01/classic-probe oversized menu2162x280 on1440x1200; original pixel bound retained",
+    "ui02 installed observer read only main-thread children; installed03 observes browser on another Desktop thread"
+  ],
+  "cleanup": {
+    "canonical_host_verified": true,
+    "selected_files": 465,
+    "guest_duplicates_retired": true,
+    "source_build_stage_cache_disks_preserved": true,
+    "owned_linux_lab_normal_stop": true
+  },
+  "remaining": [
+    "#67 MIME/default-provider discovery, FileManager1/#77, transfer and complete support/release acceptance stay open",
+    "#51 broader layout acceptance stays open;48rune cap is not arbitrary-font/screen fitting",
+    "unknown post-admission transport fault not injected on real X; unchanged Go reuse policy qualified",
+    "performance comparison not due:3/5 after291,4/5 after next merge"
+  ],
+  "separate_review": {
+    "role": "temper_reviewer",
+    "accepted_tree": "ed3fe696b2f81c702833434bf5e758feeeb34a19",
+    "result": "no remaining actionable findings",
+    "scope": "23 files, exact runtime/fixture bindings, actual results,465-member integrity and screenshots",
+    "issue67": "reuse/present criterion complete; role/adapter/full support criteria remain open",
+    "type": "read-only agent second examination; not independent human assurance",
+    "backend_model_effort": "unattested",
+    "later_changes": "review/status metadata only; final commit/tree in PR"
+  }
+}

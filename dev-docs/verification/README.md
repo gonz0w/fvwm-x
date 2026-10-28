@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Files-menu browser handoff](VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md): explicit current-folder launch/reuse, bounded failure reporting and Files-only label elision; focused Linux, installed consumer and inspected three-theme captures.
+
 - [Pinboard acceptance supplement](VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md): retirement, scoped config refresh, terminal query recovery, controlled capability refusal and composed support evidence.
 
 - [Optional desktop pinboard](VERIFICATION-2026-10-27-PINBOARD.md): saved references, shaped canvas, native management/recovery and three themes; focused Linux/FreeBSD/sanitizer/install results and remaining #64 profiles.

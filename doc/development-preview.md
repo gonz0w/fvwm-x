@@ -38,6 +38,34 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Open the Files folder in the native browser
+
+In Files, navigate to a folder and choose **Open this folder in browser**.
+An idle matching browser refreshes and presents its existing window. Folder
+menus remain the default. Long menu titles and entry labels use an ellipsis;
+navigation and browser requests retain the original full paths.
+
+Slate dark: the explicit browser action in the Files menu.
+
+![Slate Files menu with Open this folder in browser](screenshots/files-browser-slate-dark-menu.png)
+
+Dune light: the file browser, captured after the same-folder reuse workflow.
+
+![Dune browser after the qualified reuse workflow](screenshots/files-browser-dune-light-reused.png)
+
+Enlarged Classic: a monospaced 18-point font and shortened menu labels.
+
+![Enlarged Classic Files menu with shortened title and browser action](screenshots/files-browser-classic-large-menu.png)
+
+These are unmodified development captures. Punctuation in the synthetic folder
+name is literal data. A still image does not prove reuse; the
+[workflow results](../dev-docs/verification/VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md)
+and [capture identities](screenshots/files-browser-handoff-manifest.json) retain
+that evidence. Panel counters are whole-guest values, not a WM benchmark.
+The [desktop manual](FvwmDesktop.adoc)
+explains missing-command and uncertain-handoff recovery. Complete default-role,
+FileManager1 and release qualification remain in progress.
+
 ## Optional desktop pinboard
 
 `fvwm-pinboard` adds explicitly started, saved local file/folder references.

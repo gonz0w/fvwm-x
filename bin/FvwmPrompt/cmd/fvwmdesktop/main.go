@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"os/signal"
 	"path/filepath"
 	"runtime"
@@ -36,6 +37,13 @@ func helperBeside(directory, name string) string {
 	path := filepath.Join(directory, name)
 	if _, err := os.Stat(path); err == nil {
 		return path
+	}
+	if name == "fvwm-file-browser" {
+		// The build peer is adjacent, but installs put this optional
+		// application in bindir and FvwmDesktop in the module directory.
+		if command, err := exec.LookPath(name); err == nil {
+			return command
+		}
 	}
 	if name == "fvwm-desktop-capture" {
 		// Meson keeps the C helper in bin, while Go executables live in
@@ -143,7 +151,9 @@ func run(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
-	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: worker, Capture: capture, PNG: pngEnabled != "false", Input: input, Output: output})
+	// The optional browser peer is checked only when its explicit action runs.
+	browser, _ := adjacent("fvwm-file-browser", "FVWM_FILE_BROWSER")
+	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: worker, Capture: capture, Browser: browser, PNG: pngEnabled != "false", Input: input, Output: output})
 }
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)

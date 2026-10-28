@@ -448,10 +448,94 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 Files-menu browser handoff — 2026-10-28
+
+Owner: Cam; `codex/r1-file-integration`; FILE-INTEGRATION-01 #67,
+base merged PR291 `14e4b2cdf435bd6ba86d4af409aa14ba5b18d553`.
+Status: four related outcomes implemented; focused checks, all three native
+themes, scoped installed command discovery and separate screenshot inspection
+pass. Separate integrated review accepts the checkpoint; its PR is being
+prepared. #67 reuse/present acceptance is complete; remaining criteria stay open.
+#64/#65/#68 are closed; stale summary
+rows are reconciled without reopening qualified components. Performance is
+3/5 after PR291; no comparison is due. #257/#258 remain parked.
+[Results and retained failures](verification/VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md)
+bind runtime04 and installed observer05 to exact source/captures. All465 archive
+members, modes/hashes and gzip CRC pass before guest duplicates retire. The
+owned Linux lab stops normally. Existing source/build/stage/cache/disks remain.
+Broader #67 stays In progress; this is portable Files-menu consumer adoption.
+
+
+Deliver three related outcomes: an explicit Files-menu action opens its committed
+folder through the existing native browser CLI; matching idle browsers reuse and
+present through the qualified typed contract; missing peer/start and asynchronous
+nonzero-exit failures become visible without changing folder-menu defaults.
+The callback carries an opaque current-menu token, never a path or filename.
+Resolve the real desktop image with the existing runtimepath pattern, prefer
+an adjacent build-tree browser, then discover the installed browser on PATH.
+Meson installs the desktop in its module directory and the browser in bindir;
+they are not installed beside each other. Preserve explicit helper overrides
+and a usable desktop when the optional command is absent.
+Invoke literal argv `fvwm-file-browser --reuse -- PATH`; no shell/FVWM expansion,
+association writes, automatic retry or duplicate launch after uncertain admission.
+
+Reuse the existing bounded detached-application lifecycle and actual child Wait.
+A launched independent browser can remain alive: no blanket ten-second kill or
+ownership takeover. Bound outstanding browser launches/completions; only the
+resident event loop updates state and emits notices. Stale menu callbacks refuse
+before launch; a newer directory must never receive an older callback's request.
+
+Acceptance: regression/pure policy and actual child tests for stale IDs, literal
+argv, missing/execution/refusal errors, bounded admission/completion and teardown;
+actual nested-X Linux opening, same-folder reuse/presentation and refusal with no
+duplicate; scoped installed module/bindir command discovery; fresh Slate/Dune/enlarged
+Classic menu/browser captures. One incremental Linux combined checkpoint, race
+checks for the new completion path, and relevant existing Go/controller/browser
+checks. Portable process/socket APIs retain their earlier BSD qualification;
+no full-OS rebuild/install matrix merely for this consumer adoption. Broader #67
+MIME/default-provider discovery, FileManager1/#77, transfer and full support/release
+acceptance remain open. No new dependency, default resident or general MIME engine.
+Lead owns execution/tracker/integration; use bounded implementer and separate
+reviewer assignments with nonoverlapping ownership.
+
+Focused source/build/Go normal/race/minimum-SDK/vet and manual generation pass.
+The first test attempt used a noexec temporary filesystem and is retained as a
+setup failure; the actual normal test then exposed a diagnostic-word wrapping
+oracle/readability issue, corrected by three short unchanged-meaning lines.
+The first UI checkpoint passes Slate and Dune. Enlarged Classic fails the
+bounded menu-pixel sample because a mapped menu exceeds its screen dimensions;
+affected geometry/capture diagnosis is pending before a display-only fix.
+Keep these two passing themes; do not repeat unit/race/build/platform work solely
+for a fixture metadata change.
+
+The affected diagnostic retains the actual Classic menu at2162x280 on1440x1200,
+with a raw screenshot before the unchanged pixel guard fails. Accepted fourth
+outcome: cap only Files-menu title/entry display at48 sanitized printable runes,
+including directory prefix and ellipsis. Preserve original path/name/index/token
+and complete literal browser argv. Reuse existing sanitization; no generic menu
+engine, style/config migration or claim that48 runes fits every font/screen.
+Add boundary/multibyte/control/short-label and full-path identity tests. Repeat
+only affected controller normal/race/build and changed three-theme menu/UI
+checks, then the still-unrun scoped installed handoff. Keep previous passes and
+failed evidence under their exact inputs; broader #51/#67 acceptance stays open.
+
+All three corrected native theme workflows now pass. The scoped install succeeds
+and produces actual installed-browser Form windows, but the installed observer
+fails to find the browser using only the desktop's main-thread children file.
+Accepted observer-only correction: bind the enrolled desktop's kernel identity,
+scan its bounded per-thread children lists and revalidate that parent plus exact
+child PID/start/argv identities. Retain the startup deadline, one-browser/reuse
+and actual Wait requirements; record thread lists so any diagnosis is based on
+observed placement. Repeat only the installed owner check against the existing
+verified stage/view; keep the passing Go/theme/build/install receipts.
+
 ## R1 pinboard support closeout — 2026-10-28
 
-Status: finite #64 support coverage and separate integrated review passed;
-review PR being prepared.
+Status: merged in [PR291](https://github.com/gonz0w/fvwm-x/pull/291) as
+`14e4b2cdf435bd6ba86d4af409aa14ba5b18d553`. Exact reviewed tree, canonical
+signature and actual-author DCO verified; completed branch retired. #64 is
+closed and Project Done. Finite support coverage and separate integrated review
+pass; broader release acceptance remains separately owned.
 Three related runtime corrections cover native retirement acknowledgements,
 instance-scoped configuration replay and terminal missing-reply recovery.
 Composed Linux/FreeBSD/OpenBSD AMD64/ARM64 evidence, fresh Slate/Dune/enlarged
@@ -2864,10 +2948,12 @@ is 3/5 after PR229; no benchmark or tuning is due.
 
 ## Current checkpoint status
 
-Current owner selection, 2026-10-28: PR290 is merged and #68 is closed.
-The #64 pinboard support closeout passes its finite composed profiles; the next
-review candidate contains three recovery/configuration corrections and three
-fresh theme captures. See the [current closeout](#r1-pinboard-support-closeout--2026-10-28).
+Current owner selection, 2026-10-28: PR291 is merged; #64, #65 and #68
+are closed. Their finite source-bound acceptance remains complete. The active #67
+Files-menu browser checkpoint implements four related handoff/recovery/display
+outcomes; focused Linux, real installed discovery and three native themes pass.
+Separate final review accepts this checkpoint. #67 stays In progress for its
+remaining role/adapter/support criteria. No shared bus/FileManager1 adoption. See the [current closeout](#r1-pinboard-support-closeout--2026-10-28).
 The earlier maintenance-first scheduling below is historical; the R1 execution
 order remains authoritative.
 
@@ -3670,10 +3756,10 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
-| FILE-ACTION-01 | P2 / Review; all five criteria qualified, closes on merge | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
-| FILE-JOBS-01 | P2 / In progress; full job/UI slice prepared for review, exact remaining coverage open | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
-| DESKTOP-ICONS-01 | P2 / Review; finite support closeout passes, close #64 on reviewed PR merge | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
-| FILE-INTEGRATION-01 | P2 / queued, scope approved | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
+| FILE-ACTION-01 | Done / #65 closed by merged PR271; all five finite criteria qualified | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
+| FILE-JOBS-01 | Done / #68 closed by merged PR290; finite job/UI and support coverage qualified | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
+| DESKTOP-ICONS-01 | Done / #64 closed by merged PR291; finite support closeout qualified | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
+| FILE-INTEGRATION-01 | P2 / In progress; Files-menu adoption qualified, broader role/adapter/support acceptance open | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
 | FILE-ADVANCED-01 | P2 / deferred candidates | Thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo require individually bounded adoption decisions and prerequisite gates. Reuse qualified collection/jobs/image/process contracts and optional providers; no autorun, mandatory desktop stack or aggregate rewrite. Not a prerequisite for the initial primitive/config handoff or earlier file-manager checkpoints. See file-manager scope. |
 | CONTENT-01 | P2 / queued, primitives-first scope approved | Reusable bounded content items with stable IDs/generations, original bytes and multiple text/image/URI representations separate from labels/previews. Explicit leases, sensitivity/lifetime propagation and stale-reference refusal; deduplication/pinning preserve budgets and policy. Stage 6 with SELECTION-01 and shared collection/action contracts; no filesystem-path impersonation or arbitrary database framework. See [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |
 | RETENTION-01 | P2 / queued, scope approved; defaults pending | CFG-01-controlled capture/pause, formats, source exclusions, expiry/pinning/clear/lock and separate current-selection/history/persistence states. Honor supported secret hints before retention/previews/actions; remove derivatives and pending work on expiry without clearing newer clipboard data. Password-history and persistence defaults remain open decisions. Stage 6 with CONTENT-01/STORE-01; native policy and real-X lifecycle/failure gates. See clipboard scope. |

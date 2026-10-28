@@ -72,10 +72,10 @@ func appendCommand(queue []byte, message string) ([]byte, error) {
 }
 
 type Options struct {
-	Context                                  context.Context
-	Root, StatePath, System, Worker, Capture string
-	PNG                                      bool
-	Input, Output                            int
+	Context                                           context.Context
+	Root, StatePath, System, Worker, Capture, Browser string
+	PNG                                               bool
+	Input, Output                                     int
 }
 
 func Run(options Options) error {
@@ -94,6 +94,7 @@ func Run(options Options) error {
 		return err
 	}
 	defer d.Close()
+	d.browser.helper = options.Browser
 	d.emit(fmt.Sprintf("SET_MASK %d", regularDesktopMask))
 	d.emit(fmt.Sprintf("SET_MASK %d", coreReply|configSourceMessage))
 	d.emit("Send_ConfigInfo *FvwmDesktop")

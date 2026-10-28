@@ -1,0 +1,138 @@
+{
+  "status": "unmodified passing-workflow captures; all3 exact hashes and images inspected separately by temper_product",
+  "base": "14e4b2cdf435bd6ba86d4af409aa14ba5b18d553",
+  "runtime_freeze": "04",
+  "fixture_sha256": "f7d11701f8b1a603e882fe97d05c6d8ed2378285c09fbfdd38b577749515a938",
+  "source_sha256": {
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+    "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "b651ad17ed02c943e50f592c8052d5d07c0f1d48a343e23abe8837eb130498bb",
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "5ca5c4e29b2392638a7e01272ac9111f4836ea825c9df989fbf694f5f4fd3e59",
+    "bin/FvwmPrompt/internal/desktopcontroller/module.go": "7757311470d2d9587597ce4170851a9dd8dcd79c1e628f8187f2fc040b3bb890",
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": "2161611566d3a27067e26b22092fa676b03bb9c2d14175ecc3765935b305ff26",
+    "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "7bccdbf534fc485ce43861e4843b4330811686ac3aa7a0bfdc4e2f4e39c431b3",
+    "bin/FvwmPrompt/cmd/fvwmdesktop/main_test.go": "b4d9b021b1579ae1c08a10dc3ae9b5bc6f27574911814c9f0a48164e7eda74aa",
+    "tests/live_x/browser_handoff_live.py": "f7d11701f8b1a603e882fe97d05c6d8ed2378285c09fbfdd38b577749515a938"
+  },
+  "captures": [
+    {
+      "profile": "slate-dark",
+      "file": "files-browser-slate-dark-menu.png",
+      "source_member": "ui02/themes/browser-handoff-9l1yvg1v/slate-dark/files-menu.png",
+      "sha256": "74e2390152efdfad7282d543b025b31dd1aef84887adbb0f04bd394b00ff4784",
+      "caption": "Slate dark Files menu with the explicit browser action",
+      "font": "Sans 10",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 547,
+        "y": 499,
+        "width": 346,
+        "height": 202,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "evidence_sha256": "77bac66237b28e9f0b4a21fc8efed7966dffe43fc5f34fd3dbffc898a0bda748",
+      "configuration_sha256": {
+        "config": "96dc0259a227864980626fbdde47064fd0bef698183649f01f7bb83ebd87017b",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bin/FvwmPrompt/FvwmDesktop": "07050f193853feb79e99decc0147b1bb9091d86968bb7b6bf727fcc6581aaec1",
+        "bin/FvwmPrompt/fvwm-desktop-worker": "afb9030a499697aebdc4b923e96d47782d3a0aa24bfd142de6bc681296e6dcfb",
+        "bin/FvwmPrompt/fvwm-file-browser": "46dc5bf59a44bc7b423e71771177ed45ed972c176833a0d24aafac87428cb1f0",
+        "modules/FvwmForm/FvwmForm": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "modules/FvwmMFL/FvwmMFL": "de385e9ce18aa2868ff25bc2e6f5d7c5a2c893d95c9fc86ee6b1f9603fc2fc2d",
+        "bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+      }
+    },
+    {
+      "profile": "dune-light",
+      "file": "files-browser-dune-light-reused.png",
+      "source_member": "ui02/themes/browser-handoff-9l1yvg1v/dune-light/browser-reused.png",
+      "sha256": "71ed86df67b0946eed7fef95c254e0d8bf5d52718c434e0c1025fb1e4e2eea46",
+      "caption": "Dune light file browser, captured after the same-folder reuse workflow",
+      "font": "Sans 10",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 548,
+        "y": 499,
+        "width": 344,
+        "height": 202,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "evidence_sha256": "5af1acdf04cd7a1098734ed6c426283373816e0f7b27f80b9002564d6e42b180",
+      "configuration_sha256": {
+        "config": "4a99e315e5b1ab7256d3c973a86c267c7de03d928dfcf64a08eaf0429a45f17e",
+        "local.config": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb",
+        "default.config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bin/FvwmPrompt/FvwmDesktop": "07050f193853feb79e99decc0147b1bb9091d86968bb7b6bf727fcc6581aaec1",
+        "bin/FvwmPrompt/fvwm-desktop-worker": "afb9030a499697aebdc4b923e96d47782d3a0aa24bfd142de6bc681296e6dcfb",
+        "bin/FvwmPrompt/fvwm-file-browser": "46dc5bf59a44bc7b423e71771177ed45ed972c176833a0d24aafac87428cb1f0",
+        "modules/FvwmForm/FvwmForm": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "modules/FvwmMFL/FvwmMFL": "de385e9ce18aa2868ff25bc2e6f5d7c5a2c893d95c9fc86ee6b1f9603fc2fc2d",
+        "bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+      }
+    },
+    {
+      "profile": "classic-large",
+      "file": "files-browser-classic-large-menu.png",
+      "source_member": "ui02/themes/browser-handoff-9l1yvg1v/classic-large/files-menu.png",
+      "sha256": "116e1b5f8f26f99700944de916cc3b7d48d01b8067f2cb8d2dd6ff0bf766ba58",
+      "caption": "Enlarged Classic Files menu with shortened display labels",
+      "font": "DejaVu Sans Mono 18",
+      "menu_geometry": {
+        "window": 2097278,
+        "x": 359,
+        "y": 460,
+        "width": 722,
+        "height": 280,
+        "screen": [
+          1440,
+          1200
+        ]
+      },
+      "evidence_sha256": "894e368f9379920f26bddaae1eefb6675be3a88a6b67360bc5f585b85c5c1307",
+      "configuration_sha256": {
+        "config": "07fda6011c6381091edfdc22ef19a8229760d5dedca33beafcce75adb1d8f811",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop.fvwm": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_sha256": {
+        "fvwm3": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b",
+        "bin/FvwmPrompt/FvwmDesktop": "07050f193853feb79e99decc0147b1bb9091d86968bb7b6bf727fcc6581aaec1",
+        "bin/FvwmPrompt/fvwm-desktop-worker": "afb9030a499697aebdc4b923e96d47782d3a0aa24bfd142de6bc681296e6dcfb",
+        "bin/FvwmPrompt/fvwm-file-browser": "46dc5bf59a44bc7b423e71771177ed45ed972c176833a0d24aafac87428cb1f0",
+        "modules/FvwmForm/FvwmForm": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "modules/FvwmMFL/FvwmMFL": "de385e9ce18aa2868ff25bc2e6f5d7c5a2c893d95c9fc86ee6b1f9603fc2fc2d",
+        "bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+      }
+    }
+  ],
+  "limits": [
+    "development UI; broader support/release/assistive and arbitrary font/screen qualification remain separate",
+    "panel counters are whole-guest values, not a WM performance comparison",
+    "literal punctuation in the path is synthetic data, never executed"
+  ],
+  "visual_review": {
+    "role": "temper_product",
+    "result": "readable menu action/shortened title in Slate and enlarged Classic; Dune browser shown after receipt-backed reuse",
+    "backend_model_effort": "unattested"
+  }
+}

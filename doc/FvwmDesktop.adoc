@@ -42,6 +42,33 @@ is used if available; otherwise files open in less in the configured terminal.
 Calendar is a native month menu. Display information opens xrandr --query in
 a terminal; this baseline does not yet include a graphical monitor editor.
 
+== OPEN A FOLDER IN THE NATIVE BROWSER
+
+Open *Files*, navigate to a folder, then choose *Open this folder in browser*.
+The desktop passes that displayed folder to fvwm-file-browser(1). An idle
+browser already displaying the same folder is refreshed and presented;
+otherwise a new browser opens. Folder menus remain the default.
+
+The action belongs to the displayed menu. If navigation has replaced that
+menu, reopen Files and choose the action again. Folder names are passed as
+literal arguments; the action does not open or execute entries in the folder.
+The existing MIME defaults are unchanged.
+Long Files-menu titles and entry labels use a shortened middle with an
+ellipsis. Navigation and browser requests retain the full original paths.
+
+The optional browser is found beside a development build or as the installed
+*fvwm-file-browser* command on PATH. *FVWM_FILE_BROWSER* selects an explicit
+executable instead. A missing browser,
+failed launch or unsuccessful client exit produces a notice. A failed handoff
+can have an unknown outcome: inspect the existing browser before trying again.
+The desktop does not retry automatically. Starting a process does not establish
+that its folder request completed; the browser reports loading or failure.
+
+Up to eight browser launches can remain outstanding. A newly opened browser
+has an ordinary application lifetime and can stay open after the desktop helper
+restarts. Closing a browser releases its launch slot when its exit is observed.
+This menu action does not require a session bus or a FileManager1 service.
+
 == CONFIGURATION
 
 Read the installed default-config/config to use the baseline. Normal FVWM
@@ -558,7 +585,9 @@ that a later sound or power action succeeded. The existing shared five-second
 status sampler remains active; bindings add no polling timer or settings service.
 
 The installed helper is next to FvwmDesktop; build-tree consumers use the sibling
-Go output. Developers may set FVWM_DESKTOP_WORKER to an explicit helper path for
+Go output. Developers may set FVWM_FILE_BROWSER to an explicit browser
+executable for the Files-menu action; missing optional peers do not prevent
+desktop startup. Developers may set FVWM_DESKTOP_WORKER to an explicit helper path for
 isolated tests. The one-shot JSON protocol is internal, not a user configuration
 format. Module queues, packets and generated menus remain bounded; child programs
 do not inherit the module protocol descriptors.

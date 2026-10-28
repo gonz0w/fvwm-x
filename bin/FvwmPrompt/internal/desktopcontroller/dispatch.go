@@ -268,6 +268,8 @@ func (d *Controller) handle(command, argument string) error {
 		d.openDirectory(home)
 	case "files-up":
 		d.openDirectory(filepath.Dir(d.directory))
+	case "files-browser":
+		return d.openFilesBrowser(argument)
 	case "files-terminal":
 		d.term(nil, d.directory)
 	case "file":
@@ -325,6 +327,7 @@ func (d *Controller) handle(command, argument string) error {
 	return d.fatal
 }
 func (d *Controller) tick() {
+	d.pollBrowserLaunches()
 	d.pollLocker()
 	d.preview.tick()
 	d.paletteTick()

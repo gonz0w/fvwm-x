@@ -1,0 +1,11 @@
+{
+  "status": "unmodified localized XDG menu captures from the development checkpoint",
+  "base": "d6e49462baa00100ea90a0285429fd6724d304f5",
+  "source_closure_sha256": "30d9122f8ed7081e37386cc5eeaf658299fe565e786dd2ec54d53b008b272a2d",
+  "captures": [
+    {"profile": "slate-dark", "file": "xdg-menu-slate-dark.png", "sha256": "e910f2ccc2af5362821a98926827d6477b85c08bbe760793ccae0074d536da33"},
+    {"profile": "dune-light", "file": "xdg-menu-dune-light.png", "sha256": "102703cb779b595c32bf80136c7e981ca0c07d7beb981750aefb8d70a2581302"},
+    {"profile": "classic-large", "file": "xdg-menu-classic-large.png", "sha256": "c788142cf6564f1b7fc6d1094638d945693423fde83731de3ce56ab0b2c1a639"}
+  ],
+  "limits": "Synthetic fixture names and colored icons; panel counters are whole-guest values, not a performance comparison."
+}

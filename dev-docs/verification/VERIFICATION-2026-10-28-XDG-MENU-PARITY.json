@@ -1,0 +1,312 @@
+{
+  "base": "d6e49462baa00100ea90a0285429fd6724d304f5",
+  "go_source02_closure_sha256": "1b85978f3418c62401e7cb030d52711d956fb3f71aa6965792c68fbfae4145be",
+  "native_source03_closure_sha256": "30d9122f8ed7081e37386cc5eeaf658299fe565e786dd2ec54d53b008b272a2d",
+  "source_inputs": 1860,
+  "go_inputs": 592,
+  "runtime_files": {
+    "bin/FvwmPrompt/internal/xdgmenu/presentation.go": {
+      "sha256": "db345beae09043dd1021f924fe46ed4ad07c5653bf117428f935dfff55bcd508",
+      "bytes": 13323
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/actions.go": {
+      "sha256": "853940462e1402ac5bef909c5084f47e0b0564c9f7a9d5c6483925ebaf928c62",
+      "bytes": 2500
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/actions_test.go": {
+      "sha256": "58077a8065c450066aba314b322050f437dff09e025e8a69bcc9a52d0a3fa979",
+      "bytes": 5505
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/menu_parity_test.go": {
+      "sha256": "8fdaa7fe354aef04c73a6b330e42baa4ce89efaed357cfbf004abc523514b2e9",
+      "bytes": 4520
+    },
+    "bin/FvwmPrompt/internal/desktopworker/files.go": {
+      "sha256": "35d2b89b57f6ef2217d6920572ce7cda811cc70524ae73a3720432b4925a286b",
+      "bytes": 6938
+    },
+    "bin/FvwmPrompt/internal/desktopworker/applications_xdg_test.go": {
+      "sha256": "09cdc15c664d337ecfc0919c2e1d5c71b051f7a2df5d54b8d98c41b12d00520b",
+      "bytes": 10900
+    },
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/main.go": {
+      "sha256": "7d3eb5ff6d32bb00b82403ada047165cf33ef317a147839b7e1b9c8c7e29d27e",
+      "bytes": 17843
+    },
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/menu_parity_test.go": {
+      "sha256": "0e07ca441c2e1c8cf08c7c783658c0c4f2edd7433ad70ff80092ed38dfa9c305",
+      "bytes": 2594
+    }
+  },
+  "fixture_sha256": {
+    "tests/test_xdg_desktop.py": "ea0fd1594069e38528ec93c2d889639d91331cd3326a2bd267ac2e8ac971c03f",
+    "tests/live_x/xdg_actions_live.py": "0016c502987608af55825769486eb4c0a04152d6b52cad6fbcf433aab7ded0eb"
+  },
+  "tests": {
+    "go-normal": {
+      "passed_cases_including_subtests": 688,
+      "passed_packages": 5,
+      "failures": 0,
+      "skips": 0
+    },
+    "go-race": {
+      "passed_cases_including_subtests": 688,
+      "passed_packages": 5,
+      "failures": 0,
+      "skips": 0
+    },
+    "go-floor": {
+      "passed_cases_including_subtests": 501,
+      "passed_packages": 3,
+      "failures": 0,
+      "skips": 0
+    }
+  },
+  "independent_cli_cases": 18,
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "status": "passed",
+      "cases": [
+        "actual_provider_rows",
+        "localized_native_icons",
+        "native_primary",
+        "native_action",
+        "native_current_action",
+        "native_old_exported_action",
+        "literal_no_shell_execution"
+      ],
+      "screenshots": {
+        "xdg-localized-actions.png": "c788142cf6564f1b7fc6d1094638d945693423fde83731de3ce56ab0b2c1a639",
+        "xdg-regenerated-actions.png": "3479133a4e7063d277993fdd5835c1bd4edc4449a61565078d176e2f6499f342",
+        "xdg-retained-export.png": "c788142cf6564f1b7fc6d1094638d945693423fde83731de3ce56ab0b2c1a639"
+      },
+      "configuration_sha256": {
+        "config": "c81b62abc4fe146d63253a5d8813de6ab45736a50dde6653187e265c034a5402",
+        "local": "e541faad8a8908e2fa8c3831e6127ee2cab5c80e0ed373b5f9f24d2a8c909425",
+        "default": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    },
+    {
+      "profile": "dune-light",
+      "status": "passed",
+      "cases": [
+        "actual_provider_rows",
+        "localized_native_icons",
+        "native_primary",
+        "native_action",
+        "native_current_action",
+        "native_old_exported_action",
+        "literal_no_shell_execution"
+      ],
+      "screenshots": {
+        "xdg-localized-actions.png": "102703cb779b595c32bf80136c7e981ca0c07d7beb981750aefb8d70a2581302",
+        "xdg-regenerated-actions.png": "5dd3e07812decaa3552c7674065bea1b500c1e995d2cfbff1186f5e4653f481b",
+        "xdg-retained-export.png": "102703cb779b595c32bf80136c7e981ca0c07d7beb981750aefb8d70a2581302"
+      },
+      "configuration_sha256": {
+        "config": "9f54de73342022d5759f882c7cf99ed40a43bcbab80d6ff119ab30f49547ad50",
+        "local": "432d6e99a8686750e9cd0d6bdcec914afa18257a2bc69ce5a35469aa111a113d",
+        "default": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    },
+    {
+      "profile": "slate-dark",
+      "status": "passed",
+      "cases": [
+        "actual_provider_rows",
+        "localized_native_icons",
+        "native_primary",
+        "native_action",
+        "native_current_action",
+        "native_old_exported_action",
+        "literal_no_shell_execution"
+      ],
+      "screenshots": {
+        "xdg-localized-actions.png": "e910f2ccc2af5362821a98926827d6477b85c08bbe760793ccae0074d536da33",
+        "xdg-regenerated-actions.png": "0e03abbeefe622ad0a0f0d3a4809a7345cc88a60a45077648a60168fc40c759f",
+        "xdg-retained-export.png": "e910f2ccc2af5362821a98926827d6477b85c08bbe760793ccae0074d536da33"
+      },
+      "configuration_sha256": {
+        "config": "634da126622583e3f237da9e8f3b8f05128b45c587ad916c9069ac1250f03621",
+        "local": "e541faad8a8908e2fa8c3831e6127ee2cab5c80e0ed373b5f9f24d2a8c909425",
+        "default": "dfbe4b2912ff720ae8919c345400ab85be5db7f08885bba7fe8df0cc57eb3ef9",
+        "desktop": "45c68dca20aca9b23ca2a4cbd102f037aac274e5fc4d9f4a14b5ec49a42c9868"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    }
+  ],
+  "installed_entries": {
+    "FvwmDesktop": {
+      "sha256": "beefbb9b1d1d2dd46bd60dfda0ee92deb1b0be93e1db942452a3a0a630462a3c",
+      "build_sha256": "beefbb9b1d1d2dd46bd60dfda0ee92deb1b0be93e1db942452a3a0a630462a3c",
+      "bytes": 5742756,
+      "mode": 493
+    },
+    "fvwm-desktop-worker": {
+      "sha256": "2af6206d626dbdfbbea897462d0a64e7a86500db77539daff59fc8924d3804a6",
+      "build_sha256": "2af6206d626dbdfbbea897462d0a64e7a86500db77539daff59fc8924d3804a6",
+      "bytes": 5888734,
+      "mode": 493
+    },
+    "fvwm-menu-desktop": {
+      "sha256": "99d58c59e494302d9417ef9df660c23d386901e5ae52694a51074d92ee7d86ee",
+      "build_sha256": "99d58c59e494302d9417ef9df660c23d386901e5ae52694a51074d92ee7d86ee",
+      "bytes": 5443570,
+      "mode": 493
+    },
+    "fvwm-desktop-capture": {
+      "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+      "build_sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608,
+      "mode": 493
+    }
+  },
+  "canonical_archive": {
+    "status": "passed",
+    "gzip_crc": "passed",
+    "files": 190,
+    "archive_sha256": "b04dcc71d3a4648e7092e28934de1d2b2db269e41a7749270ce3db602dcc9404",
+    "bytes": 895480
+  },
+  "manual": {
+    "platform": "macOS host mandoc; roff generated in Linux, not native BSD qualification",
+    "manuals": {
+      "FvwmDesktop": {
+        "base": {
+          "render": [
+            {
+              "width": "60",
+              "exit": 0,
+              "bytes": 55242
+            },
+            {
+              "width": "80",
+              "exit": 0,
+              "bytes": 54055
+            }
+          ],
+          "lint_exit": 3,
+          "lint_families": {
+            "skipping insecure request": 1,
+            "skipping unknown macro": 1,
+            "input text line longer than 80 bytes": 68,
+            "skipping paragraph macro": 13
+          },
+          "source_sha256": "c006c5ec439a7d9ec6f4030d364dec248653c4c653eb6ddf5b653fc9bcb2fd0e",
+          "roff_sha256": "af091ee4029c3b958b756e6850c92def334e23bdbe5ddfb10818e74c92cadeb9"
+        },
+        "final": {
+          "render": [
+            {
+              "width": "60",
+              "exit": 0,
+              "bytes": 55543
+            },
+            {
+              "width": "80",
+              "exit": 0,
+              "bytes": 54345
+            }
+          ],
+          "lint_exit": 3,
+          "lint_families": {
+            "skipping insecure request": 1,
+            "skipping unknown macro": 1,
+            "input text line longer than 80 bytes": 67,
+            "skipping paragraph macro": 13
+          },
+          "source_sha256": "2b4c922e2497ac841ecd729a8e374e8282fc9cccdfdc1153e1b953db661cee03",
+          "roff_sha256": "c4548de22eaa89c553743e3daaba9dd6a1bfdc3c9b61c228280fd5a66d645fb1"
+        }
+      },
+      "fvwm-menu-desktop": {
+        "base": {
+          "render": [
+            {
+              "width": "60",
+              "exit": 0,
+              "bytes": 23950
+            },
+            {
+              "width": "80",
+              "exit": 0,
+              "bytes": 23464
+            }
+          ],
+          "lint_exit": 3,
+          "lint_families": {
+            "skipping insecure request": 1,
+            "skipping unknown macro": 1,
+            "input text line longer than 80 bytes": 9,
+            "skipping paragraph macro": 10
+          },
+          "source_sha256": "bedbaa0450a820a791663560909e1339f6211a1a2460e1caf6e8182fe858be0a",
+          "roff_sha256": "63659bb7b31707dd555eeba3bcfcfa01f5718868236726c57fd37c560077a499"
+        },
+        "final": {
+          "render": [
+            {
+              "width": "60",
+              "exit": 0,
+              "bytes": 25549
+            },
+            {
+              "width": "80",
+              "exit": 0,
+              "bytes": 25033
+            }
+          ],
+          "lint_exit": 3,
+          "lint_families": {
+            "skipping insecure request": 1,
+            "skipping unknown macro": 1,
+            "input text line longer than 80 bytes": 13,
+            "skipping paragraph macro": 10
+          },
+          "source_sha256": "52a20e6d0f23f1d9f8626164c05a51b26020f45f4b4a5d1a36d0d6172ea9fe69",
+          "roff_sha256": "3dde64f5673a18f4569a2601c4045f5db1736f084486287bd00b85f8293d4e6f"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "guest_duplicates_retired": true,
+    "normal_stop": true,
+    "preserved": [
+      "source",
+      "build",
+      "install stage",
+      "cache",
+      "SDK",
+      "VM disks",
+      "measured performance reference"
+    ]
+  },
+  "scope_limits": [
+    "focused virtualized Linux ARM64; not six-target/default-X/native CPU/hardware/assistive/release acceptance",
+    "no MIME/default-role engine, startup notification or bus adoption",
+    "first Desktop Entry issue criterion pending parity merge, broad56/67remainopen",
+    "selected roles available, backend model/effort unattested"
+  ],
+  "separate_review": {
+    "reviewer": "/root/temper_file_jobs_review",
+    "role": "temper_reviewer",
+    "candidate_tree": "43cd26452eb34518b5bfe20570388428542cc64f",
+    "base": "d6e49462baa00100ea90a0285429fd6724d304f5",
+    "result": "accepted; no remaining actionable findings",
+    "resolved_findings": [
+      "two gallery fragment links corrected",
+      "64KiB per-launch argv distinguished from1MiB aggregate result"
+    ],
+    "scope": "all23 paths, source/consumer contracts, actual Go/CLI/native data, all190 archive payloads/modes/hashes/gzipCRC, public captures, final manuals, periodic observations and cleanup",
+    "limits": "read-only separate agent review; no reviewer execution, human approval or backend model attestation"
+  }
+}

@@ -58,7 +58,9 @@ No menu generation is done.
   _xfce_, _lxde_, _debian_, etc.
 +
 This option can be used in conjunction with *--menu-type* to control
-which .menu file(s) are used.
+which .menu file(s) are used. It does not override desktop visibility:
+that uses the colon-separated `XDG_CURRENT_DESKTOP` environment value,
+or `FVWM` when it is empty.
 
 *--menu-type* _NAME_::
   Optional parameter to set the _NAME_ of the XDG menu type to use. This
@@ -142,6 +144,9 @@ directory, so a changed image in a new acquisition does not reuse an old core
 cache entry. Earlier generations keep their immutable copies. The resolver and
 request cache live for one bounded acquisition; regeneration reads fresh theme
 metadata and assets. Automatic retirement of older disk copies is not provided.
+Optional localized application, action and .directory icons use this same
+resolver. A localized icon requires a base Icon value; an action icon falls
+back to its parent application's icon.
 
 *--enable-mini-icons*::
   This option enables mini-icons in the menus. If set, 24x24 mini-icons
@@ -284,6 +289,23 @@ available across regeneration. A catalog holds at most 100000 distinct actions
 and 128 MiB; a full catalog refuses regeneration and leaves existing actions
 available. Keep these files with exported menus. Removing a catalog requires
 regeneration of menus that refer to it.
+
+Declared Desktop Actions appear after their parent as localized
+*Application — Action* rows, at the parent's Filename or Merge placement.
+They follow the parent's menu allocation and layout rules. Only the first eight
+declared action IDs are considered; invalid, duplicate or missing IDs occupy
+positions in that limit, and unlisted groups do not produce actions. An invalid
+action does not remove a valid primary launcher. Actions use the parent working
+directory and terminal setting, and the parent name and desktop file for `%c`
+and `%k`; an action's optional icon overrides the parent icon for `%i`.
+
+The standalone provider refuses publication when a primary launcher is invalid
+or presentation, rendering or catalog limits overflow. A failed publication
+leaves existing exported action records available. The desktop controller's
+Applications menu instead skips invalid or unavailable primary launchers and
+uses its own smaller limits; see *FvwmDesktop*(1). The standalone provider
+checks `TryExec` for visibility, but resolves primary and action executables at
+launch time.
 
 The Go provider limits each XML, desktop, directory-metadata and icon-index source to
 8 MiB, total acquisition to 128 MiB, nesting to 128 levels and bounded policy

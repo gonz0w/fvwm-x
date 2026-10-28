@@ -82,15 +82,6 @@ func launcherExec(value, name, location, icon string) ([]string, error) {
 	return argv, nil
 }
 
-// Icon is optional, but any present base/localized value uses the same
-// decoder and locale order as Name. A localized-only optional icon has no base.
-func localizedApplicationIcon(entry *xdgmenu.Desktop, group string, locales []string) (string, error) {
-	if _, present := entry.Groups[group]["Icon"]; !present {
-		return "", nil
-	}
-	return entry.Localized(group, "Icon", locales)
-}
-
 type Application struct {
 	Name     string   `json:"name"`
 	Argv     []string `json:"argv"`
@@ -128,11 +119,7 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 	if len(directories) > 64 {
 		return nil, errors.New("too many application roots")
 	}
-	current := os.Getenv("XDG_CURRENT_DESKTOP")
-	if current == "" {
-		current = "FVWM"
-	}
-	desktops := strings.Split(current, ":")
+	desktops := xdgmenu.CurrentDesktops(os.Getenv("XDG_CURRENT_DESKTOP"))
 	locales := xdgmenu.LocalePreferences(map[string]string{
 		"LC_ALL": os.Getenv("LC_ALL"), "LC_MESSAGES": os.Getenv("LC_MESSAGES"),
 		"LANG": os.Getenv("LANG"), "LANGUAGE": os.Getenv("LANGUAGE"),
@@ -225,7 +212,7 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 			if err != nil || name == "" {
 				continue
 			}
-			icon, err := localizedApplicationIcon(entry, "Desktop Entry", locales)
+			icon, err := xdgmenu.LocalizedIcon(entry, "Desktop Entry", locales)
 			if err != nil {
 				continue
 			}
@@ -255,42 +242,16 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 			if err := appendApplication(Application{name, argv, cwd, terminal}); err != nil {
 				return nil, err
 			}
-			// Declared action groups extend this valid launcher, never replace
-			// it. Only the first eight declared IDs are considered; malformed,
-			// duplicate or missing groups consume no output record.
-			actions, err := entry.List("Desktop Entry", "Actions")
-			if err == nil {
-				actionIDs := make(map[string]bool)
-				for _, action := range actions[:min(8, len(actions))] {
-					if len(result) == 512 {
-						break
-					}
-					if action == "" || actionIDs[action] {
-						continue
-					}
-					actionIDs[action] = true
-					group := "Desktop Action " + action
-					actionName, err := entry.Localized(group, "Name", locales)
-					if err != nil || actionName == "" || len(name)+len(" — ")+len(actionName) > CommandLimit {
-						continue
-					}
-					actionIcon, err := localizedApplicationIcon(entry, group, locales)
-					if err != nil {
-						continue
-					}
-					if actionIcon == "" {
-						actionIcon = icon
-					}
-					// Field codes describe the base application, while the
-					// localized action name is presentation only. Parent cwd
-					// and Terminal apply to every accepted action.
-					argv, err := launcherExec(entry.Groups[group]["Exec"], name, path, actionIcon)
-					if err != nil || !available(env, argv[0]) {
-						continue
-					}
-					if err := appendApplication(Application{name + " — " + actionName, argv, cwd, terminal}); err != nil {
-						return nil, err
-					}
+			for _, action := range xdgmenu.DeclaredActions(entry, locales, name, icon) {
+				if len(result) == 512 {
+					break
+				}
+				argv, err := launcherExec(action.Exec, name, path, action.Icon)
+				if err != nil || !available(env, argv[0]) {
+					continue
+				}
+				if err := appendApplication(Application{action.Label, argv, cwd, terminal}); err != nil {
+					return nil, err
 				}
 			}
 			if len(result) == 512 {

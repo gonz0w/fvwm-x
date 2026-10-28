@@ -117,7 +117,7 @@ func (s *presentationState) metadata(compiled *CompiledMenu) (label, icon string
 			if err != nil {
 				return
 			}
-			icon, err = d.String("Desktop Entry", "Icon")
+			icon, err = LocalizedIcon(d, "Desktop Entry", s.options.Locales)
 			if err != nil {
 				return
 			}
@@ -174,6 +174,22 @@ func parseLayoutOptions(attr map[string]string, base layoutOptions) (layoutOptio
 	return base, nil
 }
 
+func (s *presentationState) chargeApplication(item PresentedItem, action bool) error {
+	count := len(item.Argv)
+	if action {
+		count++
+	}
+	if err := s.charge(count, len(item.Label)+len(item.Icon)+len(item.WorkingDir)); err != nil {
+		return err
+	}
+	for _, arg := range item.Argv {
+		if err := s.charge(0, len(arg)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMenu, depth int) (*PresentedMenu, error) {
 	if compiled == nil || allocated == nil || compiled.Plan == nil || compiled.Definition == nil || depth >= MaxDepth || compiled.Plan.Name != allocated.Name || len(compiled.Children) != len(allocated.Children) {
 		return nil, errors.New("mismatched or deep presentation tree")
@@ -193,7 +209,7 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 	}
 	result := &PresentedMenu{Name: allocated.Name, Label: label, Icon: icon}
 	menus := make(map[string]PresentedItem)
-	files := make(map[string]PresentedItem)
+	files := make(map[string][]PresentedItem)
 	for i, child := range compiled.Children {
 		menu, err := s.menu(child, allocated.Children[i], depth+1)
 		if err != nil {
@@ -220,7 +236,7 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 		if err != nil {
 			return nil, err
 		}
-		icon, err := d.String("Desktop Entry", "Icon")
+		icon, err := LocalizedIcon(d, "Desktop Entry", s.options.Locales)
 		if err != nil {
 			return nil, err
 		}
@@ -239,15 +255,26 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 		if directory != "" && (!pathValue(directory) || !filepath.IsAbs(directory)) {
 			return nil, errors.New("desktop working directory must be absolute")
 		}
-		if err = s.charge(len(argv), len(label)+len(icon)+len(directory)); err != nil {
+		primary := PresentedItem{Kind: ApplicationItem, Label: label, Icon: icon, Entry: entry, Argv: argv, Terminal: terminal, WorkingDir: directory}
+		if err = s.chargeApplication(primary, false); err != nil {
 			return nil, err
 		}
-		for _, arg := range argv {
-			if err = s.charge(0, len(arg)); err != nil {
+		items := []PresentedItem{primary}
+		for _, action := range DeclaredActions(d, s.options.Locales, label, icon) {
+			argv, err := ExpandExec(action.Exec, ExecContext{Name: label, Icon: action.Icon, Location: entry.Path})
+			if err != nil {
+				continue
+			}
+			item := PresentedItem{Kind: ApplicationItem, Label: action.Label, Icon: action.Icon, Entry: entry,
+				Argv: argv, Terminal: terminal, WorkingDir: directory}
+			if err = s.chargeApplication(item, true); err != nil {
 				return nil, err
 			}
+			items = append(items, item)
 		}
-		files[entry.ID] = PresentedItem{Kind: ApplicationItem, Label: label, Icon: icon, Entry: entry, Argv: argv, Terminal: terminal, WorkingDir: directory}
+		// Layout reserves and places the original desktop ID once. Action rows
+		// stay with their primary, in declared order, without synthetic IDs.
+		files[entry.ID] = items
 	}
 	base := layoutOptions{limit: 4, header: true}
 	if compiled.DefaultLayout != nil {
@@ -324,9 +351,11 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 		name := strings.Trim(node.Text, " \t\r\n")
 		switch node.Tag {
 		case "Filename":
-			if item, ok := files[name]; ok && !usedFiles[name] {
-				if err = appendItem(item, base); err != nil {
-					return nil, err
+			if items, ok := files[name]; ok && !usedFiles[name] {
+				for _, item := range items {
+					if err = appendItem(item, base); err != nil {
+						return nil, err
+					}
 				}
 				usedFiles[name] = true
 			}
@@ -365,9 +394,9 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 				}
 			}
 			if kind != "menus" {
-				for id, item := range files {
+				for id, items := range files {
 					if !reservedFiles[id] && !usedFiles[id] {
-						candidates = append(candidates, candidate{id, item})
+						candidates = append(candidates, candidate{id, items[0]})
 					}
 				}
 			}
@@ -385,12 +414,17 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 				return a.id < b.id
 			})
 			for _, candidate := range candidates {
-				if err = appendItem(candidate.item, base); err != nil {
-					return nil, err
-				}
 				if candidate.item.Kind == SubmenuItem {
+					if err = appendItem(candidate.item, base); err != nil {
+						return nil, err
+					}
 					usedMenus[candidate.id] = true
 				} else {
+					for _, item := range files[candidate.id] {
+						if err = appendItem(item, base); err != nil {
+							return nil, err
+						}
+					}
 					usedFiles[candidate.id] = true
 				}
 			}

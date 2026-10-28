@@ -292,7 +292,7 @@ func buildDocuments(ctx context.Context, source *xdgsource.Source, files []xdgme
 				return nil, nil, err
 			}
 		}
-		menu, err := xdgmenu.PresentMenus(compiled, allocated, xdgmenu.PresentationOptions{Locales: xdgmenu.LocalePreferences(env), Desktops: []string{"FVWM"}, Directories: source.Directories, Executable: func(name string) bool { _, err := exec.LookPath(name); return err == nil }})
+		menu, err := xdgmenu.PresentMenus(compiled, allocated, xdgmenu.PresentationOptions{Locales: xdgmenu.LocalePreferences(env), Desktops: xdgmenu.CurrentDesktops(env["XDG_CURRENT_DESKTOP"]), Directories: source.Directories, Executable: func(name string) bool { _, err := exec.LookPath(name); return err == nil }})
 		if err != nil {
 			return nil, nil, err
 		}

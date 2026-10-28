@@ -1,6 +1,6 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-27. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-28. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
@@ -448,6 +448,96 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 pinboard support closeout — 2026-10-28
+
+Status: finite #64 support coverage and separate integrated review passed;
+review PR being prepared.
+Three related runtime corrections cover native retirement acknowledgements,
+instance-scoped configuration replay and terminal missing-reply recovery.
+Composed Linux/FreeBSD/OpenBSD AMD64/ARM64 evidence, fresh Slate/Dune/enlarged
+Classic captures and explicit failures/limits are in the
+[acceptance supplement](verification/VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md).
+The final affected OpenBSD AMD64 installed owner and authenticated default-X
+native checks pass with fixture18, retaining the original deadlines. Earlier
+valid results stay source-bound; this is not a fresh final-binary six-target
+matrix. #64 closes only after the reviewed candidate merges. Broad R1 release,
+physical, assistive and native-CPU acceptance remain with their existing owners.
+
+The dated progress below preserves discoveries and earlier pending states;
+this status is current.
+
+Owner: Cam; `codex/r1-pinboard-acceptance`; base merged PR290
+`b71f1b0726801ae64a49699d03540ad36d16dff0`. The user explicitly requests
+completion of #64's remaining coverage and another coherent related feature PR.
+PR290's exact reviewed tree, canonical signature and actual-author DCO are
+verified; branch retired. #68 closes on that merge. Performance is 2/5 after
+PR290; no comparison is due. Keep #257/#258 parked.
+
+Accepted outcome: finish the missing finite pinboard support profiles using
+owned cached Linux/FreeBSD/OpenBSD AMD64/ARM64 guests and approved toolchains.
+Reuse exact valid Linux ARM64 normal/race/floor/sanitizer/three-theme and FreeBSD
+ARM64 native checks; do not repeat the full matrix per correction. Add affected
+policy/build and native owner/installed entry checks on missing targets, with
+one source-frozen combined checkpoint. Run all BSD checks against their actual
+OS/X11 stack, retaining unavailable/failed results. No new dependency, profile,
+physical/native-CPU or whole-release claim follows from a focused pass.
+
+Resolve the Dune/Classic bounded-stop observation by source/log analysis and a
+bounded reproduction before any fix. Preserve real Wait/lease/persistence
+semantics; no longer retry or weakened teardown oracle merely to hide a failure.
+Qualify actual graceful and forced owner loss separately. Preserve root input,
+wallpaper/stacking/selection, scale/monitor recovery and data-only unpin. Capture
+new UI only from affected real-X runs, retaining exact source/config identities.
+Lead owns operational execution, integration and tracker writes; bounded source/
+fixture work can use Temper implementers, with separate final reviewer acceptance.
+Both previous guests are stopped; verify disk/port ownership before reusing them.
+Broader physical/assistive/native-CPU release acceptance retains its own owners.
+
+Progress: source-reviewed native retirement and alias-scoped configuration
+refresh fixes have red/green regressions. Linux AMD64 passes the original large
+mixed-scale owner/recovery profile and a fresh scoped installed-entry profile;
+FreeBSD AMD64 passes its combined build/policy/Go/installed/default-X checkpoint.
+Earlier Linux ARM64 and FreeBSD ARM64 passes remain reusable for unchanged paths.
+Controlled SHAPE-query refusal supplements the unavailable actual-absence server.
+
+OpenBSD ARM64 passes the affected build/policy/Go/refusal/configuration gates and,
+after current desktop-peer rebuild plus explicit fixture-worker qualification,
+the installed owner profile. Preserve its earlier empty-output-directory and
+peer-notice setup failures. The private default-X driver omitted the existing
+Xenocara `_x11` authority-file setup; its unauthenticated-client preflight failed,
+so repeat only that profile with the already approved helper contract.
+
+The final Linux ARM64 profile exposed a finite stacked native-loss delay during
+an outstanding Cells page: a five-second query consumes the heartbeat tick,
+then waits for the next heartbeat and its Status timeout. Keep the existing
+12-second acceptance bound. Accepted bounded correction: a native acknowledgement
+timeout marks native loss unless the owner context is cancelled, consistent with
+Status; received generation/parse errors stay distinct. Require old-code unit
+failure, corrected unit/race coverage and actual in-flight Cells child-loss proof;
+preserve unacknowledged image retention. Do not widen query/teardown deadlines.
+Remaining profiles and integrated review are pending; #64 is not yet closed.
+
+Accepted affected test-infrastructure correction: OpenBSD AMD64's wrapper
+imports the complete UI fixture before spawning its native child. Measured
+warm import is3.55s (3.96s including interpreter startup); the failed initial
+probe has no enrollment receipt within its five-second window. Missing
+instrumentation progress alone does not prove whether C launched. Extract the
+existing bounded relay into a standalone stdlib-only test helper, preserve its
+byte/queue/EOF/signal/Wait behavior and re-export existing fixture imports.
+Route only this pinboard checkpoint's Form/Pinboard/MFL/NoShape wrappers through
+the lightweight entry. No production change, new dependency, timeout extension,
+other-fixture rerouting or broad tooling migration. Require source-equivalence,
+legacy import compatibility and actual affected native/UI/default-X execution.
+
+Accepted fixture startup correction after the actual lightweight-relay run:
+the theme query precedes the desktop controller's positive provider-ready
+notice. The controller sets ready after initial configuration before publishing
+`MFL_PROVIDER_1`; MFL socket readiness alone does not establish that condition.
+Observe the exact real MFL relay's bounded incoming provider notice before the
+first theme query, sharing the existing twelve-second theme deadline and keeping
+individual exchanges at most five seconds. Do not retry a lost query, synthesize
+readiness, change runtime startup, or widen acceptance bounds.
+
 ## R1 file-job acceptance and desktop pinboard — 2026-10-27
 
 Owner: Cam; `codex/r1-desktop-pinboard`; base merged PR289
@@ -456,8 +546,9 @@ Owner: Cam; `codex/r1-desktop-pinboard`; base merged PR289
 reviewed tree, canonical signature and actual-author DCO are verified; its
 local/remote branch is retired and Project Done. Performance is 1/5 since PR288.
 
-Status: implementation and the combined focused checkpoint pass; separate
-integrated review is accepted and the signed PR is ready for publication. #68's two remaining frozen rows pass, with
+Status: merged in [PR290](https://github.com/gonz0w/fvwm-x/pull/290) at
+`b71f1b0726801ae64a49699d03540ad36d16dff0`; exact reviewed tree, signature
+and author DCO verified. Branch retired. #68's two remaining frozen rows pass, with
 separate source/archive/result/capture review: Linux ARM64 actual filesystems and
 unprivileged permission, plus real running/cancelled copy captures in Slate,
 Dune and enlarged Classic. No file-job runtime changes were needed; the earlier
@@ -2773,6 +2864,13 @@ is 3/5 after PR229; no benchmark or tuning is due.
 
 ## Current checkpoint status
 
+Current owner selection, 2026-10-28: PR290 is merged and #68 is closed.
+The #64 pinboard support closeout passes its finite composed profiles; the next
+review candidate contains three recovery/configuration corrections and three
+fresh theme captures. See the [current closeout](#r1-pinboard-support-closeout--2026-10-28).
+The earlier maintenance-first scheduling below is historical; the R1 execution
+order remains authoritative.
+
 Current release scheduling is the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
 and Execution order above. The table below preserves accepted source/evidence
 components; it does not restore the superseded maintenance-first queue.
@@ -3574,7 +3672,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
 | FILE-ACTION-01 | P2 / Review; all five criteria qualified, closes on merge | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
 | FILE-JOBS-01 | P2 / In progress; full job/UI slice prepared for review, exact remaining coverage open | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
-| DESKTOP-ICONS-01 | P2 / queued, scope approved | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
+| DESKTOP-ICONS-01 | P2 / Review; finite support closeout passes, close #64 on reviewed PR merge | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
 | FILE-INTEGRATION-01 | P2 / queued, scope approved | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
 | FILE-ADVANCED-01 | P2 / deferred candidates | Thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo require individually bounded adoption decisions and prerequisite gates. Reuse qualified collection/jobs/image/process contracts and optional providers; no autorun, mandatory desktop stack or aggregate rewrite. Not a prerequisite for the initial primitive/config handoff or earlier file-manager checkpoints. See file-manager scope. |
 | CONTENT-01 | P2 / queued, primitives-first scope approved | Reusable bounded content items with stable IDs/generations, original bytes and multiple text/image/URI representations separate from labels/previews. Explicit leases, sensitivity/lifetime propagation and stale-reference refusal; deduplication/pinning preserve budgets and policy. Stage 6 with SELECTION-01 and shared collection/action contracts; no filesystem-path impersonation or arbitrary database framework. See [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |

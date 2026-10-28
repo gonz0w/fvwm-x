@@ -142,6 +142,10 @@ replayed. Deadlines cannot guarantee immediate completion of an uninterruptible
 kernel call. Native desktop ownership has a short renewable lease so owner
 loss does not leave an abandoned input surface.
 
+A missing native acknowledgement ends the owner without changing saved
+references. Start the pinboard again to recover. Private image generations
+remain when native retirement cannot be acknowledged.
+
 This is in-progress R1 functionality. Qualification and remaining platform or
 topology coverage are recorded in the repository tracker and verification
 reports; a focused test pass does not establish complete release qualification.

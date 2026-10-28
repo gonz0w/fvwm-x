@@ -49,23 +49,25 @@ falls back into the root drawable without rewriting preferences.
 
 Slate dark at 1.25x: the manager exposes full references and a missing target.
 
-![Slate pinboard manager with missing, literal-byte and root references](screenshots/pinboard-slate-dark-02-manager-missing-literal-root.png)
+![Slate pinboard manager with missing, literal-byte and root references](screenshots/pinboard-acceptance-slate-dark.png)
 
-Dune light at 1x, using installed entries: a relabeled reference has a named icon
-and a new grid position.
+Dune light at 1x, using installed entries: the file browser remains usable
+alongside the pinboard after saved-state recovery.
 
-![Dune pinboard with relabeled icon and saved grid move](screenshots/pinboard-dune-light-03-relabeled-icon-move.png)
+![Dune file browser with the recovered pinboard behind it](screenshots/pinboard-acceptance-dune-light.png)
 
 Enlarged Classic at 2x: explicit legacy colors and a scalable 18-point mono font.
 
-![Classic enlarged pinboard manager](screenshots/pinboard-classic-large-02-manager-missing-literal-root.png)
+![Classic enlarged pinboard manager](screenshots/pinboard-acceptance-classic-large.png)
 
 These are development captures. Cell labels can clip; the manager retains full
 reference details. The whole-guest panel counters are not a window-manager
-resource benchmark. [All twelve capture identities](screenshots/pinboard-manifest.json)
-include initial references, manager, relabel/move and recovery with a concurrent
-browser in each theme. [Verification and remaining platform coverage](../dev-docs/verification/VERIFICATION-2026-10-27-PINBOARD.md)
-keep focused passes separate from release qualification.
+resource benchmark. The small black probe window is an integration-test client.
+[Current capture identities](screenshots/pinboard-acceptance-manifest.json) bind
+these three images to passing theme and recovery checks. The
+[acceptance supplement](../dev-docs/verification/VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md)
+keeps focused support results separate from release qualification. The
+[earlier twelve-capture set](screenshots/pinboard-manifest.json) remains available.
 
 See the [pinboard manual](fvwm-pinboard.adoc) for startup, Font/Colorset controls,
 state limits, ownership refusal and recovery. This opt-in data-only mode does

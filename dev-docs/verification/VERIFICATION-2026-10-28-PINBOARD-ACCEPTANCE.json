@@ -1,0 +1,575 @@
+{
+  "status": "finite #64 support profiles and separate source/evidence review passed; close on reviewed PR merge",
+  "base": "b71f1b0726801ae64a49699d03540ad36d16dff0",
+  "source_files": {
+    "modules/FvwmPinboard/pinboard.c": {
+      "sha256": "ac19c01a8ffd3cd1362539899e3d7a6fa61344d86b31d128cc3c6f9edd3a6c29",
+      "bytes": 40497
+    },
+    "tests/live_x/live_x_harness.py": {
+      "sha256": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+      "bytes": 145376
+    },
+    "tests/live_x/pinboard_live.py": {
+      "sha256": "ad8efe08a8e82711ac4dd39d1b3a9bf356e3a2314f26023ddd73de45230cae4d",
+      "bytes": 144269
+    },
+    "tests/meson.build": {
+      "sha256": "532e9d37687f99f51c0b5b85f2b0da265dcb4000ca0664d016c1043c0df2b6a4",
+      "bytes": 179724
+    },
+    "tests/pinboard_shape_unavailable.c": {
+      "sha256": "4a4c0c8632be7893e9b3dd9d738d3489d6cdee59dfd21997300c196dedc273a6",
+      "bytes": 782
+    },
+    "tests/live_x/native_bindings_live.py": {
+      "sha256": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+      "bytes": 35895
+    },
+    "bin/FvwmPrompt/cmd/fvwmpinboard/native.go": {
+      "sha256": "2b1f9e624de0fb05dd03c4487d19f6c64f78c71e124d422f33b48415e9433973",
+      "bytes": 9052
+    },
+    "bin/FvwmPrompt/cmd/fvwmpinboard/owner_test.go": {
+      "sha256": "9e651548481b58b140cc236786cad00e84b8340b5eeb18e5da5cab6723cf0fe1",
+      "bytes": 18814
+    },
+    "tests/live_x/native_module_proxy.py": {
+      "sha256": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+      "bytes": 7420
+    }
+  },
+  "source11_archive": {
+    "base": "b71f1b0726801ae64a49699d03540ad36d16dff0",
+    "source_closure_sha256": "a99a0e47023ae8a05cce5a134ec6098563193477f1d2bfcfcabebfa58efd6c8f",
+    "archive_sha256": "eff85ec952723ee99170b686afe277ebe398ae4d263e22a38491b37885923acb",
+    "archive_bytes": 6069496
+  },
+  "profiles": {
+    "linux-arm64": {
+      "status": "passed",
+      "runtime": "Cac19 / Go2b1f / fixture09",
+      "archives": [
+        "linux-arm64-final10-canonical",
+        "linux-arm64-final10-metadata-verified",
+        "linux-arm64-timeout-green-canonical"
+      ],
+      "reused": [
+        "source02 affected policies/SHAPE; unchanged Go model/race/floor and prior lease checks"
+      ]
+    },
+    "linux-amd64": {
+      "status": "passed named earlier profile; later portable timeout branch qualified separately",
+      "runtime": "Cac19 / Go073ec4 / fixture08",
+      "os": "Debian13.7 / Linux6.12.113 x86_64",
+      "archives": [
+        "linux-amd64-large08-canonical",
+        "linux-amd64-installed08-canonical"
+      ]
+    },
+    "freebsd-arm64": {
+      "status": "passed",
+      "runtime": "Cac19 / Go2b1f / fixture11",
+      "os": "FreeBSD15.1-RELEASE-p4 arm64",
+      "archives": [
+        "freebsd-arm64-final10-canonical",
+        "freebsd-arm64-final11-canonical"
+      ],
+      "reuse_note": "first archive UIfailed metadata readiness; build/unit/config/install pass; second archive affectedUI/default pass; source02 unchanged policies/SHAPE reused"
+    },
+    "freebsd-amd64": {
+      "status": "passed named earlier profile; later portable timeout branch qualified separately",
+      "runtime": "Cac19 / Go073ec4 / fixture05",
+      "os": "FreeBSD15.1-RELEASE-p4 amd64",
+      "archives": [
+        "freebsd-amd64-canonical"
+      ]
+    },
+    "openbsd-arm64": {
+      "status": "passed composed named profiles; later portable timeout branch qualified separately",
+      "runtime": "Cac19 / Go073ec4 / fixture06 build and fixture09 owner/default",
+      "os": "OpenBSD8.0 GENERIC.MP#1 arm64",
+      "raw_receipts": [
+        "openbsd-arm64-final09-review.json",
+        "openbsd-arm64-default09-review.json"
+      ]
+    },
+    "openbsd-amd64": {
+      "status": "passed composed build/policy/Go/SHAPE/config11, scoped install15 and affected installed-owner/default18",
+      "runtime": "Cac19 / Go2b1f / fixture11 build, fixture15 install, fixture18 remainder",
+      "os": "OpenBSD8.0 GENERIC.MP#2 amd64, syspatch through005_dbupdate",
+      "raw_receipts": [
+        "openbsd-amd64-final11-review.json",
+        "openbsd-amd64-remainder12-review.json",
+        "openbsd-amd64-remainder15-review.json"
+      ],
+      "commands": [
+        {
+          "label": "installed-owner",
+          "exit": 0,
+          "seconds": 133.82371823599988
+        },
+        {
+          "label": "default-native",
+          "exit": 0,
+          "seconds": 36.974355267999954
+        }
+      ],
+      "evidence_sha256": {
+        "installed_owner": "0684bd66b801e534e7743417dac7f973304ec2ee917b105a0deffb70bbdc1afb",
+        "default_native": "75da1f91a644ebadc57c760c924554d301ab47cebc607b7a735363c4191978e6"
+      },
+      "unauthenticated_refused": true,
+      "earlier_failed_attempts_retained": [
+        "source11 initial native startup",
+        "source12/13 refusal/configuration and image-publication ordering",
+        "source15 initial enrollment",
+        "source17 theme query before desktop provider readiness"
+      ]
+    }
+  },
+  "archives": {
+    "linux-arm64-canonical": {
+      "status": "passed",
+      "archive_sha256": "574e040fece6f9585fef381bede3d05bb69efa6c2ff5f42985842f544b41086b",
+      "archive_bytes": 3046895,
+      "files": 832,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "source_guard_inputs": 2162,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "freebsd-arm64-canonical": {
+      "status": "passed",
+      "files": 222,
+      "archive_sha256": "e331865ec44c94704b6b9a8d85b9358cd06091c09416bfdeff96d8b954414189",
+      "archive_bytes": 7587840,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "freebsd-amd64-canonical": {
+      "status": "passed",
+      "files": 289,
+      "archive_sha256": "6c5f0e9fc06c9022fdef99018cf00bf77f203d02d6f62f277bb336548de5aab3",
+      "archive_bytes": 8222720,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-large08-canonical": {
+      "status": "passed",
+      "files": 250,
+      "archive_sha256": "71907bf4a652de7bd11f7c5f2e10b027a7d8997dad30f24433533c3cc24fe3be",
+      "archive_bytes": 425342,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-installed08-canonical": {
+      "status": "passed",
+      "files": 210,
+      "archive_sha256": "c7263fcb30e6ea4ff2b88ab7009a539a75b771967e7af0312a3f7b7d6deb70d3",
+      "archive_bytes": 8474170,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-final09-canonical": {
+      "status": "passed",
+      "files": 253,
+      "archive_sha256": "ae9b56af59d9cdec34fe15362ef38d057239c0eefcdab62cde2f9a35651564b4",
+      "archive_bytes": 447073,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-final09-metadata": {
+      "status": "passed",
+      "files": 16,
+      "archive_sha256": "4e9298cad8ced67ee1f82600c73a55fb2c63e9ad1fb1692cf0035aff0e0a65a8",
+      "archive_bytes": 7504376,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-final10-canonical": {
+      "status": "passed",
+      "files": 908,
+      "archive_sha256": "48025d1579d68386c54cf3587c14db17fe03b85cb7ec47c6696b46c5b689b83b",
+      "archive_bytes": 2077577,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-final10-metadata-verified": {
+      "status": "passed",
+      "files": 16,
+      "archive_sha256": "43b273e37e23ad8ac96a9cb93598b34af2fcd76b769a69ae5374618375efb565",
+      "archive_bytes": 7495546,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-timeout-red-canonical": {
+      "status": "passed",
+      "files": 1,
+      "archive_sha256": "d8f21705c016229a8074c6bd2ebd8c77274ba621bc12b9af5f3749a01dda71c7",
+      "archive_bytes": 717,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-timeout-green-canonical": {
+      "status": "passed",
+      "files": 12,
+      "archive_sha256": "061034593ce67746df103074d66557458fe0a101441f235704e745fc21f83192",
+      "archive_bytes": 7978,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-arm64-final-manual-canonical": {
+      "status": "passed",
+      "files": 2,
+      "archive_sha256": "811a45a14dace7940a01d6dffe2a6604c9eac407d3555ecc48a9dbd98235ff45",
+      "archive_bytes": 4182,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "freebsd-arm64-final10-canonical": {
+      "status": "passed",
+      "files": 103,
+      "archive_sha256": "8fef6d8e5e10c434d435778fd65fa8d3fb572d408315baf94b8c0e9c1929a607",
+      "archive_bytes": 7352320,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "freebsd-arm64-final11-canonical": {
+      "status": "passed",
+      "files": 242,
+      "archive_sha256": "81c9a6302c8a5cdb0664efade98c9f036956b09ea9e24376c4f09eb35bbd0e58",
+      "archive_bytes": 399360,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-attempt1": {
+      "status": "passed",
+      "files": 195,
+      "archive_sha256": "2194a38b880b637bd3c050ca02eb9eabff8b5b611ae3ddc4a71a6d440ab7f49c",
+      "archive_bytes": 417759,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-control-canonical": {
+      "status": "passed",
+      "files": 169,
+      "archive_sha256": "cd899a6e752c0a452ec729939a3b108d0f0fe93c3d43fc87124306bfb12cf0c3",
+      "archive_bytes": 412964,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-query03-canonical": {
+      "status": "passed",
+      "files": 167,
+      "archive_sha256": "611304a13547455af4e7cc1133f01a5c6176991ffc5f06c4599de4bd2d1534b0",
+      "archive_bytes": 398057,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-proc-canonical": {
+      "status": "passed",
+      "files": 205,
+      "archive_sha256": "8a99733b6a29e0b64faf3147c46c43b38947e15abdfd22c3b4f815d6d4c9fc51",
+      "archive_bytes": 492087,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-config06-canonical": {
+      "status": "passed",
+      "files": 229,
+      "archive_sha256": "49333e8d43d112b6d53322705e3aa8adb40a822c82bb58bff2bb955a6c740024",
+      "archive_bytes": 389857,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-quiet06-canonical": {
+      "status": "passed",
+      "files": 211,
+      "archive_sha256": "d21432428f6b09ca143b2d1b3735add7d5230f4b759dd6f2414d06fa50adca29",
+      "archive_bytes": 379840,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    },
+    "linux-amd64-compact07-canonical": {
+      "status": "passed",
+      "files": 215,
+      "archive_sha256": "a286a79ec90b2067a19b36a9d4e62cc4018bca802b87dc673c059fde14da29d2",
+      "archive_bytes": 390435,
+      "exact_members_modes_hashes": true,
+      "gzip_crc": true,
+      "scope": "archive integrity only; runtime outcomes bound separately"
+    }
+  },
+  "openbsd_raw": {
+    "openbsd-arm64-final09-review.json": {
+      "archive_sha256": "4b615a24f7ad6161fdfae65691ea066cd08f965ea701e2838409a0bfbbfc038d",
+      "archive_bytes": 173320161,
+      "gzip_crc": true,
+      "selected_regular_files": 437
+    },
+    "openbsd-arm64-default09-review.json": {
+      "archive_sha256": "d4c9a147018b114df6c5bc87e30c715460ce36ea1297e6e0dbb685c6da9eb7d9",
+      "archive_bytes": 158611386,
+      "gzip_crc": true,
+      "selected_regular_files": 44
+    },
+    "openbsd-amd64-final11-review.json": {
+      "archive_sha256": "a561ed31a084058e444b23a52a11edefa62fa9fb871df240ce9eb1654fdb052f",
+      "archive_bytes": 174378339,
+      "gzip_crc": true,
+      "selected_regular_files": 151
+    },
+    "openbsd-amd64-remainder12-review.json": {
+      "archive_sha256": "6b9aeec2db756f138f48856943909ed6c3853d6c3856267db881ada88541bf36",
+      "archive_bytes": 173919257,
+      "gzip_crc": true,
+      "selected_regular_files": 161
+    },
+    "openbsd-amd64-remainder15-review.json": {
+      "archive_sha256": "7d1023da1c6a5a21299a93964f421cb1f5c3f4a6e09778342e63a59bf3867451",
+      "archive_bytes": 174149310,
+      "gzip_crc": true,
+      "selected_regular_files": 281
+    }
+  },
+  "linux_final_cases": [
+    {
+      "profile": "slate-dark",
+      "evidence_member": "pinboard-kqdrmag4/slate-dark/evidence.json",
+      "evidence_sha256": "87250d26d51c89cd839db195d2d91073f33bb0624203391b5d8f06455f049afd",
+      "checks": [
+        "managed desktop, propagated shape, real root menu/grab, startup focus/stack",
+        "preview Button3 identifies its pin, restores shape and hands grab to core menu",
+        "duplicate refusal, keyboard cancel and selection loss",
+        "ordinary client later becoming desktop retires only owned canvas",
+        "opaque and RGBA128 pictures preserve adjacent64-cell pixels",
+        "established native retirement answers delayed Status and exits0",
+        "data-only CLI, literal/base64/root/missing/symlink targets and independent stable IDs",
+        "actual New/Edit/Move/Unpin Forms persist references and preserve every source",
+        "revision conflict, corrupt reload retention and nonblocking real writer-lock refusal",
+        "real RandR mixed scale, reservations, nonzero/negative origins, workspace and hotplug fallback",
+        "owner restart persistence and native-child loss without target mutation"
+      ],
+      "failures": [],
+      "cleanup_failures": [],
+      "owner_graceful_stop": {
+        "returncode": 0,
+        "seconds": 0.0072691790001044865,
+        "total_deadline_seconds": 5,
+        "sigterm_fraction": 0.5
+      },
+      "intentional_child_loss_exit": 1,
+      "child_wait_returncode": 0,
+      "saved_state_preserved": true,
+      "browser_still_alive": true,
+      "module_binary_sha256": "a7635f9e77fd00cfbfd09157f2886308c5b00f7f959923b0b09229ef3a2f7bd2",
+      "owner_binary_sha256": "e89bf36a3eb4db689d4c9c417a70c494f2626c4ff402b8b64877250c2978aabf",
+      "fixture_sha256": "a3a453dc6cc5017cc4254fa8a472662ad0a45a475272658363162c37d06c041d"
+    },
+    {
+      "profile": "slate-dark",
+      "evidence_member": "pinboard-9x9gtup0/slate-dark/evidence.json",
+      "evidence_sha256": "b642e28d93fb10f49a934106d761eb3f413af3ff666a75bdbd9f6ef66626ce8a",
+      "checks": [
+        "managed desktop, propagated shape, real root menu/grab, startup focus/stack",
+        "preview Button3 identifies its pin, restores shape and hands grab to core menu",
+        "duplicate refusal, keyboard cancel and selection loss",
+        "ordinary client later becoming desktop retires only owned canvas",
+        "opaque and RGBA128 pictures preserve adjacent64-cell pixels",
+        "established native retirement answers delayed Status and exits0",
+        "data-only CLI, literal/base64/root/missing/symlink targets and independent stable IDs",
+        "actual New/Edit/Move/Unpin Forms persist references and preserve every source",
+        "revision conflict, corrupt reload retention and nonblocking real writer-lock refusal",
+        "real RandR mixed scale, reservations, nonzero/negative origins, workspace and hotplug fallback",
+        "owner restart persistence and native-child loss without target mutation"
+      ],
+      "failures": [],
+      "cleanup_failures": [],
+      "owner_graceful_stop": {
+        "returncode": 0,
+        "seconds": 0.003724174000126368,
+        "total_deadline_seconds": 5,
+        "sigterm_fraction": 0.5
+      },
+      "intentional_child_loss_exit": 1,
+      "child_wait_returncode": 0,
+      "saved_state_preserved": true,
+      "browser_still_alive": true,
+      "module_binary_sha256": "36d292b39f1ae6a0620a198c3337f37a8d60f11c4796a79b2c3345fd2d6c73e5",
+      "owner_binary_sha256": "e89bf36a3eb4db689d4c9c417a70c494f2626c4ff402b8b64877250c2978aabf",
+      "fixture_sha256": "a3a453dc6cc5017cc4254fa8a472662ad0a45a475272658363162c37d06c041d"
+    },
+    {
+      "profile": "classic-large",
+      "evidence_member": "pinboard-m0nfpvml/classic-large/evidence.json",
+      "evidence_sha256": "a03771b505e0bf36fde1c16482486fb74a9ef2588f72864690154b1f193d314e",
+      "checks": [
+        "managed desktop, propagated shape, real root menu/grab, startup focus/stack",
+        "preview Button3 identifies its pin, restores shape and hands grab to core menu",
+        "duplicate refusal, keyboard cancel and selection loss",
+        "ordinary client later becoming desktop retires only owned canvas",
+        "opaque and RGBA128 pictures preserve adjacent64-cell pixels",
+        "established native retirement answers delayed Status and exits0",
+        "data-only CLI, literal/base64/root/missing/symlink targets and independent stable IDs",
+        "actual New/Edit/Move/Unpin Forms persist references and preserve every source",
+        "revision conflict, corrupt reload retention and nonblocking real writer-lock refusal",
+        "real RandR mixed scale, reservations, nonzero/negative origins, workspace and hotplug fallback",
+        "owner restart persistence and native-child loss without target mutation"
+      ],
+      "failures": [],
+      "cleanup_failures": [],
+      "owner_graceful_stop": {
+        "returncode": 0,
+        "seconds": 0.0072799280001163424,
+        "total_deadline_seconds": 5,
+        "sigterm_fraction": 0.5
+      },
+      "intentional_child_loss_exit": 1,
+      "child_wait_returncode": 0,
+      "saved_state_preserved": true,
+      "browser_still_alive": true,
+      "module_binary_sha256": "a7635f9e77fd00cfbfd09157f2886308c5b00f7f959923b0b09229ef3a2f7bd2",
+      "owner_binary_sha256": "e89bf36a3eb4db689d4c9c417a70c494f2626c4ff402b8b64877250c2978aabf",
+      "fixture_sha256": "a3a453dc6cc5017cc4254fa8a472662ad0a45a475272658363162c37d06c041d"
+    },
+    {
+      "profile": "dune-light",
+      "evidence_member": "pinboard-13w8r2do/dune-light/evidence.json",
+      "evidence_sha256": "813e0e2b23bed53b122aeb13e584239c55c3e1bee897db0a55a964181c173147",
+      "checks": [
+        "managed desktop, propagated shape, real root menu/grab, startup focus/stack",
+        "preview Button3 identifies its pin, restores shape and hands grab to core menu",
+        "duplicate refusal, keyboard cancel and selection loss",
+        "ordinary client later becoming desktop retires only owned canvas",
+        "opaque and RGBA128 pictures preserve adjacent64-cell pixels",
+        "established native retirement answers delayed Status and exits0",
+        "data-only CLI, literal/base64/root/missing/symlink targets and independent stable IDs",
+        "actual New/Edit/Move/Unpin Forms persist references and preserve every source",
+        "revision conflict, corrupt reload retention and nonblocking real writer-lock refusal",
+        "real RandR mixed scale, reservations, nonzero/negative origins, workspace and hotplug fallback",
+        "owner restart persistence and native-child loss without target mutation"
+      ],
+      "failures": [],
+      "cleanup_failures": [],
+      "owner_graceful_stop": {
+        "returncode": 0,
+        "seconds": 0.007418637999762723,
+        "total_deadline_seconds": 5,
+        "sigterm_fraction": 0.5
+      },
+      "intentional_child_loss_exit": 1,
+      "child_wait_returncode": 0,
+      "saved_state_preserved": true,
+      "browser_still_alive": true,
+      "module_binary_sha256": "e3a3fb7f73e549b8a03d89774e89522362be3a66a2d1f8b7fce1ee887c47979c",
+      "owner_binary_sha256": "e89bf36a3eb4db689d4c9c417a70c494f2626c4ff402b8b64877250c2978aabf",
+      "fixture_sha256": "a3a453dc6cc5017cc4254fa8a472662ad0a45a475272658363162c37d06c041d"
+    }
+  ],
+  "go_recovery": {
+    "unit": {
+      "sha256": "a8f0fd47d0f4ce5707a94c6577b988e7ed24de96fd4466b35e13326db362d09a",
+      "passed_named_tests": 26,
+      "failed_events": 0
+    },
+    "race": {
+      "sha256": "b86f6627d4ab75a256aa79c18b1d9ab7a3cff76dc4c28543be243bcced6ac4c1",
+      "passed_named_tests": 26,
+      "failed_events": 0
+    },
+    "floor": {
+      "sha256": "a852435d273bb0b1dcce6c40b301812262064d78dab683e449c6308ed38aa057",
+      "passed_named_tests": 26,
+      "failed_events": 0
+    }
+  },
+  "limits": [
+    "Composed source-bound coverage, not a fresh final-Go all-six binary matrix.",
+    "Controlled unavailable-SHAPE-query refusal; actual SHAPE-absent server unavailable.",
+    "Virtualized/emulated; native-CPU/physical/assistive/external-toolkit/compositor/release acceptance separate.",
+    "Scoped C-module ASan/UBSan, leak detection disabled; core/peers normal.",
+    "Panel counters and screenshots are not WM resource benchmarks."
+  ],
+  "source_guards": {
+    "linux-arm64": {
+      "files": 2162,
+      "go_files": 583,
+      "source_closure_sha256": "699ba1e2d22190a88c28193425f9212a3d9ce5466f50f450928f598c029755ff",
+      "scope": "fixture09 final Go/C plus rendered manual source"
+    },
+    "freebsd-arm64": {
+      "files": 2162,
+      "go_files": 583,
+      "source_closure_sha256": "702e97972d1eacd924330f6ce0d528bffcddc83f4b4efa8c1b41a72a87c712fa",
+      "scope": "composed final fixture11 and Go/C"
+    }
+  },
+  "source12_archive": {
+    "base": "b71f1b0726801ae64a49699d03540ad36d16dff0",
+    "source_closure_sha256": "26b9501873da70caee22b311aa3bd4502fe887c1fba60092a9743fdd4eb988e7",
+    "archive_sha256": "80ef46c808fb6db09383b010e5e8f9e5a7ca99680456955d3fe91b1fd969ec97",
+    "archive_bytes": 6070445
+  },
+  "openbsd_duplicate_control": {
+    "status": "focused control passed; not full qualification",
+    "seconds": 17.750596000000087,
+    "source_sha256": "27683aee5279f29391dce669781584e148c99b3cca30bcdccd0e563865ae124b",
+    "scope": "normal installed native binary; queued initial configuration before duplicate scene, existing5sstartup/3srefusal, earlyreturn after duplicate case"
+  },
+  "source15_archive": {
+    "base": "b71f1b0726801ae64a49699d03540ad36d16dff0",
+    "source_closure_sha256": "4df738580aace3ff4ad444325ea160c05e22581fdf11391b0924d6e3fbe725af",
+    "archive_sha256": "322caed5f5c8ed29d13ed5ceee99f01f468e24d0a6d814d7c24e07ce69d18c8e",
+    "archive_bytes": 6070811
+  },
+  "source18_composed": {
+    "base_archive_sha256": "322caed5f5c8ed29d13ed5ceee99f01f468e24d0a6d814d7c24e07ce69d18c8e",
+    "source_closure_sha256": "3174a8bcbeb4193534d30a62b20d35798d5242f02a8fd30c823ceb67308663eb",
+    "composition": "source15 archive plus reviewed fixture17 helper and fixture18 readiness correction",
+    "regular_files": 2163,
+    "go_files": 583,
+    "manifest_sha256": "2e409816d3c6bbb2a989c9f875fbf05dce16a3abbecd42083a1808c8b1cddb6a"
+  },
+  "final_host_checks": [
+    "make check lint: passed",
+    "pinboard observer self-test: passed",
+    "legacy module relay import identity and constants: passed"
+  ],
+  "cleanup": {
+    "owned_guests": "all stopped",
+    "last_guest": "OpenBSD AMD64 remainder15",
+    "qemu_exit_status": 0,
+    "job_key_removed": true,
+    "original_runner_status": "failed15 retained; affected18 installed-owner and default-native passed independently",
+    "selected_archive_hashes_verified": true
+  },
+  "separate_review": {
+    "role": "temper_reviewer",
+    "accepted_tree": "8de0c42f17c245f31c017403c0aa1dd366e6cc35",
+    "result": "accepted; no remaining actionable findings",
+    "scope": "integrated code/docs/screenshots and source-bound actual results, selected archive membership/hashes/modes/CRC",
+    "later_changes": "README and current-status/review metadata only; final commit/tree in PR",
+    "observed_backend": "unattested",
+    "type": "read-only agent second examination, not independent human assurance"
+  }
+}

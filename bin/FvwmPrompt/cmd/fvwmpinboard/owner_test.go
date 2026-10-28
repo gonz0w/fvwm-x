@@ -459,3 +459,146 @@ func TestQueryRegistrationPrecedesSendAndRetiresOnEveryOutcome(t *testing.T) {
 		})
 	}
 }
+
+// Keep the transport open and feed only replies chosen by the test. In
+// particular, an incomplete page is not disguised as peer disconnection.
+func nativeCellsReplyPeer(t *testing.T, b *board, replies func(string) []string) func() {
+	t.Helper()
+	client, peer := net.Pipe()
+	b.session = transport.New(client)
+	if b.ctx == nil {
+		b.ctx = context.Background()
+	}
+	b.renew = time.NewTicker(time.Hour)
+	b.state.Pins = []pinboard.Pin{{ID: strings.Repeat("b", 32), Target: []byte("/"), Label: "Root"}}
+	b.icons = &iconAcquisition{view: b.view, epoch: b.epoch}
+	t.Cleanup(func() {
+		b.renew.Stop()
+		b.session.Close()
+		peer.Close()
+	})
+	done := make(chan error, 1)
+	go func() {
+		command, err := bufio.NewReader(peer).ReadString('\n')
+		if err != nil {
+			done <- err
+			return
+		}
+		fields := strings.Fields(command)
+		if len(fields) != 7 || fields[0] != "SendToModule" || fields[1] != b.protocol.Alias ||
+			fields[2] != "Cells" || fields[3] != b.protocol.Token || fields[5] != "0" || fields[6] != "8" {
+			done <- fmt.Errorf("unexpected Cells request %q", command)
+			return
+		}
+		for _, reply := range replies(fields[4]) {
+			if err := b.nativeReplies.offer(fields[4], reply); err != nil {
+				done <- err
+				return
+			}
+		}
+		done <- nil
+	}()
+	return func() {
+		t.Helper()
+		select {
+		case err := <-done:
+			if err != nil {
+				t.Fatal(err)
+			}
+		case <-time.After(time.Second):
+			t.Fatal("native Cells test peer did not finish its one request")
+		}
+	}
+}
+
+func nativeTestCell(b *board, tag string) string {
+	return fmt.Sprintf("FVWM_PINBOARD_CELL %s %s %d %s 0 %s 73637265656e 4 0 0 0 0 96 96 1",
+		b.protocol.Token, tag, b.view, b.epoch, b.state.Pins[0].ID)
+}
+
+func requireNativeQueryRetired(t *testing.T, b *board) {
+	t.Helper()
+	b.nativeReplies.mu.Lock()
+	defer b.nativeReplies.mu.Unlock()
+	if b.nativeReplies.tag != "" || b.nativeReplies.mailbox != nil {
+		t.Fatal("completed native exchange retained its query mailbox")
+	}
+}
+
+func TestNativeIncompleteCellsTimeoutIsTerminal(t *testing.T) {
+	b := testBoard(t)
+	peerDone := nativeCellsReplyPeer(t, b, func(tag string) []string {
+		// The real cell parser admits this row; only its matching END is absent.
+		return []string{nativeTestCell(b, tag)}
+	})
+	started := time.Now()
+	_, err := b.cells(0)
+	peerDone()
+	if err == nil || err.Error() != "native pinboard acknowledgement timed out" {
+		t.Fatal("incomplete page did not use the actual acknowledgement deadline", err)
+	}
+	if time.Since(started) < 5*time.Second {
+		t.Fatal("native acknowledgement deadline was shortened")
+	}
+	if b.ctx.Err() != nil {
+		t.Fatal("timeout was actually owner cancellation", b.ctx.Err())
+	}
+	select {
+	case <-b.session.Done():
+		t.Fatal("timeout was actually transport teardown")
+	default:
+	}
+	requireNativeQueryRetired(t, b)
+	if !b.nativeLost {
+		t.Fatal("native acknowledgement timeout did not mark the canvas lost")
+	}
+}
+
+func TestNativeCellsCancellationDoesNotMarkLoss(t *testing.T) {
+	b := testBoard(t)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	b.ctx = ctx
+	peerDone := nativeCellsReplyPeer(t, b, func(string) []string {
+		cancel()
+		return nil
+	})
+	_, err := b.cells(0)
+	peerDone()
+	if !errors.Is(err, context.Canceled) || b.nativeLost {
+		t.Fatal("owner cancellation was treated as native loss", err, b.nativeLost)
+	}
+	requireNativeQueryRetired(t, b)
+}
+
+func TestReceivedCellsReplyErrorsDoNotMarkLoss(t *testing.T) {
+	for _, outcome := range []string{"malformed", "view", "epoch"} {
+		t.Run(outcome, func(t *testing.T) {
+			b := testBoard(t)
+			peerDone := nativeCellsReplyPeer(t, b, func(tag string) []string {
+				view, epoch := b.view, b.epoch
+				if outcome == "view" {
+					view++
+				}
+				if outcome == "epoch" {
+					epoch = "0000000000000002"
+				}
+				end := fmt.Sprintf("FVWM_PINBOARD_CELLS_END %s %s %d %s 0 1 1",
+					b.protocol.Token, tag, view, epoch)
+				if outcome == "malformed" {
+					end = "FVWM_PINBOARD_CELLS_END " + b.protocol.Token + " " + tag + " invalid"
+				}
+				return []string{nativeTestCell(b, tag), end}
+			})
+			_, err := b.cells(0)
+			peerDone()
+			if err == nil || err.Error() == "native pinboard acknowledgement timed out" || b.nativeLost {
+				t.Fatal("received parse/generation error was treated as native loss", outcome, err, b.nativeLost)
+			}
+			if b.ctx.Err() != nil {
+				t.Fatal("reply error was actually owner cancellation", b.ctx.Err())
+			}
+			requireNativeQueryRetired(t, b)
+		})
+	}
+}

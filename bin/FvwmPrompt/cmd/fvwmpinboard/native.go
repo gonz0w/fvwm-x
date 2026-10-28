@@ -115,6 +115,9 @@ func (b *board) wait(tag string, mailbox <-chan string, receive func(string) (bo
 		case <-b.session.Done():
 			return errors.New("FvwmMFL disconnected during native acknowledgement")
 		case <-timer.C:
+			if b.ctx.Err() == nil {
+				b.nativeLost = true
+			}
 			return errors.New("native pinboard acknowledgement timed out")
 		}
 	}

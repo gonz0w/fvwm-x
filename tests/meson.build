@@ -1064,6 +1064,11 @@ test(
     py,
     args: [files('live_x/live_x_harness.py'), '--self-test'],
 )
+test(
+    'pinboard-observer-self-test',
+    py,
+    args: [files('live_x/pinboard_live.py'), '--self-test'],
+)
 
 if get_option('live-x-tests') and host_machine.system() == 'linux'
     dl_dependency = cc.find_library('dl', required: true)
@@ -3968,6 +3973,19 @@ pinboard_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('pinboard-policy', pinboard_test)
+
+# A noninstalled module fixture reuses the exact production objects.  Only
+# its SHAPE capability query differs; the real server remains unchanged.
+pinboard_no_shape_test = executable(
+    'test-pinboard-no-shape', 'pinboard_shape_unavailable.c',
+    objects: fvwm_pinboard.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_compile_deps + localized_text_runtime_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=XShapeQueryExtension'],
+    c_args: ['-UNDEBUG'],
+    install: false,
+)
 
 pager_monitor_test = executable(
     'test-pager-monitor',

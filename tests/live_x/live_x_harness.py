@@ -1524,14 +1524,15 @@ def query_authoritative_state(
     display: str,
     deadline: float,
     log_prefix: str,
+    *,
+    include_output_ids: bool = True,
 ) -> dict[str, object]:
-    """Query complete Monitor, output-XID, and root-dimension authority."""
+    """Query Monitor/root authority, including output XIDs by default."""
     outputs: dict[str, str] = {}
-    for name, arguments in (
-        ("query", ["--query"]),
-        ("monitors", ["--listmonitors"]),
-        ("verbose", ["--verbose"]),
-    ):
+    queries = [("query", ["--query"]), ("monitors", ["--listmonitors"])]
+    if include_output_ids:
+        queries.append(("verbose", ["--verbose"]))
+    for name, arguments in queries:
         return_code, text = query_xrandr(
             runtime,
             display,
@@ -1547,12 +1548,13 @@ def query_authoritative_state(
     if any(root_dimensions[key] != parsed_query[key]
            for key in ("width", "height")):
         raise HarnessError("Xlib and xrandr root pixel dimensions differ")
-    return {
+    state: dict[str, object] = {
         "monitors": parse_xrandr_monitors(outputs["monitors"]),
-        "output_ids": parse_xrandr_output_ids(outputs["verbose"]),
-        "root": root_dimensions,
-        "text": "\n".join(outputs.values()),
     }
+    if include_output_ids:
+        state["output_ids"] = parse_xrandr_output_ids(outputs["verbose"])
+    state.update(root=root_dimensions, text="\n".join(outputs.values()))
+    return state
 
 
 def wait_for_authoritative_state(
@@ -1562,8 +1564,10 @@ def wait_for_authoritative_state(
     predicate: object,
     deadline: float,
     log_prefix: str,
+    *,
+    include_output_ids: bool = True,
 ) -> dict[str, object]:
-    """Poll the complete queried server state to one hard deadline."""
+    """Poll the requested server authority to one unchanged hard deadline."""
     attempt = 0
 
     def query() -> dict[str, object] | None:
@@ -1571,7 +1575,8 @@ def wait_for_authoritative_state(
         attempt += 1
         try:
             state = query_authoritative_state(
-                runtime, display, deadline, f"{log_prefix}-{attempt}"
+                runtime, display, deadline, f"{log_prefix}-{attempt}",
+                include_output_ids=include_output_ids,
             )
         except HarnessError:
             return None
@@ -3626,6 +3631,86 @@ def test_scale_policy_case_contract() -> None:
     assert cases[9]["unmatched"] == ('Dock "Left"', "3")
 
 
+def test_authoritative_query_contract() -> None:
+    """Output IDs are optional; geometry and root agreement stay required."""
+    from unittest.mock import patch
+
+    runtime = object()
+    display, deadline = ":77", time.monotonic() + 1
+    texts = {
+        "--query": (
+            "Screen 0: minimum 64 x 64, current 1280 x 720, "
+            "maximum 32767 x 32767\n"
+            "screen connected 1280x720+0+0 (normal) 339mm x 190mm\n"
+        ),
+        "--listmonitors": (
+            "Monitors: 1\n 0: +screen 1280/339x720/190+0+0  screen\n"
+        ),
+        "--verbose": (
+            "screen connected 1280x720+0+0 (0x3a) normal 339mm x 190mm\n"
+            "\tIdentifier: 0x3b\n"
+        ),
+    }
+    root = dict(width=1280, height=720, mm_width=339, mm_height=190)
+    calls = []
+    allow_verbose = True
+
+    def query(actual_runtime, actual_display, arguments, actual_deadline, log):
+        assert actual_runtime is runtime and actual_display == display
+        assert actual_deadline == deadline and log.startswith("authority-")
+        assert len(arguments) == 1 and arguments[0] in texts
+        if not allow_verbose:
+            assert arguments != ["--verbose"], "reduced query started verbose"
+        calls.append(arguments[0])
+        return 0, texts[arguments[0]]
+
+    with patch(__name__ + ".query_xrandr", side_effect=query), patch(
+        __name__ + ".query_xlib_root_dimensions", return_value=root
+    ) as root_query:
+        complete = query_authoritative_state(runtime, display, deadline,
+            "authority-default")
+        assert calls == ["--query", "--listmonitors", "--verbose"]
+        assert complete["output_ids"] == {"screen": 0x3B}
+        assert complete["root"] == root
+        root_query.assert_called_once_with(display)
+        calls.clear()
+        allow_verbose = False
+        root_query.reset_mock()
+        reduced = query_authoritative_state(runtime, display, deadline,
+            "authority-reduced", include_output_ids=False)
+        assert calls == ["--query", "--listmonitors"]
+        assert "output_ids" not in reduced
+        assert reduced["monitors"] == complete["monitors"]
+        assert reduced["root"] == root
+        assert reduced["text"] == texts["--query"] + "\n" + texts["--listmonitors"]
+        root_query.assert_called_once_with(display)
+
+        root_query.return_value = dict(root, width=1281)
+        for include_ids in (True, False):
+            allow_verbose = include_ids
+            try:
+                query_authoritative_state(runtime, display, deadline,
+                    "authority-mismatch", include_output_ids=include_ids)
+            except HarnessError as error:
+                assert "root pixel dimensions differ" in str(error)
+            else:
+                raise AssertionError("mismatched Xlib/query root was accepted")
+
+    with patch(__name__ + ".query_authoritative_state") as authority:
+        for options, expected, state in (
+            ({}, True, complete),
+            ({"include_output_ids": False}, False, reduced),
+        ):
+            authority.reset_mock()
+            authority.return_value = state
+            observed = wait_for_authoritative_state(runtime, display,
+                "authority forwarding", lambda value: value is state,
+                deadline, "authority-wait", **options)
+            assert observed is state
+            authority.assert_called_once_with(runtime, display, deadline,
+                "authority-wait-1", include_output_ids=expected)
+
+
 def self_test() -> None:
     """Specify lifecycle behavior without requiring an X server."""
     test_xorg_dummy_contract()
@@ -3634,6 +3719,7 @@ def self_test() -> None:
     test_post_finalize_scale_inspection_argv()
     test_print_info_scale_parser()
     test_scale_policy_case_contract()
+    test_authoritative_query_contract()
 
     version_text = """\
 xrandr program version       1.5.1

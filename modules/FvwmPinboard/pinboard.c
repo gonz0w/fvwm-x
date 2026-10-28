@@ -1123,13 +1123,18 @@ static bool alias_valid(const char *alias)
 
 static void request_config(pinboard *board)
 {
+	char match[66];
+
 	if (board->config_pending)
 	{
 		board->workspace_refresh = true;
 		return;
 	}
 	board->config_pending = true;
-	InitGetConfigLine(board->channel, NULL);
+	/* Common monitor/work-area records and END remain unconditional;
+	 * stored module configuration is needed only for this instance. */
+	snprintf(match, sizeof(match), "*%s", board->module->name);
+	InitGetConfigLine(board->channel, match);
 }
 
 int main(int argc, char **argv)
@@ -1217,7 +1222,10 @@ int main(int argc, char **argv)
 	while (!pinboard_stopping && !board->stopped && !pinboard_x_failed)
 	{
 		double now = seconds_now();
-		if (!now || (!board->mapped && now - board->started >= 5) ||
+		/* Retirement keeps a short reply window after unmapping.  The
+		 * initial-map deadline must not cut that window short. */
+		if (!now || (!board->mapped && !board->retiring &&
+			     now - board->started >= 5) ||
 		    (board->lease && now >= board->lease) ||
 		    (board->retiring && now >= board->retiring))
 			break;

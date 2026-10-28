@@ -1,0 +1,26 @@
+{
+  "status": "unmodified localized Applications captures from the development checkpoint",
+  "source_closure": "02",
+  "source_sha256": "0a73d9f6bc8ae50bd5a47b016df9277ba2a72d1c11620844f0a7301c7e083ee3",
+  "captures": [
+    {
+      "profile": "slate-dark",
+      "configuration": "Slate dark, Sans 10",
+      "file": "applications-slate-dark.png",
+      "original_sha256": "4431b76c74400c194419df7ae8fb723a77604141109adb86b45477a5a7b37796"
+    },
+    {
+      "profile": "dune-light",
+      "configuration": "Dune light, Sans 10",
+      "file": "applications-dune-light.png",
+      "original_sha256": "697584aa4d7c7e60090dc0705a069dde8475932b8644451689e77883a6b6593a"
+    },
+    {
+      "profile": "classic-large",
+      "configuration": "Enlarged Classic, DejaVu Sans Mono 18, Slate desktop",
+      "file": "applications-classic-large.png",
+      "original_sha256": "d594bd8c3461244d8daf03043abd56451a5cda3338b266ca8d75e35bb3d7a97f"
+    }
+  ],
+  "limits": "Synthetic names; whole-guest panel counters are not a performance comparison. Wider accessibility and release qualification remain open."
+}

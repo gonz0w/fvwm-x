@@ -1,0 +1,207 @@
+{
+  "base": "c9b5aa7b3f60ee6b383daf9212f0215636f008d0",
+  "source_closure_sha256": "0a73d9f6bc8ae50bd5a47b016df9277ba2a72d1c11620844f0a7301c7e083ee3",
+  "source_inputs": 1855,
+  "go_inputs": 588,
+  "runtime_files": {
+    "bin/FvwmPrompt/internal/desktopworker/files.go": {
+      "sha256": "cb3dafcc30066d363c1ed555e52d8ea933c89b39abc5b2129cdc5503ce010c35",
+      "bytes": 8399
+    },
+    "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+      "sha256": "b16a043f345ca8da3b091912fe6a6ef979e332877da9fe9e289a654bf87fb358",
+      "bytes": 14183
+    },
+    "bin/FvwmPrompt/internal/desktopworker/applications_xdg_test.go": {
+      "sha256": "e0aae17ce72eb933ebbeb0f59a096dcc576d71ef0d476739419a33460281777d",
+      "bytes": 10168
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/desktop.go": {
+      "sha256": "71293af94806d5851753461684cd7901f80aa266a561277a591573d57f624c3d",
+      "bytes": 7914
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/locale_test.go": {
+      "sha256": "d488559c01b81d178dc6cdf307987bbfd3e7ee4e680a2b463b40dc645370aac8",
+      "bytes": 1767
+    },
+    "bin/FvwmPrompt/cmd/fvwmmenudesktop/main.go": {
+      "sha256": "aa3f1433dee48a031d5725c9c0615c2cc3adea4bfe7ff2575238dd89ce34a5cc",
+      "bytes": 17808
+    }
+  },
+  "fixture_sha256": "35dfa92664c8b8d7739f53645a946729f996710522e85882260b5f4dc9be6a6a",
+  "tests": {
+    "go-normal": {
+      "passed_cases_including_subtests": 638,
+      "passed_packages": 4
+    },
+    "go-race": {
+      "passed_cases_including_subtests": 638,
+      "passed_packages": 4
+    },
+    "go-floor": {
+      "passed_cases_including_subtests": 488,
+      "passed_packages": 3
+    }
+  },
+  "profiles": [
+    {
+      "profile": "classic-large",
+      "status": "passed",
+      "cases": [
+        "explicit_relative_root",
+        "actual_worker_policy",
+        "native_main_launch",
+        "native_action_launch",
+        "stale_then_current",
+        "missing_executable_after_commit",
+        "literal_no_shell_execution"
+      ],
+      "menu_geometry": {
+        "width": 525,
+        "height": 955
+      },
+      "screenshots": {
+        "applications-localized.png": "d594bd8c3461244d8daf03043abd56451a5cda3338b266ca8d75e35bb3d7a97f",
+        "applications-stale-action.png": "aa41329804d42782b4bc92efd2b257567a3a4fa9ace67b6d9225094c56051ed0",
+        "applications-refreshed.png": "d11364cf45088684e1683e5b2ea7a10eaaca765dccb1bdad4c6c5263e08c9a5d",
+        "applications-missing-executable.png": "2764fd83b0ba097c4ccef59c4fe0c9b07923958dd206d1d07d8755e4ed866259",
+        "applications-after-failure.png": "d11364cf45088684e1683e5b2ea7a10eaaca765dccb1bdad4c6c5263e08c9a5d"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    },
+    {
+      "profile": "dune-light",
+      "status": "passed",
+      "cases": [
+        "explicit_relative_root",
+        "actual_worker_policy",
+        "native_main_launch",
+        "native_action_launch",
+        "stale_then_current",
+        "missing_executable_after_commit",
+        "literal_no_shell_execution"
+      ],
+      "menu_geometry": {
+        "width": 348,
+        "height": 682
+      },
+      "screenshots": {
+        "applications-localized.png": "697584aa4d7c7e60090dc0705a069dde8475932b8644451689e77883a6b6593a",
+        "applications-stale-action.png": "644d4dcaf854a70bde95e5f6ef726d782264cc30105eadd44564d6bbf68c88a3",
+        "applications-refreshed.png": "d820651e5e89491ed16396c101cccac63807b66c2f7d094b51a5dc3a790f2515",
+        "applications-missing-executable.png": "8ea7ba6edaeac026fd8644084f9f7ff228bdf5ec1702139a87604dcf598db175",
+        "applications-after-failure.png": "d820651e5e89491ed16396c101cccac63807b66c2f7d094b51a5dc3a790f2515"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    },
+    {
+      "profile": "slate-dark",
+      "status": "passed",
+      "cases": [
+        "explicit_relative_root",
+        "actual_worker_policy",
+        "native_main_launch",
+        "native_action_launch",
+        "stale_then_current",
+        "missing_executable_after_commit",
+        "literal_no_shell_execution"
+      ],
+      "menu_geometry": {
+        "width": 348,
+        "height": 682
+      },
+      "screenshots": {
+        "applications-localized.png": "4431b76c74400c194419df7ae8fb723a77604141109adb86b45477a5a7b37796",
+        "applications-stale-action.png": "faf358d11b06979da6d8f2c5161592ea1a09186422cf0b8f4979baea9e422b74",
+        "applications-refreshed.png": "9dfa86cae590bfc52df1c9b4dc82aefa5defa4dfc6c0668aeec068592f21598a",
+        "applications-missing-executable.png": "b9425a981f969449ed461e1383e0257032f0b20e56181a09cfe5637c882f141e",
+        "applications-after-failure.png": "9dfa86cae590bfc52df1c9b4dc82aefa5defa4dfc6c0668aeec068592f21598a"
+      },
+      "cleanup_failures": [],
+      "unexpected_observer_x_errors": []
+    }
+  ],
+  "build_and_installed_entries": {
+    "FvwmDesktop": {
+      "sha256": "a905d4dcf1212de3b4da0d87338bb5cba755f47b944985df8a5ccada9f597d7a",
+      "build_sha256": "a905d4dcf1212de3b4da0d87338bb5cba755f47b944985df8a5ccada9f597d7a",
+      "bytes": 5742748,
+      "mode": 493
+    },
+    "fvwm-desktop-worker": {
+      "sha256": "f0489f3f8ed700a77d373f2002d67b3748e3aae780e357b3f9e3f3c5b18a5b29",
+      "build_sha256": "f0489f3f8ed700a77d373f2002d67b3748e3aae780e357b3f9e3f3c5b18a5b29",
+      "bytes": 5887184,
+      "mode": 493
+    },
+    "fvwm-menu-desktop": {
+      "sha256": "1c291901c3530130438c002f4c20f6e431efd7524bbd18d45749418cc7fe7a25",
+      "build_sha256": "1c291901c3530130438c002f4c20f6e431efd7524bbd18d45749418cc7fe7a25",
+      "bytes": 5440752,
+      "mode": 493
+    },
+    "fvwm-desktop-capture": {
+      "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+      "build_sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608,
+      "mode": 493
+    }
+  },
+  "canonical_archive": {
+    "status": "passed",
+    "files": 211,
+    "archive_sha256": "76c2dd5fd1c909a0345e229ad712ee5b72cf963203e22544a8fba7f5dcff14a6",
+    "bytes": 1127706,
+    "gzip_crc": "passed"
+  },
+  "manual": {
+    "formatter": "macOS /usr/bin/mandoc; not BSD native qualification",
+    "render": [
+      {
+        "width": "60",
+        "exit": 0,
+        "bytes": 55242
+      },
+      {
+        "width": "80",
+        "exit": 0,
+        "bytes": 54055
+      }
+    ],
+    "lint_exit": 3,
+    "base_families": {
+      "skipping insecure request": 1,
+      "skipping unknown macro": 1,
+      "input text line longer than 80 bytes": 64,
+      "skipping paragraph macro": 13
+    },
+    "final_families": {
+      "skipping insecure request": 1,
+      "skipping unknown macro": 1,
+      "input text line longer than 80 bytes": 68,
+      "skipping paragraph macro": 13
+    },
+    "no_new_diagnostic_families": true,
+    "roff_sha256": "af091ee4029c3b958b756e6850c92def334e23bdbe5ddfb10818e74c92cadeb9"
+  },
+  "final_manual_source_sha256": "c006c5ec439a7d9ec6f4030d364dec248653c4c653eb6ddf5b653fc9bcb2fd0e",
+  "lab_cleanup": "normal stop; verified guest evidence duplicates retired; source/build/stage/cache/disks preserved",
+  "limits": [
+    "focused virtualized Linux ARM64 only; not six-target or native-CPU sanitizer/release acceptance",
+    "no complete XDG/MIME/startup notification/FileManager1 claim",
+    "no performance comparison due; reference4/5 after292",
+    "role/model backend execution metadata unattested"
+  ],
+  "separate_review": {
+    "reviewer": "/root/temper_file_jobs_review",
+    "role": "temper_reviewer",
+    "candidate_tree": "3053a648145e2823e990b641838dd4971120ec58",
+    "base": "c9b5aa7b3f60ee6b383daf9212f0215636f008d0",
+    "result": "accepted; no actionable findings",
+    "scope": "all18 staged files, exact runtime/fixture hashes, native/Go streams, archive names/bytes/modes/hashes/gzip CRC, manual, captures and cleanup",
+    "limitations": "read-only agent review; no reviewer execution, human approval or backend model attestation"
+  }
+}

@@ -7,6 +7,10 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current feature checkpoint: [XDG Applications adoption](#r1-xdg-applications-adoption--2026-10-28)
+batches four existing #56 outcomes after merged PR292. Broader #56/#67 remain
+open; the faster focused cadence and deferred release gates remain explicit.
+
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
 Owner: the finite Temper adoption lead; mirror [issue #282](https://github.com/gonz0w/fvwm-x/issues/282).
@@ -448,17 +452,62 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 XDG Applications adoption — 2026-10-28
+
+Owner: Cam; `codex/r1-xdg-applications`; XDG-01 #56, related portable
+FILE-INTEGRATION-01 #67. Status: implemented; focused Linux/installed three-theme qualification and
+all 15 capture inspections and separate final integrated review pass. Its PR is
+being prepared; runtime and fixture identities remain unchanged. Selected before implementation
+based on merged PR292 `c9b5aa7b3f60ee6b383daf9212f0215636f008d0`. Deliver one coherent
+Applications-menu checkpoint with four outcomes: exact Desktop Entry Exec
+expansion through the existing shared parser; absolute XDG data-root precedence;
+localized and typed entry metadata; and bounded declared Desktop Actions.
+The simpler alternative is to extend the separate parser; adopting qualified
+policy removes disagreement without introducing a new resolver or dependency.
+
+Acceptance: literal argv with no shell expansion; malformed field codes/quoting
+refused; relative environment roots excluded; explicit roots retained; high
+priority Hidden/invalid IDs continue to shadow lower roots; locale precedence,
+decoded paths/icons, typed visibility/terminal and missing executables covered.
+Declared actions use localized `Application — Action` labels, parent cwd/terminal
+and base-application field-code context, at most eight actions per application,
+within existing 512-record/result-byte limits. Invalid actions do not erase a
+valid primary launcher; unlisted groups never launch. Reuse current menu
+pagination and generation-bound callbacks; stale actions must be refused.
+
+Dependencies: existing xdgmenu pure policy, Desktop worker/controller, qualified
+native menus and committed callbacks. Preserve acquisition/queue budgets,
+no directory-symlink traversal and configuration compatibility. Non-goals: MIME
+association/startup notification, FileManager1/bus adoption, new role-query UI,
+new dependencies, broad filesystem rewrites and full #56/#67 closure.
+Verification: independent regression cases before production edits where practical,
+affected incremental Linux Go build/unit/race/vet checks and one combined installed
+consumer/native-X checkpoint with Slate, Dune and Classic captures. No automatic
+six-target rebuild for these portable existing-helper consumers; wider support
+and R1 release acceptance remain outstanding. Lead owns execution/integration;
+Temper implementers own bounded code/fixture edits; separate reviewer examines
+the exact final candidate. Model selection remains unverified by backend metadata.
+Performance reference is 4/5 after PR292; the next merge reaches 5/5. #257/#258
+remain parked. No additional issue currently meets its complete closure contract.
+
+[Verification, failures and remaining acceptance](verification/VERIFICATION-2026-10-28-XDG-APPLICATIONS.md)
+and [three public captures](../doc/development-preview.md#localized-applications-actions)
+record the exact runtime/fixture. All 211 canonical archive members/modes/hashes
+and gzip CRC pass before guest duplicates retire. The owned Linux lab stops
+normally. Wider #56/#67 acceptance remains open; no issue closes by this subset.
+
 ## R1 Files-menu browser handoff — 2026-10-28
 
 Owner: Cam; `codex/r1-file-integration`; FILE-INTEGRATION-01 #67,
 base merged PR291 `14e4b2cdf435bd6ba86d4af409aa14ba5b18d553`.
-Status: four related outcomes implemented; focused checks, all three native
+Status: merged in PR292 as `c9b5aa7b3f60ee6b383daf9212f0215636f008d0`;
+canonical signature/author DCO and identical reviewed tree verified; branch retired
+and Project Done. Focused checks, all three native
 themes, scoped installed command discovery and separate screenshot inspection
-pass. Separate integrated review accepts the checkpoint; its PR is being
-prepared. #67 reuse/present acceptance is complete; remaining criteria stay open.
+pass. Separate integrated review accepts the checkpoint. #67 reuse/present acceptance is complete; remaining criteria stay open.
 #64/#65/#68 are closed; stale summary
 rows are reconciled without reopening qualified components. Performance is
-3/5 after PR291; no comparison is due. #257/#258 remain parked.
+4/5 after PR292; no comparison is due. #257/#258 remain parked.
 [Results and retained failures](verification/VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md)
 bind runtime04 and installed observer05 to exact source/captures. All465 archive
 members, modes/hashes and gzip CRC pass before guest duplicates retire. The

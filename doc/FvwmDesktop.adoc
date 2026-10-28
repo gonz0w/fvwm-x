@@ -544,11 +544,29 @@ A stalled job or inherited pipe is retired with its owned process group. A
 filesystem syscall still depends on operating-system cancellation; these are
 bounded service policies, not a hard real-time guarantee.
 
-Application discovery retains user-hidden masking, literal argv/field codes,
-current-desktop/availability filters, working directories and terminal flags.
-It reuses the shared Desktop Entry reader, which rejects malformed/duplicate
-keys, NUL and invalid UTF-8. The launcher retains its existing POSIX word quoting;
-it does not invoke a shell. Each job caps directory roots at 64, enumeration at
+Application discovery searches XDG_DATA_HOME (default ~/.local/share), then
+XDG_DATA_DIRS (default /usr/local/share:/usr/share), in priority order. Relative
+environment roots are excluded; explicit roots remain available. A hidden or
+invalid entry at higher priority masks the same desktop ID in lower roots.
+Discovery uses localized names and optional icons, typed visibility and terminal
+metadata, current-desktop and executable-availability filters, and decoded paths.
+Locale selection uses LC_ALL, LC_MESSAGES and LANG in that order, with LANGUAGE
+preferences before the selected locale. C, C.* or POSIX suppresses LANGUAGE.
+A specified working directory must be absolute, at most 4096 bytes and an
+existing directory.
+The shared Desktop Entry reader rejects malformed or duplicate keys, NUL and
+invalid UTF-8. The shared Desktop Entry Exec parser expands field codes into
+literal arguments and refuses malformed field codes or quoting; it does not
+invoke a shell.
+
+Declared Desktop Actions appear as additional *Application — Action* rows, with
+localized labels. Only the first eight declared IDs are considered; invalid,
+duplicate or missing actions still occupy positions in that limit. They use the
+parent application's working directory, terminal setting and field-code context.
+Each launches as a literal argument vector. A malformed action is refused independently and does
+not remove a valid primary launcher; unlisted action groups are not launched.
+Actions share existing result limits, pagination and generation-bound callbacks.
+Each job caps directory roots at 64, enumeration at
 8192 entries, depth at 16, candidates at 2048 per root and results at 512.
 Depth and candidate/application count caps limit the selected list. Enumeration
 or encoded-result overflow reports a failed refresh; a failed refresh preserves

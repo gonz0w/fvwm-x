@@ -15,7 +15,7 @@ Recent features:
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- Keyboard-first window/app/desktop/action palette with native refresh.
+- Localized applications/actions and keyboard-first action palette.
 - Optional browser: list/grid, selection, filter/sort, watching, properties/actions and
   Files-menu handoff; live updates retain drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
@@ -45,5 +45,5 @@ and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 - [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
 - [Contribute and validate locally](CONTRIBUTING.md)
 
-Review and validation run locally; GitHub Actions is disabled.
+Validation runs locally; GitHub Actions is disabled.
 FVWM-X retains FVWM's GPL license and upstream attribution; see [COPYING](COPYING).

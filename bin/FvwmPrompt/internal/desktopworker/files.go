@@ -62,82 +62,15 @@ func entryNames(path string) ([]string, error) {
 	return nil, errEntryLimit
 }
 
-// launcherExec preserves the launcher's existing POSIX word quoting, including
-// single quotes and removed unselected file codes. It performs no expansion or
-// shell evaluation. The full XDG menu's stricter Exec grammar stays in xdgmenu.
+// launcherExec adopts the shared Desktop Entry grammar while preserving this
+// worker's smaller record/argv limits. It never invokes a shell or expansion.
 func launcherExec(value, name, location, icon string) ([]string, error) {
-	var words []string
-	var word strings.Builder
-	quote := rune(0)
-	escaped, started := false, false
-	for _, c := range value {
-		if c == 0 {
-			return nil, errors.New("NUL in desktop Exec")
-		}
-		if escaped {
-			if quote == '"' && c != '"' && c != '\\' {
-				word.WriteRune('\\')
-			}
-			word.WriteRune(c)
-			escaped = false
-			started = true
-			continue
-		}
-		if c == '\\' && quote != '\'' {
-			escaped = true
-			started = true
-			continue
-		}
-		if quote != 0 {
-			if c == quote {
-				quote = 0
-			} else {
-				word.WriteRune(c)
-			}
-			continue
-		}
-		if c == '\'' || c == '"' {
-			quote = c
-			started = true
-			continue
-		}
-		if strings.ContainsRune(" \t\r\n", c) {
-			if started {
-				words = append(words, word.String())
-				word.Reset()
-				started = false
-			}
-			continue
-		}
-		word.WriteRune(c)
-		started = true
+	argv, err := xdgmenu.ExpandExec(value, xdgmenu.ExecContext{Name: name, Icon: icon, Location: location})
+	if err != nil {
+		return nil, err
 	}
-	if escaped || quote != 0 {
-		return nil, errors.New("incomplete desktop Exec quoting")
-	}
-	if started {
-		words = append(words, word.String())
-	}
-	var argv []string
-	for _, word := range words {
-		switch word {
-		case "%f", "%F", "%u", "%U":
-			continue
-		case "%i":
-			if icon != "" {
-				argv = append(argv, "--icon", icon)
-			}
-		case "%c":
-			argv = append(argv, name)
-		case "%k":
-			argv = append(argv, location)
-		default:
-			literal := strings.ReplaceAll(word, "%%", "\x01")
-			if strings.Contains(literal, "%") {
-				return nil, errors.New("unsupported/embedded desktop Exec field code")
-			}
-			argv = append(argv, strings.ReplaceAll(literal, "\x01", "%"))
-		}
+	if len(argv) > 4096 {
+		return nil, errors.New("too many launcher arguments")
 	}
 	total := 0
 	for _, value := range argv {
@@ -146,13 +79,16 @@ func launcherExec(value, name, location, icon string) ([]string, error) {
 		}
 		total += len(value)
 	}
-	if len(argv) > 4096 {
-		return nil, errors.New("too many launcher arguments")
-	}
-	if len(argv) == 0 || argv[0] == "" {
-		return nil, errors.New("empty desktop Exec")
-	}
 	return argv, nil
+}
+
+// Icon is optional, but any present base/localized value uses the same
+// decoder and locale order as Name. A localized-only optional icon has no base.
+func localizedApplicationIcon(entry *xdgmenu.Desktop, group string, locales []string) (string, error) {
+	if _, present := entry.Groups[group]["Icon"]; !present {
+		return "", nil
+	}
+	return entry.Localized(group, "Icon", locales)
 }
 
 type Application struct {
@@ -162,28 +98,32 @@ type Application struct {
 	Terminal bool     `json:"terminal"`
 }
 
-func defaultDirectories() []string {
-	home, _ := os.UserHomeDir()
-	user := os.Getenv("XDG_DATA_HOME")
-	if user == "" {
-		user = filepath.Join(home, ".local/share")
+func defaultDirectories() ([]string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
 	}
-	system := os.Getenv("XDG_DATA_DIRS")
-	if system == "" {
-		system = "/usr/local/share:/usr/share"
+	paths, err := xdgmenu.SearchDirectories(home, map[string]string{
+		"XDG_DATA_HOME": os.Getenv("XDG_DATA_HOME"),
+		"XDG_DATA_DIRS": os.Getenv("XDG_DATA_DIRS"),
+	})
+	if err != nil {
+		return nil, err
 	}
-	dirs := []string{filepath.Join(user, "applications")}
-	for _, root := range strings.Split(system, ":") {
-		if root != "" {
-			dirs = append(dirs, filepath.Join(root, "applications"))
-		}
+	directories := make([]string, 0, len(paths.Data))
+	for _, root := range paths.Data {
+		directories = append(directories, filepath.Join(root, "applications"))
 	}
-	return dirs
+	return directories, nil
 }
 
 func applications(ctx context.Context, directories []string, env Environment) ([]Application, error) {
 	if directories == nil {
-		directories = defaultDirectories()
+		var err error
+		directories, err = defaultDirectories()
+		if err != nil {
+			return nil, err
+		}
 	}
 	if len(directories) > 64 {
 		return nil, errors.New("too many application roots")
@@ -193,9 +133,28 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 		current = "FVWM"
 	}
 	desktops := strings.Split(current, ":")
+	locales := xdgmenu.LocalePreferences(map[string]string{
+		"LC_ALL": os.Getenv("LC_ALL"), "LC_MESSAGES": os.Getenv("LC_MESSAGES"),
+		"LANG": os.Getenv("LANG"), "LANGUAGE": os.Getenv("LANGUAGE"),
+	})
 	result := []Application{}
 	seen := map[string]bool{}
 	visited, total := 0, 0
+	appendApplication := func(app Application) error {
+		size := 128 + 6*len(app.Name)
+		for _, value := range app.Argv {
+			size += 6*len(value) + 4
+		}
+		if app.Cwd != nil {
+			size += 6 * len(*app.Cwd)
+		}
+		if size > ResultLimit-total-4096 {
+			return errors.New("application result limit reached")
+		}
+		total += size
+		result = append(result, app)
+		return nil
+	}
 	for _, directory := range directories {
 		var files []string
 		var walk func(string, int) error
@@ -258,54 +217,82 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 			if err != nil {
 				continue
 			}
-			fields := entry.Groups["Desktop Entry"]
-			if fields["Type"] != "Application" || strings.EqualFold(fields["Hidden"], "true") || strings.EqualFold(fields["NoDisplay"], "true") {
+			visible, err := entry.Visible(desktops, func(name string) bool { return available(env, name) })
+			if err != nil || !visible {
 				continue
 			}
-			matches := func(value string) bool {
-				for _, item := range strings.Split(value, ";") {
-					for _, desktop := range desktops {
-						if item != "" && item == desktop {
-							return true
-						}
-					}
-				}
-				return false
-			}
-			if fields["OnlyShowIn"] != "" && !matches(fields["OnlyShowIn"]) || matches(fields["NotShowIn"]) {
+			name, err := entry.Localized("Desktop Entry", "Name", locales)
+			if err != nil || name == "" {
 				continue
 			}
-			if fields["TryExec"] != "" && !available(env, fields["TryExec"]) {
+			icon, err := localizedApplicationIcon(entry, "Desktop Entry", locales)
+			if err != nil {
 				continue
 			}
-			name := fields["Name"]
-			if name == "" {
-				name = strings.TrimSuffix(filepath.Base(path), ".desktop")
+			terminal, err := entry.Boolean("Desktop Entry", "Terminal")
+			if err != nil {
+				continue
 			}
-			argv, err := launcherExec(fields["Exec"], name, path, fields["Icon"])
-			if err != nil || !available(env, argv[0]) {
+			directory, err := entry.String("Desktop Entry", "Path")
+			if err != nil || len(directory) > 4096 {
 				continue
 			}
 			var cwd *string
-			if value := fields["Path"]; value != "" {
-				info, err := os.Stat(value)
+			if directory != "" {
+				if !filepath.IsAbs(directory) {
+					continue
+				}
+				info, err := os.Stat(directory)
 				if err != nil || !info.IsDir() {
 					continue
 				}
-				cwd = &value
+				cwd = &directory
 			}
-			size := 128 + 6*len(name)
-			for _, value := range argv {
-				size += 6*len(value) + 4
+			argv, err := launcherExec(entry.Groups["Desktop Entry"]["Exec"], name, path, icon)
+			if err != nil || !available(env, argv[0]) {
+				continue
 			}
-			if cwd != nil {
-				size += 6 * len(*cwd)
+			if err := appendApplication(Application{name, argv, cwd, terminal}); err != nil {
+				return nil, err
 			}
-			if size > ResultLimit-total-4096 {
-				return nil, errors.New("application result limit reached")
+			// Declared action groups extend this valid launcher, never replace
+			// it. Only the first eight declared IDs are considered; malformed,
+			// duplicate or missing groups consume no output record.
+			actions, err := entry.List("Desktop Entry", "Actions")
+			if err == nil {
+				actionIDs := make(map[string]bool)
+				for _, action := range actions[:min(8, len(actions))] {
+					if len(result) == 512 {
+						break
+					}
+					if action == "" || actionIDs[action] {
+						continue
+					}
+					actionIDs[action] = true
+					group := "Desktop Action " + action
+					actionName, err := entry.Localized(group, "Name", locales)
+					if err != nil || actionName == "" || len(name)+len(" — ")+len(actionName) > CommandLimit {
+						continue
+					}
+					actionIcon, err := localizedApplicationIcon(entry, group, locales)
+					if err != nil {
+						continue
+					}
+					if actionIcon == "" {
+						actionIcon = icon
+					}
+					// Field codes describe the base application, while the
+					// localized action name is presentation only. Parent cwd
+					// and Terminal apply to every accepted action.
+					argv, err := launcherExec(entry.Groups[group]["Exec"], name, path, actionIcon)
+					if err != nil || !available(env, argv[0]) {
+						continue
+					}
+					if err := appendApplication(Application{name + " — " + actionName, argv, cwd, terminal}); err != nil {
+						return nil, err
+					}
+				}
 			}
-			total += size
-			result = append(result, Application{name, argv, cwd, strings.EqualFold(fields["Terminal"], "true")})
 			if len(result) == 512 {
 				break
 			}

@@ -38,6 +38,28 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Localized Applications actions
+
+Applications can show declared Desktop Actions as localized *Application — Action*
+rows. The launcher expands Desktop Entry field codes into literal arguments;
+it does not run them through a shell. A stale menu action is refused and asks
+for the menu to be closed and applications refreshed.
+
+These unmodified captures show synthetic French application and action names in
+Slate dark, Dune light and an enlarged Classic configuration, respectively.
+
+![Slate localized Applications menu](screenshots/applications-slate-dark.png)
+
+![Dune localized Applications menu](screenshots/applications-dune-light.png)
+
+![Enlarged Classic localized Applications menu](screenshots/applications-classic-large.png)
+
+The [capture manifest](screenshots/applications-manifest.json) records their
+identities; the [checkpoint results](../dev-docs/verification/VERIFICATION-2026-10-28-XDG-APPLICATIONS.md)
+record the workflows and limits. Panel counters are whole-guest values, not a
+window-manager benchmark. XDG integration, MIME associations and release
+qualification remain in progress.
+
 ## Open the Files folder in the native browser
 
 In Files, navigate to a folder and choose **Open this folder in browser**.

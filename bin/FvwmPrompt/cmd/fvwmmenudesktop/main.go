@@ -256,26 +256,6 @@ func discover(source *xdgsource.Source, paths xdgmenu.SearchPaths, prefix string
 	}
 	return xdgmenu.DiscoverMenus(inventory)
 }
-func locales(env map[string]string) []string {
-	locale := env["LC_ALL"]
-	if locale == "" {
-		locale = env["LC_MESSAGES"]
-	}
-	if locale == "" {
-		locale = env["LANG"]
-	}
-	if locale == "C" || locale == "POSIX" || strings.HasPrefix(locale, "C.") {
-		return nil
-	}
-	var result []string
-	if env["LANGUAGE"] != "" {
-		result = strings.Split(env["LANGUAGE"], ":")
-	}
-	if locale != "" {
-		result = append(result, locale)
-	}
-	return result
-}
 func menuLabel(filename string) string {
 	words := strings.Split(strings.TrimSuffix(filepath.Base(filename), ".menu"), "-")
 	for i, word := range words {
@@ -312,7 +292,7 @@ func buildDocuments(ctx context.Context, source *xdgsource.Source, files []xdgme
 				return nil, nil, err
 			}
 		}
-		menu, err := xdgmenu.PresentMenus(compiled, allocated, xdgmenu.PresentationOptions{Locales: locales(env), Desktops: []string{"FVWM"}, Directories: source.Directories, Executable: func(name string) bool { _, err := exec.LookPath(name); return err == nil }})
+		menu, err := xdgmenu.PresentMenus(compiled, allocated, xdgmenu.PresentationOptions{Locales: xdgmenu.LocalePreferences(env), Desktops: []string{"FVWM"}, Directories: source.Directories, Executable: func(name string) bool { _, err := exec.LookPath(name); return err == nil }})
 		if err != nil {
 			return nil, nil, err
 		}

@@ -179,6 +179,30 @@ func (d *Desktop) Boolean(group, key string) (bool, error) {
 	}
 }
 
+// LocalePreferences preserves the provider's environment precedence. C/POSIX
+// suppress LANGUAGE overrides; expansion into locale fallbacks remains the
+// responsibility of Localized/LocaleCandidates.
+func LocalePreferences(env map[string]string) []string {
+	locale := env["LC_ALL"]
+	if locale == "" {
+		locale = env["LC_MESSAGES"]
+	}
+	if locale == "" {
+		locale = env["LANG"]
+	}
+	if locale == "C" || locale == "POSIX" || strings.HasPrefix(locale, "C.") {
+		return nil
+	}
+	var result []string
+	if env["LANGUAGE"] != "" {
+		result = strings.Split(env["LANGUAGE"], ":")
+	}
+	if locale != "" {
+		result = append(result, locale)
+	}
+	return result
+}
+
 func LocaleCandidates(locale string) []string {
 	base, modifier, _ := strings.Cut(locale, "@")
 	base, _, _ = strings.Cut(base, ".")

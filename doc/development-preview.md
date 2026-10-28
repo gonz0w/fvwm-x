@@ -38,6 +38,40 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Optional desktop pinboard
+
+`fvwm-pinboard` adds explicitly started, saved local file/folder references.
+Its shaped native canvas leaves empty root space available to existing bindings.
+The ordinary Form manager adds, relabels, moves, reloads and unpins references;
+unpin preserves the target. Missing targets and literal byte paths remain
+manageable. Saved placement follows the admitted monitor/work-area/scale and
+falls back into the root drawable without rewriting preferences.
+
+Slate dark at 1.25x: the manager exposes full references and a missing target.
+
+![Slate pinboard manager with missing, literal-byte and root references](screenshots/pinboard-slate-dark-02-manager-missing-literal-root.png)
+
+Dune light at 1x, using installed entries: a relabeled reference has a named icon
+and a new grid position.
+
+![Dune pinboard with relabeled icon and saved grid move](screenshots/pinboard-dune-light-03-relabeled-icon-move.png)
+
+Enlarged Classic at 2x: explicit legacy colors and a scalable 18-point mono font.
+
+![Classic enlarged pinboard manager](screenshots/pinboard-classic-large-02-manager-missing-literal-root.png)
+
+These are development captures. Cell labels can clip; the manager retains full
+reference details. The whole-guest panel counters are not a window-manager
+resource benchmark. [All twelve capture identities](screenshots/pinboard-manifest.json)
+include initial references, manager, relabel/move and recovery with a concurrent
+browser in each theme. [Verification and remaining platform coverage](../dev-docs/verification/VERIFICATION-2026-10-27-PINBOARD.md)
+keep focused passes separate from release qualification.
+
+See the [pinboard manual](fvwm-pinboard.adoc) for startup, Font/Colorset controls,
+state limits, ownership refusal and recovery. This opt-in data-only mode does
+not populate or manage an actual Desktop directory. It preserves the existing
+wallpaper and refuses conflicting desktop ownership.
+
 ## Bounded file-operation jobs
 
 F9 opens the browser's job editor for its captured selection. Create a folder,
@@ -68,6 +102,22 @@ See the [job manual](fvwm-file-browser.adoc#_file_jobs) before use:
 trash can refuse unsupported locations, move is not universally atomic, and
 partial results require inspection. Development and broader file-manager and
 clipboard integration remain in progress.
+
+### Actual copy progress
+
+Copy now has its remaining acceptance captures: Slate1.25x, Dune1x and
+enlarged Classic2x each show a real running job with nonzero copied bytes,
+followed by native cancellation and explicit partial results. The private
+fixture briefly pauses the verified copy worker for readable captures; these
+images demonstrate behavior, not transfer speed.
+
+![Slate actual running copy progress](screenshots/jobs-progress-slate-dark-running.png)
+![Dune cancelled copy with partial results](screenshots/jobs-progress-dune-light-cancelled.png)
+![Enlarged Classic actual running copy progress](screenshots/jobs-progress-classic-large-running.png)
+
+[All six capture identities](screenshots/jobs-progress-manifest.json) and
+[completion evidence and limits](../dev-docs/verification/VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md)
+include the actual ARM64 filesystem supplement. Development remains in progress.
 
 ## Pointer and paste continuity
 

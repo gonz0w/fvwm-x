@@ -448,11 +448,65 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 file-job acceptance and desktop pinboard — 2026-10-27
+
+Owner: Cam; `codex/r1-desktop-pinboard`; base merged PR289
+`8d996ce9ac2f5578702e1299d6762be0b4d5c27e`. The owner explicitly requested
+#68's remaining coverage and another substantial related feature batch. PR289's
+reviewed tree, canonical signature and actual-author DCO are verified; its
+local/remote branch is retired and Project Done. Performance is 1/5 since PR288.
+
+Status: implementation and the combined focused checkpoint pass; separate
+integrated review is accepted and the signed PR is ready for publication. #68's two remaining frozen rows pass, with
+separate source/archive/result/capture review: Linux ARM64 actual filesystems and
+unprivileged permission, plus real running/cancelled copy captures in Slate,
+Dune and enlarged Classic. No file-job runtime changes were needed; the earlier
+five target results remain valid. Close #68 on this reviewed PR's merge.
+[Completion supplement](verification/VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md)
+records the explicit worker pause after real progress, source provenance, setup
+failures and release limits.
+
+The related #64 batch implements ten outcomes under the
+[frozen pinboard contract](decisions/PINBOARD-2026-10-27.md): bounded persisted
+references; create/relabel/move/unpin/reload; keyboard, pointer and context actions;
+named icons; saved grid placement; monitor/work-area/scale/workspace handling;
+restart, missing-target and corrupt/concurrent-state recovery; and respectful
+root-input, focus, stacking and desktop ownership. Unpin preserves targets.
+The optional Go owner/worker, native shaped canvas and ordinary Form dialogs
+reuse existing transport, command, picture/font/colorset and collection helpers.
+No default resident, Desktop-directory takeover, target deletion, new toolkit,
+database, core threading or packet ABI change is introduced.
+
+The combined checkpoint passes affected C policies, Go normal/race and minimum
+SDK checks, Linux native lifetime/ownership tests, three complete UI themes,
+scoped ASan/UBSan UI, installed Dune UI and scoped FreeBSD ARM64 default-X
+ownership/SHAPE/context tests. A bounded shared work-area extraction preserves
+Form's callers. Final fixes cover desktop-type invalidation, stale reply tags,
+quoted fonts, root drawable admission, oversized icon cropping and pointer-grab
+handoff for context menus. Original failures and exact source/binary/capture
+identities are retained in the
+[pinboard verification report](verification/VERIFICATION-2026-10-27-PINBOARD.md).
+The [gallery](../doc/development-preview.md#optional-desktop-pinboard) contains
+unmodified captures in all three themes, including full manager/recovery views.
+
+#64 remains open: Linux AMD64, FreeBSD AMD64 and both OpenBSD new-feature gates,
+full BSD owner/install profiles and remaining release/physical/assistive coverage
+are not completed here. Cell labels can clip; full references remain available
+in the manager. SHAPE-absent server refusal was not runnable with this Xvfb.
+Scoped emulated sanitizer passes do not establish native-CPU qualification,
+leak freedom or a performance gain. #51/#69/#70 and R1 release acceptance stay
+separate; #257/#258 stay parked. This is one combined checkpoint, without a
+repeated six-target matrix per story. Performance becomes 2/5 only after its
+merge; preserve PR288's reference. Verified evidence is retained on the host;
+owned guest duplicates are retired and guests stop after retrieval.
+
 ## R1 bounded file-operation jobs — FILE-JOBS-01 #68
 
-Owner: Cam; `codex/r1-file-jobs`; base merged PR288. Status: implementation
-and scoped checks prepared for review on 2026-10-27; required owner coverage
-remains incomplete. This follows the owner's larger-PR direction.
+Owner: Cam; `codex/r1-file-jobs`; base merged PR288. Status: merged in
+[PR289](https://github.com/gonz0w/fvwm-x/pull/289) at
+`8d996ce9ac2f5578702e1299d6762be0b4d5c27e`; exact reviewed tree, canonical
+signature and author DCO verified. Branch retired and Project Done; #68 retains
+the two coverage rows selected in the current checkpoint above.
 Complete one substantial owner slice with create-folder, rename, recursive copy,
 move, links, trash/restore and explicit permanent delete, sharing typed targets,
 bounded helper ownership, progress/conflicts/cancellation and a native browser

@@ -735,6 +735,7 @@ modules = {
     'FvwmMFL': {'subdir': 'modules/FvwmMFL'},
     'FvwmPager': {'subdir': 'modules/FvwmPager'},
     'FvwmPerl': {'subdir': 'modules/FvwmPerl'},
+    'FvwmPinboard': {'subdir': 'modules/FvwmPinboard'},
     'FvwmRearrange': {'subdir': 'modules/FvwmRearrange'},
     'FvwmScript': {'subdir': 'modules/FvwmScript'},
 }

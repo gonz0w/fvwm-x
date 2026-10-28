@@ -1,0 +1,97 @@
+{
+  "status": "focused_checkpoint_passed_separate_integrated_review_accepted",
+  "base": "8d996ce9ac2f5578702e1299d6762be0b4d5c27e",
+  "branch": "codex/r1-desktop-pinboard",
+  "source_closure_sha256": "aecd4e088c887d4002a13251ad9fda1115805bd57b52e8f46e8dd1a665d18eb8",
+  "source_inputs": 1166,
+  "go_inputs": 583,
+  "runs": [
+    {
+      "receipt": "pinboard-context-preview-native-final.json",
+      "exit": 0,
+      "seconds": 19.483802500006277,
+      "fixture_sha256": "16fde27085655b4293ac128b2ae1d3593669be55c9679d1ba9e32ef2ed566104"
+    },
+    {
+      "receipt": "pinboard-slate-qualified-3.json",
+      "exit": 0,
+      "seconds": 32.594974584004376,
+      "fixture_sha256": "715647492454488ed401e4f823a42c683bb87a30acf52e6dcb91842493e81528"
+    },
+    {
+      "receipt": "pinboard-dune-installed-qualified-3.json",
+      "exit": 0,
+      "seconds": 35.192812583001796,
+      "fixture_sha256": "715647492454488ed401e4f823a42c683bb87a30acf52e6dcb91842493e81528"
+    },
+    {
+      "receipt": "pinboard-classic-qualified-3.json",
+      "exit": 0,
+      "seconds": 35.27576550000231,
+      "fixture_sha256": "715647492454488ed401e4f823a42c683bb87a30acf52e6dcb91842493e81528"
+    },
+    {
+      "receipt": "pinboard-sanitizer-qualified-3.json",
+      "exit": 0,
+      "seconds": 33.015098709001904,
+      "fixture_sha256": "715647492454488ed401e4f823a42c683bb87a30acf52e6dcb91842493e81528"
+    }
+  ],
+  "archives": {
+    "linux-canonical": {
+      "status": "passed",
+      "files": 2393,
+      "archive_sha256": "ccdd1d91c3126ab94fa74e96b134f464e34a466931c407a9073cdb8a42d95c98",
+      "archive_bytes": 5694243,
+      "gzip_crc_to_eof": true,
+      "exact_members_modes_hashes": true,
+      "source_guard": {
+        "files": 1166,
+        "go_files": 583,
+        "passed": true
+      }
+    },
+    "bsd-canonical": {
+      "status": "passed",
+      "files": 137,
+      "archive_sha256": "be88b534570510b88e5c6c78d6322439ee6bba5242d6657e464024c8e9ca8660",
+      "archive_bytes": 71680,
+      "gzip_crc_to_eof": true,
+      "exact_members_modes_hashes": true,
+      "source_roots": [
+        "r1-pinboard-default-checkpoint",
+        "r1-pinboard-default-followup",
+        "r1-pinboard-current-core",
+        "r1-pinboard-default-x",
+        "r1-pinboard-default-x2",
+        "r1-pinboard-default-final",
+        "r1-pinboard-default-x-final",
+        "r1-pinboard-context-preview-final",
+        "r1-pinboard-default-x-context-final"
+      ]
+    }
+  },
+  "go": {
+    "current": "1.27.2",
+    "floor": "1.26.9",
+    "race": "freeze02; freeze03 only pure Font quoting, normal/floor command rerun"
+  },
+  "scope": "local emulated Linux/BSD; scoped module ASan/UBSan, leak detection disabled",
+  "remaining_issue64": [
+    "Linux AMD64",
+    "FreeBSD AMD64",
+    "OpenBSD AMD64/ARM64",
+    "full BSD owner/install",
+    "remaining release/physical/assistive acceptance"
+  ],
+  "issue68": "close on final reviewed PR merge",
+  "screenshot_manifest": "../../doc/screenshots/pinboard-manifest.json",
+  "performance": "not due; 2/5 after next merge",
+  "owner_restart_limit": "Dune/Classic original owner SIGKILL after bounded fixture stop (5s total, half SIGTERM); persistence and lease cleanup pass; graceful shutdown within that deadline not qualified. Slate/ASAN original owner exit0; restarted owners exit1 after intentional native loss.",
+  "separate_review": {
+    "tree": "27d675c8944afe4638abc3855caa87abeed7bd50",
+    "outcome": "accepted; no actionable findings",
+    "scope": "read-only source/evidence/manual/18captures; agent examination, no execution or human merge approval",
+    "model_effort_identity": "unattested"
+  }
+}

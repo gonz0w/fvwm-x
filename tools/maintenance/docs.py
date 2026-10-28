@@ -33,6 +33,7 @@ def manual_manifest():
 
 def index_source(text, prompt):
     text += '\n* xref:fvwm-file-browser.adoc[File browser foundations]\n'
+    text += '\n* xref:fvwm-pinboard.adoc[Optional desktop pinboard]\n'
     if 'xref:FvwmDesktop.adoc[' not in text:
         text += '\n== Default desktop\n\n* xref:FvwmDesktop.adoc[Slate desktop]\n'
     return text

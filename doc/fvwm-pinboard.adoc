@@ -1,0 +1,151 @@
+= fvwm-pinboard(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-pinboard - optional data-only desktop references
+
+== SYNOPSIS
+
+*fvwm-pinboard* [*--state* _absolute-path_] [*--socket* _MFL-socket_]
+[*--opener* _executable_] [*--browser* _executable_]
+[*--icon-theme* _name_] [*--icon-formats* _formats_]
+[*--font* _font_] [*--colorset* _number_]
+[*--cell-width* _pixels_] [*--cell-height* _pixels_]
+[*--icon-size* _pixels_]
+
+*fvwm-pinboard* *--pin* _local-target_ [*--state* _absolute-path_]
+[*--label* _text_] [*--icon* _name_] [*--monitor* _name_]
+[*--column* _number_] [*--row* _number_]
+[*--cell-width* _pixels_] [*--cell-height* _pixels_]
+[*--icon-size* _pixels_]
+
+== DESCRIPTION
+
+This optional development feature keeps references to local files and folders
+on the desktop. Each pin has its own identity, display label, optional named
+icon and preferred monitor/grid position. Unpin removes only the reference;
+it does not delete, move or modify the target. A missing target remains visible
+and can be edited or removed. There is no automatic Desktop-directory import.
+
+Start FvwmMFL first, then run *fvwm-pinboard* explicitly. Its native
+*FvwmPinboard* module draws the desktop cells; ordinary FvwmForm dialogs manage
+references. This requires X11 SHAPE and the existing FVWM module/runtime
+dependencies. It adds no GUI toolkit, database, wallpaper owner or default
+resident process. The shaped desktop window leaves the space between cells
+available to existing root bindings and wallpaper. Another desktop manager or
+desktop client prevents adoption; losing ownership retires this surface.
+
+For example, from an existing shell in the FVWM session:
+
+----
+fvwm-pinboard --pin "$HOME/Documents" --label Documents
+fvwm-pinboard --font 'xft:Sans:size=10:antialias=True' --colorset 10
+----
+
+The first command edits data only and exits; it neither connects to FVWM nor
+claims a desktop. The second starts the optional desktop owner. Use Reload in
+an already running board to see changes made by a separate data-only command.
+Use normal FVWM configuration to arrange explicit startup if desired.
+
+== CONTROLS
+
+The management cell opens the pin manager, including references that cannot
+fit in the current work area. Pin actions offer open, metadata edit and unpin.
+New pin accepts one literal local path. Its dialog field admits at most 384
+path bytes; use the data-only *--pin* command for longer paths. Literal command
+arguments and saved target records retain the file browser's 4096-byte limit,
+including non-UTF-8 filesystem names. Labels are separate UTF-8 display data
+and never reconstruct target paths or commands.
+
+Click a cell to focus the board; double-click a pin to open it and right-click
+for its actions. With the board focused, Tab/arrows and Home/End navigate;
+Enter opens the selected pin or manager. Menu or Shift-F10 opens actions.
+Press M to preview a move with arrow keys, Enter to commit, or Escape to cancel.
+Pointer dragging likewise proposes placement on release. Placement is saved
+before the replacement view is published. Cells follow FVWM's monitor scale
+and work area. A disconnected monitor, occupied cell or smaller work area may
+temporarily move a reference or place it in the manager without overwriting its
+preferred position. The board spans desks and pages; it has no separate pin
+sets per workspace. New settings affect this optional board only.
+Off-root named monitors likewise use a visible fallback or the manager;
+saved preferences remain intact. Oversized icons are cropped within their
+own cell so they cannot paint neighboring references.
+
+The manager offers Open (F3), Edit (F2), Move (F4), Unpin (Alt-U), New (Alt-N),
+Refresh (F5), Reload (F6), Previous/Next (F9/F10), Cancel work (Alt-X) and
+Close pinboard (Alt-Q). Label and icon edits save separately. Its work label
+distinguishes pending work, an owned active worker and fully idle/reaped state.
+
+Refresh reobserves target availability. Reload reads externally committed state.
+An unsuccessful load, save or conflicting revision leaves the last committed
+data intact and reports recovery guidance. A malformed state file is not
+silently overwritten. Close retires the owned surface; saved references remain
+for the next explicit start.
+
+== OPTIONS
+
+*--state* _absolute-path_::
+Use a private normalized absolute state-file path. The default is
+`$HOME/.local/state/fvwm-x/pinboard/state.json`. The owner uses a private
+directory, a bounded versioned JSON file, an exclusive writer lock, expected
+revision checks and atomic replacement. Do not edit it while a save is active.
+
+*--socket* _path_::
+Use an existing FvwmMFL socket. The default uses normal transport discovery.
+
+*--pin* _local-target_::
+Add one reference to a literal absolute local path or local file URI and exit.
+Pass shell arguments as individually quoted values. Remote URLs are refused.
+
+*--label* _text_, *--icon* _name_::
+Set the new pin's display label and optional named icon. Requires *--pin*.
+Labels admit up to 256 UTF-8 bytes. An unavailable icon leaves a usable label.
+
+*--monitor* _name_, *--column* _number_, *--row* _number_::
+Set preferred monitor and nonnegative grid coordinates for *--pin*. Placement
+falls back temporarily when that preference cannot be used.
+
+*--cell-width* _pixels_, *--cell-height* _pixels_::
+Save logical cell dimensions from 64 through 512 pixels. Defaults are 96 by 96.
+
+*--icon-size* _pixels_::
+Save a logical named-icon size from 16 through 128 pixels; default 32.
+
+*--icon-theme* _name_, *--icon-formats* _formats_::
+Choose the named-icon theme and available native image formats. Formats are a
+comma-separated subset of `png,svg,xpm`; an empty list keeps text labels.
+
+*--font* _font_, *--colorset* _number_::
+Supply explicit native presentation settings for this instance. Existing
+Colorset updates and monitor scaling are shared with other FVWM-owned UI.
+Use a scalable Flocale font such as `xft:Sans:size=10` for scaled text.
+A spaced family, for example `xft:DejaVu Sans Mono:size=18`, is one quoted
+shell argument. The native default is the bitmap `fixed` font, whose glyphs
+may retain their original pixel size while cells follow monitor scale.
+
+*--opener* _executable_, *--browser* _executable_::
+Choose literal file and folder handlers. Files default to `xdg-open`; folders
+default to the adjacent installed *fvwm-file-browser*. Targets are separate
+arguments. Missing handlers or unavailable, symlink and special-file targets
+receive explicit refusal; no shell command is built from a target.
+
+== LIMITS
+
+The board admits 256 references and a 2 MiB state file. A bounded worker performs
+filesystem observation, icon acquisition, persistence and handler dispatch.
+The native X owner does not enumerate folders or perform those worker calls.
+There is one active operation; failed or unknown work is not automatically
+replayed. Deadlines cannot guarantee immediate completion of an uninterruptible
+kernel call. Native desktop ownership has a short renewable lease so owner
+loss does not leave an abandoned input surface.
+
+This is in-progress R1 functionality. Qualification and remaining platform or
+topology coverage are recorded in the repository tracker and verification
+reports; a focused test pass does not establish complete release qualification.
+
+== SEE ALSO
+
+FvwmForm(1), FvwmMFL(1), fvwm-file-browser(1), fvwm3(1)

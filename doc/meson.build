@@ -161,6 +161,8 @@ if get_option('mandoc')
         page_install = {}
         if doc_name_attribute == 'fvwm-file-browser'
             page_install = {'install_tag': 'file-browser'}
+        elif doc_name_attribute == 'fvwm-pinboard'
+            page_install = {'install_tag': 'pinboard'}
         endif
         man_pages += custom_target(
             dest,

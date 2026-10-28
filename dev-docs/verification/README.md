@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Optional desktop pinboard](VERIFICATION-2026-10-27-PINBOARD.md): saved references, shaped canvas, native management/recovery and three themes; focused Linux/FreeBSD/sanitizer/install results and remaining #64 profiles.
+
+- [File-job acceptance completion](VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md): remaining Linux ARM64 filesystem/permission and real copy-progress/cancellation rows; source-bound reuse of the earlier five targets.
+
 - [Bounded file-operation jobs](VERIFICATION-2026-10-27-FILE-JOBS.md): eight operations, isolated worker and native consumer; focused Linux/BSD/filesystem evidence, three themes and explicit remaining profile coverage.
 
 - [2026-10-27 native module scale handoff](VERIFICATION-2026-10-27-MODULE-UI-SCALE.md) — focused Linux policy/native metadata foundation; #51/#69 consumer acceptance remains open.

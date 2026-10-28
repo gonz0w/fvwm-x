@@ -651,7 +651,7 @@ def parse_xrandr_monitors(output: str) -> dict[str, dict[str, object]]:
 
     pattern = re.compile(
         r"^\s*\d+:\s+([+*]*)(\S+)\s+"
-        r"(\d+)/(\d+)x(\d+)/(\d+)([+-]\d+)([+-]\d+)"
+        r"(\d+)/(\d+)x(\d+)/(\d+)(\+-?\d+|-\d+)(\+-?\d+|-\d+)"
         r"(?:\s+(.*?))?\s*$"
     )
     monitors: dict[str, dict[str, object]] = {}
@@ -672,8 +672,8 @@ def parse_xrandr_monitors(output: str) -> dict[str, dict[str, object]]:
             "mm_width": int(match.group(4)),
             "height": int(match.group(5)),
             "mm_height": int(match.group(6)),
-            "x": int(match.group(7)),
-            "y": int(match.group(8)),
+            "x": int(match.group(7).removeprefix("+")),
+            "y": int(match.group(8).removeprefix("+")),
             "output_names": output_text.split() if output_text else [],
         }
     if len(monitors) != int(count_match.group(1)):
@@ -3659,6 +3659,22 @@ Monitors: 1
             "output_names": ["screen"],
         }
     }
+
+    # xrandr prints a literal '+' before negative named-monitor offsets.
+    for position in ("+-640+-20", "-640-20"):
+        negative = parse_xrandr_monitors(
+            "Monitors: 1\n 0: Negative 640/169x480/127" + position + "\n"
+        )
+        assert negative["Negative"]["x"] == -640
+        assert negative["Negative"]["y"] == -20
+    try:
+        parse_xrandr_monitors(
+            "Monitors: 1\n 0: Invalid 640/169x480/127+--640+0\n"
+        )
+    except HarnessError:
+        pass
+    else:
+        raise AssertionError("malformed named-monitor position accepted")
 
     verbose_text = """\
 screen connected 1280x720+0+0 (0x3a) normal (normal) 0mm x 0mm

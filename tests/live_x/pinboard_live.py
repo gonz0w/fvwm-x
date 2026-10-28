@@ -183,6 +183,9 @@ class XOracle:
                 C.POINTER(C.c_int), C.POINTER(C.c_int), C.POINTER(word)], C.c_int),
             'XGetClassHint': ([ptr, word, C.POINTER(ClassHint)], C.c_int),
             'XStoreBuffer': ([ptr, C.c_char_p, C.c_int, C.c_int], C.c_int),
+            'XQueryPointer': ([ptr, word, C.POINTER(word), C.POINTER(word),
+                C.POINTER(C.c_int), C.POINTER(C.c_int), C.POINTER(C.c_int),
+                C.POINTER(C.c_int), C.POINTER(C.c_uint)], C.c_int),
             'XGetImage': ([ptr, word, C.c_int, C.c_int, C.c_uint, C.c_uint,
                 word, C.c_int], ptr),
             'XGetPixel': ([ptr, C.c_int, C.c_int], word),
@@ -268,9 +271,13 @@ class XOracle:
 
     def alias(self, window):
         hint = ClassHint()
-        assert self.x.XGetClassHint(self.d, window, C.byref(hint))
         try:
-            return C.string_at(hint.name).decode('ascii')
+            ready = self.view.errors.read(window, 20, lambda:
+                self.x.XGetClassHint(self.d, window, C.byref(hint)))
+            if not ready or not hint.name:
+                return None
+            name = C.string_at(hint.name)
+            return name.decode('ascii') if name else None
         finally:
             if hint.name:
                 self.x.XFree(hint.name)
@@ -293,8 +300,10 @@ class XOracle:
         return wait_for_predicate('owned selection peer timestamp', observed,
             time.monotonic() + 2)
 
-    def click(self, x, y, button=1):
+    def click(self, x, y, button=1, *, before_press=None):
         self.view.pointer.motion(x, y)
+        if before_press is not None:
+            before_press()
         for pressed in (1, 0):
             assert self.view.pointer.x.XTestFakeButtonEvent(self.d, button,
                 pressed, 0)
@@ -338,9 +347,9 @@ class NativeProtocol:
         return value
 
     def cells(self):
-        # Status is a stream barrier, not a reservation on the next Cells
-        # request. Topology may replace the publication between requests.
-        # Restart the whole acquisition, never combine pages from two views.
+        # Each native page carries its publication. Anchor only after the
+        # first complete page validates, then restart the whole acquisition
+        # if a later page changes view/epoch; a prior Status cannot reserve it.
         deadline = time.monotonic() + 5
         def remaining():
             value = deadline - time.monotonic()
@@ -348,11 +357,11 @@ class NativeProtocol:
                 raise TimeoutError('Cells acquisition exceeded five seconds')
             return value
         for attempt in range(3):
-            state = self.status(timeout=remaining())
-            publication = (state['current'], state['epoch'])
+            publication = None
             entries, expected_total, offset = [], None, 0
             for _ in range(32):
                 tag = 'observer-c-' + os.urandom(6).hex()
+                remaining()
                 self.send('Cells %s %s %d 8' % (self.token, tag, offset))
                 end = self.echo.take('FVWM_PINBOARD_CELLS_END %s %s ' %
                     (self.token, tag), timeout=remaining())
@@ -378,14 +387,15 @@ class NativeProtocol:
                     assert row['index'] == offset + index
                     assert re.fullmatch(r'[0-9a-f]{32}', row['id'])
                     page.append(row)
-                if page_publication != publication:
+                if publication is None:
+                    assert offset <= total
+                    publication, expected_total = page_publication, total
+                elif page_publication != publication:
                     self.evidence.setdefault('cells_restarts', []).append(dict(
                         attempt=attempt + 1, offset=offset,
                         old=publication, new=page_publication,
                         discarded_entries=len(entries) + len(page)))
                     break
-                if expected_total is None:
-                    expected_total = total
                 assert total == expected_total and offset <= total
                 entries.extend(page)
                 offset += count
@@ -403,38 +413,61 @@ def run(args, profile, run_root):
     out = run_root / profile
     out.mkdir()
     scale = args.scale or SCALES[profile]
-    svg_helper = None
+    svg_helper = desktop_worker = None
     binaries = [build / 'fvwm3', build / 'modules/FvwmMFL/FvwmMFL',
         build / 'modules/FvwmPinboard/FvwmPinboard']
+    if args.shape_query_refusal:
+        binaries.append(build / 'tests/test-pinboard-no-shape')
     if not args.native_only and not args.shape_unavailable:
+        desktop_worker = build / 'bin/FvwmPrompt/fvwm-desktop-worker'
+        assert desktop_worker.is_file() and os.access(desktop_worker, os.X_OK), (
+            'full pinboard UI requires executable build/bin/FvwmPrompt/fvwm-desktop-worker',
+            str(desktop_worker))
         binaries += [build / 'modules/FvwmForm/FvwmForm',
             build / 'bin/FvwmPrompt/fvwm-pinboard',
             build / 'bin/FvwmPrompt/fvwm-file-browser',
-            build / 'bin/FvwmPrompt/FvwmDesktop',
+            build / 'bin/FvwmPrompt/FvwmDesktop', desktop_worker,
             build / 'bin/fvwm-desktop-capture']
         if args.named_icon_format == 'svg':
             svg_helper = build / 'bin/fvwm-image-svg-worker'
             if svg_helper.is_file():
                 binaries.append(svg_helper)
     inputs = [Path(__file__).resolve(), source / 'dev-docs/decisions/PINBOARD-2026-10-27.md']
+    if args.shape_query_refusal:
+        inputs += [source / 'tests/pinboard_shape_unavailable.c',
+            source / 'tests/meson.build']
     for directory in ('modules/FvwmPinboard', 'bin/FvwmPrompt/internal/pinboard',
             'bin/FvwmPrompt/cmd/fvwmpinboard'):
         inputs += sorted(p for p in (source / directory).glob('*') if p.is_file())
     inputs += [source / 'tests/live_x' / name for name in ('live_x_harness.py',
         'desktop_live.py', 'inspector_live.py', 'native_bindings_live.py',
+        'native_module_proxy.py',
         'browser_continuity_live.py', 'mfl_stream_live.py', 'native_capture.py',
         'geometry_transition_live.py', 'session_x_errors.py', 'colorset_live.py')]
     inputs += [source / name for name in ('libs/module_workarea.c',
         'libs/module_workarea.h', 'libs/module_ui_scale.c',
         'modules/FvwmForm/FvwmForm.c', 'libs/PictureBase.c',
         'bin/FvwmPrompt/internal/iconrender/render.go')]
+    if args.config_replay_only:
+        scope = 'own-instance config replay only'
+    elif args.shape_query_refusal:
+        scope = 'controlled SHAPE query refusal on SHAPE-capable server'
+    elif args.retirement_only:
+        scope = 'native retirement reply window only'
+    elif args.crop_only:
+        scope = 'native pixel containment only'
+    elif args.shape_unavailable:
+        scope = 'SHAPE unavailable'
+    else:
+        scope = 'native server contract' if args.native_only else 'data-only pinboard and native server'
     evidence = dict(status='running', profile=profile, screenshots=[], checks=[],
         failures=[], cleanup_failures=[], source_sha256={str(p.relative_to(source)):
             digest(p) for p in inputs}, binary_sha256={str(p.relative_to(build)):
             digest(p) for p in binaries}, requested_scale=scale,
-        scope='native pixel containment only' if args.crop_only else
-            ('SHAPE unavailable' if args.shape_unavailable else
-            ('native server contract' if args.native_only else 'data-only pinboard and native server')),
+        scope=scope,
+        topology_profile=dict(requested=args.topology_profile,
+            explicitly_requested=args.topology_profile_explicit, effective=None,
+            initial_ui_framebuffer=[2560, 2160]),
         limits=dict(max_pins=256, cells_pages=32, cells_page_size=8,
             cells_acquisition_attempts=3, cells_acquisition_seconds=5,
             fixture_targets=12, physical_display_qualified=False,
@@ -499,7 +532,7 @@ def run(args, profile, run_root):
                     'pinboard real monitor scale', lambda v:
                         v['monitors'].get('DUMMY0', {}).get('mm_width') == mm[0] and
                         v['monitors']['DUMMY0']['mm_height'] == mm[1],
-                    time.monotonic() + 8, 'pinboard-scale')
+                    time.monotonic() + 8, 'pinboard-scale', include_output_ids=False)
             else:
                 command = ['Xvfb', '-screen', '0', '2560x2160x24', '-noreset']
                 if args.shape_unavailable:
@@ -513,12 +546,21 @@ def run(args, profile, run_root):
                 link = modules / directory.name
                 if directory.name in ('FvwmForm', 'FvwmPinboard', 'FvwmMFL'):
                     link.write_text('#!/bin/sh\nexec ' + shlex.join([sys.executable,
-                        str(Path(__file__).resolve()), '--module-proxy',
+                        str(source / 'tests/live_x/native_module_proxy.py'),
                         str(executable), str(native)]) + ' "$@" 2>>' +
                         shlex.quote(str(runtime.root / (directory.name + '.log'))) + '\n')
                     link.chmod(0o700)
                 else:
                     link.symlink_to(executable)
+            if args.shape_query_refusal:
+                wrapped = build / 'tests/test-pinboard-no-shape'
+                assert wrapped.is_file() and os.access(wrapped, os.X_OK), wrapped
+                link = modules / 'FvwmPinboardNoShape'
+                link.write_text('#!/bin/sh\nexec ' + shlex.join([sys.executable,
+                    str(source / 'tests/live_x/native_module_proxy.py'),
+                    str(wrapped), str(native)]) + ' "$@" 2>>' +
+                    shlex.quote(str(runtime.root / 'FvwmPinboardNoShape.log')) + '\n')
+                link.chmod(0o700)
             assets = source / 'default-config'
             desktop = build / 'bin/FvwmPrompt/FvwmDesktop'
             palette, appearance = (('dune', 'light') if profile == 'dune-light'
@@ -553,6 +595,12 @@ def run(args, profile, run_root):
                 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8', 'XDG_DATA_HOME': str(private['data']),
                 'XDG_CONFIG_HOME': str(private['config']), 'XDG_CACHE_HOME': str(private['cache']),
                 'XDG_STATE_HOME': str(private['state']), 'XDG_DATA_DIRS': str(runtime.root / 'absent')})
+            if desktop_worker is not None:
+                env['FVWM_DESKTOP_WORKER'] = str(desktop_worker)
+                evidence['desktop_worker'] = dict(path=str(desktop_worker),
+                    sha256=digest(desktop_worker),
+                    child_environment={'FVWM_DESKTOP_WORKER': str(desktop_worker)},
+                    caller_environment_modified=False)
             if svg_helper is not None:
                 env['FVWM_IMAGE_SVG_WORKER'] = str(svg_helper)
             if args.display:
@@ -582,12 +630,56 @@ def run(args, profile, run_root):
                 time.monotonic() + 12, process=core)
             echo = EchoStream(endpoint)
             if not args.native_only and not args.shape_unavailable:
+                theme_deadline = time.monotonic() + 12
+                def theme_remaining():
+                    remaining = theme_deadline - time.monotonic()
+                    if remaining <= 0:
+                        raise TimeoutError('pinboard theme startup exceeded twelve seconds')
+                    return remaining
+                def provider_ready():
+                    enrollments = list(native.glob('module-*.json'))
+                    assert len(enrollments) <= 256
+                    matches = []
+                    for path in enrollments:
+                        assert path.stat().st_size <= MAX_RECORD
+                        enrolled = json.loads(path.read_text())
+                        if enrolled['real'] == str(build / 'modules/FvwmMFL/FvwmMFL'):
+                            assert enrolled['arguments'] == ['none', '0', '8'], enrolled
+                            matches.append(enrolled)
+                    assert len(matches) <= 1
+                    if not matches:
+                        return None
+                    enrolled = matches[0]
+                    trace = native / ('module-%d.jsonl' % enrolled['proxy'])
+                    if not trace.exists():
+                        return None
+                    assert trace.stat().st_size <= 8 * MAX_RECORD
+                    lines = trace.read_text().split('\n')[:-1]
+                    assert len(lines) <= 65536
+                    for line in lines:
+                        record = json.loads(line)
+                        if (record['direction'] == 'in' and record['kind'] == 1 << 22 and
+                                record['text'].startswith('MFL_PROVIDER_1')):
+                            assert re.fullmatch(r'MFL_PROVIDER_1 [0-9a-f]{32} [0-9a-f]{32}',
+                                record['text']), record
+                            assert record['time'] >= enrolled['started']
+                            theme_remaining()
+                            return dict(enrollment=enrolled, notice=record,
+                                observed=time.monotonic(), deadline=theme_deadline)
+                    return None
+                # Socket creation and Echo barriers precede Desktop readiness.
+                # Its actual provider notice follows configuration and masks.
+                evidence['theme_provider_ready'] = wait_for_predicate(
+                    'actual Desktop provider notice reaches enrolled MFL',
+                    provider_ready, theme_deadline, process=core)
                 def theme_ready():
+                    theme_remaining()
                     tag = 'pin-theme-' + os.urandom(6).hex()
                     echo.send('SendToModule FvwmDesktop query-settings ' + tag + ' all')
                     values = {}
                     for _ in range(64):
-                        raw = echo.take('desktop-settings-' + tag + ' ')
+                        raw = echo.take('desktop-settings-' + tag + ' ',
+                            timeout=min(5, theme_remaining()))
                         if raw.endswith(' done'):
                             break
                         _, name, value = raw.split(' ', 2)
@@ -599,7 +691,7 @@ def run(args, profile, run_root):
                         return values
                     return None
                 evidence['theme_settings'] = wait_for_predicate('actual requested pinboard theme',
-                    theme_ready, time.monotonic() + 12, process=core)
+                    theme_ready, theme_deadline, process=core)
             client = connect_client(display)
             errors = SessionXErrors(client, evidence).install()
             view = NativeView(client, errors, core)
@@ -626,16 +718,79 @@ def run(args, profile, run_root):
                         assert view.pointer.x.XTestFakeKeyEvent(d, modifier, 0, 0)
                 x.XSync(d, 0)
 
-            def start_native():
+            def start_native(module='FvwmPinboard', *, colorset=None):
+                assert module in ('FvwmPinboard', 'FvwmPinboardNoShape')
                 token = os.urandom(16).hex()
                 alias = 'FvwmPinboard-' + token
                 wm('*' + alias + ': Font "' + font + '"')
-                wm('Module FvwmPinboard ' + alias)
+                if colorset is not None:
+                    assert type(colorset) is int and 0 <= colorset <= 255
+                    wm('*' + alias + ': Colorset ' + str(colorset))
+                wm('Module ' + module + ' ' + alias)
                 protocol = NativeProtocol(echo, alias, token, evidence)
                 protocol.send('Owner ' + token)
                 return protocol
 
-            def transaction(protocol, old=0, new=1):
+            def initial_config_queued(protocol, launch):
+                enrollments = list(native.glob('module-*.json'))
+                assert len(enrollments) <= 256
+                matches = []
+                for path in enrollments:
+                    assert path.stat().st_size <= MAX_RECORD
+                    enrolled = json.loads(path.read_text())
+                    if protocol.alias in enrolled['arguments']:
+                        matches.append(enrolled)
+                assert len(matches) <= 1
+                if not matches:
+                    return None
+                enrolled = matches[0]
+                trace = native / ('module-%d.jsonl' % enrolled['proxy'])
+                ends = native / ('end-config-%d.jsonl' % enrolled['proxy'])
+                if not trace.exists() or not ends.exists():
+                    return None
+                assert trace.stat().st_size <= 8 * MAX_RECORD
+                assert ends.stat().st_size <= MAX_RECORD
+                records = trace.read_text().split('\n')[:-1]
+                endings = ends.read_text().split('\n')[:-1]
+                assert len(records) <= 65536 and len(endings) <= 65536
+                if not endings:
+                    return None
+                end = json.loads(endings[0])
+                assert end['kind'] == 1 << 19 and end['time'] >= enrolled['started']
+                incoming = [r for line in records if
+                    (r := json.loads(line))['direction'] == 'in' and
+                    r['kind'] == 1 << 18 and r['time'] <= end['time']]
+                monitor = [r for r in incoming if r['text'].split()[:1] == ['MonitorUI']]
+                # The initial config-END follows a complete MonitorUI bundle in
+                # the proxy FIFO. This proves queued bytes, not native processing;
+                # the original transaction/Status below remains that barrier.
+                assert monitor, 'initial config-END has no MonitorUI bundle'
+                fields = [r['text'].split() for r in monitor]
+                begin = fields[0]
+                assert len(begin) == 6 and begin[:3] == ['MonitorUI', '1', 'BEGIN'], begin
+                epoch = begin[3]
+                assert re.fullmatch(r'[0-9a-f]{16}', epoch) and int(epoch, 16)
+                assert re.fullmatch(r'[0-9]+', begin[4]) and 1 <= int(begin[4]) <= 64
+                count = int(begin[4])
+                assert begin[5] in ('0', '1') and len(fields) == count + 2
+                for index, row in enumerate(fields[1:-1]):
+                    assert len(row) == 13 and row[:4] == ['MonitorUI', '1', 'ROW', epoch], row
+                    assert re.fullmatch(r'[0-9]+', row[4]) and int(row[4]) == index
+                    assert all(re.fullmatch(r'[0-9]+', v) for v in row[5:8])
+                    assert 0 < int(row[5]) <= 0xffffffff and 4 <= int(row[6]) <= 16
+                    assert row[7] in ('0', '1')
+                    assert all(re.fullmatch(r'-?[0-9]+', v) for v in row[8:12])
+                    assert int(row[10]) > 0 and int(row[11]) > 0
+                    assert re.fullmatch(r'(?:[0-9a-f]{2}){1,256}', row[12])
+                    assert b'\0' not in bytes.fromhex(row[12])
+                assert fields[-1] == ['MonitorUI', '1', 'END', epoch, str(count)], fields[-1]
+                observed = time.monotonic()
+                assert observed <= launch + 5, 'native refusal startup budget expired'
+                return dict(enrollment=enrolled, launch=launch,
+                    config_end=end, monitor_begin=monitor[0], monitor_end=monitor[-1],
+                    monitor_rows=count, observed=observed, queued_only=True)
+
+            def submit_transaction(protocol, old=0, new=1):
                 protocol.send('Begin %s %d %d 2' % (protocol.token, old, new))
                 protocol.send('Layout %s %d 96 96 32' % (protocol.token, new))
                 for index, column in enumerate((0, 2)):
@@ -645,6 +800,9 @@ def run(args, profile, run_root):
                     protocol.send('Label %s %d %s %s' % (protocol.token, new,
                         identity, ('Fixture ' + str(index)).encode().hex()))
                 protocol.send('Commit %s %d' % (protocol.token, new))
+
+            def transaction(protocol, old=0, new=1):
+                submit_transaction(protocol, old, new)
                 return wait_for_predicate('native committed view', lambda:
                     (s if (s := protocol.status())['current'] == new and s['state'] == 'ready' else None),
                     time.monotonic() + 5, process=core)
@@ -664,9 +822,62 @@ def run(args, profile, run_root):
                 evidence.update(status='passed', shape_unavailable=state)
                 return
 
+            if args.shape_query_refusal:
+                event_base, error_base = C.c_int(), C.c_int()
+                assert oracle.shape.XShapeQueryExtension(d,
+                    C.byref(event_base), C.byref(error_base)), (
+                    'controlled-query fixture requires an actual SHAPE-capable server')
+                assert oracle.owner() == 0
+                run_native_retirement(start_native, transaction, native, oracle,
+                    view, evidence, core)
+                selection_before = oracle.owner()
+                assert selection_before == 0
+                protocol = start_native('FvwmPinboardNoShape')
+                submit_transaction(protocol)
+                refused = wait_for_predicate('controlled SHAPE query refusal after valid scene', lambda:
+                    (state if (state := protocol.status())['state'] == 'unavailable'
+                        and state['epoch'] != '0' * 16 and state['pending'] == 1
+                        and state['current'] == 0 else None),
+                    time.monotonic() + 4, process=core)
+                assert refused['window'] == 0 and oracle.owner() == selection_before
+                assert not view.named(protocol.alias)
+                marker = 'FVWM_PINBOARD_TEST_SHAPE_QUERY_FALSE'
+                query_log = runtime.root / 'FvwmPinboardNoShape.log'
+                assert marker in query_log.read_text().splitlines(), query_log
+                protocol.send('Retire ' + protocol.token)
+                wait_for_predicate('wrapped refused module actually Waited', lambda:
+                    native_wait_receipt(native, protocol.alias),
+                    time.monotonic() + 4, process=core)
+                assert oracle.owner() == selection_before
+                evidence['shape_query_refusal'] = dict(actual_server_shape=True,
+                    controlled_query_false=True, actual_server_absence_qualified=False,
+                    positive_control=evidence['native_retirement'],
+                    refused=refused, selection_before=selection_before,
+                    selection_after=oracle.owner(), owned_canvas_created=False,
+                    wrapper_marker=marker, wrapper_log_sha256=digest(query_log),
+                    waited=native_wait_receipt(native, protocol.alias))
+                evidence['checks'].append('controlled SHAPE query false refuses valid scene without a canvas')
+                assert not errors.unexpected, errors.unexpected
+                evidence['status'] = 'passed'
+                return
+
+            if args.config_replay_only:
+                run_native_config_replay(start_native, transaction, native,
+                    oracle, view, client, evidence, core, wm, font, folder)
+                assert not errors.unexpected, errors.unexpected
+                evidence['status'] = 'passed'
+                return
+
             if args.crop_only:
                 run_native_picture_containment(runtime, folder, start_native,
                     oracle, view, client, evidence, core)
+                assert not errors.unexpected, errors.unexpected
+                evidence['status'] = 'passed'
+                return
+
+            if args.retirement_only:
+                run_native_retirement(start_native, transaction, native, oracle,
+                    view, evidence, core)
                 assert not errors.unexpected, errors.unexpected
                 evidence['status'] = 'passed'
                 return
@@ -768,13 +979,24 @@ def run(args, profile, run_root):
             assert protocol.status()['current'] == 1
             evidence['invalid_native_transaction'] = rejected
             # A second real native instance must not disturb the selection.
+            duplicate_launch = time.monotonic()
             duplicate = start_native()
+            evidence['duplicate_configuration_queued'] = wait_for_predicate(
+                'exact duplicate initial configuration queued',
+                lambda: initial_config_queued(duplicate, duplicate_launch),
+                duplicate_launch + 5, process=core)
             duplicate.send('Begin %s 0 1 0' % duplicate.token)
             duplicate.send('Commit %s 1' % duplicate.token)
-            refused = wait_for_predicate('duplicate real desktop owner refusal', lambda:
-                (s if (s := duplicate.status())['state'] == 'refused' else None),
+            def duplicate_refused():
+                sent = time.monotonic()
+                value = duplicate.status()
+                evidence.setdefault('duplicate_status_timing', []).append(dict(
+                    sent=sent, received=time.monotonic(), state=value['state'], epoch=value['epoch']))
+                return value if value['state'] == 'refused' else None
+            refused = wait_for_predicate('duplicate real desktop owner refusal', duplicate_refused,
                 time.monotonic() + 3, process=core)
             assert refused['state'] == 'refused' and oracle.owner() == canvas, refused
+            assert refused['epoch'] != '0' * 16, refused
             duplicate.send('Retire ' + duplicate.token)
             # Real input events are observed independently of metadata replies.
             focus(canvas)
@@ -951,12 +1173,18 @@ def run(args, profile, run_root):
                 time.monotonic() + 4, process=core)
             assert view.attributes(normal).map_state == 2
             assert oracle.words(normal, '_NET_WM_WINDOW_TYPE', 4) == [desktop_type.value]
+            existing_desktop_launch = time.monotonic()
             existing_desktop = start_native()
+            evidence['existing_desktop_configuration_queued'] = wait_for_predicate(
+                'exact desktop-conflict initial configuration queued',
+                lambda: initial_config_queued(existing_desktop, existing_desktop_launch),
+                existing_desktop_launch + 5, process=core)
             existing_desktop.send('Begin %s 0 1 0' % existing_desktop.token)
             existing_desktop.send('Commit %s 1' % existing_desktop.token)
             conflict_refused = wait_for_predicate('desktop client without selection refuses new canvas',
                 lambda: (s if (s := existing_desktop.status())['state'] == 'refused' else None),
                 time.monotonic() + 4, process=core)
+            assert conflict_refused['epoch'] != '0' * 16, conflict_refused
             assert oracle.owner() == 0 and view.attributes(normal).map_state == 2
             existing_desktop.send('Retire ' + existing_desktop.token)
             normal_type = C.c_ulong(oracle.atom('_NET_WM_WINDOW_TYPE_NORMAL'))
@@ -971,6 +1199,8 @@ def run(args, profile, run_root):
             evidence['checks'].append('ordinary client later becoming desktop retires only owned canvas')
             run_native_picture_containment(runtime, folder, start_native, oracle,
                 view, client, evidence, core)
+            run_native_retirement(start_native, transaction, native, oracle,
+                view, evidence, core)
             if not args.native_only:
                 run_owner(args, runtime, source, build, out, env, endpoint,
                     state_path, folder, raw_path, originals, native, echo,
@@ -981,6 +1211,38 @@ def run(args, profile, run_root):
             evidence['status'] = 'failed'
             evidence['failures'].append(dict(type=type(failure).__name__,
                 message=str(failure), traceback=traceback.format_exc()))
+            guard = evidence.get('topology_failure_guard')
+            if guard is not None:
+                proof = dict(status='checking', checked_monotonic=time.monotonic(),
+                    eligible=guard['eligible'], state_requirement=(
+                        'unchanged before first intentional topology preference write'
+                        if guard['eligible'] else
+                        'not applicable: intentional fixture mutation phase; outcome may be unknown'))
+                evidence['topology_failure_preservation'] = proof
+                try:
+                    targets = {name: digest(folder / name)
+                        for name in evidence['fixture']['source_files']}
+                    proof['observed_source_hashes'] = targets
+                    proof['sources_unchanged'] = targets == evidence['fixture']['source_files']
+                    proof['observed_literal_target_sha256'] = digest(raw_path)
+                    proof['literal_target_unchanged'] = (proof['observed_literal_target_sha256'] ==
+                        evidence['fixture']['literal_target_sha256'])
+                    proof['symlink_unchanged'] = os.readlink(folder / 'alias') == 'notes.txt'
+                    observed = state_path.read_bytes()
+                    proof['observed_state_sha256'] = hashlib.sha256(observed).hexdigest()
+                    if guard['eligible']:
+                        proof['state_unchanged'] = (
+                            proof['observed_state_sha256'] == guard['state_sha256'])
+                    assert proof['sources_unchanged'] and proof['literal_target_unchanged']
+                    assert proof['symlink_unchanged']
+                    if guard['eligible']:
+                        assert proof['state_unchanged'], 'topology failure changed committed state'
+                    proof['status'] = 'preservation passed; profile still failed'
+                except BaseException as preservation_failure:
+                    proof['status'] = 'preservation failed or unavailable'
+                    evidence['failures'].append(dict(step='topology failure preservation',
+                        type=type(preservation_failure).__name__,
+                        message=str(preservation_failure), traceback=traceback.format_exc()))
             raise
         finally:
             def clean(label, operation):
@@ -1012,6 +1274,176 @@ def run(args, profile, run_root):
                 evidence['status'] = 'failed'
             atomic_json(out / 'evidence.json', evidence)
     assert evidence['status'] == 'passed' and not evidence['cleanup_failures']
+
+
+def run_native_config_replay(start_native, transaction, native, oracle,
+        view, client, evidence, core, wm, font, folder):
+    """Filter stored module rows while retaining complete common replay."""
+    sentinel = 'pinboard-unrelated-' + os.urandom(8).hex()
+    unrelated = 'PinboardReplayUnrelated-' + os.urandom(8).hex()
+    wm('*' + unrelated + ': Sentinel ' + sentinel)
+    wm('Colorset 12 fg white, bg navy')
+    wm('ImagePath ' + str(folder))
+    protocol = start_native(colorset=12)
+    state = transaction(protocol)
+    assert state['epoch'] != '0' * 16
+    canvas = state['window']
+    attrs = view.attributes(canvas)
+    root = client.geometry(client.root)
+    assert attrs and attrs.map_state == 2
+    assert (attrs.width, attrs.height) == (root[2], root[3])
+    scene = protocol.cells()
+    assert scene[:2] == (state['current'], state['epoch'])
+    assert len(scene[2]) == 2 and all(c['visible'] and
+        c['x'] >= 0 and c['y'] >= 0 and c['width'] > 0 and c['height'] > 0 and
+        c['x'] + c['width'] <= root[2] and c['y'] + c['height'] <= root[3]
+        for c in scene[2])
+    enrolled = [json.loads(path.read_text()) for path in native.glob('module-*.json')
+        if protocol.alias in json.loads(path.read_text())['arguments']]
+    assert len(enrolled) == 1
+    enrolled = enrolled[0]
+    trace = native / ('module-%d.jsonl' % enrolled['proxy'])
+    ends = native / ('end-config-%d.jsonl' % enrolled['proxy'])
+    result = dict(alias=protocol.alias, enrollment=enrolled,
+        sentinel=sentinel, expected_request='Send_ConfigInfo *' + protocol.alias,
+        initial_state=state, initial_geometry=scene, root_geometry=list(root))
+    evidence['native_config_replay'] = result
+
+    def snapshot():
+        assert trace.stat().st_size <= 8 * 1024 * 1024
+        records = [json.loads(line) for line in trace.read_text().split('\n')[:-1]]
+        requests = [r for r in records if r['direction'] == 'out' and
+            r['text'].lstrip().startswith('Send_ConfigInfo')]
+        assert len(requests) <= 16
+        if not ends.exists():
+            return None
+        assert ends.stat().st_size <= MAX_RECORD
+        endings = [json.loads(line) for line in ends.read_text().split('\n')[:-1]]
+        if not requests or len(endings) != len(requests):
+            return None
+        assert all(r['text'].strip() == result['expected_request'] for r in requests), requests
+        incoming = [r for r in records if r['direction'] == 'in' and r['kind'] == 1 << 18]
+        assert all(sentinel not in r['text'] for r in incoming)
+        replay_desks = []
+        for request, end in zip(requests, endings):
+            assert end['kind'] == 1 << 19 and end['time'] >= request['time']
+            lines = [r['text'] for r in incoming if request['time'] <= r['time'] <= end['time']]
+            assert all(any(line.startswith(prefix) for line in lines) for prefix in
+                ('Monitor ', 'DesktopConfiguration ', 'ImagePath ',
+                 'ClickTime ', 'MoveThreshold ', 'DesktopSize ', 'LoggingFD ', 'IgnoreModifiers '))
+            # DumpColorset writes its native index in hexadecimal; instance
+            # Colorset configuration above/below retains decimal syntax.
+            colorsets = [line.split() for line in lines if line.startswith('Colorset ')]
+            assert any(len(fields) >= 2 and int(fields[1], 16) == 12 for fields in colorsets)
+            for verb in ('BEGIN', 'ROW', 'END'):
+                assert any(line.split()[:3] == ['MonitorUI', '1', verb] for line in lines)
+            monitors = [shlex.split(line) for line in lines if line.startswith('Monitor ')]
+            assert monitors and all(len(fields) == 16 for fields in monitors)
+            replay_desks.append([int(fields[9]) for fields in monitors])
+            own = [shlex.split(line[len(protocol.alias) + 1:].lstrip(': \t'))
+                for line in lines if line.startswith('*' + protocol.alias)]
+            assert ['Font', font] in own and ['Colorset', '12'] in own, own
+        return dict(requests=requests, endings=endings, received_config_rows=len(incoming),
+            replay_desks=replay_desks,
+            common_and_instance_rows_preserved=True, unrelated_rows_received=0)
+
+    initial = wait_for_predicate('complete scoped native configuration replay',
+        snapshot, time.monotonic() + 5, process=core)
+    result['initial_replay_barrier'] = protocol.status()
+    assert result['initial_replay_barrier']['state'] == 'ready'
+    before = len(initial['requests'])
+    wm('GotoDesk 0 1')
+    assert oracle.words(client.root, '_NET_CURRENT_DESKTOP', 6) == [1]
+    def refreshed():
+        value = snapshot()
+        return value if value and len(value['requests']) > before and all(
+            desk == 1 for desk in value['replay_desks'][-1]) else None
+    result['workspace_refresh'] = wait_for_predicate('scoped replay after actual workspace change',
+        refreshed, time.monotonic() + 5, process=core)
+    after = protocol.status()
+    assert after['state'] == 'ready' and after['current'] == state['current']
+    assert oracle.owner() == canvas and view.attributes(canvas).map_state == 2
+    result['after_workspace_state'] = after
+    protocol.send('Retire ' + protocol.token)
+    result['waited'] = wait_for_predicate('configuration-test native child actually Waited', lambda:
+        native_wait_receipt(native, protocol.alias), time.monotonic() + 4, process=core)
+    result['final_trace'] = snapshot()
+    assert result['final_trace'] is not None and oracle.owner() == 0
+    result['common_end_trace_sha256'] = digest(ends)
+    result['native_trace_sha256'] = digest(trace)
+    evidence['checks'].append('own-instance config filtering preserves common records, workspace replay and END')
+
+
+def native_wait_receipt(native, alias):
+    matches = [json.loads(path.read_text()) for path in native.glob('module-*.json')
+        if alias in json.loads(path.read_text())['arguments']]
+    assert len(matches) <= 1
+    if not matches:
+        return None
+    enrolled = matches[0]
+    stopped = native / ('stopped-%d.json' % enrolled['proxy'])
+    if not stopped.exists():
+        return None
+    waited = json.loads(stopped.read_text())
+    assert waited['child'] == enrolled['child'] and waited['returncode'] == 0
+    return dict(enrollment=enrolled, waited=waited)
+
+
+def run_native_retirement(start_native, transaction, native, oracle,
+        view, evidence, core):
+    """An established module must answer separately delivered retirement Status.
+
+    The bounded delay separates packet-reader iterations inside the existing
+    250-ms reply window. It is a fixture precondition, not a speed threshold.
+    Selection/window observations and actual proxy Wait remain independent.
+    """
+    protocol = start_native()
+    state = transaction(protocol)
+    canvas = state['window']
+    wait_for_predicate('retirement fixture has a mapped owned canvas', lambda:
+        oracle.owner() == canvas and (a := view.attributes(canvas)) and a.map_state == 2,
+        time.monotonic() + 3, process=core)
+    ready = time.monotonic()
+    wait_for_predicate('established canvas is past its initial-map deadline',
+        lambda: time.monotonic() - ready >= 5.05,
+        ready + 6, process=core)
+    protocol.send('Renew ' + protocol.token)
+    assert protocol.status()['state'] == 'ready'
+    enrolled = [json.loads(path.read_text()) for path in native.glob('module-*.json')
+        if protocol.alias in json.loads(path.read_text())['arguments']]
+    assert len(enrolled) == 1
+    enrolled = enrolled[0]
+    stopped = native / ('stopped-%d.json' % enrolled['proxy'])
+    assert not stopped.exists(), 'retirement child stopped before Retire'
+    result = dict(alias=protocol.alias, enrollment=enrolled, window=canvas,
+        ready_age_seconds=time.monotonic() - ready,
+        retire_sent_monotonic=time.monotonic(), reply_window_seconds=0.25)
+    evidence['native_retirement'] = result
+    protocol.send('Retire ' + protocol.token)
+    wait_for_predicate('Retire releases its selection and destroys its canvas', lambda:
+        oracle.owner() == 0 and not view.attributes(canvas),
+        time.monotonic() + 1, process=core)
+    result['release_observed_monotonic'] = time.monotonic()
+    time.sleep(0.06)
+    result['status_sent_monotonic'] = time.monotonic()
+    result['delayed_status_seconds'] = (result['status_sent_monotonic'] -
+        result['retire_sent_monotonic'])
+    assert (result['status_sent_monotonic'] -
+        result['release_observed_monotonic']) >= 0.06
+    assert result['delayed_status_seconds'] < 0.20, (
+        'inconclusive: fixture missed existing retirement reply window', result)
+    result['status'] = protocol.status()
+    assert result['status']['state'] == 'retired' and result['status']['window'] == 0
+    def exact_wait():
+        if not stopped.exists():
+            return None
+        value = json.loads(stopped.read_text())
+        assert value['child'] == enrolled['child'] and value['returncode'] == 0
+        return value
+    result['waited'] = wait_for_predicate('retired native child actually Waited',
+        exact_wait, time.monotonic() + 3, process=core)
+    assert oracle.owner() == 0
+    evidence['checks'].append('established native retirement answers delayed Status and exits0')
 
 
 def run_native_picture_containment(runtime, folder, start_native, oracle,
@@ -1202,7 +1634,7 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         canvas = wait_for_predicate('explicit pinboard owner selection', oracle.owner,
             time.monotonic() + 10, process=process)
         alias = oracle.alias(canvas)
-        assert re.fullmatch(r'FvwmPinboard-[0-9a-f]{32}', alias), alias
+        assert alias and re.fullmatch(r'FvwmPinboard-[0-9a-f]{32}', alias), alias
         protocol = NativeProtocol(echo, alias, alias.removeprefix('FvwmPinboard-'), evidence)
         wait_for_predicate('explicit owner first scene', lambda:
             (s if (s := protocol.status())['state'] == 'ready' and s['current'] else None),
@@ -1236,6 +1668,8 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
             if not target:
                 return None
             alias = oracle.alias(target)
+            if not alias:
+                return None
             lines = [row['text'][len(alias)+1:].lstrip(': \t') for row in rows(native)
                 if row['direction'] == 'out' and row['text'].startswith('*' + alias + ': ')]
             updates = [row['text'] for row in rows(native)
@@ -1257,11 +1691,72 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         return wait_for_predicate('actual native Form ' + title, observed,
             time.monotonic() + 8, process=owner)
 
-    def click_child(window, button=1):
+    def paste_pointer_receipt(current, expected, owned):
+        # Observe only this Form's owned window chain. An intervening foreign
+        # window is classified without recording its XID or reading its data.
+        chain, visited = [], set()
+        window = client.root
+        for _ in range(16):
+            if window not in owned or window in visited:
+                break
+            visited.add(window)
+            root, child = C.c_ulong(), C.c_ulong()
+            rx, ry, wx, wy = C.c_int(), C.c_int(), C.c_int(), C.c_int()
+            mask = C.c_uint()
+            same_screen = view.errors.read(window, 38, lambda:
+                client.x.XQueryPointer(client.display, window, C.byref(root),
+                    C.byref(child), C.byref(rx), C.byref(ry), C.byref(wx),
+                    C.byref(wy), C.byref(mask)))
+            chain.append(dict(window=window, same_screen=bool(same_screen),
+                expected_root=root.value == client.root,
+                root_position=[rx.value, ry.value], local_position=[wx.value, wy.value],
+                button_mask=mask.value, child_present=bool(child.value),
+                child_owned=child.value in owned,
+                child=child.value if child.value in owned else None))
+            if not same_screen or not child.value or child.value not in owned:
+                break
+            window = child.value
+        actual_focus = view.focus()
+        return dict(monotonic=time.monotonic(), chain=chain,
+            expected_input_reached=expected in visited,
+            focus=actual_focus if actual_focus in owned else None,
+            focus_owned=actual_focus in owned,
+            focus_is_form=actual_focus == current['window'],
+            focus_is_input=actual_focus == expected)
+
+    def click_child(window, button=1, *, receipt=None, current=None):
         attrs = view.attributes(window)
         assert attrs and attrs.map_state == 2
         px, py = oracle.origin(window)
-        oracle.click(px + min(6, attrs.width // 2), py + min(6, attrs.height // 2), button)
+        point = [px + min(6, attrs.width // 2), py + min(6, attrs.height // 2)]
+        observed = None
+        if receipt is not None:
+            assert current and window in current['inputs'].values()
+            owned = {client.root, current['window'], *current['inputs'].values(),
+                *current['lists'].values()}
+            parent = current['window']
+            for _ in range(16):
+                if parent == client.root:
+                    break
+                parent = client.parent(parent)
+                if not parent or parent in owned:
+                    break
+                owned.add(parent)
+            root_geometry = client.geometry(client.root)
+            actual_focus = view.focus()
+            receipt.update(monotonic=time.monotonic(), input_child=window,
+                form=current['window'], input_root_origin=[px, py],
+                input_size=[attrs.width, attrs.height], mapped_state=attrs.map_state,
+                root_bounds=[0, 0, root_geometry[2], root_geometry[3]],
+                click_point=point, button=button,
+                focus=actual_focus if actual_focus in owned else None,
+                focus_owned=actual_focus in owned,
+                focus_is_form=actual_focus == current['window'],
+                focus_is_input=actual_focus == window)
+            def observed():
+                receipt['after_motion_before_press'] = paste_pointer_receipt(
+                    current, window, owned)
+        oracle.click(*point, button, before_press=observed)
 
     def manager():
         def idle():
@@ -1335,19 +1830,39 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
     def paste(current, values):
         assert not current.get('paste_pending'), 'unobserved CUT_BUFFER0 paste'
         names = list(values)
+        receipts = evidence.setdefault('paste_diagnostics', [])
+        assert len(receipts) < 64
+        proof = dict(sequence=len(receipts) + 1, started_monotonic=time.monotonic(),
+            fields=[dict(name=name, bytes=len(value), sha256=hashlib.sha256(value).hexdigest())
+                for name, value in values.items()], clear_clicks=[])
+        receipts.append(proof)
         for name, value in values.items():
             assert name in current['inputs'] and b'\0' not in value and b'\t' not in value
-            click_child(current['inputs'][name])
+            click = dict(field=name)
+            proof['clear_clicks'].append(click)
+            click_child(current['inputs'][name], receipt=click, current=current)
             focus(current['window'])
             view.key('u', control=True)
-        # One immutable cut buffer for the entire draft. XSync alone does not
-        # prove Form consumed it; callback() must read back bytes before reuse.
+        # One immutable cut buffer for the entire draft. Passive root-property
+        # readback proves delivery; callback() still proves Form consumption.
         data = b'\t'.join(values[name] for name in names)
+        proof['store_started_monotonic'] = time.monotonic()
         client.x.XStoreBuffer(client.display, data, len(data), 0)
         client.x.XSync(client.display, 0)
-        click_child(current['inputs'][names[0]], button=2)
+        cut = oracle.property(client.root, 'CUT_BUFFER0')
+        proof['cut_buffer'] = dict(monotonic=time.monotonic(), type=cut['type'],
+            format=cut['format'], items=len(cut['values']), expected_bytes=len(data),
+            expected_sha256=hashlib.sha256(data).hexdigest())
+        assert cut['type'] == oracle.atom('STRING') and cut['format'] == 8, proof['cut_buffer']
+        copied = bytes(cut['values'])
+        proof['cut_buffer'].update(bytes=len(copied), sha256=hashlib.sha256(copied).hexdigest())
+        assert copied == data, proof['cut_buffer']
+        proof['paste_click'] = dict(field=names[0])
+        click_child(current['inputs'][names[0]], button=2,
+            receipt=proof['paste_click'], current=current)
         focus(current['window'])
         current['paste_pending'] = True
+        proof['submitted_monotonic'] = time.monotonic()
 
     def capture(name):
         assert len(evidence['screenshots']) < 5
@@ -1509,7 +2024,8 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         (v['pins'][0]['column'], v['pins'][0]['row']) == (3, 2))
     current = manager()
     callback(current, 'dialog-close', 'Escape')
-    moved = next(c for c in projection(7)[2] if c['id'] == initial['pins'][0]['id'])
+    before_pointer_drag = projection(7)
+    moved = next(c for c in before_pointer_drag[2] if c['id'] == initial['pins'][0]['id'])
     pressed = False
     try:
         oracle.view.pointer.motion(moved['x'] + moved['width'] // 2,
@@ -1525,6 +2041,21 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
             oracle.view.pointer.button(False)
     value = committed(value, lambda v:
         (v['pins'][0]['column'], v['pins'][0]['row']) == (4, 2))
+    def pointer_drag_painted():
+        current = painted()
+        if current is None:
+            return None
+        admission = current['admission']
+        cell = admission['cell']
+        return current if (cell['column'], cell['row']) == (4, 2) and \
+            cell['visible'] and admission['view'] > before_pointer_drag[0] else None
+    # Persistence precedes asynchronous icon publication. Prove the dragged
+    # scene is actually painted before sending native input that depends on it.
+    moved_icon = wait_for_predicate(
+        'pointer-dragged named icon is painted in the advanced native view',
+        pointer_drag_painted, time.monotonic() + 8, process=owner)
+    evidence['named_icon_after_move'] = moved_icon
+    evidence['named_icon_after_pointer_drag'] = moved_icon
     current = manager()
     callback(current, 'dialog-close', 'Escape')
     moved = next(c for c in projection(7)[2] if c['id'] == initial['pins'][0]['id'])
@@ -1552,11 +2083,6 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         keyboard_commit=[3, 2], pointer_commit=[4, 2], context_menu=context)
     current = manager()
     callback(current, 'dialog-close', 'Escape')
-    moved_icon = wait_for_predicate('moved named icon is painted after owned work settles',
-        painted, time.monotonic() + 8, process=owner)
-    assert (moved_icon['admission']['cell']['column'],
-        moved_icon['admission']['cell']['row']) == (4, 2)
-    evidence['named_icon_after_move'] = moved_icon
     capture('03-relabeled-icon-move.png')
     current = select_first()
     callback(current, 'edit', 'F2')
@@ -1653,6 +2179,11 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
     projection(len(external['pins']))
     disk = state_path.read_bytes()
     if args.xorg_config:
+        pre_topology = json.loads(disk)
+        evidence['topology_failure_guard'] = dict(eligible=True,
+            recorded_monotonic=time.monotonic(), state_sha256=hashlib.sha256(disk).hexdigest(),
+            revision=pre_topology['revision'], pin_ids=[pin['id'] for pin in pre_topology['pins']],
+            phase='before first intentional topology preference write')
         # Reuse the already owned dummy server. Real output properties and
         # core MonitorUI/legacy reservations independently constrain Cells.
         operations = evidence.setdefault('operations', [])
@@ -1667,20 +2198,36 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         def randr(arguments, label, predicate):
             run_required_xrandr(runtime, env['DISPLAY'], arguments, label, operations)
             return wait_for_authoritative_state(runtime, env['DISPLAY'], label,
-                predicate, time.monotonic() + 8, label)
+                predicate, time.monotonic() + 8, label, include_output_ids=False)
 
-        run_required_xrandr(runtime, env['DISPLAY'], ['--addmode', 'DUMMY1', '2560x2160'],
+        secondary = dict(width=2560, height=2160, mm_width=339, mm_height=286)
+        if args.topology_profile == 'compact':
+            secondary = dict(width=1280, height=1024, mm_width=169, mm_height=135)
+        secondary_mode = '%dx%d' % (secondary['width'], secondary['height'])
+        framebuffer = [1280 + secondary['width'], max(1024, secondary['height'])]
+        expected_mixed = dict(
+            DUMMY0=dict(x=0, y=0, width=1280, height=1024, mm_width=339, mm_height=271),
+            DUMMY1=dict(x=1280, y=0, **secondary))
+        evidence['topology_profile'].update(selected=args.topology_profile,
+            requested_mixed_monitors=expected_mixed,
+            requested_mixed_framebuffer=framebuffer, secondary_existing_mode=secondary_mode,
+            large_framebuffer_in_scope=args.topology_profile == 'large')
+        # Both profiles attach an existing server mode; neither invents one.
+        run_required_xrandr(runtime, env['DISPLAY'], ['--addmode', 'DUMMY1', secondary_mode],
             'pinboard-secondary-mode', operations)
         mixed_arguments = ['--output', 'DUMMY0', '--mode', '1280x1024', '--pos', '0x0',
             '--primary', '--set', 'WIDTH_MM', '339', '--set', 'HEIGHT_MM', '271',
-            '--output', 'DUMMY1', '--mode', '2560x2160', '--pos', '1280x0',
-            '--set', 'WIDTH_MM', '339', '--set', 'HEIGHT_MM', '286', '--fb', '3840x2160']
+            '--output', 'DUMMY1', '--mode', secondary_mode, '--pos', '1280x0',
+            '--set', 'WIDTH_MM', str(secondary['mm_width']), '--set', 'HEIGHT_MM',
+            str(secondary['mm_height']), '--fb', '%dx%d' % tuple(framebuffer)]
         def mixed_ready(v):
-            return (v['monitors'].get('DUMMY0', {}).get('width') == 1280 and
-                v['monitors'].get('DUMMY1', {}).get('x') == 1280 and
-                v['monitors']['DUMMY1']['mm_width'] == 339 and
-                v['monitors']['DUMMY1']['mm_height'] == 286)
+            return (set(v['monitors']) == set(expected_mixed) and
+                all(v['monitors'][name].get(key) == value
+                    for name, facts in expected_mixed.items() for key, value in facts.items()) and
+                [v['root']['width'], v['root']['height']] == framebuffer)
         mixed = randr(mixed_arguments, 'pinboard-mixed-real-outputs', mixed_ready)
+        evidence['topology_profile'].update(effective=args.topology_profile,
+            effective_mixed_monitors=mixed['monitors'], effective_mixed_root=mixed['root'])
         def native_mixed_ready():
             publication = projection(len(external['pins']))
             metadata = {}
@@ -1701,6 +2248,9 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         evidence['secondary_reservation_setup']['native_before_manual_command'] = \
             wait_for_predicate('native publication has both actual mixed-monitor bounds',
                 native_mixed_ready, time.monotonic() + 10, process=owner)
+        evidence['topology_failure_guard'].update(eligible=False,
+            first_intentional_write_monotonic=time.monotonic(),
+            phase='intentional topology preference mutation began; state outcome may be unknown')
         cli('--pin', folder / 'secondary-missing', '--label', 'Secondary preferred',
             '--monitor', 'DUMMY1', '--column', '1', '--row', '1')
         external = stored()
@@ -1753,6 +2303,8 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
         layout = wait_for_predicate('mixed-scale work-area-contained native projection',
             lambda: native_layout(mixed, True), time.monotonic() + 10, process=owner)
         assert {row['quarters'] for row in layout['metadata'].values()} == {4, 8}
+        assert layout['metadata']['DUMMY0']['quarters'] == 4
+        assert layout['metadata']['DUMMY1']['quarters'] == 8
         assert bytes.fromhex(layout['preferred']['monitor']) == b'DUMMY1'
         assert layout['preferred']['x'] >= 1280 + 11 and layout['preferred']['y'] >= 160
         before_epoch = layout['epoch']
@@ -1849,7 +2401,14 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
             reason='requires --xorg-config; Xvfb result does not qualify that contract'))
     # Persistence across an actual owner lifecycle. Stop only our exact child;
     # the core-managed native module independently releases or loses its lease.
-    owner.close(time.monotonic() + 5)
+    owner_stop_started = time.monotonic()
+    owner.close(owner_stop_started + 5)
+    evidence['owner_graceful_stop'] = dict(returncode=owner.poll(),
+        seconds=time.monotonic() - owner_stop_started, total_deadline_seconds=5,
+        sigterm_fraction=0.5)
+    assert owner.poll() == 0, (
+        'owner failed graceful stop before the unchanged fixture escalation',
+        evidence['owner_graceful_stop'])
     wait_for_predicate('closed owner releases native selection', lambda: oracle.owner() == 0,
         time.monotonic() + 18)
     assert state_path.read_bytes() == disk
@@ -1896,25 +2455,165 @@ def run_owner(args, runtime, source, build, out, env, endpoint, state_path,
     evidence['checks'].append('owner restart persistence and native-child loss without target mutation')
 
 
+def self_test_cells():
+    """Check observer publication/deadline contracts without X or tools."""
+    from unittest.mock import patch
+
+    token, alias = 'a' * 32, 'PinboardSelfTest'
+    epoch_a, epoch_b = '0000000000000001', '0000000000000002'
+
+    class Stream:
+        def __init__(self, frames, clock):
+            self.frames, self.clock = list(frames), clock
+            self.queue, self.offsets, self.end_timeouts = [], [], []
+
+        def send(self, command):
+            words = command.split()
+            assert len(words) == 7 and words[:2] == ['SendToModule', alias]
+            assert words[2] == 'Cells', 'Cells acquisition added a Status RPC'
+            assert words[3] == token and words[6] == '8'
+            frame = self.frames.pop(0)
+            offset, tag = int(words[5]), words[4]
+            assert offset == frame['offset']
+            self.offsets.append(offset)
+            view, epoch, total = frame['view'], frame['epoch'], frame['total']
+            count = min(8, max(0, total - offset))
+            for index in range(count):
+                position = offset + index
+                row_view = frame.get('row_view', view)
+                row_epoch = frame.get('row_epoch', epoch)
+                identity = '%032x' % (frame['id_base'] + position)
+                row = ('FVWM_PINBOARD_CELL %s %s %d %s %d %s '
+                    '73637265656e 4 %d 0 %d 0 96 96 1' %
+                    (token, tag, row_view, row_epoch, position, identity,
+                        position, position * 96))
+                self.queue.append((row, 0))
+            end = 'FVWM_PINBOARD_CELLS_END %s %s %d %s %d %d %d' % (
+                token, tag, view, epoch, offset, count, total)
+            self.queue.append((end, frame.get('delay', 0)))
+
+        def take(self, prefix, timeout=5):
+            assert timeout > 0
+            for index, (record, delay) in enumerate(self.queue):
+                if not record.startswith(prefix):
+                    continue
+                if record.startswith('FVWM_PINBOARD_CELLS_END '):
+                    self.end_timeouts.append(timeout)
+                if delay > timeout:
+                    self.clock[0] += timeout
+                    raise TimeoutError('fake stream exhausted original Cells deadline')
+                self.clock[0] += delay
+                self.queue.pop(index)
+                return record
+            raise AssertionError('fake stream has no matching token/tag reply')
+
+    def frame(offset=0, total=3, view=7, epoch=epoch_a, id_base=100, **extra):
+        return dict(offset=offset, total=total, view=view, epoch=epoch,
+            id_base=id_base, **extra)
+
+    def acquire(frames, *, failure=None):
+        clock, evidence = [100.0], {}
+        stream = Stream(frames, clock)
+        protocol = NativeProtocol(stream, alias, token, evidence)
+        with patch(__name__ + '.time.monotonic', side_effect=lambda: clock[0]):
+            if failure is None:
+                result = protocol.cells()
+            else:
+                try:
+                    protocol.cells()
+                except failure as error:
+                    evidence['_self_test_failure'] = str(error)
+                    result = None
+                else:
+                    raise AssertionError('invalid or expired Cells acquisition succeeded')
+        return result, stream, evidence, clock[0]
+
+    one, stream, evidence, _ = acquire([frame()])
+    assert one[:2] == (7, epoch_a) and stream.offsets == [0]
+    assert [row['id'] for row in one[2]] == ['%032x' % n for n in range(100, 103)]
+    assert 'native_status' not in evidence
+
+    many, stream, _, _ = acquire([frame(total=10), frame(offset=8, total=10)])
+    assert many[:2] == (7, epoch_a) and stream.offsets == [0, 8]
+    assert [row['index'] for row in many[2]] == list(range(10))
+    assert [row['id'] for row in many[2]] == ['%032x' % n for n in range(100, 110)]
+
+    restarted, stream, evidence, _ = acquire([
+        frame(total=16), frame(offset=8, total=16, view=8, epoch=epoch_b, id_base=200),
+        frame(total=16, view=8, epoch=epoch_b, id_base=200),
+        frame(offset=8, total=16, view=8, epoch=epoch_b, id_base=200)])
+    assert restarted[:2] == (8, epoch_b) and stream.offsets == [0, 8, 0, 8]
+    assert [row['id'] for row in restarted[2]] == ['%032x' % n for n in range(200, 216)]
+    assert evidence['cells_restarts'] == [dict(attempt=1, offset=8,
+        old=(7, epoch_a), new=(8, epoch_b), discarded_entries=16)]
+
+    for fault in (dict(row_view=8), dict(row_epoch=epoch_b)):
+        _, stream, evidence, _ = acquire([frame(**fault)], failure=AssertionError)
+        assert stream.offsets == [0] and 'cells_restarts' not in evidence
+        assert evidence['_self_test_failure'] == 'one Cells page mixed row/END publications'
+
+    for frames, expected_offsets in (
+        ([frame(total=24, delay=2), frame(offset=8, total=24, delay=2),
+          frame(offset=16, total=24, delay=2)], [0, 8, 16]),
+        ([frame(total=16, delay=2),
+          frame(offset=8, total=16, view=8, epoch=epoch_b, delay=2),
+          frame(total=16, view=8, epoch=epoch_b, delay=2),
+          frame(offset=8, total=16, view=8, epoch=epoch_b)], [0, 8, 0]),
+    ):
+        _, stream, evidence, now = acquire(frames, failure=TimeoutError)
+        assert stream.offsets == expected_offsets and now == 105.0
+        assert stream.end_timeouts == [5.0, 3.0, 1.0]
+        assert evidence['_self_test_failure'] == 'fake stream exhausted original Cells deadline'
+
+
 def main():
+    if sys.argv[1:] == ['--self-test']:
+        self_test_cells()
+        print('Pinboard Cells observer self-test passed')
+        return 0
     if len(sys.argv) > 1 and sys.argv[1] == '--module-proxy':
-        return module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:])
+        return module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:],
+            record_end_config=True)
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--xorg-config', type=Path)
+    parser.add_argument('--topology-profile', choices=('large', 'compact'),
+        help='real-RandR geometry profile (default: large); requires --xorg-config')
     parser.add_argument('--display', help='caller-owned authenticated disposable server; native-only')
     parser.add_argument('--scale', choices=('1', '1.25', '2'))
     parser.add_argument('--native-only', action='store_true')
     parser.add_argument('--crop-only', action='store_true',
         help='only native opaque/alpha containment; implies --native-only')
+    parser.add_argument('--config-replay-only', action='store_true',
+        help='only own-instance/common configuration replay; implies --native-only')
+    parser.add_argument('--retirement-only', action='store_true',
+        help='only native retirement reply/lifetime regression; implies --native-only')
+    parser.add_argument('--shape-query-refusal', action='store_true',
+        help='controlled false query from a noninstalled fixture on a SHAPE-capable server')
     parser.add_argument('--shape-unavailable', action='store_true')
     parser.add_argument('--skip-lease-expiry', action='store_true',
         help='reuse a separately source-bound lease-expiry result; records not run')
     parser.add_argument('--named-icon-format', choices=('png', 'svg'), default='png',
         help='PNG requires libpng; SVG is an explicit enabled-renderer precondition')
     args = parser.parse_args()
+    args.topology_profile_explicit = args.topology_profile is not None
+    if args.topology_profile_explicit and not args.xorg_config:
+        parser.error('--topology-profile requires --xorg-config')
+    args.topology_profile = args.topology_profile or 'large'
+    if args.config_replay_only:
+        if args.shape_query_refusal or args.retirement_only or args.crop_only or args.shape_unavailable:
+            parser.error('--config-replay-only cannot combine with other focused modes')
+        args.native_only = True
+    if args.shape_query_refusal:
+        if args.retirement_only or args.crop_only or args.shape_unavailable:
+            parser.error('--shape-query-refusal cannot combine with other focused modes')
+        args.native_only = True
+    if args.retirement_only:
+        if args.crop_only or args.shape_unavailable:
+            parser.error('--retirement-only cannot combine with crop/SHAPE-disable setup')
+        args.native_only = True
     if args.crop_only:
         args.native_only = True
         if args.shape_unavailable:

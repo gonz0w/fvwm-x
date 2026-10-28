@@ -21,11 +21,12 @@ Recent features:
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
 - Optional desktop pinboard: saved references, shaped cells and Form management;
-  unpin preserves targets. Qualification in progress.
+  unpin preserves targets. [Support checks](dev-docs/verification/VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md)
+  pass; release qualification continues.
 
-Slate: optional desktop pinboard.
+Slate: desktop pinboard.
 
-![Slate dark desktop pinboard manager](doc/screenshots/pinboard-slate-dark-02-manager-missing-literal-root.png)
+![Slate dark desktop pinboard manager](doc/screenshots/pinboard-acceptance-slate-dark.png)
 
 Dune: 4096-entry grid.
 

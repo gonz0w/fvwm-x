@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Pinboard acceptance supplement](VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md): retirement, scoped config refresh, terminal query recovery, controlled capability refusal and composed support evidence.
+
 - [Optional desktop pinboard](VERIFICATION-2026-10-27-PINBOARD.md): saved references, shaped canvas, native management/recovery and three themes; focused Linux/FreeBSD/sanitizer/install results and remaining #64 profiles.
 
 - [File-job acceptance completion](VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md): remaining Linux ARM64 filesystem/permission and real copy-progress/cancellation rows; source-bound reuse of the earlier five targets.

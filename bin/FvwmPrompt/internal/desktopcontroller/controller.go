@@ -80,6 +80,7 @@ type Controller struct {
 	operations                               []*operation
 	operationJobs                            map[string]*operation
 	spawnSlots                               chan struct{}
+	browser                                  browserHandoff
 	settingsBinding                          *menuBinding
 	appBinding                               *menuBinding
 	systemBinding                            *menuBinding
@@ -93,7 +94,7 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	d := &Controller{root: root, statePath: statePath, system: system, worker: worker, capture: capture, png: png, send: send,
 		instance: newID(16), generation: newID(16), overrides: values{}, width: 1440,
 		ctx: ctx, cancel: cancel, jobs: map[string]*job{}, completed: make(chan job, 4),
-		operationJobs: map[string]*operation{}, spawnSlots: make(chan struct{}, 256), lockerResult: make(chan error, 1)}
+		operationJobs: map[string]*operation{}, spawnSlots: make(chan struct{}, 256), browser: newBrowserHandoff(), lockerResult: make(chan error, 1)}
 	d.settingsBinding = newMenuBinding("settings")
 	d.appBinding = newMenuBinding("intent")
 	d.systemBinding = newMenuBinding("intent")
@@ -127,6 +128,7 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 func (d *Controller) Close() {
 	d.closePalette()
 	d.closed = true
+	d.browser.menuToken = ""
 	d.settingsBinding.policy.Close()
 	d.appBinding.policy.Close()
 	d.systemBinding.policy.Close()

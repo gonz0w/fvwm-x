@@ -382,7 +382,8 @@ func (d *Controller) publishJob(result job) error {
 			return errors.New("Invalid file menu result")
 		}
 		files := []fileEntry{}
-		rows := []desktopsettings.Row{{"Up one folder", "SendToModule FvwmDesktop files-up"}, {"Home", "SendToModule FvwmDesktop files"}, {"Open terminal here", "SendToModule FvwmDesktop files-terminal"}, {"", "Nop"}}
+		menuToken := newID(16)
+		rows := []desktopsettings.Row{{"Up one folder", "SendToModule FvwmDesktop files-up"}, {"Home", "SendToModule FvwmDesktop files"}, {"Open terminal here", "SendToModule FvwmDesktop files-terminal"}, {"Open this folder in browser", "SendToModule FvwmDesktop files-browser " + menuToken}, {"", "Nop"}}
 		for i, r := range records {
 			if !validText(r.Path, 4096) || !validText(r.Name, 4096) {
 				return errors.New("Invalid file menu entry")
@@ -392,10 +393,11 @@ func (d *Controller) publishJob(result job) error {
 			if r.Directory {
 				label = "> " + label
 			}
-			rows = append(rows, desktopsettings.Row{label, fmt.Sprintf("SendToModule FvwmDesktop file %d", i)})
+			rows = append(rows, desktopsettings.Row{filesMenuLabel(label), fmt.Sprintf("SendToModule FvwmDesktop file %d", i)})
 		}
 		d.files, d.directory = files, d.pendingDirectory
-		d.menu(desktopsettings.Menu{Name: "SlateFiles", Title: d.directory, Rows: rows})
+		d.browser.menuToken = menuToken
+		d.menu(desktopsettings.Menu{Name: "SlateFiles", Title: filesMenuLabel(d.directory), Rows: rows})
 		d.emit("Menu SlateFiles Monitor c c")
 	case "configuration":
 		reportValue, err := checkedReport(result.result)

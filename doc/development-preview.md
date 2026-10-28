@@ -38,6 +38,25 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Localized XDG menu actions
+
+The standalone XDG menu groups declared localized actions after their parent.
+These unmodified Slate dark, Dune light and enlarged Classic captures use
+synthetic colored fixture icons to check localized application, action and
+.directory icon resolution. They are test fixtures, not new artwork.
+
+![Slate XDG menu with localized parent and actions](screenshots/xdg-menu-slate-dark.png)
+
+![Dune XDG menu with localized parent and actions](screenshots/xdg-menu-dune-light.png)
+
+![Enlarged Classic XDG menu with localized parent and actions](screenshots/xdg-menu-classic-large.png)
+
+The [capture manifest](screenshots/xdg-menu-manifest.json) records image and
+source identities. The [checkpoint results](../dev-docs/verification/VERIFICATION-2026-10-28-XDG-MENU-PARITY.md)
+cover regeneration and retained exports. Panel counters are whole-guest values,
+not a window-manager benchmark. Broader XDG and file integration, MIME, startup
+notification, install and release qualification remain in progress.
+
 ## Localized Applications actions
 
 Applications can show declared Desktop Actions as localized *Application — Action*

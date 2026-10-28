@@ -550,6 +550,9 @@ environment roots are excluded; explicit roots remain available. A hidden or
 invalid entry at higher priority masks the same desktop ID in lower roots.
 Discovery uses localized names and optional icons, typed visibility and terminal
 metadata, current-desktop and executable-availability filters, and decoded paths.
+Localized icons require a base Icon value.
+Desktop visibility uses the colon-separated XDG_CURRENT_DESKTOP value, falling
+back to FVWM when it is empty.
 Locale selection uses LC_ALL, LC_MESSAGES and LANG in that order, with LANGUAGE
 preferences before the selected locale. C, C.* or POSIX suppresses LANGUAGE.
 A specified working directory must be absolute, at most 4096 bytes and an
@@ -562,7 +565,9 @@ invoke a shell.
 Declared Desktop Actions appear as additional *Application — Action* rows, with
 localized labels. Only the first eight declared IDs are considered; invalid,
 duplicate or missing actions still occupy positions in that limit. They use the
-parent application's working directory, terminal setting and field-code context.
+parent application's working directory, terminal setting and name and desktop
+file for %c and %k. An optional action icon overrides the localized parent icon
+for %i; otherwise the parent icon is used.
 Each launches as a literal argument vector. A malformed action is refused independently and does
 not remove a valid primary launcher; unlisted action groups are not launched.
 Actions share existing result limits, pagination and generation-bound callbacks.

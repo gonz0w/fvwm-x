@@ -7,9 +7,9 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [XDG Applications adoption](#r1-xdg-applications-adoption--2026-10-28)
-batches four existing #56 outcomes after merged PR292. Broader #56/#67 remain
-open; the faster focused cadence and deferred release gates remain explicit.
+Current feature checkpoint: [XDG menu parity](#r1-xdg-menu-parity--2026-10-28)
+follows merged PR293 under #56. Broader #56/#67 remain open; the faster focused
+cadence and deferred release gates remain explicit.
 
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
@@ -452,12 +452,75 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 XDG menu parity — 2026-10-28
+
+Owner: Cam; `codex/r1-xdg-menu-parity`; XDG-01 #56. Base merged PR293
+`d6e49462baa00100ea90a0285429fd6724d304f5`. Status: implementation, focused Linux/installed native three-theme checks and
+all nine capture inspections and separate final integrated review pass. Its PR
+is being prepared; runtime/fixture identities remain unchanged. Four related
+outcomes selected before
+implementation:
+(1) declared Desktop Action rows in the standalone menu, grouped with their
+parent desktop ID at Filename/Merge placement; (2) localized application/action
+icons through the existing resolver; (3) localized .directory icons through that
+same resolver; (4) environment-derived XDG_CURRENT_DESKTOP colon-list visibility,
+with empty fallback FVWM, shared by the provider and Desktop worker. Keep the
+existing --desktop option as a menu filename/prefix selector, not a visibility
+override. Reuse a small pure action/icon policy across these two existing consumers
+where this removes duplication; it owns no I/O, processes or X state.
+
+Acceptance: primary/action argv/cwd/Terminal and base %c/%k context remain literal;
+action Icon overrides/falls back to the localized parent. Only the first eight
+declared IDs are considered in either consumer; malformed, duplicate, missing or
+unlisted actions do not remove a valid primary. Parent validation and executable
+availability remain caller-owned: worker skips bad/unavailable parents and checks
+cwd; standalone provider keeps its current primary-error/publication policy.
+Standalone actions follow parent allocation, Filename reservation, Merge sorting,
+inline aliases/header/limit and duplicate-placement rules, without synthetic IDs.
+Charge all action rows/arguments/metadata to current presentation/render/catalog
+budgets; preserve whole-publication refusal on overflow. Worker retains its
+512-record/4096-argument/64KiB bounds; provider retains its larger global limits.
+Independent fixtures cover distinct/stable catalog launches, regeneration and
+exported old records, locale/icon fallback, malformed actions, desktop visibility
+and the existing --desktop selector behavior. Existing configuration names and
+arguments remain usable; no new CLI switch, menu framework or dependency.
+
+One combined affected Linux unit/race/vet/incremental build and installed CLI/
+actual-X checkpoint, with Slate/Dune/enlarged Classic screenshots, establishes
+this consumer slice. Regression expectations precede production edits. Repeat
+only changed checks after a demonstrated failure. No new OS/ABI/syscall/server
+contract is selected; wider six-target/install/release gates remain outstanding.
+Lead owns execution/tracker/Git/GitHub and evidence. Temper implementers own
+bounded source/test edits; a separate reviewer examines the final candidate.
+
+Complete this existing consumer before checking #56's first acceptance row.
+No MIME resolver, role-query UI, session bus or startup-notification implementation
+is implicitly selected. Broader #56/#67 remain open; #257/#258 stay parked.
+
+[Source-bound qualification and retained failures](verification/VERIFICATION-2026-10-28-XDG-MENU-PARITY.md)
+and [new gallery](../doc/development-preview.md#localized-xdg-menu-actions)
+record eight frozen Go files, independent CLI/native effects and all nine captures.
+All 190 canonical archive members/modes/hashes/gzip CRC pass before guest duplicates
+retire. The owned lab stops normally; source/build/stage/cache/disks and measured
+reference images remain. #56's first row can complete on parity merge; whole
+#56/#67 stay open. No complete issue closes from this subset.
+
+The due 5/5 [periodic observation](verification/PERFORMANCE-2026-10-28-XDG-MENUS.md)
+is complete after PR293, reusing retained PR288 artifacts and the current built
+images. Worker timing ranges overlap; core/Script images are identical, with
+Script private-dirty variation explicit. No speedup or leak cause is inferred.
+Preserve `m5-performance-xdg-20261028` as the next measured reference. Counter
+resets 0/5 after PR293; the next runtime merge reaches 1/5. This is not whole-WM
+latency, native CPU, physical hardware or release-budget qualification. No benchmark
+rebuild, all-OS matrix or second comparison is due for this candidate.
+
 ## R1 XDG Applications adoption — 2026-10-28
 
 Owner: Cam; `codex/r1-xdg-applications`; XDG-01 #56, related portable
-FILE-INTEGRATION-01 #67. Status: implemented; focused Linux/installed three-theme qualification and
-all 15 capture inspections and separate final integrated review pass. Its PR is
-being prepared; runtime and fixture identities remain unchanged. Selected before implementation
+FILE-INTEGRATION-01 #67. Status: merged in PR293 as `d6e49462baa00100ea90a0285429fd6724d304f5`;
+canonical signature/actual-author DCO and identical reviewed tree verified. Branch
+retired; Project Done. Focused Linux/installed three-theme checks, all 15 capture
+inspections and separate final integrated review pass. Selected before implementation
 based on merged PR292 `c9b5aa7b3f60ee6b383daf9212f0215636f008d0`. Deliver one coherent
 Applications-menu checkpoint with four outcomes: exact Desktop Entry Exec
 expansion through the existing shared parser; absolute XDG data-root precedence;
@@ -487,7 +550,7 @@ six-target rebuild for these portable existing-helper consumers; wider support
 and R1 release acceptance remain outstanding. Lead owns execution/integration;
 Temper implementers own bounded code/fixture edits; separate reviewer examines
 the exact final candidate. Model selection remains unverified by backend metadata.
-Performance reference is 4/5 after PR292; the next merge reaches 5/5. #257/#258
+Performance reference is 5/5 after PR293; comparison is due. #257/#258
 remain parked. No additional issue currently meets its complete closure contract.
 
 [Verification, failures and remaining acceptance](verification/VERIFICATION-2026-10-28-XDG-APPLICATIONS.md)

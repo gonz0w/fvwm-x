@@ -224,3 +224,21 @@ func TestDesktopApplicationsChargeActionOutputBytes(t *testing.T) {
 		t.Fatal("action labels bypassed result byte accounting", len(got), err)
 	}
 }
+
+func TestDesktopApplicationsShareCurrentDesktopVisibility(t *testing.T) {
+	env := xdgApplicationEnvironment(t)
+	root := t.TempDir()
+	writeXDGApplication(t, root, "other.desktop", "Name=Other\nOnlyShowIn=Other;\nExec=app\n")
+	writeXDGApplication(t, root, "fvwm.desktop", "Name=FVWM\nOnlyShowIn=FVWM;\nExec=app\n")
+	for value, want := range map[string][]string{"Other:Third": {"Other"}, "": {"FVWM"}, "Other:FVWM": {"FVWM", "Other"}} {
+		t.Setenv("XDG_CURRENT_DESKTOP", value)
+		got, err := applications(context.Background(), []string{root}, env)
+		var names []string
+		for _, app := range got {
+			names = append(names, app.Name)
+		}
+		if err != nil || !reflect.DeepEqual(names, want) {
+			t.Fatal(value, names, want, err)
+		}
+	}
+}

@@ -14,6 +14,7 @@ import os
 import re
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import unittest
 from xml.sax.saxutils import escape
@@ -37,7 +38,8 @@ class DesktopTests(unittest.TestCase):
                         XDG_CONFIG_DIRS=str(self.root/'absent-config'),
                         XDG_DATA_HOME=str(self.apps.parent),
                         XDG_DATA_DIRS=str(self.root/'absent-data'),
-                        XDG_MENU_PREFIX='', LC_ALL='C', LANGUAGE='')
+                        XDG_MENU_PREFIX='', XDG_CURRENT_DESKTOP='FVWM',
+                        LC_ALL='C', LANGUAGE='')
         self.env.pop('FVWM_XDG_MENU_TIMEOUT', None)
         self.desktop('a', 'Alpha & 100%', 'fixture-app "two words" %%')
         self.menu = self.write_menu('applications', '<DefaultAppDirs/><Include><All/></Include>')
@@ -63,6 +65,96 @@ class DesktopTests(unittest.TestCase):
                 self.assertEqual(path.stat().st_mode & 0o777, 0o600)
                 result.extend(json.loads(path.read_text())['Records'].values())
         return result
+
+    def launch_reference(self, text, caption):
+        rows = [line for line in text.splitlines()
+                if line.startswith('+ "' + caption + '" Exec exec ')]
+        self.assertEqual(len(rows), 1, 'expected exactly one launch row: ' + caption)
+        row = rows[0]
+        match = re.search(r' --launch ([A-Za-z0-9_-]+) ([0-9a-f]{64})$', row)
+        self.assertIsNotNone(match, row)
+        return match.groups()
+
+    def test_declared_actions_keep_literal_parent_context_and_old_references(self):
+        cwd = self.root / 'working space'
+        cwd.mkdir()
+        report = self.root / 'launched.json'
+        program = self.root / 'fixture application'
+        program.write_text('#!' + sys.executable +
+            '\nimport json, os, sys\nfrom pathlib import Path\n' +
+            'Path(' + repr(str(report)) + ').write_text(json.dumps(' +
+            '{"argv": sys.argv[1:], "cwd": os.getcwd()}))\n')
+        program.chmod(0o700)
+        name = 'Éditeur démo'
+        entry = self.apps / 'a.desktop'
+        command = '"' + str(program) + '" main %c %i %k %%'
+        self.desktop('a', 'English editor', command, extra=
+            'Name[fr]=' + name + '\nIcon=parent-icon\nIcon[fr]=parent-fr\n' +
+            'Path=' + str(cwd).replace(' ', '\\s') + '\nTerminal=true\n' +
+            'Actions=Inspect;Bad;Inspect;Missing;Recent;\n' +
+            '[Desktop Action Inspect]\nName=Inspect\nName[fr]=Inspecter\n' +
+            'Icon=action-icon\nIcon[fr]=action-fr\n' +
+            'Exec="' + str(program) + '" inspect %c %i %k\n' +
+            'Terminal=false\nPath=/not-parent\n' +
+            '[Desktop Action Bad]\nName=Must not appear\nExec=bad %Z\n' +
+            '[Desktop Action Recent]\nName=Recent\nName[fr]=Récent\n' +
+            'Exec="' + str(program) + '" recent %c %i %k\n' +
+            '[Desktop Action Unlisted]\nName=Unlisted\nExec=never\n')
+        env = dict(self.env, LC_ALL='fr_FR.UTF-8', LANGUAGE='fr')
+        out, _ = self.run_cli('--enable-mini-icons=false', '--include-items', 'none',
+                              '--term-cmd', 'env', env=env)
+        action = name + ' — Inspecter'
+        reference = self.launch_reference(out, action)
+        self.assertEqual(out.count('+ "' + action + '"'), 1)
+        self.assertNotIn('Must not appear', out)
+        self.assertNotIn('Unlisted', out)
+        records = self.records()
+        self.assertEqual(len(records), 3)
+        expected = [str(program), 'inspect', name, '--icon', 'action-fr', str(entry)]
+        selected = next(record for record in records if record['Argv'] == expected)
+        self.assertEqual(selected['Directory'], str(cwd))
+        self.assertEqual(selected['TerminalCommand'], 'env')
+        self.assertIn(dict(Argv=[str(program), 'recent', name, '--icon',
+            'parent-fr', str(entry)], Directory=str(cwd), TerminalCommand='env'), records)
+        self.run_cli('--launch', *reference, env=env)
+        self.assertEqual(json.loads(report.read_text()), dict(argv=expected[1:], cwd=str(cwd)))
+        frozen = self.user / 'old-exported-menu'
+        frozen.write_text(out)
+        self.desktop('a', 'Replacement', 'replacement-program')
+        self.run_cli('--enable-mini-icons=false', '--include-items', 'none', env=env)
+        self.assertEqual(self.launch_reference(frozen.read_text(), action), reference)
+        self.run_cli('--launch', *reference, env=env)
+        self.assertEqual(json.loads(report.read_text()), dict(argv=expected[1:], cwd=str(cwd)))
+        self.assertEqual(len(self.records()), 4)
+
+    def test_declared_action_prefix_is_bounded_without_losing_primary(self):
+        groups = ''.join('[Desktop Action A%d]\nName=Action %d\nExec=action-%d\n' %
+                         (index, index, index) for index in range(10))
+        self.desktop('a', 'Primary', extra='Actions=' +
+            ''.join('A%d;' % index for index in range(10)) + '\n' + groups)
+        out, _ = self.run_cli('--enable-mini-icons=false', '--include-items', 'none')
+        self.assertIn('+ "Primary"', out)
+        self.assertIn('+ "Primary — Action 7"', out)
+        self.assertNotIn('Action 8', out)
+        self.assertNotIn('Action 9', out)
+        self.assertEqual(len(self.records()), 9)
+
+    def test_current_desktop_visibility_and_menu_selector_are_independent(self):
+        self.desktop('only-fvwm', 'FVWM only', extra='OnlyShowIn=FVWM;\n')
+        self.desktop('only-kde', 'KDE only', extra='OnlyShowIn=KDE;\n')
+        self.desktop('only-xfce', 'XFCE only', extra='OnlyShowIn=XFCE;\n')
+        self.desktop('not-xfce', 'Except XFCE', extra='NotShowIn=XFCE;\n')
+        for current, present, absent in [
+                ('', ('FVWM only', 'Except XFCE'), ('KDE only', 'XFCE only')),
+                ('FVWM', ('FVWM only', 'Except XFCE'), ('KDE only', 'XFCE only')),
+                ('KDE:XFCE', ('KDE only', 'XFCE only'), ('FVWM only', 'Except XFCE'))]:
+            with self.subTest(current=current):
+                out, _ = self.run_cli('--enable-mini-icons=false', '--include-items', 'none',
+                    '--desktop', 'applications', env=dict(self.env, XDG_CURRENT_DESKTOP=current))
+                for label in present:
+                    self.assertIn('+ "' + label + '"', out)
+                for label in absent:
+                    self.assertNotIn('+ "' + label + '"', out)
 
     def test_discovery_lists_without_publication(self):
         out, _ = self.run_cli('--get-menus', 'all')

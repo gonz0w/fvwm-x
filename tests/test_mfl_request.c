@@ -848,6 +848,59 @@ static void test_files_schema_and_private_parts(void)
 	assert(!serial && !payload);
 }
 
+static void test_directory_role_requests(void)
+{
+	static const char prefix[] =
+		"{\"version\":1,\"id\":\"roles\",\"method\":\"action\","
+		"\"resource\":\"files\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"generation\":\"0123456789abcdef0123456789abcdef\",";
+	static const char *valid[] = {
+		"\"operation\":\"directory-roles\",\"values\":{}}",
+		"\"operation\":\"directory-roles-close\",\"values\":{}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{"
+		"\"generation\":\"0123456789abcdef0123456789abcdef\","
+		"\"id\":\"0123456789abcdef0123456789abcdef\"}}"
+	};
+	static const char *invalid[] = {
+		"\"operation\":\"directory-roles\",\"values\":{\"id\":\"bad\"}}",
+		"\"operation\":\"directory-roles-close\",\"values\":{\"extra\":true}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{"
+		"\"generation\":\"bad\",\"id\":\"0123456789abcdef0123456789abcdef\"}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{"
+		"\"generation\":\"0123456789abcdef0123456789abcdef\",\"id\":null}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{"
+		"\"generation\":\"0123456789abcdef0123456789abcdef\","
+		"\"id\":\"0123456789abcdef0123456789abcdef\",\"extra\":true}}",
+		"\"operation\":\"directory-role-launch\",\"values\":{"
+		"\"generation\":\"0123456789abcdef0123456789abcdef\","
+		"\"id\":\"0123456789abcdef0123456789abcdef\",\"id\":\"0123456789abcdef0123456789abcdef\"}}"
+	};
+	struct mfl_request request;
+	char json[MAX_MODULE_INPUT_TEXT_LEN + 1];
+
+	for (size_t i = 0; i < sizeof(valid) / sizeof(valid[0]); i++)
+	{
+		snprintf(json, sizeof(json), "%s%s", prefix, valid[i]);
+		assert(mfl_request_parse(json, &request));
+		assert(request.kind == MFL_REQUEST_FILES_ACTION);
+	}
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+	{
+		snprintf(json, sizeof(json), "%s%s", prefix, invalid[i]);
+		assert(!mfl_request_parse(json, &request));
+	}
+	assert(mfl_request_parse(
+		"{\"version\":1,\"id\":\"roles\",\"method\":\"query\","
+		"\"resource\":\"files\",\"scope\":\"directory_roles\","
+		"\"provider\":\"0123456789abcdef0123456789abcdef\","
+		"\"generation\":\"0123456789abcdef0123456789abcdef\","
+		"\"offset\":8,\"limit\":8}", &request));
+	assert(request.kind == MFL_REQUEST_FILES_QUERY);
+	assert(strcmp(request.snapshot_resource, "directory_roles") == 0);
+}
+
 static void test_files_actions(void)
 {
 	static const char prefix[] =
@@ -970,6 +1023,7 @@ static void test_files_actions(void)
 int main(void)
 {
 	test_files_actions();
+	test_directory_role_requests();
 	test_files_schema_and_private_parts();
 	test_integer_settings();
 	test_preview_requests();

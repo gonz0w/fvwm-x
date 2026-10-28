@@ -478,7 +478,7 @@ request {"version":1,"id":"selected","method":"query","resource":"files","provid
 Discovery returns `version: 1`, `query_only: false`, `file_mutation: false`, `provider_limit: 8` and
 `providers`, each with `provider` and `busy`. An empty list means no registered
 browser. Targeted queries require `provider` and `scope`: `state`, `items`,
-`selection` or `properties`. Read-only connections may query; registration is
+`selection`, `properties` or `directory_roles`. Read-only connections may query; registration is
 refused in read-only mode. This is same-user metadata transport, not an X11 or
 same-user security boundary. Use matching browser/MFL builds.
 
@@ -500,6 +500,16 @@ action or replacing its native windows. Draft input and file content are absent.
   directories, links, special entries and decimal-string `regular_file_bytes`.
   `recursive` and `links_followed` are false. Folder contents, link targets and
   file content are not read. An empty selection is unavailable.
+* `directory_roles` pages the currently published folder-application choices;
+  querying does not start discovery. It returns `status`, `choice_generation`,
+  `default_id`, `count`, `detail`, and `items`, `total`, `offset` and
+  `next_offset`. Each item contains an opaque `id`, display `label`,
+  `fingerprint`, `terminal` and `default`. The public choice generation is
+  distinct from the normal browser generation. Failed role work remains failed;
+  a retained chooser can preserve its previously current folder collection only
+  when the same captured folder is revalidated. Other file-work intents,
+  including navigation and scheduled watch refreshes, or chooser/parent
+  retirement invalidate the retained capture.
 
 For pages, optional `limit` is 1–8 (default 8); `offset` is 0–4096. A nonzero
 offset requires the preceding result's `generation`. Metadata, projection,
@@ -623,6 +633,15 @@ browser's configured opener. Symlink/special-file actions remain unavailable.
 |`terminal`
 |`{}`
 |Revalidate the observed folder and start the configured terminal there.
+|`directory-roles`
+|`{}`
+|Discover current-folder application choices in the isolated worker.
+|`directory-role-launch`
+|`{"generation":"CHOICE_GENERATION_32_HEX","id":"CHOICE_32_HEX"}`
+|Revalidate and hand the captured folder to the explicitly selected choice.
+|`directory-roles-close`
+|`{}`
+|Close the folder-application chooser.
 |`custom`
 |`{"index":0}` (integer 0–3)
 |Revalidate the complete captured selection, then pass its literal paths to that
@@ -682,6 +701,11 @@ Poll state until the matching work is terminal: `loaded`, `started`, `failed`,
 `started` means only that a process was handed off; application exit and opened
 pixels are not tracked. Completion enters the existing native publication path;
 no filesystem call runs in MFL, the WM core or the browser event loop.
+Directory-role launch uses the outer current provider generation as well as the
+choice generation and ID in `values`. Changed folder, application or association
+is refused until discovery is refreshed; a changed default cannot redirect the
+explicit choice. RootPath revalidation is an observation, not a descriptor lease
+against a later rename. See *fvwm-file-browser*(1) for role and launch semantics.
 Operation state and worker occupancy also invalidate generation tokens.
 
 One owned worker slot is available. Another worker request returns `busy` while

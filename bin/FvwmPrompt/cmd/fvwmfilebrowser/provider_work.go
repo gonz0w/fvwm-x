@@ -48,6 +48,9 @@ func (b *browser) planProviderWork(operation string, action providerAction) (wor
 		case "item":
 			request.Operation, request.ID = "browse", action.id
 		}
+	case "directory-role-launch":
+		request, code := b.directoryRoleRequest(action.roleGeneration, action.id)
+		return request, "directory-role-launch", code
 	case "open":
 		request.Operation, request.ID, request.Program = "activate", action.id, b.opener
 	case "terminal":
@@ -89,12 +92,23 @@ func (b *browser) startProviderWork(query fileQuery, action providerAction) stri
 	if b.active || b.pending != nil {
 		return "busy"
 	}
+	if query.Operation == "directory-roles" {
+		visible := b.roles != nil && b.roles.visible
+		if b.beginDirectoryRoles(visible) != nil {
+			return "operation_refused"
+		}
+		b.providerWork = &providerWork{ID: query.Serial, Operation: query.Operation, Status: "accepted", serial: b.serial}
+		return ""
+	}
 	request, navigation, code := b.planProviderWork(query.Operation, action)
 	if code != "" {
 		return code
 	}
 	if b.queue(request, navigation) != nil {
 		return "operation_refused"
+	}
+	if query.Operation == "directory-role-launch" {
+		b.selectDirectoryRole(action.id)
 	}
 	b.providerWork = &providerWork{ID: query.Serial, Operation: query.Operation, Status: "accepted", serial: b.serial}
 	return ""
@@ -134,6 +148,8 @@ func (b *browser) finishProviderWork(event completedWork) {
 	case event.work.serial != b.serial:
 		work.Status = "superseded"
 	case event.result.Status == "loaded" && event.result.Snapshot != nil:
+		work.Status = "loaded"
+	case event.result.Status == "roles" && event.result.RoleFolderValid && validDirectoryRoleResult(event.result.Roles):
 		work.Status = "loaded"
 	case event.result.Status == "started":
 		work.Status = "started"

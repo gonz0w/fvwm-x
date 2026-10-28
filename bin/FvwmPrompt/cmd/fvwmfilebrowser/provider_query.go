@@ -36,7 +36,7 @@ func (b *browser) validFileQuery(query fileQuery) bool {
 	return query.Operation == "" && len(query.Values) == 0 &&
 		query.Offset >= 0 && query.Offset <= collection.MaxItems && query.Limit >= 1 && query.Limit <= providerPageMax &&
 		(query.Generation == "" || hexToken(query.Generation, 32)) &&
-		(query.Scope == "state" || query.Scope == "items" || query.Scope == "selection" || query.Scope == "properties")
+		(query.Scope == "state" || query.Scope == "items" || query.Scope == "selection" || query.Scope == "properties" || query.Scope == "directory_roles")
 }
 
 func (b *browser) providerResult(query fileQuery) (map[string]any, string) {
@@ -78,6 +78,7 @@ func (b *browser) providerResult(query fileQuery) (map[string]any, string) {
 		result["file_actions"] = true
 		result["work"] = b.providerWork
 		result["jobs"] = b.jobSummary()
+		result["directory_roles"] = b.directoryRoleSummary()
 		result["operation_retention"] = "latest_accepted"
 		result["path_request_max"] = providerPathMax
 		result["target_request_max"] = providerTargetMax
@@ -91,6 +92,10 @@ func (b *browser) providerResult(query fileQuery) (map[string]any, string) {
 		result["configured_actions"] = actions
 		result["selection_edit_max"] = providerEditMax
 		result["action_operations"] = providerActionNames()
+	case "directory_roles":
+		if code := b.directoryRolePage(query, result); code != "" {
+			return nil, code
+		}
 	case "properties":
 		if query.Offset != 0 {
 			return nil, "invalid_request"

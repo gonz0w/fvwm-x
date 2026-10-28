@@ -26,6 +26,9 @@ var providerOperations = [...]struct {
 	{"hidden", true},
 	{"watch", false},
 	{"present", false},
+	{"directory-roles", true},
+	{"directory-role-launch", true},
+	{"directory-roles-close", false},
 }
 
 func providerKnownAction(name string) bool {

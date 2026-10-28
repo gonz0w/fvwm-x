@@ -38,6 +38,34 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Choose an application for the current folder
+
+In the optional browser, F12 opens a chooser for the displayed folder. It reads
+the existing directory default and alternatives without changing associations.
+Choose a handler and press Enter to launch, F5 to refresh or Escape to close.
+A changed handler is refused; refresh the choices before trying again. Starting
+an application is a handoff, not confirmation of its completion.
+
+Slate dark: the default is selected alongside alternatives.
+
+![Slate folder application chooser with default and alternatives](screenshots/directory-roles-slate-dark.png)
+
+Dune light: a changed handler is refused and the browser asks for refresh.
+
+![Dune folder chooser reporting a changed handler](screenshots/directory-roles-dune-light.png)
+
+Enlarged Classic: the choices are available again after refresh.
+
+![Enlarged Classic folder chooser after refresh](screenshots/directory-roles-classic-large.png)
+
+These unmodified captures use synthetic applications and folder names. Long
+folder and failure text is shortened in the chooser; the browser status supplies
+the refresh guidance. [Capture identities](screenshots/directory-roles-manifest.json)
+and [checkpoint results](../dev-docs/verification/VERIFICATION-2026-10-28-APPLICATION-ROLES.md)
+record the evidence. Panel counters are whole-guest values, not a benchmark.
+Arbitrary-file MIME detection, D-Bus integration and broader application-role,
+file integration and release qualification remain in progress.
+
 ## Localized XDG menu actions
 
 The standalone XDG menu groups declared localized actions after their parent.

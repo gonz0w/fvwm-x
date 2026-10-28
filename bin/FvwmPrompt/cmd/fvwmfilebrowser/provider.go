@@ -96,7 +96,8 @@ func (b *browser) providerGeneration() string {
 		Opener, Terminal string
 		Actions          actionFlags
 		Jobs             map[string]any
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled, b.serial, b.progress().State, b.opener, b.terminal, b.actions, b.jobSummary()})
+		DirectoryRoles   map[string]any
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled, b.serial, b.progress().State, b.opener, b.terminal, b.actions, b.jobSummary(), b.directoryRoleSummary()})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }

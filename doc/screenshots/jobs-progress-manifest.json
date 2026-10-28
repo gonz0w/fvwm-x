@@ -1,0 +1,65 @@
+{
+  "scope": "actual copy progress and cancellation, explicit short worker pause, not throughput evidence",
+  "base": "8d996ce9ac2f5578702e1299d6762be0b4d5c27e",
+  "fixture_sha256": "53be0b54f9bd7c8fe4db2cfd18f7b2f290763eadde9f1632832554aefd5c8dfa",
+  "archive": {
+    "status": "passed",
+    "files": 118,
+    "archive": {
+      "sha256": "3f56862da55ef7776b6e04aa508f93de969a785b7a1fd0755f0139dbde62d7e8",
+      "bytes": 1067598
+    },
+    "source_root": "/dev/shm/file-jobs-followup-progress",
+    "gzip_crc": true
+  },
+  "captures": [
+    {
+      "profile": "dune-light",
+      "file": "jobs-progress-dune-light-running.png",
+      "bytes": 93960,
+      "sha256": "0e776a236a355acaf30acd901ad1e3eafd0c089d244d4118688eb3c6354135b2",
+      "source_member": "file-jobs-3n5syglx/dune-light/jobs-running-progress.png",
+      "unmodified": true
+    },
+    {
+      "profile": "dune-light",
+      "file": "jobs-progress-dune-light-cancelled.png",
+      "bytes": 97401,
+      "sha256": "2c12d090e157012e5e58d5c6b0bb6984c64c0d3b6d3a9678bd43bf3e05ad9892",
+      "source_member": "file-jobs-3n5syglx/dune-light/jobs-cancelled-progress.png",
+      "unmodified": true
+    },
+    {
+      "profile": "slate-dark",
+      "file": "jobs-progress-slate-dark-running.png",
+      "bytes": 111511,
+      "sha256": "c0039b301e405b8d8c110ac13ef21916352accb3b65eb4c1fa290fffdd8c9b29",
+      "source_member": "file-jobs-jn3c1_d8/slate-dark/jobs-running-progress.png",
+      "unmodified": true
+    },
+    {
+      "profile": "slate-dark",
+      "file": "jobs-progress-slate-dark-cancelled.png",
+      "bytes": 116477,
+      "sha256": "1bb92e21ab3d17dfda3dcd971dac83ec8125bf3e506363dbe1083cacc4f3f0a6",
+      "source_member": "file-jobs-jn3c1_d8/slate-dark/jobs-cancelled-progress.png",
+      "unmodified": true
+    },
+    {
+      "profile": "classic-large",
+      "file": "jobs-progress-classic-large-running.png",
+      "bytes": 285913,
+      "sha256": "659230ddc7fc3020534a8283ac38275f48c7f85c3f3500348529459fc980b0bb",
+      "source_member": "file-jobs-xpu33a40/classic-large/jobs-running-progress.png",
+      "unmodified": true
+    },
+    {
+      "profile": "classic-large",
+      "file": "jobs-progress-classic-large-cancelled.png",
+      "bytes": 301814,
+      "sha256": "3f91d8104fc8d5ed07bfd06aa54d127ac8e804b43d0e20083123d998d93107b9",
+      "source_member": "file-jobs-xpu33a40/classic-large/jobs-cancelled-progress.png",
+      "unmodified": true
+    }
+  ]
+}

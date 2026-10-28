@@ -46,6 +46,7 @@ fvwmprompt_test_binaries = custom_target(
         'xdgsource.test', 'transport.test',
         'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
         'filejobs.test',
+        'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
     ],
     input: fvwmprompt_files,
@@ -234,6 +235,30 @@ test('file-browser-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-json', '-count=1', '-mod=vendor',
         './internal/collection', './internal/filemodel', './internal/filejobs',
         './cmd/fvwmfilebrowser', './cmd/fvwmcommand', './transport'],
+    env: prompt_test_env,
+    timeout: 180,
+)
+
+# Optional data-only desktop references, paired with the native shaped canvas.
+fvwm_pinboard_owner = custom_target(
+    'fvwm-pinboard',
+    output: 'fvwm-pinboard',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-o', meson.current_build_dir() / 'fvwm-pinboard',
+        './cmd/fvwmpinboard',
+    ],
+    install: true,
+    install_dir: bindir,
+    install_tag: 'pinboard',
+)
+test('pinboard-owner-policy', golang,
+    args: ['test', '-C', fvwmprompt_build, '-json', '-count=1', '-mod=vendor',
+        './internal/pinboard', './internal/filemodel', './cmd/fvwmpinboard'],
+    depends: fvwmprompt_test_binaries,
     env: prompt_test_env,
     timeout: 180,
 )

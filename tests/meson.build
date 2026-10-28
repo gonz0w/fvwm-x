@@ -3959,6 +3959,16 @@ form_scale_test = executable(
 )
 test('form-scale', form_scale_test)
 
+pinboard_test = executable(
+    'test-pinboard',
+    ['test_pinboard.c', '../modules/FvwmPinboard/pinboard_policy.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('pinboard-policy', pinboard_test)
+
 pager_monitor_test = executable(
     'test-pager-monitor',
     ['test_pager_monitor.c', '../modules/FvwmPager/fpmonitor.c'],
@@ -4214,6 +4224,17 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
             depends: [fvwm3, fvwm_mfl, fvwm_form, fvwm_desktop,
                 fvwm_desktop_worker, fvwm_file_browser, fvwmcommand,
                 fvwm_desktop_capture, fvwm_backer, fvwm_buttons, fvwm_event],
+            timeout: 480,
+            is_parallel: false,
+        )
+        test('pinboard-xvfb', py,
+            args: [files('live_x/pinboard_live.py'),
+                '--build', meson.project_build_root(),
+                '--artifacts-dir', meson.project_build_root() / 'live-x-pinboard'],
+            depends: [fvwm3, fvwm_mfl, fvwm_form, fvwm_pinboard,
+                fvwm_pinboard_owner, fvwm_file_browser, fvwm_desktop,
+                fvwm_desktop_worker, fvwm_desktop_capture,
+                fvwm_backer, fvwm_buttons, fvwm_event],
             timeout: 480,
             is_parallel: false,
         )

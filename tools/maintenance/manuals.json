@@ -23,7 +23,8 @@
     "FvwmRearrange",
     "FvwmScript",
     "FvwmPrompt",
-    "fvwm-file-browser"
+    "fvwm-file-browser",
+    "fvwm-pinboard"
   ],
   "split_pages": [
     "fvwm3commands",

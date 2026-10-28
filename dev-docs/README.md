@@ -51,3 +51,5 @@ for accepted, running and queued work. Dated reports retain the exact source,
 results and limitations of their own checkpoints; they are not a second active
 queue. The public website/manual redesign remains deferred under
 [DOCS-01](decisions/WEBSITE-MANUALS-BRIEF.md).
+
+Latest focused checkpoint: [optional desktop pinboard](verification/VERIFICATION-2026-10-27-PINBOARD.md) and [file-job acceptance completion](verification/VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md). Broader release coverage remains tracked separately.

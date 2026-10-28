@@ -7,34 +7,36 @@ We target responsive, maintainable code and FVWM configuration/theme compatibili
 No compositor or Wayland backend.
 
 **Status:** in development toward R1: a configurable, fast, low-memory desktop
-lite. Features target R1; maintenance is scoped into R2/R3. Builds require Go;
+lite. Features target R1; maintenance targets R2/R3. Builds require Go;
 installed utilities need no compiler or Python packages. [Build/upgrade notes](INSTALL.md).
-Recent work:
+Recent features:
 
 - Icons, scaling, wallpapers, high contrast and configuration inspection.
 - Atomic button updates, responsive layout and settings/editor.
-- Source-aware runtime errors and non-executing, paged configuration reports.
+- Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- A keyboard-first window/app/desktop/action palette with bounded native refresh.
+- Keyboard-first window/app/desktop/action palette with native refresh.
 - Optional browser: list/grid, selection, filter/sort, watching, properties and
   application actions; live updates retain drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
+- Optional desktop pinboard: saved references, shaped cells and Form management;
+  unpin preserves targets. Qualification in progress.
 
-Slate dark: list/properties.
+Slate: optional desktop pinboard.
 
-![Slate dark file browser showing selection and observed properties](doc/screenshots/browser-slate-list.png)
+![Slate dark desktop pinboard manager](doc/screenshots/pinboard-slate-dark-02-manager-missing-literal-root.png)
 
-Dune light: grid with 4096 entries.
+Dune: 4096-entry grid.
 
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
-File-manager workflows, protected clipboard, accessibility and release qualification
-remain open. Folder menus remain the default. OpenBSD follows new
-releases; 8.0 is the current qualified baseline, with 7.9 out of scope.
+File-manager, clipboard, accessibility and release qualification remain open.
+Folder menus remain default. OpenBSD follows new releases; the current baseline
+is 8.0, with 7.9 out of scope.
 
-Next: [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
+[R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
 and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 
 - [Install and build](INSTALL.md)

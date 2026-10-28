@@ -10,7 +10,9 @@ module proxies retain their original packets. A private executable-path wrapper
 records job-worker PIDs, then execs the immutable browser ELF without changing
 stdin/stdout; only such a verified fixture-owned worker may be killed. Existing
 destination conflicts provide deterministic decision/cancel/lifetime pauses.
-No response, progress event or filesystem failure is manufactured.
+No response, progress event or filesystem failure is manufactured. The optional
+--progress-only supplement uses one fixed 128-MiB copy and pauses its verified
+worker only after actual nonzero progress; it does not repeat all eight operations.
 """
 import argparse
 import base64
@@ -19,12 +21,14 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shlex
 import shutil
 import signal
 import struct
 import sys
 import tempfile
+import threading
 import time
 import traceback
 from urllib.parse import unquote_to_bytes
@@ -54,7 +58,84 @@ class ClassHint(C.Structure):
 
 
 def digest(path):
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    value = hashlib.sha256()
+    with path.open('rb') as file:
+        for block in iter(lambda: file.read(1024 * 1024), b''):
+            value.update(block)
+    return value.hexdigest()
+
+
+def process_identity(pid):
+    # comm may contain spaces or parentheses; fields after its final ')' start
+    # with state (3), parent (4), and starttime (22), independent of comm.
+    fields = (Path('/proc') / str(pid) / 'stat').read_text().rsplit(')', 1)[1].split()
+    return dict(pid=pid, state=fields[0], parent=int(fields[1]), start=fields[19])
+
+
+class ProgressWorker:
+    """Retain a pidfd, immutable identity, and a bounded emergency resume."""
+
+    def __init__(self, record, executable, parent, expected_hash, evidence):
+        self.pid = record['pid']
+        assert self.pid > 1 and record['argv'] == [str(executable), '--job-worker']
+        self.fd = os.pidfd_open(self.pid)
+        self.lock = threading.RLock()
+        self.paused = False
+        self.timer = None
+        self.evidence = evidence
+        try:
+            self.identity = process_identity(self.pid)
+            assert self.identity['parent'] == record['parent'] == parent
+            assert self.identity['start'] == record['start']
+            self.executable, self.expected_hash = executable, expected_hash
+            self.verify()
+            evidence['worker_identity'] = dict(self.identity,
+                argv=record['argv'], executable_sha256=expected_hash, pidfd=True)
+        except BaseException:
+            os.close(self.fd)
+            raise
+
+    def verify(self):
+        identity = process_identity(self.pid)
+        assert all(identity[key] == self.identity[key] for key in ('pid', 'parent', 'start'))
+        root = Path('/proc') / str(self.pid)
+        assert os.path.samefile(root / 'exe', self.executable)
+        assert (root / 'cmdline').read_bytes() == os.fsencode(self.executable) + b'\0--job-worker\0'
+        assert digest(root / 'exe') == self.expected_hash
+        return identity
+
+    def pause(self, stopping):
+        with self.lock:
+            self.verify()
+            if stopping.is_set():
+                return False
+            # pidfd pins the verified process even if it exits between checking
+            # /proc and signalling. Never signal a recycled numeric PID.
+            self.paused = True
+            signal.pidfd_send_signal(self.fd, signal.SIGSTOP)
+            self.evidence['stop_sent'] = time.monotonic()
+            self.timer = threading.Timer(45, self.resume, args=('watchdog',))
+            self.timer.daemon = True
+            self.timer.start()
+            return True
+
+    def resume(self, reason):
+        with self.lock:
+            if self.paused:
+                try:
+                    signal.pidfd_send_signal(self.fd, signal.SIGCONT)
+                    self.evidence['resume'] = dict(reason=reason, time=time.monotonic())
+                except ProcessLookupError:
+                    self.evidence['resume'] = dict(reason=reason, already_gone=True)
+                self.paused = False
+
+    def close(self):
+        self.resume('finally-before-browser-teardown')
+        if self.timer:
+            self.timer.cancel()
+            self.timer.join(2)
+            assert not self.timer.is_alive()
+        os.close(self.fd)
 
 
 def safe_child(root, path):
@@ -92,15 +173,23 @@ def run(args, profile, run_root):
         source_sha256={str(name): digest(source / name) for name in inputs},
         binary_sha256={str(path.relative_to(build)): digest(path) for path in binaries},
         requested_scale=args.scale,
+        coverage='progress-only supplement' if args.progress_only else 'eight operations and lifetime',
         limits=dict(top_level_fixture_files=24, runtime_records=128,
             physical_display_or_assistive_technology_qualified=False,
             automatic_module_scaling_qualified=bool(args.xorg_config),
             timing_gate=False, worker_pause='real existing-destination decision'))
+    if args.progress_only:
+        evidence['limits'].update(copy_bytes=128 * 1024 * 1024,
+            worker_pause='SIGSTOP after observed active nonzero progress',
+            pause_watchdog_seconds=45, enlarged_retry=False)
     with HarnessRuntime(prefix='fvwm-jobs-') as runtime:
         client = errors = core = browser = control = rpc_peer = None
         fixture_root = runtime.root / 'workspace'
         worker_records = runtime.root / 'job-workers'
         browser_exits = {}
+        progress_peer = progress_thread = None
+        progress_stop = threading.Event()
+        progress_guard = [None]
         try:
             for path in (fixture_root, worker_records):
                 path.mkdir(mode=0o700)
@@ -125,6 +214,17 @@ def run(args, profile, run_root):
             write_fixture(fixture_root, 'source/tree/leaf.txt', b'tree leaf\n')
             write_fixture(fixture_root, 'source/tree/nested/body.txt', b'tree body\n')
             os.symlink('../leaf.txt', safe_child(fixture_root, tree / 'nested/alias'))
+            if args.progress_only:
+                payload = safe_child(fixture_root, folder / 'progress.bin')
+                block = bytes(range(256)) * 256
+                descriptor = os.open(payload, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+                with os.fdopen(descriptor, 'wb') as file:
+                    for _ in range(2048):
+                        assert file.write(block) == len(block)
+                assert payload.stat().st_size == evidence['limits']['copy_bytes']
+                evidence['progress'] = dict(source_size=payload.stat().st_size,
+                    source_sha256=digest(payload), block_bytes=len(block), blocks=2048,
+                    archived_payload=False, samples=[])
             private_data = runtime.root / 'private-data'
             private_data.mkdir(mode=0o700)
             for name in ('private-config', 'private-cache', 'private-state'):
@@ -297,7 +397,8 @@ def run(args, profile, run_root):
                 'real=' + repr(str(real_browser)) + '\nroot=pathlib.Path(' + repr(str(worker_records)) + ')\n' +
                 'if sys.argv[1:]==["--job-worker"]:\n' +
                 ' token="job-%d-%d"%(os.getpid(),time.monotonic_ns())\n' +
-                ' data={"pid":os.getpid(),"argv":[real,*sys.argv[1:]],"started":time.monotonic()}\n' +
+                ' fields=pathlib.Path("/proc/self/stat").read_text().rsplit(")",1)[1].split()\n' +
+                ' data={"pid":os.getpid(),"argv":[real,*sys.argv[1:]],"started":time.monotonic(),"parent":int(fields[1]),"start":fields[19]}\n' +
                 ' temporary=root/(token+".tmp")\n temporary.write_text(json.dumps(data)+"\\n")\n' +
                 ' temporary.replace(root/(token+".json"))\n' +
                 'os.execv(real,[real,*sys.argv[1:]])\n')
@@ -619,227 +720,422 @@ def run(args, profile, run_root):
                     pixels=list(struct.unpack('>II', (out / name).read_bytes()[16:24])),
                     jobs=jobs(), native_window=view.named(JOB_TITLE), scale=observed_scale))
 
-            # All eight operations use actual native controls, independently
-            # observed directory data and complete byte content checks.
-            page = open_jobs(name=b'new-folder')
-            capture('jobs-editor.png')
-            start(page, 'mkdir')
-            assert safe_child(fixture_root, folder / 'new-folder').is_dir()
-            expect_catalog(present=(b'new-folder',))
-            page = open_jobs((b'source.txt',), name=b'renamed.txt')
-            start(page, 'rename')
-            assert not (folder / 'source.txt').exists()
-            assert (folder / 'renamed.txt').read_bytes() == original
-            expect_catalog(present=(b'renamed.txt',), absent=(b'source.txt',))
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            copied = start(page, 'copy')
-            assert copied['bytes'] >= len(original), copied
-            assert (destination / 'renamed.txt').read_bytes() == original
-            page = open_jobs((raw_name,), dest=destination)
-            start(page, 'copy')
-            with open(os.fsencode(destination) + b'/' + raw_name, 'rb') as file:
-                assert file.read() == b'byte name\n'
-            evidence['checks'].append('copy preserves invalid-UTF8 filename bytes and file contents')
-            page = open_jobs((b'tree',), dest=destination)
-            start(page, 'copy')
-            assert (destination / 'tree/leaf.txt').read_bytes() == b'tree leaf\n'
-            assert (destination / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
-            assert os.readlink(destination / 'tree/nested/alias') == '../leaf.txt'
-            evidence['checks'].append('recursive copy retains nested contents and literal symlink')
+            def progress_scenario():
+                nonlocal progress_peer, progress_thread
+                progress = evidence['progress']
+                assert hasattr(os, 'pidfd_open') and hasattr(signal, 'pidfd_send_signal'), \
+                    'Linux pidfd APIs unavailable; progress signalling is not qualified'
+                page = open_jobs((b'progress.bin',), dest=destination)
+                before, prior = jobs(), set(records())
+                progress_peer = connect()
+                progress_peer.socket.settimeout(2)
+                armed = threading.Event()
+                done = threading.Event()
+                failures = []
+                progress['observer_failures'] = failures
 
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            conflicted = start(page, 'copy', decision=True)
-            capture('jobs-conflict.png')
-            before_workers = records()
-            focus(page['window'])
-            key('F3')
-            command('Nop file-jobs-zero-queue')
-            assert jobs()['id'] == conflicted['id'] and records() == before_workers
-            parent = view.named('File browser')
-            before_view = ready_state()['view']
-            focus(parent)
-            key('F7')
-            wait_for_predicate('unrelated browser input during pending file decision',
-                lambda: (value if value['view'] != before_view else None)
-                    if (value := ready_state()) else None,
-                time.monotonic() + 8, process=browser)
-            assert jobs()['id'] == conflicted['id'] and jobs()['decision'] == conflicted['decision']
-            focus(page['window'])
-            key('F11')
-            wait_job(terminal=True, expected=('skipped', 'completed'))
-            assert (destination / 'renamed.txt').read_bytes() == original
-            evidence['checks'].append('real conflict keeps zero queued jobs and browser input responsive')
+                def observe():
+                    # This connection belongs exclusively to this thread. Arm
+                    # with an actual baseline reply before sending native Copy;
+                    # submit_job_control itself waits for a callback receipt.
+                    try:
+                        deadline = time.monotonic() + 12
+                        for index in range(1024):
+                            if progress_stop.is_set() or time.monotonic() >= deadline:
+                                break
+                            token = 'progress-%d' % index
+                            wire = frame(token, 'query', resource='files',
+                                provider=provider, scope='state')
+                            progress_peer.send(wire)
+                            reply = progress_peer.record()['reply']
+                            assert reply['id'] == token and reply['status'] == 'ok', reply
+                            value = reply['result']['jobs']
+                            progress['samples'].append(dict(time=time.monotonic(),
+                                request=json.loads(wire.removeprefix(b'request ')), jobs=value))
+                            if index == 0:
+                                assert value.get('id') == before.get('id'), value
+                                progress['armed'] = time.monotonic()
+                                armed.set()
+                            if not value.get('id') or value['id'] == before.get('id'):
+                                continue
+                            assert value['generation'] > before.get('generation', 0)
+                            assert value['operation'] == 'copy' and value['decision'] == 0, value
+                            if not value['active'] or value['state'] in TERMINAL:
+                                raise AssertionError('inconclusive: fixed copy finished before progress pause')
+                            created = {name: item for name, item in records().items() if name not in prior}
+                            assert len(created) <= 1, created
+                            if progress_guard[0] is None and created:
+                                record = next(iter(created.values()))
+                                root = Path('/proc') / str(record['pid'])
+                                # The wrapper publishes before exec. Do not
+                                # confuse that brief interpreter with the ELF.
+                                if root.exists() and os.path.samefile(root / 'exe', real_browser):
+                                    assert browser.poll() is None
+                                    progress_guard[0] = ProgressWorker(record, real_browser,
+                                        browser.process.pid, evidence['binary_sha256'][
+                                            'bin/FvwmPrompt/fvwm-file-browser'], progress)
+                            if value['state'] == 'running' and value['bytes'] > 0 and progress_guard[0]:
+                                progress['observed_running'] = value
+                                if not progress_guard[0].pause(progress_stop):
+                                    return
+                                progress['kernel_stopped'] = wait_for_predicate(
+                                    'verified progress worker kernel stop', lambda:
+                                        (identity if identity['state'] == 'T' else None)
+                                        if (identity := process_identity(progress_guard[0].pid)) else None,
+                                    time.monotonic() + 2)
+                                return
+                        raise AssertionError('inconclusive: no active nonzero progress in fixed observation bound')
+                    except BaseException as failure:
+                        failures.append(dict(type=type(failure).__name__, message=str(failure),
+                            traceback=traceback.format_exc()))
+                    finally:
+                        done.set()
 
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            start(page, 'copy', decision=True)
-            set_field(page, 'name', b'copy-$[]-literal.txt')
-            submit_job_control(page, 'new-name', 'F12')
-            wait_job(terminal=True, expected=('completed',))
-            assert (destination / 'copy-$[]-literal.txt').read_bytes() == original
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            paused = start(page, 'copy', decision=True)
-            focus(page['window'])
-            key('x', alt=True)
-            wait_job(terminal=True, expected=('cancelled',))
-            assert (folder / 'renamed.txt').read_bytes() == original
-            assert (destination / 'renamed.txt').read_bytes() == original
-            evidence['checks'].append('conflict new-name is literal and cancellation preserves source/destination')
+                progress_thread = threading.Thread(target=observe, name='file-copy-observer', daemon=True)
+                progress_thread.start()
+                assert armed.wait(3), failures
+                progress['copy_submitted'] = time.monotonic()
+                submit_job_control(page, 'copy', 'F3')
+                assert done.wait(15), 'progress observer did not finish boundedly'
+                progress['observer_failures'] = failures
+                assert not failures, failures
+                guard = progress_guard[0]
+                assert guard and guard.paused
+                observed = progress['observed_running']
 
-            page = open_jobs((b'move.txt',), dest=destination)
-            start(page, 'move')
-            assert not (folder / 'move.txt').exists()
-            assert (destination / 'move.txt').read_bytes() == b'move contents\n'
-            expect_catalog(absent=(b'move.txt',))
-            page = open_jobs((b'renamed.txt',), dest=destination, name=b'literal-link')
-            start(page, 'link')
-            assert (destination / 'literal-link').is_symlink()
-            assert os.readlink(os.fsencode(destination / 'literal-link')) == os.fsencode(folder / 'renamed.txt')
-            close_jobs()
-            navigate(destination)
-            page = open_jobs((b'literal-link',), dest=copies)
-            start(page, 'copy')
-            assert (copies / 'literal-link').is_symlink()
-            assert os.readlink(os.fsencode(copies / 'literal-link')) == os.fsencode(folder / 'renamed.txt')
-            close_jobs()
-            navigate(folder)
+                def same_running():
+                    value = jobs()
+                    assert value['id'] == observed['id'] and value['generation'] == observed['generation']
+                    assert value['operation'] == 'copy' and value['active'] and value['state'] == 'running'
+                    assert value['decision'] == 0 and value['bytes'] > 0, value
+                    assert process_identity(guard.pid)['state'] == 'T'
+                    assert guard.paused and 'resume' not in progress, progress
+                    return value
 
-            page = open_jobs((b'trash-me.txt',))
-            start(page, 'trash')
-            assert not (folder / 'trash-me.txt').exists()
-            expect_catalog(absent=(b'trash-me.txt',))
-            trash_files = private_data / 'Trash/files'
-            trash_info = private_data / 'Trash/info'
-            trashed = list(trash_files.iterdir())
-            assert len(trashed) == 1 and trashed[0].read_bytes() == b'recover me\n', trashed
-            info = (trash_info / (trashed[0].name + '.trashinfo')).read_bytes()
-            assert info.startswith(b'[Trash Info]\n')
-            info_path = next(line[5:] for line in info.splitlines() if line.startswith(b'Path='))
-            assert unquote_to_bytes(info_path.decode('ascii')) == os.fsencode(folder / 'trash-me.txt')
-            # This private trash directory is intentionally outside workspace;
-            # admission is exact, marker-guarded and never points at user data.
-            assert private_data.resolve().parent == runtime.root.resolve()
-            focus(page['window'])
-            key('t', alt=True)
-            wait_for_predicate('native Open trash retires job editor',
-                lambda: not view.named(JOB_TITLE), time.monotonic() + 8, process=browser)
-            wait_for_predicate('private trash folder ready', lambda:
-                (value if base64.b64decode(value['path_bytes']) == os.fsencode(trash_files) else None)
-                    if (value := ready_state()) else None,
-                time.monotonic() + 12, process=browser)
-            page = open_jobs((os.fsencode(trashed[0].name),))
-            start(page, 'restore')
-            assert (folder / 'trash-me.txt').read_bytes() == b'recover me\n'
-            assert not trashed[0].exists() and not (trash_info / (trashed[0].name + '.trashinfo')).exists()
-            close_jobs()
-            navigate(folder)
-            evidence['checks'].append('private desktop trash metadata and restore preserve exact source path/content')
+                progress['paused_running'] = same_running()
+                partial = safe_child(fixture_root, destination / 'progress.bin')
+                progress['paused_destination_size'] = partial.stat().st_size
+                assert 0 < observed['bytes'] <= progress['paused_destination_size'] < progress['source_size']
 
-            page = open_jobs((b'delete-me.txt', b'tree'))
-            before = jobs().get('id')
-            before_delete_generation = jobs()['dialog_generation']
-            before_delete_workers = records()
-            focus(page['window'])
-            submit_job_control(page, 'delete', 'F8')
-            command('Nop file-jobs-delete-confirmation')
+                def progress_labels():
+                    actual = [row for row in rows(native) if row['direction'] == 'out' and
+                        row['time'] >= progress['copy_submitted'] and row['text'].startswith(
+                            'SendToModule ' + page['alias'] + ' SetLabel ')]
+                    labels = {}
+                    for row in actual:
+                        name = row['text'].split()[3]
+                        if name in ('job-status', 'job-progress'):
+                            labels[name] = row
+                    if len(labels) != 2 or '"copy: running' not in labels['job-status']['text']:
+                        return None
+                    copied = re.search(r'; ([1-9][0-9]*) bytes copied\.', labels['job-progress']['text'])
+                    return dict(labels=labels, bytes=int(copied[1])) if copied else None
 
-            def delete_confirmation():
-                value = jobs()
-                generation = value.get('dialog_generation', 0)
-                if generation <= before_delete_generation:
-                    return None
-                prefix = 'SendToModule %s ListEntry results %d 0 ' % (page['alias'], generation)
-                actual = [row['text'] for row in rows(native) if row['direction'] == 'out' and
-                    row['text'].startswith(prefix)]
-                expected = {prefix + '"Delete target: %s" other off' % name
-                    for name in ('delete-me.txt', 'tree')}
-                if set(actual) != expected:
-                    return None
-                return dict(jobs=value, native_rows=actual)
+                progress['native_labels'] = wait_for_predicate('native nonzero running copy labels',
+                    progress_labels, time.monotonic() + 5, process=browser)
+                # scale_ready's actual Form reply orders behind SetLabel on
+                # the same module pipe; capture records mapped geometry too.
+                command('All (' + page['alias'] + ') Raise')
+                focus(page['window'])
+                capture('jobs-running-progress.png')
+                same_running()
+                parent = view.named('File browser')
+                before_view = ready_state()['view']
+                focus(parent)
+                key('F7')
+                progress['responsive_input'] = wait_for_predicate('native browser input during copy',
+                    lambda: (value if value['view'] != before_view else None)
+                        if (value := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                navigate(destination)
+                progress['responsive_navigation'] = ready_state()
+                same_running()
+                focus(page['window'])
+                progress['cancel_sent'] = time.monotonic()
+                try:
+                    key('x', alt=True)
+                    prefix = 'Echo FVWM_FILES_JOBS_1 %s %s cancel ' % (provider, page['lifetime'])
+                    progress['native_cancel'] = wait_for_predicate('actual native Cancel callback',
+                        lambda: next((row for row in rows(native) if row['direction'] == 'out' and
+                            row['time'] >= progress['cancel_sent'] and row['text'].startswith(prefix)), None),
+                        time.monotonic() + 0.75, process=browser)
+                finally:
+                    # The product escalates after two seconds. Never wait for
+                    # a terminal result while its owned worker is stopped.
+                    guard.resume('native-cancel')
+                assert progress['resume']['reason'] == 'native-cancel', progress
+                assert 0 <= progress['resume']['time'] - progress['cancel_sent'] < 2, progress
+                result = wait_job(expected=('partial', 'cancelled'))
+                assert result['id'] == observed['id'] and result['generation'] == observed['generation']
+                assert result['cancel_requested'] and result['items'] == 1, result
+                wait_for_predicate('progress job Wait and kernel reap',
+                    lambda: not (Path('/proc') / str(guard.pid)).exists(),
+                    time.monotonic() + 5, process=browser)
+                # active=false is published only after command.Wait returns in
+                # launchJob; /proc absence additionally excludes a zombie.
+                progress['wait_reap'] = dict(jobs=result, kernel_gone=True,
+                    browser_wait_observed=not result['active'])
+                assert payload.stat().st_size == progress['source_size']
+                assert digest(payload) == progress['source_sha256']
+                size = partial.stat().st_size
+                assert 0 < size < progress['source_size'], size
+                prefix_hash = hashlib.sha256()
+                with payload.open('rb') as source_file, partial.open('rb') as destination_file:
+                    for block in iter(lambda: destination_file.read(65536), b''):
+                        assert block == source_file.read(len(block)), 'destination differs from source prefix'
+                        prefix_hash.update(block)
+                progress['partial_destination'] = dict(size=size, sha256=prefix_hash.hexdigest(),
+                    exact_source_prefix=True, unchanged_source=True)
+                progress['native_partial_outcome'] = wait_for_predicate('native explicit incomplete item result',
+                    lambda: next((row for row in rows(native) if row['direction'] == 'out' and
+                        row['time'] >= progress['cancel_sent'] and row['text'].startswith(
+                            'SendToModule ' + page['alias'] + ' ListEntry results ') and
+                        'partial: progress.bin (content incomplete) (source and destination remain)' in row['text']), None),
+                    time.monotonic() + 5, process=browser)
+                command('All (' + page['alias'] + ') Raise')
+                focus(page['window'])
+                capture('jobs-cancelled-progress.png')
+                close_jobs()
+                navigate(folder)
+                page = open_jobs((b'source.txt',), dest=copies)
+                followup = start(page, 'copy')
+                assert followup['id'] != result['id'] and followup['generation'] > result['generation']
+                assert (copies / 'source.txt').read_bytes() == original
+                wait_for_predicate('followup copy worker reaped',
+                    lambda: not (Path('/proc') / str(followup['worker']['pid'])).exists(),
+                    time.monotonic() + 5, process=browser)
+                progress['new_job_slot'] = followup
+                close_jobs()
+                evidence['checks'].extend([
+                    'actual active nonzero copy progress, kernel stop and mapped native Form labels/capture',
+                    'unrelated native browser input and navigation respond while copy remains running',
+                    'native Cancel resumes exact worker before escalation; explicit partial/cancel and Wait reap',
+                    'unchanged 128-MiB source, incomplete exact destination prefix and usable next job slot'])
 
-            evidence['delete_confirmation'] = wait_for_predicate(
-                'armed native delete lists both captured targets', delete_confirmation,
-                time.monotonic() + 8, process=browser)
-            assert (folder / 'delete-me.txt').read_bytes() == b'explicit delete\n'
-            assert (folder / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
-            assert jobs().get('id') == before and records() == before_delete_workers
-            capture('delete-confirmation.png')
-            submit_job_control(page, 'confirm-delete', 'F10')
-            deleted = wait_job(before, expected=('completed',))
-            assert len(records()) == len(before_delete_workers) + 1
-            assert not (folder / 'delete-me.txt').exists() and not (folder / 'tree').exists()
-            assert (destination / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
-            expect_catalog(absent=(b'delete-me.txt', b'tree'))
-            capture('jobs-completed.png')
-            evidence['checks'].append('permanent delete requires distinct native confirmation')
+            if args.progress_only:
+                progress_scenario()
+            else:
+                # All eight operations use actual native controls, independently
+                # observed directory data and complete byte content checks.
+                page = open_jobs(name=b'new-folder')
+                capture('jobs-editor.png')
+                start(page, 'mkdir')
+                assert safe_child(fixture_root, folder / 'new-folder').is_dir()
+                expect_catalog(present=(b'new-folder',))
+                page = open_jobs((b'source.txt',), name=b'renamed.txt')
+                start(page, 'rename')
+                assert not (folder / 'source.txt').exists()
+                assert (folder / 'renamed.txt').read_bytes() == original
+                expect_catalog(present=(b'renamed.txt',), absent=(b'source.txt',))
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                copied = start(page, 'copy')
+                assert copied['bytes'] >= len(original), copied
+                assert (destination / 'renamed.txt').read_bytes() == original
+                page = open_jobs((raw_name,), dest=destination)
+                start(page, 'copy')
+                with open(os.fsencode(destination) + b'/' + raw_name, 'rb') as file:
+                    assert file.read() == b'byte name\n'
+                evidence['checks'].append('copy preserves invalid-UTF8 filename bytes and file contents')
+                page = open_jobs((b'tree',), dest=destination)
+                start(page, 'copy')
+                assert (destination / 'tree/leaf.txt').read_bytes() == b'tree leaf\n'
+                assert (destination / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
+                assert os.readlink(destination / 'tree/nested/alias') == '../leaf.txt'
+                evidence['checks'].append('recursive copy retains nested contents and literal symlink')
 
-            # Stale actual callback replay cannot admit another mutation.
-            stale = next(row['text'] for row in rows(native) if row['direction'] == 'out' and
-                row['text'].startswith('Echo FVWM_FILES_JOBS_1 ') and ' mkdir ' in row['text'])
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            before, before_workers = jobs(), records()
-            command(stale)
-            assert jobs()['id'] == before['id'] and records() == before_workers
-            evidence['checks'].append('retired native job callback cannot create a new job')
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                conflicted = start(page, 'copy', decision=True)
+                capture('jobs-conflict.png')
+                before_workers = records()
+                focus(page['window'])
+                key('F3')
+                command('Nop file-jobs-zero-queue')
+                assert jobs()['id'] == conflicted['id'] and records() == before_workers
+                parent = view.named('File browser')
+                before_view = ready_state()['view']
+                focus(parent)
+                key('F7')
+                wait_for_predicate('unrelated browser input during pending file decision',
+                    lambda: (value if value['view'] != before_view else None)
+                        if (value := ready_state()) else None,
+                    time.monotonic() + 8, process=browser)
+                assert jobs()['id'] == conflicted['id'] and jobs()['decision'] == conflicted['decision']
+                focus(page['window'])
+                key('F11')
+                wait_job(terminal=True, expected=('skipped', 'completed'))
+                assert (destination / 'renamed.txt').read_bytes() == original
+                evidence['checks'].append('real conflict keeps zero queued jobs and browser input responsive')
 
-            # The immutable ELF and exact recorded argv identify this one child.
-            # There is no name-based matching or signalling of an arbitrary PID.
-            lost = start(page, 'copy', decision=True)
-            worker = lost['worker']
-            pid = worker['pid']
-            assert pid > 1 and worker['argv'] == [str(real_browser), '--job-worker']
-            process_root = Path('/proc') / str(pid)
-            assert process_root.is_dir() and os.path.samefile(process_root / 'exe', real_browser)
-            argv = (process_root / 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
-            assert argv == [os.fsencode(real_browser), b'--job-worker'], argv
-            os.kill(pid, signal.SIGKILL)
-            interrupted = wait_job(terminal=True, expected=('interrupted',))
-            wait_for_predicate('killed owned worker exited and reaped', lambda: not process_root.exists(),
-                time.monotonic() + 5, process=browser)
-            assert (folder / 'renamed.txt').read_bytes() == original
-            count = records()
-            command('Nop file-jobs-no-implicit-replay')
-            assert records() == count and jobs()['id'] == interrupted['id']
-            evidence['worker_loss'] = dict(worker=worker, observed_argv=[os.fsdecode(x) for x in argv],
-                kernel_executable_sha256=digest(real_browser), terminal=interrupted, no_replay=True)
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                start(page, 'copy', decision=True)
+                set_field(page, 'name', b'copy-$[]-literal.txt')
+                submit_job_control(page, 'new-name', 'F12')
+                wait_job(terminal=True, expected=('completed',))
+                assert (destination / 'copy-$[]-literal.txt').read_bytes() == original
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                paused = start(page, 'copy', decision=True)
+                focus(page['window'])
+                key('x', alt=True)
+                wait_job(terminal=True, expected=('cancelled',))
+                assert (folder / 'renamed.txt').read_bytes() == original
+                assert (destination / 'renamed.txt').read_bytes() == original
+                evidence['checks'].append('conflict new-name is literal and cancellation preserves source/destination')
 
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            closing = start(page, 'copy', decision=True)
-            close_jobs()
-            wait_for_predicate('closed dialog worker reaped',
-                lambda: not (Path('/proc') / str(closing['worker']['pid'])).exists(),
-                time.monotonic() + 5, process=browser)
-            assert not jobs()['active'] and jobs()['id'] == closing['id']
-            assert jobs()['state'] in ('cancelled', 'interrupted'), jobs()
-            evidence['close_during_decision'] = dict(before=closing, after=jobs())
+                page = open_jobs((b'move.txt',), dest=destination)
+                start(page, 'move')
+                assert not (folder / 'move.txt').exists()
+                assert (destination / 'move.txt').read_bytes() == b'move contents\n'
+                expect_catalog(absent=(b'move.txt',))
+                page = open_jobs((b'renamed.txt',), dest=destination, name=b'literal-link')
+                start(page, 'link')
+                assert (destination / 'literal-link').is_symlink()
+                assert os.readlink(os.fsencode(destination / 'literal-link')) == os.fsencode(folder / 'renamed.txt')
+                close_jobs()
+                navigate(destination)
+                page = open_jobs((b'literal-link',), dest=copies)
+                start(page, 'copy')
+                assert (copies / 'literal-link').is_symlink()
+                assert os.readlink(os.fsencode(copies / 'literal-link')) == os.fsencode(folder / 'renamed.txt')
+                close_jobs()
+                navigate(folder)
 
-            page = open_jobs((b'renamed.txt',), dest=destination)
-            restarting = start(page, 'copy', decision=True)
-            # Restart uses the same actual executable/config and the ordinary
-            # module-transport loss path; no result is synthesized or replayed.
-            control.send(b'Restart\n')
-            control.expect_closed()
-            control.close()
-            control = None
-            rpc_peer.close()
-            rpc_peer = None
-            browser_exits['browser'] = browser.wait_until_exit(time.monotonic() + 10)
-            assert browser_exits['browser'] in (0, 1), browser_exits
-            wait_for_predicate('WM restart retires its owned job worker',
-                lambda: not (Path('/proc') / str(restarting['worker']['pid'])).exists(),
-                time.monotonic() + 5, process=core)
-            control, rpc_peer = connect(), connect()
-            control.send(b'set echo\n')
-            control.echo('file-jobs-restarted')
-            assert not rpc()['providers']
-            assert (folder / 'renamed.txt').read_bytes() == original
-            evidence['wm_restart'] = dict(job=restarting, browser_returncode=browser_exits['browser'],
-                worker_gone=True, providers_empty=True, source_preserved=True)
-            evidence['checks'].append('dialog close and actual WM restart cancel/reap instead of replaying jobs')
-            evidence['observed_copy_progress'] = [sample for sample in evidence.get('job_samples', [])
-                if sample.get('active') and sample.get('operation') in ('copy', 'move') and
-                sample.get('bytes', 0) > 0 and sample.get('state') != 'decision']
-            evidence['progress_observation_limit'] = ('Fast synthetic copies may finish between state samples; '
-                'the real conflict pause independently qualifies native decision/cancel/input servicing.')
+                page = open_jobs((b'trash-me.txt',))
+                start(page, 'trash')
+                assert not (folder / 'trash-me.txt').exists()
+                expect_catalog(absent=(b'trash-me.txt',))
+                trash_files = private_data / 'Trash/files'
+                trash_info = private_data / 'Trash/info'
+                trashed = list(trash_files.iterdir())
+                assert len(trashed) == 1 and trashed[0].read_bytes() == b'recover me\n', trashed
+                info = (trash_info / (trashed[0].name + '.trashinfo')).read_bytes()
+                assert info.startswith(b'[Trash Info]\n')
+                info_path = next(line[5:] for line in info.splitlines() if line.startswith(b'Path='))
+                assert unquote_to_bytes(info_path.decode('ascii')) == os.fsencode(folder / 'trash-me.txt')
+                # This private trash directory is intentionally outside workspace;
+                # admission is exact, marker-guarded and never points at user data.
+                assert private_data.resolve().parent == runtime.root.resolve()
+                focus(page['window'])
+                key('t', alt=True)
+                wait_for_predicate('native Open trash retires job editor',
+                    lambda: not view.named(JOB_TITLE), time.monotonic() + 8, process=browser)
+                wait_for_predicate('private trash folder ready', lambda:
+                    (value if base64.b64decode(value['path_bytes']) == os.fsencode(trash_files) else None)
+                        if (value := ready_state()) else None,
+                    time.monotonic() + 12, process=browser)
+                page = open_jobs((os.fsencode(trashed[0].name),))
+                start(page, 'restore')
+                assert (folder / 'trash-me.txt').read_bytes() == b'recover me\n'
+                assert not trashed[0].exists() and not (trash_info / (trashed[0].name + '.trashinfo')).exists()
+                close_jobs()
+                navigate(folder)
+                evidence['checks'].append('private desktop trash metadata and restore preserve exact source path/content')
+
+                page = open_jobs((b'delete-me.txt', b'tree'))
+                before = jobs().get('id')
+                before_delete_generation = jobs()['dialog_generation']
+                before_delete_workers = records()
+                focus(page['window'])
+                submit_job_control(page, 'delete', 'F8')
+                command('Nop file-jobs-delete-confirmation')
+
+                def delete_confirmation():
+                    value = jobs()
+                    generation = value.get('dialog_generation', 0)
+                    if generation <= before_delete_generation:
+                        return None
+                    prefix = 'SendToModule %s ListEntry results %d 0 ' % (page['alias'], generation)
+                    actual = [row['text'] for row in rows(native) if row['direction'] == 'out' and
+                        row['text'].startswith(prefix)]
+                    expected = {prefix + '"Delete target: %s" other off' % name
+                        for name in ('delete-me.txt', 'tree')}
+                    if set(actual) != expected:
+                        return None
+                    return dict(jobs=value, native_rows=actual)
+
+                evidence['delete_confirmation'] = wait_for_predicate(
+                    'armed native delete lists both captured targets', delete_confirmation,
+                    time.monotonic() + 8, process=browser)
+                assert (folder / 'delete-me.txt').read_bytes() == b'explicit delete\n'
+                assert (folder / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
+                assert jobs().get('id') == before and records() == before_delete_workers
+                capture('delete-confirmation.png')
+                submit_job_control(page, 'confirm-delete', 'F10')
+                deleted = wait_job(before, expected=('completed',))
+                assert len(records()) == len(before_delete_workers) + 1
+                assert not (folder / 'delete-me.txt').exists() and not (folder / 'tree').exists()
+                assert (destination / 'tree/nested/body.txt').read_bytes() == b'tree body\n'
+                expect_catalog(absent=(b'delete-me.txt', b'tree'))
+                capture('jobs-completed.png')
+                evidence['checks'].append('permanent delete requires distinct native confirmation')
+
+                # Stale actual callback replay cannot admit another mutation.
+                stale = next(row['text'] for row in rows(native) if row['direction'] == 'out' and
+                    row['text'].startswith('Echo FVWM_FILES_JOBS_1 ') and ' mkdir ' in row['text'])
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                before, before_workers = jobs(), records()
+                command(stale)
+                assert jobs()['id'] == before['id'] and records() == before_workers
+                evidence['checks'].append('retired native job callback cannot create a new job')
+
+                # The immutable ELF and exact recorded argv identify this one child.
+                # There is no name-based matching or signalling of an arbitrary PID.
+                lost = start(page, 'copy', decision=True)
+                worker = lost['worker']
+                pid = worker['pid']
+                assert pid > 1 and worker['argv'] == [str(real_browser), '--job-worker']
+                process_root = Path('/proc') / str(pid)
+                assert process_root.is_dir() and os.path.samefile(process_root / 'exe', real_browser)
+                argv = (process_root / 'cmdline').read_bytes().rstrip(b'\0').split(b'\0')
+                assert argv == [os.fsencode(real_browser), b'--job-worker'], argv
+                os.kill(pid, signal.SIGKILL)
+                interrupted = wait_job(terminal=True, expected=('interrupted',))
+                wait_for_predicate('killed owned worker exited and reaped', lambda: not process_root.exists(),
+                    time.monotonic() + 5, process=browser)
+                assert (folder / 'renamed.txt').read_bytes() == original
+                count = records()
+                command('Nop file-jobs-no-implicit-replay')
+                assert records() == count and jobs()['id'] == interrupted['id']
+                evidence['worker_loss'] = dict(worker=worker, observed_argv=[os.fsdecode(x) for x in argv],
+                    kernel_executable_sha256=digest(real_browser), terminal=interrupted, no_replay=True)
+
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                closing = start(page, 'copy', decision=True)
+                close_jobs()
+                wait_for_predicate('closed dialog worker reaped',
+                    lambda: not (Path('/proc') / str(closing['worker']['pid'])).exists(),
+                    time.monotonic() + 5, process=browser)
+                assert not jobs()['active'] and jobs()['id'] == closing['id']
+                assert jobs()['state'] in ('cancelled', 'interrupted'), jobs()
+                evidence['close_during_decision'] = dict(before=closing, after=jobs())
+
+                page = open_jobs((b'renamed.txt',), dest=destination)
+                restarting = start(page, 'copy', decision=True)
+                # Restart uses the same actual executable/config and the ordinary
+                # module-transport loss path; no result is synthesized or replayed.
+                control.send(b'Restart\n')
+                control.expect_closed()
+                control.close()
+                control = None
+                rpc_peer.close()
+                rpc_peer = None
+                browser_exits['browser'] = browser.wait_until_exit(time.monotonic() + 10)
+                assert browser_exits['browser'] in (0, 1), browser_exits
+                wait_for_predicate('WM restart retires its owned job worker',
+                    lambda: not (Path('/proc') / str(restarting['worker']['pid'])).exists(),
+                    time.monotonic() + 5, process=core)
+                control, rpc_peer = connect(), connect()
+                control.send(b'set echo\n')
+                control.echo('file-jobs-restarted')
+                assert not rpc()['providers']
+                assert (folder / 'renamed.txt').read_bytes() == original
+                evidence['wm_restart'] = dict(job=restarting, browser_returncode=browser_exits['browser'],
+                    worker_gone=True, providers_empty=True, source_preserved=True)
+                evidence['checks'].append('dialog close and actual WM restart cancel/reap instead of replaying jobs')
+                evidence['observed_copy_progress'] = [sample for sample in evidence.get('job_samples', [])
+                    if sample.get('active') and sample.get('operation') in ('copy', 'move') and
+                    sample.get('bytes', 0) > 0 and sample.get('state') != 'decision']
+                evidence['progress_observation_limit'] = ('Fast synthetic copies may finish between state samples; '
+                    'the real conflict pause independently qualifies native decision/cancel/input servicing.')
             evidence['status'] = 'passed'
         except BaseException as failure:
             evidence['status'] = 'failed'
@@ -853,6 +1149,18 @@ def run(args, profile, run_root):
                 except BaseException as failure:
                     evidence['cleanup_failures'].append(dict(step=label,
                         type=type(failure).__name__, message=str(failure)))
+            # Stop the observer first: it may be in an in-flight query or ELF
+            # identity check. No late SIGSTOP may race browser/core teardown.
+            progress_stop.set()
+            if progress_thread:
+                def join_observer():
+                    progress_thread.join(5)
+                    assert not progress_thread.is_alive(), 'progress observer still running'
+                cleanup('join progress observer', join_observer)
+            if progress_guard[0]:
+                cleanup('resume verified worker before teardown', progress_guard[0].close)
+            if progress_peer:
+                cleanup('close progress observer connection', progress_peer.close)
             for name, peer in [('control', control), ('rpc', rpc_peer)]:
                 if peer:
                     cleanup('close ' + name, peer.close)
@@ -862,6 +1170,11 @@ def run(args, profile, run_root):
                 cleanup('close observer', client.close)
             for process in reversed(runtime.processes):
                 cleanup('stop ' + process.name, lambda p=process: p.close(time.monotonic() + 5))
+            if progress_guard[0]:
+                cleanup('verify progress worker gone after teardown', lambda:
+                    wait_for_predicate('progress worker gone after browser Wait',
+                        lambda: not (Path('/proc') / str(progress_guard[0].pid)).exists(),
+                        time.monotonic() + 5))
             evidence['children_after_cleanup'] = {p.name: p.poll() for p in runtime.processes}
             evidence['expected_browser_exits'] = browser_exits
             cleanup('actual module child Wait receipts',
@@ -891,6 +1204,8 @@ def main():
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--xorg-config', type=Path)
     parser.add_argument('--scale', choices=('1', '1.25', '2'), default='1')
+    parser.add_argument('--progress-only', action='store_true',
+        help='run only the fixed 128-MiB active-progress/cancel supplement')
     args = parser.parse_args()
     if args.scale != '1' and not args.xorg_config:
         parser.error('--scale requires --xorg-config for real RandR millimetres')

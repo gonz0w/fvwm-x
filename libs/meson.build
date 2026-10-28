@@ -42,6 +42,7 @@ libfvwm3_sources = files(
     'module_packet_reader.c',
     'module_monitor.c',
     'module_ui_scale.c',
+    'module_workarea.c',
     'module_x_service.c',
     'Parse.c',
     'Picture.c',

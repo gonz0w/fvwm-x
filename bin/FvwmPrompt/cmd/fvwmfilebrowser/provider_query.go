@@ -77,6 +77,7 @@ func (b *browser) providerResult(query fileQuery) (map[string]any, string) {
 		result["actions"] = true
 		result["file_actions"] = true
 		result["work"] = b.providerWork
+		result["jobs"] = b.jobSummary()
 		result["operation_retention"] = "latest_accepted"
 		result["path_request_max"] = providerPathMax
 		result["target_request_max"] = providerTargetMax

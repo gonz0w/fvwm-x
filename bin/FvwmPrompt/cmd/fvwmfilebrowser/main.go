@@ -100,6 +100,15 @@ type browser struct {
 	detailSerial, detailSendSerial uint64
 	detailEvents                   chan detailCallback
 	detailAckReplies               *nativeWatchReplyGate
+
+	job                           *jobState
+	jobs                          *jobView
+	jobSerial, jobViewSerial      uint64
+	jobSendSerial                 uint64
+	jobEvents                     chan jobNotice
+	jobProgress                   chan jobNotice
+	jobCallbacks                  chan jobCallback
+	jobAckReplies, jobListReplies *nativeWatchReplyGate
 }
 
 func (b *browser) viewing() string {
@@ -392,6 +401,8 @@ func (b *browser) action(message string) (bool, error) {
 		if err == nil {
 			b.inspected = nil
 		}
+	case "jobs":
+		err = b.openJobs()
 	case "properties":
 		ids := b.model.SelectedIDs()
 		if b.snapshot == nil {
@@ -522,9 +533,11 @@ func run(o options) error {
 		return err
 	}
 	b := browser{session: session, executable: executable, instance: hex.EncodeToString(nonce), home: home,
-		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}}
+		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}, jobEvents: make(chan jobNotice, 16), jobProgress: make(chan jobNotice, 1), jobCallbacks: make(chan jobCallback, 16), jobAckReplies: &nativeWatchReplyGate{}, jobListReplies: &nativeWatchReplyGate{}}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
+		b.shutdownJob()
+		b.retireJobs()
 		b.closeBindings()
 		b.retireDetails()
 		if b.cancel != nil {
@@ -570,6 +583,10 @@ func run(o options) error {
 				default:
 					return errors.New("file provider query queue is full")
 				}
+			}
+			b.routeJobCallback(event.Echo.Message)
+			if b.routeJobReply(event.Echo.Message) {
+				return nil
 			}
 			if err := b.routeDetailCallback(event.Echo.Message); err != nil {
 				return err
@@ -622,6 +639,13 @@ func run(o options) error {
 			watchTick.Stop()
 		}
 	}()
+	var jobLease *time.Ticker
+	var jobLeaseTicks <-chan time.Time
+	defer func() {
+		if jobLease != nil {
+			jobLease.Stop()
+		}
+	}()
 	navigation := "push"
 	if o.properties {
 		navigation = "properties"
@@ -633,6 +657,14 @@ func run(o options) error {
 		return err
 	}
 	for {
+		jobActive := b.job != nil && !b.job.reaped
+		if jobActive && jobLease == nil {
+			jobLease = time.NewTicker(30 * time.Second)
+			jobLeaseTicks = jobLease.C
+		} else if !jobActive && jobLease != nil {
+			jobLease.Stop()
+			jobLease, jobLeaseTicks = nil, nil
+		}
 		needsTick := b.watch.needsTick()
 		if needsTick && watchTick == nil {
 			watchTick = time.NewTicker(100 * time.Millisecond)
@@ -646,7 +678,21 @@ func run(o options) error {
 		case <-ctx.Done():
 			return nil
 		case <-idle.C:
+			if b.job != nil && !b.job.reaped {
+				idle.Reset(idleLimit)
+				continue
+			}
 			return nil
+		case <-jobLeaseTicks:
+			if err := b.renewNativeIdle(); err != nil {
+				return err
+			}
+			if b.jobs != nil {
+				if err := b.session.Send("SendToModule " + b.jobs.alias + " RenewTimeout 3000"); err != nil {
+					return err
+				}
+			}
+			renewIdle()
 		case err := <-finished:
 			return err
 		case query := <-queries:
@@ -691,6 +737,30 @@ func run(o options) error {
 			if current {
 				renewIdle()
 			}
+		case notice := <-b.jobEvents:
+			if err := b.jobNotice(notice); err != nil {
+				return err
+			}
+			if err := b.renewNativeIdle(); err != nil {
+				return err
+			}
+			renewIdle()
+		case notice := <-b.jobProgress:
+			if err := b.jobNotice(notice); err != nil {
+				return err
+			}
+			if err := b.renewNativeIdle(); err != nil {
+				return err
+			}
+			renewIdle()
+		case callback := <-b.jobCallbacks:
+			accepted, err := b.jobAction(callback)
+			if err != nil {
+				return err
+			}
+			if accepted {
+				renewIdle()
+			}
 		case callback := <-b.detailEvents:
 			var accepted bool
 			var err error
@@ -731,6 +801,13 @@ func run(o options) error {
 }
 
 func main() {
+	if len(os.Args) == 2 && os.Args[1] == "--job-worker" {
+		if err := runJobWorker(); err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser: file job worker ended without a confirmed result")
+			os.Exit(1)
+		}
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--watch-worker" {
 		if err := runWatchWorker(os.Stdin, os.Stdout, watchLease); err != nil {
 			fmt.Fprintln(os.Stderr, "fvwm-file-browser: invalid watch request")

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Bounded file-operation jobs](VERIFICATION-2026-10-27-FILE-JOBS.md): eight operations, isolated worker and native consumer; focused Linux/BSD/filesystem evidence, three themes and explicit remaining profile coverage.
+
 - [2026-10-27 native module scale handoff](VERIFICATION-2026-10-27-MODULE-UI-SCALE.md) — focused Linux policy/native metadata foundation; #51/#69 consumer acceptance remains open.
 
 - [Browser continuity and action closeout](VERIFICATION-2026-10-27-BROWSER-CONTINUITY.md): in-place list/grid, native keyboard actions, atomic size refusal/retry and explicit missing-program recovery; current Linux/three-theme checks and retained support/install scope. #65 closes on merge; #69 scale work remains.

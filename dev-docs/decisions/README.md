@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Bounded file-operation jobs](FILE-JOBS-2026-10-27.md): literal typed targets, isolated mutation ownership, no-overwrite decisions, partial outcomes and finite trash/metadata guarantees.
+
 - [2026-10-27 viewport Form/browser scaling](VIEWPORT-SCALE-2026-10-27.md) — bounded opt-in rendering adoption under #51/#69.
 
 - [Module UI scale metadata handoff](MODULE-UI-SCALE-HANDOFF-2026-10-27.md): bounded #51 foundation and existing consumer inventory; #51 and #69 remain open.

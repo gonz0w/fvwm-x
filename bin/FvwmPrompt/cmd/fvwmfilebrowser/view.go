@@ -115,6 +115,7 @@ func (b *browser) render() error {
 	button("Refresh (F5)", "F5", "refresh", "-")
 	button("Hidden (F6)", "F6", "hidden", "-")
 	button("Watch (F8)", "F8", "watch", "-")
+	button("Jobs (F9)", "F9", "jobs", "-")
 	line("Line left")
 	button("Open (Enter)", "^M", "focused", "-")
 	button("Selected (F3)", "F3", "selected", "-")
@@ -136,6 +137,7 @@ func (b *browser) render() error {
 	line(`Text "Alt-letter/digit: labeled actions; Ctrl-U: clear input."`)
 	line(`Line left`)
 	line(`Text "Wheel: scroll; Tab: fields. Idle close: 5 minutes."`)
+	line("CloseCommand Echo FVWM_FILES_3 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x timeout")
 	line("Timeout 3000 \"Echo FVWM_FILES_3 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " close - x timeout\" \"\"")
 	commands = append(commands, "Module FvwmForm "+alias)
 	if err := b.sendCommands(commands); err != nil {

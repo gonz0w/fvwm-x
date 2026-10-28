@@ -252,7 +252,13 @@ func TestUnavailableProgramsFailCorrelatedWorkAndAllowRefreshRetry(t *testing.T)
 				complete("started", retry)
 				deadline := time.Now().Add(3 * time.Second)
 				for {
-					if data, err := os.ReadFile(report); err == nil {
+					data, err := os.ReadFile(report)
+					if err != nil && !os.IsNotExist(err) {
+						t.Fatal("could not read application report", err)
+					}
+					// Shell redirection creates the report before printf publishes
+					// its bytes; an empty file is not a completed report.
+					if err == nil && len(data) != 0 {
 						if string(data) != "started\n" {
 							t.Fatal("retry did not launch exactly once", string(data))
 						}

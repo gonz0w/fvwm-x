@@ -1,0 +1,4599 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "owner": "Cam",
+  "issue": 56,
+  "status": "six focused installed profiles passed; closing candidate pending maintainer merge",
+  "runtime_base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+  "runtime_base_tree": "ce90e204b74c53497cd4452ce9905eb711f1781c",
+  "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+  "source_archive_sha256": "b317e88c4e82c922d21996946f6fb61c54a6af426a07434ade714875cb089e35",
+  "regular_source_inputs": 2985,
+  "fixtures": {
+    "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+    "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+  },
+  "groups": 30,
+  "worker_results": 60,
+  "profiles": [
+    {
+      "target": "linux-arm64",
+      "archive": {
+        "status": "verified",
+        "target": "fvwm-x-linux-arm64-svg",
+        "host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/linux-arm64-evidence.tgz",
+        "archive": {
+          "archive": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-evidence.tgz",
+          "sha256": "d2c04942f3e911935f575b4e4335f0422491043bd0cde3bbdcff30c40be9d1f5",
+          "archive_bytes": 826185,
+          "payload_files": 114,
+          "payload_bytes": 2900631
+        },
+        "payload_hashes_modes": "all verified",
+        "gzip_crc": "passed",
+        "regular_members": 115,
+        "uncompressed_bytes": 2920482
+      },
+      "gate": {
+        "status": "passed",
+        "target": "linux-arm64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/tmp/fvwm-module-waits-20261015/source",
+        "build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "prefix": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux",
+        "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "sdk": "go version go1.27.2 linux/arm64",
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "Linux ARM64 native CPU in owned Podman VM",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602",
+            "bytes": 120080,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "29e12bd21c4436dd222eccbe47c3b0158249d517bf99d1172c5721548c3b6148",
+            "bytes": 5751634,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+            "bytes": 5892996,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "48bb8316d74be432f894af391193e35c8ff78f2df923bcd3a4bc6afdd8a303ad",
+            "bytes": 5450634,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "6a106c3f3e32a01e671e33e86ffa30138546e2d8793279c826ad68c20b1d58e6",
+            "bytes": 6454810,
+            "mode": 493
+          }
+        },
+        "fixture_result": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-current/native-arm03/fixture/evidence.json",
+        "fixture_result_sha256": "e20163a2148d8295500e6cab84aaa427f3af427cdc44811da6c6b5fc3967b277",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.0005668789999617729
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.0015513019999389144
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 0.08782025599998633
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 0.08639562199994089
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 0.08636170499994478
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.0007241299999805051
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 0.03302155500000481
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 0.06540023100001235
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 0.3419027969999888
+          }
+        ],
+        "free": 4699242496
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "Linux ARM64 native CPU in owned Podman VM",
+        "uname": [
+          "Linux",
+          "288f898505a4",
+          "6.18.10-200.fc43.aarch64",
+          "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+          "aarch64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 1028,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 1039,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 1044,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 1053,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 1058,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 1063,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 1068,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 1073,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 1084,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 1089,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 1096,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 1101,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 1108,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 1113,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 1120,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 1125,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 1132,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 1135,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 1137,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "6dbded8e6c24ed006bf8a2feb2f0b502b07be147ad10c6885cea053d68b68a37"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "d889c72c35e7f0f70db198d621bbaad23769451e7b143013288ccac1718b986a"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "ea363ac000b4672f44125a6810df78ebed3ba79a4c63dfc70fcf19df6c31ed6c"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "a4bf2e7d5c5a9237c503aee32d8dfcf549a91b3246bd87e7800e45b9e892fee6"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "ea9572417f89ea04732752ab8a5a0548e8becc8996c4cd4fbcda8232bc71d3dc"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "48bb8316d74be432f894af391193e35c8ff78f2df923bcd3a4bc6afdd8a303ad",
+            "mode": 493,
+            "bytes": 5450634
+          },
+          "browser": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "6a106c3f3e32a01e671e33e86ffa30138546e2d8793279c826ad68c20b1d58e6",
+            "mode": 493,
+            "bytes": 6454810
+          },
+          "helper": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602",
+            "mode": 493,
+            "bytes": 120080
+          },
+          "desktop_controller": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "29e12bd21c4436dd222eccbe47c3b0158249d517bf99d1172c5721548c3b6148",
+            "mode": 493,
+            "bytes": 5751634
+          },
+          "worker": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+            "mode": 493,
+            "bytes": 5892996
+          },
+          "core": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "sha256": "c1d40b45d1f32b64d4cfd0416d4ca4c186ac62b8b100bce61de3c6ca9f911f98",
+            "mode": 493,
+            "bytes": 5621488
+          },
+          "mfl": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "sha256": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06",
+            "mode": 493,
+            "bytes": 445064
+          },
+          "client": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-current/native-arm03/client",
+            "sha256": "ee04560a64edb146d9810b845c890beec494f4e24fa868bbb32a0e9e0390c97a",
+            "mode": 493,
+            "bytes": 82544
+          },
+          "producer": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-current/native-arm03/producer",
+            "sha256": "661a3797030d89a389cbd470a68d65b62b2cf3fb75587f62494d1546246727b0",
+            "mode": 493,
+            "bytes": 100592
+          },
+          "desktop_metadata": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-provider-tool/bin/file",
+            "sha256": "6d5e89ae30a0cd950b216878901221ed097911528014e0c6f42be84ede449731",
+            "mode": 493,
+            "bytes": 277
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 1037,
+            "child": 1038,
+            "real": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 861.233129319
+          },
+          "stopped": {
+            "child": 1038,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 1038,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 1053,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f34636435303965323134643362663334313431393133306531336632623135615f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/4cd509e214d3bf341419130e13f2b15a_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 4
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 1058,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f37353436376639623962656537333330303138393639306561616265656266365f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/75467f9b9bee73300189690eaabeebf6_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 55
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-zqrbb1zu/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "2df6f1c26b48dd882ab8a01d0aed1ccd7b3f03be871c7e974a4f3e765122406b",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "98446b2dbe1f0cc8450a20a650627c735bb79681cd0303cbbb508df3221e9b52",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "2df6f1c26b48dd882ab8a01d0aed1ccd7b3f03be871c7e974a4f3e765122406b",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "98446b2dbe1f0cc8450a20a650627c735bb79681cd0303cbbb508df3221e9b52",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "2df6f1c26b48dd882ab8a01d0aed1ccd7b3f03be871c7e974a4f3e765122406b",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "1466d8100e722690d78b02877eda8f0e9426c389adb5805247f2cc74e89c60e8",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "98446b2dbe1f0cc8450a20a650627c735bb79681cd0303cbbb508df3221e9b52",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "52d8f5d107899c30574228788b3af8aa956b10d28b3492ea65907b57f8c91edd",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "508057cfbc29b391564d033acf2e9955991c17ca70c40b75a72a59864ef1a9f4",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/a171ecfa1b398e836a246b7ac087d49c_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 3
+          },
+          "fallback": {
+            "pid": 1135,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d7a71726262317a752f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-59d3ee3f51b3-initial",
+            "name": "installed-group-59d3ee3f51b3-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroupedfdd846",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 3
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-59d3ee3f51b3-late",
+            "name": "installed-group-59d3ee3f51b3-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 0
+          },
+          "observed": {
+            "id": "installed-group-59d3ee3f51b3-late",
+            "name": "installed-group-59d3ee3f51b3-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 1
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "provenance_only": null,
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 9,
+      "fixture_runtime_seconds": 0.3419027969999888
+    },
+    {
+      "target": "linux-amd64",
+      "archive": {
+        "status": "verified",
+        "target": "linux-amd64",
+        "host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/linux-amd64-evidence.tgz",
+        "archive": {
+          "archive": "/root/fvwm-module-waits-20261015/r1-xdg-installed-evidence.tgz",
+          "sha256": "659438e0dcba4348f6fa13af418ea96cab6f8f5d80e25bb15999b80d93e163bb",
+          "archive_bytes": 491347,
+          "payload_files": 76,
+          "payload_bytes": 1694195
+        },
+        "payload_hashes_modes": "all verified",
+        "gzip_crc": "passed",
+        "regular_members": 77,
+        "uncompressed_bytes": 1707637
+      },
+      "gate": {
+        "status": "passed",
+        "target": "linux-amd64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/root/fvwm-module-waits-20261015/source",
+        "build": "/root/fvwm-module-waits-20261015/build-gcc",
+        "prefix": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "Linux fvwm-linux-amd64 6.12.113+deb13-cloud-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15) x86_64 GNU/Linux",
+        "compiler": "cc (Debian 14.2.0-19) 14.2.0",
+        "sdk": "go version go1.27.2 linux/amd64",
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "linux-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "c44f849018b9f10b75ea4294e00657f1b53fc0ea5e2c2f3e164b5a7bab5ae821",
+            "bytes": 70880,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "d080e44a96d99a14849d4b693e54ff27e1f0eed0a0437da2b95cf22cbc78cb72",
+            "bytes": 6087967,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "e1bd46bbb598fa1a5701beaf2317c4d51c0fbba2e6a09b9de186d7e2b984457e",
+            "bytes": 6255152,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "365017786d04096dcbb72b64128ec85ce47d9edd9429d1da3ce15f5fa574443f",
+            "bytes": 5795260,
+            "mode": 493
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "7fecaded6589d7914be9bbf7589d1a6b3221db2b50d55d37f5f797ef52073a32",
+            "bytes": 6931468,
+            "mode": 493
+          }
+        },
+        "fixture_result": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/native-amd01/fixture/evidence.json",
+        "fixture_result_sha256": "c8c31a79dc723eb4071c81bd7cad3a706a5e445bfd255a7fde0b8a826fc349d2",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.010421062999967035
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.040246245000048475
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 1.370725354000001
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 1.3658963209999229
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 1.3671893250000267
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.02886117600007765
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 0.5629304259999799
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 1.0949226620000445
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 4.474853207000024
+          }
+        ],
+        "free": 15179636736
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "linux-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "uname": [
+          "Linux",
+          "fvwm-linux-amd64",
+          "6.12.113+deb13-cloud-amd64",
+          "#1 SMP PREEMPT_DYNAMIC Debian 6.12.113-1 (2026-10-15)",
+          "x86_64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 1999,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 2010,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 2015,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 2024,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 2029,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 2034,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 2039,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 2044,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 2055,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 2060,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 2067,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 2072,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 2079,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 2084,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 2091,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 2096,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 2103,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 2106,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 2108,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "50e7531a176d62c4b3bdaa423a2c565e95b40a5dc05d65a1b584b678080fb263"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "077e9f8a17092d4baf97ff727cd344c338e4a824507690c8bdc88b4c388dd6e8"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "c4625abc8e15de9e5a1eb63e514dabe484861f4c55f59e918c5199d712511e98"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "5f9c719f27539ce962e4adb15abd875bb33ac45a89925b4fba07dba272878cc2"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "722adde695edee15fde6d857e1b05fce6dab40ae03cbfe4b8451b512060303e6"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "365017786d04096dcbb72b64128ec85ce47d9edd9429d1da3ce15f5fa574443f",
+            "mode": 493,
+            "bytes": 5795260
+          },
+          "browser": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "7fecaded6589d7914be9bbf7589d1a6b3221db2b50d55d37f5f797ef52073a32",
+            "mode": 493,
+            "bytes": 6931468
+          },
+          "helper": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "c44f849018b9f10b75ea4294e00657f1b53fc0ea5e2c2f3e164b5a7bab5ae821",
+            "mode": 493,
+            "bytes": 70880
+          },
+          "desktop_controller": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "d080e44a96d99a14849d4b693e54ff27e1f0eed0a0437da2b95cf22cbc78cb72",
+            "mode": 493,
+            "bytes": 6087967
+          },
+          "worker": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "e1bd46bbb598fa1a5701beaf2317c4d51c0fbba2e6a09b9de186d7e2b984457e",
+            "mode": 493,
+            "bytes": 6255152
+          },
+          "core": {
+            "path": "/root/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "sha256": "f273b29b7966719e76373605604a4ce0d60dcc2e265a0a5b3e503b1a9f924769",
+            "mode": 493,
+            "bytes": 5621000
+          },
+          "mfl": {
+            "path": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "sha256": "a80b67d451c1aae661cc9854d95b0158d6d1445173229bb543fc465caf4719cb",
+            "mode": 493,
+            "bytes": 407304
+          },
+          "client": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/native-amd01/client",
+            "sha256": "916127c405e707dc1bc5fafabe4df0cd8929f6d70dc2efe54cb388be1366e9fd",
+            "mode": 493,
+            "bytes": 26704
+          },
+          "producer": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/native-amd01/producer",
+            "sha256": "b0fd8b1af263f4e75006460e4cfbd50c88702a3434bc99b5ad568f4036cf6e7c",
+            "mode": 493,
+            "bytes": 51808
+          },
+          "desktop_metadata": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/usr/bin/file",
+            "sha256": "879067e624a6547de9e2a8492378ca2db500e066d71a34764ad9fe0d4eac953d",
+            "mode": 493,
+            "bytes": 27200
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 2008,
+            "child": 2009,
+            "real": "/root/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 967.284256133
+          },
+          "stopped": {
+            "child": 2009,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 2009,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 2024,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f64666437643431306237653562386464356239306133396536613162343635655f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/dfd7d410b7e5b8dd5b90a39e6a1b465e_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 52
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 2029,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f38633665356136363164383234363135326335376536313433333737363437645f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/8c6e5a661d8246152c57e6143377647d_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 77
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-gol38v6f/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "587d465e5e28979e3db348503a2ec0f28ac94051a1d8d4a4125ee65c35f2750f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "8eeb2e7ed01bfb79cfd2898ec7b27a0164a292cd5d05dc6fa6b3bae4b03452be",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "587d465e5e28979e3db348503a2ec0f28ac94051a1d8d4a4125ee65c35f2750f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "8eeb2e7ed01bfb79cfd2898ec7b27a0164a292cd5d05dc6fa6b3bae4b03452be",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "587d465e5e28979e3db348503a2ec0f28ac94051a1d8d4a4125ee65c35f2750f",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "660c9631249c109fe34ed5550bdec8ec887939be2f58f80b8359946183d7d6b0",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "8eeb2e7ed01bfb79cfd2898ec7b27a0164a292cd5d05dc6fa6b3bae4b03452be",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "dc4c914e3a7313cf58cb5aa7d9d0edb60c8f950fceaf07dc8415dda2ae9c00aa",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "86e66863fb2132b23b174f0baf684fa952703017d3f4f3e4d3768b59d6e7b171",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/49ba0e03dff09963445b9235ae73486f_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 13
+          },
+          "fallback": {
+            "pid": 2106,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d676f6c33387636662f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-c9d62f5d8ef1-initial",
+            "name": "installed-group-c9d62f5d8ef1-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroup49028ebd",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 25
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-c9d62f5d8ef1-late",
+            "name": "installed-group-c9d62f5d8ef1-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 1
+          },
+          "observed": {
+            "id": "installed-group-c9d62f5d8ef1-late",
+            "name": "installed-group-c9d62f5d8ef1-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 5
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "provenance_only": null,
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 9,
+      "fixture_runtime_seconds": 4.474853207000024
+    },
+    {
+      "target": "freebsd-arm64",
+      "archive": {
+        "status": "verified",
+        "target": "freebsd-arm64",
+        "host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/freebsd-arm64-evidence.tgz",
+        "archive": {
+          "archive": "/root/fvwm-module-waits-20261015/r1-xdg-installed-evidence.tgz",
+          "sha256": "2abf8787879c6e8cd68bdd94fcf1f9f34dab1d994dda3cfccdcbb5da6bf7be1b",
+          "archive_bytes": 519697,
+          "payload_files": 97,
+          "payload_bytes": 1946186
+        },
+        "payload_hashes_modes": "all verified",
+        "gzip_crc": "passed",
+        "regular_members": 98,
+        "uncompressed_bytes": 1962899
+      },
+      "gate": {
+        "status": "passed",
+        "target": "freebsd-arm64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/root/fvwm-module-waits-20261015/source",
+        "build": "/root/fvwm-module-waits-20261015/build-default",
+        "prefix": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "FreeBSD freebsd 15.1-RELEASE-p4 FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC arm64",
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "sdk": "go version go1.27.2 freebsd/arm64",
+        "generated_config": {
+          "path": "/root/fvwm-module-waits-20261015/build-default/config.h",
+          "sha256": "761e51af73514ba4efddbcc1e76d05f7d2a604cea527c9921060e93d095ba912"
+        },
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "FreeBSD ARM64 native CPU via HVF VM",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+            "bytes": 66264,
+            "mode": 493,
+            "provenance": {
+              "method": "exact bytes after canonical target Meson ELF fixup on scratch copy",
+              "meson_version": "1.10.2",
+              "metadata_sha256": "021bde10b9fbc30bc14a5f0d6a7ffa70e5f0bcae9f1132d045cb3c7e006e80cd",
+              "depfixer_source_sha256": "fd99cd28e329deeccc4dfef5dc46e618c0f0d4b86f4a732d325fa49f184824cb",
+              "api_parameters": [
+                "fname",
+                "rpath_dirs_to_remove",
+                "new_rpath",
+                "final_path",
+                "install_name_mappings",
+                "verbose"
+              ],
+              "built_sha256": "14a7682ebbc75318d0aaab69c88b2d309d14384a927cd2c467923688c6c8f880",
+              "normalized_sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+              "installed_sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+              "strip": false,
+              "install_command_strip": false,
+              "rpath_dirs_to_remove": [
+                "/usr/local/lib"
+              ],
+              "install_rpath": "",
+              "install_name_mappings": {}
+            }
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36",
+            "bytes": 5657527,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36",
+              "installed_sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85",
+            "bytes": 5787222,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85",
+              "installed_sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a",
+            "bytes": 5331363,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a",
+              "installed_sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e",
+            "bytes": 6354839,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e",
+              "installed_sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e"
+            }
+          }
+        },
+        "fixture_result": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/recovery02/fixture/evidence.json",
+        "fixture_result_sha256": "76beea26c3cb1533a6b8a1a3f660a674efe8975cd58043afe0c129dcce17744c",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.012663916000008157
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.0033853749999934735
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 0.10355116600004521
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 0.10094083299998147
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 0.10286608400002706
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.009207791999983783
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 0.05925254200002428
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 0.09061475000004293
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 1.373258958000008
+          }
+        ],
+        "free": 10319015936
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "FreeBSD ARM64 native CPU via HVF VM",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "arm64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 3138,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 3144,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 3145,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 3147,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 3149,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 3151,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 3152,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 3153,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 3155,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 3156,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 3158,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 3159,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 3161,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 3162,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 3164,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 3165,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 3167,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 3170,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 3172,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "50e7531a176d62c4b3bdaa423a2c565e95b40a5dc05d65a1b584b678080fb263"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "daff37246131e79e92853375bde0c2649b9d8b652bd3f6ecf088e8890aab1865"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "d6db39dd1ed56ba42e3155c247df845dad73022b051f968b262d9187470fb91a"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "dac655ab220338da6217e6ffa2b12bb085aac83bfe02284b9a9e69f7e49a1f16"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "f28b75e1ee254ba42187919608b245caaf5358b7047c83935d24114a297c5e2f"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a",
+            "mode": 493,
+            "bytes": 5331363
+          },
+          "browser": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e",
+            "mode": 493,
+            "bytes": 6354839
+          },
+          "helper": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+            "mode": 493,
+            "bytes": 66264
+          },
+          "desktop_controller": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36",
+            "mode": 493,
+            "bytes": 5657527
+          },
+          "worker": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85",
+            "mode": 493,
+            "bytes": 5787222
+          },
+          "core": {
+            "path": "/root/fvwm-module-waits-20261015/build-default/fvwm3",
+            "sha256": "80855a8191266ebf209bc103b684bb813c38685add985526d406f3d09732320e",
+            "mode": 493,
+            "bytes": 5317872
+          },
+          "mfl": {
+            "path": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "sha256": "07113f033f505f56f05c56a33a46b6fad0a4e4e4820606668b64e3c1a7e8ab35",
+            "mode": 493,
+            "bytes": 440496
+          },
+          "client": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/recovery02/client",
+            "sha256": "5303622eb2b5843022d78eced8c82225971cd36aa74f1484c09a4ad4d05ef864",
+            "mode": 493,
+            "bytes": 23608
+          },
+          "producer": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-current/recovery02/producer",
+            "sha256": "7ba8114251a7b3e3cc6588c9f5219a5ca1c2f5151f3307af1fc0c22ad45f7c1c",
+            "mode": 493,
+            "bytes": 47480
+          },
+          "desktop_metadata": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/usr/bin/file",
+            "sha256": "947c03d6dca9ae0239378ab404d7576f69213498aac425a287d54cf4c9d05f22",
+            "mode": 365,
+            "bytes": 25320
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 3142,
+            "child": 3143,
+            "real": "/root/fvwm-module-waits-20261015/build-default/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 509.494607624
+          },
+          "stopped": {
+            "child": 3143,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 3143,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 3147,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f31356132636465346464303331363839663739363162613362633164323961315f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/15a2cde4dd031689f7961ba3bc1d29a1_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 3
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 3149,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f65666464646561353532386465663861366436646563356636346330373538385f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/efdddea5528def8a6d6dec5f64c07588_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 3
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-himuejkw/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "ed62844224cc2e75f240fec066a17d27ce07ca3e1f038a559e6db78ea643e88f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "5da2942178f2b95b03145eb2161e4c289eea2b254c5fc0c322e543108bbed280",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "ed62844224cc2e75f240fec066a17d27ce07ca3e1f038a559e6db78ea643e88f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "5da2942178f2b95b03145eb2161e4c289eea2b254c5fc0c322e543108bbed280",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "ed62844224cc2e75f240fec066a17d27ce07ca3e1f038a559e6db78ea643e88f",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "6c861d040d361b4c7a48936e73905204edb0f15173c456bbac7d337ca8ac80c4",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "5da2942178f2b95b03145eb2161e4c289eea2b254c5fc0c322e543108bbed280",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "c056bd039e81e33fcda13c7b0ae26bacd969d28e27c0eb4580931210ab5a7c4e",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "c433ed242c0d19a7743a6b599755b189696fc23d5ee24897c957002e8401c7f4",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/cbc679722c9506c0988abf76f0ba51c3_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 62
+          },
+          "fallback": {
+            "pid": 3170,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d68696d75656a6b772f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-c24ea3c0ba09-initial",
+            "name": "installed-group-c24ea3c0ba09-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroup3d8498c0",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 2
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-c24ea3c0ba09-late",
+            "name": "installed-group-c24ea3c0ba09-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 0
+          },
+          "observed": {
+            "id": "installed-group-c24ea3c0ba09-late",
+            "name": "installed-group-c24ea3c0ba09-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 1
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "provenance_only": {
+        "status": "passed-provenance-only",
+        "target": "freebsd-arm64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/root/fvwm-module-waits-20261015/source",
+        "build": "/root/fvwm-module-waits-20261015/build-default",
+        "prefix": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "FreeBSD freebsd 15.1-RELEASE-p4 FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC arm64",
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "sdk": "go version go1.27.2 freebsd/arm64",
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+            "bytes": 66264,
+            "mode": 493,
+            "provenance": {
+              "method": "exact bytes after canonical target Meson ELF fixup on scratch copy",
+              "meson_version": "1.10.2",
+              "source": "/root/fvwm-module-waits-20261015/source",
+              "build": "/root/fvwm-module-waits-20261015/build-default",
+              "prefix": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+              "metadata_sha256": "021bde10b9fbc30bc14a5f0d6a7ffa70e5f0bcae9f1132d045cb3c7e006e80cd",
+              "depfixer_source_sha256": "fd99cd28e329deeccc4dfef5dc46e618c0f0d4b86f4a732d325fa49f184824cb",
+              "api_parameters": [
+                "fname",
+                "rpath_dirs_to_remove",
+                "new_rpath",
+                "final_path",
+                "install_name_mappings",
+                "verbose"
+              ],
+              "built_sha256": "14a7682ebbc75318d0aaab69c88b2d309d14384a927cd2c467923688c6c8f880",
+              "normalized_sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+              "installed_sha256": "633795cd6bf2cb43f2f60a7f6afb977283b0dffebe3234ea3fd59e7ace76b5aa",
+              "strip": false,
+              "install_command_strip": false,
+              "rpath_dirs_to_remove": [
+                "/usr/local/lib"
+              ],
+              "install_rpath": "",
+              "install_name_mappings": {}
+            }
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36",
+            "bytes": 5657527,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36",
+              "installed_sha256": "8a076dee3d90b5302bfc3a707040e754d79e72631bea8674ffa7a81daa5b0c36"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85",
+            "bytes": 5787222,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85",
+              "installed_sha256": "d98ce82599418cc0191e6fd6e4cab6d5c558b28cb88b0e77a84fc83e242e9a85"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a",
+            "bytes": 5331363,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a",
+              "installed_sha256": "f64255c8aa13858f4c301e78577637552837967a170eed1a46134d4317c2275a"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e",
+            "bytes": 6354839,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e",
+              "installed_sha256": "868f4c610662f848bee9c91b9c2b40080feb28bd55f8a580ff7bcab3519df84e"
+            }
+          }
+        },
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.00998491699999704
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.0030206249999764623
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 0.09296962500002337
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 0.09301529100002881
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 0.0929423750000069
+          }
+        ]
+      },
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 8,
+      "fixture_runtime_seconds": 1.373258958000008
+    },
+    {
+      "target": "freebsd-amd64",
+      "archive": {
+        "status": "verified",
+        "target": "freebsd-amd64",
+        "host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/freebsd-amd64-evidence.tgz",
+        "archive": {
+          "archive": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-evidence.tgz",
+          "sha256": "e532994316be7ec3fd163b55bd90eed32936facc43f78359fa98a60029baed43",
+          "archive_bytes": 192554,
+          "payload_files": 70,
+          "payload_bytes": 761897
+        },
+        "payload_hashes_modes": "all verified",
+        "gzip_crc": "passed",
+        "regular_members": 71,
+        "uncompressed_bytes": 773593
+      },
+      "gate": {
+        "status": "passed",
+        "target": "freebsd-amd64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/root/fvwm-style-simplification-recovery-20261016/source",
+        "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+        "prefix": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "FreeBSD freebsd 15.1-RELEASE-p4 FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC amd64",
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "sdk": "go version go1.27.2 freebsd/amd64",
+        "generated_config": {
+          "path": "/root/fvwm-style-simplification-recovery-20261016/build-default/config.h",
+          "sha256": "bff9cee27022aecc13915579027a39820b2114e4f4c3b286f97c9beabde74d34"
+        },
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "freebsd-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "0c605bd9b5260b7c5b3b5fe3adb7325d953de00e429235ae83f30d0750b1e93b",
+            "bytes": 66664,
+            "mode": 493,
+            "provenance": {
+              "method": "exact bytes after canonical target Meson ELF fixup on scratch copy",
+              "meson_version": "1.10.2",
+              "source": "/root/fvwm-style-simplification-recovery-20261016/source",
+              "build": "/root/fvwm-style-simplification-recovery-20261016/build-default",
+              "prefix": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix",
+              "metadata_sha256": "0ba8b3513b4d11a0af74e7c5b29731aba792725074895ef01314c60fe0be3351",
+              "depfixer_source_sha256": "fd99cd28e329deeccc4dfef5dc46e618c0f0d4b86f4a732d325fa49f184824cb",
+              "api_parameters": [
+                "fname",
+                "rpath_dirs_to_remove",
+                "new_rpath",
+                "final_path",
+                "install_name_mappings",
+                "verbose"
+              ],
+              "built_sha256": "b290e81e6860804d740f5e6d537a501633e4a2269f29a3c3fb14724940859591",
+              "normalized_sha256": "0c605bd9b5260b7c5b3b5fe3adb7325d953de00e429235ae83f30d0750b1e93b",
+              "installed_sha256": "0c605bd9b5260b7c5b3b5fe3adb7325d953de00e429235ae83f30d0750b1e93b",
+              "strip": false,
+              "install_command_strip": false,
+              "rpath_dirs_to_remove": [
+                "/usr/local/lib"
+              ],
+              "install_rpath": "",
+              "install_name_mappings": {}
+            }
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "517ea9491cce917b28931d3e159d5aad47d60de3fb151ead144ea24a6894f2e9",
+            "bytes": 5959847,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "517ea9491cce917b28931d3e159d5aad47d60de3fb151ead144ea24a6894f2e9",
+              "installed_sha256": "517ea9491cce917b28931d3e159d5aad47d60de3fb151ead144ea24a6894f2e9"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "7b063a9aa4123a7c61a14864017dfec9b7cc157eae50c60af8aab063105506b6",
+            "bytes": 6152653,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "7b063a9aa4123a7c61a14864017dfec9b7cc157eae50c60af8aab063105506b6",
+              "installed_sha256": "7b063a9aa4123a7c61a14864017dfec9b7cc157eae50c60af8aab063105506b6"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "9ec0ff40e9a30311bc54bd55316d09f3c2f8eddb97904903a4b11d0ee2a2bb5e",
+            "bytes": 5659802,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "9ec0ff40e9a30311bc54bd55316d09f3c2f8eddb97904903a4b11d0ee2a2bb5e",
+              "installed_sha256": "9ec0ff40e9a30311bc54bd55316d09f3c2f8eddb97904903a4b11d0ee2a2bb5e"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "91acaa5a7154716b9cd888004a6fedb6d48576b7929152a04b36e1aa67343df3",
+            "bytes": 6764636,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "91acaa5a7154716b9cd888004a6fedb6d48576b7929152a04b36e1aa67343df3",
+              "installed_sha256": "91acaa5a7154716b9cd888004a6fedb6d48576b7929152a04b36e1aa67343df3"
+            }
+          }
+        },
+        "fixture_result": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-current/fixture/evidence.json",
+        "fixture_result_sha256": "40f68924f89e78d7dfed8c553154761942bbfb23414b17b65940b5a07a6e8ecf",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.6167530000000028
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.27741999999999223
+          },
+          {
+            "label": "configure",
+            "exit": 0,
+            "seconds": 28.499112999999994
+          },
+          {
+            "label": "build",
+            "exit": 0,
+            "seconds": 192.56173399800002
+          },
+          {
+            "label": "scoped-install",
+            "exit": 0,
+            "seconds": 2.389453000000003
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 1.907449999999983
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 1.9677810000000022
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 1.9291859999999588
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.045168999999987136
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 0.6936200000000099
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 1.3099789999999985
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 5.600172000000043
+          }
+        ],
+        "free": 11327234048
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "freebsd-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "uname": [
+          "FreeBSD",
+          "freebsd",
+          "15.1-RELEASE-p4",
+          "FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC",
+          "amd64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 1674,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 1680,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 1681,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 1683,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 1685,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 1687,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 1688,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 1689,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 1691,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 1692,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 1694,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 1695,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 1697,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 1698,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 1700,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 1701,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 1703,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 1706,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 1708,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "b637a159a65702a47c7c37c3418032360e8b0e9e6d481239b46366f69bffd187"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "d2f4302ef87df63c1568200875ff4fd5ad2ae2d887184dd7a71a5c9b3c1a788b"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "0c19d783b93b58ae16bb09918f8084946f608704b6827a8ed4484853af401e0f"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "4a14183bcacbfc9c843dd7c1bd5bd427620e713904f5522b0cf817e2bbeb5e11"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "ccb4dfd6cfc74d0ad1597dbff9cf28988c4fb4fde1f724a0b1cef8a148bd2a3b"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "9ec0ff40e9a30311bc54bd55316d09f3c2f8eddb97904903a4b11d0ee2a2bb5e",
+            "mode": 493,
+            "bytes": 5659802
+          },
+          "browser": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "91acaa5a7154716b9cd888004a6fedb6d48576b7929152a04b36e1aa67343df3",
+            "mode": 493,
+            "bytes": 6764636
+          },
+          "helper": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "0c605bd9b5260b7c5b3b5fe3adb7325d953de00e429235ae83f30d0750b1e93b",
+            "mode": 493,
+            "bytes": 66664
+          },
+          "desktop_controller": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "517ea9491cce917b28931d3e159d5aad47d60de3fb151ead144ea24a6894f2e9",
+            "mode": 493,
+            "bytes": 5959847
+          },
+          "worker": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "7b063a9aa4123a7c61a14864017dfec9b7cc157eae50c60af8aab063105506b6",
+            "mode": 493,
+            "bytes": 6152653
+          },
+          "core": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/build-default/fvwm3",
+            "sha256": "9b1ee37c9388a33992153141ed0eed0117c9bf12db5e4dcb9f39f7172dad3384",
+            "mode": 493,
+            "bytes": 5345448
+          },
+          "mfl": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/build-default/modules/FvwmMFL/FvwmMFL",
+            "sha256": "965edce4c6030f06ddf0e19a9de4a7c2a101660e1937c040ab68b281eaaeeced",
+            "mode": 493,
+            "bytes": 452280
+          },
+          "client": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-current/client",
+            "sha256": "94f8b9dac4118ff4367fcb9100d27f92311fb515ae9eb1cd1d404cb999545d5b",
+            "mode": 493,
+            "bytes": 24360
+          },
+          "producer": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-current/producer",
+            "sha256": "16d38432b11a65d3ad5f4debcf5b5f6e6d07f468660b8a9c49734376f2daeae7",
+            "mode": 493,
+            "bytes": 46528
+          },
+          "desktop_metadata": {
+            "path": "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/usr/bin/file",
+            "sha256": "c21bf20a8e3594ce3d3b533d695f6ea5656dd2806b33334b1b81858c16304fc1",
+            "mode": 365,
+            "bytes": 26320
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 1678,
+            "child": 1679,
+            "real": "/root/fvwm-style-simplification-recovery-20261016/build-default/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 360.568625997
+          },
+          "stopped": {
+            "child": 1679,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 1679,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 1683,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f31326231366531346662386662653561643639383965643335353733656362305f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/12b16e14fb8fbe5ad6989ed35573ecb0_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 56
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 1685,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f33396631613264336634386136646437333937383139306438363865656234625f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/39f1a2d3f48a6dd73978190d868eeb4b_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 88
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-qre5gls2/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bf16c70a73fe51f36d6f8e96fd331e64b8fea9cff3ad15b96f5402432daeeeac",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bc1c7b3d0bb26cfe289819fba0057462e11145754f7ea192334ae7e8a14f602f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bf16c70a73fe51f36d6f8e96fd331e64b8fea9cff3ad15b96f5402432daeeeac",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bc1c7b3d0bb26cfe289819fba0057462e11145754f7ea192334ae7e8a14f602f",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bf16c70a73fe51f36d6f8e96fd331e64b8fea9cff3ad15b96f5402432daeeeac",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "1bc4361f1796047724d7a15af03f2250a3108227615461b5cd3a29e97e0ef849",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "bc1c7b3d0bb26cfe289819fba0057462e11145754f7ea192334ae7e8a14f602f",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "42e0d3f26dc32d4678fca2b63c5e5b4c0e7e4f7874f6777a3be267508f6eabed",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "2b000e8f45d10343f094d179c30a6028709bc041f33f2f82df46a2cb43a1f376",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/f4fe19361357cb661ba078bce6a9e8a4_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 69
+          },
+          "fallback": {
+            "pid": 1706,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d71726535676c73322f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-4ad2a4ee19b9-initial",
+            "name": "installed-group-4ad2a4ee19b9-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroup43e0efea",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 26
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-4ad2a4ee19b9-late",
+            "name": "installed-group-4ad2a4ee19b9-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 2
+          },
+          "observed": {
+            "id": "installed-group-4ad2a4ee19b9-late",
+            "name": "installed-group-4ad2a4ee19b9-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 6
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "provenance_only": null,
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 9,
+      "fixture_runtime_seconds": 5.600172000000043
+    },
+    {
+      "target": "openbsd-arm64",
+      "archive": {
+        "status": "verified",
+        "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-arm64-01/job/guest-evidence.tgz",
+        "sha256": "18dcaa05bff755dcbc87eaca655fa932c999a71042d02e82230d6ed93c970c15",
+        "archive_bytes": 156680908,
+        "regular_files": 3194,
+        "regular_file_bytes": 418573328,
+        "symlinks": {
+          "builddir-bsd/png-bootstrap/prefix/lib/libpng.la": "libpng16.la",
+          "builddir-bsd/png-bootstrap/prefix/lib/pkgconfig/libpng.pc": "libpng16.pc",
+          "builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "libpng16.so.18.2",
+          "builddir-bsd/png-bootstrap/prefix/bin/libpng-config": "libpng16-config",
+          "builddir-bsd/png-bootstrap/prefix/include/pnglibconf.h": "libpng16/pnglibconf.h",
+          "builddir-bsd/png-bootstrap/prefix/include/png.h": "libpng16/png.h",
+          "builddir-bsd/png-bootstrap/prefix/include/pngconf.h": "libpng16/pngconf.h",
+          "builddir-bsd/bin/FvwmPrompt/go-cache": "../../provider-go-cache"
+        },
+        "gzip_crc": "passed",
+        "critical_archive_bindings": [
+          {
+            "role": "core",
+            "path": "builddir-bsd/fvwm3",
+            "sha256": "5f2d99cd47c433efe8b25b3e6e2abe1408eb647d69b774cae9dd2e1d86a9f3ff"
+          },
+          {
+            "role": "mfl",
+            "path": "builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "sha256": "aa3bcddf85fc2fadd0c7127d12e15194b67d0e7b97b6c5a18603ed8d900b0d2b"
+          },
+          {
+            "role": "client",
+            "path": "builddir-bsd/r1-xdg-installed-results/client",
+            "sha256": "442c73e70b6991428aab69b94df388433e2ef4d9adede6b9df060a08e35bcb2d"
+          },
+          {
+            "role": "producer",
+            "path": "builddir-bsd/r1-xdg-installed-results/producer",
+            "sha256": "9994b14d02f5d73d1fec85c50f71350412064c428ad682ef837d92240a744fc2"
+          },
+          {
+            "role": "bin/fvwm-startup-launch",
+            "path": "builddir-bsd/bin/fvwm-startup-launch",
+            "sha256": "348c5a93125e91841518309eb0c6cdd35c29fd094ce8de8f54b9251db0d4fb40"
+          },
+          {
+            "role": "bin/FvwmPrompt/FvwmDesktop",
+            "path": "builddir-bsd/bin/FvwmPrompt/FvwmDesktop",
+            "sha256": "8a0567f537b4e4c9546c243a261c06c4468ee4c039399902ba0e9642bdec131e"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-desktop-worker",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-desktop-worker",
+            "sha256": "c8fdc4a75522db71d38a4aca44e954c2dae8d1cdad6384de56021640fc6dfb8e"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-menu-desktop",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-menu-desktop",
+            "sha256": "e8cb848d612481bde0d58404739375dfc9a83dfadd59ff395739094e5108a00e"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-file-browser",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-file-browser",
+            "sha256": "719d50f1c2258bf5a19df2c37075ec690a313b9ac6ee02617d6e9ec976838298"
+          }
+        ],
+        "install_metadata_bound": true
+      },
+      "gate": {
+        "status": "passed",
+        "target": "openbsd-arm64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/home/fvwm-ci/source",
+        "build": "/home/fvwm-ci/source/builddir-bsd",
+        "prefix": "/home/fvwm-ci/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#1 arm64",
+        "compiler": "OpenBSD clang version 22.1.6",
+        "sdk": "go version go1.27.2 openbsd/arm64",
+        "generated_config": {
+          "path": "/home/fvwm-ci/source/builddir-bsd/config.h",
+          "sha256": "9f6e0fb5c7d21d0c74328320264dc07c033a86adcd27868857d5f264fecf1c5d"
+        },
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "OpenBSD 8.0 ARM64 native CPU via HVF VM",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "a69dd7a0247092f8271b32359706590ae72e4d2499ac5fc0c9ac90654be15a29",
+            "bytes": 58896,
+            "mode": 493,
+            "provenance": {
+              "method": "exact bytes after canonical target Meson ELF fixup on scratch copy",
+              "meson_version": "1.12.1",
+              "source": "/home/fvwm-ci/source",
+              "build": "/home/fvwm-ci/source/builddir-bsd",
+              "prefix": "/home/fvwm-ci/r1-xdg-installed-prefix",
+              "metadata_sha256": "c6444fea17fde91748ad1663e88274a5c12c88a7bc255373d83a83cdb927af88",
+              "depfixer_source_sha256": "56b185be7369c767b5f500392821749b4ce83683be5d2c942db76e8d3b87bad1",
+              "api_parameters": [
+                "fname",
+                "rpath_dirs_to_remove",
+                "new_rpath",
+                "final_path",
+                "install_name_mappings",
+                "system",
+                "verbose"
+              ],
+              "built_sha256": "348c5a93125e91841518309eb0c6cdd35c29fd094ce8de8f54b9251db0d4fb40",
+              "normalized_sha256": "a69dd7a0247092f8271b32359706590ae72e4d2499ac5fc0c9ac90654be15a29",
+              "installed_sha256": "a69dd7a0247092f8271b32359706590ae72e4d2499ac5fc0c9ac90654be15a29",
+              "strip": false,
+              "install_command_strip": false,
+              "rpath_dirs_to_remove": [
+                "/usr/X11R6/lib"
+              ],
+              "install_rpath": "",
+              "install_name_mappings": {}
+            }
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "8a0567f537b4e4c9546c243a261c06c4468ee4c039399902ba0e9642bdec131e",
+            "bytes": 5657916,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "8a0567f537b4e4c9546c243a261c06c4468ee4c039399902ba0e9642bdec131e",
+              "installed_sha256": "8a0567f537b4e4c9546c243a261c06c4468ee4c039399902ba0e9642bdec131e"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "c8fdc4a75522db71d38a4aca44e954c2dae8d1cdad6384de56021640fc6dfb8e",
+            "bytes": 5781879,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "c8fdc4a75522db71d38a4aca44e954c2dae8d1cdad6384de56021640fc6dfb8e",
+              "installed_sha256": "c8fdc4a75522db71d38a4aca44e954c2dae8d1cdad6384de56021640fc6dfb8e"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "e8cb848d612481bde0d58404739375dfc9a83dfadd59ff395739094e5108a00e",
+            "bytes": 5267723,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "e8cb848d612481bde0d58404739375dfc9a83dfadd59ff395739094e5108a00e",
+              "installed_sha256": "e8cb848d612481bde0d58404739375dfc9a83dfadd59ff395739094e5108a00e"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "719d50f1c2258bf5a19df2c37075ec690a313b9ac6ee02617d6e9ec976838298",
+            "bytes": 6347194,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "719d50f1c2258bf5a19df2c37075ec690a313b9ac6ee02617d6e9ec976838298",
+              "installed_sha256": "719d50f1c2258bf5a19df2c37075ec690a313b9ac6ee02617d6e9ec976838298"
+            }
+          }
+        },
+        "fixture_result": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/fixture/evidence.json",
+        "fixture_result_sha256": "dfc2a11268685927e304a7d336f9452c4a70a4c65b1152d54e5d40cd7d607683",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.044880291999998434
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.0897497499999993
+          },
+          {
+            "label": "configure",
+            "exit": 0,
+            "seconds": 3.2475707919999994
+          },
+          {
+            "label": "build",
+            "exit": 0,
+            "seconds": 17.989522166
+          },
+          {
+            "label": "scoped-install",
+            "exit": 0,
+            "seconds": 0.3002508749999997
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 0.2310457079999999
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 0.22860929199999802
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 0.2279777920000008
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.0284487079999991
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 0.1385632500000007
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 0.1883765000000004
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 2.0294974590000017
+          }
+        ],
+        "free": 114285473792
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "OpenBSD 8.0 ARM64 native CPU via HVF VM",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#1",
+          "arm64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 25969,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 87907,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 45918,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 35141,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 3983,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 95690,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 70178,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 28527,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 42763,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 25045,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 7646,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 68615,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 12610,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 27398,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 24587,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 94767,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 3240,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 67217,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 63317,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "13a9e3fd62726bbdf7c7b658116f43433c83c3d2a0a2feeef36b4db000e1f38e"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "f8b2ad6847b9b6110e095ab5dd504035437a8b145fa5dac690b565d13db53952"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "210f004938b3a2549df2139c81fc1ffc4840fec5236875487b013f6c06ad3545"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "7156c6139b0b8037b09f10c37381876ae61b9bb0fdc944f5ff61ade22dc2e953"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "8aebdae4873151a382b82e9a0a8442842a03662150c612d4a077762ec01cb155"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "e8cb848d612481bde0d58404739375dfc9a83dfadd59ff395739094e5108a00e",
+            "mode": 493,
+            "bytes": 5267723
+          },
+          "browser": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "719d50f1c2258bf5a19df2c37075ec690a313b9ac6ee02617d6e9ec976838298",
+            "mode": 493,
+            "bytes": 6347194
+          },
+          "helper": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "a69dd7a0247092f8271b32359706590ae72e4d2499ac5fc0c9ac90654be15a29",
+            "mode": 493,
+            "bytes": 58896
+          },
+          "desktop_controller": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "8a0567f537b4e4c9546c243a261c06c4468ee4c039399902ba0e9642bdec131e",
+            "mode": 493,
+            "bytes": 5657916
+          },
+          "worker": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "c8fdc4a75522db71d38a4aca44e954c2dae8d1cdad6384de56021640fc6dfb8e",
+            "mode": 493,
+            "bytes": 5781879
+          },
+          "core": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/fvwm3",
+            "sha256": "5f2d99cd47c433efe8b25b3e6e2abe1408eb647d69b774cae9dd2e1d86a9f3ff",
+            "mode": 493,
+            "bytes": 5155336
+          },
+          "mfl": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "sha256": "aa3bcddf85fc2fadd0c7127d12e15194b67d0e7b97b6c5a18603ed8d900b0d2b",
+            "mode": 493,
+            "bytes": 414048
+          },
+          "client": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/client",
+            "sha256": "442c73e70b6991428aab69b94df388433e2ef4d9adede6b9df060a08e35bcb2d",
+            "mode": 493,
+            "bytes": 18320
+          },
+          "producer": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/producer",
+            "sha256": "9994b14d02f5d73d1fec85c50f71350412064c428ad682ef837d92240a744fc2",
+            "mode": 493,
+            "bytes": 40520
+          },
+          "desktop_metadata": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/usr/bin/file",
+            "sha256": "58588655613db0da490bfeb50575ebc5c3d590c6ff97f8c2d894ca55cf57d445",
+            "mode": 365,
+            "bytes": 62752
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 14949,
+            "child": 21496,
+            "real": "/home/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 32.118735041
+          },
+          "stopped": {
+            "child": 21496,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 21496,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 35141,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f37303164666439626530626465343131353230623835633435633333323464385f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/701dfd9be0bde411520b85c45c3324d8_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 21
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 3983,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f66653533636539623637656663366433356534613563326562353635326165325f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/fe53ce9b67efc6d35e4a5c2eb5652ae2_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 20
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-di5wa59c/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "1a8db85b2ed656cd8de49f1505f31ddf70438c4f74b969cff129e5bfc963d9c9",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "c030fbb0f216fe4a527fdace1521fd38dc966b3ab4182d98333a3fe998ff4f3d",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "1a8db85b2ed656cd8de49f1505f31ddf70438c4f74b969cff129e5bfc963d9c9",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "c030fbb0f216fe4a527fdace1521fd38dc966b3ab4182d98333a3fe998ff4f3d",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "1a8db85b2ed656cd8de49f1505f31ddf70438c4f74b969cff129e5bfc963d9c9",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "03a6863801127bb1408eea6dc74c0edd3025c477ffcf00cfe2fbb9f294680d22",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "c030fbb0f216fe4a527fdace1521fd38dc966b3ab4182d98333a3fe998ff4f3d",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "cde2f625d27e79080447bf096c4c5d3de6d9c7f0fb0ecac65dc889b6ef25630d",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "00a976dbfffa6880574a06b0629faa8d89e646d0332bd1a1152a8ee520ed8c24",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/1aea960a1bb8ce03aeba228fd7246cd1_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 92
+          },
+          "fallback": {
+            "pid": 67217,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d64693577613539632f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-391cf7ecd922-initial",
+            "name": "installed-group-391cf7ecd922-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroupc0e24d31",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 3
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-391cf7ecd922-late",
+            "name": "installed-group-391cf7ecd922-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 0
+          },
+          "observed": {
+            "id": "installed-group-391cf7ecd922-late",
+            "name": "installed-group-391cf7ecd922-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 1
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "runner": {
+        "profile": "openbsd-arm64",
+        "status": "passed",
+        "acceleration": "hvf",
+        "run_status": 0,
+        "qemu_exit_status": 0
+      },
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 8,
+      "fixture_runtime_seconds": 2.0294974590000017
+    },
+    {
+      "target": "openbsd-amd64",
+      "archive": {
+        "status": "verified",
+        "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-amd64-02/job/guest-evidence.tgz",
+        "sha256": "7f3898e05f02452eb10d7c13f69afdd0bd6572387fe04734549d704434e67620",
+        "archive_bytes": 169050025,
+        "regular_files": 3246,
+        "regular_file_bytes": 426339692,
+        "symlinks": {
+          "builddir-bsd/png-bootstrap/prefix/lib/libpng.la": "libpng16.la",
+          "builddir-bsd/png-bootstrap/prefix/lib/pkgconfig/libpng.pc": "libpng16.pc",
+          "builddir-bsd/png-bootstrap/prefix/lib/libpng.so.18.2": "libpng16.so.18.2",
+          "builddir-bsd/png-bootstrap/prefix/bin/libpng-config": "libpng16-config",
+          "builddir-bsd/png-bootstrap/prefix/include/pnglibconf.h": "libpng16/pnglibconf.h",
+          "builddir-bsd/png-bootstrap/prefix/include/png.h": "libpng16/png.h",
+          "builddir-bsd/png-bootstrap/prefix/include/pngconf.h": "libpng16/pngconf.h",
+          "builddir-bsd/bin/FvwmPrompt/go-cache": "../../provider-go-cache"
+        },
+        "gzip_crc": "passed",
+        "critical_archive_bindings": [
+          {
+            "role": "core",
+            "path": "builddir-bsd/fvwm3",
+            "sha256": "c1f02951c248a8c0de9874badecdf6a531b64c4892bb05cfda98a36905bb5c4c"
+          },
+          {
+            "role": "mfl",
+            "path": "builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "sha256": "5bdebf0395111584a03197bc7dd09ce77c071de1088212e270b47c84ab83e1f7"
+          },
+          {
+            "role": "client",
+            "path": "builddir-bsd/r1-xdg-installed-results/client",
+            "sha256": "908d0e9ccd959da30d3e9762563771b4cbe95473f773b0bee7947b37daa21d5d"
+          },
+          {
+            "role": "producer",
+            "path": "builddir-bsd/r1-xdg-installed-results/producer",
+            "sha256": "c63ed8137cac3a76f8a1401116ec576c8362ab02badbd2b606d7491461c40f5e"
+          },
+          {
+            "role": "bin/fvwm-startup-launch",
+            "path": "builddir-bsd/bin/fvwm-startup-launch",
+            "sha256": "5ab01a629d5dfa29d61b5dbcedfdc1b671ff2c6eba3489ac3a77bda834382dd9"
+          },
+          {
+            "role": "bin/FvwmPrompt/FvwmDesktop",
+            "path": "builddir-bsd/bin/FvwmPrompt/FvwmDesktop",
+            "sha256": "b6e2e7cec56bcc57d32433e7aa74e2be66c8d6120b995dbdced0d4f4d63b2d4f"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-desktop-worker",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-desktop-worker",
+            "sha256": "d3dd81537f1031036f1b1a11a1d4b862cb5a7d689879c19c1edd35a5fea47a0d"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-menu-desktop",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-menu-desktop",
+            "sha256": "b944593c1057b87d20203b924244f4299c599d186171014a0e5534301bc5c071"
+          },
+          {
+            "role": "bin/FvwmPrompt/fvwm-file-browser",
+            "path": "builddir-bsd/bin/FvwmPrompt/fvwm-file-browser",
+            "sha256": "0a38b0645e0e7c860c8da99206bbd242b4e49a101e5a33a8b468e3de2660f4c3"
+          }
+        ],
+        "install_metadata_bound": true
+      },
+      "gate": {
+        "status": "passed",
+        "target": "openbsd-amd64",
+        "base": "dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd",
+        "source_closure": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source": "/home/fvwm-ci/source",
+        "build": "/home/fvwm-ci/source/builddir-bsd",
+        "prefix": "/home/fvwm-ci/r1-xdg-installed-prefix",
+        "scope": "actual Meson-installed XDG public/private consumers with current built core/MFL; not full installed core/default-X/release qualification",
+        "uname": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#2 amd64",
+        "compiler": "OpenBSD clang version 22.1.6",
+        "sdk": "go version go1.27.2 openbsd/amd64",
+        "generated_config": {
+          "path": "/home/fvwm-ci/source/builddir-bsd/config.h",
+          "sha256": "9f6e0fb5c7d21d0c74328320264dc07c033a86adcd27868857d5f264fecf1c5d"
+        },
+        "source_pre": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "source_post": "9d14e135f6c3ac5317040fc45f648952ad6e0a8bc67d954334110a9c0c33a9ee",
+        "execution_profile": "openbsd-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "installed": {
+          "bin/fvwm-startup-launch": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "0972724f31e9fb2599f42dadf6684561837628670d622058de433e48ffca252a",
+            "bytes": 56528,
+            "mode": 493,
+            "provenance": {
+              "method": "exact bytes after canonical target Meson ELF fixup on scratch copy",
+              "meson_version": "1.12.1",
+              "source": "/home/fvwm-ci/source",
+              "build": "/home/fvwm-ci/source/builddir-bsd",
+              "prefix": "/home/fvwm-ci/r1-xdg-installed-prefix",
+              "metadata_sha256": "fcb89e70bed521d4bb76c003ff4d32ff62952633e7ddb2c6dea50ccdf52d72bc",
+              "depfixer_source_sha256": "56b185be7369c767b5f500392821749b4ce83683be5d2c942db76e8d3b87bad1",
+              "api_parameters": [
+                "fname",
+                "rpath_dirs_to_remove",
+                "new_rpath",
+                "final_path",
+                "install_name_mappings",
+                "system",
+                "verbose"
+              ],
+              "built_sha256": "5ab01a629d5dfa29d61b5dbcedfdc1b671ff2c6eba3489ac3a77bda834382dd9",
+              "normalized_sha256": "0972724f31e9fb2599f42dadf6684561837628670d622058de433e48ffca252a",
+              "installed_sha256": "0972724f31e9fb2599f42dadf6684561837628670d622058de433e48ffca252a",
+              "strip": false,
+              "install_command_strip": false,
+              "rpath_dirs_to_remove": [
+                "/usr/X11R6/lib"
+              ],
+              "install_rpath": "",
+              "install_name_mappings": {}
+            }
+          },
+          "bin/FvwmPrompt/FvwmDesktop": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "b6e2e7cec56bcc57d32433e7aa74e2be66c8d6120b995dbdced0d4f4d63b2d4f",
+            "bytes": 5943380,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "b6e2e7cec56bcc57d32433e7aa74e2be66c8d6120b995dbdced0d4f4d63b2d4f",
+              "installed_sha256": "b6e2e7cec56bcc57d32433e7aa74e2be66c8d6120b995dbdced0d4f4d63b2d4f"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-desktop-worker": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "d3dd81537f1031036f1b1a11a1d4b862cb5a7d689879c19c1edd35a5fea47a0d",
+            "bytes": 6147862,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "d3dd81537f1031036f1b1a11a1d4b862cb5a7d689879c19c1edd35a5fea47a0d",
+              "installed_sha256": "d3dd81537f1031036f1b1a11a1d4b862cb5a7d689879c19c1edd35a5fea47a0d"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-menu-desktop": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "b944593c1057b87d20203b924244f4299c599d186171014a0e5534301bc5c071",
+            "bytes": 5657264,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "b944593c1057b87d20203b924244f4299c599d186171014a0e5534301bc5c071",
+              "installed_sha256": "b944593c1057b87d20203b924244f4299c599d186171014a0e5534301bc5c071"
+            }
+          },
+          "bin/FvwmPrompt/fvwm-file-browser": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "0a38b0645e0e7c860c8da99206bbd242b4e49a101e5a33a8b468e3de2660f4c3",
+            "bytes": 6761407,
+            "mode": 493,
+            "provenance": {
+              "method": "direct byte equality",
+              "built_sha256": "0a38b0645e0e7c860c8da99206bbd242b4e49a101e5a33a8b468e3de2660f4c3",
+              "installed_sha256": "0a38b0645e0e7c860c8da99206bbd242b4e49a101e5a33a8b468e3de2660f4c3"
+            }
+          }
+        },
+        "fixture_result": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/fixture/evidence.json",
+        "fixture_result_sha256": "8a3e98414b4950e7121a3b92cf3848aeab558561f066666688ca9f3fa9c66fa5",
+        "commands": [
+          {
+            "label": "compiler",
+            "exit": 0,
+            "seconds": 0.44669599999999576
+          },
+          {
+            "label": "sdk",
+            "exit": 0,
+            "seconds": 0.24994900000000086
+          },
+          {
+            "label": "configure",
+            "exit": 0,
+            "seconds": 41.439324000000006
+          },
+          {
+            "label": "build",
+            "exit": 0,
+            "seconds": 130.634656177
+          },
+          {
+            "label": "scoped-install",
+            "exit": 0,
+            "seconds": 4.753684923999998
+          },
+          {
+            "label": "options",
+            "exit": 0,
+            "seconds": 3.8035770699999887
+          },
+          {
+            "label": "compilers",
+            "exit": 0,
+            "seconds": 3.8716376759999775
+          },
+          {
+            "label": "install-map",
+            "exit": 0,
+            "seconds": 3.9257900880000136
+          },
+          {
+            "label": "x11-flags",
+            "exit": 0,
+            "seconds": 0.08762192599999707
+          },
+          {
+            "label": "client-build",
+            "exit": 0,
+            "seconds": 1.2725158579999913
+          },
+          {
+            "label": "producer-build",
+            "exit": 0,
+            "seconds": 2.184100055000016
+          },
+          {
+            "label": "installed-fixture",
+            "exit": 0,
+            "seconds": 13.156516617999984
+          }
+        ],
+        "free": 114304899072
+      },
+      "fixture": {
+        "status": "passed",
+        "execution_profile": "openbsd-amd64 native guest kernel, AMD64 CPU emulated with QEMU TCG",
+        "uname": [
+          "OpenBSD",
+          "openbsd.my.domain",
+          "8.0",
+          "GENERIC.MP#2",
+          "amd64"
+        ],
+        "children": [
+          {
+            "label": "installed-discovery",
+            "pid": 43020,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "desktop-apps",
+            "pid": 78160,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "installed-menu",
+            "pid": 97158,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main",
+            "pid": 83573,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "Literal main \u2014 Inspect",
+            "pid": 70399,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "scan",
+            "pid": 14557,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "locate-path",
+            "pid": 81327,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "inspect-uri",
+            "pid": 21237,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-directory",
+            "pid": 17320,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "empty-providers-file",
+            "pid": 20955,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-directory",
+            "pid": 59821,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "malformed-masks-lower-file",
+            "pid": 37726,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-directory",
+            "pid": 418,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-preferred-file",
+            "pid": 95301,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-directory",
+            "pid": 8955,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "specificity-and-precedence-file",
+            "pid": 58974,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "missing-exec",
+            "pid": 65716,
+            "exit": 127,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "no-display",
+            "pid": 18822,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          },
+          {
+            "label": "independent-producer",
+            "pid": 30052,
+            "exit": 0,
+            "forced_cleanup": false,
+            "preference_snapshot_equal": true
+          }
+        ],
+        "cases": {
+          "installed-identities": {
+            "status": "passed",
+            "expected": "real prefix/private peers and unchanged Desktop metadata",
+            "observed_digest": "13a9e3fd62726bbdf7c7b658116f43433c83c3d2a0a2feeef36b4db000e1f38e"
+          },
+          "desktop-discovery-and-literal-launch": {
+            "status": "passed",
+            "expected": "high-root masking; main/action exact bytes/cwd; fresh ID and exact mapped XID; Wait 0",
+            "observed_digest": "6707f47eec224a68001661bd2255b5a8b865b1e4c47c81acbff226de99a59ab4"
+          },
+          "browser-roles": {
+            "status": "passed",
+            "expected": "raw path/URI locate; empty inventory; malformed/missing preferred fallback; exact MIME before broader defaults; each child preserves defaults",
+            "observed_digest": "25242e98e8f590a3f792a32bf9142970d18d91946d6d4f914de6a19929e64f5c"
+          },
+          "helper-failure-and-display-absence": {
+            "status": "passed",
+            "expected": "exec failure nonzero/stderr and protocol-ended; absent DISPLAY executes ordinary app with cleared inherited ID and Wait 0",
+            "observed_digest": "2ea5141251c5f3f0a1cef41526cfb63d8751909b0823e8e73c174495e866c275"
+          },
+          "late-unmanaged-group-property": {
+            "status": "passed",
+            "expected": "independent class completion AND actual M_MAP precede new no-class pending ID; late leader property selects exact dependent",
+            "observed_digest": "7ad4b8f5cf2543e61fd5d71c7055cf96ab107b65fba00f3de497189e743d3657"
+          }
+        },
+        "limits": {
+          "core_and_mfl": "current build artifacts, not fully installed native modules",
+          "native_cpu": "runner descriptor; no automatic native execution inference",
+          "full_matrix": false,
+          "UI": false,
+          "screenshot": false,
+          "detached_browser_launch": false,
+          "exhaustive_startup_lifetime": "existing PR300 fixture retains its original scope",
+          "infrastructure": "X server uses ordinary owned session SIGTERM during HarnessRuntime teardown"
+        },
+        "artifacts": {
+          "menu": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-menu-desktop",
+            "sha256": "b944593c1057b87d20203b924244f4299c599d186171014a0e5534301bc5c071",
+            "mode": 493,
+            "bytes": 5657264
+          },
+          "browser": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+            "sha256": "0a38b0645e0e7c860c8da99206bbd242b4e49a101e5a33a8b468e3de2660f4c3",
+            "mode": 493,
+            "bytes": 6761407
+          },
+          "helper": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+            "sha256": "0972724f31e9fb2599f42dadf6684561837628670d622058de433e48ffca252a",
+            "mode": 493,
+            "bytes": 56528
+          },
+          "desktop_controller": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "sha256": "b6e2e7cec56bcc57d32433e7aa74e2be66c8d6120b995dbdced0d4f4d63b2d4f",
+            "mode": 493,
+            "bytes": 5943380
+          },
+          "worker": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "sha256": "d3dd81537f1031036f1b1a11a1d4b862cb5a7d689879c19c1edd35a5fea47a0d",
+            "mode": 493,
+            "bytes": 6147862
+          },
+          "core": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/fvwm3",
+            "sha256": "c1f02951c248a8c0de9874badecdf6a531b64c4892bb05cfda98a36905bb5c4c",
+            "mode": 493,
+            "bytes": 5020000
+          },
+          "mfl": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "sha256": "5bdebf0395111584a03197bc7dd09ce77c071de1088212e270b47c84ab83e1f7",
+            "mode": 493,
+            "bytes": 407344
+          },
+          "client": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/client",
+            "sha256": "908d0e9ccd959da30d3e9762563771b4cbe95473f773b0bee7947b37daa21d5d",
+            "mode": 493,
+            "bytes": 18136
+          },
+          "producer": {
+            "path": "/home/fvwm-ci/source/builddir-bsd/r1-xdg-installed-results/producer",
+            "sha256": "c63ed8137cac3a76f8a1401116ec576c8362ab02badbd2b606d7491461c40f5e",
+            "mode": 493,
+            "bytes": 39400
+          },
+          "desktop_metadata": {
+            "path": "/home/fvwm-ci/r1-xdg-installed-prefix/share/applications/fvwm-file-browser.desktop",
+            "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c",
+            "mode": 420,
+            "bytes": 335
+          },
+          "classifier": {
+            "path": "/usr/bin/file",
+            "sha256": "a354d98cc1190c1273869a6908a56f6bd1a853ba42f8835ab76035cdcdc7b3e0",
+            "mode": 365,
+            "bytes": 64024
+          }
+        },
+        "core_wait": 0,
+        "mfl_wait": {
+          "started": {
+            "proxy": 59570,
+            "child": 1682,
+            "real": "/home/fvwm-ci/source/builddir-bsd/modules/FvwmMFL/FvwmMFL",
+            "arguments": [
+              "none",
+              "0",
+              "8"
+            ],
+            "started": 244.620414599
+          },
+          "stopped": {
+            "child": 1682,
+            "returncode": 0
+          },
+          "cleanup": {
+            "child": 1682,
+            "returncode": 0,
+            "forced_cleanup": false
+          }
+        },
+        "cleanup_failures": [],
+        "source_sha256_map_digest": "9d79f61b40bb15dd548b6694b826dd2491dc497f1f0aa548b1047dd9d8194270",
+        "fixture_sources": {
+          "tests/live_x/xdg_installed_live.py": "72d44c86c7a15e0aaed1c6134cdf1fd66084a2b49db504c60c0b75366ffdb63c",
+          "tests/live_x/xdg_installed_client.c": "1861d19407b6d2501d25af3350ae04cc766d3be44e915147183d4a29d3e314f0"
+        },
+        "main_action_handoffs": {
+          "Literal main": {
+            "application": {
+              "pid": 83573,
+              "window": 4194305,
+              "argv_hex": [
+                "6d61696e",
+                "",
+                "74776f20776f726473",
+                "73656d693b2026206c69746572616c",
+                "2428746f756368205348454c4c2d5741532d4e4f542d52554e29",
+                "66696c653a2f2f2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f776f726b696e6725323073706163652532302533422532302532342532386c69746572616c2532392f7261772d2546462532302533422532302532342532386c69746572616c2532392e747874",
+                "25",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f31363132623235346230396239663930363231633530326364313466396265335f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/1612b254b09b9f90621c502cd14f9be3_TIME0",
+              "name": "Literal main",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 147
+            },
+            "direct_child_wait": 0
+          },
+          "Literal main \u2014 Inspect": {
+            "application": {
+              "pid": 70399,
+              "window": 4194305,
+              "argv_hex": [
+                "616374696f6e",
+                "6c69746572616c3b2024286e6f742d612d636f6d6d616e6429",
+                "4c69746572616c206d61696e",
+                "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f757365722d646174612f6170706c69636174696f6e732f6c69746572616c2e6465736b746f70"
+              ],
+              "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f776f726b696e67207370616365203b2024286c69746572616c29",
+              "startup_id_hex": "6676776d2d782f37393539313135666636306538373165633664373536653961326262633037325f54494d4530"
+            },
+            "mapped": {
+              "map": {
+                "window": "0x400001"
+              }
+            },
+            "startup": {
+              "id": "fvwm-x/7959115ff60e871ec6d756e9a2bbc072_TIME0",
+              "name": "Literal main \u2014 Inspect",
+              "icon": "",
+              "application_id": "literal.desktop",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 4194305,
+              "age_ms": 160
+            },
+            "direct_child_wait": 0
+          }
+        },
+        "browser_role_observations": {
+          "raw_target_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f776f726b696e67207370616365203b2024286c69746572616c292f7261772dff203b2024286c69746572616c292e747874",
+          "uri": "file:///tmp/fvwm-xdg-installed-dk10sm1_/working%20space%20%3B%20%24%28literal%29/raw-%FF%20%3B%20%24%28literal%29.txt",
+          "empty": {
+            "directory": {
+              "choices": [],
+              "default_id": ""
+            },
+            "file": {
+              "choices": [],
+              "default_id": "",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "malformed": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "b4e224a386fb412eb406ef749138ff3bbd52baa6665010dd2d4ec5ae3e76bd93",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "88999059cb550d6f55b2c440fd594d98121c6e4ac3b305eea2b564cd748f5d58",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "missing": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "b4e224a386fb412eb406ef749138ff3bbd52baa6665010dd2d4ec5ae3e76bd93",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "88999059cb550d6f55b2c440fd594d98121c6e4ac3b305eea2b564cd748f5d58",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          },
+          "precedence": {
+            "directory": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "b4e224a386fb412eb406ef749138ff3bbd52baa6665010dd2d4ec5ae3e76bd93",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "bf2976f07c62088753615d0e94d5c8abd6c60bc8c5ac4c6c94e56557da33e0c7",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop"
+            },
+            "file": {
+              "choices": [
+                {
+                  "id": "good.desktop",
+                  "name": "good.desktop",
+                  "icon": "",
+                  "fingerprint": "88999059cb550d6f55b2c440fd594d98121c6e4ac3b305eea2b564cd748f5d58",
+                  "terminal": false
+                },
+                {
+                  "id": "alt.desktop",
+                  "name": "alt.desktop",
+                  "icon": "",
+                  "fingerprint": "c55c7e7a1308a32f6fa0c869ee269b388608dd36068e10ff7768f86d530ae462",
+                  "terminal": false
+                },
+                {
+                  "id": "parent.desktop",
+                  "name": "parent.desktop",
+                  "icon": "",
+                  "fingerprint": "437738dbb2af7f5a006b2856f0a2166f8eb753e4bfca515ce160de58f49fe77c",
+                  "terminal": false
+                }
+              ],
+              "default_id": "good.desktop",
+              "mime": "text/plain",
+              "observed_mime": "text/plain"
+            }
+          }
+        },
+        "preferences": {
+          "per_consumer_snapshots_equal": true,
+          "case_initial_final_differ": true,
+          "reason": "fixture deliberately replaces owned defaults between provider probes"
+        },
+        "helper_outcomes": {
+          "failure_exit": 127,
+          "failure_activity": {
+            "id": "fvwm-x/cd18284b42f5b41a0776c5f34cad7569_TIME0",
+            "name": "Known installed exec failure",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 133
+          },
+          "fallback": {
+            "pid": 18822,
+            "window": 0,
+            "argv_hex": [
+              "2d2d6e6f2d78",
+              "6c69746572616c3b2024286e6576657229"
+            ],
+            "cwd_hex": "2f746d702f6676776d2d7864672d696e7374616c6c65642d646b3130736d315f2f776f726b696e67207370616365203b2024286c69746572616c29",
+            "startup_id_hex": null
+          },
+          "fallback_wait": 0
+        },
+        "group_outcomes": {
+          "leader": 4194306,
+          "dependent": 4194307,
+          "initial_class": {
+            "id": "installed-group-cfb362723ac2-initial",
+            "name": "installed-group-cfb362723ac2-initial",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "InstalledGroup08c7480a",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 120
+          },
+          "mapped": {
+            "map": {
+              "window": "0x400003"
+            }
+          },
+          "pending": {
+            "id": "installed-group-cfb362723ac2-late",
+            "name": "installed-group-cfb362723ac2-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 5
+          },
+          "observed": {
+            "id": "installed-group-cfb362723ac2-late",
+            "name": "installed-group-cfb362723ac2-late",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "window-observed",
+            "window": 4194307,
+            "age_ms": 21
+          },
+          "last_reference_released": true,
+          "producer_wait": 0
+        }
+      },
+      "runner": {
+        "profile": "openbsd-amd64",
+        "status": "passed",
+        "acceleration": "tcg",
+        "run_status": 0,
+        "qemu_exit_status": 0
+      },
+      "worker_result_labels": [
+        "scan",
+        "locate-path",
+        "empty-providers-directory",
+        "empty-providers-file",
+        "malformed-masks-lower-directory",
+        "malformed-masks-lower-file",
+        "missing-preferred-directory",
+        "missing-preferred-file",
+        "specificity-and-precedence-directory",
+        "specificity-and-precedence-file"
+      ],
+      "raw_query_count": 9,
+      "fixture_runtime_seconds": 13.156516617999984
+    }
+  ],
+  "review": {
+    "roles": [
+      "temper_implementer",
+      "temper_analyst",
+      "temper_workflow",
+      "temper_reviewer"
+    ],
+    "backend_model_effort": "unverified",
+    "scope": "source-only delegate work; native execution and integration lead-owned; final staged review recorded separately"
+  },
+  "limits": [
+    "Current built core/MFL with actual Meson-installed XDG peers; not fully installed core/native module/default-X/release matrix.",
+    "AMD64 uses QEMU TCG CPU emulation; ARM64 uses native CPU in owned VM. No physical hardware qualification.",
+    "No new UI or theme rendering. Retain source-bound prior semantic, icon, themes, SDK, race and sanitizer evidence.",
+    "New receipts test executable failure and display absence, not helper absence.",
+    "Each consumer preserves synthetic preference bytes/mode/mtime; fixture intentionally edits its own defaults between subcases.",
+    "No BSD detached browser-app reaping claim; real direct menu/helper application Wait and query-worker ownership only.",
+    "FreeBSD ARM64 runtime recovery02 composed with unchanged-artifact provenance03; proof-only adds zero runtime cases.",
+    "Autostart #72, FileManager1 #67/#77 and parked #257/#258 remain separate."
+  ],
+  "performance": {
+    "reference": "m5-performance-providers-20261029",
+    "runtime_merges_since_reference": 1,
+    "this_checkpoint_advances": false,
+    "comparison_due": false
+  },
+  "cleanup": [
+    {
+      "target": "openbsd-amd64",
+      "disk": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-amd64-02/job/disk.qcow2",
+      "file_bytes": 4142268416,
+      "allocated_bytes": 4142268416,
+      "qemu_exit_status": 0,
+      "evidence_sha256": "7f3898e05f02452eb10d7c13f69afdd0bd6572387fe04734549d704434e67620",
+      "current_build_and_results_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-amd64-02/job/guest-evidence.tgz",
+      "job_private_key_retired": true,
+      "disk_retired": true
+    },
+    {
+      "target": "openbsd-arm64",
+      "disk": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-arm64-01/job/disk.qcow2",
+      "file_bytes": 4221501440,
+      "allocated_bytes": 4221501440,
+      "qemu_exit_status": 0,
+      "evidence_sha256": "18dcaa05bff755dcbc87eaca655fa932c999a71042d02e82230d6ed93c970c15",
+      "current_build_and_results_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-xdg-installed-closeout/openbsd-arm64-01/job/guest-evidence.tgz",
+      "job_private_key_retired": true,
+      "disk_retired": true
+    }
+  ],
+  "retained_failures": [
+    "Linux ARM raw capture equality incorrectly ignored normal RUNPATH removal; capture is outside this launch artifact contract.",
+    "Initial fixture expected command alone instead of shipped --reuse -- after absent %u; independent assertion corrected, no product edit.",
+    "FreeBSD/OpenBSD raw C helper parity failed on normal Meson RUNPATH removal. Exact scratch canonical target-Meson normalization replaces invalid oracle, not weaker behavioral assertions.",
+    "v2 FreeBSD ARM proof source/version bindings tightened in provenance-only v3 without repeating runtime."
+  ],
+  "lab_shutdown": {
+    "linux_arm64": {
+      "normal_stop": true
+    },
+    "linux_amd64": {
+      "owned_pid": 61455,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "freebsd_arm64": {
+      "owned_pid": 65799,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "freebsd_amd64": {
+      "owned_pid": 67569,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    }
+  },
+  "digest_format": "observed_digest and source_sha256_map_digest use SHA256 of sorted-key compact UTF-8 JSON with ensure_ascii=True"
+}

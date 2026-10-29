@@ -101,6 +101,41 @@ They reuse qualified default-server hardware setup; provider-specific VM profile
 and actual native sanitizer execution remain separate acceptance gates.
 GitHub Actions is disabled under the [local-review decision](decisions/LOCAL-REVIEW-GITHUB-2026-10-13.md).
 
+## Focused installed XDG probe
+
+`tests/live_x/xdg_installed_live.py` checks real installed XDG consumers with
+current built core/MFL binaries. It requires Python 3, Xvfb, X11 development
+headers, the base file(1) classifier and an already qualified build. Configure
+that owned build with an actual private Meson `--prefix`; a relocated DESTDIR
+does not change the helper directory linked into Go consumers. Install the
+existing `desktop-controller,desktop-menu,file-browser` tags. Keep normal
+dependency and SDK requirements from INSTALL.md.
+
+From the matching source root, compile the two independent probes against its
+generated config.h, then run the opt-in fixture. Use a new evidence directory:
+
+```sh
+cc -std=c11 -D_POSIX_C_SOURCE=200809L -UNDEBUG -Wall -Wextra -Werror \
+    -I/path/to/build -I. tests/live_x/xdg_installed_client.c \
+    -o /path/to/owned/client $(pkg-config --cflags --libs x11)
+cc -std=c11 -D_POSIX_C_SOURCE=200809L -UNDEBUG -Wall -Wextra -Werror \
+    -I/path/to/build -I. tests/live_x/startup_notification_client.c \
+    -o /path/to/owned/producer $(pkg-config --cflags --libs x11)
+python3 tests/live_x/xdg_installed_live.py \
+    --prefix /path/to/private-prefix --fvwm /path/to/build/fvwm3 \
+    --mfl /path/to/build/modules/FvwmMFL/FvwmMFL \
+    --client /path/to/owned/client --producer /path/to/owned/producer \
+    --execution-profile 'actual OS/architecture and CPU execution mode' \
+    --artifacts-dir /path/to/new-evidence
+```
+
+The fixture uses isolated HOME/XDG roots and reports real child exits and cleanup
+failures in `evidence.json`. Preserve a failure before correcting its cause and
+repeating only affected checks. This command does not itself establish full
+build/install provenance, default-server, theme, compiler, hardware or release
+qualification. The [installed checkpoint](verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md)
+records those boundaries and the separate target-specific artifact proofs.
+
 ## Performance observations
 
 The opt-in comparison consumes two already qualified builds on the same quiet

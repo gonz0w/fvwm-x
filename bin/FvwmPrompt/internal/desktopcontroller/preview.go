@@ -26,7 +26,7 @@ type previewControl struct {
 	opacity, retries        int
 	saved                   *previewSnapshot
 	editor                  *draft
-	contrast                *contrastCandidate
+	resource                *resourceCandidate
 }
 type previewPending struct {
 	phase, serial string
@@ -73,8 +73,8 @@ func (p *preview) allowed(e *draft) error {
 // Run only after a validated settings transition has committed. Abandon uses
 // the existing core recovery path and must precede opaque theme publication.
 func (p *preview) constrain() {
-	if p.control != nil && p.control.contrast != nil {
-		p.finish("Settings changed; high contrast preview recovery requested.", true, false)
+	if p.control != nil && p.control.resource != nil {
+		p.finish("Settings changed; resource preview recovery requested.", true, false)
 		return
 	}
 	presentation, err := desktopsettings.ResolvePresentation(p.desktop.effective)
@@ -102,8 +102,8 @@ func (d *Controller) preparePreview(opacity int) (*previewSnapshot, error) {
 	return &previewSnapshot{d.generation, d.revision}, nil
 }
 func (d *Controller) checkPreview(control *previewControl) error {
-	if control != nil && control.contrast != nil {
-		return d.checkContrast(control)
+	if control != nil && control.resource != nil {
+		return d.checkResource(control)
 	}
 	if control == nil || control.saved == nil {
 		return errors.New("This preview has no saved-preference candidate")
@@ -181,8 +181,8 @@ func (p *preview) request(op string) error {
 		generation, lease = item.generation, item.lease
 	}
 	err := p.submit(op, "Send_Preview {cookie} {serial} "+item.view+" "+coreOp+" "+generation+" "+lease+" 0 0 -")
-	if err == nil && op == "save" && item.contrast != nil {
-		item.contrast.confirming = true
+	if err == nil && op == "save" && item.resource != nil {
+		item.resource.confirming = true
 	}
 	return err
 }
@@ -211,8 +211,8 @@ func (p *preview) action(view, op string) error {
 	if p.control == nil || p.control.view != view || p.control.lease == "" || (op != "confirm" && op != "revert" && op != "save") {
 		return errors.New("Preview controls are stale")
 	}
-	if p.control.contrast != nil && (op == "confirm" || op == "save" && p.control.contrast.state != "active") {
-		return errors.New("High contrast preview is not ready to save")
+	if p.control.resource != nil && (op == "confirm" || op == "save" && p.control.resource.state != "active") {
+		return errors.New("Resource preview is not ready to save")
 	}
 	if op != "revert" {
 		if err := p.allowedControl(); err != nil {
@@ -237,7 +237,7 @@ func (p *preview) finish(message string, abandon, committed bool) {
 	if p.control != nil {
 		e = p.control.editor
 	}
-	resume := e != nil && (committed || e.generation == p.desktop.generation || p.control.contrast != nil)
+	resume := e != nil && (committed || e.generation == p.desktop.generation || p.control.resource != nil)
 	if abandon && p.control != nil {
 		p.pending = nil
 		_ = p.request("abandon")
@@ -253,8 +253,8 @@ func (p *preview) finish(message string, abandon, committed bool) {
 }
 func (p *preview) show() error {
 	lines, err := desktopsettings.Preview(p.desktop.instance, p.control.view, p.control.opacity, p.control.saved != nil)
-	if p.control.contrast != nil {
-		lines, err = desktopsettings.ContrastPreview(p.desktop.instance, p.control.view)
+	if p.control.resource != nil {
+		lines, err = desktopsettings.ResourcePreview(p.desktop.instance, p.control.view, p.control.resource.key, p.control.resource.value)
 	}
 	if err != nil {
 		return err
@@ -302,8 +302,8 @@ func (p *preview) acceptReply(fields []string) error {
 		return errors.New("Invalid preview response")
 	}
 	p.pending = nil
-	if p.control.contrast != nil {
-		return p.acceptContrastReply(pending, response)
+	if p.control.resource != nil {
+		return p.acceptResourceReply(pending, response)
 	}
 	if pending.phase != "revert" && pending.phase != "abandon" {
 		if err := p.allowed(p.control.editor); err != nil {

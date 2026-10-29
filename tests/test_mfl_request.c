@@ -792,6 +792,7 @@ static void test_resource_preview_requests(void)
 	assert(request.kind == MFL_REQUEST_PREVIEW_PREPARE);
 	assert(mfl_request_is_action(request.kind));
 	assert(request.timeout_ms == 15000);
+	assert(request.preview_plan_version == 1);
 	assert(strlen(request.preview_plan) == 336);
 	assert(strncmp(request.preview_plan, "1a2b3c1a2b3c", 12) == 0);
 	assert(mfl_request_preview_command(command, sizeof(command), &request,
@@ -800,7 +801,23 @@ static void test_resource_preview_requests(void)
 		strstr(command, " - 0 15000 1:1a2b3c"));
 	assert(!mfl_request_preview_command(command, 100, &request,
 		1, "a", "0000000000000001") && command[0] == '\0');
-	for (unsigned int bad = 0; bad < 6; bad++)
+	assert(cJSON_ReplaceItemInObjectCaseSensitive(values, "plan_version",
+		cJSON_CreateNumber(2)));
+	text = cJSON_PrintUnformatted(root);
+	assert(text && mfl_request_parse(text, &request));
+	cJSON_free(text);
+	assert(request.kind == MFL_REQUEST_PREVIEW_PREPARE &&
+		request.preview_plan_version == 2);
+	assert(mfl_request_preview_command(command, sizeof(command), &request,
+		1, "a", "0000000000000001"));
+	assert(strstr(command, " prepare ") &&
+		strstr(command, " - 0 15000 2:1a2b3c"));
+	assert(cJSON_ReplaceItemInObjectCaseSensitive(values, "plan_version",
+		cJSON_CreateNumber(1)));
+	request.preview_plan_version = 3;
+	assert(!mfl_request_preview_command(command, sizeof(command), &request,
+		1, "a", "0000000000000001") && command[0] == '\0');
+	for (unsigned int bad = 0; bad < 10; bad++)
 	{
 		cJSON *copy = cJSON_Duplicate(root, true);
 		cJSON *v = cJSON_GetObjectItemCaseSensitive(copy, "values");
@@ -819,9 +836,21 @@ static void test_resource_preview_requests(void)
 		else if (bad == 4)
 			cJSON_ReplaceItemInObjectCaseSensitive(role, "shadow",
 				cJSON_CreateString("#ffffff;Exec"));
+		else if (bad == 5)
+			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
+				cJSON_CreateNumber(3));
+		else if (bad == 6)
+			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
+				cJSON_CreateNumber(0));
+		else if (bad == 7)
+			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
+				cJSON_CreateNumber(1.5));
+		else if (bad == 8)
+			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
+				cJSON_CreateNumber(-1));
 		else
 			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
-				cJSON_CreateNumber(2));
+				cJSON_CreateString("2"));
 		text = cJSON_PrintUnformatted(copy);
 		assert(text && !mfl_request_parse(text, &request));
 		cJSON_free(text);

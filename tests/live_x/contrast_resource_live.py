@@ -31,6 +31,9 @@ ROLE_IDS = (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14)
 PLAN = {'plan_version': 1, 'roles': [dict(id=identifier,
     foreground='#ffffff', background='#000000', highlight='#ffffff',
     shadow='#000000') for identifier in ROLE_IDS]}
+OPAQUE_PLAN = {'plan_version': 2, 'roles': [dict(id=identifier,
+    foreground='#102030', background='#e0d0c0', highlight='#abcdef',
+    shadow='#010203') for identifier in ROLE_IDS]}
 
 
 def run(args):
@@ -330,15 +333,22 @@ def run(args):
                 backing_witnesses(baseline)
                 return baseline
 
-            def prepare(c=owner, timeout=15000):
+            def prepare(c=owner, timeout=15000, plan_version=1):
                 appearance = rpc(c, 'appearance')
                 capability = appearance['resource_preview']
                 assert capability == dict(version=1, scope='high-contrast',
                     role_count=14, style_count=2, metadata_max=65536,
                     preparation_timeout_ms=5000, lease_limit=1, slot_available=True), capability
+                if plan_version == 2:
+                    assert appearance['opaque_colors_preview'] == dict(version=1,
+                        plan_version=2, scope='opaque-colors', role_count=14,
+                        style_count=2, metadata_max=65536,
+                        preparation_timeout_ms=5000, lease_limit=1, slot_available=True)
                 result = rpc(c, method='action', operation='prepare',
-                    generation=appearance['generation'], values=PLAN, timeout_ms=timeout)
-                assert result['scope'] == 'high-contrast' and result['plan_version'] == 1
+                    generation=appearance['generation'],
+                    values=OPAQUE_PLAN if plan_version == 2 else PLAN, timeout_ms=timeout)
+                assert result['scope'] == ('opaque-colors' if plan_version == 2 else 'high-contrast')
+                assert result['plan_version'] == plan_version
                 return result
 
             def state(wanted, c=owner):
@@ -369,6 +379,9 @@ def run(args):
                     assert row[5] == old[5] and row[7] == old[7], (row, old)
                     assert row[18:] == old[18:], (row, old)
                 assert styles() == {'*': 100, 'SlateLauncherStyle': 100}
+                # Recovery must follow an observed candidate publication on
+                # this same subscriber, not its still-cached original rows.
+                await_rows(candidate)
                 return result, candidate
 
             def terminal(reason, recovery, c=owner):
@@ -665,6 +678,111 @@ def run(args):
                 evidence['cases']['native-Wait-' + phase + '-expiry'] = {
                     'pending': pending, 'terminal': result, 'matching_child_owned': True}
 
+            if args.opaque_colors:
+                opaque_cases = {}
+                unequal = {'*': 31, 'SlateLauncherStyle': 42}
+
+                def opaque_active(c=owner, timeout=15000):
+                    original = snapshot()
+                    assert styles() == unequal
+                    prepare(c, timeout, plan_version=2)
+                    prepared = state('prepared', c)
+                    assert snapshot() == original and styles() == unequal
+                    action(prepared, 'apply', c)
+                    item = state('active', c)
+                    assert item['scope'] == 'opaque-colors' and item['plan_version'] == 2
+                    candidate = snapshot()
+                    for identifier in ROLE_IDS:
+                        row, old = candidate[identifier], original[identifier]
+                        assert row[1:5] == (0x102030, 0xe0d0c0, 0xabcdef, 0x010203), row
+                        assert row[8] == 0 and row[9] == old[9], (row, old)
+                        assert row[14:17] == old[14:17] and row[10] == 100
+                        assert row[5] == old[5] and row[7] == old[7]
+                        assert row[18:] == old[18:]
+                    assert styles() == unequal
+                    await_rows(candidate)
+                    return item, candidate
+
+                original = reset()
+                stale = rpc(owner, 'appearance')['generation']
+                published_command('Colorset 14 bg #135724', (14,),
+                    lambda rows: rows[14][2] == 0x135724)
+                rpc(owner, method='action', operation='prepare', generation=stale,
+                    values=OPAQUE_PLAN, error='stale_generation')
+                original = snapshot()
+                for malformed in ('version-type', 'unknown-version', 'role-count', 'role-order', 'color'):
+                    invalid = copy.deepcopy(OPAQUE_PLAN)
+                    if malformed == 'version-type':
+                        invalid['plan_version'] = '2'
+                    elif malformed == 'unknown-version':
+                        invalid['plan_version'] = 3
+                    elif malformed == 'role-count':
+                        invalid['roles'].pop()
+                    elif malformed == 'role-order':
+                        invalid['roles'][0], invalid['roles'][1] = invalid['roles'][1], invalid['roles'][0]
+                    else:
+                        invalid['roles'][0]['foreground'] = '#102030;Quit'
+                    rpc(owner, method='action', operation='prepare',
+                        generation=rpc(owner, 'appearance')['generation'],
+                        values=invalid, error='invalid_request')
+                assert snapshot() == original and styles() == unequal
+                opaque_cases['typed-stale-refusal-without-publication'] = 'passed'
+
+                for ending in ('reverted', 'expired', 'confirmed'):
+                    original = reset()
+                    backing = backing_witnesses(original)
+                    item, candidate = opaque_active(timeout=3000 if ending == 'expired' else 15000)
+                    for capability in ('resource_preview', 'opaque_colors_preview'):
+                        assert not rpc(other, 'appearance')[capability]['slot_available']
+                    for plan in (PLAN, OPAQUE_PLAN):
+                        rpc(other, method='action', operation='prepare',
+                            generation=rpc(other, 'appearance')['generation'],
+                            values=plan, error='preview_busy')
+                    rpc(other, method='action', operation='start', target='SlateLauncherStyle',
+                        generation=rpc(other, 'appearance')['generation'],
+                        values={'opacity': 70}, error='preview_busy')
+                    action(item, 'confirm', other, error='preview_unavailable')
+                    if ending == 'confirmed':
+                        action(item, 'confirm')
+                        result = terminal('confirmed', 'kept')
+                        assert snapshot() == candidate
+                    else:
+                        image.unlink()
+                        shape.unlink()
+                        if ending == 'reverted':
+                            action(item, 'revert')
+                        await_rows(original)
+                        result = terminal(ending, 'restored')
+                        assert snapshot() == original and backing_witnesses(original) == backing
+                    assert styles() == unequal
+                    assert result['scope'] == 'opaque-colors' and result['plan_version'] == 2
+                    opaque_cases[ending] = {'result': result,
+                        'unchanged_unequal_scalars': styles(), 'original': original,
+                        'candidate': candidate}
+
+                original = reset()
+                departed = connect()
+                opaque_active(c=departed)
+                departed.close()
+                connections.remove(departed)
+                await_rows(original)
+                assert snapshot() == original and styles() == unequal
+                assert rpc(other)['state'] == 'inactive'
+                opaque_cases['owner-loss-actual-resource-restoration'] = 'passed'
+                # The inverse slot direction must also reject version2, while
+                # version1 retains its established force-100 scalar behavior.
+                original = reset()
+                version_one, _ = active()
+                rpc(other, method='action', operation='prepare',
+                    generation=rpc(other, 'appearance')['generation'],
+                    values=OPAQUE_PLAN, error='preview_busy')
+                action(version_one, 'revert')
+                await_rows(original)
+                terminal('reverted', 'restored')
+                assert styles() == unequal
+                opaque_cases['version-one-exclusion-and-force-100-unchanged'] = 'passed'
+                evidence['opaque_colors'] = opaque_cases
+
             original = reset()
             abandoned = connect()
             item, _ = active(c=abandoned)
@@ -751,6 +869,8 @@ if __name__ == '__main__':
     parser.add_argument('--display')
     parser.add_argument('--execution-profile', required=True)
     parser.add_argument('--metadata-limit', action='store_true')
+    parser.add_argument('--opaque-colors', action='store_true',
+        help='Also exercise version2 opaque colors and unchanged unequal scalars')
     parser.add_argument('--allocation-failure', action='store_true',
         help='--fvwm is a separate test core linked with contrast_alloc_fail.c')
     options = parser.parse_args()

@@ -30,7 +30,16 @@ static void test_resource_policy(void)
 		"prepare %s - 0 15000 1:%s", generation, plan);
 	assert(preview_request_parse(text, &request));
 	assert(request.operation == PREVIEW_PREPARE);
-	assert(request.timeout_ms == 15000 && request.colors[13][3] == 0x1a2b3c);
+	assert(request.resource_kind == PREVIEW_RESOURCE_HIGH_CONTRAST);
+	assert(request.timeout_ms == 15000 &&
+		request.colors[13][3] == 0x1a2b3c);
+	snprintf(text, sizeof(text),
+		"a 0000000000000001 0000000000000001 "
+		"prepare %s - 0 15000 2:%s", generation, plan);
+	assert(preview_request_parse(text, &request));
+	assert(request.resource_kind == PREVIEW_RESOURCE_OPAQUE_COLORS);
+	assert(request.timeout_ms == 15000 &&
+		request.colors[13][3] == 0x1a2b3c);
 	plan[335] = '\0';
 	assert(!preview_plan_parse(plan, colors));
 	assert(colors[13][3] == 0);
@@ -44,9 +53,20 @@ static void test_resource_policy(void)
 			"a 0000000000000001 0000000000000001 "
 			"prepare %s - %u %u %s:%s", generation,
 			i == 0 ? 1 : 0, i == 1 ? 999 : 15000,
-			i == 2 ? "2" : "1", i == 3 ? "00" : plan);
+			i == 2 ? "3" : "1", i == 3 ? "00" : plan);
 		assert(!preview_request_parse(text, &request));
 		assert(request.cookie[0] == '\0');
+	}
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		static const char *versions[] = {"0", "3", "01", "1.0"};
+
+		snprintf(text, sizeof(text),
+			"a 0000000000000001 0000000000000001 "
+			"prepare %s - 0 15000 %s:%s",
+			generation, versions[i], plan);
+		assert(!preview_request_parse(text, &request));
+		assert(request.resource_kind == 0 && request.cookie[0] == '\0');
 	}
 	snprintf(text, sizeof(text),
 		"a 0000000000000001 0000000000000001 "
@@ -75,6 +95,37 @@ static void test_resource_policy(void)
 		PREVIEW_RESOURCE_CONFLICT);
 }
 
+static void test_resource_menu_opacity(void)
+{
+	const int captured[] = {0, 31, 42, 100};
+	int opacity;
+
+	for (size_t i = 0; i < sizeof(captured) / sizeof(*captured); i++)
+	{
+		assert(preview_resource_opacity(PREVIEW_RESOURCE_HIGH_CONTRAST,
+			false, captured[i], &opacity) && opacity == 100);
+		assert(preview_resource_opacity(PREVIEW_RESOURCE_HIGH_CONTRAST,
+			true, captured[i], &opacity) && opacity == captured[i]);
+		assert(preview_resource_opacity(PREVIEW_RESOURCE_OPAQUE_COLORS,
+			false, captured[i], &opacity) &&
+			opacity == captured[i]);
+		assert(preview_resource_opacity(PREVIEW_RESOURCE_OPAQUE_COLORS,
+			true, captured[i], &opacity) && opacity == captured[i]);
+	}
+	opacity = 73;
+	assert(!preview_resource_opacity(0, false, 31, &opacity) &&
+		opacity == 0);
+	opacity = 73;
+	assert(!preview_resource_opacity(3, false, 31, &opacity) &&
+		opacity == 0);
+	assert(!preview_resource_opacity(PREVIEW_RESOURCE_OPAQUE_COLORS,
+		false, -1, &opacity) && opacity == 0);
+	assert(!preview_resource_opacity(PREVIEW_RESOURCE_HIGH_CONTRAST,
+		true, 101, &opacity) && opacity == 0);
+	assert(!preview_resource_opacity(PREVIEW_RESOURCE_HIGH_CONTRAST,
+		false, 31, NULL));
+}
+
 int main(void)
 {
 	struct preview_request request;
@@ -85,6 +136,7 @@ int main(void)
 		"a;Exec 0000000000000001 0000000000000001 query - - 0 0 -"};
 
 	test_resource_policy();
+	test_resource_menu_opacity();
 
 	assert(preview_request_parse(
 		"a 0000000000000001 0000000000000001 query - - 0 0 -",

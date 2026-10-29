@@ -228,20 +228,25 @@ bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair)
 }
 
 bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
-	bool restore)
+	enum preview_resource_kind kind, bool restore)
 {
 	MenuStyle *styles[2] = {menustyle_preview_named("*"),
 		menustyle_preview_named("SlateLauncherStyle")};
+	int opacity[2];
 
-	/* Validate both identities before mutating either scalar. No callback,
-	 * allocation or resource retirement runs between these assignments. */
+	/* Validate both identities and values before mutating either scalar.
+	 * Opaque-color application and recovery retain each captured value;
+	 * high-contrast application alone forces 100. No callback, allocation
+	 * or resource retirement runs between these assignments. */
 	for (unsigned int i = 0; i < 2; i++)
 	{
-		if (!styles[i] || (uintptr_t)styles[i] != pair->identities[i])
+		if (!styles[i] || (uintptr_t)styles[i] != pair->identities[i] ||
+		    !preview_resource_opacity(kind, restore, pair->opacity[i],
+			&opacity[i]))
 			return false;
 	}
 	for (unsigned int i = 0; i < 2; i++)
-		ST_TRANSLUCENT_PERCENT(styles[i]) = restore ? pair->opacity[i] : 100;
+		ST_TRANSLUCENT_PERCENT(styles[i]) = opacity[i];
 	fvwm_query_appearance_changed();
 	return true;
 }

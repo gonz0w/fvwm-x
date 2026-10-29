@@ -82,6 +82,29 @@ func (d *Controller) handle(command, argument string) error {
 			return err
 		}
 		d.retireEditor()
+	case "preview-palette-editor", "preview-appearance-editor":
+		e, changes, err := d.editorValues(argument)
+		if err != nil {
+			return err
+		}
+		key := strings.TrimSuffix(strings.TrimPrefix(command, "preview-"), "-editor")
+		value, ok := changes[key].(string)
+		if !ok {
+			return errors.New("This editor has no " + key + " draft")
+		}
+		if err := d.preview.startResource(key, value, &draft{e.scope, e.generation, changes}); err != nil {
+			return err
+		}
+		d.retireEditor()
+	case "preview-palette", "preview-appearance":
+		words, err := wordCount(argument, 2)
+		if err != nil {
+			return err
+		}
+		if words[0] != d.instance {
+			return nil
+		}
+		return d.preview.startResource(strings.TrimPrefix(command, "preview-"), words[1], nil)
 	case "preview-contrast-editor":
 		e, changes, err := d.editorValues(argument)
 		if err != nil {

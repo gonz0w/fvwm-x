@@ -188,12 +188,18 @@ func Editor(s Snapshot,
 			"Line left",
 			`Text "Opacity preview is unavailable while high contrast is selected."`)
 	}
-	if has(plan.Keys, "contrast") {
-		lines = append(lines,
-			"Line left",
-			`Text "Preview high contrast only; other edits stay here."`,
-			`Button continue "Preview high contrast (F5)" F5`,
-			"Command "+action+"preview-contrast-editor "+arguments)
+	if has(plan.Keys, "contrast") || has(plan.Keys, "palette") || has(plan.Keys, "appearance") {
+		lines = append(lines, "Line left", `Text "Preview:"`)
+		for _, button := range []struct{ key, caption, shortcut string }{
+			{"contrast", "High contrast (F5)", "F5"},
+			{"palette", "Palette (F6)", "F6"},
+			{"appearance", "Appearance (F7)", "F7"},
+		} {
+			if has(plan.Keys, button.key) {
+				lines = append(lines, "Button continue "+quote(button.caption)+" "+button.shortcut,
+					"Command "+action+"preview-"+button.key+"-editor "+arguments)
+			}
+		}
 	}
 	plan.Lines = lines
 	return plan, nil
@@ -245,6 +251,16 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 					"SendToModule FvwmDesktop edit-settings " + key})
 		} else {
 			options = append(options, Row{"Edit schedule...", "SendToModule FvwmDesktop schedule"})
+		}
+		if key == "palette" || key == "appearance" {
+			options = append(options, Row{"Preview needs opaque colors and unchanged wallpaper", "Greyed"})
+			for _, choice := range setting.Choices {
+				if key == "appearance" && choice == "auto" {
+					continue
+				}
+				options = append(options, Row{"Preview " + title(choice) + "...",
+					"SendToModule FvwmDesktop preview-" + key + " " + s.Instance + " " + choice})
+			}
 		}
 		options = append(options, Row{"Reset this setting", "SendToModule FvwmDesktop reset " + key})
 		menus = append(menus, Menu{name, key, options})
@@ -431,4 +447,33 @@ func ContrastPreview(instance, view string) ([]string, error) {
 		"Line expand", `Button continue "Cancel" ^[`, callback + " revert",
 		`Button continue "Save" ^M`, callback + " save",
 		`Timeout 160 Nop ""`}, nil
+}
+
+// ResourcePreview keeps the old contrast consumer and adds only two named
+// opaque-color candidates. The callback carries actor/view identities only.
+func ResourcePreview(instance, view, key, value string) ([]string, error) {
+	if key == "contrast" && value == "high" {
+		return ContrastPreview(instance, view)
+	}
+	if key != "palette" && key != "appearance" {
+		return nil, errors.New("Invalid resource preview setting")
+	}
+	if _, err := Value(key, value, false); err != nil {
+		return nil, err
+	}
+	if key == "appearance" && value != "light" && value != "dark" {
+		return nil, errors.New("Only Light and Dark support appearance preview")
+	}
+	if _, err := Preview(instance, view, 100, true); err != nil {
+		return nil, err
+	}
+	callback := "Command SendToModule FvwmDesktop preview-control " + instance + " " + view
+	return []string{"Title " + quote("Preview "+key),
+		"Colorset 2", "ItemColorset 12", "Line left",
+		"Text " + quote(title(key)+" preview is active for 15 seconds."),
+		"Line left", "Text " + quote("Candidate: "+title(value)+". Other edits and wallpaper are retained."),
+		"Line left", "Text " + quote("Save keeps this runtime choice and saves only "+key+"."),
+		"Line left", `Text "Cancel or expiry restores the previous resources."`,
+		"Line expand", `Button continue "Cancel" ^[`, callback + " revert",
+		`Button continue "Save" ^M`, callback + " save", `Timeout 160 Nop ""`}, nil
 }

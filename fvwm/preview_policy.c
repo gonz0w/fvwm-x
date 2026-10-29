@@ -53,9 +53,13 @@ bool preview_request_parse(const char *text, struct preview_request *request)
 		if (!token(parsed.generation, MODULE_QUERY_GENERATION_LEN) ||
 		    strcmp(parsed.lease, "-") != 0 || parsed.opacity ||
 		    parsed.timeout_ms < PREVIEW_TIMEOUT_MIN ||
-		    strncmp(target, "1:", 2) != 0 ||
+		    (target[0] != '1' && target[0] != '2') ||
+		    target[1] != ':' ||
 		    !preview_plan_parse(target + 2, parsed.colors))
 			return false;
+		parsed.resource_kind = target[0] == '1' ?
+			PREVIEW_RESOURCE_HIGH_CONTRAST :
+			PREVIEW_RESOURCE_OPAQUE_COLORS;
 	}
 	else if (strcmp(operation, "start") == 0)
 	{
@@ -169,6 +173,21 @@ bool preview_resource_colors_supported(int fg_tint, int bg_tint,
 	unsigned int fg_alpha)
 {
 	return fg_tint == 0 && bg_tint == 0 && fg_alpha == 100;
+}
+
+bool preview_resource_opacity(enum preview_resource_kind kind, bool restore,
+	int captured, int *opacity)
+{
+	if (!opacity)
+		return false;
+	*opacity = 0;
+	if ((kind != PREVIEW_RESOURCE_HIGH_CONTRAST &&
+	     kind != PREVIEW_RESOURCE_OPAQUE_COLORS) ||
+	    captured < 0 || captured > 100)
+		return false;
+	*opacity = restore || kind == PREVIEW_RESOURCE_OPAQUE_COLORS ?
+		captured : 100;
+	return true;
 }
 
 uint64_t preview_deadline(uint64_t now_ms, unsigned int timeout_ms)

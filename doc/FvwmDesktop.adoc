@@ -396,13 +396,13 @@ Existing displayed menu pixels can require reopening.
 
 The existing preview-opacity module command and FvwmMFL's core `preview`
 resource remain runtime-only. Registry `preview: false` still declines generic
-IPC saved-preference preview; `native_preview: true` identifies the opacity
-consumer. General appearance/image-resource preview remains open.
+IPC saved-preference preview; `native_preview: true` identifies the named
+conditional native consumers below. General appearance preview remains open.
 
 == HIGH CONTRAST PREVIEW
 
-Choose *Preview high contrast...* in Desktop settings, or *Preview high contrast*
-(F5) in an editor containing contrast. This previews `contrast=high` from the
+Choose *Preview high contrast...* in Desktop settings, or *High contrast*
+(F5) on the editor Preview row when its scope contains contrast. This previews `contrast=high` from the
 current normal presentation. It uses the current palette and appearance, not
 unapplied palette or appearance fields in the editor. Other draft fields return
 to the editor unchanged after the preview. The requested transparency and
@@ -439,8 +439,64 @@ preference edits retain that runtime choice. An explicit contrast edit or reload
 replaces it. Reload before intentionally retrying a conflicting file write.
 
 The contrast registry entry reports `native_preview: true` for this conditional
-consumer. Generic settings `preview: false` remains unchanged. Reverse contrast,
-general transparency and other appearance/resource previews remain unavailable.
+consumer. Generic settings `preview: false` remains unchanged. Reverse contrast
+and general transparency preview remain unavailable.
+
+== PALETTE AND APPEARANCE PREVIEW
+
+The editor Preview row offers *Palette* (F6) and *Appearance* (F7) when those
+settings belong to its scope. Choose the candidate in the editor first. Palette
+uses one of the four existing palette choices; Appearance accepts explicit
+*Light* or *Dark*. The ordinary *Auto* setting remains usable through Apply;
+this native preview refuses it. Only the selected setting is previewed and saved.
+Unapplied contrast, transparency, wallpaper and other fields remain draft values.
+
+The *Preview palette* and *Preview appearance* forms use *Save* (Enter) and
+*Cancel* (Escape). Save waits for core runtime confirmation, then writes only the
+selected key against the captured preference-file revision. Cancel, expiry and
+owner loss recover the previous owned resources, subject to the same external
+change checks as high-contrast preview. Closing the form leaves recovery to its
+core deadline. The existing high-contrast and opacity controls share one slot
+with these previews; a second preparation or preview is refused.
+
+These previews require the current desktop to resolve with transparency disabled
+and the candidate to retain the same resolved wallpaper palette/appearance pair.
+High contrast can supply the opaque presentation while retaining the requested
+transparency preference. *Retain the current palette wallpaper*, or suitable
+independent wallpaper choices, can preserve the wallpaper pair. Follow choices
+that would change it refuse preview. Resolve the reported prerequisite before
+trying again; preview never changes the wallpaper policy on your behalf.
+An unchanged candidate, selected-key override, stale settings/file revision or
+unsupported native resource owner also refuses admission. Schedule phase and
+both the baseline and candidate projections are rechecked before application
+and confirmation.
+
+The core replaces the fourteen owned role colors and preserves the actual opacity
+values of both the default menu style and SlateLauncherStyle. It does not force
+menu opacity to 100 for this scope. Current normal or high-contrast presentation
+is preserved; high contrast can mask palette colors. Wallpaper, motion, fonts,
+icons and unrelated style fields stay outside this operation. Recovery retains
+actual backing resources rather than depending on their source filenames.
+Modules repaint independently; successful confirmation does not prove every
+window has repainted.
+
+After core confirmation, a failed save or conflicting external preference edit
+reports runtime kept / preference not saved. The owner can retain at most three
+such runtime values: contrast, palette and appearance. Their settings metadata
+uses `source: runtime-kept-preference-unsaved`, with saved and effective values
+kept distinct. A later preview, timer tick or unrelated preference edit preserves
+the other held values. Explicitly replacing/saving a held key clears that key;
+reload or configuration reset clears the overlay. A replacement controller
+starts from fresh saved preferences and inherits neither the old lease nor the
+unsaved runtime overlay. No complete theme replay is used to confirm a preview.
+
+Native configuration callbacks use `preview-palette INSTANCE PALETTE` and
+`preview-appearance INSTANCE light|dark`, where INSTANCE is the current settings
+provider identity. The corresponding `preview-palette-editor` and
+`preview-appearance-editor` callbacks carry the complete captured editor values.
+Use the generated controls rather than retaining stale callback identities.
+The palette and appearance registry entries report `native_preview: true` for
+these conditional consumers; generic saved-preference IPC preview remains false.
 
 == CONFIGURATION INSPECTOR
 

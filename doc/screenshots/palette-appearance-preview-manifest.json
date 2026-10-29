@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "owner": "Cam",
+  "issues": [
+    60,
+    70
+  ],
+  "base": "2f6b48df6c57843320bf5d228b3d5d79bf9c6631",
+  "captures": [
+    {
+      "file": "palette-preview-slate-dark.png",
+      "sha256": "30d9389638fb20d2f605984f7ecc2fd82a37aafb9e939ca8769229da28015f34",
+      "bytes": 38842,
+      "profile": "slate-dark",
+      "original": "themes02/slate-dark/palette-f6-whole-draft-normal-active.png",
+      "source_closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "configuration_sha256": "0caa4cea65fe3ab3b636e1c7021891540d54dce1b5284445294347ccc34b9882",
+      "dimensions": [
+        1440,
+        1000
+      ]
+    },
+    {
+      "file": "appearance-preview-dune-light.png",
+      "sha256": "44eae1aebed77ee4c0f0b94fd6e4b6a7e9d36812352d2784434719cd1ebb9c18",
+      "bytes": 39287,
+      "profile": "dune-light",
+      "original": "themes02/dune-light/appearance-f7-dark-save-active.png",
+      "source_closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "configuration_sha256": "48a1e3eb05ec295fc869d798c4f74738172c05c1ffd0a46bd0020a3fb0c8a7bb",
+      "dimensions": [
+        1440,
+        1000
+      ]
+    },
+    {
+      "file": "appearance-preview-classic-draft.png",
+      "sha256": "ffd215560c18aaa517eb716a90a6397c6069e5e5ee7c725caf723a5b4645792f",
+      "bytes": 168294,
+      "profile": "classic-large",
+      "original": "themes04/classic-large/appearance-f7-dark-save-finished.png",
+      "source_closure": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "configuration_sha256": "99e8f83b47d09f68131e7af171e6bb33c99bd3d90f761b7c6ee7205cb805790e",
+      "dimensions": [
+        1440,
+        1000
+      ]
+    }
+  ],
+  "source_bindings": {
+    "source01": {
+      "tree": "26a4f2c048dc4d554f0a6f5ba5597f31ecd9dad2",
+      "closure": "164428528628b17794c6fba4c90a916772f4eed877ae30501a85bc299f31d57c",
+      "archive_sha256": "2ffdc03f207a7672833e3ae8cd31e04ba84bddfac727b2aab099d3462ba9bcc4"
+    },
+    "source02": {
+      "tree": "3663ec1ba3c2d94e6a1b5558812b6c201a051427",
+      "closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "archive_sha256": "6fea5ba34c6f3b1a439e761093ba93a76125fa339c55e0625830aa7dd95c0de6"
+    },
+    "source03": {
+      "tree": "036ab4b01e40a8006a26f356d33a0948475df2c1",
+      "closure": "44138233d179d89d724c01d6067d3aeaee7c46fd0e6bfd974661503959afe75b",
+      "archive_sha256": "c35ca54fb8ae448b1af66f396e8727c47f0d1601458ffe5e66d5fba3ad130377"
+    },
+    "source04": {
+      "tree": "53bede89e721f0bb6763f8004390c8cfbf63c060",
+      "closure": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "archive_sha256": "83c466b8755f5df83ffcb78fae406b1df1e14985b27fbc47ed80b0c45d52fba1"
+    }
+  },
+  "artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "a20617e93a542c8375d25514240ea075114bcbaea50633481701c71ce4e55cab",
+      "bytes": 5650576
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "0d8d4ee8a91828ce08f2425f7e3fe77bfc994869e4815dceeb4e0f106f7be565",
+      "bytes": 449672
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "6ae32f9a22d9c13d04e204a27425b1c4338d261c586eb8c6d17e3819521f255f",
+      "bytes": 5766286
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+      "bytes": 1804472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe": {
+      "sha256": "3c4e6f95d85f8fc65520262b0fc898a4e6ea8a356ed1f18b3b4b8e8a78aaad6b",
+      "bytes": 157720
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": {
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": {
+      "sha256": "3a0f02d7e2d41f6e7fcc6fa019bfc7ce79d58792a56dee4cf1760d09ba9bf6c2",
+      "bytes": 27343608
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2f59fa4a3fa655921ecc9942e5af0c89d65339a2166aa9b43b497e072087435",
+      "bytes": 3318800
+    }
+  },
+  "evidence_archive_sha256": "5a0e0630570575aa69452fd215897a4423fdccbb60034d0a89c45012d026d43c",
+  "inspection": "All 87 profile captures reviewed at contact-sheet size; these three reviewed at original resolution. Unmodified native X screenshots; not accessibility/release qualification.",
+  "notes": [
+    "Profile names identify fixture configuration; the candidate can change its visible palette/appearance.",
+    "Classic uses enlarged type and a private visibility probe; no production theme alteration.",
+    "Panel counters are whole-guest observations, not a WM performance benchmark."
+  ]
+}

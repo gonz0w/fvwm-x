@@ -1,0 +1,848 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "owner": "Cam",
+  "issues": [
+    60,
+    70
+  ],
+  "status": "focused checks passed; broader owner/release acceptance pending",
+  "base": "2f6b48df6c57843320bf5d228b3d5d79bf9c6631",
+  "source_bindings": {
+    "source01": {
+      "tree": "26a4f2c048dc4d554f0a6f5ba5597f31ecd9dad2",
+      "closure": "164428528628b17794c6fba4c90a916772f4eed877ae30501a85bc299f31d57c",
+      "archive_sha256": "2ffdc03f207a7672833e3ae8cd31e04ba84bddfac727b2aab099d3462ba9bcc4"
+    },
+    "source02": {
+      "tree": "3663ec1ba3c2d94e6a1b5558812b6c201a051427",
+      "closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "archive_sha256": "6fea5ba34c6f3b1a439e761093ba93a76125fa339c55e0625830aa7dd95c0de6"
+    },
+    "source03": {
+      "tree": "036ab4b01e40a8006a26f356d33a0948475df2c1",
+      "closure": "44138233d179d89d724c01d6067d3aeaee7c46fd0e6bfd974661503959afe75b",
+      "archive_sha256": "c35ca54fb8ae448b1af66f396e8727c47f0d1601458ffe5e66d5fba3ad130377"
+    },
+    "source04": {
+      "tree": "53bede89e721f0bb6763f8004390c8cfbf63c060",
+      "closure": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "archive_sha256": "83c466b8755f5df83ffcb78fae406b1df1e14985b27fbc47ed80b0c45d52fba1"
+    }
+  },
+  "gates": [
+    {
+      "status": "failed",
+      "source_pre": "164428528628b17794c6fba4c90a916772f4eed877ae30501a85bc299f31d57c",
+      "source_post": "164428528628b17794c6fba4c90a916772f4eed877ae30501a85bc299f31d57c",
+      "source_tree": "26a4f2c048dc4d554f0a6f5ba5597f31ecd9dad2",
+      "failure": "RuntimeError('themes01 failed')",
+      "receipt": "result01.json",
+      "commands": [
+        {
+          "label": "normal-configure01",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source"
+          ],
+          "exit": 0,
+          "seconds": 1.2209463249999999
+        },
+        {
+          "label": "normal-build01",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "tests/test-preview-policy",
+            "tests/test-mfl-request",
+            "bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "seconds": 2.3611284909999313
+        },
+        {
+          "label": "native-plan2-green-build01",
+          "command": [
+            "cc",
+            "-std=c11",
+            "-D_POSIX_C_SOURCE=200809L",
+            "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-I/tmp/fvwm-module-waits-20261015/source",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/plan-v2-baseline.c",
+            "/tmp/fvwm-module-waits-20261015/source/fvwm/preview_policy.c",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/plan-v2-green"
+          ],
+          "exit": 0,
+          "seconds": 0.033273616000087713
+        },
+        {
+          "label": "native-plan2-green01",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/plan-v2-green"
+          ],
+          "exit": 0,
+          "seconds": 0.0003814599999714119
+        },
+        {
+          "label": "normal-test-preview-policy01",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-preview-policy"
+          ],
+          "exit": 0,
+          "seconds": 0.0003294169999890073
+        },
+        {
+          "label": "normal-test-mfl-request01",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "seconds": 0.0008562949999486591
+        },
+        {
+          "label": "go-normal01",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-json",
+            "./internal/desktopcontroller",
+            "./internal/desktopsettings"
+          ],
+          "exit": 0,
+          "seconds": 2.4357227520000606
+        },
+        {
+          "label": "go-race01",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-race",
+            "-json",
+            "./internal/desktopcontroller",
+            "./internal/desktopsettings"
+          ],
+          "exit": 0,
+          "seconds": 4.630913493999969
+        },
+        {
+          "label": "go-vet01",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "./internal/desktopcontroller",
+            "./internal/desktopsettings"
+          ],
+          "exit": 0,
+          "seconds": 0.16443482700003642
+        },
+        {
+          "label": "catalog01",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/test_command_catalog.py"
+          ],
+          "exit": 0,
+          "seconds": 0.034189202999982626
+        },
+        {
+          "label": "fixture-syntax01",
+          "command": [
+            "python3",
+            "-m",
+            "py_compile",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py"
+          ],
+          "exit": 0,
+          "seconds": 0.02695313599997462
+        },
+        {
+          "label": "manual-FvwmDesktop01",
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "FvwmDesktop",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/FvwmDesktop.1",
+            "/tmp/fvwm-module-waits-20261015/source/doc/FvwmDesktop.adoc"
+          ],
+          "exit": 0,
+          "seconds": 0.09525412599998617
+        },
+        {
+          "label": "manual-FvwmMFL01",
+          "command": [
+            "asciidoctor",
+            "-b",
+            "manpage",
+            "-a",
+            "FvwmMFL",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/FvwmMFL.1",
+            "/tmp/fvwm-module-waits-20261015/source/doc/FvwmMFL.adoc"
+          ],
+          "exit": 0,
+          "seconds": 0.07418701099993541
+        },
+        {
+          "label": "resource-normal01",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--probe",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe",
+            "--opaque-colors",
+            "--execution-profile",
+            "Linux ARM64 native CPU in owned VM; GCC normal",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/resource-normal01"
+          ],
+          "exit": 0,
+          "seconds": 28.540078009000013
+        },
+        {
+          "label": "core-state01",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_core_state_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/core-state01"
+          ],
+          "exit": 0,
+          "seconds": 0.2895162879999589
+        },
+        {
+          "label": "sanitizer-configure01",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "/tmp/fvwm-module-waits-20261015/source"
+          ],
+          "exit": 0,
+          "seconds": 1.1963864389999799
+        },
+        {
+          "label": "sanitizer-options01",
+          "command": [
+            "meson",
+            "introspect",
+            "--buildoptions",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+          ],
+          "exit": 0,
+          "seconds": 0.08762123899998642
+        },
+        {
+          "label": "sanitizer-build01",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "tests/test-preview-policy",
+            "tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "seconds": 1.4017375850000917
+        },
+        {
+          "label": "sanitizer-test-preview-policy01",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-preview-policy"
+          ],
+          "exit": 0,
+          "seconds": 0.0031462630000760328
+        },
+        {
+          "label": "sanitizer-test-mfl-request01",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "seconds": 0.010362835000023551
+        },
+        {
+          "label": "resource-sanitizer01",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+            "--probe",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe",
+            "--opaque-colors",
+            "--execution-profile",
+            "Linux ARM64 native CPU; scoped core/MFL ASan/UBSan",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/resource-sanitizer01"
+          ],
+          "exit": 0,
+          "seconds": 28.794860607999908
+        },
+        {
+          "label": "themes01",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--palette-preview",
+            "--profiles",
+            "slate-dark",
+            "dune-light",
+            "classic-large",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/themes01"
+          ],
+          "exit": 1,
+          "seconds": 8.55943812800001
+        }
+      ]
+    },
+    {
+      "status": "failed",
+      "source_pre": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "source_post": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "production_unchanged": true,
+      "failure": "RuntimeError('themes02 failed')",
+      "receipt": "result02.json",
+      "commands": [
+        {
+          "label": "fixture-syntax02",
+          "command": [
+            "python3",
+            "-m",
+            "py_compile",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py"
+          ],
+          "exit": 0,
+          "seconds": 0.023080090999997083
+        },
+        {
+          "label": "resource-normal02",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--probe",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe",
+            "--opaque-colors",
+            "--execution-profile",
+            "Linux ARM64 native CPU; normal; explicit observer transition witness",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/resource-normal02"
+          ],
+          "exit": 0,
+          "seconds": 28.35652179500005
+        },
+        {
+          "label": "resource-sanitizer02",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/contrast_resource_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL",
+            "--probe",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe",
+            "--opaque-colors",
+            "--execution-profile",
+            "Linux ARM64 native CPU; sanitizer; explicit observer transition witness",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/resource-sanitizer02"
+          ],
+          "exit": 0,
+          "seconds": 28.75315624899997
+        },
+        {
+          "label": "themes02",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--palette-preview",
+            "--profiles",
+            "slate-dark",
+            "dune-light",
+            "classic-large",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/themes02"
+          ],
+          "exit": 1,
+          "seconds": 48.627372598999955
+        }
+      ]
+    },
+    {
+      "status": "failed",
+      "source_pre": "44138233d179d89d724c01d6067d3aeaee7c46fd0e6bfd974661503959afe75b",
+      "source_post": "44138233d179d89d724c01d6067d3aeaee7c46fd0e6bfd974661503959afe75b",
+      "production_unchanged": true,
+      "exit": 1,
+      "seconds": 6.466238029000124,
+      "receipt": "result03.json",
+      "commands": [],
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--palette-preview",
+        "--profiles",
+        "classic-large",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/themes03"
+      ]
+    },
+    {
+      "status": "passed",
+      "source_pre": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "source_post": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "production_unchanged": true,
+      "exit": 0,
+      "seconds": 19.562726355999985,
+      "receipt": "result04.json",
+      "commands": [],
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--palette-preview",
+        "--profiles",
+        "classic-large",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/themes04"
+      ]
+    },
+    {
+      "status": "passed",
+      "source_pre": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "source_post": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "exit": 0,
+      "seconds": 8.561673246000055,
+      "reason": "One real existing F5 consumer regression after shared-controller generalization; no all-theme repeat",
+      "receipt": "result05.json",
+      "commands": [],
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--contrast-preview",
+        "--profiles",
+        "slate-dark",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/legacy-contrast05"
+      ]
+    }
+  ],
+  "go": {
+    "go-normal01": {
+      "packages": [
+        {
+          "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+          "action": "pass"
+        },
+        {
+          "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+          "action": "pass"
+        }
+      ],
+      "passed_records": 280
+    },
+    "go-race01": {
+      "packages": [
+        {
+          "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+          "action": "pass"
+        },
+        {
+          "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+          "action": "pass"
+        }
+      ],
+      "passed_records": 280
+    }
+  },
+  "artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "a20617e93a542c8375d25514240ea075114bcbaea50633481701c71ce4e55cab",
+      "bytes": 5650576
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "0d8d4ee8a91828ce08f2425f7e3fe77bfc994869e4815dceeb4e0f106f7be565",
+      "bytes": 449672
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "6ae32f9a22d9c13d04e204a27425b1c4338d261c586eb8c6d17e3819521f255f",
+      "bytes": 5766286
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+      "bytes": 1804472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe": {
+      "sha256": "3c4e6f95d85f8fc65520262b0fc898a4e6ea8a356ed1f18b3b4b8e8a78aaad6b",
+      "bytes": 157720
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": {
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+      "bytes": 98608
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": {
+      "sha256": "3a0f02d7e2d41f6e7fcc6fa019bfc7ce79d58792a56dee4cf1760d09ba9bf6c2",
+      "bytes": 27343608
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "c2f59fa4a3fa655921ecc9942e5af0c89d65339a2166aa9b43b497e072087435",
+      "bytes": 3318800
+    }
+  },
+  "compiler_profiles": {
+    "build-gcc": {
+      "host": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "gcc",
+          "exelist": [
+            "cc"
+          ],
+          "linker_exelist": [
+            "cc"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "13.3.0",
+          "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+          "linker_id": "ld.bfd"
+        }
+      }
+    },
+    "build-module-waits-asan": {
+      "host": {
+        "c": {
+          "id": "clang",
+          "exelist": [
+            "clang"
+          ],
+          "linker_exelist": [
+            "clang"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "18.1.3",
+          "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "linker_id": "ld.bfd"
+        }
+      },
+      "build": {
+        "c": {
+          "id": "clang",
+          "exelist": [
+            "clang"
+          ],
+          "linker_exelist": [
+            "clang"
+          ],
+          "file_suffixes": [
+            "c"
+          ],
+          "default_suffix": "c",
+          "version": "18.1.3",
+          "full_version": "Ubuntu clang version 18.1.3 (1ubuntu1)",
+          "linker_id": "ld.bfd"
+        }
+      }
+    }
+  },
+  "sdk_version": "go1.27.2\ntime 2026-10-02T20:28:03Z\n",
+  "uname": [
+    "Linux",
+    "288f898505a4",
+    "6.18.10-200.fc43.aarch64",
+    "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+    "aarch64"
+  ],
+  "manuals": {
+    "status": "passed",
+    "formatter": "/usr/bin/mandoc",
+    "formatter_sha256": "82653a5451d5d2841f1049fe3027c5572fd2d1a3fa78fa650f54ac20621ac1e4",
+    "records": [
+      {
+        "name": "FvwmDesktop",
+        "command": [
+          "/usr/bin/mandoc",
+          "-Tutf8",
+          "-Owidth=80",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-next-consumer/manual-format-current/FvwmDesktop.1"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "roff_sha256": "a62f23d2f207dd26d75102d91a454273b9ba510f8dbe099a275e23ccd9f4d8eb",
+        "adoc_sha256": "31cf3000bfd4e380b0ef82bf478ad56f04c105c42e904dd76a9685d280341138",
+        "rendered_bytes": 65568
+      },
+      {
+        "name": "FvwmMFL",
+        "command": [
+          "/usr/bin/mandoc",
+          "-Tutf8",
+          "-Owidth=80",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-next-consumer/manual-format-current/FvwmMFL.1"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "roff_sha256": "f651953f36afa8ffb066182776400a11e70d6fb0133a93b922aa37adcb42d545",
+        "adoc_sha256": "721353a25f5d155568c13effa754072538c7b6e1987cf80ce2d2880c9d37c9a8",
+        "rendered_bytes": 112897
+      }
+    ],
+    "scope": "Current two Linux-generated English manuals formatted on macOS; no full corpus/install acceptance"
+  },
+  "themes": {
+    "slate-dark": {
+      "source_closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "configuration_sha256": "0caa4cea65fe3ab3b636e1c7021891540d54dce1b5284445294347ccc34b9882",
+      "capture_count": 29,
+      "workflows": [
+        "palette-f6-whole-draft-normal",
+        "palette-f6-whole-draft-high",
+        "appearance-f7-light-cancel",
+        "appearance-f7-dark-save",
+        "palette-native-dune",
+        "palette-native-grove",
+        "palette-native-high-ink",
+        "appearance-native-high-light",
+        "appearance-native-high-dark",
+        "refusal-transparent",
+        "refusal-follow-wallpaper",
+        "refusal-auto",
+        "refusal-no-change",
+        "external-file-edit"
+      ]
+    },
+    "dune-light": {
+      "source_closure": "9b7bf546469944091ae122e3c20825bac0a7a54d314d7716818a36bb815daa03",
+      "configuration_sha256": "48a1e3eb05ec295fc869d798c4f74738172c05c1ffd0a46bd0020a3fb0c8a7bb",
+      "capture_count": 29,
+      "workflows": [
+        "palette-f6-whole-draft-normal",
+        "palette-f6-whole-draft-high",
+        "appearance-f7-light-cancel",
+        "appearance-f7-dark-save",
+        "palette-native-dune",
+        "palette-native-grove",
+        "palette-native-high-ink",
+        "appearance-native-high-light",
+        "appearance-native-high-dark",
+        "refusal-transparent",
+        "refusal-follow-wallpaper",
+        "refusal-auto",
+        "refusal-no-change",
+        "external-file-edit"
+      ]
+    },
+    "classic-large": {
+      "source_closure": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "configuration_sha256": "99e8f83b47d09f68131e7af171e6bb33c99bd3d90f761b7c6ee7205cb805790e",
+      "capture_count": 29,
+      "workflows": [
+        "palette-f6-whole-draft-normal",
+        "palette-f6-whole-draft-high",
+        "appearance-f7-light-cancel",
+        "appearance-f7-dark-save",
+        "palette-native-dune",
+        "palette-native-grove",
+        "palette-native-high-ink",
+        "appearance-native-high-light",
+        "appearance-native-high-dark",
+        "refusal-transparent",
+        "refusal-follow-wallpaper",
+        "refusal-auto",
+        "refusal-no-change",
+        "external-file-edit"
+      ]
+    }
+  },
+  "baseline": {
+    "status": "expected-before-implementation-failure",
+    "runtime_base": "2f6b48df6c57843320bf5d228b3d5d79bf9c6631",
+    "source13_closure": "1561eafe649166010873bef3e432c4562c6322d1442c7716b7cfdab760dacfd7",
+    "command": [
+      "cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+      "-I/tmp/fvwm-module-waits-20261015/source",
+      "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/plan-v2-baseline.c",
+      "/tmp/fvwm-module-waits-20261015/source/fvwm/preview_policy.c",
+      "-o",
+      "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current/plan-v2-baseline"
+    ],
+    "compile_exit": 0,
+    "test_exit": 1,
+    "stdout": "version1=1 version2=0\n",
+    "stderr": "",
+    "seconds": 0.06919921099999726,
+    "fixture_sha256": "92a9cd30e2585ce9b1cc959936f5515fefa3450f1d880811542cb0866244fe29",
+    "source_hashes": {
+      "fvwm/preview_policy.c": "bafd07232508676596f3815254e285a1a28dfb114a83d7cc027d23b7ef319a24",
+      "fvwm/preview_policy.h": "afba73c800244d5408317a6cfddf3f0a57f5261f8aa561f1f37ea8b933cd1187"
+    }
+  },
+  "evidence_archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-next-consumer/evidence.tgz",
+    "sha256": "5a0e0630570575aa69452fd215897a4423fdccbb60034d0a89c45012d026d43c",
+    "bytes": 5988227,
+    "files": 734
+  },
+  "runtime_test_input": "source04; production bytes unchanged since source01; theme/observer fixture-only refinements described in report",
+  "routing": {
+    "C_component_tree": "0c2690370fbde9b736d24d3050aa0e3f749814e4",
+    "prior_reviewer_resume": "app thread limit reached",
+    "existing_reviewer": "temper_form_startup_review resumed",
+    "requested_review_role": "temper_reviewer",
+    "backend_model_metadata": "unverified",
+    "source_only_delegates": true
+  },
+  "retention": {
+    "guest": {
+      "status": "retired-owned-duplicates",
+      "host_archive_verified": true,
+      "host_archive_sha256": "5a0e0630570575aa69452fd215897a4423fdccbb60034d0a89c45012d026d43c",
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-palette-preview-current",
+          "bytes": 14348380
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-palette-preview-inputs",
+          "bytes": 99234249
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-palette-preview-evidence.tgz",
+          "bytes": 5988227
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-palette-preview-evidence.json",
+          "bytes": 115800
+        }
+      ],
+      "recovered_bytes": 119686656,
+      "last_source": "/tmp/fvwm-module-waits-20261015/r1-palette-preview-last-source.json",
+      "source_closure": "705cfd703dd4cf3b4f05f9a0d61fc2abea077a664ced28162fc4a785296f9176",
+      "preserved": [
+        "source",
+        "build-gcc",
+        "build-module-waits-asan",
+        "r1-xdg-installed-prefix",
+        "SDK/dependency caches",
+        "PR299 performance reference"
+      ]
+    },
+    "inputs": {
+      "current": "source04.tgz",
+      "records": [
+        {
+          "retired": "source01.tgz",
+          "retired_bytes": 24250417,
+          "retained_delta": "source01-from-source04.tgz",
+          "delta_bytes": 24684,
+          "delta_sha256": "e87e0cee5ba9a4673e04d2340360d893b311c31d3299b5d67883111b585fe457",
+          "reconstruction_verified": true,
+          "changed": [
+            "tests/live_x/contrast_resource_live.py",
+            "tests/live_x/theme_composition_live.py"
+          ]
+        },
+        {
+          "retired": "source02.tgz",
+          "retired_bytes": 24250553,
+          "retained_delta": "source02-from-source04.tgz",
+          "delta_bytes": 14572,
+          "delta_sha256": "1d485b068401cc85896834a7b50639b1a95ce9233773c961919aad1143cffa57",
+          "reconstruction_verified": true,
+          "changed": [
+            "tests/live_x/theme_composition_live.py"
+          ]
+        },
+        {
+          "retired": "source03.tgz",
+          "retired_bytes": 24251533,
+          "retained_delta": "source03-from-source04.tgz",
+          "delta_bytes": 15509,
+          "delta_sha256": "605fbb14e8f4e44f81ef2f2291437ea74e546b4f36c28bfe594b7757d3c581b5",
+          "reconstruction_verified": true,
+          "changed": [
+            "tests/live_x/theme_composition_live.py"
+          ]
+        }
+      ],
+      "recovered_bytes": 72697738
+    },
+    "lab_normal_stop": true
+  },
+  "separate_review": {
+    "role": "temper_reviewer",
+    "agent": "/root/temper_form_startup_review",
+    "review_type": "separate read-only integrated source and evidence",
+    "reviewed_tree": "0c22710dcec27f146cbc393eecbc47facdee8312",
+    "base": "2f6b48df6c57843320bf5d228b3d5d79bf9c6631",
+    "outcome": "accepted; no remaining actionable findings",
+    "backend_model_effort": "unverified",
+    "limits": "No builds/tests/native execution by reviewer; agent examination, not human approval or merge authorization"
+  }
+}

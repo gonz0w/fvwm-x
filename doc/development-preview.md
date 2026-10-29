@@ -38,6 +38,41 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Preview palette or light/dark appearance
+
+In a Desktop settings editor, choose the candidate, then press **Palette (F6)**
+or **Appearance (F7)** in the Preview row. Save (Enter) keeps the preview and
+saves only that preference. Cancel (Escape) or expiry recovers the previous
+owned resources. The returned editor retains other unapplied fields.
+
+These previews require an opaque effective presentation and unchanged resolved
+wallpaper choices. Disable transparency, or use high contrast; retain the current
+wallpaper or select independent wallpaper choices as appropriate. The controls
+explain unmet prerequisites. They do not change those preferences automatically.
+Appearance preview accepts Light or Dark; Auto remains available through Apply.
+See the [desktop manual](FvwmDesktop.adoc) for conflicts and failed-save recovery.
+
+Slate fixture: a palette candidate with Save and Cancel.
+
+![Native palette preview with Save and Cancel](screenshots/palette-preview-slate-dark.png)
+
+Dune fixture: explicit Dark appearance with the existing wallpaper retained.
+
+![Native Dark appearance preview retaining wallpaper](screenshots/appearance-preview-dune-light.png)
+
+Enlarged Classic: Save returns to the full editor, with the compact F5/F6/F7 row
+and the remaining fields still available.
+
+![Enlarged Classic editor after saving only appearance](screenshots/appearance-preview-classic-draft.png)
+
+These unmodified 1440×1000 development captures use three fixture configurations;
+the visible colors follow the candidate, so they can differ from the profile
+name. The [manifest](screenshots/palette-appearance-preview-manifest.json) binds
+each capture to its executed source and configuration. The
+[checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-29-PALETTE-APPEARANCE-PREVIEW.md)
+records checks and limits. Panel counters are whole-guest values, not a benchmark.
+Font, icon, layout and wallpaper preview remain in development.
+
 ## Preview high contrast and return to your edits
 
 In Desktop settings, choose **Preview high contrast...**, or press F5 in an
@@ -46,8 +81,9 @@ that preference. Cancel (Escape) restores the previous owned resources. The
 core also recovers on expiry; closing the dialog leaves recovery to that deadline.
 Other editor drafts remain available when the preview ends. See the
 [desktop manual](FvwmDesktop.adoc) for admission,
-conflict and persistence limits. This is the first scoped resource consumer;
-general appearance, typography, icons and layout previews remain in development.
+conflict and persistence limits. This was the first scoped resource consumer. Palette and explicit light/dark
+appearance now have the conditional previews above; typography, icons and layout
+previews remain in development.
 
 Slate dark: the active preview offers Save and Cancel while an existing Form
 uses the high-contrast roles.

@@ -11,6 +11,9 @@ import (
 )
 
 func (b *browser) render() error {
+	if err := b.retireFileRoles(); err != nil {
+		return err
+	}
 	if err := b.retireDirectoryRoles(); err != nil {
 		return err
 	}
@@ -125,6 +128,8 @@ func (b *browser) render() error {
 	button("Terminal (F4)", "F4", "terminal", "-")
 	line("Line left")
 	button("Open folder with (F12)", "F12", "directory-roles", "-")
+	line("Line left")
+	button("Open file with (Alt-O)", "Alt-O", "file-roles", "-")
 	line("Line left")
 	line(`Text "Path:"`)
 	line(`Input path 32 ""`)

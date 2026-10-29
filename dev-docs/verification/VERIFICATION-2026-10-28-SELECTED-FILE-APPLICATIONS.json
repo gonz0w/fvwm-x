@@ -1,0 +1,1501 @@
+{
+  "base": "142fe12803082c647d59278a13df24da29a917ba",
+  "focused_source02": "cb141c1f7aa41340981b91a60ed4d2296e87ad007cf626ffc1242476763ba322",
+  "corrected_runtime_source03": "0eab49ee999845e01dd6a9153738220a5878b9a750387899160d3f58370f5c35",
+  "final_native_source05": "de986637e574ba511f029652d92f5cb26a2aec6fe057e1dd54abf3cdd02c4ae7",
+  "go_inputs": 613,
+  "selected_inputs": 1883,
+  "source02_to03_go_delta": [
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_classifier_test.go",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_group.go",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_shutdown_test.go"
+  ],
+  "source03_to05_delta": [
+    "tests/live_x/file_roles_live.py"
+  ],
+  "reviewed_runtime_source_test_files": {
+    "bin/FvwmPrompt/internal/xdgmenu/mimeapps.go": {
+      "sha256": "f3eec2302b7bdaf92f50700e2e7dbd42c306a72aebce8810e7d61536312063fb",
+      "bytes": 11112
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/mimeapps_test.go": {
+      "sha256": "bc8d9521c635b4d985e927c74c59a1ecce7940a5fcbd3f125490da21d2c808ef",
+      "bytes": 6631
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/mime_types.go": {
+      "sha256": "16f8e9d546def186729c3645062f74f7f51f0742b1443cf6c15c3dfd2501af43",
+      "bytes": 8785
+    },
+    "bin/FvwmPrompt/internal/xdgmenu/mime_types_test.go": {
+      "sha256": "8e92715564b75880b1828464d436aca5022c5fe61899fb45361516372978f1ba",
+      "bytes": 5029
+    },
+    "bin/FvwmPrompt/internal/xdgsource/directory_roles.go": {
+      "sha256": "2c7f925c0ad0e808b19bc9f1bc9ae66c558454d774598ea43215964e4da7f494",
+      "bytes": 11323
+    },
+    "bin/FvwmPrompt/internal/xdgsource/directory_roles_test.go": {
+      "sha256": "2e6dfe37625cd13c9bb41131886f2a19d62f5e3c18556b3a53b9e7a367505b45",
+      "bytes": 10091
+    },
+    "bin/FvwmPrompt/internal/xdgsource/application_roles.go": {
+      "sha256": "85bc7afdc07bca27f6853a6ca95ca2999b033c05a4fbdad5a1dad67cd81534e7",
+      "bytes": 5780
+    },
+    "bin/FvwmPrompt/internal/xdgsource/application_roles_test.go": {
+      "sha256": "2e632645fd0dccefe2ab319bfca2391d48ddbf2afd1c47da52803e9345d8d217",
+      "bytes": 9621
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/bindings.go": {
+      "sha256": "b80112082a5f359ae51ef55624527c22ac8e2c7ddcf9b67b31d21859a260b544",
+      "bytes": 5317
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles.go": {
+      "sha256": "474f9144fb2cc209024ba78b17f27961a2719a21a8c28e76faf2e406e8c73722",
+      "bytes": 14850
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_worker.go": {
+      "sha256": "411d0ede04baf76e8066ed1df058f818f0f4922a34c565c44e641a4852f5ad12",
+      "bytes": 6803
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_classifier.go": {
+      "sha256": "ac7c83010f83677d8aa79ec7e99bf01674bffe0f45ad0cba124876f6c8b48edc",
+      "bytes": 2207
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_classifier_test.go": {
+      "sha256": "a0c2dd23535a9f9ef8bde52facaa919691e36bdb0b511f44b04790dc8284271e",
+      "bytes": 9553
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles.go": {
+      "sha256": "3b9006d1cc199840b1c6f93af378bb8e364f4091024bcfb79b3d423b5bec69e3",
+      "bytes": 10274
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_contract_test.go": {
+      "sha256": "7edcf4b84ed070160068a5a379e8e4469ab14353e3ac22bcf51d4bf6a190b49d",
+      "bytes": 2666
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_test.go": {
+      "sha256": "54673ad26a42435142b3cc99977175435775969746cf0b05dd588d6969f8fcba",
+      "bytes": 12460
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_worker.go": {
+      "sha256": "074b96fce9be98a4a6554c5dc969fee30b2becbc0d3b74604ffc12d7c83321a3",
+      "bytes": 4862
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go": {
+      "sha256": "ba0bd4b896942fc413fbbc0ab1beb1beec5d2a5366e316daca1ac7eeace312b2",
+      "bytes": 27764
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": {
+      "sha256": "c60320e5e08c38d99acad66bba9ecc4409ebc7b17a40a144b3a51b54169eab2d",
+      "bytes": 16851
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": {
+      "sha256": "6100b4224301c51c11fe1a4fc17f1740f33af7b6b2c6fae5b518a71ec787b3e3",
+      "bytes": 12863
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native_feedback.go": {
+      "sha256": "88ba0e4322b664fb0d4676e60b78d2ce9b8827fb882e193b1b83debf9fb3f284",
+      "bytes": 6293
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider.go": {
+      "sha256": "11474fad0a903c8faa683ccf0d55fd2a6b9730548ebb493ddc8d830af198ae89",
+      "bytes": 6039
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action.go": {
+      "sha256": "bfa0d5709644635ba217c563e2a1efbd7680a943cf1a84df7569cf0ab29b1f59",
+      "bytes": 4572
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_apply.go": {
+      "sha256": "41eaba37425ba1d492346143d7987da6eca5595af68449055cc0fd3aba59f912",
+      "bytes": 2614
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations.go": {
+      "sha256": "5789d908e3e46da4e346249e8a2702e4b6a84459cd059570fd51e0f93e29d5aa",
+      "bytes": 1495
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations_test.go": {
+      "sha256": "0da573bbf8a2e4acf46267ddebcb9de494b9a3be4ba97458ec80a9d24946a667",
+      "bytes": 2832
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_query.go": {
+      "sha256": "b2a8b7b13d77d5b9aad4bd7605490f5c78ac00994c7ec5565d4d46d15d3b1531",
+      "bytes": 6020
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_work.go": {
+      "sha256": "9e9b5a4b4768af7804830d02445f07673ebf49a3b8a41bdddbe96d86df883709",
+      "bytes": 5964
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": {
+      "sha256": "21a2337c2d5c4a4a22774a8a207aad2cc827459f658fd3ba97545a10fcee4b84",
+      "bytes": 5654
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view_shortcuts_test.go": {
+      "sha256": "dbe1919eb9129bf5279a6cdacecbe25375e8ee7f8626e49c0d9df3f837c100df",
+      "bytes": 5748
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker.go": {
+      "sha256": "a68a08629afb994830bc5d95b547960d01ae7451987ec2d0e78668dfed6acac6",
+      "bytes": 6563
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_group.go": {
+      "sha256": "9f98ff95569ae16dfb9fb7499f62f19f6b541069d8c6eb584ab4969c7dafa449",
+      "bytes": 2655
+    },
+    "modules/FvwmMFL/request.c": {
+      "sha256": "ef8c42087ec5e8d247f394dfb1e23ac7981bf175100f5cecc8f0e1372a5b5df8",
+      "bytes": 47381
+    },
+    "tests/test_mfl_request.c": {
+      "sha256": "c5ebdaa567573b34ce40a3a59218de113698b38541de4088235592ad9d3e8419",
+      "bytes": 43716
+    },
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_shutdown_test.go": {
+      "sha256": "186714025195bb3a5a30528b1c202e04eb69879fa9c5ab6dd555ef28e5d0795d",
+      "bytes": 2921
+    }
+  },
+  "source_file_note": "35 reviewed paths:8 policy (2 unchanged) and27 browser/C; no broad API rename",
+  "fixture": {
+    "sha256": "e7ed29af7b82f7e91c46d4aa11b281cdca2fe0eb4e5e13849ca0277409f4a0b3",
+    "bytes": 54013
+  },
+  "manual_sources": {
+    "doc/FvwmMFL.adoc": {
+      "sha256": "de958d5e795f476fdafbda4d0489f1df9d08c6eb848dd598c1855bfa5f7eece6",
+      "bytes": 72322
+    },
+    "doc/fvwm-file-browser.adoc": {
+      "sha256": "e8f6e05a2cd04b9d088ff8867f8d21f331c4c1a83ba01417143f91db38f3579d",
+      "bytes": 51722
+    }
+  },
+  "composed_tests": {
+    "normal": {
+      "cases_including_subtests": 747,
+      "packages": {
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser": 171,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker": 34,
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu": 443,
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource": 66,
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop": 33
+      }
+    },
+    "race": {
+      "cases_including_subtests": 747,
+      "packages": {
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource": 66,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker": 34,
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop": 33,
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu": 443,
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser": 171
+      },
+      "configuration": "atexit_sleep_ms=0 on serial retries; race diagnostics remain enabled"
+    },
+    "floor": {
+      "cases_including_subtests": 680,
+      "packages": {
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource": 66,
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu": 443,
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser": 171
+      },
+      "configuration": "only final browser test linker omitted DWARF with -ldflags=-w; production flags unchanged"
+    }
+  },
+  "focused_result": {
+    "status": "passed",
+    "source_pre": "0eab49ee999845e01dd6a9153738220a5878b9a750387899160d3f58370f5c35",
+    "source_post": "0eab49ee999845e01dd6a9153738220a5878b9a750387899160d3f58370f5c35",
+    "commands": [
+      {
+        "label": "kernel",
+        "command": [
+          "uname",
+          "-a"
+        ],
+        "exit": 0,
+        "seconds": 0.0025312999999869135
+      },
+      {
+        "label": "sdk",
+        "command": [
+          "go",
+          "version"
+        ],
+        "exit": 0,
+        "seconds": 0.013391705999993064
+      },
+      {
+        "label": "disk",
+        "command": [
+          "df",
+          "-k",
+          "/tmp",
+          "/dev/shm"
+        ],
+        "exit": 0,
+        "seconds": 0.0007067520000418881
+      },
+      {
+        "label": "go-normal",
+        "command": [
+          "go",
+          "test",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgmenu",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser",
+          "./internal/desktopworker",
+          "./cmd/fvwmmenudesktop"
+        ],
+        "exit": 0,
+        "seconds": 5.98055105800006
+      },
+      {
+        "label": "go-race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgmenu",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser",
+          "./internal/desktopworker",
+          "./cmd/fvwmmenudesktop"
+        ],
+        "exit": 1,
+        "seconds": 5.462829265000096
+      },
+      {
+        "label": "go-normal-browser-retry",
+        "command": [
+          "go",
+          "test",
+          "-json",
+          "-p",
+          "1",
+          "-mod=vendor",
+          "-count=1",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 5.54865483399999
+      },
+      {
+        "label": "go-race-browser-retry",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-json",
+          "-p",
+          "1",
+          "-mod=vendor",
+          "-count=1",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 6.9841376840001885
+      },
+      {
+        "label": "go-floor",
+        "command": [
+          "/tmp/fvwm-go-baseline-floor-20261014/go/bin/go",
+          "test",
+          "-p",
+          "1",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgmenu",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 1,
+        "seconds": 1.3407965549999972
+      },
+      {
+        "label": "go-floor-browser-compact-debug",
+        "command": [
+          "/tmp/fvwm-go-baseline-floor-20261014/go/bin/go",
+          "test",
+          "-p",
+          "1",
+          "-ldflags=-w",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 5.3223023769999145
+      },
+      {
+        "label": "go-vet",
+        "command": [
+          "go",
+          "vet",
+          "-p",
+          "1",
+          "-mod=vendor",
+          "./internal/xdgmenu",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser",
+          "./internal/desktopworker",
+          "./cmd/fvwmmenudesktop"
+        ],
+        "exit": 0,
+        "seconds": 0.30081224999980805
+      },
+      {
+        "label": "reconfigure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "/tmp/fvwm-module-waits-20261015/source"
+        ],
+        "exit": 0,
+        "seconds": 1.1957654570001068
+      },
+      {
+        "label": "build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j1",
+          "bin/FvwmPrompt/FvwmDesktop",
+          "bin/FvwmPrompt/fvwm-desktop-worker",
+          "bin/FvwmPrompt/fvwm-menu-desktop",
+          "bin/FvwmPrompt/fvwm-file-browser",
+          "modules/FvwmMFL/FvwmMFL",
+          "tests/test-mfl-request"
+        ],
+        "exit": 0,
+        "seconds": 1.544740413999989
+      },
+      {
+        "label": "manual",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-D",
+          "/dev/shm/r1-file-roles-focused01/man",
+          "/tmp/fvwm-module-waits-20261015/source/doc/fvwm-file-browser.adoc",
+          "/tmp/fvwm-module-waits-20261015/source/doc/FvwmMFL.adoc"
+        ],
+        "exit": 0,
+        "seconds": 0.09761621300003753
+      },
+      {
+        "label": "mfl-request",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request"
+        ],
+        "exit": 0,
+        "seconds": 0.0008108800000172778
+      },
+      {
+        "label": "menu-consumer",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/test_xdg_desktop.py",
+          "--provider",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-menu-desktop"
+        ],
+        "exit": 0,
+        "seconds": 0.1118604299999788
+      }
+    ],
+    "binary_sha256": {
+      "bin/FvwmPrompt/FvwmDesktop": "6018bef8c5ae514fb226be9433e5fb30662953df3c1a4f600fbbd2fe006e5ffd",
+      "bin/FvwmPrompt/fvwm-desktop-worker": "d7b79d408e26fbac3a4b79027c072e4e51c1222620be5792433ae0c689c66c88",
+      "bin/FvwmPrompt/fvwm-menu-desktop": "2847d8e23dd8123ec020e921d1e5ca63cc7a64049871fce0c438ab5e2ca8bcd6",
+      "bin/FvwmPrompt/fvwm-file-browser": "4136664bbe3aaed8f42f803dca9674717d3a503a35a9bbe495c03183a78a65b6",
+      "modules/FvwmMFL/FvwmMFL": "25f723490ffde43c56d878ce209c04c4e93e012da2f8a964b463b7de69340870"
+    },
+    "composed_tests": "normal source02 with browser source03 rerun; race source02 3packages +policyserialretry+browser03retry; floor source03 2policy packages plus browser -ldflags=-w retry; vet03passes",
+    "limits": "No repeated full matrix or production link flag change; normal/race passes composed across exact unchanged inputs; floor test binary only omittedDWARF after ENOSPC"
+  },
+  "independent_cli_cases": 18,
+  "linux_scoped_C_sanitizer": "not repeated: C changes are allowlist entries with existing framing/decoder bounds; Go lifetime has race, subprocess and actual-X shutdown checks; native-CPU sanitizer remains separate",
+  "profiles": [
+    {
+      "profile": "slate-dark",
+      "feature_status": "20 case groups passed; enclosing record failed only transport expected1/actual0",
+      "original_overall_status": "failed",
+      "source": "04",
+      "fixture_sha256": "ce7c47a79ff06a07deb3b031f27e18048e98ab833c988d297eb929b27ad11627",
+      "case_groups": [
+        "native_default_selection",
+        "native_default_literal_uri_and_entry_cwd",
+        "actual_file_classifier",
+        "default_change_cannot_redirect_explicit_choice",
+        "typed_literal_path_and_parent_cwd",
+        "changed_handler",
+        "removed_association",
+        "changed_content_identity_preserved",
+        "changed_content_mime",
+        "replaced_identity",
+        "deleted_target",
+        "empty_selection_refused",
+        "multiple_selection_refused",
+        "symlink_selection_refused",
+        "selection_change_invalidates_capture",
+        "duplicate_busy_refused",
+        "native_escape_closes",
+        "typed_close",
+        "F12_current_folder_unchanged",
+        "no_default_write_or_shell"
+      ],
+      "screenshots": {
+        "file-initial-chooser.png": "6b95f9bf6ab1928bc5d745e25df49cf1bcae5e8eefc0cc93627b150d2d809b6b",
+        "file-refused-handler.png": "0ff7c3d0fde3e2d93b081bd27dbce4f739592eee0a366844c89320301047e216",
+        "file-recovered-chooser.png": "dadda166f437bf0e70a12ca5c6160b7f69ca382d970f3ac1cdd7cd8a2d8cada2"
+      },
+      "cleanup_failures": [],
+      "native_close": {
+        "status": "passed",
+        "mode": "native-close",
+        "held": {
+          "token": "dadb64ae305655f5",
+          "classifier_identity": {
+            "child": 5170,
+            "parent": 5162,
+            "starttime": 176948,
+            "argv_bytes": [
+              "L3dvcmtzcGFjZS9tZXNvbi1lbnYvYmluL3B5dGhvbjM=",
+              "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9zb3VyY2UvdGVzdHMvbGl2ZV94L2ZpbGVfcm9sZXNfbGl2ZS5weQ==",
+              "LS1jbGFzc2lmaWVy",
+              "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9yMS1maWxlLXJvbGVzLXByb3ZpZGVyL2Jpbi9maWxl",
+              "L3RtcC9mdndtLWZpbGUtcm9sZXMtcGF3ZXBqN2kvY2xhc3NpZmllci1yZWNvcmRz",
+              "LWI=",
+              "LS1taW1lLXR5cGU=",
+              "L3RtcC9mdndtLWZpbGUtcm9sZXMtcGF3ZXBqN2kvc2VsZWN0ZWQgZmlsZXMvdGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w=="
+            ]
+          },
+          "worker_identity": {
+            "child": 5162,
+            "parent": 5143,
+            "starttime": 176946
+          },
+          "browser_identity": {
+            "child": 5143,
+            "parent": 4770,
+            "starttime": 176932
+          },
+          "group": 5162,
+          "started_ns": 1769516356968,
+          "heartbeat": "heartbeat-dadb64ae305655f5.jsonl",
+          "controlled_before_real_provider": true
+        },
+        "worker_forwarded_request": {
+          "request": {
+            "operation": "file-roles",
+            "hidden": false,
+            "snapshot": {
+              "schema_version": 1,
+              "path_bytes": "L3RtcC9mdndtLWZpbGUtcm9sZXMtcGF3ZXBqN2kvc2VsZWN0ZWQgZmlsZXM=",
+              "root": {
+                "device": 61,
+                "inode": 114830676,
+                "mode": 2147484096,
+                "size": 88,
+                "mtime_ns": 1793233761643289709
+              },
+              "hidden": false,
+              "items": [
+                {
+                  "id": "5b777e08c501a571a391867bb3e77469",
+                  "name_bytes": "bGlua2VkLXRleHQ=",
+                  "identity": {
+                    "device": 61,
+                    "inode": 114830679,
+                    "mode": 134218239,
+                    "size": 82,
+                    "mtime_ns": 1793233758773481730
+                  },
+                  "kind": "symlink"
+                },
+                {
+                  "id": "14c852aef1c125c753c6f97b5bc2d7a5",
+                  "name_bytes": "b3RoZXItdGV4dA==",
+                  "identity": {
+                    "device": 61,
+                    "inode": 114830678,
+                    "mode": 420,
+                    "size": 66,
+                    "mtime_ns": 1793233758773481730
+                  },
+                  "kind": "file"
+                },
+                {
+                  "id": "53caab3bf05f281c5e00f2cce778d590",
+                  "name_bytes": "dGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w==",
+                  "identity": {
+                    "device": 61,
+                    "inode": 115163050,
+                    "mode": 420,
+                    "size": 66,
+                    "mtime_ns": 1793233761644171257
+                  },
+                  "kind": "file"
+                }
+              ]
+            },
+            "id": "53caab3bf05f281c5e00f2cce778d590",
+            "program": "/bin/true"
+          },
+          "worker": 5162,
+          "started": 1769.487513612,
+          "forwarded": true
+        },
+        "owned_tree_before_exit": {
+          "worker": {
+            "child": 5162,
+            "parent": 5143,
+            "starttime": 176946,
+            "state": "S",
+            "group": 5162
+          },
+          "classifier": {
+            "child": 5170,
+            "parent": 5162,
+            "starttime": 176948,
+            "state": "S",
+            "group": 5162
+          },
+          "worker_children": [
+            5170
+          ],
+          "classifier_children": []
+        },
+        "trigger_ns": 1769549724769,
+        "browser_wait": {
+          "identity": {
+            "child": 5143,
+            "parent": 4770,
+            "starttime": 176932
+          },
+          "exit": 0,
+          "observed_exit_ns": 1769567229676
+        },
+        "actual_native_close_callback": {
+          "time": 1769.562465686,
+          "direction": "out",
+          "kind": null,
+          "text": "Echo FVWM_FILES_3 daa2453aa56efcd7f07af72630fc65ce 2 close - xAAAAAgAABA 0000000000000003",
+          "continuation": 1
+        },
+        "identities_at_browser_wait": {
+          "worker": null,
+          "classifier": {
+            "child": 5170,
+            "parent": 4770,
+            "starttime": 176948,
+            "state": "Z",
+            "group": 5162
+          }
+        },
+        "heartbeat": {
+          "sha256": "ceb24618ab746ce65e3bf02c0bdb32bd89b6f2012b6c39d45b1022fe4d7d1f2e",
+          "samples": 9,
+          "last_ns": 1769562389144,
+          "unchanged_after_browser_wait": true,
+          "limit": "exit ordering is observed at actual Wait plus kernel state, not an exact kernel exit timestamp"
+        },
+        "descendant_waits": [
+          {
+            "identity": {
+              "child": 5162,
+              "parent": 5143,
+              "starttime": 176946
+            },
+            "state": "reaped by original parent before browser exit"
+          },
+          {
+            "identity": {
+              "child": 5170,
+              "parent": 5162,
+              "starttime": 176948,
+              "argv_bytes": [
+                "L3dvcmtzcGFjZS9tZXNvbi1lbnYvYmluL3B5dGhvbjM=",
+                "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9zb3VyY2UvdGVzdHMvbGl2ZV94L2ZpbGVfcm9sZXNfbGl2ZS5weQ==",
+                "LS1jbGFzc2lmaWVy",
+                "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9yMS1maWxlLXJvbGVzLXByb3ZpZGVyL2Jpbi9maWxl",
+                "L3RtcC9mdndtLWZpbGUtcm9sZXMtcGF3ZXBqN2kvY2xhc3NpZmllci1yZWNvcmRz",
+                "LWI=",
+                "LS1taW1lLXR5cGU=",
+                "L3RtcC9mdndtLWZpbGUtcm9sZXMtcGF3ZXBqN2kvc2VsZWN0ZWQgZmlsZXMvdGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w=="
+              ]
+            },
+            "state": "owned adopted child reaped",
+            "exit": -9
+          }
+        ]
+      }
+    },
+    {
+      "profile": "classic-large",
+      "feature_status": "passed",
+      "original_overall_status": "passed",
+      "source": "05",
+      "fixture_sha256": "e7ed29af7b82f7e91c46d4aa11b281cdca2fe0eb4e5e13849ca0277409f4a0b3",
+      "case_groups": [
+        "native_default_selection",
+        "native_default_literal_uri_and_entry_cwd",
+        "actual_file_classifier",
+        "default_change_cannot_redirect_explicit_choice",
+        "typed_literal_path_and_parent_cwd",
+        "changed_handler",
+        "removed_association",
+        "changed_content_identity_preserved",
+        "changed_content_mime",
+        "replaced_identity",
+        "deleted_target",
+        "empty_selection_refused",
+        "multiple_selection_refused",
+        "symlink_selection_refused",
+        "selection_change_invalidates_capture",
+        "duplicate_busy_refused",
+        "native_escape_closes",
+        "typed_close",
+        "F12_current_folder_unchanged",
+        "no_default_write_or_shell"
+      ],
+      "screenshots": {
+        "file-initial-chooser.png": "0e415cc950244c23eccde56cd8f46e09bda9cc733b7a72c18780dcbf2f64db19",
+        "file-refused-handler.png": "3ccb10fb3e9062603d5002e189aa5932d67dc61402889596a5f823766a3c0f0f",
+        "file-recovered-chooser.png": "e57aea4d4cb691bbb0e343d2f0613936016460e33e82bad50068b6f26b8b2476"
+      },
+      "cleanup_failures": []
+    },
+    {
+      "profile": "dune-light",
+      "feature_status": "passed",
+      "original_overall_status": "passed",
+      "source": "05",
+      "fixture_sha256": "e7ed29af7b82f7e91c46d4aa11b281cdca2fe0eb4e5e13849ca0277409f4a0b3",
+      "case_groups": [
+        "native_default_selection",
+        "native_default_literal_uri_and_entry_cwd",
+        "actual_file_classifier",
+        "default_change_cannot_redirect_explicit_choice",
+        "typed_literal_path_and_parent_cwd",
+        "changed_handler",
+        "removed_association",
+        "changed_content_identity_preserved",
+        "changed_content_mime",
+        "replaced_identity",
+        "deleted_target",
+        "empty_selection_refused",
+        "multiple_selection_refused",
+        "symlink_selection_refused",
+        "selection_change_invalidates_capture",
+        "duplicate_busy_refused",
+        "native_escape_closes",
+        "typed_close",
+        "F12_current_folder_unchanged",
+        "no_default_write_or_shell"
+      ],
+      "screenshots": {
+        "file-initial-chooser.png": "fb6e29b7533cb05cdb77aa4c651973d17c38814ee0e9aa7d5ec8995147f1dccb",
+        "file-refused-handler.png": "4a9c49250ddd158f7116da6f52b1b72e4d0fe7aa89b6295c2646a3d7a2faad97",
+        "file-recovered-chooser.png": "85db8a8088152c6e012978a0e33bc71f9f5c802ecf8d4b606ffbebcecc82d6c0"
+      },
+      "cleanup_failures": []
+    }
+  ],
+  "transport_loss": {
+    "status": "passed",
+    "mode": "transport-loss",
+    "mfl_before": {
+      "record": {
+        "proxy": 5961,
+        "child": 5969,
+        "real": "/dev/shm/r1-file-roles-ui02/installed-view/modules/FvwmMFL/FvwmMFL",
+        "arguments": [
+          "none",
+          "0",
+          "8"
+        ],
+        "started": 1954.237289302
+      },
+      "identity": {
+        "child": 5969,
+        "parent": 5961,
+        "starttime": 195423,
+        "argv_bytes": [
+          "L2Rldi9zaG0vcjEtZmlsZS1yb2xlcy11aTAyL2luc3RhbGxlZC12aWV3L21vZHVsZXMvRnZ3bU1GTC9GdndtTUZM",
+          "NQ==",
+          "Ng==",
+          "bm9uZQ==",
+          "MA==",
+          "OA=="
+        ]
+      }
+    },
+    "held": {
+      "token": "78711f4c22a36c41",
+      "classifier_identity": {
+        "child": 6014,
+        "parent": 6006,
+        "starttime": 195448,
+        "argv_bytes": [
+          "L3dvcmtzcGFjZS9tZXNvbi1lbnYvYmluL3B5dGhvbjM=",
+          "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9zb3VyY2UvdGVzdHMvbGl2ZV94L2ZpbGVfcm9sZXNfbGl2ZS5weQ==",
+          "LS1jbGFzc2lmaWVy",
+          "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9yMS1maWxlLXJvbGVzLXByb3ZpZGVyL2Jpbi9maWxl",
+          "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvY2xhc3NpZmllci1yZWNvcmRz",
+          "LWI=",
+          "LS1taW1lLXR5cGU=",
+          "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvc2VsZWN0ZWQgZmlsZXMvdGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w=="
+        ]
+      },
+      "worker_identity": {
+        "child": 6006,
+        "parent": 5985,
+        "starttime": 195446
+      },
+      "browser_identity": {
+        "child": 5985,
+        "parent": 5951,
+        "starttime": 195432
+      },
+      "group": 6006,
+      "started_ns": 1954513675220,
+      "heartbeat": "heartbeat-78711f4c22a36c41.jsonl",
+      "controlled_before_real_provider": true
+    },
+    "worker_forwarded_request": {
+      "request": {
+        "operation": "file-roles",
+        "hidden": false,
+        "snapshot": {
+          "schema_version": 1,
+          "path_bytes": "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvc2VsZWN0ZWQgZmlsZXM=",
+          "root": {
+            "device": 61,
+            "inode": 237128655,
+            "mode": 2147484096,
+            "size": 88,
+            "mtime_ns": 1793233947599076386
+          },
+          "hidden": false,
+          "items": [
+            {
+              "id": "daf8eaaf72b97c17507775cf075b050d",
+              "name_bytes": "bGlua2VkLXRleHQ=",
+              "identity": {
+                "device": 61,
+                "inode": 237128670,
+                "mode": 134218239,
+                "size": 82,
+                "mtime_ns": 1793233947599076386
+              },
+              "kind": "symlink"
+            },
+            {
+              "id": "df2befa827ab243aca32410e29e6526a",
+              "name_bytes": "b3RoZXItdGV4dA==",
+              "identity": {
+                "device": 61,
+                "inode": 237128669,
+                "mode": 420,
+                "size": 66,
+                "mtime_ns": 1793233947599076386
+              },
+              "kind": "file"
+            },
+            {
+              "id": "40b7c2545112fe03522fb5ca16706e11",
+              "name_bytes": "dGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w==",
+              "identity": {
+                "device": 61,
+                "inode": 237128659,
+                "mode": 420,
+                "size": 66,
+                "mtime_ns": 1793233947599047594
+              },
+              "kind": "file"
+            }
+          ]
+        },
+        "id": "40b7c2545112fe03522fb5ca16706e11",
+        "program": "/bin/true"
+      },
+      "worker": 6006,
+      "started": 1954.486197629,
+      "forwarded": true
+    },
+    "owned_tree_before_exit": {
+      "worker": {
+        "child": 6006,
+        "parent": 5985,
+        "starttime": 195446,
+        "state": "S",
+        "group": 6006
+      },
+      "classifier": {
+        "child": 6014,
+        "parent": 6006,
+        "starttime": 195448,
+        "state": "S",
+        "group": 6006
+      },
+      "worker_children": [
+        6014
+      ],
+      "classifier_children": []
+    },
+    "browser_before_transport_loss": {
+      "action_operations": [
+        "selection",
+        "filter",
+        "sort",
+        "view",
+        "properties",
+        "navigate",
+        "refresh",
+        "open",
+        "terminal",
+        "custom",
+        "cancel",
+        "reveal",
+        "inspect",
+        "hidden",
+        "watch",
+        "present",
+        "file-roles",
+        "file-role-launch",
+        "file-roles-close",
+        "directory-roles",
+        "directory-role-launch",
+        "directory-roles-close"
+      ],
+      "actions": true,
+      "availability": {
+        "ready": false,
+        "open_visible": 0,
+        "properties": false,
+        "terminal": false,
+        "custom": false,
+        "cancel": true
+      },
+      "availability_generation": "5f9a264a44a71833eec9d3b41fbbb5a4",
+      "bindings": {
+        "intent": {
+          "state": "loading",
+          "sources": 1,
+          "identity_bytes": 39,
+          "in_flight": true,
+          "pending": false,
+          "invalidations": 2,
+          "started": 2,
+          "published": 1,
+          "rejected": 0
+        },
+        "projection": {
+          "state": "current",
+          "sources": 1,
+          "identity_bytes": 69,
+          "in_flight": false,
+          "pending": false,
+          "invalidations": 8,
+          "started": 4,
+          "published": 4,
+          "rejected": 0
+        },
+        "watch_timer_active": false
+      },
+      "busy": true,
+      "configured_actions": [],
+      "directory_roles": {
+        "choice_generation": "",
+        "count": 0,
+        "default_id": "",
+        "status": "closed"
+      },
+      "file_actions": true,
+      "file_content": false,
+      "file_roles": {
+        "canonical_mime": "",
+        "choice_generation": "",
+        "count": 0,
+        "default_id": "",
+        "detail": "",
+        "mime": "",
+        "status": "loading",
+        "target_id": "40b7c2545112fe03522fb5ca16706e11",
+        "target_label": "/tmp/fvwm-file-roles-k5dmjib7/selected files/text [U+0024](touch marker) ; [U+0024][literal] ..."
+      },
+      "filter": "",
+      "focus": "daf8eaaf72b97c17507775cf075b050d",
+      "generation": "5f9a264a44a71833eec9d3b41fbbb5a4",
+      "hidden": false,
+      "jobs": {
+        "active": false,
+        "queue_limit": 0,
+        "retention": "latest_job",
+        "state": "idle"
+      },
+      "loaded": 3,
+      "observed": true,
+      "opener_available": true,
+      "operation_retention": "latest_accepted",
+      "page_max": 8,
+      "path_bytes": "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvc2VsZWN0ZWQgZmlsZXM=",
+      "path_request_max": 192,
+      "progress": {
+        "state": "loading",
+        "known": false,
+        "completed": 0,
+        "total": null
+      },
+      "provider": "2a0b9ce9718a1e321dd14374e095cdf8",
+      "reverse": false,
+      "scope": "state",
+      "selected": 1,
+      "selection_edit_max": 8,
+      "selection_limit": 256,
+      "sort": "name",
+      "target_request_max": 8,
+      "terminal_available": true,
+      "version": 1,
+      "view": "list",
+      "visible": 3,
+      "watch": "off",
+      "watch_enabled": false,
+      "work": null
+    },
+    "trigger_ns": 1954553942975,
+    "browser_wait": {
+      "identity": {
+        "child": 5985,
+        "parent": 5951,
+        "starttime": 195432
+      },
+      "exit": 0,
+      "observed_exit_ns": 1954555075774
+    },
+    "identities_at_browser_wait": {
+      "worker": null,
+      "classifier": {
+        "child": 6014,
+        "parent": 5951,
+        "starttime": 195448,
+        "state": "Z",
+        "group": 6006
+      }
+    },
+    "heartbeat": {
+      "sha256": "472ea26bf92ddd3cdf1a09d76c63e503faf8a28f554f9bb8026a8279135ed97b",
+      "samples": 8,
+      "last_ns": 1954553031427,
+      "unchanged_after_browser_wait": true,
+      "limit": "exit ordering is observed at actual Wait plus kernel state, not an exact kernel exit timestamp"
+    },
+    "descendant_waits": [
+      {
+        "identity": {
+          "child": 6006,
+          "parent": 5985,
+          "starttime": 195446
+        },
+        "state": "reaped by original parent before browser exit"
+      },
+      {
+        "identity": {
+          "child": 6014,
+          "parent": 6006,
+          "starttime": 195448,
+          "argv_bytes": [
+            "L3dvcmtzcGFjZS9tZXNvbi1lbnYvYmluL3B5dGhvbjM=",
+            "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9zb3VyY2UvdGVzdHMvbGl2ZV94L2ZpbGVfcm9sZXNfbGl2ZS5weQ==",
+            "LS1jbGFzc2lmaWVy",
+            "L3RtcC9mdndtLW1vZHVsZS13YWl0cy0yMDI2MTAxNS9yMS1maWxlLXJvbGVzLXByb3ZpZGVyL2Jpbi9maWxl",
+            "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvY2xhc3NpZmllci1yZWNvcmRz",
+            "LWI=",
+            "LS1taW1lLXR5cGU=",
+            "L3RtcC9mdndtLWZpbGUtcm9sZXMtazVkbWppYjcvc2VsZWN0ZWQgZmlsZXMvdGV4dCAkKHRvdWNoIG1hcmtlcikgOyAkW2xpdGVyYWxdICUt/w=="
+          ]
+        },
+        "state": "owned adopted child reaped",
+        "exit": -9
+      }
+    ],
+    "transport_eof": {
+      "module_wait": {
+        "child": 5969,
+        "returncode": 0
+      },
+      "observer_eof": true,
+      "browser_log": ""
+    }
+  },
+  "installed_result": {
+    "status": "passed",
+    "pre": "de986637e574ba511f029652d92f5cb26a2aec6fe057e1dd54abf3cdd02c4ae7",
+    "post": "de986637e574ba511f029652d92f5cb26a2aec6fe057e1dd54abf3cdd02c4ae7",
+    "commands": [
+      {
+        "label": "install-reused",
+        "exit": 0,
+        "receipt": "/dev/shm/r1-file-roles-ui01/commands.json"
+      },
+      {
+        "label": "capture-build-elf",
+        "command": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture"
+        ],
+        "exit": 0,
+        "seconds": 0.0008977140000752115
+      },
+      {
+        "label": "capture-installed-elf",
+        "command": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture"
+        ],
+        "exit": 0,
+        "seconds": 0.0005122119998759445
+      },
+      {
+        "label": "fixture-syntax",
+        "command": [
+          "python3",
+          "-m",
+          "py_compile",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_roles_live.py"
+        ],
+        "exit": 0,
+        "seconds": 0.018852119000030143
+      },
+      {
+        "label": "installed-remaining-themes",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_roles_live.py",
+          "--build",
+          "/dev/shm/r1-file-roles-ui02/installed-view",
+          "--profiles",
+          "dune-light",
+          "classic-large",
+          "--artifacts-dir",
+          "/dev/shm/r1-file-roles-ui02/themes"
+        ],
+        "exit": 0,
+        "seconds": 8.441548979000117
+      },
+      {
+        "label": "held-classifier-transport-loss",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/file_roles_live.py",
+          "--build",
+          "/dev/shm/r1-file-roles-ui02/installed-view",
+          "--transport-loss-only",
+          "--artifacts-dir",
+          "/dev/shm/r1-file-roles-ui02/transport-exit"
+        ],
+        "exit": 0,
+        "seconds": 0.7979949299999589
+      }
+    ],
+    "installed_entries": {
+      "FvwmDesktop": {
+        "build_sha256": "6018bef8c5ae514fb226be9433e5fb30662953df3c1a4f600fbbd2fe006e5ffd",
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "sha256": "6018bef8c5ae514fb226be9433e5fb30662953df3c1a4f600fbbd2fe006e5ffd",
+        "bytes": 5742756,
+        "mode": 493
+      },
+      "fvwm-desktop-worker": {
+        "build_sha256": "d7b79d408e26fbac3a4b79027c072e4e51c1222620be5792433ae0c689c66c88",
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "sha256": "d7b79d408e26fbac3a4b79027c072e4e51c1222620be5792433ae0c689c66c88",
+        "bytes": 5888494,
+        "mode": 493
+      },
+      "fvwm-menu-desktop": {
+        "build_sha256": "2847d8e23dd8123ec020e921d1e5ca63cc7a64049871fce0c438ab5e2ca8bcd6",
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-menu-desktop",
+        "sha256": "2847d8e23dd8123ec020e921d1e5ca63cc7a64049871fce0c438ab5e2ca8bcd6",
+        "bytes": 5443896,
+        "mode": 493
+      },
+      "fvwm-file-browser": {
+        "build_sha256": "4136664bbe3aaed8f42f803dca9674717d3a503a35a9bbe495c03183a78a65b6",
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-file-browser",
+        "sha256": "4136664bbe3aaed8f42f803dca9674717d3a503a35a9bbe495c03183a78a65b6",
+        "bytes": 6438127,
+        "mode": 493
+      },
+      "fvwm-desktop-capture": {
+        "build_sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture",
+        "sha256": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "bytes": 98608,
+        "mode": 493
+      },
+      "desktop-role": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/share/applications/fvwm-file-browser.desktop",
+        "sha256": "e78e61f7773a28a52ea353acb630de4f5d4b9ff4bd4b8f2882598aaca7d6818c"
+      }
+    },
+    "scope": "scoped Go browser/desktop/menu Meson install; current built MFL request module and unchanged core/nativeForm with source theme data; not complete native install/OS/release qualification"
+  },
+  "bsd": [
+    {
+      "target": "freebsd-arm64",
+      "status": "passed",
+      "run_status": 0,
+      "qemu_exit_status": 0,
+      "archive_sha256": "c65c89498d5599c3006cb3dd466e9323ade81002903caeceb3f98007f7dc82ac",
+      "archive_bytes": 10240,
+      "crc": "passed",
+      "pass_records": 20,
+      "fail_records": 0,
+      "qualifier_upload": {
+        "binary_sha256": "fb2f2edc047df98bdb42b127e88f4e56f6d8e8cdd7efbef22deffc20ebd87334",
+        "source": "0eab49ee999845e01dd6a9153738220a5878b9a750387899160d3f58370f5c35",
+        "scope": "host cross-compiled frozen qualifier, executed by fresh owned target kernel; immutable merged295 source archive is setup only"
+      },
+      "ephemeral_key_absent": true
+    },
+    {
+      "target": "openbsd-arm64",
+      "status": "passed",
+      "run_status": 0,
+      "qemu_exit_status": 0,
+      "archive_sha256": "c24fd8244bff6c582211ce6f2d62d9b6e3da298c1c2a5a158a0a3c0028b9bbc7",
+      "archive_bytes": 1290,
+      "crc": "passed",
+      "pass_records": 20,
+      "fail_records": 0,
+      "qualifier_upload": {
+        "binary_sha256": "5d0db9e856c3846a2dea0b2e7f962be3bd89f6953515073d800f6a5d03696564",
+        "source": "0eab49ee999845e01dd6a9153738220a5878b9a750387899160d3f58370f5c35",
+        "scope": "host cross-compiled frozen qualifier, executed by fresh owned target kernel; immutable merged295 source archive is setup only"
+      },
+      "ephemeral_key_absent": true
+    }
+  ],
+  "bsd_scope": "targeted actual provider plus20 browser/classifier/group cases per ARM64 target on fresh owned immutable-cache VMs; no X/full build/install/release result; host cross-compiled Go1.27.2 qualifiers",
+  "manuals": [
+    {
+      "name": "FvwmMFL",
+      "side": "base",
+      "exit": 4,
+      "diagnostics": 349,
+      "families": {
+        "skipping insecure request": 1,
+        "skipping unknown macro": 1,
+        "input text line longer than 80 bytes": 202,
+        "ignoring macro in table": 121,
+        "skipping paragraph macro": 24
+      }
+    },
+    {
+      "name": "fvwm-file-browser",
+      "side": "base",
+      "exit": 4,
+      "diagnostics": 153,
+      "families": {
+        "skipping insecure request": 1,
+        "skipping unknown macro": 1,
+        "input text line longer than 80 bytes": 88,
+        "ignoring macro in table": 45,
+        "skipping paragraph macro": 18
+      }
+    },
+    {
+      "name": "FvwmMFL",
+      "side": "final",
+      "exit": 4,
+      "diagnostics": 359,
+      "families": {
+        "skipping insecure request": 1,
+        "skipping unknown macro": 1,
+        "input text line longer than 80 bytes": 203,
+        "ignoring macro in table": 130,
+        "skipping paragraph macro": 24
+      }
+    },
+    {
+      "name": "fvwm-file-browser",
+      "side": "final",
+      "exit": 4,
+      "diagnostics": 157,
+      "families": {
+        "skipping insecure request": 1,
+        "skipping unknown macro": 1,
+        "input text line longer than 80 bytes": 91,
+        "ignoring macro in table": 45,
+        "skipping paragraph macro": 19
+      }
+    }
+  ],
+  "archive": {
+    "status": "passed",
+    "gzip_crc": "passed",
+    "files": 810,
+    "archive_sha256": "cd3605a0c117859fa1a0e62ce3555132cbcdc4791e59546e2eff5e9444525144",
+    "bytes": 3536893
+  },
+  "regular_archive_members": 810,
+  "archive_expanded_bytes": 22612172,
+  "cleanup": {
+    "initial_guard": "refused unlisted packaged directory symlink before any deletion",
+    "ram_capture_duplicates": "discarded on first normal owned container stop after full host verification",
+    "private_fixture_regular_files_retired": 18,
+    "private_fixture_links_retired": 7,
+    "supplement": "pinned package header identifies omitted directory link; supplemental check before private prefix removal",
+    "all_owned_labs_stopped": true,
+    "source_build_stage_cache_sdk_vm_disks_preserved": true
+  },
+  "identical_native_source_mtime_restore": {
+    "paths": 770,
+    "prior_archive_sha256": "7ea5b1834fc073dd0c5ff28d2bd9390e6bd1bed94226cacc5b6b57637cf4700c",
+    "mode_note": "immutable git archive0664\u2192working644 non-executable metadata variant; current permissions preserved",
+    "scope": "only prior-qualified hash-identical C/header inputs; changed/new/generated/build/dependency files and outputs excluded; intended9stepaffectedNinja build executed"
+  },
+  "adopted_test_fixture_waits": {
+    "go-normal-adopted": {
+      "wait_records": 20,
+      "statuses": {
+        "0": 11,
+        "9": 9
+      },
+      "receipt": {
+        "sha256": "a6b791c50dec6e84d7a7e26f6a125d933490b0d4bf08f1ac9a37274d9ab5830a",
+        "bytes": 823
+      }
+    },
+    "go-vet-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    },
+    "go-floor-browser-compact-debug-adopted": {
+      "wait_records": 23,
+      "statuses": {
+        "0": 11,
+        "9": 12
+      },
+      "receipt": {
+        "sha256": "bea998f3688d72bb68df524bfed8bed35880b1c18daa3f847186645dc1b74b9a",
+        "bytes": 969
+      }
+    },
+    "sdk-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    },
+    "go-floor-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    },
+    "go-race-browser-retry-adopted": {
+      "wait_records": 23,
+      "statuses": {
+        "0": 11,
+        "9": 12
+      },
+      "receipt": {
+        "sha256": "d88fc9c1e5cf8ffc76d6a766f3c38bfef0c85d8d8c8af62c1c82049588ef66fd",
+        "bytes": 969
+      }
+    },
+    "go-normal-browser-retry-adopted": {
+      "wait_records": 23,
+      "statuses": {
+        "0": 11,
+        "9": 12
+      },
+      "receipt": {
+        "sha256": "0c6d537fff61f264aa38d116504855c3bf18b71394cd315a214565b82d28f8ae",
+        "bytes": 969
+      }
+    },
+    "disk-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    },
+    "kernel-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    },
+    "go-race-adopted": {
+      "wait_records": 0,
+      "statuses": {},
+      "receipt": {
+        "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+        "bytes": 3
+      }
+    }
+  },
+  "receipts": {
+    "baseline.json": {
+      "sha256": "2ba8d877f618967e9673031224d87daf657b1c4b1ea4843a34ad4b8412fae844",
+      "bytes": 775
+    },
+    "baseline02.json": {
+      "sha256": "cf7f9d0e258dba94be78b3df9cfc45af60425aa44e7a951db548c73e924e1561",
+      "bytes": 296
+    },
+    "provider-preflight.json": {
+      "sha256": "6c7181b4727e3e2012ba0c3f477e899ea942e9fc95d743f3e528038daea982b5",
+      "bytes": 1260
+    },
+    "provider-plan.json": {
+      "sha256": "5533547f00500fafe34c1596fd0699ba00f5158eaf4586515658bbb8936e0b9c",
+      "bytes": 1908
+    },
+    "provider-prepare.json": {
+      "sha256": "b9cc4ff9518fd01f51acb19c9004e33f3bb65cd07f1073864b661bcb1518d08c",
+      "bytes": 351
+    },
+    "relocate-provider-data.json": {
+      "sha256": "da00787e20e9177bf59a42dba48c20bc0d503de1d3e4a85d888c51fa7172be23",
+      "bytes": 395
+    },
+    "linux-focused01.json": {
+      "sha256": "4bc3117fc9913d7983950545ab9e2d8a73c0a2bc582b343c8493950c5f87e7a0",
+      "bytes": 7104
+    },
+    "race-policy-retry.json": {
+      "sha256": "3db0129e541aa1634f8a88ee54aa673a8712bc6193f7f88af0b2d4a083d029c9",
+      "bytes": 231
+    },
+    "linux-resume03.json": {
+      "sha256": "8e2cd2913c1a8b5f780522b146de491fa1da2c9dbb3606dbaeefe3c64fb2cc32",
+      "bytes": 7085
+    },
+    "finish-linux-go.json": {
+      "sha256": "37de0e1d3f20235390ecd5bb6c7898322434febc5771ceeb307836cde05956ab",
+      "bytes": 345
+    },
+    "restore-native-mtimes.json": {
+      "sha256": "f03424460e01a4a9ccae0259ab6b608529d45bbd26e72f23a63a49faa68b3a33",
+      "bytes": 251
+    },
+    "finish-build.json": {
+      "sha256": "47484d189feb585ccb6a3059b782d448fd6e35d7b94a943a0d3e8f8bb7318dd8",
+      "bytes": 308
+    },
+    "linux-ui01.json": {
+      "sha256": "114e800ef559c6517dc0bec31255e10de77ec00a6e8a407b77ab47bab283202b",
+      "bytes": 4055
+    },
+    "linux-ui02.json": {
+      "sha256": "a8f930b6464d556d6dc32927d7e8cda001015ac28b7bd3a2ef0e73727e8ccd92",
+      "bytes": 384
+    },
+    "canonical-verified.json": {
+      "sha256": "3ecfb666f9537b696efeeada87d993839610ffe70ddfd59f9eba2a1f51bd92a7",
+      "bytes": 173
+    },
+    "retire-duplicates.json": {
+      "sha256": "a35d0b5cc7d0a00c9ffd4db425da8ec94388b7613f2900edc3e1a2d189cad260",
+      "bytes": 333
+    },
+    "provider-link-supplement.json": {
+      "sha256": "cb326cc24095d7808cdc86b1dba7bb1047de017de1ef87cf850bb23edb746233",
+      "bytes": 287
+    },
+    "repo-verify.json": {
+      "sha256": "c81c8099978c4bf227d4544b479ce55e8c703ab0676bf95d24532c31e7c721c6",
+      "bytes": 185
+    },
+    "infrastructure-failures.json": {
+      "sha256": "dac87ea0d23667c108b615e42cbef68fd2628b48d4b32449b9260669dab6a4a4",
+      "bytes": 909
+    },
+    "bsd-verified.json": {
+      "sha256": "4441b8ecb5bbf8318ac461824b22cd55f0fd4c962b8e88d75a33eb674271cb0f",
+      "bytes": 1366
+    },
+    "cross-final/result.json": {
+      "sha256": "d7738b36d405989270992963490360fda8d9fad6b0eab9f692909885f66764c4",
+      "bytes": 824
+    },
+    "linux-cleanup.json": {
+      "sha256": "4ae381a14325df0a7c4b861f5ccd886c4b4c5c5b69b037f3a802fa00f4f4a6b8",
+      "bytes": 2048
+    },
+    "cleanup-retry/retire-private-prefix.json": {
+      "sha256": "2dd432c0df9d4d420e9d5c8a5c973ef7ac02dfb5e6b195c064ccf536b4c6c3ef",
+      "bytes": 486
+    },
+    "cleanup-retry/linux-cleanup.json": {
+      "sha256": "4ae381a14325df0a7c4b861f5ccd886c4b4c5c5b69b037f3a802fa00f4f4a6b8",
+      "bytes": 2048
+    }
+  },
+  "review": {
+    "status": "accepted; no remaining actionable findings",
+    "role": "temper_reviewer",
+    "backend_identity": "unattested",
+    "resolved": [
+      "test survival cleanup uses private cooperative token instead of bare numeric PID",
+      "browser shutdown cancels and joins actual worker cleanup before returning",
+      "transport fixture expects exact graceful EOF0 per source; malformed/truncated EOF remains error"
+    ],
+    "staged_tree": "d1adea130dfb09424a9e63ff762805ffc92dc75c",
+    "final_delta": "review-status metadata only"
+  },
+  "accepted_issue_rows": {
+    "issue56": [
+      "Desktop Entry",
+      "inherited icon resolver handoff"
+    ],
+    "issue67": [
+      "portable installed commands and directory metadata",
+      "reuse/present"
+    ],
+    "whole_issues_closed": []
+  },
+  "performance": {
+    "reference": "m5-performance-xdg-20261028",
+    "after_merged295": 2,
+    "next_runtime_merge": 3,
+    "comparison_due": false
+  },
+  "limits": [
+    "No full six-target/compiler/install/default-X qualification",
+    "No native-CPU sanitizer, hardware/assistive or release acceptance",
+    "Startup notification, shared optional bus/FileManager1 and wider installed profiles remain open;257/258 parked"
+  ]
+}

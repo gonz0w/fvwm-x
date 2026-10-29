@@ -7,8 +7,8 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [portable application roles](#r1-portable-application-roles--2026-10-28)
-follows merged PR294 under #56/#67. Desktop-entry consumer acceptance is complete;
+Current feature checkpoint: [selected-file application handoff](#r1-selected-file-application-handoff--2026-10-28)
+follows merged PR295 under #56/#67. Desktop-entry consumer acceptance is complete;
 remaining role/service/platform acceptance stays open with the focused cadence.
 
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
@@ -452,11 +452,79 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 selected-file application handoff — 2026-10-28
+
+Owner: Cam; `codex/r1-application-launch-protocol`; #56 with portable #67
+consumer adoption. Base merged PR295
+`142fe12803082c647d59278a13df24da29a917ba`. Status: implemented; focused verification and separate final integrated review passed. Candidate ready for review; merge pending. Selected before
+implementation; [provider, MIME and ownership contract](decisions/SELECTED-FILE-APPLICATIONS-2026-10-28.md) frozen for implementation.
+
+Finite outcomes: (1) general read-only known-MIME association/default resolution
+through the existing directory policy/acquisition, with explicit alias/subclass
+specificity; (2) bounded optional existing file(1) identification for one captured
+regular file in isolated work; (3) native selected-file Open with chooser using
+fresh identity/type/handler validation, literal file/URI arguments and parent
+folder cwd; (4) matching typed-client discovery/launch/close and visible failures;
+(5) explicit classifier child ownership/cancellation with independent application
+handoff lifetime. Preserve the current-folder F12 workflow and existing ordinary
+Open/navigation/custom actions. No new dependency or resident is selected.
+
+Acceptance: one selected current regular file, no symlink/special-file or mixed
+set launches. Missing classifier, malformed/oversized/timed-out results, changed
+file/type/metadata and stale choices refuse visibly; refresh can recover. A
+changed default cannot substitute an explicit handler. MIME lookup uses existing
+XDG roots and bounded read-only installed metadata; limits and most-specific to
+least-specific fallback are explicit. No association/default writes. Capture raw
+path bytes through the existing snapshot/base64 contracts and expand in the
+worker. New non-role work, selection/target changes and view retirement invalidate
+selected-file capture. Preserve matching folder choice behavior.
+
+Classifier child work must have an explicit owned termination/reap boundary;
+parent worker cancellation alone is not proof of descendant retirement.
+Successful launched applications must retain their own lifetime. Use existing
+process helpers/patterns and record concrete cancellation/timeout/normal-exit
+results. Keep authoritative X state single-threaded and filesystem/classifier
+work off that loop.
+
+[Focused results](verification/VERIFICATION-2026-10-28-SELECTED-FILE-APPLICATIONS.md):
+composed final Go normal/race 747 cases in five packages each; floor 680/3; vet,
+affected nine-step build, native request unit and 18 CLI cases pass. Three themes
+pass 20 feature groups each with nine inspected captures. Slate native Close and
+actual MFL transport-loss checks prove held-classifier ownership before browser
+exit. Two targeted fresh BSD ARM64 profiles pass their actual provider probes and
+20 worker/classifier/group records each. Storage/setup/oracle failures stay explicit;
+source/fixture review fixes are resolved and only affected work repeats.
+The 810-member host archive is verified, private fixture cleanup complete and
+owned labs stopped; wider release coverage remains open.
+
+One coherent focused Linux incremental unit/race/worker/provider/native checkpoint
+covers this combined feature. Add early affected BSD provider/process checks,
+not every compiler/install/OS matrix. Capture Slate/Dune/enlarged Classic for new
+UI. Independent expected cases precede implementation; keep all failed controls
+and exact source-bound evidence. Broader MIME/database/startup-notification,
+FileManager1/shared-bus, icon/installed-platform and release acceptance stay open;
+#257/#258 remain parked. Only actually completed whole criteria may close issues.
+Performance reference `m5-performance-xdg-20261028` is 2/5 after PR295, 3/5 on
+this next runtime merge; no comparison is due.
+
+Accepted-row reconciliation: #56's inherited icon resolver handoff is complete
+through merged PR263 plus PR293/294 consumer parity; #215's separate asset/profile
+work remains open. #67's portable installed folder/reveal/properties operations
+and directory-role metadata row is complete through PR167/171/292/295. These are
+operations of the documented installed browser, not three new executables.
+[Icon evidence](verification/VERIFICATION-2026-10-26-NAMED-MENU-ICONS.md),
+[portable target evidence](verification/VERIFICATION-2026-10-23-FILE-BROWSER-HANDOFF.md),
+[installed desktop consumer](verification/VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md)
+and [directory role evidence](verification/VERIFICATION-2026-10-28-APPLICATION-ROLES.md)
+retain their source/profile limits. This reconciles completed functional rows;
+whole #56/#67 and their wider installed/service/support rows remain open.
+
+
 ## R1 portable application roles — 2026-10-28
 
 Owner: Cam; `codex/r1-application-roles`; XDG-01 #56, related portable
 FILE-INTEGRATION-01 #67. Base merged PR294
-`32e0727aab28615a73910d67ab6e8d39e7651b99`. Status: four related outcomes implemented; focused verification and separate final integrated review passed. Review candidate ready; merge remains pending. Selected before implementation: read-only directory
+`32e0727aab28615a73910d67ab6e8d39e7651b99`. Status: merged in PR295 as `142fe12803082c647d59278a13df24da29a917ba`; canonical reviewed tree/signature and actual-author DCO verified. Branch retired and Project Done. Four related outcomes implemented; focused verification and separate final integrated review passed. Selected before implementation: read-only directory
 application/default discovery; an explicit current-folder native chooser; validated
 literal handoff; and the same captured admission/results for typed browser clients.
 The first #56 Desktop Entry row is complete through verified PR293/294. No whole
@@ -521,8 +589,8 @@ Man-page renders and repository checks retain explicit lint/host-tool limits.
 No whole issue closes. Continue with the remaining #56 MIME/startup and #67
 adapter/support criteria after this reviewed checkpoint; do not extend this batch.
 
-The current performance reference is `m5-performance-xdg-20261028`, 1/5 after
-PR294; the next runtime merge reaches 2/5. No comparison is due. Use one combined
+The current performance reference is `m5-performance-xdg-20261028`, 2/5 after
+PR295; the next runtime merge reaches 3/5. No comparison is due. Use one combined
 affected Linux checkpoint and targeted platform checks only for changed contracts;
 new UI gets Slate/Dune/enlarged Classic screenshots. Wider release gates remain.
 
@@ -3956,7 +4024,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | STANDARDS-01 | P1 / fixed protocol inventory complete; wider audit open | A first-icon WM_STATE zero-XID defect is reproduced and corrected in the atom/expose batch; real first/reused title XID checks and combined 1291-file qualification pass. Maintain requirement-level specification/revision/owner/test/profile/evidence coverage using [STANDARDS.md](STANDARDS.md). The [forty-row protocol register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md) completes root/window/selection requirement inventory and owner handoffs, retaining historical evidence boundaries; other standards areas remain queued. Continue bounded inventories in stage 2; map independent fixtures and CI with VERIFY/COMPAT, reuse passing scoped evidence and assign real gaps to their owners. Required adopted clauses and accurate advertised capabilities are release gates; no blanket compliance badge or endless audit restart. See acceptance below. |
 | EWMH-01 | P1 / bounded desktop publication qualified; broader geometry/roles open | Reconcile ICCCM 2.0/EWMH 1.5 implementation, advertised atoms and independent-client evidence. Classify required vs optional hints, then implement bounded agreed gaps such as partial struts/multi-monitor fullscreen and protocol responsiveness with MONITOR/INPUT/DRAW/DATA owners. No speculative defect claim or parallel geometry authority. The [stage3 audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) independently checks63 advertised atoms, identity/client order/extents and records the reproduced initial empty-work-area gap. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), R01–R12/W01–W12, now separates exact historical checks from unqualified semantics and defines desktop/viewport/work-area acceptance. The bounded [desktop-publication checkpoint](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md) qualifies pager admission, count adoption/refusal and matching dependent arrays. Reserved-edge/dock geometry, multi-monitor root authority and broader clauses remain open; stage5 follows interaction/publication contracts. |
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
-| XDG-01 | P2 / queued interoperability | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
+| XDG-01 | P2 / In progress; Desktop Entry and icon handoff rows complete; MIME/startup/platform acceptance open | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
 | SETTINGS-01 | P2 / queued shared preferences | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |

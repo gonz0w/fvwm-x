@@ -191,6 +191,7 @@ func performDirectoryRole(request workRequest) (result workResult) {
 	}
 	result.RoleFolderValid = true
 	command := exec.Command(argv[0], argv[1:]...)
+	detachApplication(command)
 	command.Dir = cwd
 	if err := command.Start(); err != nil {
 		result.Error = "Could not start folder application"

@@ -12,7 +12,6 @@ import (
 	"io"
 	"os/exec"
 	"strings"
-	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
 )
@@ -27,6 +26,8 @@ type workRequest struct {
 	ID              string              `json:"id,omitempty"`
 	IDs             []string            `json:"ids,omitempty"`
 	Program         string              `json:"program,omitempty"`
+	RoleMIME        string              `json:"role_mime,omitempty"`
+	ObservedMIME    string              `json:"observed_mime,omitempty"`
 	RoleID          string              `json:"role_id,omitempty"`
 	RoleFingerprint string              `json:"role_fingerprint,omitempty"`
 }
@@ -38,6 +39,8 @@ type workResult struct {
 	Snapshot        *filemodel.Snapshot  `json:"snapshot,omitempty"`
 	Error           string               `json:"error,omitempty"`
 	ActionCount     int                  `json:"action_count,omitempty"`
+	FileRoles       *fileRoleResult      `json:"file_roles,omitempty"`
+	RoleFileValid   bool                 `json:"role_file_valid,omitempty"`
 	Roles           *directoryRoleResult `json:"directory_roles,omitempty"`
 	RoleFolderValid bool                 `json:"role_folder_valid,omitempty"`
 }
@@ -60,6 +63,9 @@ func decode(data []byte, value any) error {
 func perform(request workRequest) (result workResult) {
 	result.Schema = 1
 	result.Status = "failed"
+	if request.Operation == "file-roles" || request.Operation == "file-role-launch" {
+		return performFileRole(request)
+	}
 	if request.Operation == "directory-roles" || request.Operation == "directory-role-launch" {
 		return performDirectoryRole(request)
 	}
@@ -142,6 +148,7 @@ func launch(request workRequest, args []string) (result workResult) {
 		return
 	}
 	command := exec.Command(request.Program, args...)
+	detachApplication(command)
 	command.Dir = string(request.Snapshot.Path)
 	if err := command.Start(); err != nil {
 		result.Error = "Could not start the configured application"
@@ -177,29 +184,14 @@ func startWorker(ctx context.Context, executable string, request workRequest) wo
 	if err != nil || len(data) > filemodel.MaxWire {
 		return workResult{Schema: 1, Status: "failed", Error: "File request exceeds limit"}
 	}
-	command := exec.CommandContext(ctx, executable, "--worker")
+	command := exec.Command(executable, "--worker")
 	command.Stdin = bytes.NewReader(data)
-	command.WaitDelay = time.Second
-	stdout, err := command.StdoutPipe()
-	if err != nil {
-		return workResult{Schema: 1, Status: "failed", Error: "Worker output is unavailable"}
-	}
-	if err := command.Start(); err != nil {
-		if ctx.Err() != nil {
-			return workResult{Schema: 1, Status: "cancelled", Error: "File operation cancelled or timed out"}
-		}
-		return workResult{Schema: 1, Status: "failed", Error: "Could not start file worker"}
-	}
-	data, readErr := io.ReadAll(io.LimitReader(stdout, filemodel.MaxWire+1))
-	if readErr != nil || len(data) > filemodel.MaxWire {
-		command.Process.Kill()
-	}
-	err = command.Wait()
+	data, err = ownedProcessOutput(ctx, command, filemodel.MaxWire, true)
 	if ctx.Err() != nil {
 		return workResult{Schema: 1, Status: "cancelled", Error: "File operation cancelled or timed out"}
 	}
 	var result workResult
-	if err != nil || readErr != nil || decode(data, &result) != nil || result.Schema != 1 {
+	if err != nil || decode(data, &result) != nil || result.Schema != 1 {
 		return workResult{Schema: 1, Status: "failed", Error: "File worker failed or returned invalid data"}
 	}
 	return result

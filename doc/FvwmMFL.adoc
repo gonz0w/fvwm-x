@@ -478,7 +478,7 @@ request {"version":1,"id":"selected","method":"query","resource":"files","provid
 Discovery returns `version: 1`, `query_only: false`, `file_mutation: false`, `provider_limit: 8` and
 `providers`, each with `provider` and `busy`. An empty list means no registered
 browser. Targeted queries require `provider` and `scope`: `state`, `items`,
-`selection`, `properties` or `directory_roles`. Read-only connections may query; registration is
+`selection`, `properties`, `directory_roles` or `file_roles`. Read-only connections may query; registration is
 refused in read-only mode. This is same-user metadata transport, not an X11 or
 same-user security boundary. Use matching browser/MFL builds.
 
@@ -500,6 +500,14 @@ action or replacing its native windows. Draft input and file content are absent.
   directories, links, special entries and decimal-string `regular_file_bytes`.
   `recursive` and `links_followed` are false. Folder contents, link targets and
   file content are not read. An empty selection is unavailable.
+* `file_roles` pages current selected-file choices without starting discovery.
+  In addition to choice fields, it reports `target_id`, `target_label`, observed
+  `mime` and `canonical_mime`. The target label is bounded display text. Its
+  choice generation is distinct from the outer browser generation. Missing or
+  invalid classification and metadata produce failed correlated work and chooser
+  details. A missing, multiple or non-regular selection returns
+  `selection_unavailable`; stale choice generations return `stale_choices`, and
+  retired choices return `choices_unavailable`.
 * `directory_roles` pages the currently published folder-application choices;
   querying does not start discovery. It returns `status`, `choice_generation`,
   `default_id`, `count`, `detail`, and `items`, `total`, `offset` and
@@ -642,6 +650,15 @@ browser's configured opener. Symlink/special-file actions remain unavailable.
 |`directory-roles-close`
 |`{}`
 |Close the folder-application chooser.
+|`file-roles`
+|`{}`
+|Identify the one selected regular file and discover its application choices.
+|`file-role-launch`
+|`{"generation":"CHOICE_GENERATION_32_HEX","id":"CHOICE_32_HEX"}`
+|Revalidate and hand the captured file to the explicitly selected choice.
+|`file-roles-close`
+|`{}`
+|Close the selected-file application chooser.
 |`custom`
 |`{"index":0}` (integer 0–3)
 |Revalidate the complete captured selection, then pass its literal paths to that
@@ -706,6 +723,10 @@ choice generation and ID in `values`. Changed folder, application or association
 is refused until discovery is refreshed; a changed default cannot redirect the
 explicit choice. RootPath revalidation is an observation, not a descriptor lease
 against a later rename. See *fvwm-file-browser*(1) for role and launch semantics.
+File-role launch likewise requires both generations. A changed file identity
+requires main-browser refresh, reselection and a new chooser; chooser refresh
+updates metadata and type only while that identity remains current. Selection
+or target changes, other file work and view retirement invalidate its capture.
 Operation state and worker occupancy also invalidate generation tokens.
 
 One owned worker slot is available. Another worker request returns `busy` while

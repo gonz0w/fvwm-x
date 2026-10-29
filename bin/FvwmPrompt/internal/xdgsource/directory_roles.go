@@ -50,29 +50,43 @@ func roleText(value string, limit int) bool {
 	return len(value) <= limit && utf8.ValidString(value) && !strings.ContainsRune(value, 0)
 }
 
-func directoryHandler(id, path string, data []byte, entry *xdgmenu.Desktop, options DirectoryRoleOptions) (DirectoryHandler, bool, bool, error) {
+func applicationHandler(id, path string, data []byte, entry *xdgmenu.Desktop, options DirectoryRoleOptions, graph *xdgmenu.MIMETypeGraph, context string) (DirectoryHandler, []string, bool, error) {
 	var handler DirectoryHandler
 	hidden, err := entry.Boolean("Desktop Entry", "Hidden")
 	if err != nil {
-		return handler, false, false, err
+		return handler, nil, false, err
 	}
 	if hidden {
-		return handler, false, false, nil
+		return handler, nil, false, nil
 	}
 	typeName, err := entry.String("Desktop Entry", "Type")
 	if err != nil {
-		return handler, false, false, err
+		return handler, nil, false, err
 	}
 	if typeName != "Application" {
-		return handler, false, false, nil
+		return handler, nil, false, nil
 	}
 	types, err := entry.List("Desktop Entry", "MimeType")
 	if err != nil {
-		return handler, false, false, err
+		return handler, nil, false, err
 	}
-	declares := false
+	var declares []string
+	seenTypes := make(map[string]bool)
 	for _, value := range types {
-		declares = declares || strings.EqualFold(value, xdgmenu.DirectoryRoleMIME)
+		if graph == nil {
+			if strings.EqualFold(value, xdgmenu.DirectoryRoleMIME) {
+				declares = []string{xdgmenu.DirectoryRoleMIME}
+			}
+			continue
+		}
+		canonical, err := graph.Canonical(value)
+		if err != nil {
+			return handler, nil, false, err
+		}
+		if !seenTypes[canonical] {
+			declares = append(declares, canonical)
+			seenTypes[canonical] = true
+		}
 	}
 	locales := xdgmenu.LocalePreferences(options.Environment)
 	name, err := entry.Localized("Desktop Entry", "Name", locales)
@@ -136,6 +150,10 @@ func directoryHandler(id, path string, data []byte, entry *xdgmenu.Desktop, opti
 		digest.Write([]byte(value))
 		digest.Write([]byte{0})
 	}
+	if context != "" {
+		digest.Write([]byte(context))
+		digest.Write([]byte{0})
+	}
 	digest.Write(data)
 	handler = DirectoryHandler{ID: id, Name: name, Icon: icon, DesktopPath: path, Exec: rawExec, WorkingDir: directory,
 		Fingerprint: hex.EncodeToString(digest.Sum(nil)), Terminal: terminal}
@@ -179,82 +197,13 @@ func (s *Source) DirectoryRoles(options DirectoryRoleOptions) (DirectoryRoleResu
 		references -= count
 		files = append(files, xdgmenu.DirectoryMIMEAppsFile{DataRank: location.DataRank, DesktopSpecific: location.DesktopSpecific, Values: values})
 	}
-	owners := []xdgmenu.DirectoryMIMEEntry{}
-	handlers, seen := make(map[string]DirectoryHandler), make(map[string]bool)
-	candidates := 0
-	for rank, root := range paths.Data {
-		root = filepath.Join(root, "applications")
-		// Only an absent root is an empty inventory. Once walking starts,
-		// a disappearing nested directory/read failure must not turn into a
-		// successful partial inventory by swallowing its ErrNotExist.
-		info, err := os.Stat(root)
-		if errors.Is(err, fs.ErrNotExist) {
-			continue
-		}
-		if err != nil {
-			return result, err
-		}
-		if !info.IsDir() {
-			return result, errors.New("directory role application root is not a directory")
-		}
-		readOwner := func(path string) error {
-			relative, err := filepath.Rel(root, path)
-			if err != nil {
-				return err
-			}
-			id, err := xdgmenu.DesktopID(filepath.ToSlash(relative))
-			if err != nil || !roleText(id, xdgmenu.MaxDirectoryRoleIDBytes) || strings.ContainsFunc(id, func(c rune) bool { return c < 32 || c == 127 }) {
-				return errors.New("invalid directory role desktop ID")
-			}
-			if seen[id] {
-				return nil
-			}
-			if references == 0 {
-				return errors.New("directory role desktop references exceed limits")
-			}
-			references--
-			seen[id] = true
-			data, err := s.readLimited(path, MaxDirectoryRoleSourceBytes)
-			if err != nil {
-				return err
-			}
-			entry, err := xdgmenu.ParseDesktop(data)
-			if err != nil {
-				return fmt.Errorf("directory application %s: %w", path, err)
-			}
-			handler, declares, eligible, err := directoryHandler(id, path, data, entry, options)
-			if err != nil {
-				return fmt.Errorf("directory application %s: %w", path, err)
-			}
-			owners = append(owners, xdgmenu.DirectoryMIMEEntry{ID: id, Rank: rank, Declares: declares, Eligible: eligible})
-			if eligible {
-				handlers[id] = handler
-			}
-			return nil
-		}
-		var filenames []string
-		err = s.walkLimited(root, root, 0, MaxDirectoryRoleDepth, make(map[string]bool), func(path string) error {
-			candidates++
-			if candidates > xdgmenu.MaxDirectoryRoleCandidates {
-				return errors.New("too many directory role desktop candidates")
-			}
-			if err := s.charge(0, len(path)); err != nil {
-				return err
-			}
-			filenames = append(filenames, path)
-			return nil
-		})
-		if err != nil {
-			return result, err
-		}
-		// Match the existing menu pool's lexical ownership for ambiguous
-		// flattened IDs inside one root, independently of traversal order.
-		sort.Strings(filenames)
-		for _, path := range filenames {
-			if err := readOwner(path); err != nil {
-				return result, err
-			}
-		}
+	allOwners, handlers, err := s.roleInventory(paths, options, nil, "", &references)
+	if err != nil {
+		return result, err
+	}
+	owners := make([]xdgmenu.DirectoryMIMEEntry, 0, len(allOwners))
+	for _, owner := range allOwners {
+		owners = append(owners, xdgmenu.DirectoryMIMEEntry{ID: owner.ID, Rank: owner.Rank, Declares: len(owner.Types) != 0, Eligible: owner.Eligible})
 	}
 	resolution, err := xdgmenu.ResolveDirectoryMIMEApps(files, owners)
 	if err != nil {
@@ -278,4 +227,96 @@ func (s *Source) DirectoryRoles(options DirectoryRoleOptions) (DirectoryRoleResu
 	}
 	result.DefaultID = resolution.DefaultID
 	return result, nil
+}
+
+// applicationRoleOwner retains first-ID ownership even for Hidden and otherwise
+// ineligible desktop entries. Declarations are canonical only for generic roles.
+type applicationRoleOwner struct {
+	ID       string
+	Rank     int
+	Types    []string
+	Eligible bool
+}
+
+// roleInventory is the single desktop walk for both exact directory and generic
+// MIME jobs. Each effective desktop file is acquired and parsed once per call.
+func (s *Source) roleInventory(paths xdgmenu.SearchPaths, options DirectoryRoleOptions, graph *xdgmenu.MIMETypeGraph, context string, references *int) ([]applicationRoleOwner, map[string]DirectoryHandler, error) {
+	owners := []applicationRoleOwner{}
+	handlers, seen := make(map[string]DirectoryHandler), make(map[string]bool)
+	candidates := 0
+	for rank, root := range paths.Data {
+		root = filepath.Join(root, "applications")
+		// Only an absent root is an empty inventory. Once walking starts,
+		// a disappearing nested directory/read failure must not turn into a
+		// successful partial inventory by swallowing its ErrNotExist.
+		info, err := os.Stat(root)
+		if errors.Is(err, fs.ErrNotExist) {
+			continue
+		}
+		if err != nil {
+			return nil, nil, err
+		}
+		if !info.IsDir() {
+			return nil, nil, errors.New("directory role application root is not a directory")
+		}
+		readOwner := func(path string) error {
+			relative, err := filepath.Rel(root, path)
+			if err != nil {
+				return err
+			}
+			id, err := xdgmenu.DesktopID(filepath.ToSlash(relative))
+			if err != nil || !roleText(id, xdgmenu.MaxDirectoryRoleIDBytes) || strings.ContainsFunc(id, func(c rune) bool { return c < 32 || c == 127 }) {
+				return errors.New("invalid directory role desktop ID")
+			}
+			if seen[id] {
+				return nil
+			}
+			if *references == 0 {
+				return errors.New("directory role desktop references exceed limits")
+			}
+			(*references)--
+			seen[id] = true
+			data, err := s.readLimited(path, MaxDirectoryRoleSourceBytes)
+			if err != nil {
+				return err
+			}
+			entry, err := xdgmenu.ParseDesktop(data)
+			if err != nil {
+				return fmt.Errorf("directory application %s: %w", path, err)
+			}
+			handler, declares, eligible, err := applicationHandler(id, path, data, entry, options, graph, context)
+			if err != nil {
+				return fmt.Errorf("directory application %s: %w", path, err)
+			}
+			owners = append(owners, applicationRoleOwner{ID: id, Rank: rank, Types: declares, Eligible: eligible})
+			if eligible {
+				handlers[id] = handler
+			}
+			return nil
+		}
+		var filenames []string
+		err = s.walkLimited(root, root, 0, MaxDirectoryRoleDepth, make(map[string]bool), func(path string) error {
+			candidates++
+			if candidates > xdgmenu.MaxDirectoryRoleCandidates {
+				return errors.New("too many directory role desktop candidates")
+			}
+			if err := s.charge(0, len(path)); err != nil {
+				return err
+			}
+			filenames = append(filenames, path)
+			return nil
+		})
+		if err != nil {
+			return nil, nil, err
+		}
+		// Match the existing menu pool's lexical ownership for ambiguous
+		// flattened IDs inside one root, independently of traversal order.
+		sort.Strings(filenames)
+		for _, path := range filenames {
+			if err := readOwner(path); err != nil {
+				return nil, nil, err
+			}
+		}
+	}
+	return owners, handlers, nil
 }

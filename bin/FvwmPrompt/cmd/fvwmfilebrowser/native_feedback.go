@@ -205,6 +205,9 @@ func (b *browser) nativeFeedback(change nativeChange) (bool, error) {
 	if err == nil {
 		err = b.model.SelectNativeView(b.model.Generation, entryIDs(b.viewEntries), packet)
 	}
+	if err == nil {
+		err = b.retireStaleFileRoles()
+	}
 	b.feedbackError = ""
 	if err != nil {
 		b.feedbackError = err.Error()

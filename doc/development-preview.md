@@ -38,6 +38,35 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Choose an application for a selected file
+
+Select one regular file and press Alt-O. The chooser shows its observed MIME
+type, default and alternatives. Enter launches the selected application, F5
+refreshes the choices and Escape closes the chooser. Identification uses an
+existing optional `file(1)`; it is not installed automatically and the chooser
+does not write defaults. If the file identity changes, refresh the main browser,
+select it again and reopen Alt-O.
+
+Slate dark: the observed type and selected default appear with an alternative.
+
+![Slate selected-file chooser with observed MIME type and default](screenshots/selected-file-slate-dark.png)
+
+Dune light: a changed handler is refused, with refresh guidance in browser status.
+
+![Dune selected-file chooser reporting a changed handler](screenshots/selected-file-dune-light.png)
+
+Enlarged Classic: choices appear again after refresh.
+
+![Enlarged Classic selected-file chooser after refresh](screenshots/selected-file-classic-large.png)
+
+The synthetic path and failure detail are shortened in the chooser. These
+unmodified captures and their distinct source identities are in the
+[manifest](screenshots/selected-file-manifest.json); the
+[checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-28-SELECTED-FILE-APPLICATIONS.md)
+records the workflows and limits. Panel counters are whole-guest values, not a
+benchmark. Broader application-role, file integration and release qualification
+remain in progress.
+
 ## Choose an application for the current folder
 
 In the optional browser, F12 opens a chooser for the displayed folder. It reads

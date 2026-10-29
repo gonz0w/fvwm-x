@@ -294,6 +294,9 @@ func (b *browser) update() error {
 			return b.render()
 		}
 	}
+	if err := b.retireStaleFileRoles(); err != nil {
+		return err
+	}
 	if err := b.updateLayout(); err != nil {
 		return err
 	}
@@ -315,6 +318,9 @@ func (b *browser) update() error {
 	return err
 }
 func (b *browser) show() (err error) {
+	if err = b.retireStaleFileRoles(); err != nil {
+		return err
+	}
 	if err = b.ensureBindings(); err != nil {
 		return err
 	}

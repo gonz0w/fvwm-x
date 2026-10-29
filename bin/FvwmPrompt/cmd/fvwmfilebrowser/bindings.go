@@ -50,6 +50,9 @@ func (b *browser) observeIntent(serial uint64) error {
 }
 
 func (b *browser) invalidateIntent() error {
+	if b.fileRoles != nil {
+		b.fileRoles.chooser.collectionCurrent = false
+	}
 	if b.roles != nil {
 		b.roles.collectionCurrent = false
 	}
@@ -62,6 +65,9 @@ func (b *browser) invalidateIntent() error {
 // Connection loss and destruction retire both lifetimes. A replacement process
 // registers a fresh provider and full view; no ticket or uncertain action replays.
 func (b *browser) closeBindings() {
+	if b.fileRoles != nil {
+		b.fileRoles.chooser.collectionCurrent = false
+	}
 	if b.roles != nil {
 		b.roles.collectionCurrent = false
 	}

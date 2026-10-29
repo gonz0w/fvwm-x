@@ -29,6 +29,7 @@ type directoryRoleView struct {
 	selected                             int
 }
 type directoryRoleCallback struct {
+	file                           bool
 	parent, lifetime, page, ticket uint64
 	action, packet                 string
 }
@@ -137,10 +138,13 @@ func (b *browser) startDirectoryRole(generation, id string) error {
 }
 
 func (b *browser) directoryRoleSummary() map[string]any {
-	if b.roles == nil {
+	return roleViewSummary(b.roles)
+}
+
+func roleViewSummary(view *directoryRoleView) map[string]any {
+	if view == nil {
 		return map[string]any{"status": "closed", "choice_generation": "", "default_id": "", "count": 0}
 	}
-	view := b.roles
 	count, defaultID := 0, ""
 	if view.result != nil {
 		count = len(view.result.Choices)
@@ -155,12 +159,16 @@ func (b *browser) directoryRoleSummary() map[string]any {
 }
 
 func (b *browser) directoryRolePage(query fileQuery, result map[string]any) string {
-	for key, value := range b.directoryRoleSummary() {
+	return roleChoicePage(b.roles, query, result)
+}
+
+func roleChoicePage(view *directoryRoleView, query fileQuery, result map[string]any) string {
+	for key, value := range roleViewSummary(view) {
 		result[key] = value
 	}
 	choices := []directoryRoleChoice{}
-	if b.roles != nil && b.roles.result != nil && b.roles.status == "ready" {
-		choices = b.roles.result.Choices
+	if view != nil && view.result != nil && view.status == "ready" {
+		choices = view.result.Choices
 	}
 	if query.Offset > len(choices) {
 		return "offset_out_of_range"
@@ -171,7 +179,7 @@ func (b *browser) directoryRolePage(query fileQuery, result map[string]any) stri
 	}
 	items := make([]map[string]any, 0, end-query.Offset)
 	for _, choice := range choices[query.Offset:end] {
-		items = append(items, map[string]any{"id": roleToken(choice), "label": displayText(choice.Name, 96), "fingerprint": choice.Fingerprint, "terminal": choice.Terminal, "default": choice.ID == b.roles.result.DefaultID})
+		items = append(items, map[string]any{"id": roleToken(choice), "label": displayText(choice.Name, 96), "fingerprint": choice.Fingerprint, "terminal": choice.Terminal, "default": choice.ID == view.result.DefaultID})
 	}
 	result["items"], result["total"], result["offset"], result["next_offset"] = items, len(choices), query.Offset, nil
 	if end < len(choices) {
@@ -205,7 +213,10 @@ func (b *browser) sendRoleCommands(commands []string) error {
 }
 
 func (b *browser) renderDirectoryRoles() error {
-	view := b.roles
+	return b.renderRoleChooser(b.roles, false, nil, "")
+}
+
+func (b *browser) renderRoleChooser(view *directoryRoleView, file bool, target []byte, mime string) error {
 	if view == nil || !view.visible {
 		return nil
 	}
@@ -215,21 +226,34 @@ func (b *browser) renderDirectoryRoles() error {
 	oldAlias := view.alias
 	view.page++
 	view.lastControl = 0
-	view.alias = fmt.Sprintf("FvwmFiles-%s-roles-%d-%d", b.instance, view.lifetime, view.page)
+	scope, prefix, title, instruction := "roles", "FVWM_FILES_ROLES_1", "Open folder with", "Current folder only; this does not change defaults."
+	if file {
+		scope, prefix, title, instruction = "file-roles", "FVWM_FILES_FILE_ROLES_1", "Open file with", "Selected regular file only; defaults are unchanged."
+	}
+	view.alias = fmt.Sprintf("FvwmFiles-%s-%s-%d-%d", b.instance, scope, view.lifetime, view.page)
 	commands := []string{}
 	if oldAlias != "" {
 		commands = append(commands, "KillModule FvwmForm "+oldAlias, "DestroyModuleConfig "+oldAlias+":*")
 	}
 	line := func(value string) { commands = append(commands, "*"+view.alias+": "+value) }
-	callback := fmt.Sprintf("Echo FVWM_FILES_ROLES_1 %s %d %d %d ", b.instance, b.form, view.lifetime, view.page)
+	callback := fmt.Sprintf("Echo %s %s %d %d %d ", prefix, b.instance, b.form, view.lifetime, view.page)
 	line("UIScale monitor")
-	line(`Title "Open folder with"`)
+	line(`Title "` + title + `"`)
 	line("Line left")
-	line(`Text "Current folder only; this does not change defaults."`)
+	line(`Text "` + instruction + `"`)
 	line("Line left")
-	line(`Label path 42 "` + displayText(string(view.snapshot.Path), 100) + `"`)
+	path := string(view.snapshot.Path)
+	if file {
+		path = string(target)
+	}
+	line(`Label path 42 "` + displayText(path, 100) + `"`)
 	line("LabelViewport path")
 	line("Line left")
+	if file {
+		line(`Label mime 42 "` + displayText("Observed MIME: "+mime, 100) + `"`)
+		line("LabelViewport mime")
+		line("Line left")
+	}
 	line(`Label status 42 "` + displayText(view.status+": "+view.detail, 120) + `"`)
 	line("LabelViewport status")
 	line("Line left")
@@ -272,8 +296,12 @@ func (b *browser) renderDirectoryRoles() error {
 }
 
 func parseDirectoryRoleCallback(message, instance string) (directoryRoleCallback, bool) {
+	return parseRoleCallback(message, instance, "FVWM_FILES_ROLES_1")
+}
+
+func parseRoleCallback(message, instance, prefix string) (directoryRoleCallback, bool) {
 	p := strings.Fields(message)
-	if len(message) > 800 || len(p) != 8 || p[0] != "FVWM_FILES_ROLES_1" || p[1] != instance {
+	if len(message) > 800 || len(p) != 8 || p[0] != prefix || p[1] != instance {
 		return directoryRoleCallback{}, false
 	}
 	parent, ok := canonicalDecimal(p[2])
@@ -307,7 +335,12 @@ func (b *browser) routeDirectoryRole(message string) {
 	if strings.HasPrefix(message, "FVWM_FILES_ROLES_SYNC "+b.instance+" ") && b.roleAckReplies != nil {
 		b.roleAckReplies.offer(message, message)
 	}
-	if value, ok := parseDirectoryRoleCallback(message, b.instance); ok {
+	value, ok := parseDirectoryRoleCallback(message, b.instance)
+	if !ok {
+		value, ok = parseRoleCallback(message, b.instance, "FVWM_FILES_FILE_ROLES_1")
+		value.file = ok
+	}
+	if ok {
 		select {
 		case b.roleEvents <- value:
 		default:

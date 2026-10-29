@@ -131,7 +131,9 @@ A PR may merge with focused checks passed and integration explicitly pending;
 track deferred gates and do not report them as successful execution.
 
 Record source/profile scope, actual checks, retained failures and remaining gaps
-in a dated [verification report](verification/README.md). Do not mark audit,
+in a dated [verification report](verification/README.md). Retain results in Git;
+raw logs/builds/stages follow the [retention rule](WORKFLOW.md#current-artifacts-and-retention).
+Do not mark audit,
 candidate tooling, native CI, physical hardware or third-party themes complete
 without the corresponding evidence.
 

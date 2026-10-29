@@ -58,8 +58,9 @@ scope. Preserve the existing coherent-batch and risk-based cadence below.
 
 Group related ownership/error/unwind, dependency, predecessor and tool changes.
 Choose finite source/behavior acceptance at pickup rather than reopening a whole
-audit. No age-based deletion, broad mechanical rename or inferred service/library
-replacement. Serious reproduced failures still advance with their concrete
+audit. No source deletion based only on age, broad mechanical rename or inferred
+service/library replacement. Generated-artifact cleanup follows the retention
+rule below. Serious reproduced failures still advance with their concrete
 regression and owner. No new mandatory GUI toolkit or core-state authority.
 
 User direction, 2026-10-23: use [larger related cleanup batches and risk-based
@@ -228,16 +229,46 @@ own harness changes; use affected harness tests during development.
 Docs/status-only corrections use
 repository/link/branch-diff checks and retain unchanged runtime evidence.
 
-User direction, 2026-10-20: do not accumulate completed guest test-data
-copies. After a canonical host capture passes full archive integrity and
-payload/identity validation, retire its owner-controlled guest capture and
-duplicate archive with exact file/hash and path guards. Keep the canonical
-host evidence referenced by reports, source trees, reusable incremental builds,
-install stages (including performance references), VM disks and other owners'
-work. Failed
-attempts must remain represented in canonical evidence before guest retirement.
-Record what was removed and the preserved canonical identity; a new PR does not
-require keeping another guest copy or repeating tests.
+### Current artifacts and retention
+
+Owner direction, 2026-10-28: keep what the next run needs, rather than a history
+of complete builds and test data. This [decision](decisions/ARTIFACT-RETENTION-2026-10-28.md)
+supersedes earlier blanket preservation of source copies, builds, install stages,
+VM checkpoints and canonical host archives. It applies on host and guests.
+
+- Keep one reusable source/build workspace per active target/compiler/feature
+  profile, plus a current install stage when the next check or run needs it.
+  Reuse incremental builds; a PR does not need a new full tree. Inactive profiles
+  and superseded stages can go. Keep required SDKs/dependency caches for reuse;
+  retire obsolete versions when no selected profile needs them.
+- Keep the current review/qualification evidence and the smallest useful failure
+  reproducer or diagnostic logs for unresolved work. Keep only the runnable
+  baseline, assets and input receipts needed by the next performance comparison;
+  release its predecessor once the replacement is verified. An older build needs
+  a named current reason, not merely a past PR number.
+- Keep compact versioned reports with source/profile identity, commands, results,
+  failures/skips and limits. Keep published screenshots. After review or diagnosis
+  ends, raw captures, traces, logs, source tarballs, archives and duplicate guest
+  copies can go when no current acceptance depends on them. Full archival and
+  file-by-file payload verification are not prerequisites for discarding unneeded
+  generated data. Verify any copy that remains necessary before deleting its sole
+  original. Record retired raw evidence as retired; a hash is not an available log.
+
+At checkpoint handoff, record only the retained paths, revision/profile, reason
+and next action in the owning work record or a small local receipt. Remove a
+retention reason when its review, failure, comparison or qualification finishes.
+Before the next build, retire superseded owned artifacts instead of adding space
+or making more copies. Summarize paths and space recovered in that receipt.
+
+Before removal, check exact paths, ownership, active processes and outstanding
+references. Preserve dirty/uncommitted source, another owner's resources and
+unknown or shared VM disks until ownership and active use are resolved. Retire
+obsolete task-owned VM clones/checkpoints when no current consumer needs them;
+keep the current reusable lab/base image. No broad glob, shared-store prune or
+age-only deletion establishes those facts. Routine retirement of verified
+superseded owned artifacts needs no new exception or per-directory approval;
+actual access controls and other-resource permissions still apply. This rule
+changes storage retention, not test coverage, result history or release gates.
 
 ## Periodic performance comparisons
 
@@ -318,13 +349,12 @@ task, but context management alone does not require installing a framework.
 See [official skills documentation](https://developers.openai.com/plugins/concepts/skills)
 and [plugin architecture](https://developers.openai.com/plugins/concepts/plugins).
 
-For this task's owned OpenBSD QEMU checkpoint evidence, create each new current
-verification tree on /home and retain its conventional source-tree path with a
-symlink. Keep qualified predecessor evidence and guest build trees. If an
-existing current tree must move after a capacity failure, compare every regular
-file hash and mode before removing that original tree; preserve the failed
-attempt and resume only unfinished checks. This storage setup does not change
-source scope, test registration, deadlines or release coverage.
+For owned OpenBSD QEMU checks, place the current verification tree on /home
+when /tmp is constrained; a conventional source-tree path can be a symlink.
+Apply the [current-artifact rule](#current-artifacts-and-retention), including
+to predecessor builds and VM copies. Verify a necessary current tree before
+removing its sole original during a move. Record capacity failures and resume
+only unfinished checks; storage cleanup does not require repeating valid tests.
 
 ## GitHub and local review
 

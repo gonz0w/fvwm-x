@@ -73,10 +73,12 @@ AMD64 default-X fixtures also require the explicit `--openbsd-vga-test` option.
 
 ## Retained local lab examples
 
-The paths below describe the earlier installed lab layout. Its OpenBSD disks
-contain 7.9 and are retained historical evidence, not 8.0 release inputs.
-Use the current recipes above for OpenBSD qualification; the native gate now
-refuses 7.9. Preserve these older disks and their associated builds.
+The paths below describe the earlier installed lab layout, not an inventory of
+resources that must still exist. Its OpenBSD 7.9 disks are obsolete qualification
+inputs; use the current recipes above. Retire old owned disks/builds when no
+current work needs them, after checking ownership and use under the
+[retention rule](WORKFLOW.md#current-artifacts-and-retention). Historical result
+reports remain in Git; keeping those reports does not require keeping the VMs.
 
 The verification images, private VM key, environment records, and test
 archives are under the ignored `builddir/qemu-bsd/`. Official image SHA256
@@ -181,10 +183,12 @@ python3 tests/run_bsd_default_x.py --server-only --repeat 8 \
 ```
 
 Each attempt has its own result and authentication. One failure fails the
-aggregate; later successes retain their own evidence. The updated-image
-comparison uses signed system updates and an explicit verified reboot in a
-fresh owned image. It preserves retained guests, earlier failed evidence and
-the configured default driver. No FVWM configuration changes are needed.
+aggregate; retain each attempt's result and the diagnostic logs needed for the
+current review or unresolved failure. The updated-image comparison uses signed
+system updates and an explicit verified reboot in a fresh owned image. Preserve
+other owners' guests and the configured default driver; retire superseded owned
+images and raw captures under the retention rule. No FVWM configuration changes
+are needed.
 
 To check the installed desktop settings controller on that authenticated server,
 first stage the existing build under `builddir-bsd/install-stage`, then run:

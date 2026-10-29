@@ -262,8 +262,11 @@ or use a session bus. Default IDs must name installed associated usable
 applications; unavailable defaults fall through in order. Menu-only visibility
 settings such as NoDisplay do not disqualify directory handlers. Hidden desktop
 entries still mask lower-priority copies. Missing optional sources are empty;
-malformed, unreadable or over-limit sources report failure rather than an
-invented default. A missing executable, terminal or working directory makes a
+malformed desktop entries are rejected individually with a warning, so a valid
+different application can remain available. A rejected entry still masks a
+lower-precedence file with the same desktop ID. Permission-denied optional
+settings are skipped; malformed settings, other read failures and exceeded
+source/work limits still fail the lookup rather than inventing a default. A missing executable, terminal or working directory makes a
 handler unavailable; a bus-only entry without Exec is unavailable. No eligible
 handler is reported explicitly.
 
@@ -308,7 +311,12 @@ conformance claim. No provider is installed automatically.
 
 Read-only application lookup follows installed MIME aliases and subclasses,
 including implicit text/plain and application/octet-stream parents. A
-more-specific association takes precedence over a parent default. The F12
+more-specific association takes precedence over a parent default. Permission-denied
+optional alias/subclass files are skipped; malformed or cyclic metadata remains
+an error. Both choosers send bounded warnings to the browser's standard error:
+at most 16 details and one omitted-count summary per lookup, with quoted paths
+and messages. These warnings do not change personal preferences or substitute a
+lower file with the same rejected desktop ID. The F12
 current-folder chooser remains an exact inode/directory lookup independent of
 alias and subclass metadata.
 

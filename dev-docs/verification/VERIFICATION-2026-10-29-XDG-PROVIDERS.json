@@ -1,0 +1,397 @@
+{
+  "date": "2026-10-29",
+  "status": "focused checks passed; separate exact candidate review required for PR handoff",
+  "base": "86d9ffd02c44e57746d603d74287afa772d73382",
+  "branch": "codex/r1-xdg-interoperability-closeout",
+  "owners": [
+    56,
+    67
+  ],
+  "source": {
+    "closure": "cc434d9a6ffe661f2c139d95aacd13e412310c6f9295dc7627fb69ad58abda08",
+    "files": 698,
+    "delta": {
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_worker.go": {
+        "sha256": "438cf6418866b9fa37e8c76ce7c07a591109ab137d95942c7fa1cb40276ac592",
+        "bytes": 7272
+      },
+      "bin/FvwmPrompt/internal/xdgsource/application_roles.go": {
+        "sha256": "10e19ddb239e47b2a0f7b802d22c7909e30f4dfec32d7f166f1d2d4ef50daf8a",
+        "bytes": 5885
+      },
+      "bin/FvwmPrompt/internal/xdgsource/directory_roles.go": {
+        "sha256": "e5072f13d3487bc474daf997189720e287066ba26cb3b22665b36a74b41efa7f",
+        "bytes": 12155
+      },
+      "bin/FvwmPrompt/internal/xdgsource/directory_roles_test.go": {
+        "sha256": "827863f819cf2b8fd493b17c4e8a8fb0b50c066dc9f34628cc6c4675cad33b7e",
+        "bytes": 9993
+      },
+      "bin/FvwmPrompt/internal/xdgsource/role_diagnostics.go": {
+        "sha256": "66355479d0f1081727e613c54f7583a46a7a314e9e5afc9a666b4004e712ba47",
+        "bytes": 3569
+      },
+      "bin/FvwmPrompt/internal/xdgsource/role_permission_test.go": {
+        "sha256": "d346a157e38a918134db0cfe0d666d3a1b3dd558119b6a8d28f5f19f2187751e",
+        "bytes": 4348
+      },
+      "bin/FvwmPrompt/internal/xdgsource/role_provider_test.go": {
+        "sha256": "6dd58bcf7d982386ac1165233dc9d3f97f2980c6581f63b411000d9ffc3e5a4b",
+        "bytes": 7673
+      },
+      "doc/fvwm-file-browser.adoc": {
+        "sha256": "2d74c18a5d02f176744a8bc06db115ecf845b4e3261b2ff923fc23258aa269fb",
+        "bytes": 52935
+      },
+      "tests/xdg_roles_installed.py": {
+        "sha256": "d007adcd2f75dbfbd1a6131a36d2c4c4d5423892bab8dbfcd98ae16c2bb3e121",
+        "bytes": 15808
+      }
+    },
+    "source01": "ff2cddf78e8e6787f2da21d7c52ed6565d19a701ab94da5251051dce5a6b721a",
+    "source02_delta": "Only the permission-test child GOTMPDIR environment changed; production source and installed fixture stayed identical"
+  },
+  "environment": {
+    "kernel": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux",
+    "execution": "native Linux ARM64 inside the existing hardware-virtualized local lab",
+    "sdk": "go version go1.27.2 linux/arm64",
+    "minimum_sdk": "go version go1.26.9 linux/arm64",
+    "production_flags": "unchanged; normal debug/link flags; no test-only stripping",
+    "host_compiler": "Host Go1.27.0 was not used to build/test the candidate; host gofmt only"
+  },
+  "results": {
+    "normal": {
+      "passed": 263,
+      "retained_browser": 172,
+      "fresh_source": 91,
+      "skips": 0
+    },
+    "race": {
+      "label": "race",
+      "command": [
+        "go",
+        "test",
+        "-race",
+        "-p",
+        "1",
+        "-json",
+        "-mod=vendor",
+        "-count=1",
+        "./internal/xdgsource",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "exit": 0,
+      "seconds": 7.700528829999939,
+      "passed_records": 263,
+      "failed_records": 0,
+      "skipped_records": 0,
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+      ]
+    },
+    "minimum_sdk": {
+      "label": "floor",
+      "command": [
+        "/tmp/fvwm-go-baseline-floor-20261014/go/bin/go",
+        "test",
+        "-p",
+        "1",
+        "-json",
+        "-mod=vendor",
+        "-count=1",
+        "./internal/xdgsource",
+        "./cmd/fvwmfilebrowser"
+      ],
+      "exit": 0,
+      "seconds": 6.594161700999848,
+      "passed_records": 263,
+      "failed_records": 0,
+      "skipped_records": 0,
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+      ]
+    },
+    "vet": "passed",
+    "permission_cases": {
+      "count": 4,
+      "euid": 65534,
+      "real_read_permission_refusal_confirmed": true,
+      "root_skip": false,
+      "child_deadlines": "30s context and20s Go test timeout; child TMPDIR/GOTMPDIR=/tmp"
+    },
+    "fixture": {
+      "cases": 9,
+      "workers": 17,
+      "actual_apps": 2,
+      "wait0": true
+    },
+    "installed": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-file-browser",
+      "sha256": "2ef445424f31897fa86ac0e7f2ee123aca8ff380b350fc60566847975e6f7501",
+      "bytes": 6454834,
+      "mode": "0o755"
+    },
+    "native_commands": [
+      {
+        "label": "sdk02",
+        "command": [
+          "go",
+          "version"
+        ],
+        "exit": 0,
+        "seconds": 0.0019102619999102899
+      },
+      {
+        "label": "normal",
+        "command": [
+          "go",
+          "test",
+          "-p",
+          "1",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgsource"
+        ],
+        "exit": 0,
+        "seconds": 0.38550921699993523,
+        "passed_records": 91,
+        "failed_records": 0,
+        "skipped_records": 0,
+        "packages": [
+          "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+        ]
+      },
+      {
+        "label": "race",
+        "command": [
+          "go",
+          "test",
+          "-race",
+          "-p",
+          "1",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 7.700528829999939,
+        "passed_records": 263,
+        "failed_records": 0,
+        "skipped_records": 0,
+        "packages": [
+          "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+          "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+        ]
+      },
+      {
+        "label": "floor-sdk",
+        "command": [
+          "/tmp/fvwm-go-baseline-floor-20261014/go/bin/go",
+          "version"
+        ],
+        "exit": 0,
+        "seconds": 0.006535999999869091
+      },
+      {
+        "label": "floor",
+        "command": [
+          "/tmp/fvwm-go-baseline-floor-20261014/go/bin/go",
+          "test",
+          "-p",
+          "1",
+          "-json",
+          "-mod=vendor",
+          "-count=1",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 6.594161700999848,
+        "passed_records": 263,
+        "failed_records": 0,
+        "skipped_records": 0,
+        "packages": [
+          "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+          "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+        ]
+      },
+      {
+        "label": "vet",
+        "command": [
+          "go",
+          "vet",
+          "-mod=vendor",
+          "./internal/xdgsource",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "seconds": 0.17664469500004998
+      },
+      {
+        "label": "configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "/tmp/fvwm-module-waits-20261015/source"
+        ],
+        "exit": 0,
+        "seconds": 1.202218356000003
+      },
+      {
+        "label": "browser-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j1",
+          "bin/FvwmPrompt/fvwm-file-browser"
+        ],
+        "exit": 0,
+        "seconds": 0.387026977000005
+      },
+      {
+        "label": "scoped-install",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--tags",
+          "file-browser",
+          "--destdir",
+          "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage"
+        ],
+        "exit": 0,
+        "seconds": 0.09662510799989832
+      },
+      {
+        "label": "installed-worker-fixture",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/xdg_roles_installed.py",
+          "--browser",
+          "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-file-browser",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-closeout-current/installed"
+        ],
+        "exit": 0,
+        "seconds": 0.08780488599995806
+      },
+      {
+        "label": "manual",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-closeout-current/fvwm-file-browser.1",
+          "/tmp/fvwm-module-waits-20261015/source/doc/fvwm-file-browser.adoc"
+        ],
+        "exit": 0,
+        "seconds": 0.09447505200000705
+      }
+    ],
+    "focused_command_seconds": 23.083,
+    "manual": "Linux Asciidoctor generation and host mandoc width80 rendering passed",
+    "repository": "make check, affected links and whitespace must pass before signed candidate"
+  },
+  "unchanged_native_binaries": {
+    "fvwm3": "4862dd0f4db74937d7e0c0081ecb797d29e5d41bcffd81a4bb00eadc3cb4d347",
+    "bin/fvwm-startup-launch": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602"
+  },
+  "failures": [
+    {
+      "stage": "old provider regression",
+      "result": "expected failure",
+      "detail": "107 baseline files verified;8 new independent fallback/masking/unrelated-corruption subcases fail before implementation"
+    },
+    {
+      "stage": "source01 normal gate",
+      "result": "failed",
+      "detail": "Permission-test child inherited private root GOTMPDIR;4 child cases could not create their own fixtures. Browser normal172 pass records remain valid. Correct child-only GOTMPDIR, retain all assertions, rerun source normal91 records and then remaining race/floor/build/install/fixture checks."
+    },
+    {
+      "stage": "local merge signature command",
+      "result": "unavailable locally",
+      "detail": "GitHub merge GPG public key unavailable locally; canonical GitHub verification, exact trees, author and DCO checked without changing trust"
+    },
+    {
+      "stage": "merged remote branch cleanup",
+      "result": "initial missing-ref error",
+      "detail": "GitHub had already removed both branches. Continuation verified absence, retired local branches and set both PR Project items Done."
+    }
+  ],
+  "standards": [
+    "https://specifications.freedesktop.org/mime-apps/latest/default.html",
+    "https://specifications.freedesktop.org/basedir/latest/"
+  ],
+  "limits": {
+    "permission": "Only optional mimeapps/aliases/subclasses open permission errors skip; application roots/entries/walks and other acquisition errors stay fatal",
+    "startup": "Late properties on otherwise-unmanaged group leaders remain a separate core event/mask-ownership checkpoint",
+    "installed": "Scoped file-browser tag update in existing qualified stage, not a fresh full install qualification",
+    "not_run": [
+      "new X/theme screenshots: no UI change",
+      "C/ASan/UBSan: no affected native memory/lifetime code",
+      "new BSD or six-target/compiler/default-X/release matrix: no new production OS API",
+      "periodic performance comparison:4/5 merged, reaches5/5 only on next runtime merge"
+    ],
+    "issue_closure": "Neither56 nor67 meets its whole frozen acceptance yet"
+  },
+  "evidence": {
+    "archive_sha256": "3fd9dffaaa64106331ed9d0c4f7f74b8c3c0641b431fa977c3991d519c7596a6",
+    "archive_bytes": 161929,
+    "files": 33,
+    "payload_and_member_validation": true,
+    "guest_duplicate_logs_retired": 32,
+    "current_source_guard_retained": true,
+    "raw_retention": "Keep this compact current-review bundle only while relevant under PR298 retention; versioned result receipts remain afterwards"
+  },
+  "retention": {
+    "guest_paths": [
+      "/tmp/fvwm-module-waits-20261015/style-simplification-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-escaped-overlap-review-affected1",
+      "/tmp/fvwm-module-waits-20261015/style-overlap-bounds-affected1",
+      "/tmp/fvwm-module-waits-20261015/style-matching-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-update-work-final-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-escaped-overlap-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-escaped-patterns-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-candidate-index-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-wildcard-refined1"
+    ],
+    "guest_bytes_recovered": 946151424,
+    "obsolete_host_archive_files": [
+      {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-28/r1-startup-notification/retirement-candidates/style-wildcard-combined1.tgz",
+        "bytes": 73051440,
+        "sha256": "3e4fdaf829b96ab665579222285c67896536a5965054813d5ca3c7853eecaf08",
+        "inode": 272865520
+      },
+      {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-28/r1-startup-notification/retirement-candidates/style-wildcard-refined2.tgz",
+        "bytes": 63200013,
+        "sha256": "733e69743fc5a5e5721a0c665ad9ef0a72f988bf4930f6d2d78fafdf2183365a",
+        "inode": 272865405
+      }
+    ],
+    "host_file_bytes_removed": 136251453,
+    "no_expansion": true,
+    "reusable_builds_sdk_caches_preserved": true,
+    "next_performance_reference": "m5-performance-xdg-20261028",
+    "performance_merged_count": 4,
+    "all_owned_labs_stopped": true
+  },
+  "review": {
+    "route": "temper_reviewer",
+    "source_fixture_review": "No actionable findings; final exact candidate/evidence confirmation recorded with signed PR",
+    "backend_model_effort": "unverified",
+    "human_approval": false
+  }
+}

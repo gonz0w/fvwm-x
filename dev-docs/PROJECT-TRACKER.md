@@ -1,22 +1,91 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-28. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-29. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [application startup activity](#r1-application-startup-activity--2026-10-28)
-is selected under #56 with #67 launcher adoption. PR296 is merged; desktop-entry
-consumer acceptance is complete. Remaining role/service/platform acceptance stays
-open with the focused cadence.
+Current feature checkpoint: [application-provider resilience](#r1-application-provider-resilience--2026-10-29)
+is selected under #56, reusing the #67 portable consumers. PR297 startup activity
+and PR298 current-artifact retention are merged. Complete remaining finite
+provider/installed acceptance without forcing FileManager1 or clipboard policy.
+
+## R1 application-provider resilience — 2026-10-29
+
+Owner: Cam; `codex/r1-xdg-interoperability-closeout`; XDG-01 #56, related #67
+portable consumers. Base merged PR298 `86d9ffd02c44e57746d603d74287afa772d73382`.
+Status: focused checks passed; candidate prepared for separate final PR review.
+Concrete provider behavior was frozen before implementation.
+
+Three related provider outcomes: reject malformed effective desktop entries
+individually so a valid different handler/default remains usable; skip only
+permission-denied optional XDG settings/MIME inputs with bounded diagnostics;
+and expose those diagnostics through the existing browser-worker stderr path.
+Keep first-root desktop-ID masking, valid MIME specificity/default ordering,
+literal launches and read-only preferences. An absent optional input is ordinary;
+source/work budgets, cancellation, special files, partial walk/read corruption and
+malformed MIME settings/graph syntax remain fatal. Diagnostic callbacks are
+operation-local, typed and bounded (16 details plus one suppression summary),
+with quoted bounded text and no new UI or wire schema.
+
+The independent expectation comes from
+[MIME Applications section4](https://specifications.freedesktop.org/mime-apps/latest/default.html)
+and [Base Directory section4](https://specifications.freedesktop.org/basedir/latest/).
+Reproduce the old malformed-preferred fallback failure before changing its old
+abort expectation. The separate late unmanaged-group observation gap remains
+explicit and is not closed by these provider fixes.
+
+Outcome: make read-only directory/file application roles resilient to broken
+independent providers. Reuse accepted Desktop Entry/actions/icon resolution and
+PR297 startup handling. Preserve fresh selection/handler checks, literal argv and
+personal-default files. This provider slice does not claim whole #56 completion.
+
+Acceptance: one combined affected native Linux source/browser normal/race,
+minimum-SDK and vet checkpoint; incremental browser build, scoped existing-stage
+install and independent real worker/fallback/launch/default-preservation checks.
+The four permission cases run as an actual unprivileged child, not a root skip.
+Retain unchanged source-bound startup/theme/BSD results with their original scope;
+no full compiler/OS/theme matrix for portable error handling with unchanged UI.
+Separate exact-candidate source/evidence review precedes signed author-DCO PR.
+Keep #56/#67 open for their remaining criteria.
+
+Non-goals: new UI, mandatory dependency, association writes, a second icon resolver,
+FileManager1/shared bus, clipboard retention/storage decisions, broad core event
+ownership changes or parked #257/#258. No screenshots are needed without UI changes.
+Apply current retention before the next owned build: keep the latest reusable
+profiles, next performance baseline and current evidence; retire superseded owned
+artifacts with exact ownership/use/reference checks, not another full archive.
+PR297 advances `m5-performance-xdg-20261028` to 4/5; PR298 is documentation-only.
+The next runtime merge reaches 5/5; no comparison is due before that merge.
+
+[Results and limits](verification/VERIFICATION-2026-10-29-XDG-PROVIDERS.md):
+263 normal/race/minimum-SDK records across two affected packages each, vet,
+incremental browser/scoped install and 17 real worker requests/nine groups pass.
+Four actual UID65534 permission cases and two literal/raw-byte application
+recordings with Wait0 pass. The child-temp setup failure and retained browser
+normal pass are explicit; no production expectation was relaxed. The affected
+manual generates/renders; UI/native binaries remain unchanged. No new theme or
+full OS matrix was run. Separate exact candidate/evidence review precedes handoff.
+
+Retired nine superseded style captures (946,151,424 guest bytes) and two obsolete
+host archives (136,251,453 file bytes) under merged PR298. Current builds/stage,
+SDK/tool caches and next performance reference remain. The compact 33-file
+161,929-byte host evidence bundle is verified; 32 duplicate guest logs retire,
+leaving a source guard and continuation receipt. All owned labs stop normally.
+#56/#67 remain open. The next finite #56 core checkpoint covers late unmanaged
+leader/client tracking, raw property/destroy routing and cooperative event-mask
+ownership/teardown, then remaining installed-target qualification; no broad
+mask rewrite, extra X connection or polling is hidden in this provider batch.
 
 ## Current artifact retention — 2026-10-28
 
 Owner: Cam; `codex/current-artifact-retention`. Selected by the owner after the
-PR297 storage incident. Status: policy prepared for PR review; PR297 remains
-open for its separate feature review.
+PR297 storage incident. Status: merged in PR298 as
+`86d9ffd02c44e57746d603d74287afa772d73382`; canonical composite tree
+`3556d4b80839d2df03b36687734bf410c41d9304`, signature and actual-author DCO
+verified. Local/remote branches retired and PR Project Done.
 
 Outcome: keep the latest reusable build per active target/compiler/profile and
 only artifacts needed by the next run, current review, unresolved failures,
@@ -34,8 +103,10 @@ expansion or feature/performance acceptance changes are selected here.
 [Retention decision](decisions/ARTIFACT-RETENTION-2026-10-28.md) and
 [canonical rule](WORKFLOW.md#current-artifacts-and-retention) replace blanket
 archive/stage/build preservation, including obsolete OpenBSD lab copies.
-`make check` and whitespace/source/link checks pass. Separate exact-candidate
-review is required before handoff. No native or VM checks are needed for prose.
+`make check`, 11 affected file/anchor links and whitespace/source checks pass.
+Separate review accepts exact source tree `7894506efd81cf392aa9fe2f2d39ae20867baa4a`;
+the merge composes it with accepted PR297. No native or VM checks were needed
+for prose.
 At the next owned lab run, reconcile superseded artifacts before building; keep
 PR297's current review evidence and the selected performance baseline meanwhile.
 Do not boot a guest solely for this documentation change. Older raw artifacts
@@ -486,8 +557,10 @@ speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged
 
 Owner: Cam; `codex/r1-startup-notification`; XDG-01 #56, related #67 launcher
 adoption. Base merged PR296 `56152c3fe78b1e704c654ca158d04d3a1a9264b4`.
-Status: focused checks and separate source/evidence review accepted; ready for
-PR review. Selected before
+Status: merged in PR297 as `b270b0fbbe217a455da4f39ead2670515b38edc2`;
+reviewed tree `9062f68ad86483fb14087ec22df28623e8d60f47`, canonical signature
+and actual-author DCO verified; branches retired and PR Project Done.
+Focused checks and separate source/evidence review accepted. Selected before
 implementation. The [startup contract](decisions/STARTUP-NOTIFICATION-2026-10-28.md)
 freezes four related outcomes: shared launch metadata and tri-state opt-in;
 a bounded native announcement/exec helper adopted by existing launchers; bounded
@@ -553,8 +626,8 @@ This exception is complete; the existing retention rule remains authoritative.
 
 Dependencies: merged Desktop Entry/role consumers and native query/Form contracts;
 existing Xlib, no cgo or session bus. Performance reference
-`m5-performance-xdg-20261028` remains 3/5 after PR296, 4/5 on the next runtime
-merge; no comparison is due. Close only fully completed acceptance criteria.
+`m5-performance-xdg-20261028` is 4/5 after merged PR297; the next runtime merge
+reaches 5/5. No comparison is due before that merge. Close only fully completed acceptance criteria.
 
 ## R1 selected-file application handoff — 2026-10-28
 

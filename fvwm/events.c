@@ -4031,6 +4031,7 @@ HandleEvents(void)
 			destroy_scheduled_windows();
 		}
 		image_async_outer_boundary();
+		appearance_preview_outer_boundary();
 		if (Scr.flags.do_need_window_update) {
 			flush_window_updates();
 		}
@@ -4271,7 +4272,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 			return 0;
 		}
 		force_poll = force_poll ||
-			(outer_boundary && startup_notification_outer_pending());
+			(outer_boundary && (startup_notification_outer_pending() ||
+			 appearance_preview_outer_pending()));
 		num_fd = image_async_wait(readiness.descriptors,
 			readiness.module_count * 2 + EVENTS_MODULE_WATCH,
 			force_poll ? &poll_timeout : timeoutP,

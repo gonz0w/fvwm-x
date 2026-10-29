@@ -271,7 +271,11 @@ def run(args):
             appearance = query('appearance')
             assert appearance['scope'] == 'core-appearance-configuration'
             assert not appearance['conditional_application']
-            assert not appearance['preview_supported']
+            assert appearance['preview_supported']
+            assert appearance['resource_preview'] == dict(version=1,
+                scope='high-contrast', role_count=14, style_count=2,
+                metadata_max=65536, preparation_timeout_ms=5000,
+                lease_limit=1, slot_available=True)
             assert query('appearance') == appearance
             def policy_pages(resource, property):
                 generation = query('appearance')['generation']

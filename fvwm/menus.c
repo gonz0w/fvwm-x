@@ -2069,30 +2069,46 @@ static FvwmPicture *reload_picture_at_scale(
 	return p;
 }
 
+static FlocaleFont *popup_style_item_font(MenuStyle *style)
+{
+	/* DefaultFont can replace Scr.DefaultFont before stale MenuStyle
+	 * default pointers refresh. Resolve the flag, never that pointer. */
+	return ST_USING_DEFAULT_FONT(style) ? Scr.DefaultFont :
+		ST_PSTDFONT(style);
+}
+
+static FlocaleFont *popup_style_title_font(MenuStyle *style)
+{
+	FlocaleFont *item = popup_style_item_font(style);
+
+	return ST_USING_DEFAULT_TITLEFONT(style) || !ST_PTITLEFONT(style) ?
+		item : ST_PTITLEFONT(style);
+}
+
 static void bind_popup_font(
 	struct _FlocaleFont **slot, char *name,
 	struct _FlocaleFont *fallback, monitor_scale_factor factor)
 {
 	FlocaleFont *loaded;
 
+	/* Load owns a new reference even when it hits the old slot. */
 	loaded = FlocaleLoadFontAtScale(
 		dpy, name, "fvwm", factor,
 		WM_UI_RESOURCE_GENERATION_INITIAL);
-	if (loaded != NULL)
-	{
-		if (*slot != NULL && *slot != fallback &&
-		    *slot != Scr.DefaultFont && *slot != loaded)
-		{
-			FlocaleUnloadFont(dpy, *slot);
-		}
-		*slot = loaded;
-	}
-	else
+	if (loaded == NULL)
 	{
 		fvwm_debug(__func__,
 			"Couldn't load scaled menu font '%s'; keeping 1x",
 			(name != NULL) ? name : "(default)");
-		*slot = fallback;
+		loaded = FlocaleRetainFont(fallback);
+	}
+	/* Each nonnull static slot owns one reference. Acquire before release
+	 * for both cache hits and fallback aliases; pointer equality is not an
+	 * ownership test. A missing replacement keeps the previous owner. */
+	if (loaded != NULL)
+	{
+		FlocaleUnloadFont(dpy, *slot);
+		*slot = loaded;
 	}
 
 	return;
@@ -2177,16 +2193,18 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 		char *item_name;
 		char *title_name;
 		struct _FlocaleFont *title_fallback;
+		struct _FlocaleFont *item_fallback;
 		MenuItem *mi;
 		int i;
 		FvwmPicture *style_side;
 
 		item_name = NULL;
 		title_name = NULL;
-		title_fallback = ST_PTITLEFONT(MR_STYLE(mr));
-		if (ST_PSTDFONT(MR_STYLE(mr)) != NULL)
+		item_fallback = popup_style_item_font(MR_STYLE(mr));
+		title_fallback = popup_style_title_font(MR_STYLE(mr));
+		if (item_fallback != NULL)
 		{
-			item_name = ST_PSTDFONT(MR_STYLE(mr))->name;
+			item_name = item_fallback->name;
 		}
 		if (title_fallback != NULL)
 		{
@@ -2195,11 +2213,11 @@ static void apply_popup_menu_metrics(MenuRoot *mr, int origin_x, int origin_y)
 		else
 		{
 			title_name = item_name;
-			title_fallback = ST_PSTDFONT(MR_STYLE(mr));
+			title_fallback = item_fallback;
 		}
 		bind_popup_font(
 			&mr->s->popup_std_font, item_name,
-			ST_PSTDFONT(MR_STYLE(mr)), factor);
+			item_fallback, factor);
 		bind_popup_font(
 			&mr->s->popup_title_font, title_name,
 			title_fallback, factor);
@@ -2401,6 +2419,12 @@ static void clone_menu_root_static(
 	dest_mr->s = fxmalloc(sizeof(MenuRootStatic));
 	/* copy everything */
 	memcpy(dest_mr->s, src_mr->s, sizeof(MenuRootStatic));
+	/* Independent static clones own both slots, even when they alias.
+	 * copy_menu_root instead shares the existing static owner. */
+	dest_mr->s->popup_std_font = FlocaleRetainFont(
+		src_mr->s->popup_std_font);
+	dest_mr->s->popup_title_font = FlocaleRetainFont(
+		src_mr->s->popup_title_font);
 	/* special treatment for a few parts */
 	if (MR_NAME(src_mr) != NULL)
 	{
@@ -6586,6 +6610,8 @@ Bool DestroyMenu(MenuRoot *mr, Bool do_recreate, Bool is_command_request)
 
 	if (MR_COPIES(mr) == 0)
 	{
+		FlocaleUnloadFont(dpy, mr->s->popup_std_font);
+		FlocaleUnloadFont(dpy, mr->s->popup_title_font);
 		if (MR_POPUP_ACTION(mr))
 		{
 			free(MR_POPUP_ACTION(mr));
@@ -6958,12 +6984,10 @@ MenuRoot *NewMenuRoot(char *name)
 	mr->s->popup_border_width = ST_BORDER_WIDTH(MR_STYLE(mr));
 	mr->s->popup_triangle_width = MENU_TRIANGLE_WIDTH;
 	mr->s->popup_triangle_height = MENU_TRIANGLE_HEIGHT;
-	mr->s->popup_std_font = ST_PSTDFONT(MR_STYLE(mr));
-	mr->s->popup_title_font = ST_PTITLEFONT(MR_STYLE(mr));
-	if (mr->s->popup_title_font == NULL)
-	{
-		mr->s->popup_title_font = mr->s->popup_std_font;
-	}
+	mr->s->popup_std_font = FlocaleRetainFont(
+		popup_style_item_font(MR_STYLE(mr)));
+	mr->s->popup_title_font = FlocaleRetainFont(
+		popup_style_title_font(MR_STYLE(mr)));
 	MR_ORIGINAL_MENU(mr) = mr;
 	MR_COPIES(mr) = 1;
 	MR_IS_UPDATED(mr) = 1;

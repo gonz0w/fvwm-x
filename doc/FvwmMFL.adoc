@@ -70,8 +70,10 @@ beginning with the literal prefix `request ` followed by a JSON object:
 request {"version":1,"id":"desktop-1","method":"query","resource":"desktop"}
 ....
 
-The entire line, including the prefix and excluding its newline, has the same
-1000-byte limit. Objects use the exact fields shown below; unknown or duplicate
+The entire structured-request line, including the prefix and excluding its
+newline, is limited to 4096 bytes (4088 bytes of JSON). Native/raw commands retain
+their 1000-byte limit. Capabilities distinguish `max_line_bytes: 4096` and
+`max_command_bytes: 1000`. Objects use the exact fields shown below; unknown or duplicate
 fields, wrong types and invalid JSON are errors. IDs are strings of 1–64 ASCII
 letters, digits, underscores, hyphens or periods. Embedded NUL escapes are
 rejected, and JSON nesting is limited to four levels before parsing.
@@ -103,8 +105,9 @@ receiving its terminal reply; a new connection has its own client-ID scope.
 * `topology`, `workspaces`, `bindings`, `colorsets`, `appearance`, `menu-styles`
   `decorations` and `startups` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
-* `preview` queries or controls a core-owned runtime menu-opacity lease,
-  as described below. Saved-preference preview remains separate.
+* `preview` queries or controls a core-owned runtime menu-opacity or scoped
+  high-contrast resource lease, as described below. File persistence remains
+  with the settings owner.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
 * `files` discovers or queries running browser providers, as described below.
@@ -330,6 +333,58 @@ request wait does not cancel a submitted start. Query the originating connection
 or allow its core deadline to settle. Read-only connections can query but cannot
 start/confirm/revert; switching mode does not disable existing recovery.
 
+=== High-contrast resource preview
+
+This conditional scope shares the single core preview slot with menu opacity.
+First inspect `appearance.resource_preview`: version 1, scope `high-contrast`,
+`role_count: 14`, `style_count: 2`, `metadata_max: 65536`,
+`preparation_timeout_ms: 5000`, `lease_limit: 1` and `slot_available`.
+A capability advertises the operation; preparation can still refuse unsupported
+or changing resources. The native FvwmDesktop consumer supplies the existing
+high-contrast color projection and saves only after runtime confirmation.
+
+Use an `action` on `preview` with `operation: "prepare"`, the current appearance
+generation and `values` containing exactly `plan_version: 1` and `roles`.
+The roles array has exactly fourteen objects, in ID order 0 through 8, then
+10 through 14. Every role has exactly `id`, `foreground`, `background`,
+`highlight` and `shadow`; the four colors are `#RRGGBB` strings. This describes
+literal typed colors, not FVWM command text or public Pixmap identities.
+The optional active `timeout_ms` uses the existing 1000–30000 range.
+
+Preparation captures actual owned resources and allocates the opaque candidate
+privately. It returns `scope: "high-contrast"`, `plan_version: 1`, an opaque
+`lease` and `generation`. Poll the originating connection until `prepared`.
+Then send `operation: "apply"` with that generation and the lease as `target`.
+Poll until `active`, then use the existing `confirm` or `revert` operation with
+the returned identities. Never infer application from successful submission.
+
+Resource states are `preparing`, `prepared`, `applying`, `active`,
+`recovery-pending` and `terminal`. A terminal result includes `terminal_reason`
+(`confirmed`, `reverted`, `expired`, `conflicted`, `abandoned` or `refused`).
+`recovery` distinguishes `pending`, `restored`, `kept`, `refused-conflict` and
+`not-applied`; refused preparation includes `preparation_error`. Confirmation
+can itself remain pending until a safe outer dispatch. Only terminal
+`confirmed`/`kept` authorizes the settings consumer's separate file commit.
+
+Preparation has a five-second deadline. The active deadline begins at complete
+publication. Resource acquisition, publication and release occur only at a safe
+outer dispatch, after image completions and before window updates. Nested menu
+or pointer interactions can mark expiry/cancel/loss pending, but cannot replace
+or free resources borrowed by that interaction. Complete publication precedes
+consumer notifications; screen repaint across modules remains asynchronous.
+
+Preparation refuses missing, pending, refused or unowned resources and excess
+metadata. Raw root/ParentRelative backgrounds, ownerless masks, nonzero
+foreground/background tint and nonopaque foreground alpha are unsupported.
+Proven private buffered backgrounds retain their actual owners. Explicit
+foreground-shadow and unrelated icon/shape policy remain intact. There is no
+candidate wallpaper/image job or general colorset transaction.
+
+Tracked Colorset, MenuStyle, style and root-image changes invalidate recovery;
+the core preserves the newer state. Owner loss detaches the producer immediately
+and schedules outer recovery. A replacement producer needs fresh identities.
+No protocol confirmation writes preferences or certifies final pixels.
+
 === Appearance configuration, menu styles and decorations
 
 Three read-only core observations support inspection of shared appearance policy:
@@ -360,15 +415,15 @@ interactive state, menu contents, image pixels/resources inside decorations,
 client changes and compositor state are not an effective appearance snapshot.
 The response explicitly reports `window_effective_state: false`,
 `rendered_completion: "unknown"`, `conditional_application: false` and
-`preview_supported: false`.
+`preview_supported: true` for the conditional scoped resource family above.
 
 An optional `generation` on `appearance` must match exactly, or the query returns
 `stale_generation`. The scalar resource rejects `scope`, `target`, `offset` and
 `limit`. Observing a matching token does not make a later command conditional:
 a producer or image completion can intervene. Do not use a separate query and
 mutation as a rollback guard. The separate `preview` resource below owns an
-atomic snapshot/apply/recovery operation for one menu-opacity scalar. The
-appearance query flags do not advertise general appearance transactions.
+snapshot/apply/recovery operation for menu opacity or the named high-contrast
+bundle. The appearance query flags do not advertise general transactions.
 
 `menu-styles` and `decorations` use that same conservative appearance token.
 They return `state: "observed"`, `generation`, `offset`, `next_offset`, and a
@@ -491,9 +546,9 @@ A query is a synchronous core observation; subsequent commands or asynchronous
 settlements can change it. On stale pages, restart at offset zero. These tokens
 do not cover Style/decorations, window policy or all appearance changes, and
 cannot authorize rollback after a separate check. `preview_supported: false`
-keeps colorset preview/revert unavailable. The separate runtime `preview`
-resource owns only a menu-opacity scalar. Existing settings generations retain
-their separate scope.
+keeps arbitrary colorset preview/revert unavailable. The separate `preview`
+resource owns only its named menu-opacity or high-contrast bundle operations.
+Existing settings generations retain their separate scope.
 
 === Browser metadata, selection and controls
 
@@ -610,7 +665,7 @@ labels. No filesystem lookup or content read occurs.
 |===
 
 Unknown fields, wrong types and duplicate value fields are refused. The compact
-encoded values object must fit 384 bytes as well as the whole 1000-byte request
+encoded values object must fit 384 bytes as well as the whole 4096-byte request
 line. For a larger selection, apply bounded add/remove edits, using each returned
 generation for the next edit. State advertises `selection_edit_max: 8` and
 `action_operations`. File mutation remains unavailable.
@@ -859,8 +914,10 @@ with `application: "submission-failed"`. It does not report an unchanged state
 or invite blind replay. Generic `applied_command_results` remains false; this
 provider observes its own saved preferences, not final core rendering.
 Saved-preference preview remains unavailable (`preview: false`). The separate
-core `preview` resource changes only runtime menu opacity. The opacity registry
-entry reports `native_preview: true` for its native Keep and save consumer;
+core `preview` resource supports runtime menu opacity and the fixed high-contrast
+bundle. The opacity and contrast registry entries report `native_preview: true`
+for their conditional native consumers; these are not generic settings actions.
+For opacity,
 `runtime_constraint: "transparency-disabled"` explains opaque-mode masking.
 The `contrast` enum accepts `normal` (default) and `high` in the appearance group.
 High contrast resolves transparency to false and launcher opacity to 100 while

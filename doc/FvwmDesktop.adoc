@@ -231,8 +231,8 @@ means the helper submitted its known commands to FVWM; it does not prove that
 other modules have repainted. Later personal Style or Colorset commands cannot
 be observed through this registry and are explicitly reported as unobserved.
 The helper never rewrites personal FVWM configuration. Generic saved-setting
-preview remains unavailable; the native launcher-opacity preview has its own
-timed confirmation path described below.
+preview remains unavailable; native launcher-opacity and high-contrast previews
+have their own timed confirmation paths described below.
 
 Wallpaper query metadata includes resolved, resolution and composition_version.
 Resolution is explicit, follow or retained. The resolved appearance can be auto:
@@ -339,9 +339,8 @@ the same registry, saved/effective values, override precedence and private-file
 revision checks used by the native editor. See FvwmMFL's STRUCTURED REQUESTS
 section for the wire format, bounds and result meanings. A committed preference
 or submitted FVWM command is not completed core rendering. Helper generations
-do not observe external Style/Colorset state; saved-preference preview remains
-unavailable. A separate core-owned runtime menu-opacity preview is described
-below.
+do not observe external Style/Colorset state. Generic saved-preference preview
+remains unavailable; the separate native consumers below use core-owned leases.
 The `ipc-request` module message is reserved for that bounded literal-data
 transport; existing `query-settings` Echo consumers remain supported.
 
@@ -399,6 +398,49 @@ The existing preview-opacity module command and FvwmMFL's core `preview`
 resource remain runtime-only. Registry `preview: false` still declines generic
 IPC saved-preference preview; `native_preview: true` identifies the opacity
 consumer. General appearance/image-resource preview remains open.
+
+== HIGH CONTRAST PREVIEW
+
+Choose *Preview high contrast...* in Desktop settings, or *Preview high contrast*
+(F5) in an editor containing contrast. This previews `contrast=high` from the
+current normal presentation. It uses the current palette and appearance, not
+unapplied palette or appearance fields in the editor. Other draft fields return
+to the editor unchanged after the preview. The requested transparency and
+launcher opacity values remain intact; high contrast resolves them to opaque
+presentation and 100 percent opacity.
+
+The *Preview high contrast* dialog offers *Save* (Enter) and *Cancel* (Escape)
+within the core's 15-second active lease. Save first confirms the runtime
+resources, then saves only `contrast`. Cancel, timeout or loss of the settings
+owner requests recovery without saving. Closing the dialog leaves recovery
+to the core deadline. A menu or other interaction can defer resource recovery
+until the command stack unwinds;
+the pending state does not claim that old pixels are already restored.
+
+The core retains actual color, image and shape owners for fourteen shared roles
+and the two affected menu opacity values. Recovery restores those resources
+instead of reloading their filenames. Wallpaper, motion, fonts, icon choices
+and unrelated menu-style properties are outside this preview. Modules repaint
+independently; runtime confirmation is not a simultaneous repaint guarantee.
+
+An overridden contrast, current high contrast, stale settings/file revision or
+another preview refuses admission. Pending or unsupported image owners, raw root
+pixmaps, ParentRelative backgrounds, ownerless masks, foreground/background tint
+and nonopaque foreground alpha also refuse this resource scope. Existing
+configuration remains usable. Resolve the refusal before opening a new preview;
+there is no fallback that replays theme commands.
+
+An intervening tracked Colorset, MenuStyle, style or root-image change refuses
+restoration rather than overwriting the newer state. If the core has already
+confirmed but saving fails or an external preference edit wins, the notice says
+that runtime high contrast was kept and the preference was not saved. Settings
+report `source: runtime-kept-preference-unsaved`; schedule ticks and unrelated
+preference edits retain that runtime choice. An explicit contrast edit or reload
+replaces it. Reload before intentionally retrying a conflicting file write.
+
+The contrast registry entry reports `native_preview: true` for this conditional
+consumer. Generic settings `preview: false` remains unchanged. Reverse contrast,
+general transparency and other appearance/resource previews remain unavailable.
 
 == CONFIGURATION INSPECTOR
 

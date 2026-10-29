@@ -7,17 +7,141 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [XDG installed acceptance](#r1-xdg-installed-acceptance--2026-10-29)
-finishes the frozen #56 contract after merged PR300. All six focused installed
-profiles pass; the closing candidate carries separate final review. Accepted
-Desktop Entry, icon, semantic, theme and native lifetime evidence retains its scope.
+Current checkpoint: [high contrast resource preview](#r1-high-contrast-resource-preview--2026-10-29)
+under CFG-01 #60 and IPC-02 #70 follows completed XDG-01 #56. PR301 is merged,
+its canonical signature/tree/author-DCO verified, #56 closed and branch retired.
 Performance is 1/5 from the qualified merged-PR299 reference; no comparison due.
+
+## R1 high contrast resource preview — 2026-10-29
+
+Owner: Cam; `codex/r1-high-contrast-preview`; CFG-01 #60 / IPC-02 #70.
+Base merged PR301 `31b191f359b9ccfe74d2ba31cc7848eaf74a280d`.
+Status: focused checks passed; prepared for maintainer review. The behavior and
+resource ownership contract was frozen before coding.
+
+Outcome: preview `contrast=high` from the current normal presentation through
+the existing settings Form/menu, then save after core confirmation or recover.
+Use the current 11-key registry and existing high-contrast theme projection;
+retain requested transparency/launcher opacity and all unrelated editor drafts.
+This complete consumer checkpoint batches actual resource snapshots/private
+preparation, atomic outer publication/recovery, directed generation-checked
+protocol and settings/UI persistence. Do not replay Controller.theme for preview
+or confirmation: it also changes wallpaper, animation and whole menu styles.
+
+Scope: one shared preview/preparation slot; exactly the 14 existing role colorsets
+0–8 and 10–14 plus opacity scalars for `*` and `SlateLauncherStyle`; at most
+64 KiB copied metadata including strings. Retain actual picture/source/rendered/
+shape backing and all color owners; copy the argument strings. Refuse pending,
+refused, unavailable or unowned resources, including raw root pixmaps,
+ParentRelative backgrounds and ownerless masks. Do not guess ownership or copy
+pixels. Prepare opaque candidate colorsets privately, with checked allocation;
+ordinary asynchronous colorset preparations must not publish individual pieces.
+At the outer boundary, use the existing capture helper to normalize proven
+settled private background ownership before strict checks; this covers the
+shipped buffered-root path without adopting raw root resources. Refuse nonzero
+foreground/background tint or foreground alpha other than 100 for this scope;
+preserve an explicitly supplied foreground shadow and unrelated icon/shape
+policies rather than silently changing custom appearance semantics.
+
+Generation and both named menu styles must validate before any publication.
+Publish the complete bundle/scalars before broadcasting at the safe outer
+HandleEvents boundary after image_async_outer_boundary and before window flush.
+No simultaneous repaint guarantee across modules. Nested menu/interaction waits
+may only mark expiry/cancel/conflict pending: no resource freeing, publication
+or broadcasts there. Owner loss detaches module pointers immediately and queues
+outer recovery. A preparation expires after five seconds; active duration uses
+the existing default15/max30-second policy, beginning at publication. Wake outer
+work without spinning nested waits. On generation conflict, preserve external
+changes, refuse restoration and release only retained operation owners safely.
+
+Use bounded versioned typed roles/color values and opaque identities through
+the existing directed transport; no arbitrary command payload, exported Pixmap
+identity, new packet type or second state authority. Preserve accepted scalar
+opacity behavior. The typed 14-role JSON needs a separate 4096-byte complete
+client-request-line bound (4088 bytes after `request `); native/raw commands
+remain limited to 1000 bytes. Preserve queue/request counts, partial framing,
+slow-reader and ordered continuation behavior; update C and Go client consumers
+and boundary tests together. This does not raise packet/reply/native bounds.
+Preserve single-lease exclusion. Expose prepared/applying/active/
+recovery-pending/terminal results honestly. UI offers Save/Cancel for this scope;
+core confirmation precedes saving only `contrast` through the existing atomic
+revision-checked writer. Recheck settings generation, override/effective policy
+and saved-file revision before apply/confirmation. Save failure or a concurrent
+external edit after confirmation reports runtime-kept/preference-unsaved and
+must not falsely claim persistence or immediately replay the old theme.
+A replacement controller starts from fresh state, never inherits an old lease.
+
+Acceptance: independent pure resource/lease/failure policy and controller tests;
+actual-X old image/shape pixel/resource restoration on cancel/expiry, menu and
+interaction deferral, owner loss/restart, external Colorset/MenuStyle conflicts
+and preparation refusal; scoped ownership ASan/UBSan; existing opacity regressions;
+one combined affected incremental Linux checkpoint and three existing theme
+configurations including enlarged text, with inspected preview/recovery captures.
+Render affected installed manuals and check source/protocol consumers together.
+Select additional platform checks for actual portability risk, not PR creation.
+The lead owns native/VM/Git/GitHub/tracker execution; bounded implementers own
+nonoverlapping source/tests, followed by separate exact-candidate review.
+Roles are available; actual backend model/effort remains unverified.
+
+Non-goals: reverse/general transparency or image-job preview, new wallpaper/root
+jobs, typography/icon/layout keys, arbitrary registry expansion, a configuration
+migration, theme rewrite, bus/FileManager1/session/clipboard features or tuning.
+#214 retains its compositional ownership; #60 and #70 remain open for their other
+frozen criteria and consumers. #72 follows these contracts; #67/#77 is later.
+No broad six-target/compiler/default-server/release sweep is selected. Reuse
+current owner-controlled builds/caches and retire verified superseded artifacts;
+preserve other owners and parked #257/#258. API mechanics may be refined within
+this behavior contract; any ownership or acceptance gap returns to the lead.
+
+Native acceptance discovery: a real menu opening crashed after DefaultFont
+replacement. The existing Linux ASan build reproduced the ordinary font-lifetime
+fault: a cached popup font was released by DefaultFont, then released again when
+popup metrics rebound it. The faulting menu/font paths are unchanged from the
+merged base; a minimal non-preview control is selected before correction.
+Repair only popup font ownership: each nonnull MenuRootStatic popup slot owns
+one existing Flocale reference, including alias slots. Acquire current default
+fonts using the style's default flags, acquire replacement before release even
+on cache hits, retain independent static clones, share existing dynamic copies,
+and release both slots only when the last static record dies. Do not change
+DefaultFont ordering or add a font registry. Extend this checkpoint's focused
+regression with before-first-popup/replacement/recreation/scale and teardown
+checks, then rerun the affected normal/sanitized resource/menu paths. Preserve
+the first normal crash and its diagnostic; this is required acceptance repair,
+not new typography preferences or a broader font modernization.
+
+Screenshot acceptance discovery: enlarged Classic's all-fields editor places
+Apply beyond the right screen edge because the two existing opacity hints and
+button share one wide row. Shorten the two preview explanations, separate the
+opacity admission hint by one row, and preserve all callbacks/eleven-field draft
+semantics. Add actual managed-frame/client/control containment to the same UI
+fixture; rebuild only affected Desktop UI and rerun its focused Go/theme checks.
+No generic Form layout rewrite, font reduction or larger test screen is selected.
+
+[Focused results and limits](verification/VERIFICATION-2026-10-29-CONTRAST-PREVIEW.md)
+now include actual backing restoration after source replacement/deletion, nested
+menu/Wait deferral, actor loss/restart, conflict/refusal and genuine allocation
+failures; normal and scoped core ASan/UBSan pass. The precise ordinary-menu crash
+has a red pre-correction control and passing font ownership regression. Actual
+monitor scales 1×/2× pass. Final Desktop UI packages and all three theme workflows
+pass with frame/client/control containment; all 33 captures are inspected and
+three unmodified examples are in the development gallery. Initial test/setup
+failures and the enlarged editor visual defect are retained with their repairs.
+Three manuals generate; roff formatting remains unavailable. Separate component
+source reviews accept the executed source13; exact final candidate review and
+repository checks are recorded in its PR. This is focused component acceptance,
+not closure of #60/#70 or broad platform/release qualification. Verified guest
+duplicates retire, current useful builds/install/caches/performance references
+remain, and the owned lab stops normally. Performance stays 1/5, advancing to 2/5
+only on this runtime merge; #257/#258 remain parked.
 
 ## R1 XDG installed acceptance — 2026-10-29
 
 Owner: Cam; `codex/r1-xdg-installed-acceptance`; XDG-01 #56. Base merged PR300
 `dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd`. Status: all six focused profiles
-passed; closing review candidate. The installed-outcome matrix was frozen before fixture changes.
+passed; merged in PR301 as `31b191f359b9ccfe74d2ba31cc7848eaf74a280d`.
+Canonical reviewed tree `bf9c7d1f79ada2c77e51e14c8d1391f679bac270`,
+GitHub signature and Cam author-DCO verified; #56 closed and branch retired.
+The installed-outcome matrix was frozen before fixture changes.
 
 Outcome: finish the four frozen #56 acceptance rows, reusing accepted Desktop
 Entry/Exec and inherited icon evidence. Run one focused staged interoperability
@@ -60,11 +184,11 @@ FreeBSD ARM64 composes runtime and unchanged-artifact provenance-only receipts;
 no runtime result is counted twice. Canonical target-Meson ELF normalization
 explains ordinary helper RUNPATH removal, with raw failures preserved.
 
-This is the closing #56 candidate: all four frozen criteria have linked results,
+This completed #56: all four frozen criteria have linked results,
 using prior accepted grammar/icon/theme/lifetime evidence at its exact scope.
-No product behavior or UI changes; no new screenshots. Separate staged review is recorded with the
-signed actual-author DCO PR handoff; #56 stays open until
-that closing PR merges. #67/#77 retain FileManager1 and broader browser lifecycle
+No product behavior or UI changes; no new screenshots. Separate staged review
+accepted the exact signed actual-author DCO candidate. #67/#77 retain
+FileManager1 and broader browser lifecycle
 acceptance. #72 autostart, full release/default-X/compiler/hardware checks and
 parked #257/#258 remain separate. No performance comparison is due or runtime
 counter advanced. All owned labs are stopped; verified duplicate guest evidence
@@ -4365,7 +4489,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | STANDARDS-01 | P1 / fixed protocol inventory complete; wider audit open | A first-icon WM_STATE zero-XID defect is reproduced and corrected in the atom/expose batch; real first/reused title XID checks and combined 1291-file qualification pass. Maintain requirement-level specification/revision/owner/test/profile/evidence coverage using [STANDARDS.md](STANDARDS.md). The [forty-row protocol register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md) completes root/window/selection requirement inventory and owner handoffs, retaining historical evidence boundaries; other standards areas remain queued. Continue bounded inventories in stage 2; map independent fixtures and CI with VERIFY/COMPAT, reuse passing scoped evidence and assign real gaps to their owners. Required adopted clauses and accurate advertised capabilities are release gates; no blanket compliance badge or endless audit restart. See acceptance below. |
 | EWMH-01 | P1 / bounded desktop publication qualified; broader geometry/roles open | Reconcile ICCCM 2.0/EWMH 1.5 implementation, advertised atoms and independent-client evidence. Classify required vs optional hints, then implement bounded agreed gaps such as partial struts/multi-monitor fullscreen and protocol responsiveness with MONITOR/INPUT/DRAW/DATA owners. No speculative defect claim or parallel geometry authority. The [stage3 audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) independently checks63 advertised atoms, identity/client order/extents and records the reproduced initial empty-work-area gap. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), R01–R12/W01–W12, now separates exact historical checks from unqualified semantics and defines desktop/viewport/work-area acceptance. The bounded [desktop-publication checkpoint](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md) qualifies pager admission, count adoption/refusal and matching dependent arrays. Reserved-edge/dock geometry, multi-monitor root authority and broader clauses remain open; stage5 follows interaction/publication contracts. |
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
-| XDG-01 | P2 / Ready for closing review; all four #56 criteria qualified, merge pending | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
+| XDG-01 | Done / #56 closed by merged PR301; all four frozen criteria qualified | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
 | SETTINGS-01 | P2 / queued shared preferences | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |

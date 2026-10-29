@@ -11,6 +11,70 @@
 static const char generation[] =
 	"000000000000000000000000000000000000000000000001";
 
+static void test_resource_policy(void)
+{
+	struct preview_request request;
+	uint32_t colors[14][4];
+	char plan[337], text[1001];
+	size_t copied = 0;
+
+	for (unsigned int i = 0; i < 56; i++)
+		memcpy(plan + 6 * i, "1a2b3c", 6);
+	plan[336] = '\0';
+	assert(preview_plan_parse(plan, colors));
+	for (unsigned int i = 0; i < 14; i++)
+		for (unsigned int j = 0; j < 4; j++)
+			assert(colors[i][j] == 0x1a2b3c);
+	snprintf(text, sizeof(text),
+		"a 0000000000000001 0000000000000001 "
+		"prepare %s - 0 15000 1:%s", generation, plan);
+	assert(preview_request_parse(text, &request));
+	assert(request.operation == PREVIEW_PREPARE);
+	assert(request.timeout_ms == 15000 && request.colors[13][3] == 0x1a2b3c);
+	plan[335] = '\0';
+	assert(!preview_plan_parse(plan, colors));
+	assert(colors[13][3] == 0);
+	plan[335] = 'C';
+	assert(!preview_plan_parse(plan, colors));
+	plan[335] = 'c';
+	assert(preview_plan_parse(plan, colors));
+	for (unsigned int i = 0; i < 4; i++)
+	{
+		snprintf(text, sizeof(text),
+			"a 0000000000000001 0000000000000001 "
+			"prepare %s - %u %u %s:%s", generation,
+			i == 0 ? 1 : 0, i == 1 ? 999 : 15000,
+			i == 2 ? "2" : "1", i == 3 ? "00" : plan);
+		assert(!preview_request_parse(text, &request));
+		assert(request.cookie[0] == '\0');
+	}
+	snprintf(text, sizeof(text),
+		"a 0000000000000001 0000000000000001 "
+		"apply %s %s 0 0 -", generation, generation);
+	assert(preview_request_parse(text, &request));
+	assert(request.operation == PREVIEW_APPLY);
+	assert(preview_metadata_add(&copied, 65535));
+	assert(preview_metadata_add(&copied, 1) && copied == 65536);
+	assert(!preview_metadata_add(&copied, 1) && copied == 65536);
+	assert(!preview_metadata_add(&copied, SIZE_MAX));
+	assert(preview_generation_room(generation));
+	assert(!preview_generation_room(NULL));
+	assert(!preview_generation_room(
+		"00000000000000000000000000000000fffffffffffffffc"));
+	assert(preview_resource_colors_supported(0, 0, 100));
+	assert(!preview_resource_colors_supported(1, 0, 100));
+	assert(!preview_resource_colors_supported(0, 1, 100));
+	assert(!preview_resource_colors_supported(0, 0, 99));
+	assert(preview_resource_guard_check(99, 100, true, true) ==
+		PREVIEW_RESOURCE_VALID);
+	assert(preview_resource_guard_check(100, 100, true, true) ==
+		PREVIEW_RESOURCE_EXPIRED);
+	assert(preview_resource_guard_check(99, 100, true, false) ==
+		PREVIEW_RESOURCE_OWNER_GONE);
+	assert(preview_resource_guard_check(100, 100, false, false) ==
+		PREVIEW_RESOURCE_CONFLICT);
+}
+
 int main(void)
 {
 	struct preview_request request;
@@ -19,6 +83,8 @@ int main(void)
 		"a 0000000000000001 0000000000000001 query - - 1 0 -",
 		"a 0000000000000001 0000000000000001 query - - 0 0 - extra",
 		"a;Exec 0000000000000001 0000000000000001 query - - 0 0 -"};
+
+	test_resource_policy();
 
 	assert(preview_request_parse(
 		"a 0000000000000001 0000000000000001 query - - 0 0 -",

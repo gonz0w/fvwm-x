@@ -801,7 +801,7 @@
     "name": "Send_Preview",
     "cursor": "",
     "window": 0,
-    "descr": "Internal, bounded scalar preview leases"
+    "descr": "Internal, bounded scalar and scoped resource preview leases"
   },
   {
     "name": "Send_Query",

@@ -25,6 +25,12 @@ from mfl_stream_live import Connection
 from session_x_errors import SessionXErrors
 
 
+class DestroyNotify(C.Structure):
+    _fields_ = [('type', C.c_int), ('serial', C.c_ulong),
+        ('send_event', C.c_int), ('display', C.c_void_p),
+        ('event', C.c_ulong), ('window', C.c_ulong)]
+
+
 def run(args, profile):
     out = args.artifacts_dir / profile
     out.mkdir(parents=True, exist_ok=False)
@@ -64,6 +70,8 @@ def run(args, profile):
                 '*ThemeContrastProbe: Button quit \"Close\" ^[\n' +
                 '*ThemeContrastProbe: Command Nop\n')
             (out / 'configuration.fvwm').write_bytes(config.read_bytes())
+            evidence['configuration_sha256'] = hashlib.sha256(config.read_bytes()).hexdigest()
+            evidence['palettes_sha256'] = hashlib.sha256((root / 'palettes.json').read_bytes()).hexdigest()
             env = runtime.environment({'DISPLAY': display, 'HOME': str(runtime.root),
                 'FVWM_USERDIR': str(user), 'FVWM_DESKTOP_ROOT': str(root),
                 'FVWMMFL_SOCKET_PATH': str(runtime.root),
@@ -203,6 +211,9 @@ def run(args, profile):
                     env=env, capture_output=True, text=True, timeout=35)
                 assert result.returncode == 0, result.stderr
                 Path(result.stdout.strip().removeprefix('Screenshot saved: ')).replace(out / filename)
+                evidence.setdefault('captures', []).append({'file': filename,
+                    'sha256': hashlib.sha256((out / filename).read_bytes()).hexdigest(),
+                    'bytes': (out / filename).stat().st_size})
 
             def contrast_cases():
                 nonlocal snapshot
@@ -306,6 +317,300 @@ def run(args, profile):
                         wait_for_predicate('launcher dismissed before changing theme',
                             lambda: not pointer.grabbed(), time.monotonic() + 5, process=core)
 
+                def resource_preview_cases(probe, normal_bar, independent):
+                    nonlocal snapshot
+                    saved = request(scope='all')
+                    baseline_values = {name: value['saved'] for name, value in saved['settings'].items()}
+
+                    def restore_baseline():
+                        # Setup uses the existing eight-value IPC bound. The
+                        # all-eleven-field native Apply assertion stays above.
+                        names = sorted(baseline_values)
+                        for offset in range(0, len(names), 8):
+                            change({name: baseline_values[name]
+                                for name in names[offset:offset + 8]})
+                    defaults = dict(palette='slate', appearance='auto',
+                        day='07:00', night='19:00', transparency=True, motion=False,
+                        keep_wallpaper=False, launcher_opacity=94,
+                        wallpaper_palette='follow', wallpaper_appearance='follow',
+                        contrast='normal')
+                    cases = {}
+
+                    def wallpaper_owner():
+                        # The enlarged all-fields editor may cover the usual
+                        # screen sample. Observe the actual wallpaper property
+                        # while it is mapped, rather than its overlying pixels.
+                        x.XInternAtom.argtypes = [C.c_void_p, C.c_char_p, C.c_int]
+                        x.XInternAtom.restype = C.c_ulong
+                        x.XGetWindowProperty.argtypes = [C.c_void_p, C.c_ulong,
+                            C.c_ulong, C.c_long, C.c_long, C.c_int, C.c_ulong,
+                            C.POINTER(C.c_ulong), C.POINTER(C.c_int),
+                            C.POINTER(C.c_ulong), C.POINTER(C.c_ulong),
+                            C.POINTER(C.POINTER(C.c_ubyte))]
+                        atom = x.XInternAtom(d, b'_XROOTPMAP_ID', 0)
+                        type_, count, after = C.c_ulong(), C.c_ulong(), C.c_ulong()
+                        format_, data = C.c_int(), C.POINTER(C.c_ubyte)()
+                        try:
+                            assert x.XGetWindowProperty(d, client.root, atom, 0, 1,
+                                0, 0, C.byref(type_), C.byref(format_), C.byref(count),
+                                C.byref(after), C.byref(data)) == 0
+                            assert format_.value == 32 and count.value == 1 and data
+                            value = C.cast(data, C.POINTER(C.c_ulong))[0]
+                            assert value > 1
+                            return value
+                        finally:
+                            if data:
+                                x.XFree(data)
+
+                    x.XGetInputFocus.argtypes = [C.c_void_p,
+                        C.POINTER(C.c_ulong), C.POINTER(C.c_int)]
+                    x.XTranslateCoordinates.argtypes = [C.c_void_p, C.c_ulong,
+                        C.c_ulong, C.c_int, C.c_int, C.POINTER(C.c_int),
+                        C.POINTER(C.c_int), C.POINTER(C.c_ulong)]
+
+                    def parent_of(window):
+                        root_, parent, count = C.c_ulong(), C.c_ulong(), C.c_uint()
+                        items = C.POINTER(C.c_ulong)()
+                        try:
+                            ok = errors.read(window, 15, lambda: x.XQueryTree(d,
+                                window, C.byref(root_), C.byref(parent),
+                                C.byref(items), C.byref(count)))
+                            return parent.value if ok else None
+                        finally:
+                            if items:
+                                x.XFree(items)
+
+                    def form_key(window, symbol):
+                        witness = {'window': window, 'keysym': symbol.decode('ascii'),
+                            'status': 'waiting-for-native-form'}
+                        evidence.setdefault('keyboard_observations', []).append(witness)
+                        def ready():
+                            attrs = attributes(window)
+                            parent = parent_of(window)
+                            witness['readiness'] = {'parent': parent,
+                                'map_state': attrs.map_state if attrs else None}
+                            if not attrs or attrs.map_state != 2 or parent in (None, client.root):
+                                return None
+                            frame = parent_of(parent)
+                            mapped_controls = sum(bool(control_attrs and
+                                control_attrs.map_state == 2 and
+                                control_attrs.all_event_masks & (1 << 2))
+                                for control_attrs in (attributes(child)
+                                    for child in children(window)))
+                            witness['readiness'] = {'parent': parent, 'frame': frame,
+                                'map_state': attrs.map_state,
+                                'keypress_selected': bool(attrs.all_event_masks & 1),
+                                'mapped_button_controls': mapped_controls}
+                            return (witness['readiness'] if frame not in (None, client.root)
+                                and parent_of(frame) == client.root and
+                                attrs.all_event_masks & 1 and mapped_controls else None)
+                        wait_for_predicate('managed native Form keyboard readiness', ready,
+                            time.monotonic() + 10, process=core)
+                        geometry = {'profile': profile, 'screen_width': 1440,
+                            'screen_height': 1000, 'mapped_controls': []}
+                        witness['geometry'] = geometry
+                        def rectangle(target, destination, attrs):
+                            tx, ty, child = C.c_int(), C.c_int(), C.c_ulong()
+                            assert x.XTranslateCoordinates(d, target, destination,
+                                0, 0, C.byref(tx), C.byref(ty), C.byref(child))
+                            # Translate returns the interior origin. Include
+                            # the real server border in each containment check.
+                            border = attrs.border_width
+                            return {'window': target, 'x': tx.value - border,
+                                'y': ty.value - border,
+                                'width': attrs.width + 2 * border,
+                                'height': attrs.height + 2 * border,
+                                'interior_width': attrs.width,
+                                'interior_height': attrs.height,
+                                'border_width': border}
+                        form_attrs = attributes(window)
+                        frame = witness['readiness']['frame']
+                        frame_attrs = attributes(frame)
+                        assert form_attrs and frame_attrs
+                        for label, target, attrs in (('client', window, form_attrs),
+                                ('frame', frame, frame_attrs)):
+                            assert attrs.map_state == 2
+                            rect = rectangle(target, client.root, attrs)
+                            geometry[label] = rect
+                            assert (rect['x'] >= 0 and rect['y'] >= 0 and
+                                rect['x'] + rect['width'] <= 1440 and
+                                rect['y'] + rect['height'] <= 1000), geometry
+                        # Labels drawn directly into the Form have no X child;
+                        # only actual mapped immediate control windows apply.
+                        for child in children(window):
+                            attrs = attributes(child)
+                            if not attrs or attrs.map_state != 2:
+                                continue
+                            relative = rectangle(child, window, attrs)
+                            observed = {'relative_to_client': relative,
+                                'root': rectangle(child, client.root, attrs)}
+                            geometry['mapped_controls'].append(observed)
+                            assert (relative['x'] >= 0 and relative['y'] >= 0 and
+                                relative['x'] + relative['width'] <= form_attrs.width and
+                                relative['y'] + relative['height'] <= form_attrs.height), geometry
+                        geometry['within_bounds'] = True
+                        # A visible title and another module's barrier do not
+                        # establish that the Form is managed or has X focus.
+                        # Its top-level window selects KeyPress; verify that
+                        # actual recipient before injecting the real key.
+                        control.send(('WindowId ' + str(window) + ' Focus NoWarp\n').encode())
+                        barrier()
+                        def focused():
+                            actual, revert = C.c_ulong(), C.c_int()
+                            x.XGetInputFocus(d, C.byref(actual), C.byref(revert))
+                            witness['actual_focus'] = actual.value
+                            witness['revert_to'] = revert.value
+                            return actual.value == window
+                        wait_for_predicate('actual native Form keyboard focus', focused,
+                            time.monotonic() + 10, process=core)
+                        assert focused(), witness
+                        witness['status'] = 'focus-observed'
+                        key(symbol)
+                        witness['status'] = 'focused-key-submitted'
+
+                    def preview_from_editor():
+                        # Defaults supplies a deterministic, independent draft
+                        # differing from the committed opacity/wallpaper. F5
+                        # must capture it without applying these other fields.
+                        control.send(b'SendToModule FvwmDesktop edit-settings all\n')
+                        editor = wait_for_predicate('complete settings editor',
+                            lambda: named_windows().get('Desktop settings'),
+                            time.monotonic() + 10, process=core)
+                        previous = editor
+                        attrs = attributes(previous)
+                        assert attrs and attrs.map_state == 2
+                        replacement = {'old_window': previous,
+                            'observer_event_mask_before': attrs.your_event_mask,
+                            'status': 'waiting-for-old-form-destruction',
+                            'drained_prior_destroy_events': 0}
+                        evidence.setdefault('editor_replacements', []).append(replacement)
+                        x.XSelectInput(d, previous, attrs.your_event_mask | (1 << 17))
+                        x.XSync(d, 0)
+                        event = Event()
+                        while x.XCheckTypedWindowEvent(d, previous, 17, C.byref(event)):
+                            replacement['drained_prior_destroy_events'] += 1
+                        form_key(editor, b'F2')
+                        def destroyed():
+                            if not x.XCheckTypedWindowEvent(d, previous, 17, C.byref(event)):
+                                return None
+                            observed = C.cast(C.byref(event), C.POINTER(DestroyNotify)).contents
+                            assert observed.type == 17 and not observed.send_event
+                            assert observed.event == previous and observed.window == previous
+                            replacement.update(status='old-form-destroyed',
+                                destroyed_window=observed.window,
+                                destroy_event_window=observed.event,
+                                destroy_event_serial=observed.serial,
+                                destroy_event_synthetic=bool(observed.send_event))
+                            return True
+                        wait_for_predicate('actual old Defaults editor destruction', destroyed,
+                            time.monotonic() + 10, process=core)
+                        # The server can reuse a departed Form process's XID.
+                        # Destruction establishes the incarnation boundary;
+                        # unequal integer IDs do not establish freshness.
+                        editor = wait_for_predicate('defaults draft editor',
+                            lambda: named_windows().get('Desktop settings'),
+                            time.monotonic() + 10, process=core)
+                        replacement.update(status='mapped-replacement-observed',
+                            replacement_window=editor, xid_reused=editor == previous)
+                        form_key(editor, b'F5')
+                        return wait_for_predicate('actual high contrast Save Cancel Form',
+                            lambda: named_windows().get('Preview high contrast'),
+                            time.monotonic() + 10, process=core)
+
+                    for ending in ('cancel', 'save'):
+                        before = state.read_bytes()
+                        raw = json.loads(before)
+                        original_wallpaper = wallpaper_owner()
+                        preview = preview_from_editor()
+                        assert state.read_bytes() == before
+                        assert wallpaper() == independent and opacity() == 100
+                        surface, text = (0, 0xffffff) if mode == 'dark' else (0xffffff, 0)
+                        observed = wait_for_predicate('preview recolors existing native Form',
+                            lambda: monochrome(probe, surface, text),
+                            time.monotonic() + 5, process=core)
+                        assert named_windows().get('Theme contrast probe') == probe
+                        capture('resource-preview-' + ending + '-active.png')
+                        form_key(preview, b'Escape' if ending == 'cancel' else b'Return')
+                        wait_for_predicate('contrast preview retired after ' + ending,
+                            lambda: 'Preview high contrast' not in named_windows(),
+                            time.monotonic() + 10, process=core)
+                        editor = wait_for_predicate('captured unrelated draft returned',
+                            lambda: named_windows().get('Desktop settings'),
+                            time.monotonic() + 10, process=core)
+                        barrier()
+                        if ending == 'cancel':
+                            assert state.read_bytes() == before
+                            wait_for_predicate('cancel restores actual normal bar',
+                                lambda: pixel(5, 5) == normal_bar,
+                                time.monotonic() + 10, process=core)
+                            assert opacity() == 82
+                        else:
+                            wait_for_predicate('Save persists contrast only',
+                                lambda: json.loads(state.read_text()).get('contrast') == 'high',
+                                time.monotonic() + 5, process=core)
+                            expected = dict(raw, contrast='high')
+                            assert json.loads(state.read_text()) == expected
+                            assert opacity() == 100
+                            # Slot release is observable only after the core's
+                            # terminal confirmation, rather than queued Save.
+                            capability = request(resource='appearance')['resource_preview']
+                            assert capability['slot_available'] is True, capability
+                        assert wallpaper_owner() == original_wallpaper
+                        capture('resource-preview-' + ending + '-returned-draft.png')
+                        # Applying the returned draft proves every captured
+                        # field survived. Save updates only its contrast field.
+                        form_key(editor, b'F3')
+                        wanted = dict(defaults, contrast='high' if ending == 'save' else 'normal')
+                        def draft_applied():
+                            observed_ = request(scope='all')
+                            values = {name: value['saved'] for name, value in observed_['settings'].items()}
+                            return observed_ if values == wanted else None
+                        snapshot = wait_for_predicate('all unrelated draft values retained',
+                            draft_applied, time.monotonic() + 10, process=core)
+                        assert json.loads(state.read_text())['launcher_opacity'] == 94
+                        cases[ending] = {'existing_form': observed,
+                            'contrast_only_before_apply': True, 'returned_draft': wanted}
+                        snapshot = request(scope='all')
+                        restore_baseline()
+                        wait_for_predicate('normal baseline resources recovered',
+                            lambda: pixel(5, 5) == normal_bar and opacity() == 82,
+                            time.monotonic() + 10, process=core)
+                        assert wallpaper() == independent
+                        control.send(b'KillModule FvwmForm SlateNoticeForm\n')
+
+                    # An actual external file edit must survive a later Save
+                    # callback. The controller must recover without persisting
+                    # a stale contrast snapshot or replacing the external bytes.
+                    before = json.loads(state.read_text())
+                    snapshot = request(scope='all')
+                    control.send(('SendToModule FvwmDesktop preview-contrast ' +
+                        snapshot['provider'] + '\n').encode())
+                    preview = wait_for_predicate('menu entry high contrast Form',
+                        lambda: named_windows().get('Preview high contrast'),
+                        time.monotonic() + 10, process=core)
+                    external = dict(before, launcher_opacity=37)
+                    external_bytes = (json.dumps(external, indent=3) + '\n').encode()
+                    state.write_bytes(external_bytes)
+                    form_key(preview, b'Return')
+                    wait_for_predicate('external-edit preview refusal recovery',
+                        lambda: 'Preview high contrast' not in named_windows() and
+                            opacity() == 82 and pixel(5, 5) == normal_bar,
+                        time.monotonic() + 10, process=core)
+                    assert state.read_bytes() == external_bytes
+                    capture('resource-preview-external-edit-recovered.png')
+                    cases['external_file_edit_preserved'] = True
+                    snapshot = request(scope='all')
+                    snapshot = request('action', operation='reload', provider=snapshot['provider'],
+                        generation=snapshot['generation'])
+                    barrier()
+                    snapshot = request(scope='all')
+                    restore_baseline()
+                    control.send(b'KillModule FvwmForm SlateNoticeForm\n')
+                    wait_for_predicate('resource preview final normal baseline',
+                        lambda: pixel(5, 5) == normal_bar and opacity() == 82,
+                        time.monotonic() + 10, process=core)
+                    evidence['resource_preview'] = cases
+
                 change({'contrast': 'normal', 'transparency': True, 'launcher_opacity': 82,
                     'wallpaper_palette': 'grove', 'wallpaper_appearance': 'light'})
                 independent = wallpaper()
@@ -323,6 +628,8 @@ def run(args, profile):
                     time.monotonic() + 10, process=core)
                 x.XSelectInput(d, probe, 1 << 17)
                 x.XSync(d, 0)
+                if args.contrast_preview:
+                    resource_preview_cases(probe, normal_bar, independent)
                 observations = {}
                 for appearance in ('dark', 'light'):
                     change({'contrast': 'high', 'appearance': appearance})
@@ -548,6 +855,12 @@ def run(args, profile):
             for log in runtime.root.glob('*.log'):
                 shutil.copy2(log, out / log.name)
             (out / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')
+            (out / 'capture-manifest.json').write_text(json.dumps({
+                'profile': profile,
+                'configuration_sha256': evidence.get('configuration_sha256'),
+                'palettes_sha256': evidence.get('palettes_sha256'),
+                'captures': evidence.get('captures', []),
+                'inspection': 'pending human/lead image inspection'}, indent=2) + '\n')
     assert not evidence['observer_unexpected_x_errors'], evidence
 
 
@@ -557,8 +870,12 @@ if __name__ == '__main__':
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--contrast', action='store_true',
         help='Run high contrast, native Form/menu pixels and opacity recovery cases')
+    parser.add_argument('--contrast-preview', action='store_true',
+        help='Also run native resource Save/Cancel and captured editor draft cases')
     parser.add_argument('--profiles', nargs='+', default=['slate-dark', 'dune-light', 'classic-large'],
         choices=['slate-dark', 'dune-light', 'classic-large'])
     options = parser.parse_args()
+    if options.contrast_preview:
+        options.contrast = True
     for selected in options.profiles:
         run(options, selected)

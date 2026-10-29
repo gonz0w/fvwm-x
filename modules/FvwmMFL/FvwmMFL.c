@@ -1041,11 +1041,19 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		    !cJSON_AddNumberToObject(result, "deadline_ms",
 			MFL_REQUEST_TIMEOUT_MS) ||
 		    !cJSON_AddNumberToObject(result, "max_line_bytes",
+			MFL_CLIENT_LINE_MAX) ||
+		    !cJSON_AddNumberToObject(result, "max_command_bytes",
 			MAX_MODULE_INPUT_TEXT_LEN) ||
 		    !cJSON_AddNumberToObject(
 			result, "core_query_result_max_bytes",
 			MODULE_QUERY_RESULT_MAX) ||
 		    !cJSON_AddStringToObject(result, "preview_scope", "menu-opacity") ||
+		    !cJSON_AddNumberToObject(result, "resource_preview_version", 1) ||
+		    !cJSON_AddStringToObject(result, "resource_preview_scope",
+			"high-contrast") ||
+		    !cJSON_AddNumberToObject(result, "resource_preview_role_count", 14) ||
+		    !cJSON_AddNumberToObject(result, "resource_preview_metadata_max",
+			65536) ||
 		    !cJSON_AddStringToObject(result, "preview_persistence", "runtime-only") ||
 		    !cJSON_AddNumberToObject(result, "preview_lease_limit", 1) ||
 		    !cJSON_AddNumberToObject(result, "preview_timeout_max_ms", 30000) ||
@@ -1235,7 +1243,8 @@ client_request(struct client *c, const char *json)
 		request_now_ms(), &slot);
 	if (error != NULL)
 		return client_reply(c, request.id, error, NULL);
-	if (request.kind == MFL_REQUEST_PREVIEW_START)
+	if (request.kind == MFL_REQUEST_PREVIEW_START ||
+	    request.kind == MFL_REQUEST_PREVIEW_PREPARE)
 		c->preview_used = true;
 	if (!(mfl_request_is_preview(request.kind) ?
 	    mfl_request_preview_command(command, sizeof(command), &request,
@@ -1478,7 +1487,7 @@ client_read_cb(struct bufferevent *bev, void *ctx)
 {
 	struct client *c = ctx;
 	struct evbuffer *input = bufferevent_get_input(bev);
-	char command[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	char command[MFL_CLIENT_LINE_MAX + 1];
 	const struct timeval timeout = {MFL_PROGRESS_TIMEOUT, 0};
 	const struct timeval yield = {0, 1000};
 	unsigned int count;

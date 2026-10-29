@@ -1,0 +1,735 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "owner": "Cam",
+  "issues": [
+    60,
+    70
+  ],
+  "status": "focused checks passed; broader owner/release acceptance pending",
+  "base": "31b191f359b9ccfe74d2ba31cc7848eaf74a280d",
+  "source_bindings": {
+    "source02": {
+      "tree": "1ff70b097e689e6cdfb6fb079d6f036082569149",
+      "closure": "8b478502d0acfea45f54f9e8ce28762ac429a3bd1a663e75adec73da239287fd",
+      "archive_sha256": "3adda1993d8e30f4c0990e827b107ca8d7d467ad64649b69354db499f1caf21e"
+    },
+    "source03": {
+      "tree": "884d712c1a182ed4691e0fb80a848a1182b9d726",
+      "closure": "739e176b112be840e55f18cac397137861794b272bfc066898649c1756967579",
+      "archive_sha256": "7e048f88fb1dc4858718fa1016114a229ba4a7ab27a77bd59b9c4eebfafa3e83"
+    },
+    "source04": {
+      "tree": "e5267697497c0b396e7e055158a03152ee5f94fe",
+      "closure": "ce6431508fcded54103fa1967ebcbc00e07dafb0ee28757e018f97a3d37348cd",
+      "archive_sha256": "d6e7dddee408e032c1ed780c03d0c318d0a71bfb972a66ef8e3880678a511ed7"
+    },
+    "source09": {
+      "tree": "b70ccab72bcf82f1145904d99226203f7239cc32",
+      "closure": "e99b732881285238a5e5336c71577475fea1a8b475681315c412976a6851e121",
+      "archive_sha256": "f54cf59f88207386985b671c00b2ae601bfc917e453d65eb725aa343dcc19c66"
+    },
+    "source10": {
+      "tree": "57b824e1169c5411e8b356edce4a4396032d0240",
+      "closure": "360717a0800bd66a776becbe40e80d07c911279c659c2c6fc2baad6bf40b6afe",
+      "archive_sha256": "91d7552a1c4b89b733dacd3c8b5a6a6fd2093fd0f312e101e757aa4d278a5b7b"
+    },
+    "source12": {
+      "tree": "4eb7e6b75331dfe14d2b4d40a416298b909c48a5",
+      "closure": "27f7785fbe6a52036dca9fed47a0e8a9f9739c0ea2ffac32e3f7f3df6daf1889",
+      "archive_sha256": "c433be048ce33256dbbe8f4161823c2a92d5070f6c5592effb932d277f082c81"
+    },
+    "source13": {
+      "tree": "6ea83587d38d719ca7a613ecd04ba55e33ab5381",
+      "closure": "1561eafe649166010873bef3e432c4562c6322d1442c7716b7cfdab760dacfd7",
+      "archive_sha256": "67e83bfc028c7c09ee2b1c2cd24086c4bd25680480ec64755965acfdaf1433f3"
+    }
+  },
+  "gates": [
+    {
+      "receipt": "result08.json",
+      "status": "passed",
+      "source_pre": "e99b732881285238a5e5336c71577475fea1a8b475681315c412976a6851e121",
+      "source_post": "e99b732881285238a5e5336c71577475fea1a8b475681315c412976a6851e121",
+      "commands": [
+        {
+          "label": "build-gcc-configure08",
+          "exit": 0,
+          "seconds": 1.1226111160003711
+        },
+        {
+          "label": "build-gcc-build08",
+          "exit": 0,
+          "seconds": 8.536761022000064
+        },
+        {
+          "label": "build-gcc-font-unit08",
+          "exit": 0,
+          "seconds": 0.001916969999911089
+        },
+        {
+          "label": "build-gcc-font-x08-1",
+          "exit": 0,
+          "seconds": 1.6069893169997158
+        },
+        {
+          "label": "build-gcc-font-x08-2",
+          "exit": 0,
+          "seconds": 1.53483819900066
+        },
+        {
+          "label": "build-gcc-resource-x08",
+          "exit": 0,
+          "seconds": 23.200868640999943
+        },
+        {
+          "label": "build-module-waits-asan-configure08",
+          "exit": 0,
+          "seconds": 1.203839166999387
+        },
+        {
+          "label": "build-module-waits-asan-build08",
+          "exit": 0,
+          "seconds": 4.118561553000291
+        },
+        {
+          "label": "build-module-waits-asan-font-unit08",
+          "exit": 0,
+          "seconds": 0.011681822999889846
+        },
+        {
+          "label": "build-module-waits-asan-font-x08-1",
+          "exit": 0,
+          "seconds": 1.959819652999613
+        },
+        {
+          "label": "build-module-waits-asan-font-x08-2",
+          "exit": 0,
+          "seconds": 1.966129068000555
+        },
+        {
+          "label": "build-module-waits-asan-resource-x08",
+          "exit": 0,
+          "seconds": 23.626789725999515
+        }
+      ]
+    },
+    {
+      "receipt": "result12.json",
+      "status": "failed",
+      "source_pre": "e99b732881285238a5e5336c71577475fea1a8b475681315c412976a6851e121",
+      "source_post": "e99b732881285238a5e5336c71577475fea1a8b475681315c412976a6851e121",
+      "commands": [
+        {
+          "label": "fault-wrapper-cflags12",
+          "exit": 0,
+          "seconds": 0.005034449999584467
+        },
+        {
+          "label": "fault-wrapper-build12",
+          "exit": 0,
+          "seconds": 0.023654738999539404
+        },
+        {
+          "label": "normal-link-command12",
+          "exit": 0,
+          "seconds": 0.0068560030003936845
+        },
+        {
+          "label": "fault-core-link12",
+          "exit": 0,
+          "seconds": 0.05885309400036931
+        },
+        {
+          "label": "resource-fault-x12",
+          "exit": 0,
+          "seconds": 23.93834538200008
+        },
+        {
+          "label": "mfl_preview_live12",
+          "exit": 0,
+          "seconds": 3.2541838790002657
+        },
+        {
+          "label": "mfl_core_state_live12",
+          "exit": 0,
+          "seconds": 0.34777136399952724
+        },
+        {
+          "label": "mfl_stream_live12",
+          "exit": 0,
+          "seconds": 0.8938861119995636
+        },
+        {
+          "label": "mfl_request_live12",
+          "exit": 0,
+          "seconds": 10.316427687000214
+        },
+        {
+          "label": "themes12",
+          "exit": 1,
+          "seconds": 10.655702078000104
+        }
+      ]
+    },
+    {
+      "receipt": "result13.json",
+      "status": "failed",
+      "source_pre": "360717a0800bd66a776becbe40e80d07c911279c659c2c6fc2baad6bf40b6afe",
+      "source_post": "360717a0800bd66a776becbe40e80d07c911279c659c2c6fc2baad6bf40b6afe",
+      "commands": [
+        {
+          "label": "syntax13",
+          "exit": 0,
+          "seconds": 0.01854916400043294
+        },
+        {
+          "label": "build-gcc-font-x13-1",
+          "exit": 0,
+          "seconds": 1.6421023090006202
+        },
+        {
+          "label": "build-gcc-font-x13-2",
+          "exit": 0,
+          "seconds": 1.7337758269986807
+        },
+        {
+          "label": "build-module-waits-asan-font-x13-1",
+          "exit": 0,
+          "seconds": 1.9582960910011025
+        },
+        {
+          "label": "build-module-waits-asan-font-x13-2",
+          "exit": 0,
+          "seconds": 1.9863128989982215
+        },
+        {
+          "label": "manual-desktop13",
+          "exit": 0,
+          "seconds": 0.05881134400078736
+        },
+        {
+          "label": "themes13",
+          "exit": 1,
+          "seconds": 10.671571681999922
+        }
+      ]
+    },
+    {
+      "receipt": "result14.json",
+      "status": "failed",
+      "source_pre": "bb645cc9ee861499cb1dc182f29fbf498ee5c9bd19dfe573a1ccc7c92da96013",
+      "source_post": "bb645cc9ee861499cb1dc182f29fbf498ee5c9bd19dfe573a1ccc7c92da96013",
+      "commands": [
+        {
+          "label": "themes14",
+          "exit": 1,
+          "seconds": 1.945083443999465
+        }
+      ]
+    },
+    {
+      "receipt": "result15.json",
+      "status": "passed",
+      "source_pre": "27f7785fbe6a52036dca9fed47a0e8a9f9739c0ea2ffac32e3f7f3df6daf1889",
+      "source_post": "27f7785fbe6a52036dca9fed47a0e8a9f9739c0ea2ffac32e3f7f3df6daf1889",
+      "commands": [
+        {
+          "label": "themes15",
+          "exit": 0,
+          "seconds": 25.013274678000016
+        }
+      ]
+    },
+    {
+      "receipt": "result17.json",
+      "status": "passed",
+      "source_pre": "1561eafe649166010873bef3e432c4562c6322d1442c7716b7cfdab760dacfd7",
+      "source_post": "1561eafe649166010873bef3e432c4562c6322d1442c7716b7cfdab760dacfd7",
+      "commands": [
+        {
+          "label": "go-ui-normal17",
+          "exit": 0,
+          "seconds": 2.4869813860004797
+        },
+        {
+          "label": "desktop-ui-build17",
+          "exit": 0,
+          "seconds": 0.3748916660006216
+        },
+        {
+          "label": "themes17",
+          "exit": 0,
+          "seconds": 26.486851039999237
+        }
+      ]
+    }
+  ],
+  "observations": {
+    "build-gcc-1": {
+      "status": "passed",
+      "effective_scale_quarters": [
+        4
+      ],
+      "menus": 10,
+      "startup_geometry": {
+        "width": 163,
+        "height": 57
+      }
+    },
+    "build-gcc-2": {
+      "status": "passed",
+      "effective_scale_quarters": [
+        8
+      ],
+      "menus": 10,
+      "startup_geometry": {
+        "width": 167,
+        "height": 61
+      }
+    },
+    "build-module-waits-asan-1": {
+      "status": "passed",
+      "effective_scale_quarters": [
+        4
+      ],
+      "menus": 10,
+      "startup_geometry": {
+        "width": 163,
+        "height": 57
+      }
+    },
+    "build-module-waits-asan-2": {
+      "status": "passed",
+      "effective_scale_quarters": [
+        8
+      ],
+      "menus": 10,
+      "startup_geometry": {
+        "width": 167,
+        "height": 61
+      }
+    },
+    "build-gcc-resource-x08": {
+      "status": "passed",
+      "case_names": [
+        "typed-plan-and-stale-refusal-no-publication",
+        "cancel-before-apply-and-active-clock-starts-at-publication",
+        "prepared-generation-conflict-no-apply",
+        "reverted-actual-backing-after-source-deletion",
+        "expired-actual-backing-after-source-deletion",
+        "prepared-deadline-never-publishes",
+        "refusal-Transparent",
+        "refusal-fgTint red 50",
+        "refusal-bgTint red 50",
+        "refusal-fg_alpha 70",
+        "missing-menu-style-no-partial-publication",
+        "real-color-allocation-failure-no-publication",
+        "metadata-filename-setup",
+        "metadata-overflow-no-publication",
+        "preserve-external-Colorset 14 bg #135724",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57",
+        "preserve-external-MenuStyle * Translucent 64",
+        "external-root-property-conflict-preserves-external-owner",
+        "raw-root-pixmap-not-adopted",
+        "nested-menu-expiry",
+        "nested-menu-revert",
+        "nested-menu-confirm",
+        "nested-menu-confirm-expiry",
+        "native-Wait-preparing-expiry",
+        "native-Wait-active-expiry",
+        "actor-isolation-scalar-exclusion-disconnect",
+        "owner-loss-detached-during-menu-outer-recovery",
+        "native-producer-death-fresh-actor-no-inheritance"
+      ],
+      "case_states": {
+        "typed-plan-and-stale-refusal-no-publication": "passed",
+        "cancel-before-apply-and-active-clock-starts-at-publication": "passed",
+        "prepared-generation-conflict-no-apply": "passed",
+        "reverted-actual-backing-after-source-deletion": "observed",
+        "expired-actual-backing-after-source-deletion": "observed",
+        "prepared-deadline-never-publishes": "passed",
+        "refusal-Transparent": "observed",
+        "refusal-fgTint red 50": "observed",
+        "refusal-bgTint red 50": "observed",
+        "refusal-fg_alpha 70": "observed",
+        "missing-menu-style-no-partial-publication": "observed",
+        "real-color-allocation-failure-no-publication": "skipped",
+        "metadata-filename-setup": "unavailable",
+        "metadata-overflow-no-publication": "observed",
+        "preserve-external-Colorset 14 bg #135724": "observed",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57": "observed",
+        "preserve-external-MenuStyle * Translucent 64": "observed",
+        "external-root-property-conflict-preserves-external-owner": "observed",
+        "raw-root-pixmap-not-adopted": "observed",
+        "nested-menu-expiry": "observed",
+        "nested-menu-revert": "observed",
+        "nested-menu-confirm": "observed",
+        "nested-menu-confirm-expiry": "observed",
+        "native-Wait-preparing-expiry": "observed",
+        "native-Wait-active-expiry": "observed",
+        "actor-isolation-scalar-exclusion-disconnect": "passed",
+        "owner-loss-detached-during-menu-outer-recovery": "passed",
+        "native-producer-death-fresh-actor-no-inheritance": "passed"
+      }
+    },
+    "build-module-waits-asan-resource-x08": {
+      "status": "passed",
+      "case_names": [
+        "typed-plan-and-stale-refusal-no-publication",
+        "cancel-before-apply-and-active-clock-starts-at-publication",
+        "prepared-generation-conflict-no-apply",
+        "reverted-actual-backing-after-source-deletion",
+        "expired-actual-backing-after-source-deletion",
+        "prepared-deadline-never-publishes",
+        "refusal-Transparent",
+        "refusal-fgTint red 50",
+        "refusal-bgTint red 50",
+        "refusal-fg_alpha 70",
+        "missing-menu-style-no-partial-publication",
+        "real-color-allocation-failure-no-publication",
+        "metadata-filename-setup",
+        "metadata-overflow-no-publication",
+        "preserve-external-Colorset 14 bg #135724",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57",
+        "preserve-external-MenuStyle * Translucent 64",
+        "external-root-property-conflict-preserves-external-owner",
+        "raw-root-pixmap-not-adopted",
+        "nested-menu-expiry",
+        "nested-menu-revert",
+        "nested-menu-confirm",
+        "nested-menu-confirm-expiry",
+        "native-Wait-preparing-expiry",
+        "native-Wait-active-expiry",
+        "actor-isolation-scalar-exclusion-disconnect",
+        "owner-loss-detached-during-menu-outer-recovery",
+        "native-producer-death-fresh-actor-no-inheritance"
+      ],
+      "case_states": {
+        "typed-plan-and-stale-refusal-no-publication": "passed",
+        "cancel-before-apply-and-active-clock-starts-at-publication": "passed",
+        "prepared-generation-conflict-no-apply": "passed",
+        "reverted-actual-backing-after-source-deletion": "observed",
+        "expired-actual-backing-after-source-deletion": "observed",
+        "prepared-deadline-never-publishes": "passed",
+        "refusal-Transparent": "observed",
+        "refusal-fgTint red 50": "observed",
+        "refusal-bgTint red 50": "observed",
+        "refusal-fg_alpha 70": "observed",
+        "missing-menu-style-no-partial-publication": "observed",
+        "real-color-allocation-failure-no-publication": "skipped",
+        "metadata-filename-setup": "unavailable",
+        "metadata-overflow-no-publication": "observed",
+        "preserve-external-Colorset 14 bg #135724": "observed",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57": "observed",
+        "preserve-external-MenuStyle * Translucent 64": "observed",
+        "external-root-property-conflict-preserves-external-owner": "observed",
+        "raw-root-pixmap-not-adopted": "observed",
+        "nested-menu-expiry": "observed",
+        "nested-menu-revert": "observed",
+        "nested-menu-confirm": "observed",
+        "nested-menu-confirm-expiry": "observed",
+        "native-Wait-preparing-expiry": "observed",
+        "native-Wait-active-expiry": "observed",
+        "actor-isolation-scalar-exclusion-disconnect": "passed",
+        "owner-loss-detached-during-menu-outer-recovery": "passed",
+        "native-producer-death-fresh-actor-no-inheritance": "passed"
+      }
+    },
+    "resource-fault-x12": {
+      "status": "passed",
+      "case_names": [
+        "typed-plan-and-stale-refusal-no-publication",
+        "cancel-before-apply-and-active-clock-starts-at-publication",
+        "prepared-generation-conflict-no-apply",
+        "reverted-actual-backing-after-source-deletion",
+        "expired-actual-backing-after-source-deletion",
+        "prepared-deadline-never-publishes",
+        "refusal-Transparent",
+        "refusal-fgTint red 50",
+        "refusal-bgTint red 50",
+        "refusal-fg_alpha 70",
+        "missing-menu-style-no-partial-publication",
+        "real-color-allocation-failure-no-publication",
+        "metadata-filename-setup",
+        "metadata-overflow-no-publication",
+        "preserve-external-Colorset 14 bg #135724",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57",
+        "preserve-external-MenuStyle * Translucent 64",
+        "external-root-property-conflict-preserves-external-owner",
+        "raw-root-pixmap-not-adopted",
+        "nested-menu-expiry",
+        "nested-menu-revert",
+        "nested-menu-confirm",
+        "nested-menu-confirm-expiry",
+        "native-Wait-preparing-expiry",
+        "native-Wait-active-expiry",
+        "actor-isolation-scalar-exclusion-disconnect",
+        "owner-loss-detached-during-menu-outer-recovery",
+        "native-producer-death-fresh-actor-no-inheritance"
+      ],
+      "case_states": {
+        "typed-plan-and-stale-refusal-no-publication": "passed",
+        "cancel-before-apply-and-active-clock-starts-at-publication": "passed",
+        "prepared-generation-conflict-no-apply": "passed",
+        "reverted-actual-backing-after-source-deletion": "observed",
+        "expired-actual-backing-after-source-deletion": "observed",
+        "prepared-deadline-never-publishes": "passed",
+        "refusal-Transparent": "observed",
+        "refusal-fgTint red 50": "observed",
+        "refusal-bgTint red 50": "observed",
+        "refusal-fg_alpha 70": "observed",
+        "missing-menu-style-no-partial-publication": "observed",
+        "real-color-allocation-failure-no-publication": "observed",
+        "metadata-filename-setup": "unavailable",
+        "metadata-overflow-no-publication": "observed",
+        "preserve-external-Colorset 14 bg #135724": "observed",
+        "preserve-external-MenuStyle SlateLauncherStyle Translucent 57": "observed",
+        "preserve-external-MenuStyle * Translucent 64": "observed",
+        "external-root-property-conflict-preserves-external-owner": "observed",
+        "raw-root-pixmap-not-adopted": "observed",
+        "nested-menu-expiry": "observed",
+        "nested-menu-revert": "observed",
+        "nested-menu-confirm": "observed",
+        "nested-menu-confirm-expiry": "observed",
+        "native-Wait-preparing-expiry": "observed",
+        "native-Wait-active-expiry": "observed",
+        "actor-isolation-scalar-exclusion-disconnect": "passed",
+        "owner-loss-detached-during-menu-outer-recovery": "passed",
+        "native-producer-death-fresh-actor-no-inheritance": "passed"
+      }
+    },
+    "go": {
+      "go-normal": {
+        "packages": [
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/transport",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/commandmeta",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+            "action": "fail"
+          }
+        ],
+        "passed_tests": 256
+      },
+      "go-controller02": {
+        "packages": [
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+            "action": "pass"
+          }
+        ],
+        "passed_tests": 184
+      },
+      "go-race02": {
+        "packages": [
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/transport",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/cmd/fvwmcommand",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+            "action": "pass"
+          },
+          {
+            "package": "github.com/fvwmorg/FvwmPrompt/internal/commandmeta",
+            "action": "pass"
+          }
+        ],
+        "passed_tests": 261
+      }
+    }
+  },
+  "themes": {
+    "slate-dark": {
+      "configuration_sha256": "21f1035b4a0cb800f307fb5d7e0dce4167311370f541aa2dda1b47ebca28c66d",
+      "capture_count": 11,
+      "replacements": [
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 1268,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        },
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 8460,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        }
+      ],
+      "geometry_checks": 9,
+      "unexpected_x_errors": []
+    },
+    "dune-light": {
+      "configuration_sha256": "f427d1fb487f74f88c015034be4e9a720bfd2605ec1d7f96e8729c5ca824163c",
+      "capture_count": 11,
+      "replacements": [
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 1268,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        },
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 8460,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        }
+      ],
+      "geometry_checks": 9,
+      "unexpected_x_errors": []
+    },
+    "classic-large": {
+      "configuration_sha256": "c6fb4a25ad5252845603e3ff5bacc122f722e2d52c6664d12222812dd2b5c254",
+      "capture_count": 11,
+      "replacements": [
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 1268,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        },
+        {
+          "old_window": 14680071,
+          "observer_event_mask_before": 0,
+          "status": "mapped-replacement-observed",
+          "drained_prior_destroy_events": 0,
+          "destroyed_window": 14680071,
+          "destroy_event_window": 14680071,
+          "destroy_event_serial": 8460,
+          "destroy_event_synthetic": false,
+          "replacement_window": 14680071,
+          "xid_reused": true
+        }
+      ],
+      "geometry_checks": 9,
+      "unexpected_x_errors": []
+    }
+  },
+  "artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "69932319e4e311bb8ad3fb2bd41f0fc216638570058dfada2018c6ded3edbed8",
+      "bytes": 5649280
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "ce738106ce599b07a0a1127723b30ec6718a68a616667ed2cb11cf5973d809e9",
+      "bytes": 449464
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+      "bytes": 1804472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "7c589118670025bf2008fe7fe31fe1e1a123492abfca0814999aa62201fd6757",
+      "bytes": 5761158
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmCommand": {
+      "sha256": "d59d100cd4356f9d2f61bd13dddb486ab5fd958f30f2200818083a8fefc3294c",
+      "bytes": 4692152
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe": {
+      "sha256": "3c4e6f95d85f8fc65520262b0fc898a4e6ea8a356ed1f18b3b4b8e8a78aaad6b",
+      "bytes": 157720
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": {
+      "sha256": "a2168bb34d3fb4fc280460365b73bd8707b048541b09cc8ee09aaeacb828275c",
+      "bytes": 27340936
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-flocale-font-ref": {
+      "sha256": "32355d730d9b7fa46db26f8d16bb81af6fce326735da201426986e0fcb29aa37",
+      "bytes": 5463120
+    }
+  },
+  "archive": {
+    "name": "final-evidence.tgz",
+    "sha256": "25d5dfe6d845afa3400d57031837a67a5f9d832e5db7b4520b6bc2d66598a592",
+    "bytes": 6001764,
+    "verified_regular_payloads": 1080
+  },
+  "cleanup": {
+    "verified_retired_files": 1110,
+    "retired_bytes": 327477139,
+    "retained": [
+      "source",
+      "build-gcc",
+      "build-module-waits-asan",
+      "private install",
+      "SDK/dependency caches",
+      "performance reference",
+      "r1-contrast-last-source.json"
+    ],
+    "host_archive_sha256": "25d5dfe6d845afa3400d57031837a67a5f9d832e5db7b4520b6bc2d66598a592"
+  },
+  "normal_lab_stop": true,
+  "source_reviews": [
+    "b70ccab72bcf82f1145904d99226203f7239cc32 (manual wording finding resolved)",
+    "57b824e1169c5411e8b356edce4a4396032d0240",
+    "6ea83587d38d719ca7a613ecd04ba55e33ab5381"
+  ],
+  "backend_model_metadata": "unverified",
+  "performance": {
+    "merged_runtime_count": 1,
+    "on_merge": 2,
+    "interval": 5,
+    "comparison_due": false
+  },
+  "limits": [
+    "No fresh six-target/compiler/install/default-X/release sweep",
+    "Roff formatter unavailable; three AsciiDoc pages generated",
+    "See report for unavailable filename route, separately linked allocation injection and inherited Form allocator finding",
+    "Report additions do not constitute later runtime execution"
+  ]
+}

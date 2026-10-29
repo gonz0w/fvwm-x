@@ -49,6 +49,7 @@ type Controller struct {
 	revision                                 *string
 	generation, instance, persistenceError   string
 	ready                                    bool
+	runtimeContrast                          bool
 	editor                                   *editor
 	preview                                  preview
 	palette                                  *paletteView
@@ -176,7 +177,8 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 		persistence = &text
 	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
-		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil}
+		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
+		RuntimeContrast: d.runtimeContrast}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {
@@ -205,6 +207,7 @@ func (d *Controller) configure(key, text string) error {
 	return nil
 }
 func (d *Controller) finishConfiguration() error {
+	d.runtimeContrast = false
 	d.emit("KillModule FvwmForm SlateSettingsForm")
 	d.emit("KillModule FvwmForm SlateConfigCheckForm")
 	d.closeInspection()
@@ -235,6 +238,11 @@ func (d *Controller) prepare(changes values) (values, values, error) {
 	}
 	candidate := result["candidate"].(map[string]any)
 	effective := result["effective"].(map[string]any)
+	if d.runtimeContrast {
+		if _, explicit := changes["contrast"]; !explicit {
+			effective["contrast"] = "high"
+		}
+	}
 	if _, _, _, err := d.themePlan(effective, now.Hour()*60+now.Minute()); err != nil {
 		return nil, nil, err
 	}
@@ -254,6 +262,9 @@ func (d *Controller) changeSettings(changes values) error {
 		return err
 	}
 	d.saved, d.effective, d.revision = candidate, effective, revision
+	if _, explicit := changes["contrast"]; explicit {
+		d.runtimeContrast = false
+	}
 	d.changed(generation)
 	d.preview.constrain()
 	return d.theme(true)
@@ -273,6 +284,7 @@ func (d *Controller) reloadSettings() error {
 	}
 	generation := newID(16)
 	d.saved, d.effective, d.revision = saved, effective, revision
+	d.runtimeContrast = false
 	d.persistenceError = ""
 	d.closePalette()
 	d.resetWorkerMenus()

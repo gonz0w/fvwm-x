@@ -38,6 +38,7 @@
 #include "libs/FProperty.h"
 
 #include <stdio.h>
+#include <limits.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -1540,8 +1541,7 @@ FlocaleFont *FlocaleLoadFontAtScale(
 		    flf->scale_quarters == factor.quarters &&
 		    flf->generation == generation)
 		{
-			flf->count++;
-			return flf;
+			return FlocaleRetainFont(flf);
 		}
 		flf = flf->next;
 	}
@@ -1748,6 +1748,19 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module)
 	return FlocaleLoadFontAtScale(
 		dpy, fontname, module, factor,
 		WM_UI_RESOURCE_GENERATION_INITIAL);
+}
+
+FlocaleFont *FlocaleRetainFont(FlocaleFont *flf)
+{
+	if (flf == NULL)
+		return NULL;
+	if (flf->count <= 0 || flf->count == INT_MAX)
+	{
+		fvwm_debug(__func__, "invalid or exhausted font reference count");
+		exit(1);
+	}
+	flf->count++;
+	return flf;
 }
 
 void FlocaleUnloadFont(Display *dpy, FlocaleFont *flf)

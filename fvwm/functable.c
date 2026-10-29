@@ -498,7 +498,7 @@ const func_t func_table[] =
 
 	CMD_ENT("send_preview", CMD_Send_Preview, F_SEND_PREVIEW,
 		FUNC_INTERACTION_SAFE, 0),
-	/* - Internal, bounded scalar preview leases */
+	/* - Internal, bounded scalar and scoped resource preview leases */
 
 	CMD_ENT("send_query", CMD_Send_Query, F_SEND_QUERY,
 		FUNC_INTERACTION_SAFE, 0),

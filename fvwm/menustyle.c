@@ -193,6 +193,59 @@ bool menustyle_preview_opacity(const char *name, int opacity, int *previous)
 	return false;
 }
 
+static MenuStyle *menustyle_preview_named(const char *name)
+{
+	MenuStyle *style = default_menu_style;
+	unsigned int count = 0;
+
+	for (; style && count <= MODULE_QUERY_OFFSET_MAX;
+	     style = ST_NEXT_STYLE(style), count++)
+	{
+		if (strcasecmp(ST_NAME(style), name) == 0)
+			return style;
+	}
+	return NULL;
+}
+
+bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair)
+{
+	static const char *names[2] = {"*", "SlateLauncherStyle"};
+	struct menustyle_preview_pair captured = {0};
+
+	memset(pair, 0, sizeof(*pair));
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		MenuStyle *style = menustyle_preview_named(names[i]);
+
+		if (!style || ST_TRANSLUCENT_PERCENT(style) < 0 ||
+		    ST_TRANSLUCENT_PERCENT(style) > 100)
+			return false;
+		captured.identities[i] = (uintptr_t)style;
+		captured.opacity[i] = ST_TRANSLUCENT_PERCENT(style);
+	}
+	*pair = captured;
+	return true;
+}
+
+bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
+	bool restore)
+{
+	MenuStyle *styles[2] = {menustyle_preview_named("*"),
+		menustyle_preview_named("SlateLauncherStyle")};
+
+	/* Validate both identities before mutating either scalar. No callback,
+	 * allocation or resource retirement runs between these assignments. */
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		if (!styles[i] || (uintptr_t)styles[i] != pair->identities[i])
+			return false;
+	}
+	for (unsigned int i = 0; i < 2; i++)
+		ST_TRANSLUCENT_PERCENT(styles[i]) = restore ? pair->opacity[i] : 100;
+	fvwm_query_appearance_changed();
+	return true;
+}
+
 void menustyle_free(MenuStyle *ms)
 {
 	MenuStyle *before = default_menu_style;

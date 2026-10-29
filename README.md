@@ -11,7 +11,7 @@ lite. Features target R1; maintenance targets R2/R3. Builds require Go;
 installed utilities need no compiler or Python packages. [Build/upgrade notes](INSTALL.md).
 Features:
 
-- Icons, scaling, wallpapers, high contrast and configuration inspection.
+- Icons, scaling, wallpapers, high contrast preview and configuration inspection.
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.

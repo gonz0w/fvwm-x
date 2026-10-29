@@ -46,6 +46,7 @@
 #include "libs/Strings.h"
 #include "libs/Grab.h"
 #include "colorset.h"
+#include "preview_policy.h"
 #include "query_json.h"
 #include "externs.h"
 #include "fvwm.h"
@@ -773,6 +774,8 @@ static void free_colorset_background(colorset_t *cs, Bool do_free_args)
 {
 	if (cs->rendered_picture != NULL)
 	{
+		if (cs->alpha_pixmap == cs->rendered_picture->alpha)
+			cs->alpha_pixmap = None;
 		SafeDestroyPicture(dpy, cs->rendered_picture);
 		cs->rendered_picture = NULL;
 		cs->pixmap = cs->mask = None;
@@ -828,6 +831,233 @@ static void free_colorset_background(colorset_t *cs, Bool do_free_args)
 		cs->gradient_args = NULL;
 		cs->is_maybe_root_transparent = False;
 		cs->pixmap_type = 0;
+	}
+}
+
+/* A preview keeps exactly the projected roles. The alternate records own
+ * private candidates before publication and the displaced originals after it.
+ * Swapping records does not call X or expose a partially replaced bundle. */
+struct colorset_preview
+{
+	colorset_t original[14];
+	colorset_t alternate[14];
+};
+
+_Static_assert(sizeof(struct colorset_preview) + 16384 <=
+	PREVIEW_METADATA_MAX, "preview fixed metadata exceeds its bound");
+
+static const int colorset_preview_ids[14] = {
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14
+};
+
+static Bool colorset_preview_pixmap_owned(const colorset_t *cs, Pixmap pixmap)
+{
+	const FvwmPicture *pictures[] = {cs->picture, cs->rendered_picture};
+
+	if (pixmap == None)
+		return True;
+	if (pixmap == ParentRelative || pixmap == root_pic.pixmap ||
+	    pixmap == root_pic.old_pixmap)
+		return False;
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		const FvwmPicture *p = pictures[i];
+
+		if (picture_is_usable(p) && !p->pending &&
+		    (pixmap == p->picture || pixmap == p->mask ||
+		     pixmap == p->alpha))
+			return True;
+	}
+	return False;
+}
+
+static Bool colorset_preview_available(const colorset_t *cs)
+{
+	if (!cs || cs->preparation || cs->preparing ||
+	    cs->pending_picture || cs->pending_shape || cs->pixels ||
+	    cs->nalloc_pixels || !preview_resource_colors_supported(
+		cs->fg_tint_percent, cs->bg_tint_percent, cs->fg_alpha_percent) ||
+	    !cs->color_owners[COLORSET_FG_SAVED] ||
+	    !cs->color_owners[COLORSET_BG_SAVED] ||
+	    !colorset_preview_pixmap_owned(cs, cs->pixmap) ||
+	    !colorset_preview_pixmap_owned(cs, cs->mask) ||
+	    !colorset_preview_pixmap_owned(cs, cs->alpha_pixmap))
+		return False;
+	if ((cs->picture && (!picture_is_usable(cs->picture) ||
+	     cs->picture->pending)) ||
+	    (cs->rendered_picture &&
+	     (!picture_is_usable(cs->rendered_picture) ||
+	      cs->rendered_picture->pending)))
+		return False;
+	return cs->shape_mask == None ||
+		(picture_is_usable(cs->shape_picture) &&
+		 !cs->shape_picture->pending &&
+		 (cs->shape_mask == cs->shape_picture->picture ||
+		  cs->shape_mask == cs->shape_picture->mask));
+}
+
+void colorset_preview_release(struct colorset_preview *bundle)
+{
+	if (!bundle)
+		return;
+	for (unsigned int i = 0; i < 28; i++)
+	{
+		colorset_t *cs = i < 14 ? &bundle->original[i] :
+			&bundle->alternate[i - 14];
+
+		free_colorset_background(cs, True);
+		free_colorset_shape(cs);
+		for (unsigned int slot = 0; slot < COLORSET_COLOR_COUNT; slot++)
+		{
+			/* Empty/partially prepared slots own no implicit pixels. */
+			picture_color_release(dpy, cs->color_owners[slot]);
+			cs->color_owners[slot] = NULL;
+		}
+	}
+	free(bundle);
+}
+
+static Bool colorset_preview_color(colorset_t *cs, unsigned int slot,
+	XColor color)
+{
+	color.flags = DoRed | DoGreen | DoBlue;
+	if (!PictureAllocColor(dpy, Pcmap, &color, True))
+		return False;
+	picture_color_release(dpy, cs->color_owners[slot]);
+	cs->color_owners[slot] = picture_color_adopt(Pcmap, color.pixel, True);
+	*colorset_color_slot(cs, slot) = color.pixel;
+	return True;
+}
+
+struct colorset_preview *colorset_preview_prepare(
+	const uint32_t colors[14][4], const char **error)
+{
+	/* Reserve fixed request/lease/menu bookkeeping as well as this owner. */
+	size_t copied = sizeof(struct colorset_preview) + 16384;
+	struct colorset_preview *bundle;
+
+	*error = "preview_resources_unavailable";
+	/* Validate the entire input before capturing a single owner. */
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		const colorset_t *cs = FindColorset(colorset_preview_ids[i]);
+		const char *args[2];
+
+		if (!cs || cs->preparation || cs->preparing ||
+		    cs->pending_picture || cs->pending_shape)
+			return NULL;
+		args[0] = cs->pixmap_args;
+		args[1] = cs->gradient_args;
+		for (unsigned int j = 0; j < 2; j++)
+		{
+			if (args[j])
+			{
+				size_t bytes = strnlen(args[j], 65536) + 1;
+
+				if (!preview_metadata_add(&copied, bytes))
+				{
+					*error = "preview_metadata_limit";
+					return NULL;
+				}
+			}
+		}
+	}
+	/* The existing owner adapter knows the provenance of core-created
+	 * gradient/bitmap/buffer pixmaps. It never adopts raw root pixmaps or
+	 * ParentRelative, and leaves unknown alpha/shape resources unowned. */
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		colorset_t *cs = FindColorset(colorset_preview_ids[i]);
+
+		colorset_background_capture(cs);
+		if (!colorset_preview_available(cs))
+			return NULL;
+	}
+	bundle = fxcalloc(1, sizeof(*bundle));
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		colorset_t *published = FindColorset(colorset_preview_ids[i]);
+		colorset_t *original = &bundle->original[i];
+		colorset_t *cs = &bundle->alternate[i];
+
+		*original = *published;
+		original->pixmap_args = published->pixmap_args ?
+			fxstrdup(published->pixmap_args) : NULL;
+		original->gradient_args = published->gradient_args ?
+			fxstrdup(published->gradient_args) : NULL;
+		original->picture = picture_snapshot(published->picture);
+		original->rendered_picture =
+			picture_snapshot(published->rendered_picture);
+		original->shape_picture = picture_snapshot(published->shape_picture);
+		for (unsigned int slot = 0; slot < COLORSET_COLOR_COUNT; slot++)
+		{
+			if (slot < COLORSET_FG_SAVED)
+				colorset_color_capture(published, slot);
+			original->color_owners[slot] = picture_color_retain(
+				published->color_owners[slot]);
+		}
+		*cs = *original;
+		/* Plain candidates have no background ownership. The original
+		 * snapshot keeps every source/rendered backing and argument. */
+		cs->picture = cs->rendered_picture = NULL;
+		cs->pixmap = cs->mask = cs->alpha_pixmap = None;
+		cs->pixmap_args = cs->gradient_args = NULL;
+		cs->shape_picture = picture_snapshot(original->shape_picture);
+		for (unsigned int slot = 0; slot < COLORSET_COLOR_COUNT; slot++)
+			cs->color_owners[slot] = picture_color_retain(
+				original->color_owners[slot]);
+		/* Plain retains shape and unrelated icon policy, exactly as the
+		 * existing role projection does. No image jobs or pixel copies. */
+		free_colorset_background(cs, True);
+		for (unsigned int slot = 0; slot < 4; slot++)
+		{
+			uint32_t rgb = colors[i][slot];
+			XColor color = {0};
+
+			color.red = ((rgb >> 16) & 255) * 257;
+			color.green = ((rgb >> 8) & 255) * 257;
+			color.blue = (rgb & 255) * 257;
+			if (!colorset_preview_color(cs, slot, color))
+				goto fail;
+		}
+		colorset_color_save(cs, COLORSET_FG, COLORSET_FG_SAVED);
+		colorset_color_save(cs, COLORSET_BG, COLORSET_BG_SAVED);
+		if (!(cs->color_flags & FGSH_SUPPLIED) &&
+		    !colorset_preview_color(cs, COLORSET_FGSH,
+			*GetForeShadowColor(cs->fg, cs->bg)))
+			goto fail;
+		cs->color_flags &= ~(FG_CONTRAST | BG_AVERAGE);
+		cs->color_flags |= FG_SUPPLIED | BG_SUPPLIED | HI_SUPPLIED |
+			SH_SUPPLIED;
+	}
+	*error = NULL;
+	return bundle;
+fail:
+	*error = "color_allocation_failed";
+	colorset_preview_release(bundle);
+	return NULL;
+}
+
+void colorset_preview_move(struct colorset_preview *bundle)
+{
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		colorset_t *published = FindColorset(colorset_preview_ids[i]);
+		colorset_t previous = *published;
+
+		*published = bundle->alternate[i];
+		bundle->alternate[i] = previous;
+	}
+	colorset_query_changed();
+}
+
+void colorset_preview_broadcast(void)
+{
+	/* Every native record and both menu scalars have moved before this. */
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		BroadcastColorset(colorset_preview_ids[i]);
+		update_fvwm_colorset(colorset_preview_ids[i]);
 	}
 }
 
@@ -2291,6 +2521,9 @@ void update_root_transparent_colorset(Atom prop)
 
 	root_pic.old_pixmap = root_pic.pixmap;
 	update_root_pixmap(prop);
+	/* A resource preview can temporarily hide a retained root-buffer
+	 * colorset. Root changes still invalidate its restoration generation. */
+	colorset_query_changed();
 #if 0
 	if (!root_pic.pixmap)
 	{

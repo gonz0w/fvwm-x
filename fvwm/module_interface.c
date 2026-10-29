@@ -1121,8 +1121,23 @@ void CMD_Send_Query(F_CMD_ARGS)
 		if (!fvwm_query_appearance_token(generation))
 			error = "generation_unavailable";
 		else if (strcmp(spec.resource, "appearance") == 0)
+		{
 			result = fvwm_query_appearance(generation,
 				&spec, &error);
+			if (result)
+			{
+				cJSON *capability = appearance_preview_capability();
+
+				if (!capability || !cJSON_AddItemToObject(result,
+				    "resource_preview", capability))
+				{
+					cJSON_Delete(capability);
+					cJSON_Delete(result);
+					result = NULL;
+					error = "allocation_failed";
+				}
+			}
+		}
 		else if (strcmp(spec.resource, "menu-styles") == 0)
 			result = fvwm_query_menu_styles(
 				menustyle_get_default_style(), generation,

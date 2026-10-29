@@ -15,6 +15,7 @@ type Snapshot struct {
 	Generation, Instance        string
 	PersistenceError            *string
 	Submitted                   bool
+	RuntimeContrast             bool
 }
 
 func identity(value any) (string, error) {
@@ -85,6 +86,9 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 	result := Values{}
 	for _, key := range keys {
 		item, _ := find(key)
+		// This flag identifies a dedicated native UI consumer. Admission still
+		// requires its direction, current policy and native resource capability;
+		// it does not advertise a generic settings IPC preview operation.
 		v := Values{"type": item.Type,
 			"default":            item.Default,
 			"group":              item.Group,
@@ -93,7 +97,7 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 			"available":          true,
 			"capability":         "owned-desktop-preference",
 			"preview":            false,
-			"native_preview":     key == "launcher_opacity",
+			"native_preview":     key == "launcher_opacity" || key == "contrast",
 			"runtime_constraint": nil,
 			"saved":              s.Saved[key],
 			"effective":          s.Effective[key],
@@ -147,6 +151,9 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		}
 		if _, found := s.Overrides[key]; found {
 			v["source"] = "module-configuration"
+		}
+		if key == "contrast" && s.RuntimeContrast {
+			v["source"] = "runtime-kept-preference-unsaved"
 		}
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"

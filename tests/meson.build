@@ -932,6 +932,16 @@ preview_policy_test = executable(
 )
 test('preview-policy', preview_policy_test)
 
+flocale_font_ref_test = executable(
+    'test-flocale-font-ref',
+    'test_flocale_font_ref.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('flocale-font-ref', flocale_font_ref_test)
+
 palette_policy_test = executable(
     'test-palette-policy',
     ['test_palette_policy.c', '../fvwm/palette_policy.c'],

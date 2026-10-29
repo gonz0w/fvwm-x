@@ -243,6 +243,9 @@ FlocaleFont *FlocaleLoadFont(Display *dpy, char *fontname, char *module);
 FlocaleFont *FlocaleLoadFontAtScale(
 	Display *dpy, char *fontname, char *module,
 	monitor_scale_factor factor, unsigned generation);
+/* Own another reference to this exact font, including an aliased slot.
+ * NULL remains NULL; invalid or exhausted counts are fatal invariants. */
+FlocaleFont *FlocaleRetainFont(FlocaleFont *flf);
 
 /*
  * unload the flf FlocaleFont

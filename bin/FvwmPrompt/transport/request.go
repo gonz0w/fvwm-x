@@ -17,7 +17,7 @@ import (
 )
 
 func RequestID(text string) (string, error) {
-	if len(text)+len("request ") > MaxCommand ||
+	if len(text)+len("request ") > MaxRequest ||
 		strings.ContainsAny(text, "\x00\r\n") || !utf8.ValidString(text) {
 		return "", errors.New("request must be one bounded UTF-8 JSON line")
 	}
@@ -140,7 +140,7 @@ func request(parent context.Context, endpoint, text string, readonly bool) (json
 					return errors.New("FvwmMFL refused read-only admission")
 				}
 				modePending = false
-				return session.Send("request " + text)
+				return session.sendRequest(text)
 			}
 			reply = append(json.RawMessage(nil), record...)
 			return errReplyComplete
@@ -159,7 +159,7 @@ func request(parent context.Context, endpoint, text string, readonly bool) (json
 			"method": "set_mode", "mode": "read-only"})
 		first = string(data)
 	}
-	if err := session.Send("request " + first); err != nil {
+	if err := session.sendRequest(first); err != nil {
 		if ctx.Err() != nil {
 			return nil, ctx.Err()
 		}

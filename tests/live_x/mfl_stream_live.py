@@ -116,8 +116,24 @@ def run(options):
         evidence["stream_boundaries"] = "passed"
 
         healthy.echo("x" * 995)  # Exactly the existing 1000-byte core limit.
+        # Typed JSON has its own 4096-byte client frame limit; raw native
+        # commands retain the 1000-byte core command limit below.
+        boundary = ('request ' + json.dumps(dict(version=1, id='client-boundary',
+            method='query', resource='connection'))).encode().ljust(4096, b' ')
+        healthy.send(boundary[:1001])
+        assert not select.select([healthy.socket], [], [], 0.1)[0]
+        healthy.send(boundary[1001:] + b'\n')
+        boundary_reply = healthy.record()['reply']
+        assert boundary_reply['id'] == 'client-boundary' and boundary_reply['status'] == 'ok'
+        healthy.send(('request ' + json.dumps(dict(version=1, id='separate-limits',
+            method='query', resource='capabilities')) + '\n').encode())
+        limits = healthy.record()['reply']
+        assert limits['id'] == 'separate-limits' and limits['status'] == 'ok'
+        assert limits['result']['max_line_bytes'] == 4096
+        assert limits['result']['max_command_bytes'] == 1000
+        evidence['typed_client_boundary_4096_native_boundary_1000'] = 'passed'
         for invalid in (b"Echo " + b"x" * 996 + b"\n", b"Echo\0hidden\n",
-                        b"x" * 1001, b"set\nEcho\0hidden\n"):
+                        b"x" * 4097, b"set\nEcho\0hidden\n"):
             offending = connect(False)
             offending.send(invalid)
             offending.expect_closed()

@@ -38,6 +38,38 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Preview high contrast and return to your edits
+
+In Desktop settings, choose **Preview high contrast...**, or press F5 in an
+editor containing contrast. Save (Enter) keeps high contrast and saves only
+that preference. Cancel (Escape) restores the previous owned resources. The
+core also recovers on expiry; closing the dialog leaves recovery to that deadline.
+Other editor drafts remain available when the preview ends. See the
+[desktop manual](FvwmDesktop.adoc) for admission,
+conflict and persistence limits. This is the first scoped resource consumer;
+general appearance, typography, icons and layout previews remain in development.
+
+Slate dark: the active preview offers Save and Cancel while an existing Form
+uses the high-contrast roles.
+
+![Slate dark native high contrast preview](screenshots/contrast-preview-slate-dark.png)
+
+Dune light: an external preference-file edit is preserved, the previous runtime
+presentation recovers, and the notice requests a reload.
+
+![Dune light external-edit recovery notice](screenshots/contrast-preview-dune-recovery.png)
+
+Enlarged Classic: Save returns to the captured all-fields draft. Apply remains
+available on screen; other edits are still unsaved until Apply.
+
+![Enlarged Classic returned settings draft after saving contrast](screenshots/contrast-preview-classic-draft.png)
+
+These unmodified 1440×1000 captures are a development checkpoint, not complete
+accessibility or release qualification. The [manifest](screenshots/contrast-preview-manifest.json)
+binds source, configuration and artifacts; the [verification report](../dev-docs/verification/VERIFICATION-2026-10-29-CONTRAST-PREVIEW.md)
+records actual checks and remaining limits. Panel counters are whole-guest values,
+not a window-manager benchmark.
+
 ## Application startup activity
 
 Choose **Launch activity...** from the Applications launcher, or send:

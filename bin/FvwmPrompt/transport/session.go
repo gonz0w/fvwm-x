@@ -20,8 +20,10 @@ import (
 	"unicode/utf8"
 )
 
-// These are the current core command limit and MFL output queue limit.
+// Native commands keep the core queue limit. Structured client request lines
+// have a separate ceiling for typed role plans, including the "request " prefix.
 const MaxCommand = 1000
+const MaxRequest = 4096
 const MaxRecord = 256 * 1024
 const WriteTimeout = 5 * time.Second
 
@@ -49,8 +51,16 @@ func (s *Session) Close() {
 // Send preserves order and completes the entire frame before returning.
 // Failure closes the session: retrying a partially written command is unsafe.
 func (s *Session) Send(command string) error {
-	if len(command) > MaxCommand || strings.ContainsAny(command, "\x00\r\n") {
-		return fmt.Errorf("command must be one line of at most %d bytes", MaxCommand)
+	return s.sendLine(command, MaxCommand)
+}
+
+func (s *Session) sendRequest(text string) error {
+	return s.sendLine("request "+text, MaxRequest)
+}
+
+func (s *Session) sendLine(command string, limit int) error {
+	if len(command) > limit || strings.ContainsAny(command, "\x00\r\n") {
+		return fmt.Errorf("frame must be one line of at most %d bytes", limit)
 	}
 	if command == "" {
 		return nil

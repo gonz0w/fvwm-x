@@ -31,6 +31,9 @@ func TestQueryAdmissionAndExchangeShareConnection(t *testing.T) {
 				t.Fatal(err)
 			}
 			defer listener.Close()
+			// A valid padded query exercises the distinct client-frame ceiling
+			// after read-only admission, on this same connection.
+			queryText := `{"version":1,"id":"readonly","method":"query","resource":"appearance"}` + strings.Repeat(" ", MaxCommand)
 			finished := make(chan error, 1)
 			go func() {
 				conn, err := listener.Accept()
@@ -75,14 +78,14 @@ func TestQueryAdmissionAndExchangeShareConnection(t *testing.T) {
 					return
 				}
 				var query map[string]any
-				if json.Unmarshal([]byte(strings.TrimPrefix(line, "request ")), &query) != nil || query["method"] != "query" || query["id"] != "readonly" || query["resource"] != "appearance" {
+				if line != "request "+queryText+"\n" || json.Unmarshal([]byte(strings.TrimPrefix(line, "request ")), &query) != nil || query["method"] != "query" || query["id"] != "readonly" || query["resource"] != "appearance" {
 					finished <- fmt.Errorf("bad query %q", line)
 					return
 				}
 				_, err = io.WriteString(conn, "{\"reply\":{\"version\":1,\"id\":\"readonly\",\"status\":\"ok\",\"result\":{\"generation\":\"one\"}}}\n")
 				finished <- err
 			}()
-			result, err := Query(context.Background(), path, `{"version":1,"id":"readonly","method":"query","resource":"appearance"}`)
+			result, err := Query(context.Background(), path, queryText)
 			if admit && (err != nil || !strings.Contains(string(result), `"generation":"one"`)) || !admit && err == nil {
 				t.Fatal(string(result), err)
 			}

@@ -6,6 +6,7 @@
 /* ---------------------------- included header files ---------------------- */
 #include "fvwm.h"
 #include <stdbool.h>
+#include <stdint.h>
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -297,6 +298,14 @@ typedef struct MenuStyle
 
 /* Bounded scalar access: no X requests, resources or retained pointers. */
 bool menustyle_preview_opacity(const char *name, int opacity, int *previous);
+struct menustyle_preview_pair
+{
+	uintptr_t identities[2];
+	int opacity[2];
+};
+bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair);
+bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
+	bool restore);
 void menustyle_free(MenuStyle *ms);
 MenuStyle *menustyle_find(char *name);
 void menustyle_update(MenuStyle *ms);

@@ -182,10 +182,18 @@ func Editor(s Snapshot,
 	if has(plan.Keys, "launcher_opacity") {
 		lines = append(lines,
 			"Line left",
-			`Text "Preview tests opacity only, then returns to this captured draft."`,
-			`Text "Opacity preview is unavailable while high contrast is selected."`,
+			`Text "Preview opacity only; other edits stay here."`,
 			`Button continue "Preview opacity (F4)" F4`,
-			"Command "+action+"preview-editor "+arguments)
+			"Command "+action+"preview-editor "+arguments,
+			"Line left",
+			`Text "Opacity preview is unavailable while high contrast is selected."`)
+	}
+	if has(plan.Keys, "contrast") {
+		lines = append(lines,
+			"Line left",
+			`Text "Preview high contrast only; other edits stay here."`,
+			`Button continue "Preview high contrast (F5)" F5`,
+			"Command "+action+"preview-contrast-editor "+arguments)
 	}
 	plan.Lines = lines
 	return plan, nil
@@ -259,6 +267,12 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 				"SendToModule FvwmDesktop preview-setting " + s.Instance + " " + fmt.Sprint(n)})
 	}
 	menus = append(menus, Menu{"SlateOpacityPreview", "Runtime launcher opacity", opacity})
+	if s.Effective["contrast"] == "normal" {
+		rows = append(rows, Row{"Preview high contrast...",
+			"SendToModule FvwmDesktop preview-contrast " + s.Instance})
+	} else {
+		rows = append(rows, Row{"High contrast is already active", "Greyed"})
+	}
 	rows = append(rows,
 		Row{"Preview launcher opacity...",
 			"Popup SlateOpacityPreview"},
@@ -398,4 +412,23 @@ func Preview(instance, view string, opacity int, saved bool) ([]string, error) {
 	}
 	// This independent native consumer timer never confirms or commits a file.
 	return append(lines, `Timeout 160 Nop ""`), nil
+}
+
+// ContrastPreview shares the existing view/cookie validation and native timer.
+// Contrast has no separate runtime-only confirmation control: Save first asks
+// the core to confirm its resource lease, then attempts the preference write.
+func ContrastPreview(instance, view string) ([]string, error) {
+	if _, err := Preview(instance, view, 100, true); err != nil {
+		return nil, err
+	}
+	callback := "Command SendToModule FvwmDesktop preview-control " + instance + " " + view
+	return []string{`Title "Preview high contrast"`,
+		"Colorset 2", "ItemColorset 12", "Line left",
+		`Text "High contrast preview is active for 15 seconds."`,
+		"Line left", "Text " + quote(highContrastHint),
+		"Line left", `Text "Save keeps high contrast and saves only contrast."`,
+		"Line left", `Text "Cancel or expiry restores the previous resources."`,
+		"Line expand", `Button continue "Cancel" ^[`, callback + " revert",
+		`Button continue "Save" ^M`, callback + " save",
+		`Timeout 160 Nop ""`}, nil
 }

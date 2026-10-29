@@ -1,6 +1,8 @@
 # Verification reports
 
-- [Startup group event ownership](VERIFICATION-2026-10-29-STARTUP-GROUPS.md): late IDs, cooperative masks, lifetime retirement, bounded queue/outer continuation and focused Linux/BSD-policy evidence; installed-target #56 acceptance remains open.
+- [Installed XDG acceptance](VERIFICATION-2026-10-29-XDG-INSTALLED.md): all six focused installed profiles, 30 runtime groups, literal launches, MIME/default preservation and startup outcomes; #56 closing candidate.
+
+- [Startup group event ownership](VERIFICATION-2026-10-29-STARTUP-GROUPS.md): late IDs, cooperative masks, lifetime retirement, bounded queue/outer continuation and focused Linux/BSD-policy evidence; installed-target acceptance is composed in the installed XDG report above.
 
 - [PR293→PR299 performance observation](PERFORMANCE-2026-10-29-PROVIDERS.md): cached binaries, overlapping browser/Script timings, stable browser peak RSS and separately reported feature-size growth.
 

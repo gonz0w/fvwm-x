@@ -7,17 +7,78 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [startup group event ownership](#r1-startup-group-event-ownership--2026-10-29)
-is selected under #56 after merged PR299. Finish the bounded late-group observer
-and its ownership/lifetime contracts, then the remaining installed-target evidence.
-The due periodic performance comparison passed with existing merged PR299
-binaries; the next reference is current at 0/5.
+Current checkpoint: [XDG installed acceptance](#r1-xdg-installed-acceptance--2026-10-29)
+finishes the frozen #56 contract after merged PR300. All six focused installed
+profiles pass; the closing candidate carries separate final review. Accepted
+Desktop Entry, icon, semantic, theme and native lifetime evidence retains its scope.
+Performance is 1/5 from the qualified merged-PR299 reference; no comparison due.
+
+## R1 XDG installed acceptance — 2026-10-29
+
+Owner: Cam; `codex/r1-xdg-installed-acceptance`; XDG-01 #56. Base merged PR300
+`dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd`. Status: all six focused profiles
+passed; closing review candidate. The installed-outcome matrix was frozen before fixture changes.
+
+Outcome: finish the four frozen #56 acceptance rows, reusing accepted Desktop
+Entry/Exec and inherited icon evidence. Run one focused staged interoperability
+checkpoint per Linux/FreeBSD/OpenBSD AMD64/ARM64 target. Use current owned
+incremental builds and verified caches where supported; distinguish fresh image
+preparation from this feature qualification. The existing Linux ARM64 UI/theme
+and semantic results retain their exact source/profile scope.
+
+Acceptance: actual installed command/private-helper and desktop metadata identities;
+independent desktop/provider discovery and literal launch/cwd/URI outcomes; MIME
+precedence, absent/competing provider handling and byte-preserved synthetic personal
+defaults; current core/MFL plus native announcement/exec success, failure and display
+absence. Qualify installed paths rather than a build-tree fallback. Record every
+selected target, tested source/profile and pass/failure/remaining limit. Portable
+fixtures must not claim Linux subreaper or /proc evidence on BSD. Use directly
+owned children and observable results with explicit ownership and wait limits.
+
+No broad full-compiler/optional-feature/default-server/release matrix is selected;
+those remain with #5 and their existing owners. No new UI/theme suite, dependency,
+FileManager1/bus feature, configuration migration or performance tuning. #67 and
+parked #257/#258 retain their separate scope. Any reproduced product regression
+gets a narrow correction and affected rerun; do not relax an oracle for closure.
+
+The lead owns native/VM/Git/GitHub execution and tracker/issue reconciliation.
+Use bounded source-only Temper implementation and separate final review; actual
+backend model/effort metadata remains unverified. Close #56 only after all frozen
+rows have linked results and review; missing/deferred checks do not count as
+success. Keep the current reusable build per profile and compact current evidence,
+retiring superseded duplicates and disposable disks after verification.
+
+[Results and limits](verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md):
+Linux, FreeBSD15.1 and OpenBSD8.0 AMD64/ARM64 each pass five installed-XDG
+groups, 30 total, with 60 genuine browser-worker results and 12 main/action
+application handoffs. Real private helper discovery, literal argv/cwd/URI,
+MIME/default precedence, missing/competing providers, expected exec127,
+display absence and late unmanaged group resolution pass. Each consumer call
+preserves synthetic preference bytes/mode/mtime; fixture setup intentionally
+changes its own defaults between probes. No forced child cleanup occurs.
+FreeBSD ARM64 composes runtime and unchanged-artifact provenance-only receipts;
+no runtime result is counted twice. Canonical target-Meson ELF normalization
+explains ordinary helper RUNPATH removal, with raw failures preserved.
+
+This is the closing #56 candidate: all four frozen criteria have linked results,
+using prior accepted grammar/icon/theme/lifetime evidence at its exact scope.
+No product behavior or UI changes; no new screenshots. Separate staged review is recorded with the
+signed actual-author DCO PR handoff; #56 stays open until
+that closing PR merges. #67/#77 retain FileManager1 and broader browser lifecycle
+acceptance. #72 autostart, full release/default-X/compiler/hardware checks and
+parked #257/#258 remain separate. No performance comparison is due or runtime
+counter advanced. All owned labs are stopped; verified duplicate guest evidence
+and completed disposable OpenBSD disks retire, retaining current reusable builds,
+private installs, compact receipts and useful caches.
 
 ## R1 startup group event ownership — 2026-10-29
 
 Owner: Cam; `codex/r1-startup-group-events`; XDG-01 #56. Base merged PR299
-`9cde299b2efb8a002ce88999ad8db13a009bfa0c`. Status: review candidate; bounded event/mask
-ownership contract implemented after its pre-implementation freeze.
+`9cde299b2efb8a002ce88999ad8db13a009bfa0c`. Status: merged in PR300 as
+`dbcbe2f1cb1d57ee0a6c90f130b34502dffe66fd`; reviewed tree
+`ce90e204b74c53497cd4452ce9905eb711f1781c`, canonical signature and actual-author
+DCO verified. Branch retired and PR Project Done. The bounded event/mask
+ownership contract was implemented after its pre-implementation freeze.
 
 Outcome: observe late startup-ID changes on otherwise-unmanaged ICCCM group
 leaders without losing another core selector's event interests or retaining
@@ -4304,7 +4365,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | STANDARDS-01 | P1 / fixed protocol inventory complete; wider audit open | A first-icon WM_STATE zero-XID defect is reproduced and corrected in the atom/expose batch; real first/reused title XID checks and combined 1291-file qualification pass. Maintain requirement-level specification/revision/owner/test/profile/evidence coverage using [STANDARDS.md](STANDARDS.md). The [forty-row protocol register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md) completes root/window/selection requirement inventory and owner handoffs, retaining historical evidence boundaries; other standards areas remain queued. Continue bounded inventories in stage 2; map independent fixtures and CI with VERIFY/COMPAT, reuse passing scoped evidence and assign real gaps to their owners. Required adopted clauses and accurate advertised capabilities are release gates; no blanket compliance badge or endless audit restart. See acceptance below. |
 | EWMH-01 | P1 / bounded desktop publication qualified; broader geometry/roles open | Reconcile ICCCM 2.0/EWMH 1.5 implementation, advertised atoms and independent-client evidence. Classify required vs optional hints, then implement bounded agreed gaps such as partial struts/multi-monitor fullscreen and protocol responsiveness with MONITOR/INPUT/DRAW/DATA owners. No speculative defect claim or parallel geometry authority. The [stage3 audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) independently checks63 advertised atoms, identity/client order/extents and records the reproduced initial empty-work-area gap. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), R01–R12/W01–W12, now separates exact historical checks from unqualified semantics and defines desktop/viewport/work-area acceptance. The bounded [desktop-publication checkpoint](verification/VERIFICATION-2026-10-21-DESKTOP-PUBLICATION.md) qualifies pager admission, count adoption/refusal and matching dependent arrays. Reserved-edge/dock geometry, multi-monitor root authority and broader clauses remain open; stage5 follows interaction/publication contracts. |
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
-| XDG-01 | P2 / In progress; Desktop Entry and icon handoff rows complete; MIME/startup/platform acceptance open | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
+| XDG-01 | P2 / Ready for closing review; all four #56 criteria qualified, merge pending | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
 | SETTINGS-01 | P2 / queued shared preferences | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |

@@ -15,7 +15,8 @@ Features:
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- Localized application actions, action palette and startup activity.
+- [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
+  action palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff and folder or
   selected-file application choosers; live updates retain drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;

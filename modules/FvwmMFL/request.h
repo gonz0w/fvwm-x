@@ -46,6 +46,8 @@ enum mfl_request_kind {
 	MFL_REQUEST_PREVIEW_START,
 	MFL_REQUEST_PREVIEW_CONFIRM,
 	MFL_REQUEST_PREVIEW_REVERT,
+	MFL_REQUEST_PREVIEW_PREPARE,
+	MFL_REQUEST_PREVIEW_APPLY,
 	MFL_REQUEST_FILES_LIST,
 	MFL_REQUEST_FILES_REGISTER,
 	MFL_REQUEST_FILES_QUERY,
@@ -58,6 +60,7 @@ struct mfl_request {
 	char target[MFL_REQUEST_ID_MAX + 1];
 	unsigned int opacity;
 	unsigned int timeout_ms;
+	char preview_plan[337];
 	unsigned int offset;
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];

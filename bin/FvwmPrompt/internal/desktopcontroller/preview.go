@@ -26,6 +26,7 @@ type previewControl struct {
 	opacity, retries        int
 	saved                   *previewSnapshot
 	editor                  *draft
+	contrast                *contrastCandidate
 }
 type previewPending struct {
 	phase, serial string
@@ -72,6 +73,10 @@ func (p *preview) allowed(e *draft) error {
 // Run only after a validated settings transition has committed. Abandon uses
 // the existing core recovery path and must precede opaque theme publication.
 func (p *preview) constrain() {
+	if p.control != nil && p.control.contrast != nil {
+		p.finish("Settings changed; high contrast preview recovery requested.", true, false)
+		return
+	}
 	presentation, err := desktopsettings.ResolvePresentation(p.desktop.effective)
 	if err == nil && p.control != nil && presentation.Contrast == "high" {
 		p.finish("High contrast enabled; launcher opacity preview ended.", true, false)
@@ -97,6 +102,9 @@ func (d *Controller) preparePreview(opacity int) (*previewSnapshot, error) {
 	return &previewSnapshot{d.generation, d.revision}, nil
 }
 func (d *Controller) checkPreview(control *previewControl) error {
+	if control != nil && control.contrast != nil {
+		return d.checkContrast(control)
+	}
 	if control == nil || control.saved == nil {
 		return errors.New("This preview has no saved-preference candidate")
 	}
@@ -155,7 +163,7 @@ func (p *preview) request(op string) error {
 		return errors.New("Preview controls are stale")
 	}
 	if op == "confirm" || op == "save" {
-		if err := p.allowed(item.editor); err != nil {
+		if err := p.allowedControl(); err != nil {
 			return err
 		}
 	}
@@ -172,7 +180,11 @@ func (p *preview) request(op string) error {
 	if coreOp == "confirm" || coreOp == "revert" {
 		generation, lease = item.generation, item.lease
 	}
-	return p.submit(op, "Send_Preview {cookie} {serial} "+item.view+" "+coreOp+" "+generation+" "+lease+" 0 0 -")
+	err := p.submit(op, "Send_Preview {cookie} {serial} "+item.view+" "+coreOp+" "+generation+" "+lease+" 0 0 -")
+	if err == nil && op == "save" && item.contrast != nil {
+		item.contrast.confirming = true
+	}
+	return err
 }
 func (p *preview) start(opacity int, saved bool, e *draft) error {
 	if p.control != nil || !p.desktop.ready {
@@ -199,8 +211,11 @@ func (p *preview) action(view, op string) error {
 	if p.control == nil || p.control.view != view || p.control.lease == "" || (op != "confirm" && op != "revert" && op != "save") {
 		return errors.New("Preview controls are stale")
 	}
+	if p.control.contrast != nil && (op == "confirm" || op == "save" && p.control.contrast.state != "active") {
+		return errors.New("High contrast preview is not ready to save")
+	}
 	if op != "revert" {
-		if err := p.allowed(p.control.editor); err != nil {
+		if err := p.allowedControl(); err != nil {
 			return err
 		}
 	}
@@ -222,7 +237,7 @@ func (p *preview) finish(message string, abandon, committed bool) {
 	if p.control != nil {
 		e = p.control.editor
 	}
-	resume := e != nil && (committed || e.generation == p.desktop.generation)
+	resume := e != nil && (committed || e.generation == p.desktop.generation || p.control.contrast != nil)
 	if abandon && p.control != nil {
 		p.pending = nil
 		_ = p.request("abandon")
@@ -238,6 +253,9 @@ func (p *preview) finish(message string, abandon, committed bool) {
 }
 func (p *preview) show() error {
 	lines, err := desktopsettings.Preview(p.desktop.instance, p.control.view, p.control.opacity, p.control.saved != nil)
+	if p.control.contrast != nil {
+		lines, err = desktopsettings.ContrastPreview(p.desktop.instance, p.control.view)
+	}
 	if err != nil {
 		return err
 	}
@@ -251,6 +269,10 @@ func (p *preview) reply(message string) {
 	}
 	prefix := "MFL_CORE_1 " + p.desktop.instance + " " + pending.serial + " "
 	if !strings.HasPrefix(message, prefix) {
+		return
+	}
+	if !time.Now().Before(pending.deadline) {
+		p.finish("Preview reply timed out; core recovery remains responsible.", true, false)
 		return
 	}
 	if err := p.acceptReply(strings.Fields(message[len(prefix):])); err != nil {
@@ -280,6 +302,9 @@ func (p *preview) acceptReply(fields []string) error {
 		return errors.New("Invalid preview response")
 	}
 	p.pending = nil
+	if p.control.contrast != nil {
+		return p.acceptContrastReply(pending, response)
+	}
 	if pending.phase != "revert" && pending.phase != "abandon" {
 		if err := p.allowed(p.control.editor); err != nil {
 			return err

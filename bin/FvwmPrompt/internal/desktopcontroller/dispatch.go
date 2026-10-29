@@ -82,6 +82,27 @@ func (d *Controller) handle(command, argument string) error {
 			return err
 		}
 		d.retireEditor()
+	case "preview-contrast-editor":
+		e, changes, err := d.editorValues(argument)
+		if err != nil {
+			return err
+		}
+		if _, ok := changes["contrast"]; !ok {
+			return errors.New("This editor has no contrast draft")
+		}
+		if err := d.preview.startContrast(&draft{e.scope, e.generation, changes}); err != nil {
+			return err
+		}
+		d.retireEditor()
+	case "preview-contrast":
+		words, err := wordCount(argument, 1)
+		if err != nil {
+			return err
+		}
+		if words[0] != d.instance {
+			return nil
+		}
+		return d.preview.startContrast(nil)
 	case "preview-opacity", "preview-setting":
 		words, err := wordCount(argument, 2)
 		if err != nil {

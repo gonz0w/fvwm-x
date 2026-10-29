@@ -87,7 +87,7 @@ static void test_appearance(void)
 	assert(result && !error);
 	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
 		"conditional_application")));
-	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
+	assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(result,
 		"preview_supported")));
 	cJSON_Delete(result);
 	for (unsigned int kind = 0; kind < 2; kind++)

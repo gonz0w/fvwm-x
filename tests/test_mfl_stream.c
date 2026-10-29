@@ -12,7 +12,7 @@
 static void test_every_command_split(void)
 {
 	const char line[] = "Echo split-command\n";
-	char command[MAX_MODULE_INPUT_TEXT_LEN + 1];
+	char command[MFL_CLIENT_LINE_MAX + 1];
 	struct evbuffer *input = evbuffer_new();
 
 	for (size_t split = 0; split < sizeof(line) - 1; split++)
@@ -40,18 +40,18 @@ static void test_every_command_split(void)
 
 static void test_limits_and_nul(void)
 {
-	char command[MAX_MODULE_INPUT_TEXT_LEN + 1];
-	char line[MAX_MODULE_INPUT_TEXT_LEN + 2];
+	char command[MFL_CLIENT_LINE_MAX + 1];
+	char line[MFL_CLIENT_LINE_MAX + 2];
 	struct evbuffer *input = evbuffer_new();
 
 	memset(line, 'x', sizeof(line));
-	evbuffer_add(input, line, MAX_MODULE_INPUT_TEXT_LEN);
+	evbuffer_add(input, line, MFL_CLIENT_LINE_MAX);
 	assert(mfl_read_command(input, command) ==
 		    MFL_STREAM_INCOMPLETE);
 	evbuffer_add(input, "\n", 1);
 	assert(mfl_read_command(input, command) == MFL_STREAM_READY);
-	assert(strlen(command) == MAX_MODULE_INPUT_TEXT_LEN);
-	evbuffer_add(input, line, MAX_MODULE_INPUT_TEXT_LEN + 1);
+	assert(strlen(command) == MFL_CLIENT_LINE_MAX);
+	evbuffer_add(input, line, MFL_CLIENT_LINE_MAX + 1);
 	assert(mfl_read_command(input, command) == MFL_STREAM_INVALID);
 	evbuffer_add(input, "\n", 1);
 	assert(mfl_read_command(input, command) == MFL_STREAM_INVALID);
@@ -99,6 +99,12 @@ static void test_output_caps_and_wire_format(void)
 	struct evbuffer *output = evbuffer_new();
 	unsigned long window, length, continuation;
 	char text[5];
+	char overlong[MAX_MODULE_INPUT_TEXT_LEN + 2];
+
+	memset(overlong, 'x', sizeof(overlong));
+	overlong[sizeof(overlong) - 1] = '\0';
+	assert(!mfl_queue_command(output, overlong));
+	assert(evbuffer_get_length(output) == 0);
 
 	assert(mfl_queue_command(output, "Echo"));
 	evbuffer_remove(output, &window, sizeof(window));

@@ -1,0 +1,76 @@
+{
+  "status": "development preview; focused Linux checks, wider qualification pending",
+  "source_base": "31b191f359b9ccfe74d2ba31cc7848eaf74a280d",
+  "qualified_source_closure": "1561eafe649166010873bef3e432c4562c6322d1442c7716b7cfdab760dacfd7",
+  "canonical_archive_sha256": "25d5dfe6d845afa3400d57031837a67a5f9d832e5db7b4520b6bc2d66598a592",
+  "captures_unmodified": true,
+  "server": "Linux ARM64 Xvfb; native CPU in owned VM; no compositor",
+  "inspection": "Lead inspected all33 final captures as contact sheets and selected full-size captures; enlarged editor controls fit after repair",
+  "captures": [
+    {
+      "file": "contrast-preview-slate-dark.png",
+      "profile": "slate-dark",
+      "artifact": "themes17/slate-dark/resource-preview-cancel-active.png",
+      "sha256": "812239b7af9f16e4a2ff71cea97c79e8ffdea02585dc825ea584c5e485558a02",
+      "bytes": 39117,
+      "width": 1440,
+      "height": 1000,
+      "configuration_sha256": "21f1035b4a0cb800f307fb5d7e0dce4167311370f541aa2dda1b47ebca28c66d"
+    },
+    {
+      "file": "contrast-preview-dune-recovery.png",
+      "profile": "dune-light",
+      "artifact": "themes17/dune-light/resource-preview-external-edit-recovered.png",
+      "sha256": "5869e2386d2d3ed12eee6ff354648fde344abdfa214b39ce41001ccff7da5ed2",
+      "bytes": 29307,
+      "width": 1440,
+      "height": 1000,
+      "configuration_sha256": "f427d1fb487f74f88c015034be4e9a720bfd2605ec1d7f96e8729c5ca824163c"
+    },
+    {
+      "file": "contrast-preview-classic-draft.png",
+      "profile": "classic-large",
+      "artifact": "themes17/classic-large/resource-preview-save-returned-draft.png",
+      "sha256": "ea88efd1dff5101b25520eeb4d52d7ea781ab9b582c897d0c0074fb4501fc04b",
+      "bytes": 161276,
+      "width": 1440,
+      "height": 1000,
+      "configuration_sha256": "c6fb4a25ad5252845603e3ff5bacc122f722e2d52c6664d12222812dd2b5c254"
+    }
+  ],
+  "native_artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "69932319e4e311bb8ad3fb2bd41f0fc216638570058dfada2018c6ded3edbed8",
+      "bytes": 5649280
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "ce738106ce599b07a0a1127723b30ec6718a68a616667ed2cb11cf5973d809e9",
+      "bytes": 449464
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": {
+      "sha256": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+      "bytes": 1804472
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "7c589118670025bf2008fe7fe31fe1e1a123492abfca0814999aa62201fd6757",
+      "bytes": 5761158
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmCommand": {
+      "sha256": "d59d100cd4356f9d2f61bd13dddb486ab5fd958f30f2200818083a8fefc3294c",
+      "bytes": 4692152
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/image-owner-probe": {
+      "sha256": "3c4e6f95d85f8fc65520262b0fc898a4e6ea8a356ed1f18b3b4b8e8a78aaad6b",
+      "bytes": 157720
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3": {
+      "sha256": "a2168bb34d3fb4fc280460365b73bd8707b048541b09cc8ee09aaeacb828275c",
+      "bytes": 27340936
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-flocale-font-ref": {
+      "sha256": "32355d730d9b7fa46db26f8d16bb81af6fce326735da201426986e0fcb29aa37",
+      "bytes": 5463120
+    }
+  },
+  "fixture_sha256": "8980319655891b8250a6363a047f58634fdf5cc00ad066b2736695ff478287b8"
+}

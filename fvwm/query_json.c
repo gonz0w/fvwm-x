@@ -632,7 +632,7 @@ cJSON *fvwm_query_appearance(const char *generation,
 	    !cJSON_AddStringToObject(result, "rendered_completion",
 		"unknown") ||
 	    !cJSON_AddBoolToObject(result, "conditional_application", false) ||
-	    !cJSON_AddBoolToObject(result, "preview_supported", false))
+	    !cJSON_AddBoolToObject(result, "preview_supported", true))
 		goto fail;
 	for (size_t i = 0; i < sizeof(coverage) / sizeof(coverage[0]); i++)
 	{

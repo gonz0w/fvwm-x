@@ -6,7 +6,9 @@
 
 #include "config.h"
 #include <limits.h>
+#include <ctype.h>
 #include "request.h"
+#include "stream.h"
 #include "libs/defaults.h"
 #include "libs/module_monitor.h"
 #include "libs/json_print_policy.h"
@@ -233,6 +235,66 @@ static bool preview_token(const cJSON *value)
 			MODULE_QUERY_GENERATION_LEN;
 }
 
+static bool preview_role_plan(const cJSON *values, char output[337])
+{
+	static const int ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,
+		10, 11, 12, 13, 14};
+	static const char *fields[] = {"foreground", "background",
+		"highlight", "shadow"};
+	const cJSON *roles, *version;
+	size_t offset = 0;
+
+	output[0] = '\0';
+	if (!cJSON_IsObject(values) || cJSON_GetArraySize(values) != 2)
+		return false;
+	version = cJSON_GetObjectItemCaseSensitive(values, "plan_version");
+	roles = cJSON_GetObjectItemCaseSensitive(values, "roles");
+	if (!cJSON_IsNumber(version) || version->valuedouble != 1 ||
+	    !cJSON_IsArray(roles) || cJSON_GetArraySize(roles) != 14)
+		return false;
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		const cJSON *role = cJSON_GetArrayItem(roles, i);
+		const cJSON *id = cJSON_GetObjectItemCaseSensitive(role, "id");
+		const cJSON *field;
+		unsigned int seen = 0;
+
+		if (!cJSON_IsObject(role) || cJSON_GetArraySize(role) != 5 ||
+		    !cJSON_IsNumber(id) || id->valuedouble != ids[i])
+			return false;
+		for (field = role->child; field; field = field->next)
+		{
+			unsigned int j;
+
+			for (j = 0; j < 4; j++)
+				if (strcmp(field->string, fields[j]) == 0)
+					break;
+			if (j == 4 && strcmp(field->string, "id") != 0)
+				return false;
+			if (seen & (1U << j))
+				return false;
+			seen |= 1U << j;
+		}
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			const cJSON *color = cJSON_GetObjectItemCaseSensitive(role,
+				fields[j]);
+			const char *text;
+
+			if (!bounded_string(color, 7))
+				return false;
+			text = color->valuestring;
+			if (strlen(text) != 7 || *text != '#' ||
+			    strspn(text + 1, "0123456789abcdefABCDEF") != 6)
+				return false;
+			for (unsigned int k = 1; k < 7; k++)
+				output[offset++] = (char)tolower((unsigned char)text[k]);
+		}
+	}
+	output[offset] = '\0';
+	return true;
+}
+
 static bool preview_request(struct mfl_request *request,
 	const cJSON *const *values, unsigned int seen)
 {
@@ -245,10 +307,25 @@ static bool preview_request(struct mfl_request *request,
 		return true;
 	}
 	if (strcmp(values[2]->valuestring, "action") != 0 ||
-	    !bounded_string(values[6], 8) || !preview_token(values[7]) ||
-	    !bounded_string(values[10], MFL_REQUEST_ID_MAX))
+	    !bounded_string(values[6], 8) || !preview_token(values[7]))
 		return false;
 	operation = values[6]->valuestring;
+	if (strcmp(operation, "prepare") == 0)
+	{
+		fields = 15 | (1U << 6) | (1U << 7) | (1U << 8);
+		if ((seen & ~(1U << 13)) != fields ||
+		    !preview_role_plan(values[8], request->preview_plan))
+			return false;
+		request->timeout_ms = 15000;
+		if (values[13] && (!query_index(values[13], 30000,
+			&request->timeout_ms) || request->timeout_ms < 1000))
+			return false;
+		request->kind = MFL_REQUEST_PREVIEW_PREPARE;
+		strcpy(request->generation, values[7]->valuestring);
+		return true;
+	}
+	if (!bounded_string(values[10], MFL_REQUEST_ID_MAX))
+		return false;
 	if (strcmp(operation, "start") == 0)
 	{
 		const cJSON *opacity;
@@ -274,6 +351,8 @@ static bool preview_request(struct mfl_request *request,
 			request->kind = MFL_REQUEST_PREVIEW_CONFIRM;
 		else if (strcmp(operation, "revert") == 0)
 			request->kind = MFL_REQUEST_PREVIEW_REVERT;
+		else if (strcmp(operation, "apply") == 0)
+			request->kind = MFL_REQUEST_PREVIEW_APPLY;
 		else
 			return false;
 	}
@@ -787,7 +866,7 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 
 	memset(request, 0, sizeof(*request));
 	request->error = "invalid_request";
-	if (json == NULL || !request_shape(json, MAX_MODULE_INPUT_TEXT_LEN, 4))
+	if (json == NULL || !request_shape(json, MFL_REQUEST_JSON_MAX, 4))
 		return false;
 	root = cJSON_ParseWithOpts(json, NULL, true);
 	if (!cJSON_IsObject(root))
@@ -971,6 +1050,12 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 		{
 		case MFL_REQUEST_PREVIEW_START:
 			operation = "start";
+			break;
+		case MFL_REQUEST_PREVIEW_PREPARE:
+			operation = "prepare";
+			break;
+		case MFL_REQUEST_PREVIEW_APPLY:
+			operation = "apply";
 			break;
 		case MFL_REQUEST_PREVIEW_CONFIRM:
 			operation = "confirm";
@@ -1205,7 +1290,7 @@ fail:
 bool mfl_request_is_preview(enum mfl_request_kind kind)
 {
 	return kind >= MFL_REQUEST_PREVIEW_QUERY &&
-		kind <= MFL_REQUEST_PREVIEW_REVERT;
+		kind <= MFL_REQUEST_PREVIEW_APPLY;
 }
 
 bool mfl_request_is_core_reply(enum mfl_request_kind kind)
@@ -1243,7 +1328,9 @@ bool mfl_request_is_action(enum mfl_request_kind kind)
 		kind == MFL_REQUEST_OPERATION_CANCEL ||
 		kind == MFL_REQUEST_PREVIEW_START ||
 		kind == MFL_REQUEST_PREVIEW_CONFIRM ||
-		kind == MFL_REQUEST_PREVIEW_REVERT;
+		kind == MFL_REQUEST_PREVIEW_REVERT ||
+		kind == MFL_REQUEST_PREVIEW_PREPARE ||
+		kind == MFL_REQUEST_PREVIEW_APPLY;
 }
 
 void mfl_request_clear(struct mfl_pending_request *pending)
@@ -1265,7 +1352,7 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 	const char *cookie, const char *view)
 {
 	static const char hex[] = "0123456789abcdef";
-	char name[2 * MFL_REQUEST_ID_MAX + 1] = "-";
+	char name[339] = "-";
 	const char *operation;
 	int length;
 
@@ -1278,7 +1365,16 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 		return false;
 	operation = request->kind == MFL_REQUEST_PREVIEW_START ? "start" :
 		request->kind == MFL_REQUEST_PREVIEW_CONFIRM ? "confirm" :
-		request->kind == MFL_REQUEST_PREVIEW_REVERT ? "revert" : "query";
+		request->kind == MFL_REQUEST_PREVIEW_REVERT ? "revert" :
+		request->kind == MFL_REQUEST_PREVIEW_PREPARE ? "prepare" :
+		request->kind == MFL_REQUEST_PREVIEW_APPLY ? "apply" : "query";
+	if (request->kind == MFL_REQUEST_PREVIEW_PREPARE)
+	{
+		if (strlen(request->preview_plan) != 336 ||
+		    strspn(request->preview_plan, hex) != 336)
+			return false;
+		snprintf(name, sizeof(name), "1:%s", request->preview_plan);
+	}
 	if (request->kind == MFL_REQUEST_PREVIEW_START)
 	{
 		size_t bytes = strnlen(request->target, sizeof(request->target));
@@ -1299,7 +1395,8 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 		cookie, serial, view, operation,
 		request->generation[0] ? request->generation : "-",
 		request->kind == MFL_REQUEST_PREVIEW_CONFIRM ||
-		request->kind == MFL_REQUEST_PREVIEW_REVERT ? request->target : "-",
+		request->kind == MFL_REQUEST_PREVIEW_REVERT ||
+		request->kind == MFL_REQUEST_PREVIEW_APPLY ? request->target : "-",
 		request->opacity, request->timeout_ms, name);
 	if (length < 0 || (size_t)length >= capacity)
 	{

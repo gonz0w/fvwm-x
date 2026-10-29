@@ -4,11 +4,12 @@
  * (at your option) any later version.
  */
 
+#include "config.h"
 #include "stream.h"
 #include <string.h>
 
 enum mfl_stream_result mfl_read_command(struct evbuffer *input,
-    char command[MAX_MODULE_INPUT_TEXT_LEN + 1])
+    char command[MFL_CLIENT_LINE_MAX + 1])
 {
 	struct evbuffer_ptr end = evbuffer_search(input, "\n", 1, NULL);
 	size_t length = evbuffer_get_length(input);
@@ -16,10 +17,10 @@ enum mfl_stream_result mfl_read_command(struct evbuffer *input,
 	command[0] = '\0';
 	if (end.pos < 0)
 	{
-		return length > MAX_MODULE_INPUT_TEXT_LEN ? MFL_STREAM_INVALID :
+		return length > MFL_CLIENT_LINE_MAX ? MFL_STREAM_INVALID :
 		    MFL_STREAM_INCOMPLETE;
 	}
-	if ((size_t)end.pos > MAX_MODULE_INPUT_TEXT_LEN)
+	if ((size_t)end.pos > MFL_CLIENT_LINE_MAX)
 	{
 		return MFL_STREAM_INVALID;
 	}

@@ -33,11 +33,11 @@ static bool number(const char *text, unsigned int maximum, unsigned int *value)
 bool preview_request_parse(const char *text, struct preview_request *request)
 {
 	struct preview_request parsed = {0};
-	char operation[9], opacity[11], timeout[11], target[129], extra;
+	char operation[9], opacity[11], timeout[11], target[339], extra;
 
 	memset(request, 0, sizeof(*request));
 	if (!text || strnlen(text, 1001) > 1000 || sscanf(text,
-	    "%64s %16s %16s %8s %48s %48s %10s %10s %128s %c",
+	    "%64s %16s %16s %8s %48s %48s %10s %10s %338s %c",
 	    parsed.cookie, parsed.serial, parsed.view, operation,
 	    parsed.generation, parsed.lease, opacity, timeout,
 	    target, &extra) != 9 ||
@@ -47,7 +47,17 @@ bool preview_request_parse(const char *text, struct preview_request *request)
 	    !number(opacity, 100, &parsed.opacity) ||
 	    !number(timeout, PREVIEW_TIMEOUT_MAX, &parsed.timeout_ms))
 		return false;
-	if (strcmp(operation, "start") == 0)
+	if (strcmp(operation, "prepare") == 0)
+	{
+		parsed.operation = PREVIEW_PREPARE;
+		if (!token(parsed.generation, MODULE_QUERY_GENERATION_LEN) ||
+		    strcmp(parsed.lease, "-") != 0 || parsed.opacity ||
+		    parsed.timeout_ms < PREVIEW_TIMEOUT_MIN ||
+		    strncmp(target, "1:", 2) != 0 ||
+		    !preview_plan_parse(target + 2, parsed.colors))
+			return false;
+	}
+	else if (strcmp(operation, "start") == 0)
 	{
 		size_t length = strlen(target);
 
@@ -88,6 +98,8 @@ bool preview_request_parse(const char *text, struct preview_request *request)
 				parsed.operation = PREVIEW_CONFIRM;
 			else if (strcmp(operation, "revert") == 0)
 				parsed.operation = PREVIEW_REVERT;
+			else if (strcmp(operation, "apply") == 0)
+				parsed.operation = PREVIEW_APPLY;
 			else
 				return false;
 			if (!token(parsed.generation,
@@ -98,6 +110,65 @@ bool preview_request_parse(const char *text, struct preview_request *request)
 	}
 	*request = parsed;
 	return true;
+}
+
+bool preview_plan_parse(const char *text, uint32_t colors[14][4])
+{
+	uint32_t parsed[14][4] = {{0}};
+
+	memset(colors, 0, sizeof(parsed));
+	if (!text || !token(text, PREVIEW_PLAN_HEX_LENGTH))
+		return false;
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		for (unsigned int j = 0; j < 4; j++)
+		{
+			for (unsigned int k = 0; k < 6; k++)
+			{
+				char c = *text++;
+
+				parsed[i][j] = (parsed[i][j] << 4) |
+					(unsigned int)(c <= '9' ? c - '0' : c - 'a' + 10);
+			}
+		}
+	}
+	memcpy(colors, parsed, sizeof(parsed));
+	return true;
+}
+
+bool preview_metadata_add(size_t *used, size_t bytes)
+{
+	if (*used > PREVIEW_METADATA_MAX ||
+	    bytes > PREVIEW_METADATA_MAX - *used)
+		return false;
+	*used += bytes;
+	return true;
+}
+
+bool preview_generation_room(const char *generation)
+{
+	/* Publication advances one colorset and one menu revision. Keep a
+	 * further recovery pair available; never publish an unqueryable lease. */
+	return generation && token(generation, MODULE_QUERY_GENERATION_LEN) &&
+		strcmp(generation + MODULE_QUERY_GENERATION_LEN - 16,
+			"fffffffffffffffb") <= 0;
+}
+
+enum preview_resource_guard preview_resource_guard_check(uint64_t now_ms,
+	uint64_t deadline_ms, bool generation_matches, bool owner_alive)
+{
+	if (!generation_matches)
+		return PREVIEW_RESOURCE_CONFLICT;
+	if (!owner_alive)
+		return PREVIEW_RESOURCE_OWNER_GONE;
+	return now_ms >= deadline_ms ? PREVIEW_RESOURCE_EXPIRED :
+		PREVIEW_RESOURCE_VALID;
+}
+
+bool preview_resource_colors_supported(int fg_tint, int bg_tint,
+	unsigned int fg_alpha)
+{
+	return fg_tint == 0 && bg_tint == 0 && fg_alpha == 100;
 }
 
 uint64_t preview_deadline(uint64_t now_ms, unsigned int timeout_ms)

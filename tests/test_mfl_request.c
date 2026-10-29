@@ -6,6 +6,7 @@
 
 #include "config.h"
 #include "modules/FvwmMFL/request.h"
+#include "modules/FvwmMFL/stream.h"
 #include "libs/defaults.h"
 #include <assert.h>
 #include <limits.h>
@@ -748,12 +749,115 @@ static void test_integer_settings(void)
 	}
 }
 
+static void test_resource_preview_requests(void)
+{
+	static const int ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,
+		10, 11, 12, 13, 14};
+	static const char *names[] = {"foreground", "background",
+		"highlight", "shadow"};
+	const char *generation =
+		"000000000000000000000000000000000000000000000001";
+	struct mfl_request request;
+	char command[1001];
+	char padded[MFL_REQUEST_JSON_MAX + 2];
+	cJSON *root, *values, *roles;
+	char *text;
+
+	root = cJSON_CreateObject();
+	assert(root);
+	assert(cJSON_AddNumberToObject(root, "version", 1));
+	assert(cJSON_AddStringToObject(root, "id", "resource-preview"));
+	assert(cJSON_AddStringToObject(root, "method", "action"));
+	assert(cJSON_AddStringToObject(root, "resource", "preview"));
+	assert(cJSON_AddStringToObject(root, "operation", "prepare"));
+	assert(cJSON_AddStringToObject(root, "generation", generation));
+	values = cJSON_AddObjectToObject(root, "values");
+	assert(values && cJSON_AddNumberToObject(values, "plan_version", 1));
+	roles = cJSON_AddArrayToObject(values, "roles");
+	assert(roles);
+	for (unsigned int i = 0; i < 14; i++)
+	{
+		cJSON *role = cJSON_CreateObject();
+
+		assert(role && cJSON_AddItemToArray(roles, role));
+		assert(cJSON_AddNumberToObject(role, "id", ids[i]));
+		for (unsigned int j = 0; j < 4; j++)
+			assert(cJSON_AddStringToObject(role, names[j], "#1A2b3C"));
+	}
+	text = cJSON_PrintUnformatted(root);
+	assert(text && mfl_request_parse(text, &request));
+	assert(strlen(text) > MAX_MODULE_INPUT_TEXT_LEN &&
+		strlen(text) <= MFL_REQUEST_JSON_MAX);
+	cJSON_free(text);
+	assert(request.kind == MFL_REQUEST_PREVIEW_PREPARE);
+	assert(mfl_request_is_action(request.kind));
+	assert(request.timeout_ms == 15000);
+	assert(strlen(request.preview_plan) == 336);
+	assert(strncmp(request.preview_plan, "1a2b3c1a2b3c", 12) == 0);
+	assert(mfl_request_preview_command(command, sizeof(command), &request,
+		1, "a", "0000000000000001"));
+	assert(strstr(command, " prepare ") &&
+		strstr(command, " - 0 15000 1:1a2b3c"));
+	assert(!mfl_request_preview_command(command, 100, &request,
+		1, "a", "0000000000000001") && command[0] == '\0');
+	for (unsigned int bad = 0; bad < 6; bad++)
+	{
+		cJSON *copy = cJSON_Duplicate(root, true);
+		cJSON *v = cJSON_GetObjectItemCaseSensitive(copy, "values");
+		cJSON *r = cJSON_GetObjectItemCaseSensitive(v, "roles");
+		cJSON *role = cJSON_GetArrayItem(r, 13);
+
+		if (bad == 0)
+			cJSON_AddNumberToObject(v, "extra", 1);
+		else if (bad == 1)
+			cJSON_DeleteItemFromArray(r, 13);
+		else if (bad == 2)
+			cJSON_ReplaceItemInObjectCaseSensitive(role, "id",
+				cJSON_CreateNumber(13));
+		else if (bad == 3)
+			cJSON_AddStringToObject(role, "foreground", "#ffffff");
+		else if (bad == 4)
+			cJSON_ReplaceItemInObjectCaseSensitive(role, "shadow",
+				cJSON_CreateString("#ffffff;Exec"));
+		else
+			cJSON_ReplaceItemInObjectCaseSensitive(v, "plan_version",
+				cJSON_CreateNumber(2));
+		text = cJSON_PrintUnformatted(copy);
+		assert(text && !mfl_request_parse(text, &request));
+		cJSON_free(text);
+		cJSON_Delete(copy);
+	}
+	cJSON_Delete(root);
+	snprintf(command, sizeof(command),
+		"{\"version\":1,\"id\":\"apply\",\"method\":\"action\","
+		"\"resource\":\"preview\",\"operation\":\"apply\","
+		"\"generation\":\"%s\",\"target\":\"%s\"}",
+		generation, generation);
+	assert(mfl_request_parse(command, &request));
+	assert(request.kind == MFL_REQUEST_PREVIEW_APPLY);
+	assert(mfl_request_is_action(request.kind));
+	assert(mfl_request_preview_command(command, sizeof(command), &request,
+		1, "a", "0000000000000001"));
+	assert(strstr(command, " apply ") && strstr(command, " 0 0 -"));
+	strcpy(padded, "{\"version\":1,\"id\":\"q\",\"method\":\"query\","
+		"\"resource\":\"preview\"}");
+	memset(padded + strlen(padded), ' ',
+		MFL_REQUEST_JSON_MAX - strlen(padded));
+	padded[MFL_REQUEST_JSON_MAX] = '\0';
+	assert(mfl_request_parse(padded, &request));
+	padded[MFL_REQUEST_JSON_MAX] = ' ';
+	padded[MFL_REQUEST_JSON_MAX + 1] = '\0';
+	assert(!mfl_request_parse(padded, &request));
+}
+
 static void test_preview_requests(void)
 {
 	struct mfl_request request;
 	struct mfl_pending_request pending[MFL_REQUEST_LIMIT] = {{0}}, *slot;
 	char text[1001], command[1001];
 	const char *token = "ffffffffffffffffffffffffffffffffffffffffffffffff";
+
+	test_resource_preview_requests();
 
 	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"p\","
 		"\"method\":\"action\",\"resource\":\"preview\",\"operation\":\"start\","

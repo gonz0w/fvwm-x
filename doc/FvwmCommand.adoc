@@ -98,7 +98,9 @@ A partial command write is not retried.
 == STRUCTURED REQUEST MODE
 
 The Go client's `--request` sends one UTF-8 JSON object with a valid 1–64 byte
-ASCII request ID. The complete `request ` line must fit 1000 bytes. Duplicate
+ASCII request ID. The complete `request ` line must fit 4096 bytes, excluding
+its final newline; the JSON object can occupy at most 4088 bytes. Native/raw
+commands retain their separate 1000-byte limit. Duplicate
 fields, multiple objects and embedded line breaks are refused. Do not combine
 this mode with commands, stdin mode, info output or detailed diagnostics.
 

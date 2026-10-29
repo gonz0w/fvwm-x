@@ -27,6 +27,7 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		"Alt-U": {"Up (Alt-U)", "up", "-"},
 		"Alt-B": {"Back (Alt-B)", "back", "-"},
 		"Alt-G": {"Go (Alt-G)", "path", "x$(path:Base64)"},
+		"Alt-O": {"Open file with (Alt-O)", "file-roles", "-"},
 		"Alt-X": {"Cancel (Alt-X)", "cancel", "-"},
 		"F1":    {"Details (F1)", "details", "-"},
 		"F2":    {"Properties (F2)", "properties", "-"},

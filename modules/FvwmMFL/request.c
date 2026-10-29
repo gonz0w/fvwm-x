@@ -662,7 +662,8 @@ static bool files_values(const char *operation, const cJSON *values)
 	}
 	if (strcmp(operation, "open") == 0)
 		return count == 1 && settings_token(id);
-	if (strcmp(operation, "directory-role-launch") == 0)
+	if (strcmp(operation, "directory-role-launch") == 0 ||
+	    strcmp(operation, "file-role-launch") == 0)
 		return count == 2 && settings_token(id) &&
 			settings_token(generation);
 	if (strcmp(operation, "custom") == 0)
@@ -679,7 +680,9 @@ static bool files_values(const char *operation, const cJSON *values)
 		strcmp(operation, "terminal") == 0 ||
 		strcmp(operation, "present") == 0 ||
 		strcmp(operation, "directory-roles") == 0 ||
-		strcmp(operation, "directory-roles-close") == 0);
+		strcmp(operation, "directory-roles-close") == 0 ||
+		strcmp(operation, "file-roles") == 0 ||
+		strcmp(operation, "file-roles-close") == 0);
 }
 
 static bool files_action(struct mfl_request *request,
@@ -747,7 +750,8 @@ static bool files_request(struct mfl_request *request,
 	scope = values[5]->valuestring;
 	if (strcmp(scope, "state") != 0 && strcmp(scope, "items") != 0 &&
 	    strcmp(scope, "selection") != 0 && strcmp(scope, "properties") != 0 &&
-	    strcmp(scope, "directory_roles") != 0)
+	    strcmp(scope, "directory_roles") != 0 &&
+	    strcmp(scope, "file_roles") != 0)
 		return false;
 	if ((strcmp(scope, "state") == 0 || strcmp(scope, "properties") == 0) &&
 	    (values[11] || values[12]))

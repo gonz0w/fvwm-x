@@ -67,6 +67,7 @@ type browser struct {
 	form, serial               uint64
 	active                     bool
 	cancel                     context.CancelFunc
+	worker                     *fileWorkerProcess
 	pending                    *pendingWork
 	acks                       chan string
 	results                    chan completedWork
@@ -101,6 +102,7 @@ type browser struct {
 	detailEvents                   chan detailCallback
 	detailAckReplies               *nativeWatchReplyGate
 
+	fileRoles                  *fileRoleView
 	roles                      *directoryRoleView
 	roleSerial, roleSendSerial uint64
 	roleEvents                 chan directoryRoleCallback
@@ -182,9 +184,16 @@ func (b *browser) start(work pendingWork) error {
 	b.active = true
 	ctx, cancel := context.WithTimeout(context.Background(), workerLimit)
 	b.cancel = cancel
+	process := &fileWorkerProcess{done: make(chan struct{}), stop: make(chan struct{})}
+	b.worker = process
 	go func() {
+		defer close(process.done)
 		defer cancel()
-		b.results <- completedWork{work, startWorker(ctx, b.executable, work.request)}
+		result := startWorker(ctx, b.executable, work.request)
+		select {
+		case b.results <- completedWork{work, result}:
+		case <-process.stop:
+		}
 	}()
 	return nil
 }
@@ -196,8 +205,13 @@ func (b *browser) queue(request workRequest, navigation string) error {
 	if b.active && request.Operation != "scan" {
 		return errors.New("file worker is busy")
 	}
-	if request.Operation != "scan" && request.Operation != "locate" && request.Operation != "directory-roles" && !b.dataReady() {
+	if request.Operation != "scan" && request.Operation != "locate" && request.Operation != "directory-roles" && request.Operation != "file-roles" && !b.dataReady() {
 		return errors.New("file actions unavailable; refresh the folder first")
+	}
+	if request.Operation != "file-roles" && request.Operation != "file-role-launch" {
+		if err := b.retireFileRoles(); err != nil {
+			return err
+		}
 	}
 	if request.Operation != "directory-roles" && request.Operation != "directory-role-launch" && b.roles != nil {
 		if err := b.retireDirectoryRoles(); err != nil {
@@ -239,11 +253,18 @@ func (b *browser) completed(event completedWork) error {
 			return nil
 		}
 		success := event.result.Status == "loaded" && event.result.Snapshot != nil || event.result.Status == "started"
+		if event.work.request.Operation == "file-roles" || event.work.request.Operation == "file-role-launch" {
+			success = b.fileRolePreservesCollection(event)
+		}
 		if event.work.request.Operation == "directory-roles" || event.work.request.Operation == "directory-role-launch" {
 			success = b.directoryRolePreservesCollection(event)
 		}
 		current = b.intentBinding.Complete(event.work.ticket, success) && current
 		b.activeSerial = 0
+	}
+	if b.worker != nil {
+		<-b.worker.done
+		b.worker = nil
 	}
 	b.active = false
 	b.cancel = nil
@@ -253,7 +274,18 @@ func (b *browser) completed(event completedWork) error {
 	// A current failed result may update diagnostics, but retains the last data.
 	if current || event.work.serial == b.serial && b.intentBinding != nil && b.intentBinding.State() == viewbinding.Failed {
 		result := event.result
-		if event.work.request.Operation == "directory-roles" {
+		if event.work.request.Operation == "file-roles" || event.work.request.Operation == "file-role-launch" {
+			b.status = result.Error
+			if result.Status == "roles" && result.RoleFileValid && validFileRoleResult(result.FileRoles) {
+				b.status = "File application choices loaded"
+			}
+			if result.Status == "started" {
+				b.status = "File application started; completion is not tracked"
+			}
+			if err := b.finishFileRole(event); err != nil {
+				return err
+			}
+		} else if event.work.request.Operation == "directory-roles" {
 			if result.Status == "roles" && result.RoleFolderValid && validDirectoryRoleResult(result.Roles) {
 				b.status = "Folder application choices loaded"
 			} else {
@@ -392,6 +424,9 @@ func (b *browser) action(message string) (bool, error) {
 		b.replaceSelection = true
 		return false, err
 	}
+	if err := b.retireStaleFileRoles(); err != nil {
+		return false, err
+	}
 	b.feedbackError = ""
 	b.lastControl = ticket
 	path := ""
@@ -432,6 +467,8 @@ func (b *browser) action(message string) (bool, error) {
 		}
 	case "jobs":
 		err = b.openJobs()
+	case "file-roles":
+		err = b.beginFileRoles(true)
 	case "directory-roles":
 		err = b.beginDirectoryRoles(true)
 	case "properties":
@@ -567,14 +604,13 @@ func run(o options) error {
 		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}, jobEvents: make(chan jobNotice, 16), jobProgress: make(chan jobNotice, 1), jobCallbacks: make(chan jobCallback, 16), jobAckReplies: &nativeWatchReplyGate{}, jobListReplies: &nativeWatchReplyGate{}, roleEvents: make(chan directoryRoleCallback, 16), roleAckReplies: &nativeWatchReplyGate{}}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
+		b.shutdownWorker()
 		b.shutdownJob()
 		b.retireJobs()
 		b.closeBindings()
 		b.retireDetails()
 		b.retireDirectoryRoles()
-		if b.cancel != nil {
-			b.cancel()
-		}
+		b.retireFileRoles()
 		if b.watch.cancel != nil {
 			b.watch.cancel()
 		}
@@ -795,7 +831,13 @@ func run(o options) error {
 				renewIdle()
 			}
 		case callback := <-b.roleEvents:
-			accepted, err := b.directoryRoleAction(callback)
+			var accepted bool
+			var err error
+			if callback.file {
+				accepted, err = b.fileRoleAction(callback)
+			} else {
+				accepted, err = b.directoryRoleAction(callback)
+			}
 			if err != nil {
 				return err
 			}

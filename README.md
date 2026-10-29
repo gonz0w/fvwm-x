@@ -16,8 +16,8 @@ Recent features:
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
 - Localized applications/actions and keyboard-first action palette.
-- Optional browser: list/grid, watching, properties, Files-menu handoff and a
-  current-folder application chooser; live updates retain drafts/selection.
+- Optional browser: list/grid, watching, Files-menu handoff and folder or
+  selected-file application choosers; live updates retain drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
 - Optional desktop pinboard: saved references, shaped cells and Form management;

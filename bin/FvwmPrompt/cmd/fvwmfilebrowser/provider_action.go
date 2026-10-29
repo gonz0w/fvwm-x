@@ -107,14 +107,14 @@ func decodeProviderAction(query fileQuery) (providerAction, error) {
 		valid = len(fields) == 1 && fields.boolean("enabled", &action.enabled)
 	case "open":
 		valid = len(fields) == 1 && fields.string("id", &action.id) && hexToken(action.id, 32)
-	case "directory-role-launch":
+	case "directory-role-launch", "file-role-launch":
 		valid = len(fields) == 2 && fields.string("generation", &action.roleGeneration) && hexToken(action.roleGeneration, 32) && fields.string("id", &action.id) && hexToken(action.id, 32)
 	case "custom":
 		value := fields["index"]
 		valid = len(fields) == 1 && json.Unmarshal(value, &action.index) == nil && len(value) == 1 && action.index >= 0 && action.index < 4
 	case "cancel":
 		valid = len(fields) == 1 && fields.string("id", &action.id) && hexToken(action.id, 16) && action.id != "0000000000000000"
-	case "properties", "refresh", "terminal", "present", "directory-roles", "directory-roles-close":
+	case "properties", "refresh", "terminal", "present", "directory-roles", "directory-roles-close", "file-roles", "file-roles-close":
 		valid = len(fields) == 0
 	}
 	if !valid {

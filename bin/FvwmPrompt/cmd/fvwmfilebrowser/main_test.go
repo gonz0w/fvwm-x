@@ -34,6 +34,9 @@ func testControl(b *browser, action, argument string, packet []byte) string {
 }
 
 func TestMain(m *testing.M) {
+	if applicationRoleProcessFixture() {
+		return
+	}
 	if len(os.Args) == 2 && os.Args[1] == "--job-worker" {
 		if mode := os.Getenv("FVWM_TEST_JOB_WORKER"); mode != "" {
 			os.Exit(jobProcessFixture(mode))

@@ -24,8 +24,8 @@ const MaxDirectoryRoleIDBytes = 4096
 const MaxDirectoryRoleReferences = 8192
 const MaxDirectoryRolePolicyBytes = 16 * 1024 * 1024
 
-// DirectoryMIMEApps contains only this consumer's known directory MIME role.
-// Other types remain unowned; this is not a MIME classifier or database.
+// DirectoryMIMEApps retains the original per-type association shape. Generic
+// consumers reuse it for each known type; this is not a MIME classifier.
 type DirectoryMIMEApps struct {
 	Defaults, Added, Removed []string
 }
@@ -64,9 +64,25 @@ func validDirectoryDesktopID(id string) bool {
 // ParseDirectoryMIMEApps parses bounded INI syntax separately from Desktop Entry
 // keys (which cannot contain a MIME slash). It never rewrites a preference file.
 func ParseDirectoryMIMEApps(data []byte) (DirectoryMIMEApps, error) {
-	result := DirectoryMIMEApps{}
+	values, err := parseMIMEApps(data, func(key string) (string, error) {
+		if strings.EqualFold(key, DirectoryRoleMIME) {
+			return DirectoryRoleMIME, nil
+		}
+		return "", nil
+	})
+	return values[DirectoryRoleMIME], err
+}
+
+// ParseApplicationMIMEApps applies the same INI grammar to concrete canonical
+// MIME keys. Alias-equivalent assignments in one group are duplicate keys.
+func ParseApplicationMIMEApps(data []byte, graph MIMETypeGraph) (map[string]DirectoryMIMEApps, error) {
+	return parseMIMEApps(data, graph.Canonical)
+}
+
+func parseMIMEApps(data []byte, canonicalize func(string) (string, error)) (map[string]DirectoryMIMEApps, error) {
+	result := make(map[string]DirectoryMIMEApps)
 	if len(data) > MaxDirectoryRoleSourceBytes || !utf8.Valid(data) || bytes.IndexByte(data, 0) >= 0 {
-		return result, errors.New("invalid or oversized MIME application settings")
+		return nil, errors.New("invalid or oversized MIME application settings")
 	}
 	group := ""
 	groups := make(map[string]bool)
@@ -82,7 +98,7 @@ func ParseDirectoryMIMEApps(data []byte) (DirectoryMIMEApps, error) {
 			group = line[1 : len(line)-1]
 			if group == "" || strings.ContainsAny(group, "[]") || groups[group] ||
 				strings.ContainsFunc(group, func(c rune) bool { return c < 32 || c == 127 }) {
-				return DirectoryMIMEApps{}, errors.New("invalid or duplicate MIME settings group")
+				return nil, errors.New("invalid or duplicate MIME settings group")
 			}
 			groups[group] = true
 			continue
@@ -91,55 +107,68 @@ func ParseDirectoryMIMEApps(data []byte) (DirectoryMIMEApps, error) {
 		key, raw = strings.TrimSpace(key), strings.Trim(raw, " \t")
 		if !found || group == "" || key == "" || strings.ContainsAny(key, "[]") ||
 			strings.ContainsFunc(key, func(c rune) bool { return c < 32 || c == 127 }) {
-			return DirectoryMIMEApps{}, errors.New("invalid MIME settings assignment")
+			return nil, errors.New("invalid MIME settings assignment")
 		}
-		if strings.EqualFold(key, DirectoryRoleMIME) {
-			key = DirectoryRoleMIME
+		knownGroup := group == "Default Applications" || group == "Added Associations" || group == "Removed Associations"
+		selected := ""
+		if knownGroup || strings.EqualFold(key, DirectoryRoleMIME) {
+			var err error
+			selected, err = canonicalize(key)
+			if err != nil {
+				return nil, err
+			}
+			if selected != "" {
+				key = selected
+			}
 		}
 		identity := group + "\x00" + key
 		if keys[identity] {
-			return DirectoryMIMEApps{}, errors.New("duplicate MIME settings key")
+			return nil, errors.New("duplicate MIME settings key")
 		}
 		keys[identity] = true
-		if key != DirectoryRoleMIME || group != "Default Applications" && group != "Added Associations" && group != "Removed Associations" {
+		if selected == "" || !knownGroup {
 			continue
 		}
 		var ids []string
 		if raw != "" {
 			values, err := decodeValue(raw, true)
 			if err != nil {
-				return DirectoryMIMEApps{}, err
+				return nil, err
 			}
 			seen := make(map[string]bool)
 			for _, id := range values {
 				if !validDirectoryDesktopID(id) {
-					return DirectoryMIMEApps{}, errors.New("invalid MIME application desktop ID")
+					return nil, errors.New("invalid MIME application desktop ID")
 				}
 				if !seen[id] {
 					if len(ids) >= MaxDirectoryRoleCandidates {
-						return DirectoryMIMEApps{}, errors.New("too many MIME application IDs")
+						return nil, errors.New("too many MIME application IDs")
 					}
 					ids = append(ids, id)
 					seen[id] = true
 				}
 			}
 		}
+		value := result[selected]
 		switch group {
 		case "Default Applications":
-			result.Defaults = ids
+			value.Defaults = ids
 		case "Added Associations":
-			result.Added = ids
+			value.Added = ids
 		case "Removed Associations":
-			result.Removed = ids
+			value.Removed = ids
 		}
+		result[selected] = value
 	}
-	added := make(map[string]bool)
-	for _, id := range result.Added {
-		added[id] = true
-	}
-	for _, id := range result.Removed {
-		if added[id] {
-			return DirectoryMIMEApps{}, errors.New("conflicting added and removed MIME association")
+	for _, value := range result {
+		added := make(map[string]bool)
+		for _, id := range value.Added {
+			added[id] = true
+		}
+		for _, id := range value.Removed {
+			if added[id] {
+				return nil, errors.New("conflicting added and removed MIME association")
+			}
 		}
 	}
 	return result, nil

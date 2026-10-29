@@ -1,0 +1,12 @@
+{
+  "status": "unmodified development captures; Slate feature exercise and native Close passed, with a separate transport-exit expectation failure",
+  "runtime_freeze": "03",
+  "archive_sha256": "cd3605a0c117859fa1a0e62ce3555132cbcdc4791e59546e2eff5e9444525144",
+  "dimensions": [1440, 1200],
+  "captures": [
+    {"profile": "slate-dark", "source": "04", "source_closure_sha256": "3cf994f5796634cba435741f41eae36bde984556ff6e6b6a9e119e3577f59c49", "original": "ui01/themes/file-roles-qfbpgfhw/slate-dark/file-initial-chooser.png", "file": "selected-file-slate-dark.png", "sha256": "6b95f9bf6ab1928bc5d745e25df49cf1bcae5e8eefc0cc93627b150d2d809b6b"},
+    {"profile": "dune-light", "source": "05", "source_closure_sha256": "de986637e574ba511f029652d92f5cb26a2aec6fe057e1dd54abf3cdd02c4ae7", "original": "ui02/themes/file-roles-_uqagvgw/dune-light/file-refused-handler.png", "file": "selected-file-dune-light.png", "sha256": "4a9c49250ddd158f7116da6f52b1b72e4d0fe7aa89b6295c2646a3d7a2faad97"},
+    {"profile": "classic-large", "source": "05", "source_closure_sha256": "de986637e574ba511f029652d92f5cb26a2aec6fe057e1dd54abf3cdd02c4ae7", "original": "ui02/themes/file-roles-_uqagvgw/classic-large/file-recovered-chooser.png", "file": "selected-file-classic-large.png", "sha256": "e57aea4d4cb691bbb0e343d2f0613936016460e33e82bad50068b6f26b8b2476"}
+  ],
+  "limits": "Synthetic fixture names; whole-guest panel counters are not a performance comparison."
+}

@@ -15,7 +15,7 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		return b.cancelProviderWork(action.id)
 	}
 	if providerWorkerAction(query.Operation) {
-		if query.Operation != "navigate" && query.Operation != "refresh" && query.Operation != "hidden" && query.Operation != "reveal" && query.Operation != "inspect" && query.Operation != "directory-roles" && !b.dataReady() {
+		if query.Operation != "navigate" && query.Operation != "refresh" && query.Operation != "hidden" && query.Operation != "reveal" && query.Operation != "inspect" && query.Operation != "directory-roles" && query.Operation != "file-roles" && !b.dataReady() {
 			return "not_ready"
 		}
 		return b.startProviderWork(query, action)
@@ -46,6 +46,10 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		b.view = action.mode
 	case "present":
 		// Publication and managed-window commands are acknowledged by the caller.
+	case "file-roles-close":
+		if b.retireFileRoles() != nil {
+			return "operation_refused"
+		}
 	case "directory-roles-close":
 		if b.retireDirectoryRoles() != nil {
 			return "operation_refused"
@@ -64,6 +68,9 @@ func (b *browser) applyProviderAction(query fileQuery, action providerAction) st
 		b.inspected = append([]string(nil), ids...)
 	default:
 		return "invalid_request"
+	}
+	if b.retireStaleFileRoles() != nil {
+		return "operation_refused"
 	}
 	return ""
 }

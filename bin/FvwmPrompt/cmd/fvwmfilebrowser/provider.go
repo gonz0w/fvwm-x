@@ -96,8 +96,9 @@ func (b *browser) providerGeneration() string {
 		Opener, Terminal string
 		Actions          actionFlags
 		Jobs             map[string]any
+		FileRoles        map[string]any
 		DirectoryRoles   map[string]any
-	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled, b.serial, b.progress().State, b.opener, b.terminal, b.actions, b.jobSummary(), b.directoryRoleSummary()})
+	}{b.model.Generation, b.model.SelectedIDs(), b.model.Focus, b.viewing(), b.inspected, b.providerWork, b.active, b.snapshot != nil && b.snapshot.Hidden, b.watch != nil && b.watch.enabled, b.serial, b.progress().State, b.opener, b.terminal, b.actions, b.jobSummary(), b.fileRoleSummary(), b.directoryRoleSummary()})
 	sum := sha256.Sum256(data)
 	return hex.EncodeToString(sum[:16])
 }
@@ -122,6 +123,11 @@ func (b *browser) answerProvider(query fileQuery) (bool, error) {
 		packet, err := b.snapshotNative("q"+query.Serial, b.nativeGeneration, 0)
 		if err != nil || b.model.SelectNative(b.model.Generation, packet) != nil {
 			code = "native_state_unavailable"
+		}
+	}
+	if code == "" {
+		if err := b.retireStaleFileRoles(); err != nil {
+			return false, err
 		}
 	}
 	if code == "" && query.Scope == "action" {

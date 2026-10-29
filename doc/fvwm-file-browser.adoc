@@ -291,6 +291,44 @@ folder and that folder is revalidated. Other file-work intents, including
 navigation and scheduled watch refreshes, or chooser/parent retirement invalidate
 the retained capture. Reopen or refresh the chooser for a new set.
 
+== OPEN A SELECTED FILE WITH AN APPLICATION
+
+Select exactly one regular file and press Alt-O to open its application chooser.
+The focused item alone is not a selection; links, special files and multiple
+selections are refused. The chooser shows the identified MIME type, its default
+and associated alternatives. Choose an application and press Launch (Enter),
+Refresh (F5) or Close (Escape). This does not change association defaults.
+
+Identification uses an existing optional *file*(1) with literal `-b
+--mime-type` arguments and the actual filename. Missing, failed, malformed,
+oversized or timed-out output reports unavailable. The isolated classifier has
+a two-second deadline, a 256-byte output limit and a 4-KiB diagnostic limit.
+It invokes no shell or decompression and is not a full MIME classifier
+conformance claim. No provider is installed automatically.
+
+Read-only application lookup follows installed MIME aliases and subclasses,
+including implicit text/plain and application/octet-stream parents. A
+more-specific association takes precedence over a parent default. The F12
+current-folder chooser remains an exact inode/directory lookup independent of
+alias and subclass metadata.
+
+Before handoff the browser rechecks the captured file identity and type, and
+the selected handler and association. If the file identity changed, refresh the
+main browser, select the file again and press Alt-O. Chooser F5 refreshes type
+and handler metadata only while the captured identity remains current. A changed
+default cannot redirect an explicit selection. Selection or target changes,
+other file work and chooser or parent retirement invalidate the capture; a role
+failure does not repair unrelated failed work.
+
+Desktop Entry file and URI codes receive the original raw path or encoded local
+URI as literal arguments; no operand is appended without a field code. The
+entry's Path supplies the working directory, or the containing folder is used.
+Terminal applications use the configured literal terminal and `-e`. Starting a
+process means handoff, not completion.
+Classifier work has its own cleanup boundary; an application already handed off
+can continue independently. Cancellation cannot undo an escaped handoff and
+does not retry it automatically.
+
 == CONFIGURED SELECTION ACTIONS
 
 Repeat `--action 'Label=executable'` up to four times to add named native buttons.
@@ -379,7 +417,10 @@ Close (Escape) exits the helper and closes its Form. The prototype closes after
 five minutes without an accepted callback, control or current-Form feedback;
 it also has an independent native Form timer.
 Normal window-manager Close, SIGINT/SIGTERM and connection loss cancel owned
-work and retain child ownership until reap. A force-killed Form can expire
+work and wait for worker cleanup and reap before the helper returns. Close can
+wait for an uninterruptible kernel operation; it has no fixed completion time.
+Cancellation cannot undo an application handoff that has already escaped.
+A force-killed Form can expire
 independently of its helper. A remaining Form has its own orphan lease. This is a bounded example
 consumer, not a persistent full file-manager window.
 

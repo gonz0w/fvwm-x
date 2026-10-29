@@ -48,6 +48,9 @@ func (b *browser) planProviderWork(operation string, action providerAction) (wor
 		case "item":
 			request.Operation, request.ID = "browse", action.id
 		}
+	case "file-role-launch":
+		request, code := b.fileRoleRequest(action.roleGeneration, action.id)
+		return request, "file-role-launch", code
 	case "directory-role-launch":
 		request, code := b.directoryRoleRequest(action.roleGeneration, action.id)
 		return request, "directory-role-launch", code
@@ -92,6 +95,17 @@ func (b *browser) startProviderWork(query fileQuery, action providerAction) stri
 	if b.active || b.pending != nil {
 		return "busy"
 	}
+	if query.Operation == "file-roles" {
+		if _, _, code := b.selectedRoleFile(); code != "" {
+			return code
+		}
+		visible := b.fileRoles != nil && b.fileRoles.chooser.visible
+		if b.beginFileRoles(visible) != nil {
+			return "operation_refused"
+		}
+		b.providerWork = &providerWork{ID: query.Serial, Operation: query.Operation, Status: "accepted", serial: b.serial}
+		return ""
+	}
 	if query.Operation == "directory-roles" {
 		visible := b.roles != nil && b.roles.visible
 		if b.beginDirectoryRoles(visible) != nil {
@@ -106,6 +120,9 @@ func (b *browser) startProviderWork(query fileQuery, action providerAction) stri
 	}
 	if b.queue(request, navigation) != nil {
 		return "operation_refused"
+	}
+	if query.Operation == "file-role-launch" {
+		b.selectFileRole(action.id)
 	}
 	if query.Operation == "directory-role-launch" {
 		b.selectDirectoryRole(action.id)
@@ -148,6 +165,8 @@ func (b *browser) finishProviderWork(event completedWork) {
 	case event.work.serial != b.serial:
 		work.Status = "superseded"
 	case event.result.Status == "loaded" && event.result.Snapshot != nil:
+		work.Status = "loaded"
+	case event.result.Status == "roles" && event.result.RoleFileValid && validFileRoleResult(event.result.FileRoles):
 		work.Status = "loaded"
 	case event.result.Status == "roles" && event.result.RoleFolderValid && validDirectoryRoleResult(event.result.Roles):
 		work.Status = "loaded"

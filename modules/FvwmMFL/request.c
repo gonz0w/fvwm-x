@@ -235,7 +235,8 @@ static bool preview_token(const cJSON *value)
 			MODULE_QUERY_GENERATION_LEN;
 }
 
-static bool preview_role_plan(const cJSON *values, char output[337])
+static bool preview_role_plan(const cJSON *values, char output[337],
+	unsigned int *plan_version)
 {
 	static const int ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,
 		10, 11, 12, 13, 14};
@@ -245,11 +246,13 @@ static bool preview_role_plan(const cJSON *values, char output[337])
 	size_t offset = 0;
 
 	output[0] = '\0';
+	*plan_version = 0;
 	if (!cJSON_IsObject(values) || cJSON_GetArraySize(values) != 2)
 		return false;
 	version = cJSON_GetObjectItemCaseSensitive(values, "plan_version");
 	roles = cJSON_GetObjectItemCaseSensitive(values, "roles");
-	if (!cJSON_IsNumber(version) || version->valuedouble != 1 ||
+	if (!cJSON_IsNumber(version) ||
+	    (version->valuedouble != 1 && version->valuedouble != 2) ||
 	    !cJSON_IsArray(roles) || cJSON_GetArraySize(roles) != 14)
 		return false;
 	for (unsigned int i = 0; i < 14; i++)
@@ -292,6 +295,7 @@ static bool preview_role_plan(const cJSON *values, char output[337])
 		}
 	}
 	output[offset] = '\0';
+	*plan_version = (unsigned int)version->valueint;
 	return true;
 }
 
@@ -314,7 +318,8 @@ static bool preview_request(struct mfl_request *request,
 	{
 		fields = 15 | (1U << 6) | (1U << 7) | (1U << 8);
 		if ((seen & ~(1U << 13)) != fields ||
-		    !preview_role_plan(values[8], request->preview_plan))
+		    !preview_role_plan(values[8], request->preview_plan,
+			&request->preview_plan_version))
 			return false;
 		request->timeout_ms = 15000;
 		if (values[13] && (!query_index(values[13], 30000,
@@ -1370,10 +1375,13 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 		request->kind == MFL_REQUEST_PREVIEW_APPLY ? "apply" : "query";
 	if (request->kind == MFL_REQUEST_PREVIEW_PREPARE)
 	{
-		if (strlen(request->preview_plan) != 336 ||
+		if ((request->preview_plan_version != 1 &&
+		     request->preview_plan_version != 2) ||
+		    strlen(request->preview_plan) != 336 ||
 		    strspn(request->preview_plan, hex) != 336)
 			return false;
-		snprintf(name, sizeof(name), "1:%s", request->preview_plan);
+		snprintf(name, sizeof(name), "%u:%s",
+			request->preview_plan_version, request->preview_plan);
 	}
 	if (request->kind == MFL_REQUEST_PREVIEW_START)
 	{

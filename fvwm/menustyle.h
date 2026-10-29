@@ -5,6 +5,7 @@
 
 /* ---------------------------- included header files ---------------------- */
 #include "fvwm.h"
+#include "preview_policy.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -305,7 +306,7 @@ struct menustyle_preview_pair
 };
 bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair);
 bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
-	bool restore);
+	enum preview_resource_kind kind, bool restore);
 void menustyle_free(MenuStyle *ms);
 MenuStyle *menustyle_find(char *name);
 void menustyle_update(MenuStyle *ms);

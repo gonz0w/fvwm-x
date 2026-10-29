@@ -106,7 +106,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   `decorations` and `startups` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
 * `preview` queries or controls a core-owned runtime menu-opacity or scoped
-  high-contrast resource lease, as described below. File persistence remains
+  high-contrast or opaque-role-color resource lease, as described below. File persistence remains
   with the settings owner.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
@@ -385,6 +385,29 @@ the core preserves the newer state. Owner loss detaches the producer immediately
 and schedules outer recovery. A replacement producer needs fresh identities.
 No protocol confirmation writes preferences or certifies final pixels.
 
+=== Opaque role-color resource preview
+
+The `appearance.opaque_colors_preview` capability advertises a second fixed
+plan kind: `version: 1`, `plan_version: 2`, `scope: "opaque-colors"`, fourteen
+roles, two menu styles and the same metadata/deadline/lease bounds. The existing
+`resource_preview` high-contrast capability object remains unchanged. Both
+kinds share one core slot with scalar opacity; they cannot run concurrently.
+
+Use the same exact `prepare` values object and ordered fourteen-role array with
+`plan_version: 2`. Version 1 keeps high-contrast force-100 menu behavior;
+version 2 publishes opaque role colors while retaining both captured actual
+menu-opacity scalars. Unknown versions are refused. Resource replies identify
+`scope: "opaque-colors"` and `plan_version: 2`; the prepare/apply/active/terminal
+sequence, fresh identities, generation checks, deadlines, retained owners,
+conflict policy and outer-boundary recovery are otherwise the same.
+
+This core operation does not infer Desktop preferences or write files. Its
+native palette/explicit-light-or-dark consumer additionally requires an opaque
+effective presentation and an unchanged resolved wallpaper pair, captures the
+whole editor draft and confirms runtime before saving only the selected key.
+See FvwmDesktop(1). Actual menu scalars remain unchanged, including distinct
+custom values; confirmation is not a simultaneous repaint guarantee.
+
 === Appearance configuration, menu styles and decorations
 
 Three read-only core observations support inspection of shared appearance policy:
@@ -422,8 +445,8 @@ An optional `generation` on `appearance` must match exactly, or the query return
 `limit`. Observing a matching token does not make a later command conditional:
 a producer or image completion can intervene. Do not use a separate query and
 mutation as a rollback guard. The separate `preview` resource below owns an
-snapshot/apply/recovery operation for menu opacity or the named high-contrast
-bundle. The appearance query flags do not advertise general transactions.
+snapshot/apply/recovery operation for menu opacity or the named resource
+bundles. The appearance query flags do not advertise general transactions.
 
 `menu-styles` and `decorations` use that same conservative appearance token.
 They return `state: "observed"`, `generation`, `offset`, `next_offset`, and a
@@ -547,7 +570,7 @@ settlements can change it. On stale pages, restart at offset zero. These tokens
 do not cover Style/decorations, window policy or all appearance changes, and
 cannot authorize rollback after a separate check. `preview_supported: false`
 keeps arbitrary colorset preview/revert unavailable. The separate `preview`
-resource owns only its named menu-opacity or high-contrast bundle operations.
+resource owns only its named menu-opacity, high-contrast or opaque-colors bundle operations.
 Existing settings generations retain their separate scope.
 
 === Browser metadata, selection and controls
@@ -914,9 +937,10 @@ with `application: "submission-failed"`. It does not report an unchanged state
 or invite blind replay. Generic `applied_command_results` remains false; this
 provider observes its own saved preferences, not final core rendering.
 Saved-preference preview remains unavailable (`preview: false`). The separate
-core `preview` resource supports runtime menu opacity and the fixed high-contrast
-bundle. The opacity and contrast registry entries report `native_preview: true`
-for their conditional native consumers; these are not generic settings actions.
+core `preview` resource supports runtime menu opacity and the fixed role-color
+bundles. The opacity, contrast, palette and appearance registry entries report
+`native_preview: true` for their conditional native consumers; these are not
+generic settings actions.
 For opacity,
 `runtime_constraint: "transparency-disabled"` explains opaque-mode masking.
 The `contrast` enum accepts `normal` (default) and `high` in the appearance group.

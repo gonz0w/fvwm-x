@@ -16,5 +16,6 @@ void appearance_preview_owner_gone(struct fmodule *owner);
 void appearance_preview_outer_boundary(void);
 bool appearance_preview_outer_pending(void);
 cJSON *appearance_preview_capability(void);
+cJSON *appearance_opaque_colors_capability(void);
 
 #endif

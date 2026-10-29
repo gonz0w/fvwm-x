@@ -60,6 +60,8 @@ def run(args, profile):
             config.write_text('ModulePath ' + str(modules) + '\nRead ' +
                 str(source / 'fvwm/ConfigFvwmDefaults') + '\n' + body +
                 '\nAddToFunc StartFunction I Module FvwmMFL\n' +
+                ('Style ThemeContrastProbe Layer 6\n'
+                    if profile == 'classic-large' and args.palette_preview else '') +
                 '*ThemeContrastProbe: Title \"Theme contrast probe\"\n' +
                 '*ThemeContrastProbe: Colorset 0\n' +
                 '*ThemeContrastProbe: ItemColorset 0\n' +
@@ -380,8 +382,46 @@ def run(args, profile):
                             if items:
                                 x.XFree(items)
 
-                    def form_key(window, symbol):
-                        witness = {'window': window, 'keysym': symbol.decode('ascii'),
+                    def managed_frame(window):
+                        parent = parent_of(window)
+                        if parent in (None, client.root):
+                            return None
+                        frame = parent_of(parent)
+                        return frame if frame not in (None, client.root) and parent_of(frame) == client.root else None
+
+                    def above_probe(window):
+                        frame, probe_frame = managed_frame(window), managed_frame(probe)
+                        order = children(client.root)
+                        if frame not in order or probe_frame not in order:
+                            return None
+                        rectangles = []
+                        for target in (frame, probe_frame):
+                            attrs = attributes(target)
+                            if not attrs or attrs.map_state != 2:
+                                return None
+                            px, py, child = C.c_int(), C.c_int(), C.c_ulong()
+                            assert x.XTranslateCoordinates(d, target, client.root,
+                                0, 0, C.byref(px), C.byref(py), C.byref(child))
+                            border = attrs.border_width
+                            rectangles.append((px.value - border, py.value - border,
+                                attrs.width + 2 * border, attrs.height + 2 * border))
+                        form_rect, probe_rect = rectangles
+                        overlap = (form_rect[0] < probe_rect[0] + probe_rect[2] and
+                            probe_rect[0] < form_rect[0] + form_rect[2] and
+                            form_rect[1] < probe_rect[1] + probe_rect[3] and
+                            probe_rect[1] < form_rect[1] + form_rect[3])
+                        if overlap and order.index(frame) <= order.index(probe_frame):
+                            return None
+                        # A lower-layer preview can already be unobscured when
+                        # its actual frame does not intersect the pixel probe.
+                        return {'frame': frame, 'probe_frame': probe_frame,
+                            'frame_rectangle': form_rect, 'probe_rectangle': probe_rect,
+                            'overlaps_probe': overlap, 'frame_stack_index': order.index(frame),
+                            'probe_stack_index': order.index(probe_frame), 'root_bottom_to_top': order}
+
+                    def form_key(window, symbol=None):
+                        witness = {'window': window,
+                            'keysym': symbol.decode('ascii') if symbol else None,
                             'status': 'waiting-for-native-form'}
                         evidence.setdefault('keyboard_observations', []).append(witness)
                         def ready():
@@ -453,7 +493,9 @@ def run(args, profile):
                         # establish that the Form is managed or has X focus.
                         # Its top-level window selects KeyPress; verify that
                         # actual recipient before injecting the real key.
-                        control.send(('WindowId ' + str(window) + ' Focus NoWarp\n').encode())
+                        raise_command = ('WindowId ' + str(window) + ' Raise\n'
+                            if profile == 'classic-large' and args.palette_preview else '')
+                        control.send((raise_command + 'WindowId ' + str(window) + ' Focus NoWarp\n').encode())
                         barrier()
                         def focused():
                             actual, revert = C.c_ulong(), C.c_int()
@@ -464,14 +506,18 @@ def run(args, profile):
                         wait_for_predicate('actual native Form keyboard focus', focused,
                             time.monotonic() + 10, process=core)
                         assert focused(), witness
+                        if profile == 'classic-large' and args.palette_preview:
+                            witness['capture_stacking'] = wait_for_predicate('capture Form unobscured by pixel probe',
+                                lambda: above_probe(window), time.monotonic() + 5, process=core)
                         witness['status'] = 'focus-observed'
-                        key(symbol)
-                        witness['status'] = 'focused-key-submitted'
+                        if symbol:
+                            key(symbol)
+                            witness['status'] = 'focused-key-submitted'
 
-                    def preview_from_editor():
+                    def defaults_editor():
                         # Defaults supplies a deterministic, independent draft
-                        # differing from the committed opacity/wallpaper. F5
-                        # must capture it without applying these other fields.
+                        # differing from the committed opacity/wallpaper. Each
+                        # preview key must capture the other fields unchanged.
                         control.send(b'SendToModule FvwmDesktop edit-settings all\n')
                         editor = wait_for_predicate('complete settings editor',
                             lambda: named_windows().get('Desktop settings'),
@@ -512,10 +558,373 @@ def run(args, profile):
                             time.monotonic() + 10, process=core)
                         replacement.update(status='mapped-replacement-observed',
                             replacement_window=editor, xid_reused=editor == previous)
+                        return editor
+
+                    def preview_from_editor():
+                        editor = defaults_editor()
                         form_key(editor, b'F5')
                         return wait_for_predicate('actual high contrast Save Cancel Form',
                             lambda: named_windows().get('Preview high contrast'),
                             time.monotonic() + 10, process=core)
+
+                    def palette_appearance_cases():
+                        nonlocal snapshot
+                        observed_cases = {}
+                        role_ids = (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14)
+
+                        def close_notice():
+                            control.send(b'KillModule FvwmForm SlateNoticeForm\n')
+                            barrier()
+                            wait_for_predicate('preview notice retired',
+                                lambda: 'FVWM-X' not in named_windows(),
+                                time.monotonic() + 5, process=core)
+
+                        def scalars():
+                            page = request(resource='menu-styles', limit=8)
+                            values = {item['name']: item['opacity_percent']
+                                for item in page['menu_styles']
+                                if item['name'] in ('*', 'SlateLauncherStyle')}
+                            assert set(values) == {'*', 'SlateLauncherStyle'}, page
+                            return values
+
+                        def published_roles():
+                            return {identifier: request(resource='colorsets', target=str(identifier))[
+                                'colorsets'][0] for identifier in role_ids}
+
+                        def wallpaper_witness():
+                            owner = wallpaper_owner()
+                            image = x.XGetImage(d, owner, 0, 0, 2, 2,
+                                C.c_ulong(-1).value, 2)
+                            assert image
+                            try:
+                                samples = [x.XGetPixel(image, px, py)
+                                    for py in range(2) for px in range(2)]
+                            finally:
+                                x.XDestroyImage(image)
+                            return {'pixmap': owner, 'pixels': samples}
+
+                        def presentation(name, appearance, contrast):
+                            surface = (0 if appearance == 'dark' else 0xffffff) if contrast == 'high' else int(
+                                palettes[name][appearance]['surface'][1:], 16)
+                            text = (0xffffff if appearance == 'dark' else 0) if contrast == 'high' else int(
+                                palettes[name][appearance]['text'][1:], 16)
+                            wait_for_predicate('actual opaque panel presentation',
+                                lambda: pixel(5, 5) == surface,
+                                time.monotonic() + 10, process=core)
+                            if profile == 'classic-large':
+                                assert named_windows().get('Theme contrast probe') == probe
+                                visibility = {'profile': profile, 'client': probe,
+                                    'command': 'WindowId ' + str(probe) + ' Raise'}
+                                evidence.setdefault('probe_visibility', []).append(visibility)
+                                control.send((visibility['command'] + '\n').encode())
+                                barrier()
+                                def bounds(window):
+                                    attrs = attributes(window)
+                                    if not attrs or attrs.map_state != 2:
+                                        return None
+                                    px, py, child = C.c_int(), C.c_int(), C.c_ulong()
+                                    assert x.XTranslateCoordinates(d, window, client.root,
+                                        0, 0, C.byref(px), C.byref(py), C.byref(child))
+                                    border = attrs.border_width
+                                    return (px.value - border, py.value - border,
+                                        attrs.width + 2 * border, attrs.height + 2 * border)
+                                def visible():
+                                    frame = managed_frame(probe)
+                                    order = children(client.root)
+                                    rectangle = bounds(frame) if frame else None
+                                    if frame not in order or rectangle is None:
+                                        return None
+                                    overlaps = []
+                                    for title, window in named_windows().items():
+                                        if title != 'Desktop settings' and title != 'FVWM-X' and not title.startswith('Preview '):
+                                            continue
+                                        other = managed_frame(window)
+                                        rect = bounds(other) if other else None
+                                        if other not in order or rect is None:
+                                            continue
+                                        if (rectangle[0] < rect[0] + rect[2] and rect[0] < rectangle[0] + rectangle[2]
+                                                and rectangle[1] < rect[1] + rect[3] and rect[1] < rectangle[1] + rectangle[3]):
+                                            overlaps.append({'title': title, 'client': window,
+                                                'frame': other, 'rectangle': rect, 'stack_index': order.index(other)})
+                                    visibility.update(frame=frame, rectangle=rectangle,
+                                        root_bottom_to_top=order, overlapping_forms=overlaps)
+                                    return visibility if all(order.index(frame) > item['stack_index'] for item in overlaps) else None
+                                wait_for_predicate('same probe exposed above overlapping Forms', visible,
+                                    time.monotonic() + 5, process=core)
+                            return wait_for_predicate('actual existing Form presentation',
+                                lambda: monochrome(probe, surface, text),
+                                time.monotonic() + 10, process=core)
+
+                        def setup(name='slate', appearance='dark', contrast='normal',
+                                transparency=False, follow=False):
+                            nonlocal snapshot
+                            close_notice()
+                            old_wall = wallpaper_witness()
+                            old_pair = json.loads(state.read_text())['wallpaper']
+                            # Native Save/Apply can advance the provider between
+                            # cases. Observe its current generation for this new
+                            # intentional action; never retry a stale action.
+                            snapshot = request(scope='all')
+                            change({'palette': name, 'appearance': appearance,
+                                'contrast': contrast, 'transparency': transparency,
+                                'keep_wallpaper': False, 'launcher_opacity': 82,
+                                'wallpaper_palette': 'follow' if follow else 'grove',
+                                'wallpaper_appearance': 'follow' if follow else 'light'})
+                            def settled():
+                                return all(request(resource='colorsets', target=str(identifier))[
+                                    'colorsets'][0]['update_state'] == 'idle' for identifier in role_ids)
+                            wait_for_predicate('all fourteen submitted roles settled', settled,
+                                time.monotonic() + 10, process=core)
+                            new_pair = json.loads(state.read_text())['wallpaper']
+                            if new_pair != old_pair:
+                                wait_for_predicate('actual setup wallpaper change',
+                                    lambda: wallpaper_witness() != old_wall,
+                                    time.monotonic() + 10, process=core)
+                                wallpaper()
+                            if not transparency or contrast == 'high':
+                                presentation(name, appearance, contrast)
+                            if contrast == 'normal' and not transparency:
+                                # These are actual external menu scalars, distinct
+                                # from both requested opacity and resolved policy.
+                                control.send(b'MenuStyle * Translucent 69\n'
+                                    b'MenuStyle SlateLauncherStyle Translucent 87\n')
+                                barrier()
+                                assert scalars() == {'*': 69, 'SlateLauncherStyle': 87}
+                            snapshot = request(scope='all')
+
+                        def start_native(setting, value):
+                            nonlocal snapshot
+                            close_notice()
+                            snapshot = request(scope='all')
+                            control.send(('SendToModule FvwmDesktop preview-' + setting + ' ' +
+                                snapshot['provider'] + ' ' + value + '\n').encode())
+                            return wait_for_predicate('native ' + setting + ' preview Form',
+                                lambda: named_windows().get('Preview ' + setting),
+                                time.monotonic() + 10, process=core)
+
+                        def finish(window, setting, value, ending, before, wall,
+                                original_scalars, name, appearance, contrast, label, editor_expected=False):
+                            assert state.read_bytes() == before
+                            assert wallpaper_witness() == wall and scalars() == original_scalars
+                            painted = presentation(name, appearance, contrast)
+                            if profile == 'classic-large':
+                                form_key(window)
+                            capture(label + '-active.png')
+                            form_key(window, b'Return' if ending == 'save' else b'Escape')
+                            wait_for_predicate('native ' + setting + ' preview retired',
+                                lambda: 'Preview ' + setting not in named_windows(),
+                                time.monotonic() + 10, process=core)
+                            capture_form = None
+                            if profile == 'classic-large':
+                                title = 'Desktop settings' if editor_expected else 'FVWM-X'
+                                capture_form = wait_for_predicate('existing returned capture Form',
+                                    lambda: named_windows().get(title),
+                                    time.monotonic() + 10, process=core)
+                                wait_for_predicate('returned capture Form managed',
+                                    lambda: managed_frame(capture_form),
+                                    time.monotonic() + 10, process=core)
+                            if ending == 'save':
+                                expected = dict(json.loads(before), **{setting: value})
+                                wait_for_predicate('only ' + setting + ' preference saved',
+                                    lambda: json.loads(state.read_text()) == expected,
+                                    time.monotonic() + 5, process=core)
+                                capability = request(resource='appearance')['opaque_colors_preview']
+                                assert capability['slot_available'], capability
+                                presentation(name, appearance, contrast)
+                            else:
+                                assert state.read_bytes() == before
+                                baseline = json.loads(before)
+                                presentation(baseline['palette'], baseline['appearance'], baseline['contrast'])
+                            assert wallpaper_witness() == wall and scalars() == original_scalars
+                            if capture_form:
+                                if editor_expected:
+                                    form_key(capture_form)
+                                else:
+                                    # Notices are deliberately NeverFocus.
+                                    control.send(('WindowId ' + str(capture_form) + ' Raise\n').encode())
+                                    barrier()
+                                    wait_for_predicate('capture notice unobscured by pixel probe',
+                                        lambda: above_probe(capture_form), time.monotonic() + 5, process=core)
+                            capture(label + '-finished.png')
+                            observed_cases[label] = {'setting': setting, 'candidate': value,
+                                'ending': ending, 'actual_presentation': painted,
+                                'unchanged_wallpaper': wall, 'unchanged_menu_scalars': original_scalars}
+
+                        def choose_appearance(editor, value):
+                            form_key(editor)
+                            rows = {}
+                            for child in children(editor):
+                                attrs = attributes(child)
+                                if attrs and attrs.map_state == 2 and attrs.width == attrs.height:
+                                    rows.setdefault(attrs.y, []).append((attrs.x, child, attrs))
+                            choices = [sorted(items) for _, items in sorted(rows.items())]
+                            evidence.setdefault('appearance_choice_rows', []).append([
+                                [{'window': child, 'x': attrs.x, 'y': attrs.y,
+                                    'width': attrs.width, 'height': attrs.height}
+                                    for _, child, attrs in items] for items in choices])
+                            # Public editor ordering: four palette choices,
+                            # then Light/Dark/Auto. Labels are drawn, while each
+                            # real Choice checkbox owns a square X child.
+                            assert len(choices) >= 2 and len(choices[0]) == 4 and len(choices[1]) == 3, choices
+                            _, child, attrs = choices[1][{'light': 0, 'dark': 1, 'auto': 2}[value]]
+                            px, py, under = C.c_int(), C.c_int(), C.c_ulong()
+                            assert x.XTranslateCoordinates(d, child, client.root,
+                                attrs.width // 2, attrs.height // 2,
+                                C.byref(px), C.byref(py), C.byref(under))
+                            pointer.motion(px.value, py.value)
+                            root_, actual_child = C.c_ulong(), C.c_ulong()
+                            rx, ry, wx, wy = (C.c_int() for _ in range(4))
+                            mask = C.c_uint()
+                            assert x.XQueryPointer(d, editor, C.byref(root_), C.byref(actual_child),
+                                C.byref(rx), C.byref(ry), C.byref(wx), C.byref(wy),
+                                C.byref(mask))
+                            assert actual_child.value == child, (child, actual_child.value)
+                            pointer.button(True)
+                            pointer.button(False)
+                            x.XSync(d, 0)
+                            evidence.setdefault('appearance_choice_clicks', []).append({
+                                'window': editor, 'choice_window': child, 'value': value,
+                                'root_x': px.value, 'root_y': py.value})
+
+                        def apply_returned_draft(wanted):
+                            nonlocal snapshot
+                            editor = wait_for_predicate('whole captured draft returned',
+                                lambda: named_windows().get('Desktop settings'),
+                                time.monotonic() + 10, process=core)
+                            close_notice()
+                            old_wall = wallpaper_witness()
+                            old_pair = json.loads(state.read_text())['wallpaper']
+                            form_key(editor, b'F3')
+                            def applied():
+                                observed = request(scope='all')
+                                actual = {key_: item['saved'] for key_, item in observed['settings'].items()}
+                                return observed if actual == wanted else None
+                            snapshot = wait_for_predicate('all eleven captured draft fields applied', applied,
+                                time.monotonic() + 10, process=core)
+                            if json.loads(state.read_text())['wallpaper'] != old_pair:
+                                # Ordinary Apply may intentionally change the
+                                # captured follow-wallpaper draft. Observe that
+                                # actual publication before the next setup;
+                                # preference persistence is not paint completion.
+                                wait_for_predicate('actual wallpaper from ordinary draft Apply',
+                                    lambda: wallpaper_witness() != old_wall,
+                                    time.monotonic() + 10, process=core)
+                                wallpaper()
+
+                        # A changed committed palette permits Defaults' Slate
+                        # draft while all ten other default draft fields differ
+                        # from, or remain independent of, the running candidate.
+                        for contrast in ('normal', 'high'):
+                            setup(name='dune', appearance=mode, contrast=contrast,
+                                transparency=contrast == 'high')
+                            before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                            editor = defaults_editor()
+                            form_key(editor, b'F6')
+                            preview = wait_for_predicate('real F6 palette preview',
+                                lambda: named_windows().get('Preview palette'),
+                                time.monotonic() + 10, process=core)
+                            finish(preview, 'palette', 'slate', 'save', before, wall, actual_scalars,
+                                'slate', mode, contrast, 'palette-f6-whole-draft-' + contrast,
+                                editor_expected=True)
+                            apply_returned_draft(dict(defaults))
+
+                        for appearance, ending in (('light', 'cancel'), ('dark', 'save')):
+                            baseline_mode = 'dark' if appearance == 'light' else 'light'
+                            setup(appearance=baseline_mode)
+                            before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                            editor = defaults_editor()
+                            choose_appearance(editor, appearance)
+                            form_key(editor, b'F7')
+                            preview = wait_for_predicate('real F7 appearance preview',
+                                lambda: named_windows().get('Preview appearance'),
+                                time.monotonic() + 10, process=core)
+                            label = 'appearance-f7-' + appearance + '-' + ending
+                            finish(preview, 'appearance', appearance, ending, before, wall, actual_scalars,
+                                'slate', appearance, 'normal', label, editor_expected=True)
+                            if ending == 'cancel':
+                                presentation('slate', baseline_mode, 'normal')
+                            apply_returned_draft(dict(defaults, appearance=appearance))
+
+                        # Exercise all four palette values and both appearance
+                        # directions through the public native menu commands.
+                        for name, ending in (('dune', 'save'), ('grove', 'cancel')):
+                            setup()
+                            before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                            preview = start_native('palette', name)
+                            finish(preview, 'palette', name, ending, before, wall, actual_scalars,
+                                name, 'dark', 'normal', 'palette-native-' + name)
+                            if ending == 'cancel':
+                                presentation('slate', 'dark', 'normal')
+                        setup(contrast='high', transparency=True)
+                        before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                        preview = start_native('palette', 'ink')
+                        finish(preview, 'palette', 'ink', 'save', before, wall, actual_scalars,
+                            'ink', 'dark', 'high', 'palette-native-high-ink')
+                        for appearance, ending in (('light', 'save'), ('dark', 'cancel')):
+                            before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                            preview = start_native('appearance', appearance)
+                            finish(preview, 'appearance', appearance, ending, before, wall, actual_scalars,
+                                'ink', appearance, 'high', 'appearance-native-high-' + appearance)
+                            if ending == 'cancel':
+                                presentation('ink', 'light', 'high')
+
+                        for refusal in ('transparent', 'follow-wallpaper', 'auto', 'no-change'):
+                            setup(transparency=refusal == 'transparent', follow=refusal == 'follow-wallpaper')
+                            before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                            before_roles = published_roles()
+                            setting = 'appearance' if refusal == 'auto' else 'palette'
+                            value = 'auto' if refusal == 'auto' else 'slate' if refusal == 'no-change' else 'dune'
+                            snapshot = request(scope='all')
+                            control.send(('SendToModule FvwmDesktop preview-' + setting + ' ' +
+                                snapshot['provider'] + ' ' + value + '\n').encode())
+                            wait_for_predicate('explicit native refusal notice',
+                                lambda: named_windows().get('FVWM-X'),
+                                time.monotonic() + 10, process=core)
+                            barrier()
+                            assert not any('Preview ' + key_ in named_windows()
+                                for key_ in ('palette', 'appearance'))
+                            assert state.read_bytes() == before and wallpaper_witness() == wall
+                            assert scalars() == actual_scalars
+                            assert published_roles() == before_roles
+                            capture('opaque-refused-' + refusal + '.png')
+                            observed_cases['refusal-' + refusal] = {
+                                'unchanged_published_roles_sha256': hashlib.sha256(json.dumps(
+                                    before_roles, sort_keys=True).encode()).hexdigest(),
+                                'unchanged_wallpaper': wall, 'unchanged_menu_scalars': actual_scalars,
+                                'file_unchanged': True}
+
+                        setup()
+                        before, wall, actual_scalars = state.read_bytes(), wallpaper_witness(), scalars()
+                        preview = start_native('palette', 'dune')
+                        external = dict(json.loads(before), motion=True)
+                        external_bytes = (json.dumps(external, indent=3) + '\n').encode()
+                        state.write_bytes(external_bytes)
+                        form_key(preview, b'Return')
+                        wait_for_predicate('opaque external-file edit recovery',
+                            lambda: 'Preview palette' not in named_windows(),
+                            time.monotonic() + 10, process=core)
+                        presentation('slate', 'dark', 'normal')
+                        assert state.read_bytes() == external_bytes and scalars() == actual_scalars
+                        assert wallpaper_witness() == wall
+                        capture('opaque-external-file-edit-recovered.png')
+                        observed_cases['external-file-edit'] = 'external-bytes-preserved-and-old-resources-restored'
+                        snapshot = request(scope='all')
+                        snapshot = request('action', operation='reload', provider=snapshot['provider'],
+                            generation=snapshot['generation'])
+                        barrier()
+                        snapshot = request(scope='all')
+                        restore_baseline()
+                        close_notice()
+                        wait_for_predicate('original tinted profile recovered after opaque cases',
+                            lambda: pixel(5, 5) == normal_bar and opacity() == 82,
+                            time.monotonic() + 10, process=core)
+                        assert wallpaper() == independent
+                        evidence['palette_appearance_preview'] = observed_cases
+
+                    if args.palette_preview:
+                        palette_appearance_cases()
+                        if not args.contrast_preview:
+                            return
 
                     for ending in ('cancel', 'save'):
                         before = state.read_bytes()
@@ -628,7 +1037,7 @@ def run(args, profile):
                     time.monotonic() + 10, process=core)
                 x.XSelectInput(d, probe, 1 << 17)
                 x.XSync(d, 0)
-                if args.contrast_preview:
+                if args.contrast_preview or args.palette_preview:
                     resource_preview_cases(probe, normal_bar, independent)
                 observations = {}
                 for appearance in ('dark', 'light'):
@@ -872,10 +1281,12 @@ if __name__ == '__main__':
         help='Run high contrast, native Form/menu pixels and opacity recovery cases')
     parser.add_argument('--contrast-preview', action='store_true',
         help='Also run native resource Save/Cancel and captured editor draft cases')
+    parser.add_argument('--palette-preview', action='store_true',
+        help='Also run native opaque palette/appearance previews and whole-draft capture')
     parser.add_argument('--profiles', nargs='+', default=['slate-dark', 'dune-light', 'classic-large'],
         choices=['slate-dark', 'dune-light', 'classic-large'])
     options = parser.parse_args()
-    if options.contrast_preview:
+    if options.contrast_preview or options.palette_preview:
         options.contrast = True
     for selected in options.profiles:
         run(options, selected)

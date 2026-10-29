@@ -20,6 +20,11 @@ enum preview_operation {
 	PREVIEW_ABANDON, PREVIEW_PREPARE, PREVIEW_APPLY
 };
 
+enum preview_resource_kind {
+	PREVIEW_RESOURCE_HIGH_CONTRAST = 1,
+	PREVIEW_RESOURCE_OPAQUE_COLORS = 2
+};
+
 struct preview_request {
 	char cookie[65];
 	char serial[17];
@@ -30,6 +35,7 @@ struct preview_request {
 	char target[PREVIEW_NAME_MAX + 1];
 	unsigned int opacity;
 	unsigned int timeout_ms;
+	enum preview_resource_kind resource_kind;
 	uint32_t colors[PREVIEW_ROLE_COUNT][4];
 };
 
@@ -47,6 +53,8 @@ enum preview_resource_guard preview_resource_guard_check(uint64_t now_ms,
 	uint64_t deadline_ms, bool generation_matches, bool owner_alive);
 bool preview_resource_colors_supported(int fg_tint, int bg_tint,
 	unsigned int fg_alpha);
+bool preview_resource_opacity(enum preview_resource_kind kind, bool restore,
+	int captured, int *opacity);
 uint64_t preview_deadline(uint64_t now_ms, unsigned int timeout_ms);
 int preview_remaining(uint64_t now_ms, uint64_t deadline_ms);
 enum preview_recovery preview_recovery_check(uint64_t now_ms,

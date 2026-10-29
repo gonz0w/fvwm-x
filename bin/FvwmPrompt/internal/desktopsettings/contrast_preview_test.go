@@ -22,7 +22,7 @@ func TestContrastPreviewEditorCapturesEveryDraftField(t *testing.T) {
 		arguments += " $(" + key + ")"
 	}
 	lines := strings.Join(plan.Lines, "\n")
-	if !strings.Contains(lines, `Button continue "Preview high contrast (F5)" F5`) ||
+	if !strings.Contains(lines, `Button continue "High contrast (F5)" F5`) ||
 		!strings.Contains(lines, "Command SendToModule FvwmDesktop preview-contrast-editor "+arguments) {
 		t.Fatal("contrast preview failed to capture complete editor draft", lines)
 	}
@@ -63,7 +63,7 @@ func TestContrastPreviewMenuAndRuntimeOnlySource(t *testing.T) {
 	for key, raw := range query {
 		metadata := raw.(map[string]any)
 		if metadata["preview"] != false ||
-			metadata["native_preview"] != (key == "contrast" || key == "launcher_opacity") ||
+			metadata["native_preview"] != (key == "contrast" || key == "launcher_opacity" || key == "palette" || key == "appearance") ||
 			metadata["source"] != "saved" {
 			t.Fatal("native consumer flag claimed generic preview or changed source", key, metadata)
 		}
@@ -81,7 +81,7 @@ func TestContrastPreviewMenuAndRuntimeOnlySource(t *testing.T) {
 	if !found {
 		t.Fatal("normal presentation has no contrast preview entry")
 	}
-	s.RuntimeContrast, s.Effective["contrast"] = true, "high"
+	s.RuntimeHeld, s.Effective["contrast"] = map[string]string{"contrast": "high"}, "high"
 	query, err = Query(s, "all", true)
 	if err != nil {
 		t.Fatal(err)

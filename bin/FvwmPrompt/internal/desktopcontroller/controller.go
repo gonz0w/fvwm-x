@@ -49,7 +49,7 @@ type Controller struct {
 	revision                                 *string
 	generation, instance, persistenceError   string
 	ready                                    bool
-	runtimeContrast                          bool
+	runtimeHeld                              map[string]string
 	editor                                   *editor
 	preview                                  preview
 	palette                                  *paletteView
@@ -165,6 +165,7 @@ func merged(base, changes values) values {
 	return result
 }
 func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot {
+	observed := saved == nil && effective == nil
 	if saved == nil {
 		saved = d.saved
 	}
@@ -176,9 +177,24 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 		text := d.persistenceError
 		persistence = &text
 	}
+	// Validation describes a proposed saved/effective pair, not the currently
+	// kept runtime. Attribute only inherited holds; an explicitly replaced
+	// candidate must not inherit the previous key's persistence-failure source.
+	var held map[string]string
+	for key, value := range d.runtimeHeld {
+		currentSaved, currentOK := d.saved[key].(string)
+		candidateSaved, candidateOK := saved[key].(string)
+		if !observed && (!currentOK || !candidateOK || candidateSaved != currentSaved || effective[key] != value) {
+			continue
+		}
+		if held == nil {
+			held = map[string]string{}
+		}
+		held[key] = value
+	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
 		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
-		RuntimeContrast: d.runtimeContrast}
+		RuntimeHeld: held}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {
@@ -207,7 +223,7 @@ func (d *Controller) configure(key, text string) error {
 	return nil
 }
 func (d *Controller) finishConfiguration() error {
-	d.runtimeContrast = false
+	d.runtimeHeld = nil
 	d.emit("KillModule FvwmForm SlateSettingsForm")
 	d.emit("KillModule FvwmForm SlateConfigCheckForm")
 	d.closeInspection()
@@ -238,11 +254,16 @@ func (d *Controller) prepare(changes values) (values, values, error) {
 	}
 	candidate := result["candidate"].(map[string]any)
 	effective := result["effective"].(map[string]any)
-	if d.runtimeContrast {
-		if _, explicit := changes["contrast"]; !explicit {
-			effective["contrast"] = "high"
+	for key, value := range d.runtimeHeld {
+		if _, explicit := changes[key]; !explicit {
+			effective[key] = value
 		}
 	}
+	wallpaper, err := desktopsettings.ResolveWallpaper(effective, now.Hour()*60+now.Minute())
+	if err != nil {
+		return nil, nil, err
+	}
+	candidate["wallpaper"], effective["wallpaper"] = wallpaper, wallpaper
 	if _, _, _, err := d.themePlan(effective, now.Hour()*60+now.Minute()); err != nil {
 		return nil, nil, err
 	}
@@ -262,8 +283,8 @@ func (d *Controller) changeSettings(changes values) error {
 		return err
 	}
 	d.saved, d.effective, d.revision = candidate, effective, revision
-	if _, explicit := changes["contrast"]; explicit {
-		d.runtimeContrast = false
+	for key := range changes {
+		delete(d.runtimeHeld, key)
 	}
 	d.changed(generation)
 	d.preview.constrain()
@@ -284,7 +305,7 @@ func (d *Controller) reloadSettings() error {
 	}
 	generation := newID(16)
 	d.saved, d.effective, d.revision = saved, effective, revision
-	d.runtimeContrast = false
+	d.runtimeHeld = nil
 	d.persistenceError = ""
 	d.closePalette()
 	d.resetWorkerMenus()

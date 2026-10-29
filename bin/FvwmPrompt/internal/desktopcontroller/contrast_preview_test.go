@@ -64,7 +64,7 @@ func activateContrastReplies(t *testing.T, d *Controller) {
 		t.Fatal(err)
 	}
 	contrastReply(&d.preview, contrastResult("active", "", "pending"))
-	if d.preview.control == nil || d.preview.control.contrast.state != "active" {
+	if d.preview.control == nil || d.preview.control.resource.state != "active" {
 		t.Fatal("contrast resource lease did not become active")
 	}
 }
@@ -96,11 +96,11 @@ func contrastFixture(t *testing.T) (*Controller, *[]string, *previewControl) {
 	if err := d.theme(true); err != nil {
 		t.Fatal(err)
 	}
-	snapshot, candidate, err := d.prepareContrast()
+	snapshot, candidate, err := d.prepareResource("contrast", "high")
 	if err != nil {
 		t.Fatal(err)
 	}
-	return d, commands, &previewControl{view: newID(8), saved: snapshot, contrast: candidate}
+	return d, commands, &previewControl{view: newID(8), saved: snapshot, resource: candidate}
 }
 
 func noThemeReplay(t *testing.T, commands []string) {
@@ -118,19 +118,19 @@ func TestContrastCandidateOwnsOnlyFixedRoles(t *testing.T) {
 	d, commands, control := contrastFixture(t)
 	before := merged(d.effective, nil)
 	*commands = nil
-	if err := d.checkContrast(control); err != nil {
+	if err := d.checkResource(control); err != nil {
 		t.Fatal(err)
 	}
 	ids := []int{}
-	for _, role := range control.contrast.projection.Roles {
+	for _, role := range control.resource.projection.Roles {
 		ids = append(ids, role.Colorset)
 	}
 	if !reflect.DeepEqual(ids, []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14}) ||
 		!reflect.DeepEqual(d.effective, before) || len(*commands) != 0 {
 		t.Fatal("candidate expanded its resource or state scope", ids)
 	}
-	control.contrast.projection.Roles[0].Foreground = "#123456"
-	if err := d.checkContrast(control); err == nil {
+	control.resource.projection.Roles[0].Foreground = "#123456"
+	if err := d.checkResource(control); err == nil {
 		t.Fatal("modified candidate escaped pre-apply validation")
 	}
 }
@@ -156,7 +156,7 @@ func TestContrastCandidateRechecksGenerationPolicyAndFile(t *testing.T) {
 				d.lastTheme = nil
 			}
 			*commands = nil
-			if err := d.checkContrast(control); err == nil || len(*commands) != 0 {
+			if err := d.checkResource(control); err == nil || len(*commands) != 0 {
 				t.Fatal("stale candidate admitted or emitted commands")
 			}
 		})
@@ -174,13 +174,13 @@ func TestContrastConfirmedSavesOnlyContrastAndRetainsDraft(t *testing.T) {
 	control.editor = &draft{scope: e.scope, generation: e.generation, values: changes}
 	d.retireEditor()
 	*commands = nil
-	if err := d.confirmContrast(control); err != nil {
+	if err := d.confirmResource(control); err != nil {
 		t.Fatal(err)
 	}
 	stored, _, err := loadSettings(d.statePath)
 	before["contrast"] = "high"
 	draftBefore["contrast"] = "high"
-	if err != nil || !reflect.DeepEqual(stored, before) || !reflect.DeepEqual(control.editor.values, draftBefore) || d.runtimeContrast {
+	if err != nil || !reflect.DeepEqual(stored, before) || !reflect.DeepEqual(control.editor.values, draftBefore) || d.runtimeUnsaved("contrast") {
 		t.Fatal("confirmation saved unrelated drafts or lost draft values", stored, err)
 	}
 	noThemeReplay(t, *commands)
@@ -196,11 +196,11 @@ func TestContrastConfirmedFileRaceKeepsRuntimeWithoutRetry(t *testing.T) {
 		t.Fatal(err)
 	}
 	*commands = nil
-	if err := d.confirmContrast(control); err == nil {
+	if err := d.confirmResource(control); err == nil {
 		t.Fatal("external edit falsely reported saved")
 	}
 	data, _ := os.ReadFile(d.statePath)
-	if string(data) != "{}" || d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeContrast {
+	if string(data) != "{}" || d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeUnsaved("contrast") {
 		t.Fatal("save failure lost runtime or overwrote external edit")
 	}
 	noThemeReplay(t, *commands)
@@ -221,10 +221,10 @@ func TestContrastConfirmedWriteFailureKeepsRuntimeAndUnrelatedEdits(t *testing.T
 		t.Fatal(err)
 	}
 	*commands = nil
-	if err := d.confirmContrast(control); err == nil {
+	if err := d.confirmResource(control); err == nil {
 		t.Fatal("unwritable preference falsely reported saved")
 	}
-	if d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeContrast {
+	if d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeUnsaved("contrast") {
 		t.Fatal("failed save did not retain honest runtime state")
 	}
 	noThemeReplay(t, *commands)
@@ -234,10 +234,10 @@ func TestContrastConfirmedWriteFailureKeepsRuntimeAndUnrelatedEdits(t *testing.T
 	if err := d.changeSettings(values{"motion": true}); err != nil {
 		t.Fatal(err)
 	}
-	if d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeContrast {
+	if d.saved["contrast"] != "normal" || d.effective["contrast"] != "high" || !d.runtimeUnsaved("contrast") {
 		t.Fatal("unrelated edit silently discarded runtime-kept contrast")
 	}
-	if err := d.reloadSettings(); err != nil || d.runtimeContrast || d.effective["contrast"] != "normal" {
+	if err := d.reloadSettings(); err != nil || d.runtimeUnsaved("contrast") || d.effective["contrast"] != "normal" {
 		t.Fatal("explicit reload did not replace runtime-only contrast", err)
 	}
 }
@@ -362,7 +362,7 @@ func TestContrastPostConfirmationRaceAndCoreLossPreserveDrafts(t *testing.T) {
 				*commands = nil
 				contrastReply(&d.preview, contrastResult("terminal", "confirmed", "kept"))
 				data, _ := os.ReadFile(d.statePath)
-				if string(data) != "{}" || !d.runtimeContrast || d.effective["contrast"] != "high" {
+				if string(data) != "{}" || !d.runtimeUnsaved("contrast") || d.effective["contrast"] != "high" {
 					t.Fatal("confirmed external edit did not stay runtime-only")
 				}
 			case "core-loss":
@@ -430,7 +430,7 @@ func TestContrastReplacementControllerNeverInheritsLease(t *testing.T) {
 	}
 	defer replacement.Close()
 	if replacement.instance == oldInstance || replacement.preview.control != nil ||
-		replacement.runtimeContrast || replacement.preview.pending != nil {
+		replacement.runtimeUnsaved("contrast") || replacement.preview.pending != nil {
 		t.Fatal("replacement inherited another controller's runtime ownership")
 	}
 	replacement.Handle("preview-control " + oldInstance + " " + oldView + " save")

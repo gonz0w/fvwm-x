@@ -45,6 +45,7 @@ static struct {
 	struct menustyle_preview_pair menus;
 	uint64_t deadline;
 	unsigned int timeout_ms;
+	enum preview_resource_kind kind;
 	enum resource_preview_state state;
 	bool applied;
 	const char *reason, *recovery, *preparation_error;
@@ -139,7 +140,8 @@ void appearance_preview_outer_boundary(void)
 	{
 		if (!resource_preview.bundle ||
 		    !preview_generation_room(resource_preview.generation) ||
-		    !menustyle_preview_pair_set(&resource_preview.menus, false))
+		    !menustyle_preview_pair_set(&resource_preview.menus,
+			resource_preview.kind, false))
 			resource_pending("conflicted");
 		else
 		{
@@ -162,7 +164,8 @@ void appearance_preview_outer_boundary(void)
 		if (resource_preview.applied && !conflict && !keep)
 		{
 			if (!resource_generation_current() ||
-			    !menustyle_preview_pair_set(&resource_preview.menus, true))
+			    !menustyle_preview_pair_set(&resource_preview.menus,
+				resource_preview.kind, true))
 				conflict = true;
 			else
 			{
@@ -259,13 +262,17 @@ static bool preview_actor(struct fmodule *owner,
 		strcmp(preview.view, request->view) == 0;
 }
 
-cJSON *appearance_preview_capability(void)
+static cJSON *resource_capability(enum preview_resource_kind kind)
 {
 	cJSON *result = cJSON_CreateObject();
 
 	if (result &&
 	    cJSON_AddNumberToObject(result, "version", 1) &&
-	    cJSON_AddStringToObject(result, "scope", "high-contrast") &&
+	    cJSON_AddStringToObject(result, "scope",
+		kind == PREVIEW_RESOURCE_OPAQUE_COLORS ?
+		"opaque-colors" : "high-contrast") &&
+	    (kind != PREVIEW_RESOURCE_OPAQUE_COLORS ||
+	     cJSON_AddNumberToObject(result, "plan_version", 2)) &&
 	    cJSON_AddNumberToObject(result, "role_count", 14) &&
 	    cJSON_AddNumberToObject(result, "style_count", 2) &&
 	    cJSON_AddNumberToObject(result, "metadata_max", PREVIEW_METADATA_MAX) &&
@@ -279,6 +286,16 @@ cJSON *appearance_preview_capability(void)
 	return NULL;
 }
 
+cJSON *appearance_preview_capability(void)
+{
+	return resource_capability(PREVIEW_RESOURCE_HIGH_CONTRAST);
+}
+
+cJSON *appearance_opaque_colors_capability(void)
+{
+	return resource_capability(PREVIEW_RESOURCE_OPAQUE_COLORS);
+}
+
 static cJSON *resource_result(const char **error)
 {
 	static const char *states[] = {"inactive", "preparing", "prepared",
@@ -286,8 +303,11 @@ static cJSON *resource_result(const char **error)
 	cJSON *result = cJSON_CreateObject();
 
 	if (result &&
-	    cJSON_AddStringToObject(result, "scope", "high-contrast") &&
-	    cJSON_AddNumberToObject(result, "plan_version", 1) &&
+	    cJSON_AddStringToObject(result, "scope",
+		resource_preview.kind == PREVIEW_RESOURCE_OPAQUE_COLORS ?
+		"opaque-colors" : "high-contrast") &&
+	    cJSON_AddNumberToObject(result, "plan_version",
+		resource_preview.kind) &&
 	    cJSON_AddStringToObject(result, "state",
 		states[resource_preview.state]) &&
 	    cJSON_AddStringToObject(result, "lease", resource_preview.id) &&
@@ -349,6 +369,7 @@ static cJSON *resource_request(struct fmodule *owner,
 		resource_preview.deadline = preview_deadline(now,
 			PREVIEW_PREPARATION_MS);
 		resource_preview.timeout_ms = request->timeout_ms;
+		resource_preview.kind = request->resource_kind;
 		resource_preview.state = RESOURCE_PREPARING;
 		resource_preview.reason = "";
 		resource_preview.recovery = "pending";

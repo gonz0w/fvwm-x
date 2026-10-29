@@ -138,8 +138,8 @@ func (d *Controller) theme(force bool) error {
 	if !force && reflect.DeepEqual(key, d.lastTheme) {
 		return nil
 	}
-	if d.preview.control != nil && d.preview.control.contrast != nil {
-		d.preview.finish("Theme changed; high contrast preview recovery requested.", true, false)
+	if d.preview.control != nil && d.preview.control.resource != nil {
+		d.preview.finish("Theme changed; resource preview recovery requested.", true, false)
 	}
 	presentation, err := desktopsettings.ResolvePresentation(d.effective)
 	if err != nil {

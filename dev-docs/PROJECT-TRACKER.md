@@ -7,17 +7,120 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [high contrast resource preview](#r1-high-contrast-resource-preview--2026-10-29)
-under CFG-01 #60 and IPC-02 #70 follows completed XDG-01 #56. PR301 is merged,
-its canonical signature/tree/author-DCO verified, #56 closed and branch retired.
-Performance is 1/5 from the qualified merged-PR299 reference; no comparison due.
+Current checkpoint: [palette and appearance preview](#r1-palette-and-appearance-preview--2026-10-29)
+under CFG-01 #60 and IPC-02 #70 follows merged PR302. Its canonical signature,
+reviewed tree and Cam author-DCO are verified; both owned branch references are
+retired. Performance is 2/5 from merged PR299; no comparison is due.
+
+## R1 palette and appearance preview — 2026-10-29
+
+Owner: Cam; `codex/r1-palette-appearance-preview`; #60 / #70.
+Base merged PR302 `2f6b48df6c57843320bf5d228b3d5d79bf9c6631`.
+Status: ready for PR review; focused checks and separate integrated agent review pass.
+The finite contract below was frozen before implementation.
+
+Outcome: use one shared resource-candidate controller to preview an existing
+palette choice or explicit light/dark appearance, then Save only that setting
+or Cancel/recover. Preserve both normal/high contrast presentation, requested
+transparency/opacity, actual menu scalars and all unrelated editor drafts. The
+R1 registry remains the current eleven keys. High contrast retains its accepted
+normal-to-high behavior; no copied state machine per setting.
+
+Scope: extend the fixed fourteen-role plan with version2 `opaque-colors` while
+version1 high contrast retains force-100 menu behavior. Version2 preserves both
+captured actual `*` and `SlateLauncherStyle` opacity values. Keep one slot, actual
+resource owners,64 KiB metadata, five-second preparation, existing active leases,
+outer-only complete publication/recovery and exact typed plan/framing bounds.
+Native encoding uses `2:` with the same fourteen ordered role colors. Public
+MFL accepts exactly plan_version2 with those roles; advertise a separate
+`opaque_colors_preview` capability (version1, plan_version2, scope opaque-colors)
+without changing the existing high-contrast capability object. Update C/Go
+producers/consumers, refusal policy, directed results and manuals together.
+
+Admit only a validated existing palette enum or appearance `light`/`dark`, a
+changed candidate, an unoverridden selected key, opaque effective presentation
+and an unchanged resolved wallpaper pair. Existing keep_wallpaper or independent
+wallpaper selectors can satisfy the latter; default follow selectors may refuse.
+Do not consume draft contrast/transparency/wallpaper fields, silently change
+keep_wallpaper or persist a setting whose next tick would perform a deferred
+wallpaper change. Explicitly explain the prerequisite/refusal. Recheck generation,
+file revision, baseline/candidate projection and current schedule phase before
+apply/confirm. Appearance auto remains available through ordinary settings but
+is outside this finite native-preview extension.
+
+After core confirmed/kept, save only the selected key against the captured file
+revision. Retain confirmed but unsaved runtime values in a bounded overlay for
+at most contrast/palette/appearance. Preserve other overlay entries across later
+previews, timer ticks and unrelated changes; clear only an explicitly replaced/
+saved key or explicit reload/configuration reset. Keep saved/effective/source and
+failure metadata truthful. Update the submitted theme key, caches, labels and
+settings UI without calling the full theme replay or starting image/wallpaper
+jobs. A restarted controller inherits neither a lease nor unsaved overlay state.
+
+The native editor uses one compact Preview row with Contrast F5, Palette F6 and
+Appearance F7 for keys in its scope. Capture the complete existing draft, but
+preview/confirm/save only the named field and return the rest unchanged. Provide
+menu/typed native entry points and Save/Cancel controls with existing bounded
+instance/view identities; preserve old command/configuration consumers.
+
+Acceptance: affected C plan/menu/MFL policies and Go controller/settings/transport
+regressions; actual-X version1 force-100 versus version2 unequal original-scalar
+preservation; normal/high contrast and palette/both appearance directions;
+transparent/follow-wallpaper/auto/override/no-change refusals; stale drafts,
+phase/file races, resource failures, cancel/expiry/owner loss and consecutive
+failed saves plus later timer/unrelated edits. Reuse the current normal and scoped
+Linux builds and existing resource fixture; batch related implementation before
+one combined focused gate. Run three theme workflows and inspect new screenshots,
+including actual frame/client/control containment at enlarged Classic size.
+No full OS/install/default-X/release matrix or performance repeat solely for
+this PR. Preserve failed evidence, current builds and the compact retention rule.
+
+Non-goals: transparent/background/image-job preview, wallpaper preview or new
+font/icon/layout keys; generic preference/plugin registration; automatic session
+startup or a new resident/dependency; opacity tuning or parked #257/#258. The
+remaining #60/#70 owner/domain/release criteria stay open; #72's once-per-session
+lifecycle needs its own selected design. Lead owns Git/GitHub/tracker/native/lab
+execution, source-only Temper implementers have nonoverlapping files, and a
+separate reviewer examines the integrated candidate. Actual backend model/effort
+metadata remains unverified. Refuse/escalate an ownership or scope gap rather
+than weaken these acceptance conditions.
+
+Focused implementation now passes the affected C policy/MFL units, two Go
+packages with race/vet, actual-X normal and scoped core/MFL sanitizer resource
+checks, and Slate/Dune/enlarged Classic workflows. The existing native F5 editor
+Save/Cancel path also passes after controller generalization. All 87 theme
+captures were inspected as contact sheets, with three unmodified gallery images
+inspected at original resolution. Later input revisions only strengthen the
+observer and Classic fixture visibility checks; failed attempts remain recorded.
+See the [checkpoint report](verification/VERIFICATION-2026-10-29-PALETTE-APPEARANCE-PREVIEW.md)
+and [gallery](../doc/development-preview.md#preview-palette-or-lightdark-appearance).
+Verified guest evidence/input duplicates retired (119,686,656 bytes), superseded
+host full inputs became compact reconstructable deltas, and the owned lab stopped
+normally. Current builds, useful stage, caches and performance reference remain.
+The requested execution-profile labels do not establish native-CPU qualification;
+resource receipts explicitly leave that claim unmade. No wider platform/install
+matrix or due performance comparison is claimed. #60/#70 remain open.
+
+Separate read-only `temper_reviewer` examination accepts integrated tree
+`0c22710dcec27f146cbc393eecbc47facdee8312` with no remaining actionable findings.
+Runtime/test/manual byte guards, repository and whitespace checks pass. The final
+reporting annotation changes no executed input; backend model/effort metadata
+remains unverified. This is agent review, not human approval or merge authority.
+
+A separate host mandoc check now formats the three unchanged PR302 manual inputs
+successfully with no diagnostics. Their exact Linux-generated roff and AsciiDoc
+hashes are retained; this closes only the previously unavailable formatter step,
+not the whole manual corpus, installed support or release qualification.
 
 ## R1 high contrast resource preview — 2026-10-29
 
 Owner: Cam; `codex/r1-high-contrast-preview`; CFG-01 #60 / IPC-02 #70.
 Base merged PR301 `31b191f359b9ccfe74d2ba31cc7848eaf74a280d`.
-Status: focused checks passed; prepared for maintainer review. The behavior and
-resource ownership contract was frozen before coding.
+Status: merged in PR302 as `2f6b48df6c57843320bf5d228b3d5d79bf9c6631`;
+reviewed tree `7aeebbcbfc64eefc947c2afe164633c43644152d`, canonical signature
+and Cam author-DCO verified. GitHub retired the remote branch; the matching
+local branch and tracking reference are retired. The finite contract below
+was frozen before implementation.
 
 Outcome: preview `contrast=high` from the current normal presentation through
 the existing settings Form/menu, then save after core confirmation or recover.

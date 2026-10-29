@@ -1137,6 +1137,21 @@ void CMD_Send_Query(F_CMD_ARGS)
 					error = "allocation_failed";
 				}
 			}
+			if (result)
+			{
+				cJSON *capability =
+					appearance_opaque_colors_capability();
+
+				if (!capability ||
+				    !cJSON_AddItemToObject(result,
+				    "opaque_colors_preview", capability))
+				{
+					cJSON_Delete(capability);
+					cJSON_Delete(result);
+					result = NULL;
+					error = "allocation_failed";
+				}
+			}
 		}
 		else if (strcmp(spec.resource, "menu-styles") == 0)
 			result = fvwm_query_menu_styles(

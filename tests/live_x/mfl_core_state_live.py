@@ -276,6 +276,10 @@ def run(args):
                 scope='high-contrast', role_count=14, style_count=2,
                 metadata_max=65536, preparation_timeout_ms=5000,
                 lease_limit=1, slot_available=True)
+            assert appearance['opaque_colors_preview'] == dict(version=1,
+                plan_version=2, scope='opaque-colors', role_count=14, style_count=2,
+                metadata_max=65536, preparation_timeout_ms=5000,
+                lease_limit=1, slot_available=True)
             assert query('appearance') == appearance
             def policy_pages(resource, property):
                 generation = query('appearance')['generation']

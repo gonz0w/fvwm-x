@@ -15,7 +15,7 @@ type Snapshot struct {
 	Generation, Instance        string
 	PersistenceError            *string
 	Submitted                   bool
-	RuntimeContrast             bool
+	RuntimeHeld                 map[string]string
 }
 
 func identity(value any) (string, error) {
@@ -97,7 +97,7 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 			"available":          true,
 			"capability":         "owned-desktop-preference",
 			"preview":            false,
-			"native_preview":     key == "launcher_opacity" || key == "contrast",
+			"native_preview":     key == "launcher_opacity" || key == "contrast" || key == "palette" || key == "appearance",
 			"runtime_constraint": nil,
 			"saved":              s.Saved[key],
 			"effective":          s.Effective[key],
@@ -152,8 +152,9 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		if _, found := s.Overrides[key]; found {
 			v["source"] = "module-configuration"
 		}
-		if key == "contrast" && s.RuntimeContrast {
+		if _, held := s.RuntimeHeld[key]; held {
 			v["source"] = "runtime-kept-preference-unsaved"
+			v["persistence_error"] = "Runtime kept; preference not saved. Reload or save this setting again."
 		}
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"

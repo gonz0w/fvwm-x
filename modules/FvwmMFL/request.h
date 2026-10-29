@@ -60,6 +60,7 @@ struct mfl_request {
 	char target[MFL_REQUEST_ID_MAX + 1];
 	unsigned int opacity;
 	unsigned int timeout_ms;
+	unsigned int preview_plan_version;
 	char preview_plan[337];
 	unsigned int offset;
 	unsigned int limit;

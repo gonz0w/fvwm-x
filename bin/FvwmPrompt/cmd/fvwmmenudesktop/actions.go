@@ -19,6 +19,7 @@ import (
 	"syscall"
 	"unicode/utf8"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/startuplaunch"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
 )
@@ -27,6 +28,7 @@ type launchRecord struct {
 	Argv            []string
 	Directory       string
 	TerminalCommand string
+	Startup         *xdgmenu.StartupMetadata `json:",omitempty"`
 }
 type actionCatalog struct {
 	Version int
@@ -103,7 +105,7 @@ func (e *actionEncoder) close() {
 	}
 }
 func (e *actionEncoder) encode(item xdgmenu.PresentedItem) (string, error) {
-	record := launchRecord{Argv: item.Argv, Directory: item.WorkingDir}
+	record := launchRecord{Argv: item.Argv, Directory: item.WorkingDir, Startup: item.Startup}
 	if item.Terminal {
 		record.TerminalCommand = e.terminal
 	}
@@ -136,10 +138,13 @@ func (e *actionEncoder) publish() error {
 	return xdgsource.PublishPrivate(e.path, data)
 }
 func validateLaunch(record launchRecord) error {
+	if !xdgmenu.ValidStartupMetadata(record.Startup) {
+		return errors.New("invalid application startup metadata")
+	}
 	if len(record.Argv) == 0 || len(record.Argv) > xdgmenu.MaxItems || record.Argv[0] == "" {
 		return errors.New("invalid application arguments")
 	}
-	bytes := xdgmenu.MaxSourceBytes
+	bytes := xdgmenu.MaxSourceBytes - xdgmenu.StartupMetadataBytes(record.Startup)
 	for _, value := range append(append([]string(nil), record.Argv...), record.Directory, record.TerminalCommand) {
 		if len(value) > xdgmenu.MaxValueBytes || !utf8.ValidString(value) || strings.ContainsRune(value, 0) || len(value) > bytes {
 			return errors.New("application action exceeds limits")
@@ -196,9 +201,13 @@ func launch(args []string) error {
 		}
 		argv = []string{"/bin/sh", "-c", "exec " + record.TerminalCommand + " " + strings.Join(quoted, " ")}
 	}
-	program, err := exec.LookPath(argv[0])
+	plan, err := startuplaunch.Current(argv, record.Startup)
 	if err != nil {
 		return err
 	}
-	return syscall.Exec(program, argv, os.Environ())
+	program, err := exec.LookPath(plan.Argv[0])
+	if err != nil {
+		return err
+	}
+	return syscall.Exec(program, plan.Argv, plan.Environment)
 }

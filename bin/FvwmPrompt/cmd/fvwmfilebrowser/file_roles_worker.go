@@ -8,10 +8,10 @@ package main
 import (
 	"context"
 	"errors"
-	"os/exec"
 	"path/filepath"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/internal/startuplaunch"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
 )
 
@@ -138,7 +138,11 @@ func performFileRole(request workRequest) (result workResult) {
 		return
 	}
 	result.RoleFileValid = true
-	command := exec.Command(argv[0], argv[1:]...)
+	command, err := startuplaunch.Command(argv, selected.Startup)
+	if err != nil {
+		result.Error = "Could not prepare file application launch"
+		return
+	}
 	detachApplication(command)
 	command.Dir = cwd
 	if err := command.Start(); err != nil {

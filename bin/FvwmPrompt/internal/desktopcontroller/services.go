@@ -22,6 +22,8 @@ import (
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
+	"github.com/fvwmorg/FvwmPrompt/internal/startuplaunch"
+	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 )
 
 // POSIX word quoting only. Environment/module terminal commands never perform
@@ -100,6 +102,9 @@ func detectTerminal(text string) []string {
 // startDetached admits a launched application without adopting its lifetime.
 // Slot release belongs to exactly one waiter; the event loop owns notices.
 func (d *Controller) startDetached(argv []string, cwd string) (*exec.Cmd, error) {
+	return d.startDetachedStartup(argv, cwd, nil)
+}
+func (d *Controller) startDetachedStartup(argv []string, cwd string, startup *xdgmenu.StartupMetadata) (*exec.Cmd, error) {
 	if len(argv) == 0 {
 		return nil, errors.New("Missing application command")
 	}
@@ -108,7 +113,11 @@ func (d *Controller) startDetached(argv []string, cwd string) (*exec.Cmd, error)
 	default:
 		return nil, errors.New("Too many desktop-launched applications are still running.")
 	}
-	command := exec.Command(argv[0], argv[1:]...)
+	command, err := startuplaunch.Command(argv, startup)
+	if err != nil {
+		<-d.spawnSlots
+		return nil, err
+	}
 	command.Dir = cwd
 	command.SysProcAttr = &syscall.SysProcAttr{Setsid: true}
 	if err := command.Start(); err != nil {
@@ -118,7 +127,10 @@ func (d *Controller) startDetached(argv []string, cwd string) (*exec.Cmd, error)
 	return command, nil
 }
 func (d *Controller) spawn(argv []string, cwd string) {
-	command, err := d.startDetached(argv, cwd)
+	d.spawnStartup(argv, cwd, nil)
+}
+func (d *Controller) spawnStartup(argv []string, cwd string, startup *xdgmenu.StartupMetadata) {
+	command, err := d.startDetachedStartup(argv, cwd, startup)
 	if err != nil {
 		d.notice("Could not start program: " + err.Error())
 		return
@@ -231,7 +243,7 @@ func checkedApps(value any) ([]desktopworker.Application, error) {
 	}
 	for _, raw := range records {
 		r, ok := raw.(map[string]any)
-		if !ok || !exact(r, "name", "argv", "cwd", "terminal") {
+		if !ok || !exact(r, "name", "argv", "cwd", "terminal") && !exact(r, "name", "argv", "cwd", "terminal", "startup") {
 			return nil, errors.New("Invalid desktop application record")
 		}
 		if !validText(r["name"], 65536) {
@@ -258,7 +270,16 @@ func checkedApps(value any) ([]desktopworker.Application, error) {
 			return nil, errors.New("Application arguments exceed limit")
 		}
 	}
-	return resultAs[[]desktopworker.Application](value)
+	apps, err := resultAs[[]desktopworker.Application](value)
+	if err != nil {
+		return nil, err
+	}
+	for _, app := range apps {
+		if !xdgmenu.ValidStartupMetadata(app.Startup) {
+			return nil, errors.New("Invalid application startup metadata")
+		}
+	}
+	return apps, nil
 }
 func validText(value any, limit int) bool {
 	text, ok := value.(string)
@@ -434,6 +455,10 @@ func (d *Controller) pollJobs() {
 			delete(d.jobs, result.key)
 			if result.key == "inspection" {
 				d.finishInspection(result)
+				continue
+			}
+			if result.key == "startups" {
+				d.finishStartupActivity(result)
 				continue
 			}
 			record := d.operationJobs[result.key]

@@ -1,8 +1,8 @@
-# Development preview: native file browsing and themes
+# Development preview: native desktop controls and themes
 
-FVWM-X is in active development. These examples show the optional native
-file-browser prototype and the shared controls behind it, not a completed file
-manager or clipboard application. The [project tracker](../dev-docs/PROJECT-TRACKER.md)
+FVWM-X is in active development. These examples show native desktop controls
+and the optional file-browser prototype. The file manager and clipboard
+application remain in development. The [project tracker](../dev-docs/PROJECT-TRACKER.md)
 owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
@@ -37,6 +37,44 @@ closes after five minutes without a callback, accepted external control or
 current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
+
+## Application startup activity
+
+Choose **Launch activity...** from the Applications launcher, or send:
+
+```fvwm
+SendToModule FvwmDesktop launch-activity
+```
+
+The native form shows a read-only snapshot of observed startup notifications.
+F1 and F2 move between retained records, F5 refreshes the snapshot, and Escape
+closes it. The view does not refresh in the background. A record can be
+`pending`, `protocol-ended`, `window-observed` or `expired`. These are
+observations: a `protocol-ended` notification does not establish that an
+application started successfully. The [desktop manual](FvwmDesktop.adoc)
+describes the bounds, fallback behavior and remaining matching limits.
+
+Slate dark: a pending notification in the snapshot.
+
+![Slate dark launch activity showing a pending notification](screenshots/startup-activity-slate-dark.png)
+
+Dune light: a synthetic notification after it ended and the snapshot was
+refreshed.
+
+![Dune light launch activity showing a protocol-ended notification](screenshots/startup-activity-dune-light.png)
+
+Enlarged Classic: the activity form with larger monospace type.
+
+![Enlarged Classic launch activity showing a pending notification](screenshots/startup-activity-classic-large.png)
+
+The Classic fixture requests larger fonts and legacy Form colors. This activity
+form explicitly uses Colorset 2, so its visible colors follow the Slate colorset
+in this capture. These unmodified images use synthetic notifications; the
+[manifest](screenshots/startup-activity-manifest.json) records their source and
+configuration identities. The [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-28-STARTUP-NOTIFICATION.md)
+records the checks and remaining qualification. Panel counters show whole-guest
+values, not a window-manager benchmark. Broader startup, file integration and
+release qualification remain in progress.
 
 ## Choose an application for a selected file
 

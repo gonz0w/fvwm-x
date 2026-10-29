@@ -3,19 +3,19 @@
 FVWM-X is an X11 window manager from FVWM3, for Linux, FreeBSD Xorg
 and OpenBSD Xenocara on AMD64 and ARM64.
 
-We target responsive, maintainable code and FVWM configuration/theme compatibility.
+Responsive, maintainable code preserves FVWM configuration/theme compatibility.
 No compositor or Wayland backend.
 
 **Status:** in development toward R1: a configurable, fast, low-memory desktop
 lite. Features target R1; maintenance targets R2/R3. Builds require Go;
 installed utilities need no compiler or Python packages. [Build/upgrade notes](INSTALL.md).
-Recent features:
+Features:
 
 - Icons, scaling, wallpapers, high contrast and configuration inspection.
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.
-- Localized applications/actions and keyboard-first action palette.
+- Localized application actions, action palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff and folder or
   selected-file application choosers; live updates retain drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;

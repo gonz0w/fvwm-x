@@ -192,6 +192,13 @@ func (d *Controller) handle(command, argument string) error {
 		return d.startInspection(argument)
 	case "inspect-control":
 		return d.inspectionControl(argument)
+	case "launch-activity":
+		if argument != "" {
+			return errors.New("launch-activity takes no arguments")
+		}
+		return d.startStartupActivity()
+	case "startup-control":
+		return d.startupControl(argument)
 	case "check-config":
 		if argument != "" {
 			return errors.New("check-config takes no module arguments; it checks local.config")
@@ -358,10 +365,14 @@ func (d *Controller) launchApplication(argument string) error {
 	if app.Cwd != nil {
 		cwd = *app.Cwd
 	}
+	argv := app.Argv
 	if app.Terminal {
-		d.term(app.Argv, cwd)
-	} else {
-		d.spawn(app.Argv, cwd)
+		if len(d.terminal) == 0 {
+			d.notice("No terminal found. Set FVWM_TERMINAL to your terminal command.")
+			return d.fatal
+		}
+		argv = append(append(append([]string{}, d.terminal...), "-e"), argv...)
 	}
+	d.spawnStartup(argv, cwd, app.Startup)
 	return d.fatal
 }

@@ -17,6 +17,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/internal/startuplaunch"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
 )
@@ -190,7 +191,11 @@ func performDirectoryRole(request workRequest) (result workResult) {
 		return
 	}
 	result.RoleFolderValid = true
-	command := exec.Command(argv[0], argv[1:]...)
+	command, err := startuplaunch.Command(argv, selected.Startup)
+	if err != nil {
+		result.Error = "Could not prepare folder application launch"
+		return
+	}
 	detachApplication(command)
 	command.Dir = cwd
 	if err := command.Start(); err != nil {
@@ -198,6 +203,8 @@ func performDirectoryRole(request workRequest) (result workResult) {
 		return
 	}
 	command.Process.Release()
+	// Start acknowledges submission to the helper/program, never application
+	// success or a mapped window. The existing wire status remains compatible.
 	result.Status, result.ActionCount = "started", 1
 	return
 }

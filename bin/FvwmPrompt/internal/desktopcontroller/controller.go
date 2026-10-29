@@ -55,6 +55,9 @@ type Controller struct {
 	inspection                               *inspection
 	inspectionJob                            *inspectionWork
 	inspectionFocusConfigured                bool
+	startupActivity                          *startupActivity
+	startupWork                              string
+	startupFocusConfigured                   bool
 	lastThemeColors                          map[string]string
 	lastThemeAppearance                      string
 	report                                   *report
@@ -127,6 +130,7 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 }
 func (d *Controller) Close() {
 	d.closePalette()
+	d.closeStartupActivity()
 	d.closed = true
 	d.browser.menuToken = ""
 	d.settingsBinding.policy.Close()
@@ -204,6 +208,7 @@ func (d *Controller) finishConfiguration() error {
 	d.emit("KillModule FvwmForm SlateSettingsForm")
 	d.emit("KillModule FvwmForm SlateConfigCheckForm")
 	d.closeInspection()
+	d.closeStartupActivity()
 	d.closePalette()
 	var err error
 	d.effective, err = desktopsettings.Checked(merged(d.saved, d.overrides))

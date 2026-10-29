@@ -42,6 +42,56 @@ is used if available; otherwise files open in less in the configured terminal.
 Calendar is a native month menu. Display information opens xrandr --query in
 a terminal; this baseline does not yet include a graphical monitor editor.
 
+== APPLICATION STARTUP ACTIVITY
+
+Choose *Launch activity...* in the launcher, or send:
+
+....
+SendToModule FvwmDesktop launch-activity
+....
+
+The native form shows a read-only snapshot of startup notifications observed by
+the window manager. Refresh requests a new snapshot; Close dismisses the form.
+There is no periodic sampler. Pending means notification is in progress;
+*Protocol ended* means a client sent a completion message; *Window observed*
+means the core matched a managed window; *Expired* means no matching completion
+was observed within sixty seconds. Protocol messages are public X11 data.
+Protocol ended does not prove a successful exec, window map or completed task.
+Launch submission alone does not prove those outcomes either. Actual launcher
+exec errors retain their diagnostics; a crash after exec can appear as expiry.
+
+The Applications menu, standalone desktop-menu actions and browser application
+choosers share Desktop Entry startup metadata. `StartupNotify=false` disables
+notification, including class fallback. True enables it; an absent key with a
+valid StartupWMClass enables the legacy class case. Otherwise launch ordinarily.
+The private *fvwm-startup-launch* helper announces through Xlib before replacing
+itself with the literal application argument vector. It adds no resident watcher,
+GUI dependency or session bus. Arguments, working directory and Terminal remain
+those of the chosen application.
+
+The helper allows at most two seconds for a separate announcement child, then
+reaps it before exec. Missing helper, display failure, timeout or metadata outside
+its bounds falls back to ordinary launch; stale inherited DESKTOP_STARTUP_ID is
+cleared. The variable is set only after a successful announcement. Correlation
+IDs use an unavailable event time of zero; startup activity does not change
+focus or placement. A submitted launch is never automatically repeated.
+
+Tracking has fixed bounds: 32 partial messages, 4096 bytes per message, 64 activity
+records and 255 UTF-8 bytes per field. Partial messages expire after five seconds;
+pending records after sixty. Terminal records remain for sixty seconds. Updates
+do not extend a pending deadline. At capacity, applications still launch; excess
+tracking is dropped and the view/query exposes counters. These deadlines use
+monotonic time and run during idle and busy X activity.
+
+The core matches a direct _NET_STARTUP_ID before a cached WM_HINTS window-group
+ID at managed-window observation. Direct-ID and WM_HINTS changes are observed;
+malformed direct IDs do not fall back to another identity. Class fallback needs
+one unambiguous pending match and broadcasts its standard completion for other
+observers. Direct/group properties accept one optional final NUL, while rejecting
+embedded or double NULs. Late property changes on otherwise-unmanaged group
+leaders are outside this implementation. No inherited ID is written to a client.
+The *FvwmMFL*(1) `startups` query exposes the same bounded activity inventory.
+
 == OPEN A FOLDER IN THE NATIVE BROWSER
 
 Open *Files*, navigate to a folder, then choose *Open this folder in browser*.

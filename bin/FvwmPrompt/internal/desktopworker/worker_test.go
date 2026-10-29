@@ -85,7 +85,7 @@ func TestApplicationPrecedenceAndLiteralRecords(t *testing.T) {
 	if err != nil || len(result) != 1 {
 		t.Fatalf("%v %v", result, err)
 	}
-	if !reflect.DeepEqual(result[0], Application{"Quoted;Name", []string{"/bin/sh", "literal; argument"}, nil, false}) {
+	if !reflect.DeepEqual(result[0], Application{Name: "Quoted;Name", Argv: []string{"/bin/sh", "literal; argument"}}) {
 		t.Fatalf("%+v", result)
 	}
 	ctx, cancel := context.WithCancel(context.Background())

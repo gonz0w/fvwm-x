@@ -7,9 +7,10 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [selected-file application handoff](#r1-selected-file-application-handoff--2026-10-28)
-follows merged PR295 under #56/#67. Desktop-entry consumer acceptance is complete;
-remaining role/service/platform acceptance stays open with the focused cadence.
+Current feature checkpoint: [application startup activity](#r1-application-startup-activity--2026-10-28)
+is selected under #56 with #67 launcher adoption. PR296 is merged; desktop-entry
+consumer acceptance is complete. Remaining role/service/platform acceptance stays
+open with the focused cadence.
 
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
@@ -452,11 +453,85 @@ is complete with preserved binaries and alternating pairs. It establishes no
 speed gain and keeps memory aggregates separate. Counter resets to 0/5 at merged PR269. Preserve the actual
 `m5-performance-bindings-20261026` reference artifacts for the next comparison.
 
+## R1 application startup activity — 2026-10-28
+
+Owner: Cam; `codex/r1-startup-notification`; XDG-01 #56, related #67 launcher
+adoption. Base merged PR296 `56152c3fe78b1e704c654ca158d04d3a1a9264b4`.
+Status: focused checks and separate source/evidence review accepted; ready for
+PR review. Selected before
+implementation. The [startup contract](decisions/STARTUP-NOTIFICATION-2026-10-28.md)
+freezes four related outcomes: shared launch metadata and tri-state opt-in;
+a bounded native announcement/exec helper adopted by existing launchers; bounded
+core protocol/window/deadline observation exposed through the existing query
+transport; and a read-only native Launch activity view with explicit states.
+
+Acceptance: preserve literal argv/raw path bytes/cwd/Terminal and independent
+application lifetime. Helper/display absence and announcement timeout fall back
+to ordinary launch without a stale startup environment. Do not retry a submitted
+launch automatically. Verify protocol fragmentation, grammar, competing producers,
+limits, absolute monotonic expiry during idle and busy X, direct/group IDs and
+ambiguous class fallback. A public protocol remove means protocol ended, not proof
+of application success. Real exec failures retain diagnostics/nonzero status.
+The bounded snapshot has Refresh/Close and no background sampler. Existing private
+menu catalog references remain valid. Add no mandatory dependency or resident.
+
+Non-goals: focus/placement changes, startup feedback animations, late property
+changes on otherwise-unmanaged group leaders, FileManager1/shared bus, default
+association writes, new services, broad event-mask ownership rewrite, full #56/#67
+or release closure. Direct ID changes, group ID at managed observation and cached
+WM_HINTS changes are selected; the remaining late-group interoperability gap is
+explicit. #257/#258 remain parked.
+
+Verification: establish pure-policy and independent integration expectations first;
+lead executes one combined affected Linux incremental build/unit/race/native-X
+checkpoint and three-theme UI captures, plus early affected BSD native helper/
+policy checks. Reuse existing owner-controlled builds; no full matrix solely for
+this PR. Full six-target installed/service acceptance remains separate. Preserve
+failed controls and exact source/evidence identity. Separate final review is
+required. Lead alone owns operations, tracker/GitHub writes and integration;
+routed implementers have nonoverlapping source/test ownership, no execution or
+nested delegation. Role/model selection is requested by named route; backend
+model/effort metadata remains unverified where the client does not report it.
+
+[Results and limits](verification/VERIFICATION-2026-10-28-STARTUP-NOTIFICATION.md):
+Linux native C build/unit/ASan/UBSan, Go normal/race 908 test records across seven
+packages, minimum SDK 514/3, vet and 18 CLI cases pass. Thirteen short independent
+protocol groups plus complete cleanup pass; a retained real interval observes
+absolute expiry during idle/busy X, with query-side expiry and source-review
+limits explicit. Ten helper/Desktop groups pass. Three installed theme profiles
+pass four UI groups each; six captures are inspected and three appear in the
+[gallery](../doc/development-preview.md#application-startup-activity). Classic's
+larger type retains explicit Colorset2 precedence over legacy colors. Four
+manuals generate and render. Two fresh BSD ARM64 helper/policy profiles pass an
+independent C argv/cwd/environment oracle; the final portable UTF-8-key parser
+correction has its own focused Linux unit/sanitizer/native-producer evidence.
+No broad Go/theme/platform rerun follows that isolated delta.
+
+Review corrections preserve old catalog hashes, closed-owner callbacks, literal
+handoff and actual stderr; failed setup/capacity/oracle/teardown controls remain
+in the canonical evidence. Final source/C/Go identity, screenshot hashes and
+qualification scopes are recorded. The compact 338-file host archive and final
+31-file supplement are verified; guest duplicates are retired and all owned labs
+are stopped. Separate final immutable-tree review is required before handoff.
+
+Finite storage exception approved by Cam on 2026-10-28: retire only
+`style-wildcard-combined1` and `style-wildcard-refined2` guest checkpoint copies,
+including their old copied install stages, after all 809 files passed canonical
+host archive checks. Exact hash/path/no-live-user guards recovered about 292 MiB.
+No disk expansion, global retention-policy change, active build/cache/source,
+current performance reference, VM disk or other-project retirement is implied.
+This exception is complete; the existing retention rule remains authoritative.
+
+Dependencies: merged Desktop Entry/role consumers and native query/Form contracts;
+existing Xlib, no cgo or session bus. Performance reference
+`m5-performance-xdg-20261028` remains 3/5 after PR296, 4/5 on the next runtime
+merge; no comparison is due. Close only fully completed acceptance criteria.
+
 ## R1 selected-file application handoff — 2026-10-28
 
 Owner: Cam; `codex/r1-application-launch-protocol`; #56 with portable #67
 consumer adoption. Base merged PR295
-`142fe12803082c647d59278a13df24da29a917ba`. Status: implemented; focused verification and separate final integrated review passed. Candidate ready for review; merge pending. Selected before
+`142fe12803082c647d59278a13df24da29a917ba`. Status: merged in PR296 as `56152c3fe78b1e704c654ca158d04d3a1a9264b4`; canonical reviewed tree/signature and actual-author DCO verified. Branch retired and Project Done. Focused verification and separate final integrated review passed. Selected before
 implementation; [provider, MIME and ownership contract](decisions/SELECTED-FILE-APPLICATIONS-2026-10-28.md) frozen for implementation.
 
 Finite outcomes: (1) general read-only known-MIME association/default resolution
@@ -504,7 +579,7 @@ UI. Independent expected cases precede implementation; keep all failed controls
 and exact source-bound evidence. Broader MIME/database/startup-notification,
 FileManager1/shared-bus, icon/installed-platform and release acceptance stay open;
 #257/#258 remain parked. Only actually completed whole criteria may close issues.
-Performance reference `m5-performance-xdg-20261028` is 2/5 after PR295, 3/5 on
+Performance reference `m5-performance-xdg-20261028` is 3/5 after PR296, 4/5 on
 this next runtime merge; no comparison is due.
 
 Accepted-row reconciliation: #56's inherited icon resolver handoff is complete

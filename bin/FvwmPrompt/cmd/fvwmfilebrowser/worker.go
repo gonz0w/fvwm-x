@@ -10,10 +10,12 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/filemodel"
+	"github.com/fvwmorg/FvwmPrompt/internal/startuplaunch"
 )
 
 // Private parent/worker data. Raw paths are base64 JSON bytes, never commands.
@@ -147,7 +149,11 @@ func launch(request workRequest, args []string) (result workResult) {
 		result.Error = "Invalid configured application"
 		return
 	}
-	command := exec.Command(request.Program, args...)
+	command, err := startuplaunch.Command(append([]string{request.Program}, args...), nil)
+	if err != nil {
+		result.Error = "Could not prepare the configured application launch"
+		return
+	}
 	detachApplication(command)
 	command.Dir = string(request.Snapshot.Path)
 	if err := command.Start(); err != nil {
@@ -186,6 +192,10 @@ func startWorker(ctx context.Context, executable string, request workRequest) wo
 	}
 	command := exec.Command(executable, "--worker")
 	command.Stdin = bytes.NewReader(data)
+	// Detached applications may emit helper diagnostics after this worker
+	// returns. Preserve the browser's real stderr fd without a capture pipe
+	// whose EOF could couple their lifetime to worker completion.
+	command.Stderr = os.Stderr
 	data, err = ownedProcessOutput(ctx, command, filemodel.MaxWire, true)
 	if ctx.Err() != nil {
 		return workResult{Schema: 1, Status: "cancelled", Error: "File operation cancelled or timed out"}

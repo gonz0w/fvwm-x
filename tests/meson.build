@@ -4457,3 +4457,11 @@ if get_option('live-x-tests') and host_machine.system() == 'linux' and libpng.fo
         suite: 'live-x', is_parallel: false, timeout: 360,
     )
 endif
+
+startup_notification_policy_test = executable(
+    'test-startup-notification-policy',
+    ['test_startup_notification_policy.c', '../libs/startup_notification_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('startup-notification-policy', startup_notification_policy_test)

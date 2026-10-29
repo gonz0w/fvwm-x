@@ -59,6 +59,7 @@ libfvwm3_sources = files(
     'Strings.c',
     'config_line.c',
     'config_origin.c',
+    'startup_notification_policy.c',
     'System.c',
     'Target.c',
     'WinMagic.c',

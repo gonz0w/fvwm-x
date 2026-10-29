@@ -46,6 +46,7 @@
 
 #include "config.h"
 #include "appearance_preview.h"
+#include "startup_notification.h"
 #include "fvwm/event_filter.h"
 #include "fvwm/module_records.h"
 #include "libs/FProperty.h"
@@ -1858,6 +1859,8 @@ HandleClientMessage(const evh_args_t *ea)
 	const XEvent	 *te = ea->exc->x.etrigger;
 	FvwmWindow *const fw = ea->exc->w.fw;
 
+	if (startup_notification_client_message(&te->xclient))
+		return;
 	if (EWMH_ProcessClientMessage(ea->exc)) {
 		return;
 	}
@@ -2697,6 +2700,8 @@ HandleMapNotify(const evh_args_t *ea)
 		}
 		return;
 	}
+	if (te->xmap.window == FW_W(fw))
+		startup_notification_window_observed(fw);
 	if (te->xmap.window == FW_W_FRAME(fw)) {
 		/* Now that we know the frame is mapped after capturing the
 		 * window we do not need StructureNotifyMask events anymore. */
@@ -3100,6 +3105,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 	if (!fw) {
 		return;
 	}
+	startup_notification_property(fw, te->xproperty.atom);
 	switch (te->xproperty.atom) {
 	case XA_WM_TRANSIENT_FOR: {
 		if (setup_transientfor(fw) == True) {
@@ -3233,6 +3239,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 			XFree((char *)fw->wmhints);
 		}
 		setup_wm_hints(fw);
+		startup_notification_window_observed(fw);
 		if (fw->wmhints == NULL) {
 			return;
 		}
@@ -3692,6 +3699,7 @@ InitEventHandlerJumpTable(void)
 	static PFEH EventHandlerJumpTable[LASTEvent];
 	int	    i;
 
+	startup_notification_initialize();
 	for (i = 0; i < LASTEvent; i++) {
 		EventHandlerJumpTable[i] = NULL;
 	}
@@ -4033,6 +4041,7 @@ Bool events_interaction_poll(int timeout_ms)
 	Bool healthy = True;
 
 	appearance_preview_service();
+	startup_notification_service();
 	if (ExecuteInteractionCommandQueue())
 	{
 		timeout_ms = 0;
@@ -4044,6 +4053,9 @@ Bool events_interaction_poll(int timeout_ms)
 	{
 		return True;
 	}
+	timer_ms = startup_notification_next_ms();
+	if (timer_ms >= 0 && (timeout_ms < 0 || timer_ms < timeout_ms))
+		timeout_ms = timer_ms;
 	timer_ms = appearance_preview_timeout_ms();
 	if (timer_ms >= 0 && (timeout_ms < 0 || timer_ms < timeout_ms))
 		timeout_ms = timer_ms;
@@ -4065,6 +4077,7 @@ Bool events_interaction_poll(int timeout_ms)
 		timeout_ms < 0 ? NULL : &timeout,
 		image_async_timeout_ms(False), &image_timeout);
 	poll_error = result < 0 ? errno : 0;
+	startup_notification_service();
 	image_async_transport();
 	if (result < 0)
 	{
@@ -4116,9 +4129,11 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 	Bool		       force_poll;
 	struct timeval	       poll_timeout = {0, 0};
 	bool image_timeout = false;
+	bool startup_activity_timeout = false;
 
 	/* Preview recovery changes only an opacity scalar, never borrowed faces. */
 	appearance_preview_service();
+	startup_notification_service();
 	/* Pump even under an X-event flood, without changing any owner. */
 	image_async_transport();
 
@@ -4175,6 +4190,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		int		       scheduler_ms;
 		int		       topology_ms;
 		int		       ms;
+		int		       startup_ms;
 		Bool		       is_waiting_with_timeout = False;
 		static struct timeval *old_timeoutP	       = NULL;
 
@@ -4191,6 +4207,15 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		    &topology_refresh_state, events_monotonic_ns());
 		ms = fvwm_topology_timeout_min(scheduler_ms, topology_ms);
 		ms = fvwm_topology_timeout_min(ms, appearance_preview_timeout_ms());
+		/* An activity timer is not the existing startup-module timeout. */
+		startup_ms = startup_notification_next_ms();
+		if (fFvwmInStartup && startup_ms >= 0 &&
+		    (ms < 0 || ms > 42000))
+			ms = 42000;
+
+		startup_activity_timeout = startup_ms >= 0 &&
+			(ms < 0 || startup_ms <= ms);
+		ms = fvwm_topology_timeout_min(ms, startup_ms);
 		if (ms < 0) {
 			timeout.tv_sec	= 42;
 			timeout.tv_usec = 0;
@@ -4229,6 +4254,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 			errno = EBADF;
 		}
 		image_async_transport();
+		startup_notification_service();
 		fvwm_process_deferred_signals();
 		if (is_waiting_with_timeout) {
 			timeoutP = old_timeoutP;
@@ -4264,7 +4290,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		events_readiness_clear(&readiness);
 		if (!force_poll) {
 			/* A decoder-only deadline cannot finish module startup. */
-			if (fFvwmInStartup && !image_timeout) {
+			if (fFvwmInStartup && !image_timeout &&
+			    !startup_activity_timeout) {
 				fvwm_debug(__func__,
 				    "Some command line modules have not quit, "
 				    "Starting up after timeout.\n");

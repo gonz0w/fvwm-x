@@ -130,9 +130,9 @@ func TestDesktopApplicationsTypedLocalizedMetadataAndDeclaredActions(t *testing.
 		t.Fatalf("localized parent/actions: %+v %v", got, err)
 	}
 	want := []Application{
-		{"Nom Base", []string{"app", "--icon", "icône parent", "Nom Base", path}, &cwd, true},
-		{"Nom Base — Héritée", []string{"action", "--icon", "icône parent", "Nom Base", path}, &cwd, true},
-		{"Nom Base — Édition privée", []string{"action", "--icon", "action française", "Nom Base", path}, &cwd, true},
+		{Name: "Nom Base", Argv: []string{"app", "--icon", "icône parent", "Nom Base", path}, Cwd: &cwd, Terminal: true},
+		{Name: "Nom Base — Héritée", Argv: []string{"action", "--icon", "icône parent", "Nom Base", path}, Cwd: &cwd, Terminal: true},
+		{Name: "Nom Base — Édition privée", Argv: []string{"action", "--icon", "action française", "Nom Base", path}, Cwd: &cwd, Terminal: true},
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Fatalf("typed/localized fields or parent action context changed: got %+v want %+v", got, want)

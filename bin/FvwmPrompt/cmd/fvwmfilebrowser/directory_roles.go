@@ -419,7 +419,7 @@ func (b *browser) finishDirectoryRole(event completedWork) error {
 	}
 	if event.work.request.Operation == "directory-role-launch" && b.roles != nil && b.roles.snapshot == event.work.request.Snapshot {
 		if event.result.Status == "started" {
-			b.roles.detail = "Application started; completion is not tracked"
+			b.roles.detail = "Application launch submitted; completion is not tracked"
 		} else {
 			b.roles.detail = event.result.Error
 			b.roles.status, b.roles.generation, b.roles.result = "failed", "", nil

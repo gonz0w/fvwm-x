@@ -39,6 +39,7 @@ type DirectoryRoleOptions struct {
 type DirectoryHandler struct {
 	ID, Name, Icon, DesktopPath, Exec, WorkingDir, Fingerprint string
 	Terminal                                                   bool
+	Startup                                                    *xdgmenu.StartupMetadata `json:",omitempty"`
 }
 
 type DirectoryRoleResult struct {
@@ -145,6 +146,10 @@ func applicationHandler(id, path string, data []byte, entry *xdgmenu.Desktop, op
 	if !options.Executable(argv[0]) {
 		return handler, declares, false, nil
 	}
+	startup, err := xdgmenu.ParseStartupMetadata(entry, name, icon, id)
+	if err != nil {
+		return handler, declares, false, err
+	}
 	digest := sha256.New()
 	for _, value := range []string{id, path, name, icon, directory, rawExec} {
 		digest.Write([]byte(value))
@@ -156,7 +161,7 @@ func applicationHandler(id, path string, data []byte, entry *xdgmenu.Desktop, op
 	}
 	digest.Write(data)
 	handler = DirectoryHandler{ID: id, Name: name, Icon: icon, DesktopPath: path, Exec: rawExec, WorkingDir: directory,
-		Fingerprint: hex.EncodeToString(digest.Sum(nil)), Terminal: terminal}
+		Fingerprint: hex.EncodeToString(digest.Sum(nil)), Terminal: terminal, Startup: startup}
 	return handler, declares, true, nil
 }
 
@@ -215,7 +220,7 @@ func (s *Source) DirectoryRoles(options DirectoryRoleOptions) (DirectoryRoleResu
 	remaining := MaxDirectoryRoleResultBytes - 4096
 	for _, id := range resolution.IDs {
 		handler := handlers[id]
-		size := 256
+		size := 256 + xdgmenu.StartupMetadataBytes(handler.Startup)
 		for _, value := range []string{handler.ID, handler.Name, handler.Icon, handler.DesktopPath, handler.Exec, handler.WorkingDir, handler.Fingerprint} {
 			size += 6*len(value) + 4
 		}

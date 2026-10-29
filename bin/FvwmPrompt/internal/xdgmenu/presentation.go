@@ -33,6 +33,7 @@ type PresentedItem struct {
 	Argv        []string
 	Terminal    bool
 	WorkingDir  string
+	Startup     *StartupMetadata
 }
 type PresentedMenu struct {
 	Name, Label, Icon string
@@ -179,7 +180,7 @@ func (s *presentationState) chargeApplication(item PresentedItem, action bool) e
 	if action {
 		count++
 	}
-	if err := s.charge(count, len(item.Label)+len(item.Icon)+len(item.WorkingDir)); err != nil {
+	if err := s.charge(count, len(item.Label)+len(item.Icon)+len(item.WorkingDir)+StartupMetadataBytes(item.Startup)); err != nil {
 		return err
 	}
 	for _, arg := range item.Argv {
@@ -255,7 +256,11 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 		if directory != "" && (!pathValue(directory) || !filepath.IsAbs(directory)) {
 			return nil, errors.New("desktop working directory must be absolute")
 		}
-		primary := PresentedItem{Kind: ApplicationItem, Label: label, Icon: icon, Entry: entry, Argv: argv, Terminal: terminal, WorkingDir: directory}
+		startup, err := ParseStartupMetadata(d, label, icon, entry.ID)
+		if err != nil {
+			return nil, err
+		}
+		primary := PresentedItem{Kind: ApplicationItem, Label: label, Icon: icon, Entry: entry, Argv: argv, Terminal: terminal, WorkingDir: directory, Startup: startup}
 		if err = s.chargeApplication(primary, false); err != nil {
 			return nil, err
 		}
@@ -265,8 +270,12 @@ func (s *presentationState) menu(compiled *CompiledMenu, allocated *AllocatedMen
 			if err != nil {
 				continue
 			}
+			startup, err := ParseStartupMetadata(d, action.Label, action.Icon, entry.ID)
+			if err != nil {
+				return nil, err
+			}
 			item := PresentedItem{Kind: ApplicationItem, Label: action.Label, Icon: action.Icon, Entry: entry,
-				Argv: argv, Terminal: terminal, WorkingDir: directory}
+				Argv: argv, Terminal: terminal, WorkingDir: directory, Startup: startup}
 			if err = s.chargeApplication(item, true); err != nil {
 				return nil, err
 			}

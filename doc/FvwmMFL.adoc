@@ -101,7 +101,7 @@ receiving its terminal reply; a new connection has its own client-ID scope.
 * `connection` returns this connection's `read_only` flag and selected event
   names. These are MFL-owned values and require no core round trip.
 * `topology`, `workspaces`, `bindings`, `colorsets`, `appearance`, `menu-styles`
-  and `decorations` query core-owned state, as described
+  `decorations` and `startups` query core-owned state, as described
   below. Binding pages also accept their documented continuation fields.
 * `preview` queries or controls a core-owned runtime menu-opacity lease,
   as described below. Saved-preference preview remains separate.
@@ -401,6 +401,33 @@ process/resource observations, not authentication or persistent identifiers;
 `generation_unavailable` refuses an unavailable/exhausted revision. A colorset
 or unrelated covered definition change can conservatively invalidate either
 page resource even when its selected entries remain identical.
+
+=== Application startup activity
+
+The read-only `startups` resource observes the core's bounded startup-notification
+inventory. It creates no application, waiter or extra watcher:
+
+----
+request {"version":1,"id":"startups-1","method":"query","resource":"startups","limit":8}
+----
+
+The result has `state: "observed"`, `scope: "core-startup-activity"`, an opaque
+`generation`, `offset`, `total`, actual `limit`, `next_offset` and `startups`.
+Pages default to eight records and clamp accepted generic limits to eight.
+Follow a non-null next offset with the returned generation; a changed inventory
+returns `stale_generation`. Age alone does not change the generation. A final
+page has a null next offset. At most 64 records are visible.
+
+Each record has `id`, `name`, `icon`, `application_id`, `wmclass`, `state`,
+`window` (an XID, zero before observation) and monotonic elapsed `age_ms`.
+States are `pending`, `protocol-ended`, `window-observed` and `expired`.
+A protocol-ended record reports a public X11 completion message, not proof of
+application success. `counters` reports `dropped`, `malformed` and
+`partial_expired`; `limits` records the configured fixed bounds/deadlines.
+These are observations during this core lifetime, not persistent history or a
+security/authentication boundary. The native Launch activity view in
+*FvwmDesktop*(1) uses these pages. That manual describes matching, fallback and
+late-group-property limits.
 
 === Core colorset inspection
 

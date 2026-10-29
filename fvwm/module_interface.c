@@ -55,6 +55,7 @@
 #include "module_queue.h"
 #include "query_json.h"
 #include "appearance_preview.h"
+#include "startup_notification.h"
 #include "action_palette.h"
 #include "colorset.h"
 #include "menustyle.h"
@@ -1137,6 +1138,8 @@ void CMD_Send_Query(F_CMD_ARGS)
 	else if (strcmp(spec.resource, "topology") == 0)
 		result = fvwm_query_topology(
 			FScreenGetTopologySnapshot(), &error);
+	else if (strcmp(spec.resource, "startups") == 0)
+		result = startup_notification_query(&spec, &error);
 	else if (strcmp(spec.resource, "palette") == 0)
 		result = action_palette_query(module, &spec, &error);
 	else if (strcmp(spec.resource, "workspaces") == 0)

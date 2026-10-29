@@ -1073,8 +1073,34 @@ static void test_files_actions(void)
 	}
 }
 
+static void test_startup_requests(void)
+{
+	struct mfl_request request;
+	char command[256];
+	const char *first = "{\"version\":1,\"id\":\"startup\","
+		"\"method\":\"query\",\"resource\":\"startups\",\"limit\":16}";
+
+	assert(mfl_request_parse(first, &request));
+	assert(request.kind == MFL_REQUEST_STARTUPS);
+	assert(request.limit == 16 && request.offset == 0);
+	assert(mfl_request_is_snapshot(request.kind));
+	assert(!mfl_request_is_action(request.kind));
+	assert(mfl_request_snapshot_command(command, sizeof(command),
+		&request, 1, "abc"));
+	assert(strstr(command, " startups 0 16 -"));
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"startup\","
+		"\"method\":\"query\",\"resource\":\"startups\",\"offset\":8}",
+		&request));
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"startup\","
+		"\"method\":\"action\",\"resource\":\"startups\"}", &request));
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"startup\","
+		"\"method\":\"query\",\"resource\":\"startups\",\"limit\":17}",
+		&request));
+}
+
 int main(void)
 {
+	test_startup_requests();
 	test_files_actions();
 	test_directory_role_requests();
 	test_file_role_requests();

@@ -329,6 +329,14 @@ Classifier work has its own cleanup boundary; an application already handed off
 can continue independently. Cancellation cannot undo an escaped handoff and
 does not retry it automatically.
 
+Folder and selected-file application choosers use the same optional Desktop Entry
+startup notification as the Applications menu. Explicit StartupNotify=false
+disables it; true or an absent key with a valid StartupWMClass enables it.
+Helper/display/announcement failure preserves ordinary literal launch without a
+stale DESKTOP_STARTUP_ID. A handoff reports launch submission, not successful
+application completion. The application retains its independent lifetime after
+the browser closes. See APPLICATION STARTUP ACTIVITY in *FvwmDesktop*(1).
+
 == CONFIGURED SELECTION ACTIONS
 
 Repeat `--action 'Label=executable'` up to four times to add named native buttons.

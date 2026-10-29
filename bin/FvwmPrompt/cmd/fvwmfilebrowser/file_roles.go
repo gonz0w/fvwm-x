@@ -215,7 +215,7 @@ func (b *browser) finishFileRole(event completedWork) error {
 		}
 	} else if event.work.request.Operation == "file-role-launch" {
 		if event.result.Status == "started" {
-			chooser.detail = "Application started; completion is not tracked"
+			chooser.detail = "Application launch submitted; completion is not tracked"
 		} else {
 			chooser.status, chooser.generation, chooser.result = "failed", "", nil
 			chooser.detail = event.result.Error

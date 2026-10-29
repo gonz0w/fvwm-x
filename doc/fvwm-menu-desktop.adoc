@@ -307,6 +307,15 @@ uses its own smaller limits; see *FvwmDesktop*(1). The standalone provider
 checks `TryExec` for visibility, but resolves primary and action executables at
 launch time.
 
+Desktop Entry StartupNotify and StartupWMClass are shared with the desktop and
+browser launchers. Optional notification uses the installed private native helper
+and keeps the literal arguments, working directory and Terminal. Explicit false
+disables notification. True, or an absent key with a valid class, enables it;
+missing helper/display and bounded announcement failure fall back to ordinary
+launch without an inherited DESKTOP_STARTUP_ID. Existing exported catalog
+references remain usable. See APPLICATION STARTUP ACTIVITY in *FvwmDesktop*(1)
+for deadlines, observation states and support limits.
+
 The Go provider limits each XML, desktop, directory-metadata and icon-index source to
 8 MiB, total acquisition to 128 MiB, nesting to 128 levels and bounded policy
 work. PNG sources are bounded to 128 MiB, dimensions to 32768 pixels per axis

@@ -73,6 +73,7 @@ fvwm_sources = [
     'fvwm/style.c',
     'fvwm/style_id_filter.c',
     'fvwm/style_match.c',
+    'fvwm/startup_notification.c',
     'fvwm/status_json.c',
     'fvwm/status_pipe.c',
     'fvwm/update.c',

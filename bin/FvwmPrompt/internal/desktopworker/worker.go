@@ -94,6 +94,9 @@ func Decode(data []byte) (Request, error) {
 	if request.Operation == "inspect" && (len(seen) != 3 || !seen["version"] || !seen["operation"] || !seen["inspect"]) {
 		return request, errors.New("unexpected inspector worker field")
 	}
+	if request.Operation == "startups" && (len(seen) != 2 || !seen["version"] || !seen["operation"]) {
+		return request, errors.New("unexpected startup activity worker field")
+	}
 	return validateRequest(request)
 }
 
@@ -105,6 +108,12 @@ func validateRequest(request Request) (Request, error) {
 
 	if request.Version != 1 {
 		return request, errors.New("unsupported desktop worker protocol")
+	}
+	if request.Operation == "startups" {
+		if request.System != "" || request.Action != "" || request.Path != "" || len(request.Directories) != 0 || request.Check != nil || request.Inspect != nil {
+			return request, errors.New("startup activity has no arguments")
+		}
+		return request, nil
 	}
 	for _, value := range append([]string{request.System, request.Action, request.Path}, request.Directories...) {
 		if len(value) > 4096 || strings.ContainsRune(value, 0) {
@@ -248,6 +257,8 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "startups":
+		value, err = collectStartups(ctx, env.Query)
 	case "inspect":
 		inspection, _ := desktopinspect.DecodeRequest(request.Inspect)
 		value, err = desktopinspect.Collect(ctx, inspection, env.Query)

@@ -67,3 +67,15 @@ fvwm_desktop_capture = executable(
     install_dir: fvwm_moduledir,
     install_tag: 'desktop-controller',
 )
+
+# One transient Xlib announcer is supervised before this wrapper execs the
+# application in place. Go launchers retain pure metadata and literal argv.
+fvwm_startup_launch = executable(
+    'fvwm-startup-launch',
+    ['startup_launch.c', '../libs/startup_notification_policy.c'],
+    include_directories: includedirs,
+    dependencies: [summary_depvals['x11']],
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'desktop-controller',
+)

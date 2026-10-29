@@ -416,7 +416,8 @@ static bool snapshot_request(struct mfl_request *request,
 	}
 	else if (strcmp(resource, "appearance") == 0 ||
 	    strcmp(resource, "menu-styles") == 0 ||
-	    strcmp(resource, "decorations") == 0)
+	    strcmp(resource, "decorations") == 0 ||
+	    strcmp(resource, "startups") == 0)
 	{
 		const unsigned int allowed = (1U << 7) | (1U << 11) |
 			(1U << 12);
@@ -452,7 +453,9 @@ static bool snapshot_request(struct mfl_request *request,
 		request->kind = strcmp(resource, "appearance") == 0 ?
 			MFL_REQUEST_APPEARANCE :
 			strcmp(resource, "menu-styles") == 0 ?
-			MFL_REQUEST_MENU_STYLES : MFL_REQUEST_DECORATIONS;
+			MFL_REQUEST_MENU_STYLES :
+			strcmp(resource, "startups") == 0 ?
+			MFL_REQUEST_STARTUPS : MFL_REQUEST_DECORATIONS;
 	}
 	else if (strcmp(resource, "bindings") == 0)
 	{
@@ -875,7 +878,8 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 		strcmp(values[3]->valuestring, "colorsets") == 0 ||
 		strcmp(values[3]->valuestring, "appearance") == 0 ||
 		strcmp(values[3]->valuestring, "menu-styles") == 0 ||
-		strcmp(values[3]->valuestring, "decorations") == 0))
+		strcmp(values[3]->valuestring, "decorations") == 0 ||
+		strcmp(values[3]->valuestring, "startups") == 0))
 	{
 		valid = snapshot_request(request, values, seen);
 		if (valid)
@@ -1008,6 +1012,7 @@ cJSON *mfl_request_pending_result(const struct mfl_pending_request *pending,
 			p->kind == MFL_REQUEST_APPEARANCE ? "appearance" :
 			p->kind == MFL_REQUEST_MENU_STYLES ? "menu-styles" :
 			p->kind == MFL_REQUEST_DECORATIONS ? "decorations" :
+			p->kind == MFL_REQUEST_STARTUPS ? "startups" :
 			p->kind == MFL_REQUEST_DESKTOP ?
 			"desktop" : "core-stream") ||
 		    !cJSON_AddStringToObject(item, "state",
@@ -1215,7 +1220,8 @@ bool mfl_request_is_snapshot(enum mfl_request_kind kind)
 		kind == MFL_REQUEST_BINDINGS || kind == MFL_REQUEST_COLORSETS ||
 		kind == MFL_REQUEST_APPEARANCE ||
 		kind == MFL_REQUEST_MENU_STYLES ||
-		kind == MFL_REQUEST_DECORATIONS;
+		kind == MFL_REQUEST_DECORATIONS ||
+		kind == MFL_REQUEST_STARTUPS;
 }
 
 bool mfl_request_is_settings(enum mfl_request_kind kind)

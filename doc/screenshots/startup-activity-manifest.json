@@ -1,0 +1,86 @@
+{
+  "status": "development preview; focused checks, wider qualification pending",
+  "source_base": "56152c3fe78b1e704c654ca158d04d3a1a9264b4",
+  "qualified_source_closure": "9df68195e8fb4617792453ef0cc0c09f295a389a0c81706bad1366eec5e32057",
+  "canonical_archive_sha256": "4428d2858cd6b13a12a6ab489ebdc5f56c150596c44a4e98204e5555cd6edcf6",
+  "captures_unmodified": true,
+  "server": "Native Linux ARM64 Xvfb; no compositor",
+  "scope": "Synthetic startup notifications and native Launch activity snapshot; no application-success guarantee or complete desktop/release acceptance",
+  "captures": [
+    {
+      "file": "startup-activity-slate-dark.png",
+      "profile": "slate-dark",
+      "capture": "initial",
+      "sha256": "d6f74132793c8bcbe0b9eb4081145fc834647be64b1ff7124383adbb16a02aa7",
+      "bytes": 50024,
+      "width": 1440,
+      "height": 1200,
+      "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-slate-dark/startup-activity-initial.png",
+      "configuration_sha256": {
+        "config": "10083eebfcb1629a24757d13053b94f43350cd7b153dd61b79ecb39d579d5820",
+        "local": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+      },
+      "native_binary_sha256": {
+        "core": "56f9575f60c42d400a21c15a2167f1e05d92e7898e340911916cf4e0b0483838",
+        "Desktop": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad",
+        "worker": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+        "MFL": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06",
+        "Form": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "capture": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "helper": "e2c5b21981b91d6ec73fd5930852895d42998fba139aeed9eaf8eb2f82017a30",
+        "client": "126db0ca2963652aa65eaeb5957b990df045dad2ef5aee0901a489b27a0cfac3"
+      },
+      "fixture_sha256": "34b148b2fdb515d96b92f928963a129fa99ef4948d00aafc756ea23f1f5182b9"
+    },
+    {
+      "file": "startup-activity-dune-light.png",
+      "profile": "dune-light",
+      "capture": "refreshed",
+      "sha256": "b9ae07933ece48f7c575a72a0718e4337001e2847f1b12f6768e8d3ecfa19c15",
+      "bytes": 52069,
+      "width": 1440,
+      "height": 1200,
+      "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-dune-light/startup-activity-refreshed.png",
+      "configuration_sha256": {
+        "config": "cc36ee0b70871dcade79a86f63541476e1b6b93dbb4b5dfcb9901bb8c73f93b5",
+        "local": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb"
+      },
+      "native_binary_sha256": {
+        "core": "56f9575f60c42d400a21c15a2167f1e05d92e7898e340911916cf4e0b0483838",
+        "Desktop": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad",
+        "worker": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+        "MFL": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06",
+        "Form": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "capture": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "helper": "e2c5b21981b91d6ec73fd5930852895d42998fba139aeed9eaf8eb2f82017a30",
+        "client": "126db0ca2963652aa65eaeb5957b990df045dad2ef5aee0901a489b27a0cfac3"
+      },
+      "fixture_sha256": "34b148b2fdb515d96b92f928963a129fa99ef4948d00aafc756ea23f1f5182b9"
+    },
+    {
+      "file": "startup-activity-classic-large.png",
+      "profile": "classic-large",
+      "capture": "initial",
+      "sha256": "a1ce0d6d34df3ce6740c7ef267d11d1531b46b7c71782b2a9ff196d46dc3d559",
+      "bytes": 87885,
+      "width": 1440,
+      "height": 1200,
+      "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-classic-large/startup-activity-initial.png",
+      "configuration_sha256": {
+        "config": "b935dd87bcce8f9ce6c3d2ffd0dff5b3bcede1936bf37b41e65c8a9817746010",
+        "local": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+      },
+      "native_binary_sha256": {
+        "core": "56f9575f60c42d400a21c15a2167f1e05d92e7898e340911916cf4e0b0483838",
+        "Desktop": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad",
+        "worker": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+        "MFL": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06",
+        "Form": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95",
+        "capture": "c6dfbe09dbb38588ffc2b06e0d7b9b16506915d19d60a431fce082e150567821",
+        "helper": "e2c5b21981b91d6ec73fd5930852895d42998fba139aeed9eaf8eb2f82017a30",
+        "client": "126db0ca2963652aa65eaeb5957b990df045dad2ef5aee0901a489b27a0cfac3"
+      },
+      "fixture_sha256": "34b148b2fdb515d96b92f928963a129fa99ef4948d00aafc756ea23f1f5182b9"
+    }
+  ]
+}

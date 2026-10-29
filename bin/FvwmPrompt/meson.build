@@ -48,6 +48,7 @@ fvwmprompt_test_binaries = custom_target(
         'filejobs.test',
         'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
+        'startuplaunch.test',
     ],
     input: fvwmprompt_files,
     command: [
@@ -183,6 +184,14 @@ test('script-com-example', py,
 
 # Coordinated XDG provider/settings port; acquisition has a bounded worker and
 # applications stay literal typed records until launch. No new Go dependency.
+# Binaries installed in bindir need the actual private module helper directory.
+# Preserve Go's independent -ldflags quoting for configured paths with spaces.
+startup_module_linker = 'github.com/fvwmorg/FvwmPrompt/internal/startuplaunch.ModuleDirectory=' + fvwm_moduledir
+if not startup_module_linker.contains('\'')
+    startup_module_linker = '\'' + startup_module_linker + '\''
+elif not startup_module_linker.contains('"')
+    startup_module_linker = '"' + startup_module_linker + '"'
+endif
 fvwm_menu_desktop = custom_target(
     'fvwm-menu-desktop',
     output: 'fvwm-menu-desktop',
@@ -191,7 +200,8 @@ fvwm_menu_desktop = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X main.version=' + meson.project_version()
+        '-ldflags', '-X ' + startup_module_linker
+            + ' -X main.version=' + meson.project_version()
             + ' -X main.pngEnabled=' + (libpng.found() ? 'true' : 'false')
             + ' -X main.svgEnabled=' + (librsvg.found() ? 'true' : 'false')
             + ' -X main.xpmEnabled=' + (xpm.found() ? 'true' : 'false'),
@@ -218,6 +228,7 @@ fvwm_file_browser = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-ldflags', '-X ' + startup_module_linker,
         '-o', meson.current_build_dir() / 'fvwm-file-browser',
         './cmd/fvwmfilebrowser',
     ],
@@ -281,7 +292,7 @@ fvwm_desktop = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X ' + desktop_data_linker
+        '-ldflags', '-X ' + startup_module_linker + ' -X ' + desktop_data_linker
             + ' -X main.pngEnabled=' + (libpng.found() ? 'true' : 'false'),
         '-o', meson.current_build_dir() / 'FvwmDesktop',
         './cmd/fvwmdesktop',

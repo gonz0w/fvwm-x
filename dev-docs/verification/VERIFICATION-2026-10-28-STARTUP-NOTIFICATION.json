@@ -1,0 +1,949 @@
+{
+  "status": "focused checks passed; separate source/evidence review accepted",
+  "date": "2026-10-28",
+  "base": "56152c3fe78b1e704c654ca158d04d3a1a9264b4",
+  "branch": "codex/r1-startup-notification",
+  "owners": [
+    56,
+    67
+  ],
+  "qualified_source": {
+    "final_closure": "0ed235ffd9c7397d50d4de1cb5a4a7b1b3959c4b9c033ecaca9941d690706d8a",
+    "archive_sha256": "14c4a8a2db963ab5006dc1bebac6464a56fe520037dba73ef0a90a4576e9176d",
+    "runtime_closure": "a59f16686289d1ecc2d5238692b5859b24b6289d0cd49b8cb86cd39b6398259c",
+    "ui_fixture_closure": "9df68195e8fb4617792453ef0cc0c09f295a389a0c81706bad1366eec5e32057",
+    "affected_files": {
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles.go": {
+        "sha256": "04c1a7cbaa63d2fad7aedb69f93b1ffcd62cbeed59fb763fc03f90f1009a1ee3",
+        "bytes": 14859,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_worker.go": {
+        "sha256": "732c6b0ed3497483f3a74d36992cacc88fbab24f8fb10894431e12951d606d03",
+        "bytes": 7119,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles.go": {
+        "sha256": "ddb7db9a553398f4caf4af624db1357ff6f8dc592c02ae6d1042945abdb65421",
+        "bytes": 10283,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_worker.go": {
+        "sha256": "23925edd2de316d185568f64ac6a80637e091deb492d43718cf3204f96f80a01",
+        "bytes": 5013,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": {
+        "sha256": "f2be75edcef9d3a5d2de0cd5a2fbe80fb6f6061ca6fb7c32327e3b57016a6ce4",
+        "bytes": 17748,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker.go": {
+        "sha256": "f40b8ae9364703a3f989671cbb889eaee1dc300ac7c5b0a3aa294d99adbad9e3",
+        "bytes": 7000,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmmenudesktop/actions.go": {
+        "sha256": "b8876e3177aade553b9a3fc28b4cb2b4b8d7fe8657c9a665a069cb6ddbeda222",
+        "bytes": 6597,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/cmd/fvwmmenudesktop/startup_test.go": {
+        "sha256": "9e26c17a6cf9dc902b017aeca694759b618e8383b0e099b5b73c630c74008b03",
+        "bytes": 1453,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/controller.go": {
+        "sha256": "6d6e04d985b8f45d9fc24cf819a1622a9ff2dff91e5da80663e3410f36db4727",
+        "bytes": 11383,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": {
+        "sha256": "d0718114c7ea6f64d86c700a16196e3200a741a23534b61e65e2bdaa483e75aa",
+        "bytes": 10688,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/services.go": {
+        "sha256": "66ff07b285921956c4f39703df99d75c32ed9e655c32630762b12a3f1878b4a8",
+        "bytes": 16344,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/startups.go": {
+        "sha256": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bytes": 6007,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": {
+        "sha256": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bytes": 2146,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/ui.go": {
+        "sha256": "bbb532b54cf2c290f73eb79fe940dc553b9e92e10626f0dabb7356ff4c5cf4f1",
+        "bytes": 14837,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/applications_xdg_test.go": {
+        "sha256": "50ee09cfbf1c2c531cfae58e20e0919ec4764df3221c888ca26505856fb8e8a3",
+        "bytes": 10981,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/files.go": {
+        "sha256": "4fd5c74f6dc7b8fa716c32f9618d3e923e40bbbc29a2a46eda884eb4ec1a9af8",
+        "bytes": 7445,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/startups.go": {
+        "sha256": "869d21ac8c843eda833a243af96ce871ccbecc7865faf8edbf597bdc1e27489e",
+        "bytes": 8202,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/startups_test.go": {
+        "sha256": "9e371d5b96748245d94e165a6cc4cdb7c4bb31fba1e27db763183636f5da8c75",
+        "bytes": 3688,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/worker.go": {
+        "sha256": "fce133505e93d6e63c73e7116d93dd800f92a5d85afbe444da42230bee7d76d0",
+        "bytes": 11554,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopworker/worker_test.go": {
+        "sha256": "bbacbf545d89c94d02cde5ca1c64b1856df301327cdef44c17cd84be08795d20",
+        "bytes": 14183,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/startuplaunch/launch.go": {
+        "sha256": "d4347c03f9038fcbc7f690f3894c2e7f67e4f3810f48f9a3b0cc0bac3970b59f",
+        "bytes": 3391,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/startuplaunch/launch_test.go": {
+        "sha256": "41b6e2e2a5c4bb9b9fd3e5c9d170645346dcda76fcfcb7a6fd6d00c02e864357",
+        "bytes": 2703,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgmenu/presentation.go": {
+        "sha256": "6adee8ef1dbd8bae4adaf8ddbda63f30d133021fb8bac097d3c4808e10f4d0d1",
+        "bytes": 13654,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgmenu/startup.go": {
+        "sha256": "30d0a0970d823f1ea2dfede98fbb4af65af44b55924c1e260f55b2d2859b0458",
+        "bytes": 2808,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgmenu/startup_test.go": {
+        "sha256": "3c2666bbe94d3d179b216f911add90fd978bf323712d787ba58542b1c6af47cc",
+        "bytes": 2351,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgsource/application_roles.go": {
+        "sha256": "c73ece0ddcd1435ab2620873a037afc415bc3f0e6064613059bbde9f91bdb7db",
+        "bytes": 5828,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgsource/directory_roles.go": {
+        "sha256": "8bbc3cf918996238bbc5b079887dcb8c4a65e0aa72f4c53c710942b4809957d2",
+        "bytes": 11622,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgsource/startup_test.go": {
+        "sha256": "75e07f603329765aa4ef1acd710b7abeab9f448bdb0e06d250a0e200dfe4fba1",
+        "bytes": 1133,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/meson.build": {
+        "sha256": "a64fef5a6efa86c1f9ae651798c4a22a019473b538b7a25ce41d11d9e4f28227",
+        "bytes": 12868,
+        "mode": 420
+      },
+      "bin/meson.build": {
+        "sha256": "870c33c4ba9f2116e84d266f5349f17747254f37722e1943413c9e7378fb2877",
+        "bytes": 2939,
+        "mode": 420
+      },
+      "bin/startup_launch.c": {
+        "sha256": "3f51a315d02084e84ddde236354554855b12b897d68d9566abc2d5a97154f9c5",
+        "bytes": 9092,
+        "mode": 420
+      },
+      "fvwm/events.c": {
+        "sha256": "441e7d7a5dfbfa69face16e6afe122eef97559da3329f52b9dabe7108c33cb92",
+        "bytes": 132037,
+        "mode": 420
+      },
+      "fvwm/meson.build": {
+        "sha256": "06cfad8b359fcf13b1e9ed2adb59f8623a8e3a152ea4b7ad8e8df1acafac09c2",
+        "bytes": 2152,
+        "mode": 420
+      },
+      "fvwm/module_interface.c": {
+        "sha256": "4f01496ad7a4bbae5733a1ef5961a12ad17c36a27a85085d69840bd47a58737e",
+        "bytes": 36880,
+        "mode": 420
+      },
+      "fvwm/startup_notification.c": {
+        "sha256": "ae493ef7eed34d89db95f6e2a39d56b62bb22d0360865d20736433f5d66aed12",
+        "bytes": 9677,
+        "mode": 420
+      },
+      "fvwm/startup_notification.h": {
+        "sha256": "e0cd1200f3ae3a4492a86e0c85658d8fe3ade9bf583c58f76526b9782c26067b",
+        "bytes": 699,
+        "mode": 420
+      },
+      "libs/meson.build": {
+        "sha256": "125dee2389ff1bfd984b4d13fbef3d6e33ad33d9617dee2fe95d22ef02e6e4f5",
+        "bytes": 2325,
+        "mode": 420
+      },
+      "libs/startup_notification_policy.c": {
+        "sha256": "d1c702e44a8d29936b8ebccf2a48b70a7c777a1cee025abd08a12876128da356",
+        "bytes": 12110,
+        "mode": 420
+      },
+      "libs/startup_notification_policy.h": {
+        "sha256": "113633f99d817b69ae51559ad18d2da39683d17fd1411d401ed4cf9ce21e7f41",
+        "bytes": 2423,
+        "mode": 420
+      },
+      "modules/FvwmMFL/FvwmMFL.c": {
+        "sha256": "03096e85d0bfc8a383ed1a9a3d972b0556c2c14ade1fa2dcd9c00488a79f53d9",
+        "bytes": 53625,
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.c": {
+        "sha256": "561bd654ebce51cfd8b5f20f19a625094fc07aaa6c13276e85c555871ecd3784",
+        "bytes": 47625,
+        "mode": 420
+      },
+      "modules/FvwmMFL/request.h": {
+        "sha256": "5a1aeee15785eeb00fe5e1816cbb197188d6f8cb63248d1d662b100e0ce7fda3",
+        "bytes": 4966,
+        "mode": 420
+      },
+      "tests/live_x/startup_notification.py": {
+        "sha256": "cf04b6a94d3c6023fc34a15f620d809e7137776dfe8a9af27d699b5c3cc50e7b",
+        "bytes": 56886,
+        "mode": 420
+      },
+      "tests/live_x/startup_notification_client.c": {
+        "sha256": "70ef1fe3ecfba25f90f6b17298bb173e22a9237a5dd0b809e230320185028ecc",
+        "bytes": 7910,
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "80ed31f9bd9bd8217f3bdfe567624e301f3be66717d9c2b307d07e931b61d454",
+        "bytes": 180033,
+        "mode": 420
+      },
+      "tests/test_mfl_request.c": {
+        "sha256": "2b3b0bc496e49b3c9dc2cde695806637a7eb1b9d16a9140034c10d16d5981f76",
+        "bytes": 44752,
+        "mode": 420
+      },
+      "tests/test_startup_notification_policy.c": {
+        "sha256": "4847de965b5c991071ca164b16829a391495dc0fda69c7e111a2348db893f7f6",
+        "bytes": 9157,
+        "mode": 420
+      }
+    },
+    "final_fixture_note": "Only stricter native-client terminal-exit assertion after UI capture; actual clients exited0, real exit7 failure reproduced/rejected in host regression.",
+    "final_delta": "Final UTF-8 unknown-key predicate and policy test: native Linux old failure reproduced, affected C build/unit/ASan/UBSan and actual valid/malformed UTF-8 producer passed; Go/UI logic and BSD-facing helper APIs unchanged."
+  },
+  "linux": {
+    "kernel": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux",
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "normal": {
+      "passed": 908,
+      "skipped": 0,
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker",
+        "github.com/fvwmorg/FvwmPrompt/internal/startuplaunch",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+      ],
+      "composition": "Retain source05 xdgmenu native normal445 records (test-only -w); ordinary-flags remaining6 packages463 records. Production flags unchanged."
+    },
+    "race": {
+      "passed": 908,
+      "skipped": 0,
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmfilebrowser",
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmmenudesktop",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker",
+        "github.com/fvwmorg/FvwmPrompt/internal/startuplaunch",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+      ]
+    },
+    "floor": {
+      "passed": 514,
+      "skipped": 0,
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/internal/startuplaunch",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgmenu",
+        "github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
+      ]
+    },
+    "vet": "passed",
+    "native_C": "Core/helper/MFL affected build, policy unit/ASan/UBSan passed; unchanged MFL request unit retained from native02.",
+    "protocol": {
+      "passed_groups": 13,
+      "cases": [
+        "fragmented_interleaved_utf8",
+        "dead_producer_other_remove_terminal_retention",
+        "invisible_orphan_change_merged",
+        "nonzero_padding_after_nul_ignored",
+        "ordinary_client_untracked",
+        "direct_map_and_property",
+        "direct_optional_terminal_nul",
+        "group_at_map_hints_change_no_malformed_inheritance",
+        "group_terminal_nul_and_bad_nul_no_inheritance",
+        "exact_latin1_and_competing_class",
+        "real_expiry",
+        "malformed_and_oversize_refused",
+        "partial_capacity_and_expiry",
+        "record_capacity_pagination_no_eviction"
+      ],
+      "cleanup_failures": []
+    },
+    "real_expiry": {
+      "artifact": "r1-startup-integration07/protocol/startup-3jwltmbz/protocol-slate-dark/result.json",
+      "case": {
+        "status": "passed",
+        "idle": {
+          "id": "fixture-465d0b39d1f8-idle-expiry",
+          "name": "fixture-465d0b39d1f8-idle-expiry",
+          "icon": "",
+          "application_id": "",
+          "wmclass": "",
+          "state": "expired",
+          "window": 0,
+          "age_ms": 61007
+        },
+        "busy": {
+          "id": "fixture-465d0b39d1f8-busy-expiry",
+          "name": "Changed without extending deadline",
+          "icon": "",
+          "application_id": "",
+          "wmclass": "",
+          "state": "expired",
+          "window": 0,
+          "age_ms": 60001
+        },
+        "changed_did_not_extend": true,
+        "limit": "one combined real monotonic interval; no native CPU/performance claim"
+      },
+      "overall_run": "failed cleanup receipt after concurrent Go ENOSPC; valid scenario retained, short protocol+cleanup serial rerun passed",
+      "oracle_limit": "Query itself also expires state; source-reviewed timer/event hooks plus pure-clock tests and idle/busy observed expiry, not an independent background-service or hard-realtime oracle."
+    },
+    "helpers": {
+      "cases": [
+        "helper_true_literal_exec_and_survival",
+        "helper_fresh_second_id",
+        "helper_missing_display_fallback",
+        "helper_blocked_display_fallback",
+        "known_exec_failure",
+        "desktop_true",
+        "desktop_false",
+        "desktop_legacy",
+        "desktop_ordinary",
+        "missing_helper"
+      ],
+      "cleanup_failures": []
+    },
+    "ui": [
+      {
+        "profile": "dune-light",
+        "cases": [
+          "native_activity_initial",
+          "native_activity_paged_ended",
+          "native_activity_refresh",
+          "native_activity_close"
+        ],
+        "screenshots": {
+          "startup-activity-initial.png": "e7c14e0e62a039a308c31b07fe734546ae7c13afa3c91ca230b3d2525a23f0c6",
+          "startup-activity-refreshed.png": "b9ae07933ece48f7c575a72a0718e4337001e2847f1b12f6768e8d3ecfa19c15"
+        },
+        "configuration_sha256": {
+          "config": "cc36ee0b70871dcade79a86f63541476e1b6b93dbb4b5dfcb9901bb8c73f93b5",
+          "local": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb"
+        },
+        "native_client_waits": {
+          "sender": 0
+        },
+        "owned_process_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-dune-light/result.json"
+      },
+      {
+        "profile": "slate-dark",
+        "cases": [
+          "native_activity_initial",
+          "native_activity_paged_ended",
+          "native_activity_refresh",
+          "native_activity_close"
+        ],
+        "screenshots": {
+          "startup-activity-initial.png": "d6f74132793c8bcbe0b9eb4081145fc834647be64b1ff7124383adbb16a02aa7",
+          "startup-activity-refreshed.png": "16d307c668ff6ad605bdee8bfecbb4672cfff3e6a05ca2d8856b5ec437b15482"
+        },
+        "configuration_sha256": {
+          "config": "10083eebfcb1629a24757d13053b94f43350cd7b153dd61b79ecb39d579d5820",
+          "local": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+        },
+        "native_client_waits": {
+          "sender": 0
+        },
+        "owned_process_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-slate-dark/result.json"
+      },
+      {
+        "profile": "classic-large",
+        "cases": [
+          "native_activity_initial",
+          "native_activity_paged_ended",
+          "native_activity_refresh",
+          "native_activity_close"
+        ],
+        "screenshots": {
+          "startup-activity-initial.png": "a1ce0d6d34df3ce6740c7ef267d11d1531b46b7c71782b2a9ff196d46dc3d559",
+          "startup-activity-refreshed.png": "bde4df232ce6f6c690ccc359a4e57ca87647eeeee37af6befb0c5056f90c8478"
+        },
+        "configuration_sha256": {
+          "config": "b935dd87bcce8f9ce6c3d2ffd0dff5b3bcede1936bf37b41e65c8a9817746010",
+          "local": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+        },
+        "native_client_waits": {
+          "sender": 0
+        },
+        "owned_process_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "artifact": "r1-startup-ui09/themes/startup-dg_ljtkg/ui-classic-large/result.json"
+      }
+    ],
+    "cli_cases": 18,
+    "manuals": [
+      "FvwmDesktop",
+      "FvwmMFL",
+      "fvwm-menu-desktop",
+      "fvwm-file-browser"
+    ],
+    "installed_entries": {
+      "Desktop": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "sha256": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad",
+        "bytes": 5751602,
+        "mode": 493
+      },
+      "worker": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80",
+        "bytes": 5892996,
+        "mode": 493
+      },
+      "helper": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-startup-launch",
+        "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602",
+        "bytes": 120080,
+        "mode": 493
+      },
+      "menu": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-menu-desktop",
+        "sha256": "fa2e740f08b44b3e0e3f5e3ca7bc9dcc9b562ee1d5a375f960c1c49b39158d89",
+        "bytes": 5450514,
+        "mode": 493
+      },
+      "browser": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage/usr/local/bin/fvwm-file-browser",
+        "sha256": "f1318b0c459f617ce4ad1c5a27112edd425eca88a9916b92c1073bd2146460c3",
+        "bytes": 6442001,
+        "mode": 493
+      }
+    },
+    "fixed_core_state_bytes": 216104,
+    "final_parser_delta": {
+      "status": "passed",
+      "source": "0ed235ffd9c7397d50d4de1cb5a4a7b1b3959c4b9c033ecaca9941d690706d8a",
+      "changed_runtime": [
+        "libs/startup_notification_policy.c",
+        "tests/test_startup_notification_policy.c"
+      ],
+      "delta": "Accept validUTF8unknownkeys; existingbounds/types/APIs/knownkeysunchanged",
+      "commands": [
+        {
+          "label": "red-build",
+          "command": [
+            "cc",
+            "-std=c11",
+            "-D_POSIX_C_SOURCE=200809L",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-O1",
+            "-g0",
+            "-UNDEBUG",
+            "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-I/tmp/fvwm-module-waits-20261015/source",
+            "-I/tmp/fvwm-module-waits-20261015/source/libs",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/startup_notification_policy.c",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/test_startup_notification_policy.c",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/old-policy.test"
+          ],
+          "exit": 0,
+          "seconds": 0.0973085729999923
+        },
+        {
+          "label": "old-policy-reproduced",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/old-policy.test"
+          ],
+          "exit": -6,
+          "seconds": 0.04144424999998364
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j1",
+            "fvwm3",
+            "bin/fvwm-startup-launch",
+            "tests/test-startup-notification-policy"
+          ],
+          "exit": 0,
+          "seconds": 0.4091898530000151
+        },
+        {
+          "label": "policy-unit",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-startup-notification-policy"
+          ],
+          "exit": 0,
+          "seconds": 0.0004418350000037208
+        },
+        {
+          "label": "san-build",
+          "command": [
+            "cc",
+            "-std=c11",
+            "-D_POSIX_C_SOURCE=200809L",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-O1",
+            "-g0",
+            "-UNDEBUG",
+            "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-I/tmp/fvwm-module-waits-20261015/source",
+            "-I/tmp/fvwm-module-waits-20261015/source/libs",
+            "-fsanitize=address,undefined",
+            "-fno-omit-frame-pointer",
+            "/tmp/fvwm-module-waits-20261015/source/libs/startup_notification_policy.c",
+            "/tmp/fvwm-module-waits-20261015/source/tests/test_startup_notification_policy.c",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/policy-san.test"
+          ],
+          "exit": 0,
+          "seconds": 0.15645103800000015
+        },
+        {
+          "label": "policy-san",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/r1-startup-utf8-delta/policy-san.test"
+          ],
+          "exit": 0,
+          "seconds": 0.004352146999991646
+        },
+        {
+          "label": "refresh-helper-install",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/r1-app-roles-stage"
+          ],
+          "exit": 0,
+          "seconds": 0.1045681519999846
+        }
+      ],
+      "core_sha256": "4862dd0f4db74937d7e0c0081ecb797d29e5d41bcffd81a4bb00eadc3cb4d347",
+      "helper_sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602",
+      "helper_bytes": 120080,
+      "probe": "bb11422625abbe88e765330543be1ac22138cd31fbe2f99b3e49dae2863d065c",
+      "scope": "Onlyfinalportableparserdelta: Cbuild/unit/SAN+actualoneUTF8keyproducer+rejection, noGo/UI/BSDfullrepeat"
+    },
+    "final_core_sha256": "4862dd0f4db74937d7e0c0081ecb797d29e5d41bcffd81a4bb00eadc3cb4d347"
+  },
+  "bsd": {
+    "status": "passed",
+    "targets": [
+      {
+        "target": "freebsd-arm64-08",
+        "status": "passed",
+        "source_archive_sha256": "6bd1816002debcdbd810c941e2f8dcd7131ac7e18019e5d22dcaa23be71e0325",
+        "guest_archive_sha256": "32555f3f0b3ae4257c06ca26570a92b0980a303d6cde3c0d8ea1c02910268d9b",
+        "guest_files": {
+          "builddir-bsd/fallback.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/policy.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.status": {
+            "sha256": "743c7850cccfba5e53a9002663ec1ddd1079315a98bdbfdde10e6044f56abefe",
+            "bytes": 4,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.stderr": {
+            "sha256": "fc9dbd852975c379a673e1061a484a519a4fbcb8a65f8a96735232e7383d4d02",
+            "bytes": 98,
+            "mode": 420
+          },
+          "builddir-bsd/launch-probe": {
+            "sha256": "a21bb9d4eff6ce7b6ec99fcadbe20ea648c581db5ad9b5c7ca7d443dd4c449cb",
+            "bytes": 9712,
+            "mode": 493
+          },
+          "builddir-bsd/kernel.txt": {
+            "sha256": "eaeeda75bd854de284046cf49017145f1d0ceb9656f51d1fb88c65267f7f4302",
+            "bytes": 103,
+            "mode": 420
+          },
+          "builddir-bsd/policy.stdout": {
+            "sha256": "120db6217a1e1b667f0c96ae076cba976f41ab4f27c68577b5f8b2cd2c6ab398",
+            "bytes": 36,
+            "mode": 420
+          },
+          "builddir-bsd/test-startup-policy": {
+            "sha256": "a2e45f05aa821d387499bf892db67fb8da031f788d311cc9025a0d6136d66898",
+            "bytes": 28752,
+            "mode": 493
+          },
+          "builddir-bsd/fallback.stdout": {
+            "sha256": "e848a7ea29e0df6fe2e0bcdd895583cc1bf46d638f1f4ef0a5144f81380f9a53",
+            "bytes": 76,
+            "mode": 420
+          },
+          "builddir-bsd/launch_probe.c": {
+            "sha256": "5c8554ecf6b3143acee527015c5e1a7cb0715eb108da3a8451846ec037b5eb76",
+            "bytes": 511,
+            "mode": 420
+          },
+          "builddir-bsd/compiler.txt": {
+            "sha256": "41e02021522c4628079f59e5cc9f01b47c931574744f263a480ee10fa483294b",
+            "bytes": 182,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.stdout": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/fvwm-startup-launch": {
+            "sha256": "deac5ce52e67865b6c68fd07aa8501d148b8c2c75ac40939426690243c9efcee",
+            "bytes": 28032,
+            "mode": 493
+          },
+          "builddir-bsd/SHA256SUMS": {
+            "sha256": "355cef1e326e5c0f978ae013174e5ad5ccf9bee091c3335cdd143857f15d21eb",
+            "bytes": 860,
+            "mode": 420
+          },
+          "builddir-bsd/include/config.h": {
+            "sha256": "25e3249fe0acd3e99b7c3f02ca7c61f4cd8cafef78785a9dee246da31e97b23a",
+            "bytes": 75,
+            "mode": 420
+          }
+        },
+        "kernel": "FreeBSD freebsd 15.1-RELEASE-p3 FreeBSD 15.1-RELEASE-p3 releng/15.1-n283611-88e7371d9dc2 GENERIC arm64",
+        "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+        "fallback_probe": "Independent C probe: literal argv, actual cwd and stale-ID cleanup verified",
+        "empty_fallback_stderr": true,
+        "missing_exec_status": 127,
+        "job_keys_removed": true,
+        "qemu_exit_status": 0,
+        "source_equivalence": "final source08 policy/helper/unit, exact hashes checked"
+      },
+      {
+        "target": "openbsd-arm64-08",
+        "status": "passed",
+        "source_archive_sha256": "6bd1816002debcdbd810c941e2f8dcd7131ac7e18019e5d22dcaa23be71e0325",
+        "guest_archive_sha256": "60e68122812e7fd4624ddcbaa10b5f72a0e97b37695fd75ba2e4e8faeda893d4",
+        "guest_files": {
+          "builddir-bsd/include/config.h": {
+            "sha256": "25e3249fe0acd3e99b7c3f02ca7c61f4cd8cafef78785a9dee246da31e97b23a",
+            "bytes": 75,
+            "mode": 420
+          },
+          "builddir-bsd/kernel.txt": {
+            "sha256": "f017fcc52535bbfb9c681c311bce55c4c55943f00c4601e900f0dd64de7e8bc9",
+            "bytes": 49,
+            "mode": 420
+          },
+          "builddir-bsd/compiler.txt": {
+            "sha256": "42783a24f0158a8c3349de12f495220f13dec3cd07401ea70ac4d3a1ce632993",
+            "bytes": 107,
+            "mode": 420
+          },
+          "builddir-bsd/policy.stdout": {
+            "sha256": "120db6217a1e1b667f0c96ae076cba976f41ab4f27c68577b5f8b2cd2c6ab398",
+            "bytes": 36,
+            "mode": 420
+          },
+          "builddir-bsd/test-startup-policy": {
+            "sha256": "62983a06187eb8b4fbac7b164658dbbbd57b8443371d5db65fa090566ef7b417",
+            "bytes": 29416,
+            "mode": 493
+          },
+          "builddir-bsd/policy.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/launch_probe.c": {
+            "sha256": "5c8554ecf6b3143acee527015c5e1a7cb0715eb108da3a8451846ec037b5eb76",
+            "bytes": 511,
+            "mode": 420
+          },
+          "builddir-bsd/fvwm-startup-launch": {
+            "sha256": "dc2e57f031cac6fcde82acb2aa01d38478365695e1ab8c29a014fa4a30d6e9ef",
+            "bytes": 28256,
+            "mode": 493
+          },
+          "builddir-bsd/fallback.stdout": {
+            "sha256": "e848a7ea29e0df6fe2e0bcdd895583cc1bf46d638f1f4ef0a5144f81380f9a53",
+            "bytes": 76,
+            "mode": 420
+          },
+          "builddir-bsd/launch-probe": {
+            "sha256": "4253edfe4b0fb61d04651309b7d440e9138bf26647e12faba1a04247f3aad356",
+            "bytes": 7872,
+            "mode": 493
+          },
+          "builddir-bsd/fallback.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.stdout": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.stderr": {
+            "sha256": "fc9dbd852975c379a673e1061a484a519a4fbcb8a65f8a96735232e7383d4d02",
+            "bytes": 98,
+            "mode": 420
+          },
+          "builddir-bsd/exec-failure.status": {
+            "sha256": "743c7850cccfba5e53a9002663ec1ddd1079315a98bdbfdde10e6044f56abefe",
+            "bytes": 4,
+            "mode": 420
+          },
+          "builddir-bsd/SHA256SUMS": {
+            "sha256": "f9e5fa87862ec58ec89a398163294bee43c0e175a6e69873feb4f9785443d273",
+            "bytes": 860,
+            "mode": 420
+          }
+        },
+        "kernel": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#1 arm64",
+        "compiler": "OpenBSD clang version 22.1.6",
+        "fallback_probe": "Independent C probe: literal argv, actual cwd and stale-ID cleanup verified",
+        "empty_fallback_stderr": true,
+        "missing_exec_status": 127,
+        "job_keys_removed": true,
+        "qemu_exit_status": 0,
+        "source_equivalence": "final source08 policy/helper/unit, exact hashes checked"
+      }
+    ],
+    "source_scope": "Source08 helper API and policy checks passed; final portable parser predicate/test correction is separately qualified on Linux, no BSD-facing API/helper source change and no additional BSD boot."
+  },
+  "canonical_archive": {
+    "status": "passed",
+    "gzip_crc": "passed",
+    "files": 338,
+    "symlinks": 47,
+    "archive_sha256": "4428d2858cd6b13a12a6ab489ebdc5f56c150596c44a4e98204e5555cd6edcf6",
+    "bytes": 1395765
+  },
+  "local_artifacts_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-28/r1-startup-notification",
+  "retirement": {
+    "explicit_user_approval": true,
+    "receipt_sha256": "3ccb9b9acf3298e3b9d02fd4587ac654ef6a631653c1bb7e3bb6a3c5affa00c6",
+    "trees": [
+      "/tmp/fvwm-module-waits-20261015/style-wildcard-combined1",
+      "/tmp/fvwm-module-waits-20261015/style-wildcard-refined2"
+    ],
+    "host_archives": [
+      {
+        "name": "style-wildcard-combined1",
+        "sha256": "3e4fdaf829b96ab665579222285c67896536a5965054813d5ca3c7853eecaf08",
+        "bytes": 73051440
+      },
+      {
+        "name": "style-wildcard-refined2",
+        "sha256": "733e69743fc5a5e5721a0c665ad9ef0a72f988bf4930f6d2d78fafdf2183365a",
+        "bytes": 63200013
+      }
+    ],
+    "disk_not_resized": true
+  },
+  "limits": [
+    "Late property changes on otherwise-unmanaged WM_HINTS group leaders deferred; no full startup WM semantics claim.",
+    "No prompt post-exec crash status; expiry-based activity and actual stderr/nonzero diagnostic only.",
+    "Native observed expiry also occurs on query; no independent background-service proof.",
+    "Classic enlarged font is exercised; explicit Colorset2 overrides legacy Form Fore/Back, not proof of legacy colors.",
+    "No fresh full six-target/compiler/install/default-BSD-X or release qualification; no physical hardware/toolkit/compositor coverage.",
+    "No full #56/#67/#77 closure; FileManager1/shared bus and broader installed/lifecycle/service rows remain open.",
+    "#257/#258 parked. Performance counter3/5 after296,4/5 on next runtime merge; no comparison due."
+  ],
+  "routing": {
+    "requested": [
+      "temper_workflow/luna-medium",
+      "temper_analyst/astra-high",
+      "temper_implementer/sol-high",
+      "temper_product/terra-medium",
+      "temper_reviewer/sol-high"
+    ],
+    "roles_unavailable": [],
+    "backend_model_effort_metadata": "unverified; runtime does not expose attestation"
+  },
+  "cleanup": {
+    "linux_initial_wrapper": "Container-stop wrapper returned125; subsequent read-only inspect confirmed VM stopped. Preserved in cleanup-recovery-preflight.json.",
+    "linux_final_resume": {
+      "records": [
+        {
+          "command": [
+            "podman",
+            "machine",
+            "start",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "start",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "--time",
+            "15",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "normal_stop": true
+    },
+    "guest_regular_duplicates_retired": 338,
+    "guest_symlinks_retired": 47,
+    "final_delta_regular_duplicates_retired": 31,
+    "candidate_survivors_before_stop": [],
+    "bsd": "All fresh owned jobs stopped, final target QEMU exit0 and job keys removed",
+    "host_canonical_evidence_preserved": true,
+    "disk_size_gib": 100,
+    "disk_expansion_performed": false
+  },
+  "manual_render": {
+    "status": "passed",
+    "platform": "host Darwin mandoc rendering from exact qualified Linux AsciiDoc output; not a BSD installed-man gate",
+    "renderer": "/usr/bin/mandoc",
+    "records": [
+      {
+        "file": "FvwmDesktop.1",
+        "source_sha256": "38404383baf89f29d83c93bd0322a325e23baf1f5858817173869e1d6f81f85f",
+        "exit": 0,
+        "characters": 57751,
+        "stderr": ""
+      },
+      {
+        "file": "FvwmMFL.1",
+        "source_sha256": "8bd95a75284b6c2d23e22ddbd619680895bffadd3549070afc39f61b94eeb278",
+        "exit": 0,
+        "characters": 96776,
+        "stderr": ""
+      },
+      {
+        "file": "fvwm-file-browser.1",
+        "source_sha256": "fdadd7999d11b3c8cbd4299a7687122359917f7e5a6ddc68adecaacdee2d4e44",
+        "exit": 0,
+        "characters": 62306,
+        "stderr": ""
+      },
+      {
+        "file": "fvwm-menu-desktop.1",
+        "source_sha256": "92b77f268b2b59aa0942937673da306c75016b1d645576c9a6fac86ed2a0c832",
+        "exit": 0,
+        "characters": 25703,
+        "stderr": ""
+      }
+    ]
+  },
+  "host_supplement": {
+    "status": "passed",
+    "archive_sha256": "2bb7a4e9d24d4c002f148fcffeb51cfa86f0840e819dedc1bd3c5094c7e54667",
+    "archive_bytes": 370392,
+    "prior_packaging_attempt": "A misspelled source filename aborted the initial supplement before validation; final inputs preflighted and all payloads verified."
+  },
+  "review": {
+    "type": "Separate bounded agent source/evidence examination; not independent human assurance or a GitHub approving review",
+    "route": "temper_reviewer",
+    "substantive_tree": "a5e6e4592304a94957213d8e6e49c4e7593c69d8",
+    "findings_resolved": true,
+    "metadata_reconciliation": "Add retained xdgmenu to composed seven-package normal inventory and record accepted source/evidence review; final exact staged-tree ACK is retained with the local signed-candidate receipt",
+    "backend_model_effort": "unverified"
+  }
+}

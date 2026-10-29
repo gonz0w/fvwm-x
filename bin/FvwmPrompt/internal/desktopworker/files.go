@@ -83,10 +83,11 @@ func launcherExec(value, name, location, icon string) ([]string, error) {
 }
 
 type Application struct {
-	Name     string   `json:"name"`
-	Argv     []string `json:"argv"`
-	Cwd      *string  `json:"cwd"`
-	Terminal bool     `json:"terminal"`
+	Name     string                   `json:"name"`
+	Argv     []string                 `json:"argv"`
+	Cwd      *string                  `json:"cwd"`
+	Terminal bool                     `json:"terminal"`
+	Startup  *xdgmenu.StartupMetadata `json:"startup,omitempty"`
 }
 
 func defaultDirectories() ([]string, error) {
@@ -128,7 +129,7 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 	seen := map[string]bool{}
 	visited, total := 0, 0
 	appendApplication := func(app Application) error {
-		size := 128 + 6*len(app.Name)
+		size := 128 + 6*len(app.Name) + xdgmenu.StartupMetadataBytes(app.Startup)
 		for _, value := range app.Argv {
 			size += 6*len(value) + 4
 		}
@@ -239,7 +240,11 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 			if err != nil || !available(env, argv[0]) {
 				continue
 			}
-			if err := appendApplication(Application{name, argv, cwd, terminal}); err != nil {
+			startup, err := xdgmenu.ParseStartupMetadata(entry, name, icon, identity)
+			if err != nil {
+				continue
+			}
+			if err := appendApplication(Application{Name: name, Argv: argv, Cwd: cwd, Terminal: terminal, Startup: startup}); err != nil {
 				return nil, err
 			}
 			for _, action := range xdgmenu.DeclaredActions(entry, locales, name, icon) {
@@ -250,7 +255,11 @@ func applications(ctx context.Context, directories []string, env Environment) ([
 				if err != nil || !available(env, argv[0]) {
 					continue
 				}
-				if err := appendApplication(Application{action.Label, argv, cwd, terminal}); err != nil {
+				startup, err := xdgmenu.ParseStartupMetadata(entry, action.Label, action.Icon, identity)
+				if err != nil {
+					continue
+				}
+				if err := appendApplication(Application{Name: action.Label, Argv: argv, Cwd: cwd, Terminal: terminal, Startup: startup}); err != nil {
 					return nil, err
 				}
 			}

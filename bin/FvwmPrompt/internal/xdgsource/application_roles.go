@@ -147,7 +147,7 @@ func (s *Source) ApplicationRoles(mime string, options DirectoryRoleOptions) (Ap
 				return empty, errors.New("too many application role results")
 			}
 			handler := handlers[id]
-			size := 256
+			size := 256 + xdgmenu.StartupMetadataBytes(handler.Startup)
 			for _, value := range []string{handler.ID, handler.Name, handler.Icon, handler.DesktopPath, handler.Exec, handler.WorkingDir, handler.Fingerprint} {
 				size += 6*len(value) + 4
 			}

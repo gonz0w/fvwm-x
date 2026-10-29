@@ -1015,11 +1015,11 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
 			"bindings", "provider", "operations", "colorsets",
-			"appearance", "menu-styles", "decorations", "preview",
+			"appearance", "menu-styles", "decorations", "startups", "preview",
 			"files"};
 
 		if (!request_add_strings(result, "methods", methods, 9) ||
-		    !request_add_strings(result, "resources", resources, 16) ||
+		    !request_add_strings(result, "resources", resources, 17) ||
 		    !cJSON_AddNumberToObject(result, "files_provider_limit",
 			MFL_FILES_PROVIDER_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "files_page_max",

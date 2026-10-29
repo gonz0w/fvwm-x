@@ -84,6 +84,8 @@ func TestMain(m *testing.M) {
 	}
 	if len(os.Args) == 2 && os.Args[1] == "--worker" {
 		switch os.Getenv("FVWM_TEST_FILE_WORKER") {
+		case "diagnostic":
+			fmt.Fprintln(os.Stderr, "owned-worker-diagnostic")
 		case "block":
 			time.Sleep(time.Minute)
 			os.Exit(0)
@@ -123,6 +125,30 @@ func TestWorkerIsolationBoundsAndCancellation(t *testing.T) {
 		if runWorker(strings.NewReader(data), new(bytes.Buffer)) == nil {
 			t.Fatal("invalid private request accepted")
 		}
+	}
+}
+
+func TestWorkerForwardsDiagnosticsToExistingStderrFile(t *testing.T) {
+	executable, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	diagnostics, err := os.CreateTemp(t.TempDir(), "stderr-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer diagnostics.Close()
+	previous := os.Stderr
+	os.Stderr = diagnostics
+	defer func() { os.Stderr = previous }()
+	t.Setenv("FVWM_TEST_FILE_WORKER", "diagnostic")
+	result := startWorker(context.Background(), executable, workRequest{Operation: "scan", Path: []byte(t.TempDir())})
+	if result.Status != "loaded" {
+		t.Fatal("diagnostic output altered the worker result", result)
+	}
+	data, err := os.ReadFile(diagnostics.Name())
+	if err != nil || string(data) != "owned-worker-diagnostic\n" {
+		t.Fatal("owned worker diagnostic did not reach existing stderr fd", string(data), err)
 	}
 }
 

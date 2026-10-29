@@ -5,8 +5,10 @@
 """Independent startup sender, native observer, helper and activity-form checks.
 
 The lead compiles startup_notification_client.c against generated config.h/X11,
-then runs this fixture on Linux. --mode protocol --expiry spends one real expiry
-interval; UI themes never repeat it. No candidate parser or reply is substituted.
+then runs this fixture on Linux. --mode groups selects focused lifecycle checks;
+adding --expiry witnesses one real interval before a query. Protocol/all modes
+retain their original expiry check. UI themes never repeat the interval.
+No candidate parser or reply is substituted.
 """
 import argparse
 import base64
@@ -190,7 +192,7 @@ class Session:
         self.evidence = dict(status='running', phase=phase, profile=profile,
             cases={}, screenshots={}, cleanup_failures=[], limits=dict(
                 native_cpu_hardware_release=False, exact_kernel_exit_timestamp=False,
-                late_unmanaged_group_property_changes='deferred by contract'))
+                late_unmanaged_group_property_changes='verified only by the separately selected groups phase'))
 
     def script(self, path, arguments, suffix=''):
         path.write_text('#!/bin/sh\nexec ' + shlex.join([sys.executable,
@@ -227,7 +229,7 @@ class Session:
                 (modules / directory.name).symlink_to(executable)
         self.private_helper = root / 'launch-copy' / 'fvwm-startup-launch'
         desktop_image = self.binaries['Desktop']
-        if self.phase != 'protocol':
+        if self.phase not in ('protocol', 'groups'):
             self.private_helper.parent.mkdir(mode=0o700)
             desktop_image = self.private_helper.parent / 'FvwmDesktop'
             # A hard link gives the actual image an isolated discovery path
@@ -249,7 +251,7 @@ class Session:
             '\n*FvwmDesktop: appearance ' + appearance +
             '\n*FvwmDesktop: motion Off\n*FvwmDesktop: transparency Off\n')
         body = ''
-        if self.phase != 'protocol':
+        if self.phase not in ('protocol', 'groups'):
             body = (assets / 'config').read_text().replace('$[FVWM_DATADIR]/default-config', str(assets))
             if self.profile == 'classic-large':
                 body = body.replace('Sans:size=10:antialias=True',
@@ -551,6 +553,477 @@ class Session:
         shared.atomic_json(self.out / 'runtime-evidence-manifest.json', manifest)
 
 
+# X11 protocol mask bits, independent of the candidate's mask helper.
+GROUP_STRUCTURE_MASK = 1 << 17
+GROUP_PROPERTY_MASK = 1 << 22
+GROUP_FOCUS_MASK = 1 << 21
+
+
+def group_map(s, c, slot, iconic=False):
+    c.command('map %d' % slot)
+    if iconic:
+        s.wait('initial iconic client managed', lambda:
+            s.managed(c.windows[slot]) and c.command('state %d' % slot) == 3)
+        return dict(window=c.windows[slot], initial_state=3)
+    deadline = time.monotonic() + 5
+    while time.monotonic() < deadline:
+        record = s.control.record()
+        if int(record.get('map', {}).get('window', '0'), 0) == c.windows[slot]:
+            assert s.managed(c.windows[slot]), record
+            return record
+    raise AssertionError('missing actual mapped client notification')
+
+
+def group_mask(s, c, slot, required=0, forbidden=0, exact=None):
+    def matches():
+        value = c.command('mask %d' % slot)
+        if value & required != required or value & forbidden:
+            return None
+        if exact is not None and value != exact:
+            return None
+        return dict(all_event_masks=value,
+            creator_event_mask=c.command('own-mask %d' % slot))
+    return s.wait('group event-mask observation', matches)
+
+
+def group_command(s, text):
+    s.serial += 1
+    s.control.send((text + '\n').encode('ascii'))
+    s.control.echo('group-command-%d' % s.serial)
+
+
+def group_pending(s, id_, seconds=.12):
+    deadline, checks, last = time.monotonic() + seconds, 0, None
+    while True:
+        last = next(item for item in s.query()['startups'] if item['id'] == id_)
+        assert last['state'] == 'pending' and last['window'] == 0, last
+        checks += 1
+        if time.monotonic() >= deadline:
+            return dict(checks=checks, interval_seconds=seconds, observed=last)
+        pause_until(min(deadline, time.monotonic() + .01))
+
+
+def group_end_pending(s):
+    for item in s.query()['startups']:
+        if item['state'] == 'pending':
+            send(s.sender, 0, message('remove', ID=item['id']))
+            s.state(item['id'], 'protocol-ended')
+
+
+def group_expiry(s, prefix):
+    """Witness outer expiry through X masks before any expiry query occurs."""
+    c = s.sender
+    group_end_pending(s)
+    leader, dependent = c.create(122), c.create(123)
+    c.command('group 123 122')
+    group_map(s, c, 123)
+    id_ = prefix + 'actual-group-expiry'
+    started = time.monotonic()
+    s.new(id_)
+    initial = group_mask(s, c, 122,
+        exact=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    pause_until(started + 55)
+    c.send('busy 122 6500')
+    checks, witness, busy_reply = [], None, None
+    deadline = started + 66
+    while time.monotonic() < deadline:
+        attributes = s.view.attributes(leader)
+        assert attributes is not None
+        now = time.monotonic()
+        if select.select([c.process.stdout], [], [], 0)[0]:
+            busy_reply = c.line(seconds=1)
+        checks.append(dict(elapsed=now - started,
+            all_event_masks=attributes.all_event_masks,
+            monitor_event_mask=attributes.your_event_mask,
+            busy_reply_observed=busy_reply is not None))
+        assert len(checks) <= 128
+        assert attributes.your_event_mask == 0, 'monitor must not claim these bits'
+        if attributes.all_event_masks == GROUP_STRUCTURE_MASK:
+            assert busy_reply is None, 'expiry claim removal occurred after the busy producer finished'
+            assert now - started >= 59, 'pending PropertyChange claim was removed before its deadline'
+            witness = checks[-1]
+            break
+        pause_until(min(deadline, now + .1))
+    assert witness, 'pending group claim never retired through the outer loop'
+    if busy_reply is None:
+        busy_reply = c.line(seconds=3)
+    assert busy_reply == 'OK busy 122 %d' % leader, busy_reply
+    s.evidence.setdefault('native_commands', []).append(dict(client=c.name,
+        command='busy 122 6500', reply=busy_reply))
+    # This is deliberately the first core query since the busy interval began.
+    expired = s.state(id_, 'expired')
+    assert expired['window'] == 0, expired
+    c.command('destroy 123')
+    released = group_mask(s, c, 122, exact=0)
+    c.command('destroy 122')
+    s.evidence['cases']['actual_group_expiry_before_query'] = dict(initial=initial,
+        mask_observations=checks, first_lifecycle_only=witness,
+        busy_reply=busy_reply, query_after_mask_witness=expired,
+        last_reference_release=released,
+        limit='one busy monotonic interval; monitor queries only the X server before the expiry witness')
+
+
+def group_cases(s):
+    """A real late property follows an observed initial map/class completion."""
+    c, cases = s.sender, s.evidence['cases']
+    prefix = 'fixture-group-' + os.urandom(6).hex() + '-'
+    initial_id, id_ = prefix + 'initial-class', prefix + 'late'
+    class_name = 'GroupMapBarrier' + os.urandom(4).hex()
+    s.control.send(b'set map\n')
+    s.control.echo('group-map-subscription-ready')
+    s.new(initial_id, WMCLASS=class_name)
+    leader, dependent = c.create(10), c.create(11)
+    c.command('group 11 10')
+    c.command('class 11 %s %s' % (b'group-fixture'.hex(), class_name.encode().hex()))
+    c.command('map 11')
+    deadline, mapped = time.monotonic() + 5, None
+    while time.monotonic() < deadline:
+        record = s.control.record()
+        if int(record.get('map', {}).get('window', '0'), 0) == dependent:
+            mapped = record
+            break
+    assert mapped, 'missing actual core M_MAP after initial startup observation'
+    initial = s.state(initial_id, 'window-observed')
+    assert initial['window'] == dependent, initial
+    assert not s.managed(leader), 'the late group leader must stay unmanaged'
+    # M_MAP is emitted after HandleMapNotify's startup observation. Its
+    # separately observed WMCLASS completion proves that observation ran.
+    # The new pending reply then fences older X events before the ID write;
+    # this record has no WMCLASS, so the initial class cannot complete it.
+    pending = s.new(id_)
+    assert pending['window'] == 0 and not pending.get('wmclass'), pending
+    cases['late_unmanaged_group_property'] = dict(leader=leader,
+        dependent=dependent, initial_class_completion=initial, mapped=mapped,
+        before_late_property=pending, expected='window-observed', id=id_)
+    c.command('id 10 ' + id_.encode().hex())
+    observed = s.state(id_, 'window-observed')
+    assert observed['window'] == dependent, observed
+    cases['late_unmanaged_group_property']['observed'] = observed
+
+    # This ID is already on the leader before another pending launch exists.
+    # A later new announcement must rescan bindings even while that launch
+    # is still pending and no new property notification accompanies it.
+    group_mask(s, c, 10, exact=GROUP_STRUCTURE_MASK)
+    rescan_id, holding = prefix + 'rescan', prefix + 'holding'
+    c.command('id 10 ' + rescan_id.encode().hex())
+    s.new(holding)
+    group_mask(s, c, 10, required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    send(c, 0, message('new', ID=rescan_id, NAME=rescan_id, SCREEN=c.screen))
+    rescanned = s.state(rescan_id, 'window-observed')
+    assert rescanned['window'] == dependent, rescanned
+    still_pending = group_pending(s, holding)
+    group_end_pending(s)
+    idle = group_mask(s, c, 10, exact=GROUP_STRUCTURE_MASK)
+    c.command('destroy 11')
+    released = group_mask(s, c, 10, exact=0)
+    c.command('destroy 10')
+    cases['preexisting_binding_new_pending_epoch'] = dict(observed=rescanned,
+        other_launch=still_pending, idle=idle, last_reference_released=released)
+
+    # Shared leaders remain watched until their final dependent retires.
+    leader = c.create(20)
+    first, second = c.create(21), c.create(22)
+    for slot in (21, 22):
+        c.command('group %d 20' % slot)
+        group_map(s, c, slot)
+    shared_id = prefix + 'shared'
+    s.new(shared_id)
+    c.command('id 20 ' + shared_id.encode().hex())
+    shared_observed = s.state(shared_id, 'window-observed')
+    assert shared_observed['window'] in (first, second), shared_observed
+    c.command('destroy 21')
+    retained = group_mask(s, c, 20, exact=GROUP_STRUCTURE_MASK)
+    survivor_id = prefix + 'survivor'
+    s.new(survivor_id)
+    c.command('id 20 ' + survivor_id.encode().hex())
+    survivor = s.state(survivor_id, 'window-observed')
+    assert survivor['window'] == second, survivor
+    c.command('destroy 22')
+    final_release = group_mask(s, c, 20, exact=0)
+    c.command('destroy 20')
+    cases['shared_leader_reference_lifetime'] = dict(first=shared_observed,
+        retained=retained, survivor=survivor, final_release=final_release)
+
+    old_leader, new_leader, client = c.create(30), c.create(31), c.create(32)
+    c.command('group 32 30')
+    group_map(s, c, 32)
+    changed_id = prefix + 'hints-replaced'
+    s.new(changed_id)
+    c.command('group 32 31')
+    old_release = group_mask(s, c, 30, exact=0)
+    new_claim = group_mask(s, c, 31,
+        required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('id 30 ' + changed_id.encode().hex())
+    old_refused = group_pending(s, changed_id)
+    c.command('id 31 ' + changed_id.encode().hex())
+    changed = s.state(changed_id, 'window-observed')
+    assert changed['window'] == client, changed
+    c.command('clear-group 32')
+    cleared = group_mask(s, c, 31, exact=0)
+    for slot in (32, 31, 30):
+        c.command('destroy %d' % slot)
+    cases['hints_replacement_and_clear'] = dict(old_release=old_release,
+        new_claim=new_claim, old_group_refused=old_refused, observed=changed,
+        cleared=cleared, old_leader=old_leader, new_leader=new_leader)
+
+    c.create(40)
+    explicit, malformed = c.create(41), c.create(42)
+    c.command('group 41 40')
+    c.command('id 41 ' + (prefix + 'unannounced-direct').encode().hex())
+    group_map(s, c, 41)
+    direct_id = prefix + 'direct-precedence'
+    s.new(direct_id)
+    c.command('id 40 ' + direct_id.encode().hex())
+    direct_refused = group_pending(s, direct_id)
+    c.command('clear-id 41')
+    inherited = s.state(direct_id, 'window-observed')
+    assert inherited['window'] == explicit, inherited
+    c.command('destroy 41')
+    c.command('group 42 40')
+    c.command('bad-id 42')
+    group_map(s, c, 42)
+    malformed_id = prefix + 'malformed-direct'
+    s.new(malformed_id)
+    c.command('id 40 ' + malformed_id.encode().hex())
+    malformed_refused = group_pending(s, malformed_id)
+    c.command('clear-id 42')
+    recovered = s.state(malformed_id, 'window-observed')
+    assert recovered['window'] == malformed, recovered
+    c.command('destroy 42')
+    group_mask(s, c, 40, exact=0)
+    c.command('destroy 40')
+    cases['direct_property_precedence_and_malformed_refusal'] = dict(
+        direct_refused=direct_refused, inherited=inherited,
+        malformed_refused=malformed_refused, recovered=recovered)
+
+    leader, dependent = c.create(50), c.create(51)
+    c.command('group 51 50')
+    group_map(s, c, 51)
+    dead_id = prefix + 'destroyed-leader'
+    s.new(dead_id)
+    group_mask(s, c, 50, required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('destroy 50')
+    destroyed = group_pending(s, dead_id)
+    replacement = c.create(52)
+    assert replacement != leader, 'this case uses fresh XIDs, not simulated reuse'
+    c.command('id 52 ' + dead_id.encode().hex())
+    unrelated = group_pending(s, dead_id)
+    c.command('group 51 52')
+    rebound = s.state(dead_id, 'window-observed')
+    assert rebound['window'] == dependent, rebound
+    c.command('destroy 51')
+    group_mask(s, c, 52, exact=0)
+    c.command('destroy 52')
+    cases['destroyed_leader_and_explicit_rebind'] = dict(old_leader=leader,
+        fresh_leader=replacement, destroyed=destroyed,
+        unrelated_fresh_id=unrelated, rebound=rebound)
+
+    parent, leader, dependent = c.create(60), c.create(61), c.create(62)
+    c.command('group 62 61')
+    group_map(s, c, 62)
+    group_mask(s, c, 61, exact=GROUP_STRUCTURE_MASK)
+    c.command('reparent 61 60')
+    reparent_id = prefix + 'reparented-leader'
+    s.new(reparent_id)
+    c.command('id 61 ' + reparent_id.encode().hex())
+    reparented = s.state(reparent_id, 'window-observed')
+    assert reparented['window'] == dependent, reparented
+    idle_claim = group_mask(s, c, 61, exact=GROUP_STRUCTURE_MASK)
+    # Destroy with no launch pending and after leaving the root. Root
+    # SubstructureNotify alone cannot supply this child's destruction.
+    c.command('destroy 61')
+    after_destroy = prefix + 'after-reparent-destroy'
+    s.new(after_destroy)
+    remained = group_pending(s, after_destroy)
+    assert s.managed(dependent)
+    group_end_pending(s)
+    c.command('destroy 62'); c.command('destroy 60')
+    cases['reparented_unmanaged_leader_lifetime'] = dict(parent=parent,
+        leader=leader, observed=reparented, idle_claim=idle_claim,
+        pending_after_destroy=remained)
+
+    leader, dependent = c.create(70), c.create(71)
+    c.command('group 71 70')
+    group_map(s, c, 71)
+    group_mask(s, c, 70, exact=GROUP_STRUCTURE_MASK)
+    managed_map = group_map(s, c, 70)
+    baseline_mask = c.command('mask 70')
+    transition_id = prefix + 'managed-transition'
+    s.new(transition_id)
+    group_command(s, 'WindowId %d Focus' % leader)
+    group_command(s, 'WindowId %d Iconify on' % leader)
+    s.wait('managed leader iconified without withdrawal', lambda:
+        s.managed(leader) and c.command('state 70') == 3)
+    group_command(s, 'WindowId %d Iconify off' % leader)
+    s.wait('managed leader deiconified', lambda:
+        s.managed(leader) and c.command('state 70') == 1)
+    group_command(s, 'GotoDesk 0 1')
+    assert s.managed(leader) and s.managed(dependent)
+    group_command(s, 'GotoDesk 0 0')
+    assert s.managed(leader) and c.command('state 70') == 1
+    assert c.command('mask 70') == baseline_mask
+    c.command('id 70 ' + transition_id.encode().hex())
+    managed_observation = s.state(transition_id, 'window-observed')
+    assert managed_observation['window'] in (leader, dependent), managed_observation
+    withdraw_id = prefix + 'live-withdraw'
+    s.new(withdraw_id)
+    c.command('withdraw 70')
+    s.wait('leader live withdrawal', lambda: not s.managed(leader))
+    unmanaged_claim = group_mask(s, c, 70,
+        exact=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('id 70 ' + withdraw_id.encode().hex())
+    withdrawn_observation = s.state(withdraw_id, 'window-observed')
+    assert withdrawn_observation['window'] == dependent, withdrawn_observation
+    c.command('destroy 71')
+    withdrawn_release = group_mask(s, c, 70, exact=0)
+    c.command('destroy 70')
+    cases['managed_leader_iconify_desk_and_live_withdraw'] = dict(mapped=managed_map,
+        base_mask=baseline_mask, observed=managed_observation,
+        unmanaged_claim=unmanaged_claim, after_withdraw=withdrawn_observation,
+        final_release=withdrawn_release)
+
+    parent, leader, dependent = c.create(74), c.create(75), c.create(76)
+    group_map(s, c, 75)
+    c.command('group 76 75')
+    group_map(s, c, 76)
+    assert c.command('listed 75') == 1 and c.command('listed 76') == 1
+    c.command('reparent 75 74')
+
+    def foreign_retired():
+        leader_listed = c.command('listed 75')
+        dependent_listed = c.command('listed 76')
+        if leader_listed == 0 and dependent_listed == 1:
+            return dict(leader_listed=leader_listed,
+                dependent_listed=dependent_listed)
+        return None
+
+    retired = s.wait('foreign-reparent leader retired from managed list', foreign_retired)
+    assert c.command('state 75') == 0
+    retained = group_mask(s, c, 75, exact=GROUP_STRUCTURE_MASK)
+    foreign_id = prefix + 'foreign-reparent'
+    s.new(foreign_id)
+    pending_claim = group_mask(s, c, 75,
+        exact=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('id 75 ' + foreign_id.encode().hex())
+    foreign_observation = s.state(foreign_id, 'window-observed')
+    assert foreign_observation['window'] == dependent, foreign_observation
+    assert c.command('listed 75') == 0 and c.command('listed 76') == 1
+    c.command('destroy 76')
+    foreign_release = group_mask(s, c, 75, exact=0)
+    c.command('destroy 75'); c.command('destroy 74')
+    cases['real_foreign_reparent_retires_only_leader'] = dict(parent=parent,
+        leader=leader, dependent=dependent, managed_list_after=retired,
+        retained=retained, pending_claim=pending_claim,
+        after_reparent=foreign_observation, final_release=foreign_release)
+
+    leader, dependent = c.create(80), c.create(81)
+    c.command('group 81 80')
+    c.command('iconic 81')
+    iconic_map = group_map(s, c, 81, iconic=True)
+    iconic_id = prefix + 'initial-iconic'
+    s.new(iconic_id)
+    group_mask(s, c, 80, required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('id 80 ' + iconic_id.encode().hex())
+    iconic_observation = s.state(iconic_id, 'window-observed')
+    assert iconic_observation['window'] == dependent and c.command('state 81') == 3
+    c.command('destroy 81')
+    group_mask(s, c, 80, exact=0)
+    c.command('destroy 80')
+    cases['initially_iconic_group_registration'] = dict(initial=iconic_map,
+        observed=iconic_observation)
+
+    leader, dependent = c.create(85), c.create(86)
+    c.command('group 86 85')
+    group_map(s, c, 86)
+    or_id = prefix + 'override-redirect'
+    s.new(or_id)
+    group_mask(s, c, 85, required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('override 85 1')
+    c.command('map 85')
+    or_claim = group_mask(s, c, 85,
+        required=GROUP_FOCUS_MASK | GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    assert not s.managed(leader)
+    c.command('id 85 ' + or_id.encode().hex())
+    or_observation = s.state(or_id, 'window-observed')
+    assert or_observation['window'] == dependent, or_observation
+    c.command('destroy 86')
+    preserved_base = group_mask(s, c, 85, exact=GROUP_FOCUS_MASK)
+    c.command('destroy 85')
+    cases['override_redirect_latest_base_mask_preserved'] = dict(active=or_claim,
+        observed=or_observation, released_to_latest_base=preserved_base)
+
+    pending = []
+    for index in range(12):
+        leader_slot, client_slot = 90 + 2 * index, 91 + 2 * index
+        c.create(leader_slot); window = c.create(client_slot)
+        c.command('group %d %d' % (client_slot, leader_slot))
+        group_map(s, c, client_slot)
+        id_ = prefix + 'batch-%02d' % index
+        c.command('id %d %s' % (leader_slot, id_.encode().hex()))
+        pending.append((id_, window, leader_slot, client_slot))
+    for id_, _, _, _ in pending:
+        send(c, 0, message('new', ID=id_, NAME=id_, SCREEN=c.screen))
+    progressed = []
+    for id_, window, _, _ in pending:
+        item = s.state(id_, 'window-observed')
+        assert item['window'] == window, item
+        progressed.append(item)
+    for _, _, leader_slot, client_slot in pending:
+        c.command('destroy %d' % client_slot)
+        group_mask(s, c, leader_slot, exact=0)
+        c.command('destroy %d' % leader_slot)
+    cases['more_than_one_outer_budget_progresses'] = dict(observed=progressed,
+        limit='12 groups demonstrate eventual progress; exact per-turn budget is pure-policy coverage')
+
+    leader, dependent = c.create(114), c.create(115)
+    group_map(s, c, 114)
+    c.command('group 115 114')
+    group_map(s, c, 115)
+    synthetic_id = prefix + 'synthetic-managed-destroy'
+    s.new(synthetic_id)
+    watched = group_mask(s, c, 114, required=GROUP_PROPERTY_MASK)
+    c.command('synthetic-destroy 114')
+    group_command(s, 'Nop')
+    synthetic_pending = group_pending(s, synthetic_id)
+    assert s.managed(leader) and s.managed(dependent)
+    c.command('id 114 ' + synthetic_id.encode().hex())
+    synthetic_observed = s.state(synthetic_id, 'window-observed')
+    assert synthetic_observed['window'] in (leader, dependent), synthetic_observed
+    assert s.managed(leader) and s.managed(dependent)
+    cases['synthetic_destroy_preserves_managed_group'] = dict(leader=leader,
+        dependent=dependent, watched=watched, after_synthetic=synthetic_pending,
+        real_id_observed=synthetic_observed)
+    c.command('destroy 115'); c.command('destroy 114')
+
+    leader, owner, dependent = c.create(118), c.create(119), c.create(120)
+    c.command('group 120 118')
+    group_map(s, c, 120)
+    alias_id = prefix + 'foreign-icon-alias'
+    s.new(alias_id)
+    before_alias = group_mask(s, c, 118,
+        required=GROUP_STRUCTURE_MASK | GROUP_PROPERTY_MASK)
+    c.command('icon-window 119 118')
+    group_map(s, c, 119)
+    alias_mask = c.command('mask 118')
+    c.command('destroy 118')
+    alias_pending = group_pending(s, alias_id)
+    assert s.managed(owner) and s.managed(dependent)
+    group_end_pending(s)
+    c.command('destroy 120'); c.command('destroy 119')
+    cases['foreign_icon_alias_destroy_preserves_managed_owner'] = dict(
+        leader=leader, icon_owner=owner, dependent=dependent,
+        before_alias=before_alias, alias_mask=alias_mask, pending=alias_pending,
+        limit='known internal/icon-context exclusions may retire the claim before destruction')
+    s.evidence['limits'].update(native_group_capacity='pure policy, not 256-window stress',
+        native_xid_reuse='fresh-ID/rebind plus pure stale-serial/identity coverage; no simulated server reuse',
+        legacy_tray_transitions='not independently driven by this group fixture')
+    if s.args.expiry and s.args.mode == 'groups':
+        group_expiry(s, prefix)
+    else:
+        cases['actual_group_expiry_before_query'] = dict(status='skipped',
+            reason='lead selects --mode groups --expiry once; no theme repetition')
+
+
 def protocol_cases(s):
     cases, c = s.evidence['cases'], s.sender
     prefix = 'fixture-' + os.urandom(6).hex() + '-'
@@ -635,34 +1108,40 @@ def protocol_cases(s):
     c.create(20); c.command('id 20 ' + group_id.encode().hex())
     group_window = map_id(21, '', direct=False, group=20)
     assert s.state(group_id, 'window-observed')['window'] == group_window
+    # Each independent case owns a leader: surviving older dependents now
+    # observe later ID changes, so sharing would complete the wrong case.
     blocked_id = prefix + 'malformed-direct'
-    s.new(blocked_id); c.command('id 20 ' + blocked_id.encode().hex())
+    c.create(19)
+    s.new(blocked_id); c.command('id 19 ' + blocked_id.encode().hex())
     blocked_window = c.create(22)
-    c.command('group 22 20'); c.command('bad-id 22'); c.command('map 22')
+    c.command('group 22 19'); c.command('bad-id 22'); c.command('map 22')
     s.wait('malformed direct client managed', lambda: s.managed(blocked_window))
     assert s.state(blocked_id, 'pending')['window'] == 0
     leader_window = c.create(23)
-    c.command('leader 23 20'); c.command('map 23')
+    c.command('leader 23 19'); c.command('map 23')
     s.wait('session leader client managed', lambda: s.managed(leader_window))
     assert s.state(blocked_id, 'pending')['window'] == 0
     hints_id = prefix + 'hints-change'
     hints_window = map_id(24, '', direct=False)
-    s.new(hints_id); c.command('id 20 ' + hints_id.encode().hex())
-    c.command('group 24 20')
+    c.create(18)
+    s.new(hints_id); c.command('id 18 ' + hints_id.encode().hex())
+    c.command('group 24 18')
     assert s.state(hints_id, 'window-observed')['window'] == hints_window
     cases['group_at_map_hints_change_no_malformed_inheritance'] = dict(
         group=group_window, malformed=blocked_window, session_leader=leader_window,
         hints_change=hints_window, still_pending=blocked_id)
     group_nul_id = prefix + 'group-final-nul'
-    s.new(group_nul_id); c.command('id 20 ' + (group_nul_id.encode() + b'\0').hex())
-    group_nul_window = map_id(25, '', direct=False, group=20)
+    c.create(17)
+    s.new(group_nul_id); c.command('id 17 ' + (group_nul_id.encode() + b'\0').hex())
+    group_nul_window = map_id(25, '', direct=False, group=17)
     assert s.state(group_nul_id, 'window-observed')['window'] == group_nul_window
-    for slot, suffix in [(26, b'\0\0'), (27, b'\0trailing')]:
+    for slot, group_slot, suffix in [(26, 16, b'\0\0'), (27, 15, b'\0trailing')]:
         bad_id = prefix + 'bad-nul-%d' % slot
-        s.new(bad_id); c.command('id 20 ' + bad_id.encode().hex())
+        c.create(group_slot)
+        s.new(bad_id); c.command('id %d %s' % (group_slot, bad_id.encode().hex()))
         bad_window = c.create(slot)
         c.command('id %d %s' % (slot, (bad_id.encode() + suffix).hex()))
-        c.command('group %d 20' % slot); c.command('map %d' % slot)
+        c.command('group %d %d' % (slot, group_slot)); c.command('map %d' % slot)
         s.wait('malformed NUL property client managed', lambda window=bad_window: s.managed(window))
         assert s.state(bad_id, 'pending')['window'] == 0
     cases['group_terminal_nul_and_bad_nul_no_inheritance'] = dict(group=group_nul_window,
@@ -1014,7 +1493,8 @@ def run(args, phase, profile, root):
         session = Session(args, phase, profile, out, runtime)
         try:
             session.start()
-            {'protocol': protocol_cases, 'helper': helper_cases, 'ui': ui_cases}[phase](session)
+            {'protocol': protocol_cases, 'groups': group_cases,
+                'helper': helper_cases, 'ui': ui_cases}[phase](session)
             session.evidence['status'] = 'passed'
         except BaseException as failure:
             session.evidence.update(status='failed', failure=repr(failure))
@@ -1055,8 +1535,9 @@ def main():
     parser.add_argument('--startup-helper', type=Path, required=True)
     parser.add_argument('--module-directory', type=Path,
         help='actual linked installation module directory; required for helper-absence case')
-    parser.add_argument('--mode', choices=('protocol', 'helper', 'ui', 'all'), default='all')
-    parser.add_argument('--expiry', action='store_true', help='one real idle/busy pending-expiry interval')
+    parser.add_argument('--mode', choices=('protocol', 'groups', 'helper', 'ui', 'all'), default='all')
+    parser.add_argument('--expiry', action='store_true',
+        help='one real pending-expiry interval in the selected protocol or groups phase')
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     args = parser.parse_args()
@@ -1069,7 +1550,7 @@ def main():
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     root = Path(tempfile.mkdtemp(prefix='startup-', dir=args.artifacts_dir.resolve()))
     print(json.dumps(dict(artifacts_dir=str(root))), flush=True)
-    phases = ('protocol', 'helper', 'ui') if args.mode == 'all' else (args.mode,)
+    phases = ('protocol', 'groups', 'helper', 'ui') if args.mode == 'all' else (args.mode,)
     for phase in phases:
         for profile in args.profiles if phase == 'ui' else ('slate-dark',):
             run(args, phase, profile, root)

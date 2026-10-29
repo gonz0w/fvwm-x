@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Startup group event ownership](VERIFICATION-2026-10-29-STARTUP-GROUPS.md): late IDs, cooperative masks, lifetime retirement, bounded queue/outer continuation and focused Linux/BSD-policy evidence; installed-target #56 acceptance remains open.
+
+- [PR293→PR299 performance observation](PERFORMANCE-2026-10-29-PROVIDERS.md): cached binaries, overlapping browser/Script timings, stable browser peak RSS and separately reported feature-size growth.
+
 - [Files-menu browser handoff](VERIFICATION-2026-10-28-FILES-BROWSER-HANDOFF.md): explicit current-folder launch/reuse, bounded failure reporting and Files-only label elision; focused Linux, installed consumer and inspected three-theme captures.
 
 - [Pinboard acceptance supplement](VERIFICATION-2026-10-28-PINBOARD-ACCEPTANCE.md): retirement, scoped config refresh, terminal query recovery, controlled capability refusal and composed support evidence.

@@ -7,17 +7,119 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current feature checkpoint: [application-provider resilience](#r1-application-provider-resilience--2026-10-29)
-is selected under #56, reusing the #67 portable consumers. PR297 startup activity
-and PR298 current-artifact retention are merged. Complete remaining finite
-provider/installed acceptance without forcing FileManager1 or clipboard policy.
+Current feature checkpoint: [startup group event ownership](#r1-startup-group-event-ownership--2026-10-29)
+is selected under #56 after merged PR299. Finish the bounded late-group observer
+and its ownership/lifetime contracts, then the remaining installed-target evidence.
+The due periodic performance comparison passed with existing merged PR299
+binaries; the next reference is current at 0/5.
+
+## R1 startup group event ownership — 2026-10-29
+
+Owner: Cam; `codex/r1-startup-group-events`; XDG-01 #56. Base merged PR299
+`9cde299b2efb8a002ce88999ad8db13a009bfa0c`. Status: review candidate; bounded event/mask
+ownership contract implemented after its pre-implementation freeze.
+
+Outcome: observe late startup-ID changes on otherwise-unmanaged ICCCM group
+leaders without losing another core selector's event interests or retaining
+freed window records. Batch leader/dependent identities, cooperative mask
+ownership, raw property/destroy routing and pending-epoch retirement together.
+The frozen design uses 256 dependent client XIDs plus palette identities and 256
+leader/mask records; no FvwmWindow pointer survives a turn. One latest permanent
+base mask is separate from supplemental claims and nestable temporary suppression.
+Every relevant selector uses explicit base retrieval/set and scoped suppression;
+never promote an effective server mask into the remembered base. Exclude known
+core internal XIDs via existing contexts. Preserve each iconified target's own
+mask and existing StructureNotify suppression.
+
+Referenced unmanaged leaders retain only a lifecycle StructureNotify claim while
+managed dependents exist. PropertyChange is claimed while startup work is pending;
+managed leaders rely on existing core lifecycle and gain no supplemental Structure
+bit. Last-reference release, actual destroy and managed/unmanaged transitions
+have explicit retirement; stale serials, duplicate destroy and reused XIDs cannot
+complete old work. Capacity refusal increments saturating diagnostics and never
+evicts active records or prevents launch. Additional fixed storage must be <=64 KiB,
+with the complete startup observer still below 512 KiB by compile-time checks.
+
+First mask acquisition uses the existing nested server-grab helpers across only
+attribute import and subscription. Their existing synchronization is intentional.
+Inherited property X errors invalidate all dependents without mask restoration;
+lifetime guarantees start at acquisition, since stale raw hints before acquisition
+have no historical X identity. No additional barriers or periodic probes.
+
+Final review identified queued destroy versus inherited-read ordering. The
+accepted correction scans a queued-only prefix of at most 64 events after the
+property reply, preserves FIFO/input caches, rejects an actual serial-valid
+destroy and defers an incomplete scan to ordinary dispatch. Stop that outer batch
+on deferral. Include the scratch array in the 64 KiB bound; no per-read grab,
+new round trip or recursive event handling. The reply defines observation time.
+
+At the safe outer HandleEvents boundary after module_config_flush_one, reconcile
+and observe at most eight X-dependent group/client steps per turn. Resolve current
+client identity, cached group and direct-ID precedence before each observation.
+Coalesce fixed dirty flags with round-robin continuation; new pending launches
+rescan existing bindings. Keep startup_notification_service/next_ms pure in nested
+waits. Request an immediate outer continuation through existing force_poll only
+at the outer event wait, with no periodic timer or recursive dispatch.
+
+This replaces the old late-group deferral with bounded reference-owned lifetime
+subscriptions. No saved-mask OR/restore shortcut, periodic polling, second X
+connection, new dependency, focus/placement policy, new UI or broad mask rewrite
+is selected.
+
+Acceptance: reproduce the current late-group miss with an independent real-X
+producer; pure ownership-policy tests and actual-X late/change/shared-leader/
+destroy/teardown/selector-transition checks; one combined affected incremental
+Linux build/sanitizer/integration checkpoint with relevant target checks for
+actual API/platform risk. Reuse valid unchanged launch/provider/theme evidence.
+The lead owns all execution; implementer/fixture ownership is nonoverlapping,
+with separate final source/evidence review and signed author-DCO PR. #56 closes
+only when all frozen criteria, including installed-target evidence, are met.
+
+[Due comparison completed](verification/PERFORMANCE-2026-10-29-PROVIDERS.md):
+merged PR299 reaches 5/5 since PR293; PR298 is documentation-only. One paired
+observation used cached binaries before the new core changes. Browser/Script
+timing ranges overlap; browser peak RSS is unchanged and byte-identical Script
+RSS/PSS is +4 KiB. Report unstripped file and BSS growth separately from resident
+memory. Current `m5-performance-providers-20261029` hashes and raw samples verify;
+cadence resets to 0/5 at merged PR299. The next runtime merge advances to 1/5.
+Retired only the eight verified superseded reference files (30,917,729 bytes),
+after checking no live process used either owned old directory.
+Current source/build/cache/stage retention follows PR298; discard superseded raw
+artifacts when no current review, failure or next comparison needs them.
+
+[Results and limits](verification/VERIFICATION-2026-10-29-STARTUP-GROUPS.md):
+normal native GCC and pure-policy ASan/UBSan pass; the final bounded-queue unit,
+existing expose/resize/hint units, 14 fast actual-X group cases and 13 protocol
+groups pass. Scoped core/queue ASan/UBSan with leak checking passes. One retained
+15-case group run includes an independent busy expiry mask witness at 60.037s
+before any core query. Each fresh FreeBSD15.1/OpenBSD8.0 ARM64 policy run passes;
+these do not claim BSD core/installed-X acceptance. Capture reparent handling,
+old protocol-case interference, source/setup and wrapper compile failures retain
+their original evidence and focused corrections. Added registry/scope/queue
+scratch is 61,468 bytes under the 64 KiB bound; total observer is 277,572 bytes
+under 512 KiB on the tested target, not an RSS measurement.
+
+Separate source review resolved acquisition and queued-lifetime boundaries;
+final integrated source/evidence review precedes signed author-DCO handoff.
+No new UI or screenshots. The verified 462,794-byte host bundle preserves 242
+regular payload files plus its manifest; 240 duplicate guest files retire with current source/result,
+builds, stage, SDK/tool caches, producer and next performance reference retained.
+Both completed disposable BSD disks retire (6,307,889,152 allocated bytes), both
+QEMU exits are zero and the owned Linux lab stops normally. #56 stays open for
+remaining installed-target qualification; #67 retains FileManager1 under #77 and
+broader lifecycle/target acceptance. Next pickup finishes that finite #56
+installed-platform evidence before another interoperability feature. #257/#258
+remain parked.
 
 ## R1 application-provider resilience — 2026-10-29
 
 Owner: Cam; `codex/r1-xdg-interoperability-closeout`; XDG-01 #56, related #67
 portable consumers. Base merged PR298 `86d9ffd02c44e57746d603d74287afa772d73382`.
-Status: focused checks passed; candidate prepared for separate final PR review.
-Concrete provider behavior was frozen before implementation.
+Status: merged in PR299 as `9cde299b2efb8a002ce88999ad8db13a009bfa0c`;
+reviewed tree `3e7b6cf66209b66b527f7b6782feedfdb66c3d85`, canonical signature
+and actual-author DCO verified; branch retired and PR Project Done. Separate
+source/evidence review accepted. Concrete provider behavior was frozen before
+implementation.
 
 Three related provider outcomes: reject malformed effective desktop entries
 individually so a valid different handler/default remains usable; skip only
@@ -58,7 +160,8 @@ Apply current retention before the next owned build: keep the latest reusable
 profiles, next performance baseline and current evidence; retire superseded owned
 artifacts with exact ownership/use/reference checks, not another full archive.
 PR297 advances `m5-performance-xdg-20261028` to 4/5; PR298 is documentation-only.
-The next runtime merge reaches 5/5; no comparison is due before that merge.
+Merged PR299 reaches 5/5; the next selected checkpoint runs the due comparison
+before changing its measured binaries.
 
 [Results and limits](verification/VERIFICATION-2026-10-29-XDG-PROVIDERS.md):
 263 normal/race/minimum-SDK records across two affected packages each, vet,

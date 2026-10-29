@@ -423,11 +423,15 @@ Each record has `id`, `name`, `icon`, `application_id`, `wmclass`, `state`,
 States are `pending`, `protocol-ended`, `window-observed` and `expired`.
 A protocol-ended record reports a public X11 completion message, not proof of
 application success. `counters` reports `dropped`, `malformed` and
-`partial_expired`; `limits` records the configured fixed bounds/deadlines.
+`partial_expired`; `limits` records the protocol record/stream bounds and
+deadlines. The core separately bounds group tracking to 256 managed-client
+bindings and 256 leaders; admission refusal contributes to `dropped`. Late
+unmanaged group-ID changes use reference-owned event subscriptions. The query
+adds no subscription and does not require periodic polling.
 These are observations during this core lifetime, not persistent history or a
 security/authentication boundary. The native Launch activity view in
 *FvwmDesktop*(1) uses these pages. That manual describes matching, fallback and
-late-group-property limits.
+group-property lifetime and capacity limits.
 
 === Core colorset inspection
 

@@ -94,6 +94,21 @@ void fev_sanitize_size_hints(XSizeHints *sh);
 int FCollectQueuedExposes(
 	Display *display, Window window, XEvent *events);
 
+#define FEV_DESTROY_BATCH_MAX 64
+
+typedef enum {
+	FEV_QUEUED_DESTROY_CLEAR,
+	FEV_QUEUED_DESTROY_MATCH,
+	FEV_QUEUED_DESTROY_INCOMPLETE
+} FQueuedDestroyResult;
+
+/* Inspect only the first 64 already-queued records for a real destruction of
+ * window at or after acquisition_serial. MATCH wins over an incomplete prefix;
+ * CLEAR means the whole queued snapshot was inspected. Restore exact FIFO order.
+ * No socket input, callbacks, dispatch or cached-event/timestamp updates occur. */
+FQueuedDestroyResult FCheckQueuedWindowDestroy(
+	Display *display, Window window, unsigned long acquisition_serial);
+
 /* Iterates over all events currentliy in the input queue and calls the
  * weed_predicate procedure for them.  The predicate may return
  *  0 = keep event and continue weeding

@@ -557,6 +557,34 @@ int FCollectQueuedExposes(
 	return selected;
 }
 
+FQueuedDestroyResult FCheckQueuedWindowDestroy(
+	Display *display, Window window, unsigned long acquisition_serial)
+{
+	XEvent retained[FEV_DESTROY_BATCH_MAX];
+	int queued = XEventsQueued(display, QueuedAlready);
+	FQueuedDestroyResult result = queued > FEV_DESTROY_BATCH_MAX ?
+		FEV_QUEUED_DESTROY_INCOMPLETE : FEV_QUEUED_DESTROY_CLEAR;
+
+	if (queued > FEV_DESTROY_BATCH_MAX)
+		queued = FEV_DESTROY_BATCH_MAX;
+	/* The single owner removes only the queued snapshot, using raw queue
+	 * operations to leave cached input events and timestamps unchanged. */
+	for (int index = 0; index < queued; index++)
+	{
+		const XDestroyWindowEvent *destroy =
+			&retained[index].xdestroywindow;
+
+		XNextEvent(display, &retained[index]);
+		if (retained[index].type == DestroyNotify && !destroy->send_event &&
+		    destroy->window == window &&
+		    destroy->serial >= acquisition_serial)
+			result = FEV_QUEUED_DESTROY_MATCH;
+	}
+	while (queued > 0)
+		XPutBackEvent(display, &retained[--queued]);
+	return result;
+}
+
 static Bool fev_is_size_only_request(const XEvent *event)
 {
 	return event->type == ConfigureRequest &&

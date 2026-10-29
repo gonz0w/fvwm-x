@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "eventmask.h"
 #include "libs/FProperty.h"
 
 #include <stdio.h>
@@ -368,11 +369,11 @@ void FetchWmColormapWindows (FvwmWindow *fw)
 			{
 				valuemask = CWEventMask;
 				setattribs.event_mask =
-					getattribs.your_event_mask |
+					eventmask_base(fw->cmap_windows[i],
+						getattribs.your_event_mask) |
 					EnterWindowMask | LeaveWindowMask;
-				XChangeWindowAttributes(
-					dpy, fw->cmap_windows[i], valuemask,
-					&setattribs);
+				eventmask_change_attributes(fw->cmap_windows[i],
+					valuemask, &setattribs);
 			}
 		}
 	}

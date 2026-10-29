@@ -774,8 +774,8 @@ void CreateIconWindow(FvwmWindow *fw, int def_x, int def_y)
 		/* client supplied icon window: select events on it */
 		attributes.event_mask = XEVMASK_ICONPW;
 		valuemask = CWEventMask;
-		XChangeWindowAttributes(
-			dpy, FW_W_ICON_PIXMAP(fw), valuemask,&attributes);
+		eventmask_change_attributes(FW_W_ICON_PIXMAP(fw),
+			valuemask, &attributes);
 		if (!IS_ICON_OURS(fw))
 		{
 			XMoveWindow(
@@ -2697,7 +2697,7 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	FvwmWindow *t;
 	FvwmWindow *sf;
 	XWindowAttributes winattrs = {0};
-	unsigned long eventMask;
+	struct eventmask_scope mask_scope;
 	Window previous_icon_title;
 	rectangle icon_rect;
 
@@ -2723,7 +2723,6 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 		SET_ICONIFY_AFTER_MAP(fw, 1);
 		return;
 	}
-	eventMask = winattrs.your_event_mask;
 
 	mark_transient_subtree(fw, MARK_ALL_LAYERS, MARK_ALL, False, True);
 	sf = get_focus_window();
@@ -2741,15 +2740,19 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	{
 		if (t == fw || IS_IN_TRANSIENT_SUBTREE(t))
 		{
+			/* Each transient owns its own mask; the initiating client's
+			 * effective mask must never become another client's base. */
+			if (!XGetWindowAttributes(dpy, FW_W(t), &winattrs))
+				continue;
 			SET_IN_TRANSIENT_SUBTREE(t, 0);
 			SET_ICON_ENTERED(t, 0);
 			/* Prevent the receipt of an UnmapNotify, since that
 			 * would cause a transition to the Withdrawn state. */
 			SET_MAPPED(t, 0);
-			XSelectInput(
-				dpy, FW_W(t), eventMask & ~StructureNotifyMask);
+			eventmask_suppress_begin(FW_W(t), winattrs.your_event_mask,
+				StructureNotifyMask, &mask_scope);
 			XUnmapWindow(dpy, FW_W(t));
-			XSelectInput(dpy, FW_W(t), eventMask);
+			eventmask_suppress_end(&mask_scope);
 			XUnmapWindow(dpy, FW_W_FRAME(t));
 			border_undraw_decorations(t);
 			t->DeIconifyDesk = t->Desk;

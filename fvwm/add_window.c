@@ -78,6 +78,7 @@
 #include "events.h"
 #include "eventhandler.h"
 #include "eventmask.h"
+#include "startup_notification.h"
 #include "execcontext.h"
 #include "module_interface.h"
 #include "stack.h"
@@ -207,7 +208,7 @@ static int MappedNotOverride(
 
 	if (wa.override_redirect == True)
 	{
-		XSelectInput(dpy, w, XEVMASK_ORW);
+		eventmask_select(w, XEVMASK_ORW);
 		XFlush(dpy);
 	}
 
@@ -2689,7 +2690,7 @@ FvwmWindow *AddWindow(
 		attributes.event_mask = XEVMASK_CLIENTW;
 	}
 	attributes.do_not_propagate_mask = ButtonPressMask | ButtonReleaseMask;
-	XChangeWindowAttributes(dpy, FW_W(fw), valuemask, &attributes);
+	eventmask_change_attributes(FW_W(fw), valuemask, &attributes);
 	/****** make sure the window is not destroyed when fvwm dies ******/
 	if (!IS_TEAR_OFF_MENU(fw))
 	{
@@ -2949,6 +2950,7 @@ FvwmWindow *AddWindow(
 		adjust_for_shared_placement(fw, exc);
 	}
 
+	startup_notification_window_registered(fw);
 	return fw;
 }
 
@@ -3462,6 +3464,8 @@ void destroy_window(FvwmWindow *fw)
 	{
 		return;
 	}
+
+	startup_notification_window_retiring(fw);
 
 	/* remove window style */
 	if (!IS_SCHEDULED_FOR_DESTROY(fw) && !DO_REUSE_DESTROYED(fw))

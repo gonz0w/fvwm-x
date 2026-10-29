@@ -51,6 +51,7 @@
  */
 
 #include "config.h"
+#include "eventmask.h"
 #include "ewmh_property_policy.h"
 #include "ewmh_client_list.h"
 #include "ewmh_atom_index.h"
@@ -897,7 +898,7 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 		{
 			fvwm_debug(__func__, "KST_UNMAP: 0x%lx\n", w);
 		}
-		XSelectInput(dpy, w, StructureNotifyMask);
+		eventmask_select(w, StructureNotifyMask);
 		XFlush(dpy);
 		break;
 	case DestroyNotify:
@@ -905,7 +906,7 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 		{
 			fvwm_debug(__func__, "KST_DESTROY: 0x%lx\n", w);
 		}
-		XSelectInput(dpy, t->w, NoEventMask);
+		eventmask_select(t->w, NoEventMask);
 		XFlush(dpy);
 		/* These X calls do not dispatch events/commands. Retain their
 		 * order before unlinking the already found record. */
@@ -918,7 +919,7 @@ void EWMH_ManageKdeSysTray(Window w, int type)
 		{
 			fvwm_debug(__func__, "KST_Reparent: 0x%lx\n", w);
 		}
-		XSelectInput(dpy, w, StructureNotifyMask);
+		eventmask_select(w, StructureNotifyMask);
 		XFlush(dpy);
 		break;
 	default:

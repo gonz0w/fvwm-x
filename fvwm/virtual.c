@@ -371,7 +371,7 @@ found_desk:
 void unmap_window(FvwmWindow *t)
 {
 	XWindowAttributes winattrs;
-	unsigned long eventMask = 0;
+	struct eventmask_scope mask_scope;
 	Status ret;
 
 	/*
@@ -381,9 +381,9 @@ void unmap_window(FvwmWindow *t)
 	ret = XGetWindowAttributes(dpy, FW_W(t), &winattrs);
 	if (ret)
 	{
-		eventMask = winattrs.your_event_mask;
 		/* suppress UnmapRequest event */
-		XSelectInput(dpy, FW_W(t), eventMask & ~StructureNotifyMask);
+		eventmask_suppress_begin(FW_W(t), winattrs.your_event_mask,
+			StructureNotifyMask, &mask_scope);
 	}
 	if (IS_ICONIFIED(t))
 	{
@@ -412,7 +412,7 @@ void unmap_window(FvwmWindow *t)
 	}
 	if (ret)
 	{
-		XSelectInput(dpy, FW_W(t), eventMask);
+		eventmask_suppress_end(&mask_scope);
 		XFlush(dpy);
 	}
 
@@ -427,7 +427,7 @@ void unmap_window(FvwmWindow *t)
 void map_window(FvwmWindow *t)
 {
 	XWindowAttributes winattrs;
-	unsigned long eventMask = 0;
+	struct eventmask_scope mask_scope;
 	Status ret;
 
 	if (IS_SCHEDULED_FOR_DESTROY(t))
@@ -441,9 +441,9 @@ void map_window(FvwmWindow *t)
 	ret = XGetWindowAttributes(dpy, FW_W(t), &winattrs);
 	if (ret)
 	{
-		eventMask = winattrs.your_event_mask;
 		/* suppress MapRequest event */
-		XSelectInput(dpy, FW_W(t), eventMask & ~StructureNotifyMask);
+		eventmask_suppress_begin(FW_W(t), winattrs.your_event_mask,
+			StructureNotifyMask, &mask_scope);
 	}
 	if (IS_ICONIFIED(t))
 	{
@@ -476,7 +476,7 @@ void map_window(FvwmWindow *t)
 	}
 	if (ret)
 	{
-		XSelectInput(dpy, FW_W(t), eventMask);
+		eventmask_suppress_end(&mask_scope);
 		XFlush(dpy);
 	}
 

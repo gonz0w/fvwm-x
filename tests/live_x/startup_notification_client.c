@@ -99,6 +99,13 @@ static int command(char *line)
 	XClassHint class_hint;
 	XWMHints hints;
 	XSizeHints size_hints;
+	XWMHints *current_hints;
+	XWindowAttributes attributes;
+	XSetWindowAttributes set_attributes;
+	unsigned char *property_data;
+	Atom property_type;
+	int property_format;
+	unsigned long property_items, property_after;
 	unsigned long cardinal, tick;
 	unsigned int count, i;
 	struct timespec start, now, delay = {0, 2000000};
@@ -135,6 +142,18 @@ static int command(char *line)
 		{
 			XDestroyWindow(display, windows[slot]);
 			windows[slot] = None;
+		}
+		else if (strcmp(operation, "synthetic-destroy") == 0)
+		{
+			memset(&event, 0, sizeof(event));
+			event.xdestroywindow.type = DestroyNotify;
+			event.xdestroywindow.display = display;
+			event.xdestroywindow.event = root;
+			event.xdestroywindow.window = windows[slot];
+			/* The server marks this event synthetic; no window is destroyed. */
+			if (!XSendEvent(display, root, False,
+				SubstructureNotifyMask, &event))
+				return 0;
 		}
 		else if (strcmp(operation, "fragment") == 0)
 		{
@@ -180,7 +199,13 @@ static int command(char *line)
 			if (strcmp(operation, "group") == 0)
 			{
 				memset(&hints, 0, sizeof(hints));
-				hints.flags = WindowGroupHint;
+				current_hints = XGetWMHints(display, windows[slot]);
+				if (current_hints != NULL)
+				{
+					hints = *current_hints;
+					XFree(current_hints);
+				}
+				hints.flags |= WindowGroupHint;
 				hints.window_group = windows[other];
 				XSetWMHints(display, windows[slot], &hints);
 			}
@@ -192,6 +217,127 @@ static int command(char *line)
 					XA_WINDOW, 32, PropModeReplace,
 					(unsigned char *)&cardinal, 1);
 			}
+		}
+		else if (strcmp(operation, "clear-group") == 0 ||
+			 strcmp(operation, "iconic") == 0 ||
+			 strcmp(operation, "icon-window") == 0)
+		{
+			memset(&hints, 0, sizeof(hints));
+			current_hints = XGetWMHints(display, windows[slot]);
+			if (current_hints != NULL)
+			{
+				hints = *current_hints;
+				XFree(current_hints);
+			}
+			if (strcmp(operation, "clear-group") == 0)
+			{
+				hints.flags &= ~WindowGroupHint;
+				hints.window_group = None;
+			}
+			else if (strcmp(operation, "iconic") == 0)
+			{
+				hints.flags |= StateHint;
+				hints.initial_state = IconicState;
+			}
+			else
+			{
+				if (!number(second, SLOTS - 1, &other) ||
+				    windows[other] == None)
+					return 0;
+				hints.flags |= IconWindowHint;
+				hints.icon_window = windows[other];
+			}
+			XSetWMHints(display, windows[slot], &hints);
+		}
+		else if (strcmp(operation, "override") == 0)
+		{
+			if (!number(second, 1, &other))
+				return 0;
+			memset(&set_attributes, 0, sizeof(set_attributes));
+			set_attributes.override_redirect = other ? True : False;
+			XChangeWindowAttributes(display, windows[slot],
+				CWOverrideRedirect, &set_attributes);
+		}
+		else if (strcmp(operation, "reparent") == 0)
+		{
+			if (!number(second, SLOTS - 1, &other) ||
+			    windows[other] == None || other == slot)
+				return 0;
+			XReparentWindow(display, windows[slot], windows[other], 0, 0);
+		}
+		else if (strcmp(operation, "unmap") == 0)
+			XUnmapWindow(display, windows[slot]);
+		else if (strcmp(operation, "withdraw") == 0)
+		{
+			if (!XWithdrawWindow(display, windows[slot],
+				DefaultScreen(display)))
+				return 0;
+		}
+		else if (strcmp(operation, "mask") == 0 ||
+			 strcmp(operation, "own-mask") == 0)
+		{
+			if (!XGetWindowAttributes(display, windows[slot], &attributes))
+				return 0;
+			cardinal = (unsigned long)(strcmp(operation, "mask") == 0 ?
+				attributes.all_event_masks : attributes.your_event_mask);
+			printf("OK %s %u %lu\n", operation, slot, cardinal);
+			fflush(stdout);
+			return 1;
+		}
+		else if (strcmp(operation, "listed") == 0)
+		{
+			property_data = NULL;
+			cardinal = 0;
+			if (XGetWindowProperty(display, root,
+				XInternAtom(display, "_NET_CLIENT_LIST", False),
+				0, 4096, False, XA_WINDOW, &property_type,
+				&property_format, &property_items, &property_after,
+				&property_data) != Success)
+				return 0;
+			if (property_type != None)
+			{
+				if (property_type != XA_WINDOW || property_format != 32 ||
+				    property_items > 4096 || property_after != 0)
+				{
+					if (property_data != NULL)
+						XFree(property_data);
+					return 0;
+				}
+				for (i = 0; i < property_items; i++)
+					if (((unsigned long *)property_data)[i] == windows[slot])
+						cardinal = 1;
+			}
+			if (property_data != NULL)
+				XFree(property_data);
+			printf("OK %s %u %lu\n", operation, slot, cardinal);
+			fflush(stdout);
+			return 1;
+		}
+		else if (strcmp(operation, "state") == 0)
+		{
+			property_data = NULL;
+			cardinal = WithdrawnState;
+			if (XGetWindowProperty(display, windows[slot],
+				XInternAtom(display, "WM_STATE", False), 0, 2, False,
+				AnyPropertyType, &property_type, &property_format,
+				&property_items, &property_after, &property_data) != Success)
+				return 0;
+			if (property_type != None)
+			{
+				if (property_format != 32 || property_items < 1 ||
+				    property_after != 0)
+				{
+					if (property_data != NULL)
+						XFree(property_data);
+					return 0;
+				}
+				cardinal = ((unsigned long *)property_data)[0];
+			}
+			if (property_data != NULL)
+				XFree(property_data);
+			printf("OK %s %u %lu\n", operation, slot, cardinal);
+			fflush(stdout);
+			return 1;
 		}
 		else if (strcmp(operation, "class") == 0)
 		{

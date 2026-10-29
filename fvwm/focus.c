@@ -16,6 +16,7 @@
 /* ---------------------------- included header files ---------------------- */
 
 #include "config.h"
+#include "eventmask.h"
 
 #include <stdio.h>
 
@@ -1066,15 +1067,15 @@ void set_focus_model(FvwmWindow *fw)
 void focus_force_refresh_focus(const FvwmWindow *fw)
 {
 	XWindowAttributes winattrs;
+	struct eventmask_scope mask_scope;
 
 	MyXGrabServer(dpy);
 	if (XGetWindowAttributes(dpy, FW_W(fw), &winattrs))
 	{
-		XSelectInput(
-			dpy, FW_W(fw),
-			winattrs.your_event_mask & ~FocusChangeMask);
+		eventmask_suppress_begin(FW_W(fw), winattrs.your_event_mask,
+			FocusChangeMask, &mask_scope);
 		FOCUS_SET(FW_W(fw), NULL /* we don't expect an event */);
-		XSelectInput(dpy, FW_W(fw), winattrs.your_event_mask);
+		eventmask_suppress_end(&mask_scope);
 	}
 	MyXUngrabServer(dpy);
 

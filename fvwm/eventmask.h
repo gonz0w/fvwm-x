@@ -3,6 +3,31 @@
 #ifndef FVWM_EVENTMASK_H
 #define FVWM_EVENTMASK_H
 
+#include "libs/fvwm_x11.h"
+#include "libs/startup_group_policy.h"
+
+/* Only referenced startup leaders have a retained mask record. Ordinary
+ * windows keep the existing direct selection path. */
+struct eventmask_scope {
+	Window window;
+	long base_mask;
+	uint64_t serial;
+	uint32_t suppressed;
+	Bool tracked;
+	Bool counted;
+};
+
+void eventmask_initialize(void);
+struct startup_group_state *eventmask_startup_groups(void);
+long eventmask_base(Window window, long server_mask);
+void eventmask_select(Window window, long base_mask);
+void eventmask_change_attributes(Window window, unsigned long value_mask,
+	const XSetWindowAttributes *attributes);
+void eventmask_suppress_begin(Window window, long server_mask, long suppressed,
+	struct eventmask_scope *scope);
+void eventmask_suppress_end(struct eventmask_scope *scope);
+Bool eventmask_outer_ready(void);
+
 /* ---------------------------- global definitions ------------------------- */
 
 #define XEVMASK_FRAMEW                                                     \

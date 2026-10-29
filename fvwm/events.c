@@ -249,12 +249,13 @@ fake_map_unmap_notify(const FvwmWindow *fw, int event_type)
 {
 	XEvent		  client_event;
 	XWindowAttributes winattrs = {0};
+	struct eventmask_scope mask_scope;
 
 	if (!XGetWindowAttributes(dpy, FW_W(fw), &winattrs)) {
 		return;
 	}
-	XSelectInput(
-	    dpy, FW_W(fw), winattrs.your_event_mask & ~StructureNotifyMask);
+	eventmask_suppress_begin(FW_W(fw), winattrs.your_event_mask,
+		StructureNotifyMask, &mask_scope);
 	client_event.type	  = event_type;
 	client_event.xmap.display = dpy;
 	client_event.xmap.event	  = FW_W(fw);
@@ -271,7 +272,7 @@ fake_map_unmap_notify(const FvwmWindow *fw, int event_type)
 		break;
 	}
 	FSendEvent(dpy, FW_W(fw), False, StructureNotifyMask, &client_event);
-	XSelectInput(dpy, FW_W(fw), winattrs.your_event_mask);
+	eventmask_suppress_end(&mask_scope);
 	XFlush(dpy);
 
 	return;
@@ -1945,7 +1946,18 @@ HandleConfigureRequest(const evh_args_t *ea)
 void
 HandleDestroyNotify(const evh_args_t *ea)
 {
-	destroy_window(ea->exc->w.fw);
+	const XDestroyWindowEvent *event =
+		&ea->exc->x.etrigger->xdestroywindow;
+	FvwmWindow *fw = ea->exc->w.fw;
+
+	if (!startup_notification_destroyed(event))
+		return;
+	/* Supplemental observation of a client-supplied icon must not turn
+	 * that icon's destruction into destruction of its managed owner. */
+	if (fw != NULL && FW_W(fw) != event->window &&
+	    FW_W_ICON_PIXMAP(fw) == event->window)
+		fw = NULL;
+	destroy_window(fw);
 	EWMH_ManageKdeSysTray(ea->exc->x.etrigger->xdestroywindow.window,
 	    ea->exc->x.etrigger->type);
 	EWMH_WindowDestroyed();
@@ -2694,7 +2706,7 @@ HandleMapNotify(const evh_args_t *ea)
 	if (!fw) {
 		if (te->xmap.override_redirect == True
 		    && te->xmap.window != Scr.NoFocusWin) {
-			XSelectInput(dpy, te->xmap.window, XEVMASK_ORW);
+			eventmask_select(te->xmap.window, XEVMASK_ORW);
 			XFlush(dpy);
 			Scr.UnknownWinFocused = te->xmap.window;
 		}
@@ -2708,6 +2720,9 @@ HandleMapNotify(const evh_args_t *ea)
 		XSelectInput(dpy, FW_W_FRAME(fw), XEVMASK_FRAMEW);
 		XFlush(dpy);
 	}
+	if (te->xmap.window == FW_W_ICON_PIXMAP(fw) &&
+	    te->xmap.window != FW_W(fw))
+		return;
 	/* Except for identifying over-ride redirect window mappings, we
 	 * don't need or want windows associated with the
 	 * SubstructureNotifyMask */
@@ -3037,6 +3052,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 	char		 *urgency_action = NULL;
 	FvwmWindow *const fw		 = ea->exc->w.fw;
 
+	startup_notification_raw_property(&te->xproperty);
 	if (te->xproperty.window == Scr.Root
 	    && te->xproperty.state == PropertyNewValue
 	    && (te->xproperty.atom == _XA_XSETROOT_ID
@@ -3102,7 +3118,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 		return;
 	}
 
-	if (!fw) {
+	if (!fw || te->xproperty.window != FW_W(fw)) {
 		return;
 	}
 	startup_notification_property(fw, te->xproperty.atom);
@@ -3239,6 +3255,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 			XFree((char *)fw->wmhints);
 		}
 		setup_wm_hints(fw);
+		startup_notification_window_registered(fw);
 		startup_notification_window_observed(fw);
 		if (fw->wmhints == NULL) {
 			return;
@@ -3393,21 +3410,29 @@ HandleReparentNotify(const evh_args_t *ea)
 	if (!fw) {
 		return;
 	}
+	if (te->xreparent.window == FW_W_ICON_PIXMAP(fw) &&
+	    te->xreparent.window != FW_W(fw))
+		return;
 	if (te->xreparent.parent == Scr.Root) {
 		/* Ignore reparenting to the root window.  In some cases these
 		 * events are selected although the window is no longer
 		 * managed. */
 		return;
 	}
-	if (te->xreparent.parent != FW_W_FRAME(fw)) {
+	/* A watched leader already selects StructureNotify during capture, so
+	 * our own client-to-parent reparent can also arrive directly. */
+	if (te->xreparent.parent != FW_W_FRAME(fw) &&
+	    (te->xreparent.window != FW_W(fw) ||
+	     te->xreparent.parent != FW_W_PARENT(fw))) {
 		/* window was reparented by someone else, destroy the frame */
 		SetMapStateProp(fw, WithdrawnState);
 		EWMH_RestoreInitialStates(fw, te->type);
+		startup_notification_window_retiring(fw);
 		if (!IS_TEAR_OFF_MENU(fw)) {
 			XRemoveFromSaveSet(dpy, te->xreparent.window);
-			XSelectInput(dpy, te->xreparent.window, NoEventMask);
+			eventmask_select(te->xreparent.window, NoEventMask);
 		} else {
-			XSelectInput(dpy, te->xreparent.window, XEVMASK_MENUW);
+			eventmask_select(te->xreparent.window, XEVMASK_MENUW);
 		}
 		XSync(dpy, 0);
 		FWeedIfWindowEvents(dpy, FW_W_FRAME(fw), NULL, NULL);
@@ -3496,6 +3521,9 @@ HandleUnmapNotify(const evh_args_t *ea)
 			return;
 		}
 	}
+	if (te->xunmap.window == FW_W_ICON_PIXMAP(fw) &&
+	    te->xunmap.window != FW_W(fw))
+		return;
 	cw = FW_W(fw);
 	pw = FW_W_PARENT(fw);
 	if (te->xunmap.window == FW_W_FRAME(fw)) {
@@ -3544,9 +3572,10 @@ HandleUnmapNotify(const evh_args_t *ea)
 		} else {
 			RestoreWithdrawnLocation(fw, False, Scr.Root);
 		}
+		startup_notification_window_retiring(fw);
 		if (!IS_TEAR_OFF_MENU(fw)) {
 			XRemoveFromSaveSet(dpy, te->xunmap.window);
-			XSelectInput(dpy, te->xunmap.window, NoEventMask);
+			eventmask_select(te->xunmap.window, NoEventMask);
 		}
 		XSync(dpy, 0);
 		MyXUngrabServer(dpy);
@@ -4008,6 +4037,8 @@ HandleEvents(void)
 		module_config_dispatch_ready();
 		fvwm_stack_restack_publication_flush();
 		module_config_flush_one();
+		if (!isTerminated)
+			startup_notification_outer_boundary();
 		deferred_config_poll = module_config_pending();
 		if (events_next_event(dpy, &ev, True)) {
 			/* DV (19-Sep-2014): We mark events as invalid by
@@ -4239,6 +4270,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 				"module readiness snapshot limit exceeded");
 			return 0;
 		}
+		force_poll = force_poll ||
+			(outer_boundary && startup_notification_outer_pending());
 		num_fd = image_async_wait(readiness.descriptors,
 			readiness.module_count * 2 + EVENTS_MODULE_WATCH,
 			force_poll ? &poll_timeout : timeoutP,

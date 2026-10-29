@@ -88,8 +88,15 @@ ID at managed-window observation. Direct-ID and WM_HINTS changes are observed;
 malformed direct IDs do not fall back to another identity. Class fallback needs
 one unambiguous pending match and broadcasts its standard completion for other
 observers. Direct/group properties accept one optional final NUL, while rejecting
-embedded or double NULs. Late property changes on otherwise-unmanaged group
-leaders are outside this implementation. No inherited ID is written to a client.
+embedded or double NULs. Late group-ID changes are observed for already managed
+clients, including initially iconic clients. Group tracking is bounded to 256
+client bindings and 256 leaders; additional tracking is refused and counted as
+dropped when full. Unmanaged leaders retain only a reference-owned lifecycle
+subscription while clients depend on them, with property observation during
+pending launches. Last-reference release and destruction retire those claims;
+existing window event interests remain intact. No inherited ID is written to a
+client, and a destroyed leader cannot identify a later reused XID without a fresh
+hints/lifecycle binding.
 The *FvwmMFL*(1) `startups` query exposes the same bounded activity inventory.
 
 == OPEN A FOLDER IN THE NATIVE BROWSER

@@ -1,0 +1,3593 @@
+{
+  "base": {
+    "pr": 299,
+    "commit": "9cde299b2efb8a002ce88999ad8db13a009bfa0c",
+    "reviewed_tree": "3e7b6cf66209b66b527f7b6782feedfdb66c3d85",
+    "signature_and_author_dco": "canonical GitHub verified",
+    "branches": "retired"
+  },
+  "candidate": {
+    "branch": "codex/r1-startup-group-events",
+    "source_closure": "8614edc47eebe49d05bbc0bcf650c7552986b74fd8fe1bc8803c6cd89b607431",
+    "input_files": 578,
+    "changed_runtime_inputs": {
+      "doc/FvwmDesktop.adoc": {
+        "sha256": "8c0f814b6c3cee23dea8b3023b664b39b1c7f01a7f755e1298815fe74d465003",
+        "bytes": 52103
+      },
+      "doc/FvwmMFL.adoc": {
+        "sha256": "a4f3f3bd741b96e9c8909f1b8c267276cd286c602b7a399a20fb64f0f212bd41",
+        "bytes": 74072
+      },
+      "fvwm/add_window.c": {
+        "sha256": "ae92c7b83c658522df074d0dc263a49e47c833e4612b39a67727b8344779e7f3",
+        "bytes": 94114
+      },
+      "fvwm/colormaps.c": {
+        "sha256": "08136761a16f7ad5fcb6184db0f09e1c884f308f26f6687422b40b26ee28441d",
+        "bytes": 10463
+      },
+      "fvwm/eventmask.c": {
+        "sha256": "9103c397511fe61e8286199b7eb93a037878d8dafd0eab0f8be6407aa1c40fee",
+        "bytes": 3893
+      },
+      "fvwm/eventmask.h": {
+        "sha256": "7e3ac6a8e5240f922734a5763f7f208d6831471a850b7e43b0205cfb6cfb264b",
+        "bytes": 3833
+      },
+      "fvwm/events.c": {
+        "sha256": "dc97bd56d1489100a3e9398cc49516d39bc6a10be27b7e47bb5a310b0b7b355f",
+        "bytes": 133359
+      },
+      "fvwm/ewmh.c": {
+        "sha256": "2131dadbc25e2d2fa427925b7e8bc4e05eeb575eba687cd3784ef20c217d68b6",
+        "bytes": 55150
+      },
+      "fvwm/focus.c": {
+        "sha256": "36cc1b226a9d8dd4bea0b3f31ce86c2c2f047f7ebbbab0a67f8f4ffdbcb05503",
+        "bytes": 26131
+      },
+      "fvwm/icons.c": {
+        "sha256": "9aba512e0d1f6d6fffa8b5881a7ee901eef8cc33efa4b6c09edb001a585ba2a6",
+        "bytes": 75154
+      },
+      "fvwm/meson.build": {
+        "sha256": "e5b8b29fb2d222c4bb99a7bf52f07bb5bece7bb12a3c9eb3e429ddc1c32be109",
+        "bytes": 2176
+      },
+      "fvwm/startup_notification.c": {
+        "sha256": "c5f77bacddcf7a509b921142cbe7c1fd241811ab7a2f23ac458d334ad097e0c5",
+        "bytes": 18341
+      },
+      "fvwm/startup_notification.h": {
+        "sha256": "7a2ecab56a1cc7b954451fe063bc6f14a535332660f865d98bf1a89752d89c81",
+        "bytes": 1076
+      },
+      "fvwm/virtual.c": {
+        "sha256": "cc5beb9be8efbd0f4bfdb1a85284c5cb4344b24b05fcf94b1830964b32117c49",
+        "bytes": 72267
+      },
+      "libs/FEvent.c": {
+        "sha256": "546bf5ba6db1186ad2cc3a0391991a628d2e9a14ed5fafe0be0b83b1f4ac30e5",
+        "bytes": 19612
+      },
+      "libs/FEvent.h": {
+        "sha256": "6a0a509fa52e695ecc3079c2f5962400c8bcd26001f4982938fc3d92ef4efb51",
+        "bytes": 9740
+      },
+      "libs/meson.build": {
+        "sha256": "46208a1be5d97db3d2e69513f5624f4b489749c03d377659f0902e03e77d45d8",
+        "bytes": 2355
+      },
+      "libs/startup_group_policy.c": {
+        "sha256": "2ea1c3741f6ca142dc840c7416f4474f1785f735199394c384d4d275f6962462",
+        "bytes": 9892
+      },
+      "libs/startup_group_policy.h": {
+        "sha256": "c3bc251ca08c843ff3da6decc16d603bc33418ce991fc2b72343341e3427acc4",
+        "bytes": 3441
+      },
+      "tests/live_x/startup_notification.py": {
+        "sha256": "1ef2551c95b9b79c7aa50438dfa805e8ff6a36d3aacd04bbcf46191ddfa98202",
+        "bytes": 79065
+      },
+      "tests/live_x/startup_notification_client.c": {
+        "sha256": "a80fc78f2229cdf6169db5a5eac68eb14248ffe1b96b077ed65b6197dbd37cab",
+        "bytes": 12301
+      },
+      "tests/meson.build": {
+        "sha256": "c63bc4df3b180931d3be846499a17d672565505daff954d0779010a28def98fa",
+        "bytes": 180670
+      },
+      "tests/test_queued_destroy.c": {
+        "sha256": "2be75c313e99c03163a6903c0e309325e91578cf5d6c97c3be6ff76d3b7d6b8b",
+        "bytes": 6564
+      },
+      "tests/test_startup_group_policy.c": {
+        "sha256": "caf74221e747be8b66b94188bc4488d7d025fde4dc702cac51a702a52b6cd6ad",
+        "bytes": 9100
+      }
+    },
+    "scope": "late group IDs, cooperative masks, lifetime retirement and bounded outer work; not whole #56 acceptance"
+  },
+  "native": {
+    "profile": "Linux ARM64 native GCC, Xvfb, scoped Clang ASan/UBSan core",
+    "final": {
+      "status": "passed",
+      "source_pre": "8614edc47eebe49d05bbc0bcf650c7552986b74fd8fe1bc8803c6cd89b607431",
+      "source_post": "8614edc47eebe49d05bbc0bcf650c7552986b74fd8fe1bc8803c6cd89b607431",
+      "commands": [
+        {
+          "label": "build05",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "tests/test-queued-destroy",
+            "tests/test-expose-queue",
+            "tests/test-resize-merge-queue",
+            "tests/test-fevent-hints"
+          ],
+          "exit": 0,
+          "seconds": 0.4011901029998626
+        },
+        {
+          "label": "queued-destroy",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-queued-destroy"
+          ],
+          "exit": 0,
+          "seconds": 0.0013085919999866746
+        },
+        {
+          "label": "expose-queue",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-expose-queue"
+          ],
+          "exit": 0,
+          "seconds": 0.0006400039997060958
+        },
+        {
+          "label": "resize-merge-queue",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-resize-merge-queue"
+          ],
+          "exit": 0,
+          "seconds": 0.000686671000039496
+        },
+        {
+          "label": "fevent-hints",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-fevent-hints"
+          ],
+          "exit": 0,
+          "seconds": 0.00042866900002991315
+        },
+        {
+          "label": "groups-x05",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/startup_notification.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--client",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "--startup-helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "--mode",
+            "groups",
+            "--profiles",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/groups05"
+          ],
+          "exit": 0,
+          "seconds": 2.4319555699999
+        },
+        {
+          "label": "protocol-x05",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/startup_notification.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--client",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "--startup-helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "--mode",
+            "protocol",
+            "--profiles",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/protocol05"
+          ],
+          "exit": 0,
+          "seconds": 5.453944258999854
+        },
+        {
+          "label": "san-configure05",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "/tmp/fvwm-module-waits-20261015/source"
+          ],
+          "exit": 0,
+          "seconds": 1.0793128780001098
+        },
+        {
+          "label": "san-build05",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "fvwm3",
+            "tests/test-queued-destroy"
+          ],
+          "exit": 0,
+          "seconds": 2.068258918000083
+        },
+        {
+          "label": "san-queued-destroy",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-queued-destroy"
+          ],
+          "exit": 0,
+          "seconds": 0.007021671000075003
+        },
+        {
+          "label": "san-groups-x05",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/startup_notification.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/san-view",
+            "--client",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "--startup-helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "--mode",
+            "groups",
+            "--profiles",
+            "slate-dark",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/san-groups05"
+          ],
+          "exit": 0,
+          "seconds": 2.9948910560001423
+        }
+      ],
+      "core_sha256": "3132ea1726e897d45f207568aad46d307a83297259b560587f56927b1dd09394",
+      "san_core_sha256": "308658f3e392c3fc4b14cb61a3f69b89d030d33a365733eac960049b6258524b",
+      "client_sha256": "661a3797030d89a389cbd470a68d65b62b2cf3fb75587f62494d1546246727b0",
+      "kernel": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux"
+    },
+    "policy_commands": [
+      {
+        "label": "compiler",
+        "command": [
+          "cc",
+          "--version"
+        ],
+        "exit": 0,
+        "seconds": 0.0030093129998931545
+      },
+      {
+        "label": "configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "/tmp/fvwm-module-waits-20261015/source"
+        ],
+        "exit": 0,
+        "seconds": 1.3006214540000656
+      },
+      {
+        "label": "build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "fvwm3",
+          "tests/test-startup-group-policy",
+          "tests/test-startup-notification-policy"
+        ],
+        "exit": 0,
+        "seconds": 2.040734345999681
+      },
+      {
+        "label": "group-unit",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-startup-group-policy"
+        ],
+        "exit": 0,
+        "seconds": 0.0007101719997990585
+      },
+      {
+        "label": "startup-unit",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-startup-notification-policy"
+        ],
+        "exit": 0,
+        "seconds": 0.0007907970002634102
+      },
+      {
+        "label": "group-san-build",
+        "command": [
+          "cc",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-g",
+          "-O1",
+          "-UNDEBUG",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-I/tmp/fvwm-module-waits-20261015/source",
+          "/tmp/fvwm-module-waits-20261015/source/tests/test_startup_group_policy.c",
+          "/tmp/fvwm-module-waits-20261015/source/libs/startup_group_policy.c",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/group-policy-san"
+        ],
+        "exit": 0,
+        "seconds": 0.20322095700021237
+      },
+      {
+        "label": "group-san",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/group-policy-san"
+        ],
+        "exit": 0,
+        "seconds": 0.005007410999951389
+      }
+    ],
+    "results": {
+      "groups05": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/groups05/startup-7528cy7j/groups-slate-dark/result.json",
+        "sha256": "28661c6304b45276cb54f077ac155972484750e5a143373c254a745e907cb4a9",
+        "status": "passed",
+        "cases": {
+          "late_unmanaged_group_property": {
+            "leader": 6291458,
+            "dependent": 6291459,
+            "initial_class_completion": {
+              "id": "fixture-group-dfb8b3a6a325-initial-class",
+              "name": "fixture-group-dfb8b3a6a325-initial-class",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "GroupMapBarrier97fe756c",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 3
+            },
+            "mapped": {
+              "map": {
+                "window": "0x600003"
+              }
+            },
+            "before_late_property": {
+              "id": "fixture-group-dfb8b3a6a325-late",
+              "name": "fixture-group-dfb8b3a6a325-late",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "pending",
+              "window": 0,
+              "age_ms": 0
+            },
+            "expected": "window-observed",
+            "id": "fixture-group-dfb8b3a6a325-late",
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-late",
+              "name": "fixture-group-dfb8b3a6a325-late",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 1
+            }
+          },
+          "preexisting_binding_new_pending_epoch": {
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-rescan",
+              "name": "fixture-group-dfb8b3a6a325-rescan",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 0
+            },
+            "other_launch": {
+              "checks": 11,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-holding",
+                "name": "fixture-group-dfb8b3a6a325-holding",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 124
+              }
+            },
+            "idle": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "last_reference_released": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "shared_leader_reference_lifetime": {
+            "first": {
+              "id": "fixture-group-dfb8b3a6a325-shared",
+              "name": "fixture-group-dfb8b3a6a325-shared",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291461,
+              "age_ms": 1
+            },
+            "retained": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "survivor": {
+              "id": "fixture-group-dfb8b3a6a325-survivor",
+              "name": "fixture-group-dfb8b3a6a325-survivor",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291462,
+              "age_ms": 1
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "hints_replacement_and_clear": {
+            "old_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            },
+            "new_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "old_group_refused": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-hints-replaced",
+                "name": "fixture-group-dfb8b3a6a325-hints-replaced",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 184
+              }
+            },
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-hints-replaced",
+              "name": "fixture-group-dfb8b3a6a325-hints-replaced",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291465,
+              "age_ms": 185
+            },
+            "cleared": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            },
+            "old_leader": 6291463,
+            "new_leader": 6291464
+          },
+          "direct_property_precedence_and_malformed_refusal": {
+            "direct_refused": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-direct-precedence",
+                "name": "fixture-group-dfb8b3a6a325-direct-precedence",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 121
+              }
+            },
+            "inherited": {
+              "id": "fixture-group-dfb8b3a6a325-direct-precedence",
+              "name": "fixture-group-dfb8b3a6a325-direct-precedence",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291467,
+              "age_ms": 121
+            },
+            "malformed_refused": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-malformed-direct",
+                "name": "fixture-group-dfb8b3a6a325-malformed-direct",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 124
+              }
+            },
+            "recovered": {
+              "id": "fixture-group-dfb8b3a6a325-malformed-direct",
+              "name": "fixture-group-dfb8b3a6a325-malformed-direct",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291468,
+              "age_ms": 125
+            }
+          },
+          "destroyed_leader_and_explicit_rebind": {
+            "old_leader": 6291469,
+            "fresh_leader": 6291471,
+            "destroyed": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-destroyed-leader",
+                "name": "fixture-group-dfb8b3a6a325-destroyed-leader",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 125
+              }
+            },
+            "unrelated_fresh_id": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-destroyed-leader",
+                "name": "fixture-group-dfb8b3a6a325-destroyed-leader",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 247
+              }
+            },
+            "rebound": {
+              "id": "fixture-group-dfb8b3a6a325-destroyed-leader",
+              "name": "fixture-group-dfb8b3a6a325-destroyed-leader",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291470,
+              "age_ms": 249
+            }
+          },
+          "reparented_unmanaged_leader_lifetime": {
+            "parent": 6291472,
+            "leader": 6291473,
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-reparented-leader",
+              "name": "fixture-group-dfb8b3a6a325-reparented-leader",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291474,
+              "age_ms": 2
+            },
+            "idle_claim": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "pending_after_destroy": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-after-reparent-destroy",
+                "name": "fixture-group-dfb8b3a6a325-after-reparent-destroy",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 125
+              }
+            }
+          },
+          "managed_leader_iconify_desk_and_live_withdraw": {
+            "mapped": {
+              "map": {
+                "window": "0x600013"
+              }
+            },
+            "base_mask": 14811184,
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-managed-transition",
+              "name": "fixture-group-dfb8b3a6a325-managed-transition",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291475,
+              "age_ms": 18
+            },
+            "unmanaged_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "after_withdraw": {
+              "id": "fixture-group-dfb8b3a6a325-live-withdraw",
+              "name": "fixture-group-dfb8b3a6a325-live-withdraw",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291476,
+              "age_ms": 2
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "real_foreign_reparent_retires_only_leader": {
+            "parent": 6291477,
+            "leader": 6291478,
+            "dependent": 6291479,
+            "managed_list_after": {
+              "leader_listed": 0,
+              "dependent_listed": 1
+            },
+            "retained": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "pending_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "after_reparent": {
+              "id": "fixture-group-dfb8b3a6a325-foreign-reparent",
+              "name": "fixture-group-dfb8b3a6a325-foreign-reparent",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291479,
+              "age_ms": 2
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "initially_iconic_group_registration": {
+            "initial": {
+              "window": 6291481,
+              "initial_state": 3
+            },
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-initial-iconic",
+              "name": "fixture-group-dfb8b3a6a325-initial-iconic",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291481,
+              "age_ms": 3
+            }
+          },
+          "override_redirect_latest_base_mask_preserved": {
+            "active": {
+              "all_event_masks": 6422528,
+              "creator_event_mask": 0
+            },
+            "observed": {
+              "id": "fixture-group-dfb8b3a6a325-override-redirect",
+              "name": "fixture-group-dfb8b3a6a325-override-redirect",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291483,
+              "age_ms": 4
+            },
+            "released_to_latest_base": {
+              "all_event_masks": 2097152,
+              "creator_event_mask": 0
+            }
+          },
+          "more_than_one_outer_budget_progresses": {
+            "observed": [
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-00",
+                "name": "fixture-group-dfb8b3a6a325-batch-00",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291485,
+                "age_ms": 7
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-01",
+                "name": "fixture-group-dfb8b3a6a325-batch-01",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291487,
+                "age_ms": 8
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-02",
+                "name": "fixture-group-dfb8b3a6a325-batch-02",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291489,
+                "age_ms": 8
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-03",
+                "name": "fixture-group-dfb8b3a6a325-batch-03",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291491,
+                "age_ms": 9
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-04",
+                "name": "fixture-group-dfb8b3a6a325-batch-04",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291493,
+                "age_ms": 9
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-05",
+                "name": "fixture-group-dfb8b3a6a325-batch-05",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291495,
+                "age_ms": 10
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-06",
+                "name": "fixture-group-dfb8b3a6a325-batch-06",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291497,
+                "age_ms": 11
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-07",
+                "name": "fixture-group-dfb8b3a6a325-batch-07",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291499,
+                "age_ms": 12
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-08",
+                "name": "fixture-group-dfb8b3a6a325-batch-08",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291501,
+                "age_ms": 13
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-09",
+                "name": "fixture-group-dfb8b3a6a325-batch-09",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291503,
+                "age_ms": 13
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-10",
+                "name": "fixture-group-dfb8b3a6a325-batch-10",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291505,
+                "age_ms": 13
+              },
+              {
+                "id": "fixture-group-dfb8b3a6a325-batch-11",
+                "name": "fixture-group-dfb8b3a6a325-batch-11",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291507,
+                "age_ms": 14
+              }
+            ],
+            "limit": "12 groups demonstrate eventual progress; exact per-turn budget is pure-policy coverage"
+          },
+          "synthetic_destroy_preserves_managed_group": {
+            "leader": 6291508,
+            "dependent": 6291509,
+            "watched": {
+              "all_event_masks": 14811184,
+              "creator_event_mask": 0
+            },
+            "after_synthetic": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-synthetic-managed-destroy",
+                "name": "fixture-group-dfb8b3a6a325-synthetic-managed-destroy",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 126
+              }
+            },
+            "real_id_observed": {
+              "id": "fixture-group-dfb8b3a6a325-synthetic-managed-destroy",
+              "name": "fixture-group-dfb8b3a6a325-synthetic-managed-destroy",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291508,
+              "age_ms": 134
+            }
+          },
+          "foreign_icon_alias_destroy_preserves_managed_owner": {
+            "leader": 6291510,
+            "icon_owner": 6291511,
+            "dependent": 6291512,
+            "before_alias": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "alias_mask": 4325376,
+            "pending": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-dfb8b3a6a325-foreign-icon-alias",
+                "name": "fixture-group-dfb8b3a6a325-foreign-icon-alias",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 131
+              }
+            },
+            "limit": "known internal/icon-context exclusions may retire the claim before destruction"
+          },
+          "actual_group_expiry_before_query": {
+            "status": "skipped",
+            "reason": "lead selects --mode groups --expiry once; no theme repetition"
+          }
+        },
+        "cleanup_failures": [],
+        "failure": null,
+        "owned_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "native_waits": {
+          "sender": 0
+        },
+        "binaries": {
+          "core": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "sha256": "3132ea1726e897d45f207568aad46d307a83297259b560587f56927b1dd09394"
+          },
+          "Desktop": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "sha256": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad"
+          },
+          "worker": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+            "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80"
+          },
+          "MFL": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "sha256": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06"
+          },
+          "Form": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "sha256": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95"
+          },
+          "capture": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+            "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+          },
+          "helper": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602"
+          },
+          "client": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "sha256": "661a3797030d89a389cbd470a68d65b62b2cf3fb75587f62494d1546246727b0"
+          }
+        },
+        "source_sha256": {
+          "tests/live_x/startup_notification.py": "1ef2551c95b9b79c7aa50438dfa805e8ff6a36d3aacd04bbcf46191ddfa98202",
+          "tests/live_x/startup_notification_client.c": "a80fc78f2229cdf6169db5a5eac68eb14248ffe1b96b077ed65b6197dbd37cab",
+          "tests/live_x/directory_roles_live.py": "cd4fd5b293c52986d39b919fa16cfd20d4453b84a9a6de8c8e0d2f7eaefa9fac",
+          "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+          "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+          "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+          "tests/live_x/inspector_live.py": "145ca7565aecb873d17e8e5ebb6708c5da536e58e76e9c8e2edd4775dd2d764a",
+          "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+          "dev-docs/decisions/STARTUP-NOTIFICATION-2026-10-28.md": "3e4f491883e9196613383b33d36fdac3f5589d14134a4a9e25063a2b67cdf2cd"
+        },
+        "runtime_evidence": {
+          "status": "complete",
+          "total_bytes": 58995,
+          "reserved_bytes": 58995,
+          "files": {
+            "config.fvwm": {
+              "required": true,
+              "size_bytes": 156,
+              "mode": "0644",
+              "copied_bytes": 156,
+              "sha256": "1dff4e877802e25110eb5a9fc7110d60a6829ce5207f19885b29a041fe68317e",
+              "status": "copied"
+            },
+            "user/local.config": {
+              "required": true,
+              "size_bytes": 114,
+              "mode": "0644",
+              "copied_bytes": 114,
+              "sha256": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+              "status": "copied"
+            },
+            "FvwmMFL.log": {
+              "required": false,
+              "size_bytes": 26,
+              "mode": "0644",
+              "copied_bytes": 26,
+              "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+              "status": "copied"
+            },
+            "core.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "data/applications/fixture-false.desktop": {
+              "required": false,
+              "size_bytes": 265,
+              "mode": "0644",
+              "copied_bytes": 265,
+              "sha256": "d311c1babf82c9bb8959f0f8f53128cd6ab07cb5461020fb777eb6c2b2892f94",
+              "status": "copied"
+            },
+            "data/applications/fixture-legacy.desktop": {
+              "required": false,
+              "size_bytes": 248,
+              "mode": "0644",
+              "copied_bytes": 248,
+              "sha256": "88891ceceafe3586f2ba40a43cd0ada1d93f94144eb80d0ae243534073bbf71a",
+              "status": "copied"
+            },
+            "data/applications/fixture-ordinary.desktop": {
+              "required": false,
+              "size_bytes": 223,
+              "mode": "0644",
+              "copied_bytes": 223,
+              "sha256": "05efe1dbe29f00feb9f97a35044e86fc435adcd98be328990e10290d04c00fbd",
+              "status": "copied"
+            },
+            "data/applications/fixture-true.desktop": {
+              "required": false,
+              "size_bytes": 261,
+              "mode": "0644",
+              "copied_bytes": 261,
+              "sha256": "1daad27fd09fcfe45a9a81f8b8f9fd243581b3ffddbd44c3acdb5c3f35515dbf",
+              "status": "copied"
+            },
+            "native-records/module-885.json": {
+              "required": false,
+              "size_bytes": 194,
+              "mode": "0644",
+              "copied_bytes": 194,
+              "sha256": "99021fa222219190569bfc241d6cacc640375f8d65ba1eb34d60d4cabf49c9d5",
+              "status": "copied"
+            },
+            "native-records/module-885.jsonl": {
+              "required": false,
+              "size_bytes": 56296,
+              "mode": "0644",
+              "copied_bytes": 56296,
+              "sha256": "85088d6b616174e22566b3594f8af64d1d1f8bbb43669bd9d76c1dde2236d8fc",
+              "status": "copied"
+            },
+            "native-records/stopped-885.json": {
+              "required": false,
+              "size_bytes": 38,
+              "mode": "0644",
+              "copied_bytes": 38,
+              "sha256": "5d22ad4598adbe03a1cceae0d7f254517605f7f5c4deca79afe33bab49e823de",
+              "status": "copied"
+            },
+            "sender.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "xserver.log": {
+              "required": false,
+              "size_bytes": 1174,
+              "mode": "0644",
+              "copied_bytes": 1174,
+              "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+              "status": "copied"
+            }
+          },
+          "issues": [],
+          "bounds": {
+            "per_file_bytes": 4194304,
+            "total_bytes": 16777216,
+            "scanned_entries": 512
+          },
+          "excluded_scopes": [
+            "ELFs",
+            "launch-copy",
+            "modules",
+            "caches",
+            "SDKs",
+            "Xauthority and other unselected runtime files"
+          ],
+          "scanned_entries": 21
+        }
+      },
+      "protocol05": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/protocol05/startup-3fhgjiy1/protocol-slate-dark/result.json",
+        "sha256": "321bd51bc04c4abaf2894b33c7c663dd552bad811c680ab8d1e53ad6445bf681",
+        "status": "passed",
+        "cases": {
+          "fragmented_interleaved_utf8": {
+            "first": {
+              "id": "fixture-0dbb3c93d492-a",
+              "name": "\u00c9diteur \"quoted\" \\ literal",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "pending",
+              "window": 0,
+              "age_ms": 0
+            },
+            "second": {
+              "id": "fixture-0dbb3c93d492-b",
+              "name": "Interleaved second",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "pending",
+              "window": 0,
+              "age_ms": 0
+            },
+            "stable_age_generation": [
+              "0000000000000e1b2a3804a20000037e0000000000000003",
+              "0000000000000e1b2a3804a20000037e0000000000000003"
+            ]
+          },
+          "dead_producer_other_remove_terminal_retention": {
+            "id": "fixture-0dbb3c93d492-a",
+            "name": "\u00c9diteur \"quoted\" \\ literal",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "",
+            "state": "protocol-ended",
+            "window": 0,
+            "age_ms": 29
+          },
+          "invisible_orphan_change_merged": {
+            "id": "fixture-0dbb3c93d492-orphan",
+            "name": "Later new",
+            "icon": "",
+            "application_id": "",
+            "wmclass": "OrphanClass",
+            "state": "pending",
+            "window": 0,
+            "age_ms": 0
+          },
+          "nonzero_padding_after_nul_ignored": "fixture-0dbb3c93d492-padding",
+          "ordinary_client_untracked": 6291458,
+          "direct_map_and_property": {
+            "direct": 6291459,
+            "property": 6291460
+          },
+          "direct_optional_terminal_nul": 6291461,
+          "group_at_map_hints_change_no_malformed_inheritance": {
+            "group": 6291463,
+            "malformed": 6291465,
+            "session_leader": 6291466,
+            "hints_change": 6291467,
+            "still_pending": "fixture-0dbb3c93d492-malformed-direct"
+          },
+          "group_terminal_nul_and_bad_nul_no_inheritance": {
+            "group": 6291470,
+            "malformed_slots": [
+              26,
+              27
+            ]
+          },
+          "exact_latin1_and_competing_class": {
+            "latin1": 6291475,
+            "ambiguous": 6291476,
+            "unique_after_remove": 6291477,
+            "unique_public_remove": [
+              {
+                "producer": 2097575,
+                "text": "remove: ID=\"fixture-0dbb3c93d492-latin1-class\""
+              }
+            ],
+            "resolved_public_remove": [
+              {
+                "producer": 2097634,
+                "text": "remove: ID=\"fixture-0dbb3c93d492-class-b\""
+              }
+            ]
+          },
+          "real_expiry": {
+            "status": "skipped",
+            "reason": "lead selects --expiry once; no theme repetition"
+          },
+          "malformed_and_oversize_refused": {
+            "before": {
+              "dropped": 0,
+              "malformed": 0,
+              "partial_expired": 0
+            },
+            "after": {
+              "dropped": 0,
+              "malformed": 52,
+              "partial_expired": 0
+            }
+          },
+          "partial_capacity_and_expiry": {
+            "saturated": {
+              "dropped": 1,
+              "malformed": 52,
+              "partial_expired": 0
+            },
+            "expired": {
+              "dropped": 1,
+              "malformed": 52,
+              "partial_expired": 32
+            }
+          },
+          "record_capacity_pagination_no_eviction": {
+            "startups": [
+              {
+                "id": "fixture-0dbb3c93d492-b",
+                "name": "Interleaved second",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5299
+              },
+              {
+                "id": "fixture-0dbb3c93d492-a",
+                "name": "\u00c9diteur \"quoted\" \\ literal",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "protocol-ended",
+                "window": 0,
+                "age_ms": 5299
+              },
+              {
+                "id": "fixture-0dbb3c93d492-orphan",
+                "name": "Later new",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "OrphanClass",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5268
+              },
+              {
+                "id": "fixture-0dbb3c93d492-padding",
+                "name": "NUL padding",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5268
+              },
+              {
+                "id": "fixture-0dbb3c93d492-direct",
+                "name": "fixture-0dbb3c93d492-direct",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291459,
+                "age_ms": 5264
+              },
+              {
+                "id": "fixture-0dbb3c93d492-property",
+                "name": "fixture-0dbb3c93d492-property",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291460,
+                "age_ms": 5200
+              },
+              {
+                "id": "fixture-0dbb3c93d492-single-final-nul",
+                "name": "fixture-0dbb3c93d492-single-final-nul",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291461,
+                "age_ms": 5199
+              },
+              {
+                "id": "fixture-0dbb3c93d492-group",
+                "name": "fixture-0dbb3c93d492-group",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291463,
+                "age_ms": 5136
+              },
+              {
+                "id": "fixture-0dbb3c93d492-malformed-direct",
+                "name": "fixture-0dbb3c93d492-malformed-direct",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5132
+              },
+              {
+                "id": "fixture-0dbb3c93d492-hints-change",
+                "name": "fixture-0dbb3c93d492-hints-change",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291467,
+                "age_ms": 5121
+              },
+              {
+                "id": "fixture-0dbb3c93d492-group-final-nul",
+                "name": "fixture-0dbb3c93d492-group-final-nul",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291470,
+                "age_ms": 5118
+              },
+              {
+                "id": "fixture-0dbb3c93d492-bad-nul-26",
+                "name": "fixture-0dbb3c93d492-bad-nul-26",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5113
+              },
+              {
+                "id": "fixture-0dbb3c93d492-bad-nul-27",
+                "name": "fixture-0dbb3c93d492-bad-nul-27",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 5109
+              },
+              {
+                "id": "fixture-0dbb3c93d492-latin1-class",
+                "name": "fixture-0dbb3c93d492-latin1-class",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "Caf\u00e9Fixture",
+                "state": "window-observed",
+                "window": 6291475,
+                "age_ms": 5104
+              },
+              {
+                "id": "fixture-0dbb3c93d492-class-a",
+                "name": "fixture-0dbb3c93d492-class-a",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "StartupCompetition",
+                "state": "protocol-ended",
+                "window": 0,
+                "age_ms": 5099
+              },
+              {
+                "id": "fixture-0dbb3c93d492-class-b",
+                "name": "fixture-0dbb3c93d492-class-b",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "StartupCompetition",
+                "state": "window-observed",
+                "window": 6291477,
+                "age_ms": 5098
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-0",
+                "name": "Capacity 0",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 36
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-1",
+                "name": "Capacity 1",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 36
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-2",
+                "name": "Capacity 2",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 35
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-3",
+                "name": "Capacity 3",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 35
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-4",
+                "name": "Capacity 4",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 34
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-5",
+                "name": "Capacity 5",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 34
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-6",
+                "name": "Capacity 6",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 34
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-7",
+                "name": "Capacity 7",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 33
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-8",
+                "name": "Capacity 8",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 33
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-9",
+                "name": "Capacity 9",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 33
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-10",
+                "name": "Capacity 10",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 32
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-11",
+                "name": "Capacity 11",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 32
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-12",
+                "name": "Capacity 12",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 31
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-13",
+                "name": "Capacity 13",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 31
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-14",
+                "name": "Capacity 14",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 30
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-15",
+                "name": "Capacity 15",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 30
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-16",
+                "name": "Capacity 16",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 29
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-17",
+                "name": "Capacity 17",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 29
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-18",
+                "name": "Capacity 18",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 28
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-19",
+                "name": "Capacity 19",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 28
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-20",
+                "name": "Capacity 20",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 27
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-21",
+                "name": "Capacity 21",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 27
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-22",
+                "name": "Capacity 22",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 26
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-23",
+                "name": "Capacity 23",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 26
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-24",
+                "name": "Capacity 24",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 25
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-25",
+                "name": "Capacity 25",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 25
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-26",
+                "name": "Capacity 26",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 24
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-27",
+                "name": "Capacity 27",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 24
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-28",
+                "name": "Capacity 28",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 23
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-29",
+                "name": "Capacity 29",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 23
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-30",
+                "name": "Capacity 30",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 22
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-31",
+                "name": "Capacity 31",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 22
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-32",
+                "name": "Capacity 32",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 22
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-33",
+                "name": "Capacity 33",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 22
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-34",
+                "name": "Capacity 34",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 21
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-35",
+                "name": "Capacity 35",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 21
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-36",
+                "name": "Capacity 36",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 20
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-37",
+                "name": "Capacity 37",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 20
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-38",
+                "name": "Capacity 38",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 19
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-39",
+                "name": "Capacity 39",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 19
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-40",
+                "name": "Capacity 40",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 19
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-41",
+                "name": "Capacity 41",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 18
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-42",
+                "name": "Capacity 42",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 18
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-43",
+                "name": "Capacity 43",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 17
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-44",
+                "name": "Capacity 44",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 17
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-45",
+                "name": "Capacity 45",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 17
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-46",
+                "name": "Capacity 46",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 16
+              },
+              {
+                "id": "fixture-0dbb3c93d492-capacity-47",
+                "name": "Capacity 47",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 16
+              }
+            ],
+            "counters": {
+              "dropped": 33,
+              "malformed": 52,
+              "partial_expired": 32
+            },
+            "limits": {
+              "records": 64,
+              "streams": 32,
+              "message_bytes": 4096,
+              "partial_ms": 5000,
+              "pending_ms": 60000,
+              "retention_ms": 60000
+            },
+            "state": "observed",
+            "scope": "core-startup-activity",
+            "generation": "0000000000000e1b2a3804a20000037e00000000000000c1",
+            "offset": 0,
+            "total": 64,
+            "limit": 8,
+            "more": true,
+            "next_offset": 8
+          }
+        },
+        "cleanup_failures": [],
+        "failure": null,
+        "owned_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "native_waits": {
+          "producer-a": 0,
+          "producer-b": 0,
+          "sender": 0
+        },
+        "binaries": {
+          "core": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "sha256": "3132ea1726e897d45f207568aad46d307a83297259b560587f56927b1dd09394"
+          },
+          "Desktop": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "sha256": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad"
+          },
+          "worker": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+            "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80"
+          },
+          "MFL": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "sha256": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06"
+          },
+          "Form": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "sha256": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95"
+          },
+          "capture": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+            "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+          },
+          "helper": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602"
+          },
+          "client": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "sha256": "661a3797030d89a389cbd470a68d65b62b2cf3fb75587f62494d1546246727b0"
+          }
+        },
+        "source_sha256": {
+          "tests/live_x/startup_notification.py": "1ef2551c95b9b79c7aa50438dfa805e8ff6a36d3aacd04bbcf46191ddfa98202",
+          "tests/live_x/startup_notification_client.c": "a80fc78f2229cdf6169db5a5eac68eb14248ffe1b96b077ed65b6197dbd37cab",
+          "tests/live_x/directory_roles_live.py": "cd4fd5b293c52986d39b919fa16cfd20d4453b84a9a6de8c8e0d2f7eaefa9fac",
+          "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+          "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+          "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+          "tests/live_x/inspector_live.py": "145ca7565aecb873d17e8e5ebb6708c5da536e58e76e9c8e2edd4775dd2d764a",
+          "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+          "dev-docs/decisions/STARTUP-NOTIFICATION-2026-10-28.md": "3e4f491883e9196613383b33d36fdac3f5589d14134a4a9e25063a2b67cdf2cd"
+        },
+        "runtime_evidence": {
+          "status": "complete",
+          "total_bytes": 49058,
+          "reserved_bytes": 49058,
+          "files": {
+            "config.fvwm": {
+              "required": true,
+              "size_bytes": 156,
+              "mode": "0644",
+              "copied_bytes": 156,
+              "sha256": "b4fd1b5db6a05bb3d43225b2039be70bcf0bc2b0795ed08672d5479de2a23a95",
+              "status": "copied"
+            },
+            "user/local.config": {
+              "required": true,
+              "size_bytes": 114,
+              "mode": "0644",
+              "copied_bytes": 114,
+              "sha256": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+              "status": "copied"
+            },
+            "FvwmMFL.log": {
+              "required": false,
+              "size_bytes": 26,
+              "mode": "0644",
+              "copied_bytes": 26,
+              "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+              "status": "copied"
+            },
+            "core.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "data/applications/fixture-false.desktop": {
+              "required": false,
+              "size_bytes": 265,
+              "mode": "0644",
+              "copied_bytes": 265,
+              "sha256": "e2aee281446ca29f2100cc00e28076fec2196cb4d324a65572704dd01855927f",
+              "status": "copied"
+            },
+            "data/applications/fixture-legacy.desktop": {
+              "required": false,
+              "size_bytes": 248,
+              "mode": "0644",
+              "copied_bytes": 248,
+              "sha256": "9f95b3d55b8f5aeea3f91fdf87c5b5451fc260f2e7f67f5a54c845fc427ddc22",
+              "status": "copied"
+            },
+            "data/applications/fixture-ordinary.desktop": {
+              "required": false,
+              "size_bytes": 223,
+              "mode": "0644",
+              "copied_bytes": 223,
+              "sha256": "fa808ea4c9d3b7cdcf27d2bc44cb8b4f3651701b9d1a95dcd6d64b05910cd48e",
+              "status": "copied"
+            },
+            "data/applications/fixture-true.desktop": {
+              "required": false,
+              "size_bytes": 261,
+              "mode": "0644",
+              "copied_bytes": 261,
+              "sha256": "0cfa2c068a764691d592755c25d12aa2168020a020e087beadaa9939906e2553",
+              "status": "copied"
+            },
+            "native-records/module-895.json": {
+              "required": false,
+              "size_bytes": 194,
+              "mode": "0644",
+              "copied_bytes": 194,
+              "sha256": "073b163cb93b0b4b159288361b22d4a6fbb4d439d9e6fb771ba9372e41a19c69",
+              "status": "copied"
+            },
+            "native-records/module-895.jsonl": {
+              "required": false,
+              "size_bytes": 46359,
+              "mode": "0644",
+              "copied_bytes": 46359,
+              "sha256": "08e80bdd977a97fdcf75a715bd2a4c3e16645f641091e7607083d843e92c7ee0",
+              "status": "copied"
+            },
+            "native-records/stopped-895.json": {
+              "required": false,
+              "size_bytes": 38,
+              "mode": "0644",
+              "copied_bytes": 38,
+              "sha256": "71ab3c4b5615c35c33fcc57df1f0b33d08fb091d97bbf2bf2e2466bc9e4cc4ec",
+              "status": "copied"
+            },
+            "producer-a.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "producer-b.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "sender.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "xserver.log": {
+              "required": false,
+              "size_bytes": 1174,
+              "mode": "0644",
+              "copied_bytes": 1174,
+              "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+              "status": "copied"
+            }
+          },
+          "issues": [],
+          "bounds": {
+            "per_file_bytes": 4194304,
+            "total_bytes": 16777216,
+            "scanned_entries": 512
+          },
+          "excluded_scopes": [
+            "ELFs",
+            "launch-copy",
+            "modules",
+            "caches",
+            "SDKs",
+            "Xauthority and other unselected runtime files"
+          ],
+          "scanned_entries": 23
+        }
+      },
+      "san-groups05": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/san-groups05/startup-ohxwob8q/groups-slate-dark/result.json",
+        "sha256": "402a2fab98f712527aa887e0a33d6e2a60810e23700020bbc12be5a1eed9e66c",
+        "status": "passed",
+        "cases": {
+          "late_unmanaged_group_property": {
+            "leader": 6291458,
+            "dependent": 6291459,
+            "initial_class_completion": {
+              "id": "fixture-group-be5c04601c94-initial-class",
+              "name": "fixture-group-be5c04601c94-initial-class",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "GroupMapBarrier95f0a719",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 6
+            },
+            "mapped": {
+              "map": {
+                "window": "0x600003"
+              }
+            },
+            "before_late_property": {
+              "id": "fixture-group-be5c04601c94-late",
+              "name": "fixture-group-be5c04601c94-late",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "pending",
+              "window": 0,
+              "age_ms": 0
+            },
+            "expected": "window-observed",
+            "id": "fixture-group-be5c04601c94-late",
+            "observed": {
+              "id": "fixture-group-be5c04601c94-late",
+              "name": "fixture-group-be5c04601c94-late",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 0
+            }
+          },
+          "preexisting_binding_new_pending_epoch": {
+            "observed": {
+              "id": "fixture-group-be5c04601c94-rescan",
+              "name": "fixture-group-be5c04601c94-rescan",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291459,
+              "age_ms": 0
+            },
+            "other_launch": {
+              "checks": 11,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-holding",
+                "name": "fixture-group-be5c04601c94-holding",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 124
+              }
+            },
+            "idle": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "last_reference_released": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "shared_leader_reference_lifetime": {
+            "first": {
+              "id": "fixture-group-be5c04601c94-shared",
+              "name": "fixture-group-be5c04601c94-shared",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291461,
+              "age_ms": 1
+            },
+            "retained": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "survivor": {
+              "id": "fixture-group-be5c04601c94-survivor",
+              "name": "fixture-group-be5c04601c94-survivor",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291462,
+              "age_ms": 1
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "hints_replacement_and_clear": {
+            "old_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            },
+            "new_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "old_group_refused": {
+              "checks": 10,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-hints-replaced",
+                "name": "fixture-group-be5c04601c94-hints-replaced",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 184
+              }
+            },
+            "observed": {
+              "id": "fixture-group-be5c04601c94-hints-replaced",
+              "name": "fixture-group-be5c04601c94-hints-replaced",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291465,
+              "age_ms": 185
+            },
+            "cleared": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            },
+            "old_leader": 6291463,
+            "new_leader": 6291464
+          },
+          "direct_property_precedence_and_malformed_refusal": {
+            "direct_refused": {
+              "checks": 11,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-direct-precedence",
+                "name": "fixture-group-be5c04601c94-direct-precedence",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 122
+              }
+            },
+            "inherited": {
+              "id": "fixture-group-be5c04601c94-direct-precedence",
+              "name": "fixture-group-be5c04601c94-direct-precedence",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291467,
+              "age_ms": 123
+            },
+            "malformed_refused": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-malformed-direct",
+                "name": "fixture-group-be5c04601c94-malformed-direct",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 124
+              }
+            },
+            "recovered": {
+              "id": "fixture-group-be5c04601c94-malformed-direct",
+              "name": "fixture-group-be5c04601c94-malformed-direct",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291468,
+              "age_ms": 126
+            }
+          },
+          "destroyed_leader_and_explicit_rebind": {
+            "old_leader": 6291469,
+            "fresh_leader": 6291471,
+            "destroyed": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-destroyed-leader",
+                "name": "fixture-group-be5c04601c94-destroyed-leader",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 124
+              }
+            },
+            "unrelated_fresh_id": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-destroyed-leader",
+                "name": "fixture-group-be5c04601c94-destroyed-leader",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 248
+              }
+            },
+            "rebound": {
+              "id": "fixture-group-be5c04601c94-destroyed-leader",
+              "name": "fixture-group-be5c04601c94-destroyed-leader",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291470,
+              "age_ms": 250
+            }
+          },
+          "reparented_unmanaged_leader_lifetime": {
+            "parent": 6291472,
+            "leader": 6291473,
+            "observed": {
+              "id": "fixture-group-be5c04601c94-reparented-leader",
+              "name": "fixture-group-be5c04601c94-reparented-leader",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291474,
+              "age_ms": 3
+            },
+            "idle_claim": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "pending_after_destroy": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-after-reparent-destroy",
+                "name": "fixture-group-be5c04601c94-after-reparent-destroy",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 126
+              }
+            }
+          },
+          "managed_leader_iconify_desk_and_live_withdraw": {
+            "mapped": {
+              "map": {
+                "window": "0x600013"
+              }
+            },
+            "base_mask": 14811184,
+            "observed": {
+              "id": "fixture-group-be5c04601c94-managed-transition",
+              "name": "fixture-group-be5c04601c94-managed-transition",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291475,
+              "age_ms": 22
+            },
+            "unmanaged_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "after_withdraw": {
+              "id": "fixture-group-be5c04601c94-live-withdraw",
+              "name": "fixture-group-be5c04601c94-live-withdraw",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291476,
+              "age_ms": 5
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "real_foreign_reparent_retires_only_leader": {
+            "parent": 6291477,
+            "leader": 6291478,
+            "dependent": 6291479,
+            "managed_list_after": {
+              "leader_listed": 0,
+              "dependent_listed": 1
+            },
+            "retained": {
+              "all_event_masks": 131072,
+              "creator_event_mask": 0
+            },
+            "pending_claim": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "after_reparent": {
+              "id": "fixture-group-be5c04601c94-foreign-reparent",
+              "name": "fixture-group-be5c04601c94-foreign-reparent",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291479,
+              "age_ms": 2
+            },
+            "final_release": {
+              "all_event_masks": 0,
+              "creator_event_mask": 0
+            }
+          },
+          "initially_iconic_group_registration": {
+            "initial": {
+              "window": 6291481,
+              "initial_state": 3
+            },
+            "observed": {
+              "id": "fixture-group-be5c04601c94-initial-iconic",
+              "name": "fixture-group-be5c04601c94-initial-iconic",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291481,
+              "age_ms": 4
+            }
+          },
+          "override_redirect_latest_base_mask_preserved": {
+            "active": {
+              "all_event_masks": 6422528,
+              "creator_event_mask": 0
+            },
+            "observed": {
+              "id": "fixture-group-be5c04601c94-override-redirect",
+              "name": "fixture-group-be5c04601c94-override-redirect",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291483,
+              "age_ms": 4
+            },
+            "released_to_latest_base": {
+              "all_event_masks": 2097152,
+              "creator_event_mask": 0
+            }
+          },
+          "more_than_one_outer_budget_progresses": {
+            "observed": [
+              {
+                "id": "fixture-group-be5c04601c94-batch-00",
+                "name": "fixture-group-be5c04601c94-batch-00",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291485,
+                "age_ms": 8
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-01",
+                "name": "fixture-group-be5c04601c94-batch-01",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291487,
+                "age_ms": 9
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-02",
+                "name": "fixture-group-be5c04601c94-batch-02",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291489,
+                "age_ms": 10
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-03",
+                "name": "fixture-group-be5c04601c94-batch-03",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291491,
+                "age_ms": 11
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-04",
+                "name": "fixture-group-be5c04601c94-batch-04",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291493,
+                "age_ms": 13
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-05",
+                "name": "fixture-group-be5c04601c94-batch-05",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291495,
+                "age_ms": 14
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-06",
+                "name": "fixture-group-be5c04601c94-batch-06",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291497,
+                "age_ms": 15
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-07",
+                "name": "fixture-group-be5c04601c94-batch-07",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291499,
+                "age_ms": 16
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-08",
+                "name": "fixture-group-be5c04601c94-batch-08",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291501,
+                "age_ms": 17
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-09",
+                "name": "fixture-group-be5c04601c94-batch-09",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291503,
+                "age_ms": 18
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-10",
+                "name": "fixture-group-be5c04601c94-batch-10",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291505,
+                "age_ms": 19
+              },
+              {
+                "id": "fixture-group-be5c04601c94-batch-11",
+                "name": "fixture-group-be5c04601c94-batch-11",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "window-observed",
+                "window": 6291507,
+                "age_ms": 20
+              }
+            ],
+            "limit": "12 groups demonstrate eventual progress; exact per-turn budget is pure-policy coverage"
+          },
+          "synthetic_destroy_preserves_managed_group": {
+            "leader": 6291508,
+            "dependent": 6291509,
+            "watched": {
+              "all_event_masks": 14811184,
+              "creator_event_mask": 0
+            },
+            "after_synthetic": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-synthetic-managed-destroy",
+                "name": "fixture-group-be5c04601c94-synthetic-managed-destroy",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 128
+              }
+            },
+            "real_id_observed": {
+              "id": "fixture-group-be5c04601c94-synthetic-managed-destroy",
+              "name": "fixture-group-be5c04601c94-synthetic-managed-destroy",
+              "icon": "",
+              "application_id": "",
+              "wmclass": "",
+              "state": "window-observed",
+              "window": 6291508,
+              "age_ms": 135
+            }
+          },
+          "foreign_icon_alias_destroy_preserves_managed_owner": {
+            "leader": 6291510,
+            "icon_owner": 6291511,
+            "dependent": 6291512,
+            "before_alias": {
+              "all_event_masks": 4325376,
+              "creator_event_mask": 0
+            },
+            "alias_mask": 4325376,
+            "pending": {
+              "checks": 9,
+              "interval_seconds": 0.12,
+              "observed": {
+                "id": "fixture-group-be5c04601c94-foreign-icon-alias",
+                "name": "fixture-group-be5c04601c94-foreign-icon-alias",
+                "icon": "",
+                "application_id": "",
+                "wmclass": "",
+                "state": "pending",
+                "window": 0,
+                "age_ms": 136
+              }
+            },
+            "limit": "known internal/icon-context exclusions may retire the claim before destruction"
+          },
+          "actual_group_expiry_before_query": {
+            "status": "skipped",
+            "reason": "lead selects --mode groups --expiry once; no theme repetition"
+          }
+        },
+        "cleanup_failures": [],
+        "failure": null,
+        "owned_waits": {
+          "Xvfb": 0,
+          "core": 0
+        },
+        "native_waits": {
+          "sender": 0
+        },
+        "binaries": {
+          "core": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/fvwm3",
+            "sha256": "308658f3e392c3fc4b14cb61a3f69b89d030d33a365733eac960049b6258524b"
+          },
+          "Desktop": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "sha256": "355224869bbded78a6f91487a2d64590c54f7d39a71febb8a7010f5ade48c2ad"
+          },
+          "worker": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+            "sha256": "8b9c8ddfe4a7092bcd0f1daef462c9400df493768559af817b04d14a173ddd80"
+          },
+          "MFL": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "sha256": "78be2217a1194a5a3371092ee5e1491c7a17d96730740785ded4297f54c49a06"
+          },
+          "Form": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+            "sha256": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95"
+          },
+          "capture": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+            "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+          },
+          "helper": {
+            "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-startup-launch",
+            "sha256": "4271e955a77c16a2930ef0fe4ced404524ab97a1588ad88e5bde56046f542602"
+          },
+          "client": {
+            "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/startup-client",
+            "sha256": "661a3797030d89a389cbd470a68d65b62b2cf3fb75587f62494d1546246727b0"
+          }
+        },
+        "source_sha256": {
+          "tests/live_x/startup_notification.py": "1ef2551c95b9b79c7aa50438dfa805e8ff6a36d3aacd04bbcf46191ddfa98202",
+          "tests/live_x/startup_notification_client.c": "a80fc78f2229cdf6169db5a5eac68eb14248ffe1b96b077ed65b6197dbd37cab",
+          "tests/live_x/directory_roles_live.py": "cd4fd5b293c52986d39b919fa16cfd20d4453b84a9a6de8c8e0d2f7eaefa9fac",
+          "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+          "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+          "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+          "tests/live_x/inspector_live.py": "145ca7565aecb873d17e8e5ebb6708c5da536e58e76e9c8e2edd4775dd2d764a",
+          "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+          "dev-docs/decisions/STARTUP-NOTIFICATION-2026-10-28.md": "3e4f491883e9196613383b33d36fdac3f5589d14134a4a9e25063a2b67cdf2cd"
+        },
+        "runtime_evidence": {
+          "status": "complete",
+          "total_bytes": 58102,
+          "reserved_bytes": 58102,
+          "files": {
+            "config.fvwm": {
+              "required": true,
+              "size_bytes": 156,
+              "mode": "0644",
+              "copied_bytes": 156,
+              "sha256": "9df7576ab4e4287891b0aac694dabf42cfe87bb0badcee840c8a8457b858ae57",
+              "status": "copied"
+            },
+            "user/local.config": {
+              "required": true,
+              "size_bytes": 114,
+              "mode": "0644",
+              "copied_bytes": 114,
+              "sha256": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+              "status": "copied"
+            },
+            "FvwmMFL.log": {
+              "required": false,
+              "size_bytes": 26,
+              "mode": "0644",
+              "copied_bytes": 26,
+              "sha256": "3fd4d27e1259a89fea301b3eed38d178a8be4beb09ed8e45acba839f36b90f02",
+              "status": "copied"
+            },
+            "core.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "data/applications/fixture-false.desktop": {
+              "required": false,
+              "size_bytes": 265,
+              "mode": "0644",
+              "copied_bytes": 265,
+              "sha256": "222cc85baa79cf3510142e4183a68f4bec756cc94b0b362b52f1d881ff20ce62",
+              "status": "copied"
+            },
+            "data/applications/fixture-legacy.desktop": {
+              "required": false,
+              "size_bytes": 248,
+              "mode": "0644",
+              "copied_bytes": 248,
+              "sha256": "6ada0307f0857587b1ea3aa4f9ab7de64beca24f39a4093c1787ff194cac08a9",
+              "status": "copied"
+            },
+            "data/applications/fixture-ordinary.desktop": {
+              "required": false,
+              "size_bytes": 223,
+              "mode": "0644",
+              "copied_bytes": 223,
+              "sha256": "ea700344af4bb70b02565aa29cd8af1dd64a2f7ddee3448f377250a52df1a909",
+              "status": "copied"
+            },
+            "data/applications/fixture-true.desktop": {
+              "required": false,
+              "size_bytes": 261,
+              "mode": "0644",
+              "copied_bytes": 261,
+              "sha256": "ff9bd66d178304c19cbe25a7d661910aeda2e8b0f9cb7fd80ea7728219362554",
+              "status": "copied"
+            },
+            "native-records/module-1028.json": {
+              "required": false,
+              "size_bytes": 221,
+              "mode": "0644",
+              "copied_bytes": 221,
+              "sha256": "afd70a6050ee07ef2271bf7dcd2ba0666fe486f1dd2cccb4aec2efd58f7f7532",
+              "status": "copied"
+            },
+            "native-records/module-1028.jsonl": {
+              "required": false,
+              "size_bytes": 55375,
+              "mode": "0644",
+              "copied_bytes": 55375,
+              "sha256": "55fca40de355d686f5331afea7d2546ffea550155675f283e6e6ac16effe670a",
+              "status": "copied"
+            },
+            "native-records/stopped-1028.json": {
+              "required": false,
+              "size_bytes": 39,
+              "mode": "0644",
+              "copied_bytes": 39,
+              "sha256": "d81ea266765edbeb0359f6e6a2aa9bb68fe3c4ad5a453d347422a942ec355395",
+              "status": "copied"
+            },
+            "sender.log": {
+              "required": false,
+              "size_bytes": 0,
+              "mode": "0644",
+              "copied_bytes": 0,
+              "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "status": "copied"
+            },
+            "xserver.log": {
+              "required": false,
+              "size_bytes": 1174,
+              "mode": "0644",
+              "copied_bytes": 1174,
+              "sha256": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+              "status": "copied"
+            }
+          },
+          "issues": [],
+          "bounds": {
+            "per_file_bytes": 4194304,
+            "total_bytes": 16777216,
+            "scanned_entries": 512
+          },
+          "excluded_scopes": [
+            "ELFs",
+            "launch-copy",
+            "modules",
+            "caches",
+            "SDKs",
+            "Xauthority and other unselected runtime files"
+          ],
+          "scanned_entries": 21
+        }
+      }
+    },
+    "retained_real_expiry": {
+      "source_closure": "b5c3e3323759218b65a257a3f85f14bd25b3125dae06a3b165dd4ee6dfb14489",
+      "group_fixture_section": {
+        "status": "identical group phase",
+        "old_fixture_sha256": "dbd694871d75998d52d5014e28a03c4e6864994d308c3cb3034c677c93bbb616",
+        "new_fixture_sha256": "1ef2551c95b9b79c7aa50438dfa805e8ff6a36d3aacd04bbcf46191ddfa98202",
+        "section_sha256": "d33786e9c4666cdd4e2a9d18705ffc01192ab75ce6877193eea62dc67a125743",
+        "section_bytes": 21623,
+        "boundary": "from # X11 protocol mask bits to def protocol_cases; trailing blank lines included"
+      },
+      "case": {
+        "initial": {
+          "all_event_masks": 4325376,
+          "creator_event_mask": 0
+        },
+        "mask_observations": [
+          {
+            "elapsed": 55.00896509599988,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.116637906999586,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.22516618199961,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.328597218999676,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.43597465399989,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.54191708099961,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.65235799099992,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.75551052699984,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.85646992599959,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 55.95910891699987,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.06960107799978,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.17166606599994,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.27745765899999,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.380356026999834,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.484906986999704,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.59069620499986,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.69968002299993,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.80042179599968,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 56.9011794019998,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.008511627999724,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.11685044299975,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.227260894999745,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.33333498899992,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.44184392999978,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.54519809199974,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.6470364959996,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.74849531399968,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.8497570479999,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 57.95029356999976,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.051625220000005,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.157695647999844,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.26788868199992,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.369456541999625,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.47144273799995,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.572871681999914,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.67792177000001,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.781639558999814,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 58.890246209,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.00057320199994,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.10272281599964,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.20551914199996,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.308473884999785,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.41440643599981,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.51715617899981,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.61793215999978,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.72507842599998,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.829761512999994,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 59.932565754999814,
+            "all_event_masks": 4325376,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          },
+          {
+            "elapsed": 60.03652725399979,
+            "all_event_masks": 131072,
+            "monitor_event_mask": 0,
+            "busy_reply_observed": false
+          }
+        ],
+        "first_lifecycle_only": {
+          "elapsed": 60.03652725399979,
+          "all_event_masks": 131072,
+          "monitor_event_mask": 0,
+          "busy_reply_observed": false
+        },
+        "busy_reply": "OK busy 122 6291513",
+        "query_after_mask_witness": {
+          "id": "fixture-group-cf51acb5de1f-actual-group-expiry",
+          "name": "fixture-group-cf51acb5de1f-actual-group-expiry",
+          "icon": "",
+          "application_id": "",
+          "wmclass": "",
+          "state": "expired",
+          "window": 0,
+          "age_ms": 61509
+        },
+        "last_reference_release": {
+          "all_event_masks": 0,
+          "creator_event_mask": 0
+        },
+        "limit": "one busy monotonic interval; monitor queries only the X server before the expiry witness"
+      },
+      "reason": "final short runs cover queued-read correction; expiry deadline/mask retirement paths unchanged"
+    },
+    "manual_commands": [
+      {
+        "label": "manual-FvwmDesktop",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/FvwmDesktop.1",
+          "/tmp/fvwm-module-waits-20261015/source/doc/FvwmDesktop.adoc"
+        ],
+        "exit": 0,
+        "seconds": 0.09907968000015899
+      },
+      {
+        "label": "manual-FvwmMFL",
+        "command": [
+          "asciidoctor",
+          "-b",
+          "manpage",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/FvwmMFL.1",
+          "/tmp/fvwm-module-waits-20261015/source/doc/FvwmMFL.adoc"
+        ],
+        "exit": 0,
+        "seconds": 0.06755000300017855
+      }
+    ],
+    "fixed_storage": {
+      "registry": 49176,
+      "scope_depth": 4,
+      "queue_scratch": 12288,
+      "additional_total": 61468,
+      "limit": 65536,
+      "startup_activity": 216104,
+      "combined_total": 277572,
+      "combined_limit_exclusive": 524288
+    },
+    "storage_symbols": "0000000001265704 0000000000000004 b eventmask_scope_depth\n0000000001344224 0000000000216104 b startup_activity\n0000000001265712 0000000000049176 b startup_groups"
+  },
+  "bsd_policy": {
+    "status": "passed",
+    "scope": "fresh native compiler policy tests only",
+    "targets": [
+      {
+        "target": "freebsd-arm64",
+        "source": {
+          "sha256": "08beccd37cb5fcb8659bcc6337dfb634b3e24c0b359be7cce2e7240d04aad360",
+          "members": 6,
+          "expanded_bytes": 46123
+        },
+        "kernel": null,
+        "runner_exit": 0,
+        "qemu_exit_status": 0,
+        "evidence_sha256": "cd9df0123767e9bc725b453a5ccfdbe96cb5d0ee9f931b25e20baf4757ec4de2",
+        "evidence": {
+          "builddir-bsd/group.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "builddir-bsd/test-startup-policy": {
+            "sha256": "3fa467e8041595ec19da2d5b97271100890df2be6432ffe819d69d97b2315abe",
+            "bytes": 29184
+          },
+          "builddir-bsd/startup.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "builddir-bsd/test-startup-group-policy": {
+            "sha256": "be4cf3c2dd9a5e8c790e20578f89667ad39f96d2b9398b3a3df8e336353a6834",
+            "bytes": 25616
+          },
+          "builddir-bsd/startup.stdout": {
+            "sha256": "120db6217a1e1b667f0c96ae076cba976f41ab4f27c68577b5f8b2cd2c6ab398",
+            "bytes": 36
+          },
+          "builddir-bsd/group.stdout": {
+            "sha256": "39653ab6f4fc5216ed3531be7f7cec2531a8bc347b93bc0ee38cbf7b3255a51d",
+            "bytes": 51
+          },
+          "builddir-bsd/compiler.txt": {
+            "sha256": "41e02021522c4628079f59e5cc9f01b47c931574744f263a480ee10fa483294b",
+            "bytes": 182
+          },
+          "builddir-bsd/SHA256SUMS": {
+            "sha256": "5d3ee7f3ecd74c220ac01ecce5d055e7fbd3daed6cb283a27d99d12b36266d15",
+            "bytes": 881
+          },
+          "builddir-bsd/kernel.txt": {
+            "sha256": "eaeeda75bd854de284046cf49017145f1d0ceb9656f51d1fb88c65267f7f4302",
+            "bytes": 103
+          },
+          "builddir-bsd/include/config.h": {
+            "sha256": "d93a990eff14449f55d3cc82032b2dcace847cb1bb5b2e662c665c1c853bc4da",
+            "bytes": 68
+          }
+        },
+        "retired_disk": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-startup-group-events/bsd-policy/freebsd-arm64/disk.qcow2",
+          "file_bytes": 3226927104,
+          "allocated_bytes": 3226927104
+        }
+      },
+      {
+        "target": "openbsd-arm64",
+        "source": {
+          "sha256": "08beccd37cb5fcb8659bcc6337dfb634b3e24c0b359be7cce2e7240d04aad360",
+          "members": 6,
+          "expanded_bytes": 46123
+        },
+        "kernel": [
+          "OpenBSD",
+          "8.0",
+          "arm64",
+          "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+        ],
+        "runner_exit": 0,
+        "qemu_exit_status": 0,
+        "evidence_sha256": "8d5657b0fa3f707d93deca2a8344682f853447aabfd63d9d27c9df8a0f9e24dc",
+        "evidence": {
+          "builddir-bsd/include/config.h": {
+            "sha256": "d93a990eff14449f55d3cc82032b2dcace847cb1bb5b2e662c665c1c853bc4da",
+            "bytes": 68
+          },
+          "builddir-bsd/kernel.txt": {
+            "sha256": "f017fcc52535bbfb9c681c311bce55c4c55943f00c4601e900f0dd64de7e8bc9",
+            "bytes": 49
+          },
+          "builddir-bsd/compiler.txt": {
+            "sha256": "42783a24f0158a8c3349de12f495220f13dec3cd07401ea70ac4d3a1ce632993",
+            "bytes": 107
+          },
+          "builddir-bsd/group.stdout": {
+            "sha256": "39653ab6f4fc5216ed3531be7f7cec2531a8bc347b93bc0ee38cbf7b3255a51d",
+            "bytes": 51
+          },
+          "builddir-bsd/group.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "builddir-bsd/test-startup-group-policy": {
+            "sha256": "026a3b88797e81acf52f46ecc96b407a6b4d344f964e500c7260b25750d84b06",
+            "bytes": 26528
+          },
+          "builddir-bsd/startup.stdout": {
+            "sha256": "120db6217a1e1b667f0c96ae076cba976f41ab4f27c68577b5f8b2cd2c6ab398",
+            "bytes": 36
+          },
+          "builddir-bsd/test-startup-policy": {
+            "sha256": "fec93f434ea0fde44008d7fe52c4795f221801b4d313c29b4cf10e97a74fa8c2",
+            "bytes": 29848
+          },
+          "builddir-bsd/startup.stderr": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "bytes": 0
+          },
+          "builddir-bsd/SHA256SUMS": {
+            "sha256": "2056b90a59a04322da72d66b751662588119fe59b853afa1cd66f9112ca1a49b",
+            "bytes": 881
+          }
+        },
+        "retired_disk": {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-startup-group-events/bsd-policy/openbsd-arm64/disk.qcow2",
+          "file_bytes": 3071803392,
+          "allocated_bytes": 3080962048
+        }
+      }
+    ]
+  },
+  "failures": {
+    "baseline": "first hierarchy-only oracle rejected; corrected class+M_MAP baseline fails actual late observation before implementation",
+    "source01_groups": {
+      "failure": "TimeoutError('timed out')",
+      "passed_cases": [
+        "late_unmanaged_group_property",
+        "preexisting_binding_new_pending_epoch",
+        "shared_leader_reference_lifetime",
+        "hints_replacement_and_clear",
+        "direct_property_precedence_and_malformed_refusal",
+        "destroyed_leader_and_explicit_rebind",
+        "reparented_unmanaged_leader_lifetime"
+      ],
+      "resolution": "accept actual client parent for own reparent; retain actual foreign-parent teardown"
+    },
+    "source02_protocol": {
+      "failure": "HarnessError('deadline expired while waiting for startup fixture-3549fb504f50-malformed-direct pending')",
+      "resolution": "isolate independent groups; original pending/exact-window expectations unchanged"
+    },
+    "lead_setup": [
+      "gate03 missing client variable before execution",
+      "freeze_sync new-file KeyError and unknown native target before synchronized input"
+    ],
+    "source04_build": {
+      "commands": [
+        {
+          "label": "configure04",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source"
+          ],
+          "exit": 0,
+          "seconds": 1.0357721370000945
+        },
+        {
+          "label": "build04",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "tests/test-queued-destroy",
+            "tests/test-expose-queue",
+            "tests/test-resize-merge-queue",
+            "tests/test-fevent-hints"
+          ],
+          "exit": 1,
+          "seconds": 2.8062307899999723
+        }
+      ],
+      "resolution": "established FSendEvent passthrough required by newly included wrapper header"
+    }
+  },
+  "evidence": {
+    "status": "verified",
+    "archive": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-evidence.tgz",
+    "sha256": "ea8fc7fb7a61a6a2fb8a5022eba5d6ed35663bd99581a79872f58fc2e78b0320",
+    "archive_bytes": 462794,
+    "files": 242,
+    "file_bytes": 8976067,
+    "host_archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-startup-group-events/native-evidence.tgz",
+    "payload_hashes_modes": "all verified",
+    "gzip_crc": "passed",
+    "count_semantics": "files and file_bytes count manifested payloads only",
+    "archive_regular_members": 243,
+    "embedded_manifest_bytes": 52247,
+    "archive_uncompressed_bytes": 9028314
+  },
+  "cleanup": {
+    "guest": {
+      "status": "retired verified guest evidence duplicates",
+      "archived_regular_files": 240,
+      "archived_file_bytes": 8888158,
+      "extra": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-startup-group-baseline/startup-client",
+          "bytes": 95656,
+          "sha256": "6e4de54f0da9301b0f8ccbfe9dc41c09c2355c5cbf7cc8efabd644e0cee7f6b9"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-current/group-policy-san",
+          "bytes": 244016,
+          "sha256": "e57d92f5823849ac11bee4854cd7f1cf6bbafbb15f4a852df363e17f161f5062"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-evidence.tgz",
+          "bytes": 462794,
+          "sha256": "ea8fc7fb7a61a6a2fb8a5022eba5d6ed35663bd99581a79872f58fc2e78b0320"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-startup-groups-evidence-manifest.json",
+          "bytes": 52247,
+          "sha256": "0cd7411b677a17052de2ebdde0f3340c7ce4bfab5ccd63c38a6ee4ce74fcf42c"
+        }
+      ],
+      "preserved": [
+        "r1-startup-groups-current/delta-result05.json",
+        "r1-startup-groups-current/source.json"
+      ],
+      "host_archive_sha256": "ea8fc7fb7a61a6a2fb8a5022eba5d6ed35663bd99581a79872f58fc2e78b0320",
+      "preserved_resources": [
+        "current native source",
+        "normal GCC incremental profile",
+        "core sanitizer incremental profile",
+        "current startup producer",
+        "current staged installation",
+        "SDK/tool caches",
+        "m5-performance-providers-20261029"
+      ]
+    },
+    "linux": {
+      "records": [
+        {
+          "command": [
+            "podman",
+            "machine",
+            "start",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "start",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "--time",
+            "15",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "normal_stop": true
+    },
+    "bsd_disks": [
+      {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-startup-group-events/bsd-policy/freebsd-arm64/disk.qcow2",
+        "file_bytes": 3226927104,
+        "allocated_bytes": 3226927104
+      },
+      {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-startup-group-events/bsd-policy/openbsd-arm64/disk.qcow2",
+        "file_bytes": 3071803392,
+        "allocated_bytes": 3080962048
+      }
+    ],
+    "performance_reference": {
+      "status": "retired superseded owned performance references",
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-xdg-20261028/core",
+          "bytes": 5539656,
+          "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-xdg-20261028/script",
+          "bytes": 2211368,
+          "sha256": "92ecd6dda7a0dd1548ebe4703f1537cd7d627d30164165ee30127ae21ca7ce16"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-xdg-20261028/browser",
+          "bytes": 6091518,
+          "sha256": "46dc5bf59a44bc7b423e71771177ed45ed972c176833a0d24aafac87428cb1f0"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-xdg-20261028/form",
+          "bytes": 1802864,
+          "sha256": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pointer-20261027/core",
+          "bytes": 5539656,
+          "sha256": "209fb8e98a1b0136d1f071a8913d5c48843a8988b83baa1f444150b6d6c9ad1b"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pointer-20261027/script",
+          "bytes": 2211368,
+          "sha256": "92ecd6dda7a0dd1548ebe4703f1537cd7d627d30164165ee30127ae21ca7ce16"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pointer-20261027/browser",
+          "bytes": 5720923,
+          "sha256": "dc316fdb6868f09524fc81f9e4cbb922e8944172c221cef48400b1205b42ff87"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/m5-performance-pointer-20261027/form",
+          "bytes": 1800376,
+          "sha256": "889289decc71b773b6c4f76591018b29130f20f15bcf3347bcc70e605d88d998"
+        }
+      ],
+      "bytes": 30917729,
+      "preserved": {
+        "core": "4862dd0f4db74937d7e0c0081ecb797d29e5d41bcffd81a4bb00eadc3cb4d347",
+        "script": "92ecd6dda7a0dd1548ebe4703f1537cd7d627d30164165ee30127ae21ca7ce16",
+        "browser": "2ef445424f31897fa86ac0e7f2ee123aca8ff380b350fc60566847975e6f7501",
+        "form": "bb4ecbaba91d62548980be6a4b8eea26907dceb3cb1d035400e68e2ea98c3d95"
+      }
+    }
+  },
+  "review": {
+    "routes": [
+      "temper_implementer",
+      "temper_analyst",
+      "temper_reviewer",
+      "temper_workflow"
+    ],
+    "backend_model_effort": "unverified",
+    "separate_source_findings": "acquisition, own reparent, protocol isolation and queued lifetime findings resolved; exact integrated candidate review before signed handoff",
+    "native_execution": "lead only"
+  },
+  "limits": [
+    "BSD policy only; no new BSD core/installed-X gate",
+    "actual same-XID queued replacement assessed from source/protocol order, not native reproduction",
+    "pre-acquisition raw hint identity inherently ambiguous",
+    "legacy tray transition and creation-only internal rejection have no dedicated new native fixture",
+    "remaining #56 installed-platform and #67 FileManager1/lifecycle/release acceptance open",
+    "full compiler/feature/default-X/install/six-target/native-CPU/hardware qualification retains original boundary",
+    "no new UI/screenshots/themes or new Go suite required; unchanged source-bound evidence reused",
+    "parked #257/#258 untouched"
+  ],
+  "performance": {
+    "report": "PERFORMANCE-2026-10-29-PROVIDERS.md",
+    "raw_sha256": "5d38c22d3248264170c3003428ccc9f2c798e18a7241ef14a4d6a0d69dcab737",
+    "reference": "m5-performance-providers-20261029",
+    "merged_runtime_counter": 0,
+    "next_runtime_merge_counter": 1
+  }
+}

@@ -789,6 +789,17 @@ expose_queue_test = executable(
 )
 test('expose-queue', expose_queue_test)
 
+queued_destroy_test = executable(
+    'test-queued-destroy', 'test_queued_destroy.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    link_args: ['-Wl,--wrap=XEventsQueued', '-Wl,--wrap=XNextEvent',
+                '-Wl,--wrap=XPutBackEvent'],
+    c_args: ['-UNDEBUG'],
+)
+test('queued-destroy', queued_destroy_test)
+
 fevent_hints_test = executable(
     'test-fevent-hints', 'test_fevent_hints.c',
     include_directories: includedirs,
@@ -4465,3 +4476,11 @@ startup_notification_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('startup-notification-policy', startup_notification_policy_test)
+
+startup_group_policy_test = executable(
+    'test-startup-group-policy',
+    ['test_startup_group_policy.c', '../libs/startup_group_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('startup-group-policy', startup_group_policy_test)

@@ -64,11 +64,51 @@ Latin-1 class values. An actual unambiguous class completion also broadcasts a
 bounded asynchronous standard remove for competing observers, without an XSync
 barrier. Avoid property work on the legacy path when no pending work.
 
-Late property changes on otherwise-unmanaged group leaders are deferred: there is
-no shared reference-counted X event-mask owner, and temporary mask restoration can
-erase another selector's changes. Do not add permanent watches, a second connection
-or a broad mask ownership rewrite. This subset must remain visible in #56 rather
-than claiming complete startup-notification WM semantics.
+## Group-observer completion selected 2026-10-29
+
+The [next bounded checkpoint](../PROJECT-TRACKER.md#r1-startup-group-event-ownership--2026-10-29)
+replaces the earlier late-group deferral. Use 256 dependent client XIDs with current
+palette identities and 256 reference-owned leader/mask records. Keep base masks,
+supplemental claims and temporary suppression separate across the finite existing
+selectors. Do not restore saved effective masks or retain FvwmWindow pointers.
+Known internal windows are excluded through existing contexts. Preserve existing
+StructureNotify suppression on managed leaders and each iconified target's mask.
+
+Unmanaged leaders retain a lifecycle StructureNotify claim only while referenced;
+PropertyChange belongs to pending startup observation. Managed leaders use core
+lifetime events instead of supplemental StructureNotify. Last-reference release,
+actual destruction and management transitions retire or transfer claims. Guard
+stale serials/reused XIDs; refuse excess admission visibly without eviction or
+blocking launch. Bound all additional state to 64 KiB and combined observer to 512 KiB.
+
+First acquisition imports the existing mask and selects lifecycle events within a
+balanced existing `MyXGrabServer`/`MyXUngrabServer` pair. Those helpers already
+synchronize with X; add no extra barrier. Keep the region to attributes, local
+policy state and selection, with no logging, callback or property read inside.
+Later inherited-property X errors abandon every dependent binding without
+restoring a mask on the possibly dead XID. Missing and malformed properties keep
+their distinct precedence behavior. This guarantees observed lifetime after
+acquisition; a raw WM_HINTS XID already stale or reused before acquisition has no
+historical identity in X11 and cannot be authenticated retrospectively.
+
+After an inherited property reply, inspect at most 64 events already queued on
+that display for an actual, acquisition-serial-valid leader DestroyNotify. Use a
+small FEvent wrapper with raw remove/reinsert in reverse order to preserve the
+exact FIFO and cached input state, without reading the socket or dispatching.
+A match invalidates all bindings and discards the fetched ID without restoration.
+An incomplete prefix discards the ID, requeues the dependent and stops this outer
+batch so ordinary dispatch drains the queue. Only a complete clear snapshot may
+accept the inherited value. The property reply is the observation boundary;
+destruction after that reply is a later lifetime event. Include the 64-XEvent
+scratch array in the added-storage assertion. No per-read grab or round trip.
+
+Resolve and observe at most eight X-dependent group/client steps at the safe outer
+HandleEvents boundary. Coalesced dirty work uses round-robin continuation and the
+existing outer force_poll path, not a periodic timer. Nested service/deadline
+functions remain pure. New pending launches revisit existing bindings, with direct
+ID precedence and malformed-direct refusal intact. No second connection, broad
+mask rewrite, focus/placement change or new UI is selected. This is implementation
+scope, not completed execution or whole #56/release acceptance.
 
 ## Consumer and evidence
 

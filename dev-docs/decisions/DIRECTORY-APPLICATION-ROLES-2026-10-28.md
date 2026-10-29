@@ -38,8 +38,13 @@ Use valid Application metadata/Exec and executable/TryExec availability. DBus
 activation is not implemented: a valid available Exec fallback may participate;
 bus-only entries are unavailable. See [Desktop Entry keys](https://specifications.freedesktop.org/desktop-entry/latest/recognized-keys.html).
 
-Missing files are empty inputs. Malformed/unreadable sources or exceeded
-resource bounds fail discovery visibly; do not silently assert another default.
+Provider refusal update, 2026-10-29: missing optional files are empty inputs.
+Reject malformed effective desktop entries individually with a bounded warning,
+retaining their ID masks while valid different handlers remain usable. Skip only
+open-stage permission refusals for optional MIME settings. Malformed preferences,
+other acquisition errors and exceeded resource bounds still fail visibly. This
+supersedes the earlier blanket malformed/unreadable-source abort behavior; see
+[provider results and limits](../verification/VERIFICATION-2026-10-29-XDG-PROVIDERS.md).
 Reuse existing bounded acquisition instead of creating a second directory walker.
 The selected bounds are 64 combined config/data roots, 16 desktop components,
 1,152 association sources, 64 KiB per source read, 16 MiB total source data,

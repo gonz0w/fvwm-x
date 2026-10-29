@@ -111,12 +111,13 @@ func TestDirectoryRolesExecFallbackAndFreshAcquisition(t *testing.T) {
 	}
 }
 
+// The former malformed-preferred abort expectation is superseded by the
+// independently reproduced MIME Applications section 4 fallback contract.
 func TestDirectoryRolesExecGrammarFailureVersusUnavailableFallback(t *testing.T) {
 	for _, tc := range []struct {
 		name, exec string
-		wantError  bool
 	}{
-		{name: "malformed preferred", exec: "app %Z", wantError: true},
+		{name: "malformed preferred", exec: "app %Z"},
 		{name: "valid missing program", exec: "missing %u"},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -125,14 +126,8 @@ func TestDirectoryRolesExecGrammarFailureVersusUnavailableFallback(t *testing.T)
 			roleEntry(t, user, "fallback.desktop", "")
 			writeFixture(t, filepath.Join(config, "mimeapps.list"), "[Default Applications]\ninode/directory=preferred.desktop;fallback.desktop;\n")
 			got, err := New(nil).DirectoryRoles(o)
-			if tc.wantError {
-				if err == nil || !strings.Contains(err.Error(), "unknown Exec field code") || len(got.Handlers) != 0 {
-					t.Fatal("malformed preferred Exec silently fell back", got, err)
-				}
-				return
-			}
 			if err != nil || got.DefaultID != "fallback.desktop" || len(got.Handlers) != 1 || got.Handlers[0].ID != "fallback.desktop" {
-				t.Fatal("valid unavailable executable blocked fallback", got, err)
+				t.Fatal("ineligible preferred executable blocked valid fallback", got, err)
 			}
 		})
 	}

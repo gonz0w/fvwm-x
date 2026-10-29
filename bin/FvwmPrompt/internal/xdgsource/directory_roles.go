@@ -32,6 +32,7 @@ type DirectoryRoleOptions struct {
 	Environment map[string]string
 	Terminal    string
 	Executable  func(string) bool
+	Diagnostic  func(RoleDiagnostic)
 }
 
 // DirectoryHandler keeps unexpanded launch metadata inside the worker. Folder
@@ -131,7 +132,7 @@ func applicationHandler(id, path string, data []byte, entry *xdgmenu.Desktop, op
 			return handler, declares, false, nil
 		}
 		if err != nil {
-			return handler, declares, false, err
+			return handler, declares, false, roleHandlerAcquisitionError{err}
 		}
 		if !info.IsDir() {
 			return handler, declares, false, nil
@@ -168,6 +169,9 @@ func applicationHandler(id, path string, data []byte, entry *xdgmenu.Desktop, op
 // DirectoryRoles consumes one bounded Source job. Use a fresh New(ctx) for a
 // later query/launch revalidation: cached input is intentionally immutable here.
 func (s *Source) DirectoryRoles(options DirectoryRoleOptions) (DirectoryRoleResult, error) {
+	diagnostics := newRoleDiagnostics(options.Diagnostic)
+	options.Diagnostic = diagnostics.emit
+	defer diagnostics.finish()
 	result := DirectoryRoleResult{Handlers: []DirectoryHandler{}}
 	if options.Executable == nil || !roleText(options.Terminal, xdgmenu.MaxValueBytes) {
 		return result, errors.New("directory role lookup requires valid executable policy")
@@ -184,10 +188,7 @@ func (s *Source) DirectoryRoles(options DirectoryRoleOptions) (DirectoryRoleResu
 	files := make([]xdgmenu.DirectoryMIMEAppsFile, 0, len(locations))
 	references := xdgmenu.MaxDirectoryRoleReferences
 	for _, location := range locations {
-		data, err := s.readLimited(location.Path, MaxDirectoryRoleSourceBytes)
-		if errors.Is(err, fs.ErrNotExist) {
-			data, err = nil, nil
-		}
+		data, err := s.readRoleOptional(location.Path, MaxDirectoryRoleSourceBytes, options)
 		if err != nil {
 			return result, err
 		}
@@ -287,11 +288,19 @@ func (s *Source) roleInventory(paths xdgmenu.SearchPaths, options DirectoryRoleO
 			}
 			entry, err := xdgmenu.ParseDesktop(data)
 			if err != nil {
-				return fmt.Errorf("directory application %s: %w", path, err)
+				owners = append(owners, applicationRoleOwner{ID: id, Rank: rank})
+				roleDiagnostic(options, RoleDiagnosticInvalidEntry, path, err)
+				return nil
 			}
 			handler, declares, eligible, err := applicationHandler(id, path, data, entry, options, graph, context)
 			if err != nil {
-				return fmt.Errorf("directory application %s: %w", path, err)
+				var acquisition roleHandlerAcquisitionError
+				if errors.As(err, &acquisition) {
+					return fmt.Errorf("directory application %s: %w", path, err)
+				}
+				owners = append(owners, applicationRoleOwner{ID: id, Rank: rank})
+				roleDiagnostic(options, RoleDiagnosticInvalidEntry, path, err)
+				return nil
 			}
 			owners = append(owners, applicationRoleOwner{ID: id, Rank: rank, Types: declares, Eligible: eligible})
 			if eligible {
@@ -322,6 +331,9 @@ func (s *Source) roleInventory(paths xdgmenu.SearchPaths, options DirectoryRoleO
 				return nil, nil, err
 			}
 		}
+	}
+	if err := s.ContextError(); err != nil {
+		return nil, nil, err
 	}
 	return owners, handlers, nil
 }

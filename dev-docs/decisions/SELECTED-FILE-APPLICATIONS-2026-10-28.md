@@ -51,8 +51,13 @@ Keep the current 64-root, 16-desktop, 1,152 settings-source, 64-KiB settings rea
 at 1 MiB/file before allocation and count against the same aggregate budget.
 Bound aliases to 4,096, explicit edges to 8,192, reachable types to 128 and depth
 to 32. Retained association references are bounded across the entire chain,
-not independently multiplied by its length. Malformed, unreadable, cyclic and
-excessive inputs fail visibly. Preserve DirectoryRoles as an exact inode/directory
+not independently multiplied by its length. Provider refusal update,
+2026-10-29: malformed/cyclic MIME settings or graphs, excessive input and other
+acquisition errors fail visibly. Optional settings/aliases/subclasses with an
+open-stage permission refusal are skipped with bounded warnings. Malformed
+effective desktop entries are individually ineligible and retain their ID masks;
+valid different handlers remain usable. See the
+[provider results and limits](../verification/VERIFICATION-2026-10-29-XDG-PROVIDERS.md). Preserve DirectoryRoles as an exact inode/directory
 wrapper with unchanged shapes/fingerprints and no alias/subclass reads; corrupt
 unrelated MIME metadata must not break current-folder roles.
 

@@ -10,6 +10,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
+	"fmt"
 	"net/url"
 	"os"
 	"os/exec"
@@ -56,7 +57,10 @@ func currentRoleOptions(terminal string) (xdgsource.DirectoryRoleOptions, error)
 		}
 	}
 	return xdgsource.DirectoryRoleOptions{Home: home, Environment: env, Terminal: terminal,
-		Executable: func(program string) bool { _, err := exec.LookPath(program); return err == nil }}, nil
+		Executable: func(program string) bool { _, err := exec.LookPath(program); return err == nil },
+		Diagnostic: func(diagnostic xdgsource.RoleDiagnostic) {
+			fmt.Fprintf(os.Stderr, "fvwm-file-browser: XDG role %s\n", diagnostic.String())
+		}}, nil
 }
 
 func validDirectoryRoleResult(result *directoryRoleResult) bool {

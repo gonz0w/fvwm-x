@@ -8,7 +8,6 @@ package xdgsource
 import (
 	"errors"
 	"fmt"
-	"io/fs"
 	"path/filepath"
 	"strings"
 
@@ -29,7 +28,7 @@ type applicationRoleSettings struct {
 	values   map[string]xdgmenu.DirectoryMIMEApps
 }
 
-func (s *Source) mimeTypeGraph(paths xdgmenu.SearchPaths) (xdgmenu.MIMETypeGraph, error) {
+func (s *Source) mimeTypeGraph(paths xdgmenu.SearchPaths, options DirectoryRoleOptions) (xdgmenu.MIMETypeGraph, error) {
 	sources := make([]xdgmenu.MIMETypeSource, 0, len(paths.Data))
 	for _, root := range paths.Data {
 		var source xdgmenu.MIMETypeSource
@@ -38,10 +37,7 @@ func (s *Source) mimeTypeGraph(paths xdgmenu.SearchPaths) (xdgmenu.MIMETypeGraph
 			data *[]byte
 		}{{"aliases", &source.Aliases}, {"subclasses", &source.Subclasses}} {
 			path := filepath.Join(root, "mime", input.name)
-			data, err := s.readLimited(path, xdgmenu.MaxMIMETypeSourceBytes)
-			if errors.Is(err, fs.ErrNotExist) {
-				continue
-			}
+			data, err := s.readRoleOptional(path, xdgmenu.MaxMIMETypeSourceBytes, options)
 			if err != nil {
 				return xdgmenu.MIMETypeGraph{}, fmt.Errorf("MIME metadata %s: %w", path, err)
 			}
@@ -56,6 +52,9 @@ func (s *Source) mimeTypeGraph(paths xdgmenu.SearchPaths) (xdgmenu.MIMETypeGraph
 // inventory as DirectoryRoles, with installed aliases/subclasses added to the
 // same 16 MiB acquisition budget. Use a fresh Source for launch revalidation.
 func (s *Source) ApplicationRoles(mime string, options DirectoryRoleOptions) (ApplicationRoleResult, error) {
+	diagnostics := newRoleDiagnostics(options.Diagnostic)
+	options.Diagnostic = diagnostics.emit
+	defer diagnostics.finish()
 	empty := ApplicationRoleResult{Handlers: []DirectoryHandler{}}
 	if _, err := xdgmenu.NormalizeMIMEType(mime); err != nil {
 		return empty, err
@@ -72,7 +71,7 @@ func (s *Source) ApplicationRoles(mime string, options DirectoryRoleOptions) (Ap
 		return empty, err
 	}
 	s.bytes, s.items = min(s.bytes, MaxDirectoryRoleBytes), min(s.items, MaxDirectoryRoleItems)
-	graph, err := s.mimeTypeGraph(paths)
+	graph, err := s.mimeTypeGraph(paths, options)
 	if err != nil {
 		return empty, err
 	}
@@ -83,10 +82,7 @@ func (s *Source) ApplicationRoles(mime string, options DirectoryRoleOptions) (Ap
 	settings := make([]applicationRoleSettings, 0, len(locations))
 	references := xdgmenu.MaxDirectoryRoleReferences
 	for _, location := range locations {
-		data, err := s.readLimited(location.Path, MaxDirectoryRoleSourceBytes)
-		if errors.Is(err, fs.ErrNotExist) {
-			data, err = nil, nil
-		}
+		data, err := s.readRoleOptional(location.Path, MaxDirectoryRoleSourceBytes, options)
 		if err != nil {
 			return empty, err
 		}

@@ -1,0 +1,158 @@
+= fvwm-session(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-session - portable FVWM login startup and controlled autostart
+
+== SYNOPSIS
+
+*fvwm-session* [*--no-autostart*] [*--* _fvwm3-arguments_...]
+
+== DESCRIPTION
+
+The packaged FVWM desktop entry starts this login parent. It establishes the
+session environment, starts the installed *fvwm3*, and runs eligible XDG
+autostart applications once after the core acknowledges initial startup.
+It uses the existing Go runtime and adds no desktop service, toolkit or bus
+requirement. This is a development startup checkpoint; complete service
+supervision and cooperative application logout remain in development.
+
+Direct *fvwm3* invocation remains available and starts no new autostart owner.
+Existing configuration files, startup functions and custom *-f* arguments remain
+usable. For example, from an X startup script whose existing display and
+authentication environment are already configured:
+
+----
+exec fvwm-session -- -f "$HOME/.fvwm/config"
+----
+
+Use *--no-autostart* when configuration startup functions or an external tool
+already launch the applications. The separator *--* passes all following
+arguments literally to FVWM. Labels, desktop-entry fields and wrapper arguments
+are never evaluated as shell programs by this wrapper. Explicit FVWM display
+options select the same display for ownership, acquisition and applications;
+the last applicable display option wins. Option-looking values belonging to
+other FVWM arguments retain their literal meaning. Unknown, incomplete or
+information-only core invocations use direct FVWM execution without autostart
+rather than inferring an ownership display.
+
+== ENVIRONMENT AND OWNERSHIP
+
+Missing *XDG_CURRENT_DESKTOP* becomes *FVWM3:FVWM*, and missing
+*XDG_SESSION_TYPE* becomes *x11*. Existing values, *DISPLAY*, *XAUTHORITY*,
+*HOME*, *PATH*, the session bus and *XDG_RUNTIME_DIR* are preserved. The wrapper
+does not create a runtime-directory environment variable or start a bus.
+
+A nonempty *SESSION_MANAGER* selects the existing externally managed XSMP path:
+the wrapper directly executes FVWM and skips its own lifecycle/autostart owner.
+The external session manager retains its existing restart and shutdown policy.
+This does not prove that an inherited external manager is reachable.
+
+For an owned login, a private nonblocking record lock distinguishes concurrent
+wrappers using the same literal display name. It uses an owned private runtime
+directory or a private cache leaf. It does not remove the persistent lock file,
+read a PID file or signal an existing process. Unavailable or busy ownership
+reports a direct-FVWM fallback without autostart. Different display aliases are
+not a promised common session identity.
+
+The parent owns only the directly started WM and its temporary acquisition
+worker. A normal FVWM Restart replaces the same WM process and does not repeat
+autostart. No automatic WM restart or application retry is performed.
+Autostart applications are independent launches, not adopted session services.
+The parent does not terminate them or borrowed services.
+
+== STARTUP ACKNOWLEDGMENT
+
+An inherited private pipe carries one acknowledgment after the core completes
+initial capture, startup functions and state loading. The core removes the
+private descriptor environment before launching children, uses nonblocking
+output and closes the pipe once. The descriptor is closed on exec.
+
+This acknowledges core startup only. It does not certify completed asynchronous
+modules, painted windows, application readiness or locker protection. After
+fifteen seconds, EOF or malformed acknowledgment, autostart is unavailable for
+that login and a diagnostic explains why. The WM remains usable; the parent does
+not substitute a fixed sleep or replay autostart after a later restart.
+
+== XDG AUTOSTART
+
+The parent runs one isolated acquisition worker after acknowledgment. It reads
+*autostart* directories under the XDG configuration roots, using the existing
+Desktop Entry parser and literal *Exec* expansion. Entries run in stable filename
+order. The user configuration directory takes precedence over system directories
+by filename before parsing or filtering. A hidden, malformed or unavailable
+winning entry never exposes a lower-priority copy.
+
+*Hidden=true* disables an entry. *OnlyShowIn*, *NotShowIn* and *TryExec* control
+eligibility; both desktop-filter keys together are invalid, including empty
+values. *TryExec* must be an absolute executable path or a bare executable name.
+*NoDisplay* is menu visibility and does not disable autostart.
+
+*Terminal=true* is unavailable in this portable slice; the wrapper does not launch
+it outside a terminal. *DBusActivatable=true* uses a valid literal *Exec* fallback;
+without one it is unavailable. No D-Bus activation is attempted. A nonempty
+*Path* must name an absolute directory. No removable-media autorun is processed.
+Bare executable names in both *TryExec* and *Exec* search only absolute *PATH*
+components; empty and relative components are ignored. Acquisition pins the
+observed executable to an absolute path. Files and directories can still change
+before launch; this observation is not an immutable executable identity.
+A launch result means started, not ready; exits, failed launches and skipped
+entries have distinct diagnostics. Per-application errors do not block login.
+
+The scan admits at most sixteen configuration roots, 1024 observed directory
+entries per root, 256 winning desktop entries, 256 KiB per file and 8 MiB total
+input. The private worker reply is limited to 512 KiB and acquisition to five
+seconds. Global overflow refuses the scan as a whole before any application
+starts. Diagnostics and retained child records are bounded. One blocked filesystem
+operation cannot be interrupted by a context check; the isolated worker supplies
+the acquisition deadline. Other private path and process system calls can still
+block in the kernel.
+
+For a user-controlled optional terminal, create
+*$HOME/.config/autostart/local-terminal.desktop* with:
+
+----
+[Desktop Entry]
+Type=Application
+Name=Optional local terminal
+TryExec=xterm
+Exec=xterm
+OnlyShowIn=FVWM3;FVWM;
+# Keep disabled until this user explicitly chooses to enable it.
+Hidden=true
+----
+
+Change *Hidden* to *false* only when this entry should run at the next owned
+login. An installed optional program is not automatically added to this list.
+Do not launch the same application again in a configuration startup function.
+
+== SHUTDOWN AND ERRORS
+
+The wrapper forwards cooperative shutdown only to its directly owned WM and
+reaps owned children. It does not force-close applications, terminate another
+session, adopt services or claim that all application work has been saved.
+A failed ownership/startup path has an explicit diagnostic. After forwarding
+a cooperative request, the wrapper continues waiting for its WM; a WM that
+ignores the request has no forced-shutdown deadline in this slice. Full
+cooperative application shutdown, stalled-WM recovery and service supervision
+require their separate session-provider work.
+
+The WM's exit determines normal session completion. Invalid command options,
+missing required executable and owner failures are reported on standard error.
+A refused autostart scan leaves the WM running. No automatic package installation,
+privilege escalation or lock-provider readiness is implied.
+
+== FILES
+
+*$XDG_CONFIG_HOME/autostart*::
+User Desktop Entry files with the _.desktop_ suffix; *$HOME/.config* is the default configuration root.
+
+*$XDG_CONFIG_DIRS/autostart*::
+System Desktop Entry files with the _.desktop_ suffix in root order; */etc/xdg* is the default configuration root.
+
+== SEE ALSO
+
+*fvwm3*(1), *FvwmDesktop*(1), *FvwmMFL*(1)

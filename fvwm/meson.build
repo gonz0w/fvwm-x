@@ -32,6 +32,7 @@ fvwm_sources = [
     'fvwm/functable_complex.c',
     'fvwm/functions.c',
     'fvwm/fvwm3.c',
+    'fvwm/session_ready.c',
     'fvwm/geometry.c',
     'fvwm/icccm2.c',
     'fvwm/icons.c',

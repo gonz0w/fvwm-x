@@ -7,16 +7,131 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [palette and appearance preview](#r1-palette-and-appearance-preview--2026-10-29)
-under CFG-01 #60 and IPC-02 #70 follows merged PR302. Its canonical signature,
-reviewed tree and Cam author-DCO are verified; both owned branch references are
-retired. Performance is 2/5 from merged PR299; no comparison is due.
+Current checkpoint: [portable session startup](#r1-portable-session-startup--2026-10-29)
+under SESSION-01 #72 follows merged PR303. Its canonical signature, reviewed tree
+and Cam author-DCO are verified; owned branch references are retired. Performance
+is 3/5 from merged PR299; no comparison is due.
+
+## R1 portable session startup — 2026-10-29
+
+Owner: Cam; `codex/r1-session-startup`; SESSION-01 #72.
+Base merged PR303 `886e0d17cd69725e484c8e6a7cee0a28c612a01e`.
+Status: ready for PR review; focused checks and separate integrated review pass.
+The finite contract below was frozen before implementation.
+Early FreeBSD ARM64 production-helper compilation passed, then the first actual
+pipe case exposed the platform's duplex O_RDWR descriptors. The directed helper
+fix admits writable FIFO modes without dropping nonblocking/CLOEXEC/type checks.
+A second real FreeBSD 15.1 ARM64 gate passes, with a separate flag probe recording
+read=2/write=2; both disposable guests stop normally. This is helper-only
+portability evidence, not a full BSD login/install pass.
+
+Deliver one coherent startup slice: installed `fvwm-session`, packaged default
+login wiring, environment before WM/application startup, an explicit core-startup
+acknowledgment, bounded controlled XDG autostart and restart-safe ownership.
+Preserve direct fvwm3/custom configuration and external XSMP session paths.
+No second preference store, mandatory desktop package, bus or core state owner.
+
+The wrapper accepts `--no-autostart` and literal FVWM arguments after `--`.
+Resolve the fixed installed sibling/build-configured fvwm3; do not shell-evaluate
+arguments. Fill only missing XDG_CURRENT_DESKTOP=FVWM3:FVWM and
+XDG_SESSION_TYPE=x11. Preserve existing display/authentication, runtime directory,
+bus and session-manager environment. With external SESSION_MANAGER, exec the
+original core directly and do not claim lifecycle/autostart ownership.
+
+Use the existing nonblocking private record-lock contract, anchored to a validated
+owned runtime directory or private cache leaf, keyed by the literal display.
+Create only the private cache leaf when needed; never chmod an existing parent,
+unlink a lock or invent XDG_RUNTIME_DIR. Busy/unavailable ownership reports a
+direct-core/no-autostart fallback. Display aliases are not a promised global
+session identity. Private startup path/exec system calls can still block in the
+kernel; the five-second deadline applies to the isolated acquisition worker.
+
+Otherwise own only the directly launched WM and bounded scan worker. Use a
+private inherited nonblocking/CLOEXEC pipe with one fixed readiness byte. Capture
+and remove its environment before the core closes inherited descriptors; emit
+and close only after initial StartupStuff completes. This attests core startup,
+not asynchronous modules, apps or service readiness. Timeout/EOF/malformed ack
+within fifteen seconds reports autostart unavailable and leaves the WM usable.
+No polling/sleep substitute, blocking core write or new X11 dependency. Normal
+WM Restart exec preserves the wrapper; run the autostart scan at most once.
+
+Acquire autostart files in an isolated self-worker with a finite deadline and
+bounded JSON output. Reuse XDG base paths, Desktop Entry parser and literal Exec
+expansion. Filename precedence precedes filtering: a user Hidden/malformed or
+unavailable winner suppresses lower copies. Honor Hidden, TryExec and desktop
+filters; NoDisplay is menu-only and does not suppress autostart. Ignore unrelated
+non-desktop files; report unsupported Terminal/service activation rather than
+invent a terminal or bus. DBusActivatable entries use a valid literal Exec
+fallback; a missing Exec is unavailable. Define caps before allocation/read: sixteen config
+roots, 1024 observed entries per directory, 256 winning entries, 256 KiB per file,
+8 MiB total input and 512 KiB worker output. Overflow is an explicit refused scan,
+not a partial silent start. Stable filename order; no implicit retries.
+
+Autostart launch is not readiness. Record started/exited/failed/skipped outcomes
+with bounded diagnostics; do not adopt, retry or terminate externally owned
+services or independent application children. Only the directly owned WM receives
+cooperative forwarded shutdown signals. No name/PID-file signaling, forced app
+closure or broad process cleanup. Full service/provider readiness, crash recovery
+and cooperative application logout remain #72 acceptance, not claimed here.
+
+Verification: affected Go policy/acquisition/runner tests with race/vet; real
+pipe/child exits, missing optional programs, override/filter/NoDisplay/malformed/
+bounds and once-per-restart cases. Compile the affected core and wrapper on the
+reusable Linux profile; exercise real nested-X startup, literal custom config,
+actual WM exec Restart and no duplicate autostart, readiness loss/timeout and
+external-session bypass. Because login/install wiring changes, verify a private
+installed prefix and rendered manual early. No UI changes are planned, so no new
+screenshot set is required unless implementation adds UI. Add affected platform
+checks for concrete portability changes; full Linux/BSD/default-display/service/
+release acceptance stays open. No performance comparison due.
+
+Non-goals: D-Bus #77, lock-provider #225, notify/tray, service framework, arbitrary
+new settings registry, session restoration or clipboard/file dependencies.
+#60/#70/#72 remain open for their wider frozen criteria; parked #257/#258 untouched.
+Source-only Temper implementation has explicit file ownership; lead owns build,
+install, VM/native, tracker/GitHub and integration; separate final review remains
+required. Requested role/model settings are not observed backend metadata.
+
+Focused startup handoff: ordinary/race Go policy and real-child tests, vet,
+core readiness helper and scoped ASan/UBSan pass. Actual FreeBSD ARM64 helper
+flags/behavior pass after the directed duplex fix; BSD Go cross-compilation is
+compile-only evidence. A private Meson-tagged wrapper/login-entry/manual stage
+and six actual-X scenarios pass: literal custom config/application argv, corrected
+display selection, same-PID WM exec Restart without duplicate autostart,
+no-autostart, external/direct paths, source-default startup and stalled-startup
+readiness refusal with the core still responding. Native app display is observed;
+lock display propagation is Go-tested. Final manual prose/FILES corrections are
+freshly generated and host-formatted separately from the source03 install check.
+No UI primitives changed, so theme/screenshots are not repeated solely for login
+wiring. See the [source-bound results and retained failures](verification/VERIFICATION-2026-10-29-SESSION-STARTUP.md).
+
+Both disposable BSD disks retired (6,455,230,464 allocated bytes); guest duplicate
+inputs/stage/evidence retired (98,326,925 bytes). Superseded host full inputs are
+verified payload-reconstruction deltas. Current builds, useful full prefix,
+SDK/dependency caches and next performance reference remain; the owned Linux
+container/VM stopped normally. Source04 runtime/test bytes remain frozen; final
+report/manual annotations change no executed runtime input. #72 stays open for
+service/provider, stalled-WM/cooperative-logout and broader support/release
+acceptance. A cooperative shutdown request can wait indefinitely for an
+unresponsive WM in this slice; no forced application closure is introduced.
+Performance stays 3/5 from merged PR299, advancing to 4/5 only on this runtime
+checkpoint's merge. The new wrapper's unstripped file size is recorded; its
+resident RSS and whole-session speed/memory effects are not measured here.
+
+Separate read-only `temper_reviewer` accepts integrated tree
+`ba26f88490e54e365a9b7f313700f1b317ce3aac` with no remaining findings. Runtime/test
+byte guards and repository/whitespace checks pass. Final annotations record the
+review only; backend model/effort metadata remains unverified. Superseded merged303
+full source/evidence archives retired after review, retaining versioned reports,
+canonical source and public screenshots. This is agent review, not merge approval.
 
 ## R1 palette and appearance preview — 2026-10-29
 
 Owner: Cam; `codex/r1-palette-appearance-preview`; #60 / #70.
 Base merged PR302 `2f6b48df6c57843320bf5d228b3d5d79bf9c6631`.
-Status: ready for PR review; focused checks and separate integrated agent review pass.
+Status: merged in PR303 as `886e0d17cd69725e484c8e6a7cee0a28c612a01e`;
+canonical signature, reviewed tree `b5a51d6b2599002229cd2d928cd70a74a0568620`
+and Cam author-DCO verified. Matching branch references retired.
 The finite contract below was frozen before implementation.
 
 Outcome: use one shared resource-candidate controller to preview an existing

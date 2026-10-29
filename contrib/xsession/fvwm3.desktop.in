@@ -5,4 +5,4 @@ Comment=F? Virtual Window Manager
 Icon=@datadir@/fvwm3/default-config/fvwm-x.png
 Type=Application
 DesktopNames=FVWM3;FVWM;
-Exec=@bindir@/fvwm3
+Exec=@bindir@/fvwm-session

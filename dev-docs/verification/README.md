@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Portable session startup](VERIFICATION-2026-10-29-SESSION-STARTUP.md): default login wrapper, startup acknowledgment, controlled autostart and restart ownership; focused Linux install/X/race and real FreeBSD descriptor evidence.
+
 - [Palette and appearance preview](VERIFICATION-2026-10-29-PALETTE-APPEARANCE-PREVIEW.md): shared candidate ownership, selected-key Save/recovery, bounded unsaved overlays and three inspected themes; focused native Linux/race/sanitizer evidence.
 
 - [High contrast resource preview](VERIFICATION-2026-10-29-CONTRAST-PREVIEW.md): actual owner recovery, typed Save/Cancel, popup font repair, three inspected themes and focused Linux normal/sanitizer results.

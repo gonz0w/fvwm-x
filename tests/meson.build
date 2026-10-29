@@ -739,6 +739,14 @@ fd_safety_test = executable(
 )
 test('fd-safety', fd_safety_test)
 
+session_ready_test = executable(
+    'test-session-ready',
+    ['test_session_ready.c', '../fvwm/session_ready.c', '../libs/fd_safety.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('session-ready', session_ready_test)
+
 mfl_stream_test = executable(
     'test-mfl-stream',
     ['test_mfl_stream.c', '../modules/FvwmMFL/stream.c'],

@@ -18,6 +18,7 @@
 #include "config.h"
 #include "image_async.h"
 #include "libs/FProperty.h"
+#include "session_ready.h"
 
 #include <stdio.h>
 #include <signal.h>
@@ -127,6 +128,9 @@ static char s_g_bits[] =
 static const char *home_dir;
 
 static volatile sig_atomic_t fvwmRunState = FVWM_RUNNING;
+
+/* Private, one-shot session-owner pipe; never inherited by modules or Restart. */
+static int session_ready_fd = -1;
 
 static const char *init_function_names[4] =
 {
@@ -1507,6 +1511,7 @@ void StartupStuff(void)
 	 * flag back to False!
 	 */
 	Restarting = False;
+	session_ready_publish(&session_ready_fd);
 
 	return;
 }
@@ -1689,9 +1694,13 @@ int main(int argc, char **argv)
 	fev_init_invalid_event_type(KeymapNotify);
 
 	/* close open fds */
+	session_ready_fd = session_ready_take();
 	for (i = 3; i < fvwmlib_max_fd; i++)
 	{
-		close(i);
+		if (i != session_ready_fd)
+		{
+			close(i);
+		}
 	}
 	/* reopen stdin, stdout and stderr if necessary */
 	reopen_fd(0, "rb", stdin);

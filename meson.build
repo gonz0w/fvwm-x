@@ -756,6 +756,7 @@ configure_file(
     configuration: file_config,
     install_dir: datadir / 'xsessions',
     install: true,
+    install_tag: 'session-startup',
 )
 
 summary_docdir = get_option('datadir') / 'doc' / meson.project_name()

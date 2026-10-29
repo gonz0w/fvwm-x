@@ -48,7 +48,7 @@ fvwmprompt_test_binaries = custom_target(
         'filejobs.test',
         'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
-        'startuplaunch.test',
+        'startuplaunch.test', 'sessionowner.test', 'fvwmsession.test',
     ],
     input: fvwmprompt_files,
     command: [
@@ -334,4 +334,28 @@ test('desktop-worker-client', py,
     env: desktop_worker_env,
     depends: [fvwm_desktop, fvwm_desktop_worker],
     timeout: 90,
+)
+
+# The default login parent owns startup once; it uses no new Go dependency.
+session_wm_linker = 'main.wmPath=' + (bindir / 'fvwm3')
+if not session_wm_linker.contains('\'')
+    session_wm_linker = '\'' + session_wm_linker + '\''
+elif not session_wm_linker.contains('"')
+    session_wm_linker = '"' + session_wm_linker + '"'
+endif
+fvwm_session = custom_target(
+    'fvwm-session',
+    output: 'fvwm-session',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-ldflags', '-X ' + session_wm_linker,
+        '-o', meson.current_build_dir() / 'fvwm-session',
+        './cmd/fvwmsession',
+    ],
+    install: true,
+    install_dir: bindir,
+    install_tag: 'session-startup',
 )

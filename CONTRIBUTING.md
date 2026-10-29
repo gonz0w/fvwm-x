@@ -59,6 +59,10 @@ Linux profile, plus early affected-platform checks for sensitive changes.
 The full scripts above are acceptance recipes, not an every-PR checklist.
 Record the integration cycle and deferred gates; reuse valid unaffected evidence.
 Use separate build directories. Default-X tests require a disposable BSD VM.
+Keep the latest reusable build per active profile and only current review,
+failure, qualification and performance artifacts. Retire superseded owned
+copies at handoff or before the next build; see the
+[retention rule](dev-docs/WORKFLOW.md#current-artifacts-and-retention).
 
 Before pushing, inspect the diff, run appropriate checks and record commit/tree,
 base, commands/results, source-bound native receipts and remaining gaps in the

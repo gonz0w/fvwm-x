@@ -12,6 +12,35 @@ is selected under #56 with #67 launcher adoption. PR296 is merged; desktop-entry
 consumer acceptance is complete. Remaining role/service/platform acceptance stays
 open with the focused cadence.
 
+## Current artifact retention — 2026-10-28
+
+Owner: Cam; `codex/current-artifact-retention`. Selected by the owner after the
+PR297 storage incident. Status: policy prepared for PR review; PR297 remains
+open for its separate feature review.
+
+Outcome: keep the latest reusable build per active target/compiler/profile and
+only artifacts needed by the next run, current review, unresolved failures,
+qualification or the next performance comparison. Retain compact versioned
+results instead of indefinite copies of completed build/evidence trees.
+Supersede the blanket source/build/install/archive preservation rule; preserve
+other owners' resources and explicit current dependencies.
+
+Acceptance: one canonical retention rule with clear replacement/cleanup points,
+small continuation records and bounded exceptions; reconcile conflicting guide
+wording. Verify with documentation/link/whitespace checks and separate source
+review. No runtime changes, guest boots, broad testing, bulk deletion, disk
+expansion or feature/performance acceptance changes are selected here.
+
+[Retention decision](decisions/ARTIFACT-RETENTION-2026-10-28.md) and
+[canonical rule](WORKFLOW.md#current-artifacts-and-retention) replace blanket
+archive/stage/build preservation, including obsolete OpenBSD lab copies.
+`make check` and whitespace/source/link checks pass. Separate exact-candidate
+review is required before handoff. No native or VM checks are needed for prose.
+At the next owned lab run, reconcile superseded artifacts before building; keep
+PR297's current review evidence and the selected performance baseline meanwhile.
+Do not boot a guest solely for this documentation change. Older raw artifacts
+are no longer permanent just because a dated report referenced them.
+
 ## Modular policy and selection checker — MAINT-02/TEMPER-05
 
 Owner: the finite Temper adoption lead; mirror [issue #282](https://github.com/gonz0w/fvwm-x/issues/282).

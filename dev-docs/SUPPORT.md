@@ -44,7 +44,8 @@ Linux uses native runners for GCC and Clang on both architectures, with
 separate native AddressSanitizer/UndefinedBehaviorSanitizer jobs. Its real
 Xorg dummy scenarios cover monitor/scale changes and geometry transitions.
 BSD CI uses real FreeBSD/OpenBSD kernels under QEMU, selecting `x86_64` or
-`aarch64` explicitly. Every job preserves its own test evidence.
+`aarch64` explicitly. Each job records its source-bound results; retain raw
+artifacts under the [current-artifact rule](WORKFLOW.md#current-artifacts-and-retention).
 
 Run the Linux gate after installing dependencies with
 `tests/install_linux_dependencies.sh` and Meson 1.7.0 or a supported newer
@@ -121,8 +122,11 @@ python3 tests/compare_performance.py \
 
 No build, install, correctness matrix or timing threshold is added. Each side
 uses an owned Xvfb server with the same profiler, 128 samples per workload and
-three repetitions in alternating order. Preserve `comparison.json`, all raw
-run directories and the source/compiler/dependency receipts for both builds.
+three repetitions in alternating order. Keep `comparison.json` and compact
+source/compiler/dependency receipts. Keep raw runs through review or unresolved
+regression analysis, then retire them under the retention rule. Retain only the
+runnable baseline and inputs needed for the next comparison, replacing its
+predecessor after verification.
 RSS is unavailable outside Linux `/proc`; CPU/memory and latency reflect the
 recorded environment. Physical hardware remains separate qualification.
 
@@ -142,7 +146,9 @@ with a reason. The helper creates fresh private resources and never mounts
 tracefs, enables controllers or changes global tracing. The observer and X
 server stay outside the measured cgroup. Preserve `ownership.json`, cleanup
 receipts, raw proc snapshots, phase boundaries and scheduler trace alongside
-`evidence.json` before retiring guest duplicates.
+`evidence.json` while the observation is under review or needed by an unresolved
+acceptance check. Afterwards retain compact results and retire unneeded raw
+host/guest artifacts under the retention rule.
 
 Sampling starts just after core launch, covers readiness, twelve seconds of
 idle (including regular five-second desktop status work), settings editor/query

@@ -168,7 +168,7 @@ func (control *ownerControl) serve(parent context.Context, connection *net.UnixC
 	case <-ctx.Done():
 		return
 	default:
-		_ = sessionservice.WriteReply(connection, sessionservice.Reply{Version: 1, Outcome: "busy", Error: "session control queue is full"})
+		_ = sessionservice.WriteReply(connection, sessionservice.Reply{Version: sessionservice.Version, Outcome: "busy", Error: "session control queue is full"})
 		return
 	}
 	select {

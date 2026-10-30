@@ -37,6 +37,7 @@ func serviceEnvironment(t *testing.T, config sessionservice.Config) []string {
 	values["session_bus"] = config.Bus
 	values["session_notifications"] = config.Notifications
 	values["notification_dnd"] = config.DND
+	values["session_power"] = config.Power
 	data, err := json.Marshal(values)
 	if err != nil {
 		t.Fatal(err)
@@ -141,7 +142,7 @@ func TestBorrowedBusAndDisabledStartNeverCreateDaemon(t *testing.T) {
 			mode = "disabled"
 			address = ""
 		}
-		env := append(serviceEnvironment(t, sessionservice.Config{Bus: policy, Notifications: "external"}), "DBUS_SESSION_BUS_ADDRESS="+address)
+		env := append(serviceEnvironment(t, sessionservice.Config{Power: "portable", Bus: policy, Notifications: "external"}), "DBUS_SESSION_BUS_ADDRESS="+address)
 		calls := 0
 		cfg := defaults(Config{Environment: env, BusHelperPath: "/fixture/helper", Command: func(path string, args ...string) *exec.Cmd {
 			calls++
@@ -168,7 +169,7 @@ func TestBorrowedBusAndDisabledStartNeverCreateDaemon(t *testing.T) {
 }
 
 func TestOwnedBusAddressPrecedesApplicationsAndStopsOnlyOwnedChild(t *testing.T) {
-	env := serviceEnvironment(t, sessionservice.Config{Bus: "start", Notifications: "external"})
+	env := serviceEnvironment(t, sessionservice.Config{Power: "portable", Bus: "start", Notifications: "external"})
 	directory := environmentMap(env)["HOME"]
 	daemon := filepath.Join(directory, "dbus-daemon")
 	if err := os.WriteFile(daemon, []byte("injected test command"), 0700); err != nil {
@@ -235,16 +236,16 @@ func TestHelperDeadlineOutputAndUnsafeAddresses(t *testing.T) {
 }
 
 func TestServiceControlsCASDNDAndOwnedNotificationIDs(t *testing.T) {
-	cfg := defaults(Config{Environment: serviceEnvironment(t, sessionservice.Config{Bus: "off", Notifications: "external"})})
+	cfg := defaults(Config{Environment: serviceEnvironment(t, sessionservice.Config{Power: "portable", Bus: "off", Notifications: "external"})})
 	state, err := newServices(&cfg, &reporter{output: io.Discard})
 	if err != nil {
 		t.Fatal(err)
 	}
 	request := func(verb string) controlRequest {
-		return controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: 1, Verb: verb, Generation: state.snapshot.Generation, Operation: state.snapshot.Operation}, reply: make(chan sessionservice.Reply, 1)}
+		return controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: sessionservice.Version, Verb: verb, Generation: state.snapshot.Generation, Operation: state.snapshot.Operation}, reply: make(chan sessionservice.Reply, 1)}
 	}
 	configure := request("configure")
-	configure.message.Config = &sessionservice.Config{Bus: "start", Notifications: "external", DND: true}
+	configure.message.Config = &sessionservice.Config{Power: "portable", Bus: "start", Notifications: "external", DND: true}
 	if _, reply := state.admit(configure, cfg, true); reply.Outcome != "busy" || state.snapshot.Operation != configure.message.Operation {
 		t.Fatal("busy request consumed control identity")
 	}
@@ -286,17 +287,17 @@ func TestOutboundNotificationUsesPinnedOwnerAndFiniteIDs(t *testing.T) {
 		return serviceCommand("helper", args...)
 	}})
 	identity := busReply{BusID: "fixture-bus", ServerOwner: ":1.27"}
-	request := controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: 1, Verb: "notify", Summary: "Plain ; $(text)", Body: "Body <text>"}}
+	request := controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "notify", Summary: "Plain ; $(text)", Body: "Body <text>"}}
 	job := runServiceJob(request, cfg, identity, 0)
 	if job.err != nil || job.outcome != "sent" || job.result.NotificationID != 7 || len(lastArgs) != 5 || lastArgs[1] != request.message.Summary || lastArgs[2] != request.message.Body {
 		t.Fatalf("%#v args=%q", job, lastArgs)
 	}
-	request.message = sessionservice.RequestMessage{Version: 1, Verb: "close", NotificationID: 7}
+	request.message = sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "close", NotificationID: 7}
 	job = runServiceJob(request, cfg, identity, 1)
 	if job.err != nil || job.outcome != "closed" || len(lastArgs) != 4 {
 		t.Fatalf("%#v %q", job, lastArgs)
 	}
-	request.message = sessionservice.RequestMessage{Version: 1, Verb: "notify", Summary: "Capacity"}
+	request.message = sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "notify", Summary: "Capacity"}
 	job = runServiceJob(request, cfg, identity, 32)
 	if job.err == nil || len(lastArgs) != 1 || lastArgs[0] != "probe" {
 		t.Fatal("capacity overflow sent a notification")
@@ -383,7 +384,7 @@ func TestLateProbeCannotReviveKnownOwnedBusExit(t *testing.T) {
 }
 
 func TestKnownOwnedBusExitRefusesNewAdapterAdmission(t *testing.T) {
-	cfg := defaults(Config{Environment: serviceEnvironment(t, sessionservice.Config{Bus: "off", Notifications: "external"})})
+	cfg := defaults(Config{Environment: serviceEnvironment(t, sessionservice.Config{Power: "portable", Bus: "off", Notifications: "external"})})
 	state, err := newServices(&cfg, &reporter{output: io.Discard})
 	if err != nil {
 		t.Fatal(err)
@@ -396,7 +397,7 @@ func TestKnownOwnedBusExitRefusesNewAdapterAdmission(t *testing.T) {
 	state.snapshot.Items[2].Detail = "known owned bus exit"
 	state.snapshot.Items[3].State = "unavailable"
 	request := func(verb string) controlRequest {
-		return controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: 1, Verb: verb, Generation: state.snapshot.Generation, Operation: state.snapshot.Operation}}
+		return controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Version: sessionservice.Version, Verb: verb, Generation: state.snapshot.Generation, Operation: state.snapshot.Operation}}
 	}
 	for _, verb := range []string{"reprobe", "notify", "close"} {
 		call := request(verb)
@@ -421,7 +422,7 @@ func TestKnownOwnedBusExitRefusesNewAdapterAdmission(t *testing.T) {
 		t.Fatal("terminal status became unavailable to readers")
 	}
 	configure := request("configure")
-	configure.message.Config = &sessionservice.Config{Bus: "start", Notifications: "external", DND: true}
+	configure.message.Config = &sessionservice.Config{Power: "portable", Bus: "start", Notifications: "external", DND: true}
 	if start, reply := state.admit(configure, cfg, false); start || reply.Outcome != "applied" || state.snapshot.Items[2].State != "failed" || state.snapshot.ActiveBusPolicy != "off" {
 		t.Fatalf("next-login configuration changed terminal bus: %#v", reply)
 	}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "checkpoint": "R1 session providers and power coordination",
+  "base": "8402e098c0fe3fcab8b14f2ff9c52346f7ff7d9b",
+  "files": [
+    {
+      "profile": "slate-dark",
+      "file": "session-providers-slate-dark-panel.png",
+      "sha256": "48ca1808a22db4f67dcfe3b90c9f07dce39b252508212cd5861f8c66c3e05cda",
+      "bytes": 72590,
+      "configuration_file": "session-providers-slate-dark.fvwm",
+      "configuration_sha256": "a1b308f5c27b0f08ee03c842915732295018d3b1b7bca08ad74eea9fbd6ad3d6",
+      "source": "native-ui03",
+      "source_closure": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true
+    },
+    {
+      "profile": "dune-light",
+      "file": "session-providers-dune-light-settings.png",
+      "sha256": "7203cf923a8ff59bf985304836f35b6ca0c6ce9586e546fc77da146f86eb5dae",
+      "bytes": 67560,
+      "configuration_file": "session-providers-dune-light.fvwm",
+      "configuration_sha256": "a09472c40b5ae0190d1240dc8e51434293b7e5d9e18de2a9ae127babff2bdf71",
+      "source": "native-ui03",
+      "source_closure": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true
+    },
+    {
+      "profile": "classic-large",
+      "file": "session-providers-classic-large-confirmation.png",
+      "sha256": "48b767ff8a25a634b3f9ab23decc694db6088e3ee4437ef07f61e00415eece7c",
+      "bytes": 53189,
+      "configuration_file": "session-providers-classic-large.fvwm",
+      "configuration_sha256": "ac85e1202665459cbe6023aa1541e60e1d91b5a33c1f018653a095037bb7bb33",
+      "source": "native-ui03",
+      "source_closure": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true
+    }
+  ],
+  "inputs": {
+    "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "ac32c45a8073d78bae9680fa9c838e46a78b151fd41d28ab0ed22abf1020c687",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": "a8ce029f6684d4ee878facb33f9caa6e583b422f721b231660cbc1b6132ba831",
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider": "d15d3ca8e3f9c353e8127cc68f98e1466a4ae2e3a3bb83ee40d92699a768101e",
+    "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "5b769de4a4a80e2c4cfea22017988747dec19901b1003907ade119764ed9d0ea",
+    "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "35ff53c432f7382e6cca78e4f959697ad0c7dbc39aea58cca029507b02c274f5"
+  },
+  "limits": [
+    "Unmodified nested-X captures; no real power/authentication or secure lock",
+    "Classic is enlarged Slate plus explicit legacy Form colors/borders; examples retain fixture paths",
+    "Diagnostic rows intentionally elide to fit; whole-guest counters are not WM benchmarks"
+  ]
+}

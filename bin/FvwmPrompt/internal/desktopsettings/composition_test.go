@@ -199,6 +199,9 @@ func versionedFixture(version int) Values {
 	settings["palette"], settings["appearance"] = "dune", "light"
 	settings["keep_wallpaper"] = true
 	settings["wallpaper"] = Values{"palette": "ink", "appearance": "dark"}
+	if version < 6 {
+		delete(settings, "session_power")
+	}
 	if version < 5 {
 		delete(settings, "session_bus")
 		delete(settings, "session_notifications")
@@ -220,12 +223,12 @@ func versionedFixture(version int) Values {
 }
 
 func TestExactStoredSchemasAndMigration(t *testing.T) {
-	if StateVersion != 5 {
+	if StateVersion != 6 {
 		t.Fatal(StateVersion)
 	}
-	for _, version := range []int{1, 2, 3, 4, 5} {
+	for _, version := range []int{1, 2, 3, 4, 5, 6} {
 		settings := versionedFixture(version)
-		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16}[version] {
+		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16, 6: 17}[version] {
 			t.Fatal(settings)
 		}
 		data, _ := json.Marshal(settings)
@@ -270,7 +273,7 @@ func TestExactStoredSchemasAndMigration(t *testing.T) {
 	if err != nil || got["wallpaper_palette"] != "grove" || got["wallpaper_appearance"] != "light" {
 		t.Fatal(got, err)
 	}
-	for _, version := range []any{0, 6, -1, true, "4", 4.5, nil} {
+	for _, version := range []any{0, 7, -1, true, "4", 4.5, nil} {
 		bad := versionedFixture(3)
 		bad["schema_version"] = version
 		data, _ := json.Marshal(bad)

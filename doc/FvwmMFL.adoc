@@ -887,10 +887,17 @@ existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 and a `settings`
 object keyed by setting name. Each item includes its type/default/choices or
 range, description, saved/effective values, override source and capability.
+The result-level `owner` and `generation` apply to every item in `settings`;
+items omit those two duplicate fields to preserve the fixed reply budget. All
+per-setting values, types, choices/bounds, descriptions, source/application,
+preview/constraint and persistence diagnostics remain in each item. Standalone
+FvwmDesktop `query-settings` records and native inspector metadata retain their
+own per-item owner/generation fields.
 The provider token identifies one helper incarnation. An optional `provider`
 field targets a query to that exact instance; omit it to discover an owner.
 The generation belongs to this helper's settings snapshot; it changes after
-accepted settings changes, reload or helper restart.
+accepted settings changes, adopted service/provider observations, reload or
+helper restart.
 
 The wallpaper group contains `wallpaper_palette` and `wallpaper_appearance`.
 Their `resolved` and `resolution` fields describe explicit, follow or retained
@@ -899,13 +906,15 @@ projection. A resolved appearance of `auto` remains schedule policy rather than
 the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
 explains why a saved choice is masked by keep_wallpaper. These fields are stable
 for the preference generation; no clock revision or new resource is introduced.
-The IPC schema remains version 1, independently of the version 5 preference file.
+The IPC schema remains version 1, independently of the version 6 preference file.
 The session group contains `session_bus` (off/reuse/start, default off),
-`session_notifications` (off/external, default off) and `notification_dnd`
-(boolean, default false). Bus policy applies at next owned login. Notifications
-and DND require a successful live owner handshake after the atomic preference
-commit; a saved value alone does not attest live application. Older supported
-file schemas gain these defaults on read without rewriting the file.
+`session_notifications` (off/external, default off), `notification_dnd`
+(boolean, default false) and `session_power` (portable/login1, default portable).
+The file holds fifteen preferences plus retained wallpaper. The compact Session
+editor edits these four keys; edit-all retains eleven appearance fields. Bus
+policy applies at next owned login. Power, notifications and DND require a
+successful live owner handshake after the atomic preference commit; a saved
+value alone does not attest live application. Older supported file schemas gain these defaults on read without rewriting the file.
 
 Typed actions use `method: "action"`, `resource: "settings"`, `operation` and
 the exact provider and generation returned by the preceding query:
@@ -1085,8 +1094,8 @@ Discover a desktop provider first, then query its separate session projection:
 request {"version":1,"id":"session-1","method":"query","resource":"session","provider":"0123456789abcdef0123456789abcdef"}
 ....
 
-The result has `schema_version: 1`, `scope: "session-services"`, saved and
-requested three-key configurations, `bus_policy: "next-login"` and the desktop
+The result has `schema_version: 2`, `scope: "session-services"`, saved and
+requested four-key configurations, `bus_policy: "next-login"` and the desktop
 provider/preference generation. A valid parent observation adds
 `state: "observed"`, `availability: "available"`, `session_generation`,
 `active_bus_policy`, `active` and five fixed `items`: core, scan, bus,
@@ -1095,7 +1104,27 @@ detail and relevant attempt/launch/exit counters. Independent application
 observations do not establish readiness. The notifications item's opaque
 operation identity changes when the actual bus/server owner changes; stale
 notification IDs are retired. Details in this public projection are shortened
-to preserve the existing reply cap.
+to preserve the existing 8 KiB reply cap. Item and provider diagnostic details
+have at most 48 Unicode characters in this public projection; private observations
+remain intact. The public result omits raw power bus and unique-owner identities.
+
+Separate typed `power` and `locker` records accompany the five inventory items.
+Power contains `provider` (portable or login1), an opaque observation `generation`,
+`state`, bounded `detail` and exactly three ordered `capabilities`: poweroff,
+reboot and suspend, each with action, permission and bounded detail. Portable
+installed native tools report authorization unknown/request-capable. login1
+permissions retain yes, no, challenge, na, inhibited, inhibitor-blocked and
+challenge-inhibitor-blocked independently; unknown observations refuse action.
+Only login1 yes permits poweroff/reboot, with a fresh permission check and
+interactive=false. No authentication or inhibitor bypass is provided.
+
+Locker contains its own `generation`, `state`, bounded `detail` and
+`secure_ready: false`. Installed, starting, running, exited and failed are
+process/discovery observations, never evidence that the screen is protected.
+The parent retains its actual locker across desktop/controller and ordinary WM
+Restart, refuses duplicates while pending/running and does not terminate it on
+request loss, deadline or WM exit. Coordinated suspend remains unavailable
+before any command or Suspend method, including when CanSuspend returns yes.
 
 Without a known portable owner, the result reports unavailable with
 `service_lifecycle: false`; direct/custom and external XSMP paths remain usable.
@@ -1113,8 +1142,26 @@ request {"version":1,"id":"observe-owner","method":"action","resource":"operatio
 request {"version":1,"id":"probe-owner","method":"action","resource":"operations","operation":"start","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"session-reprobe"}
 ....
 
-The other fixed targets are `notification-test`, `notification-close` and
-`logout`. Notification text is fixed by the desktop action; this is not an
+The exact session targets are `session-status`, `session-reprobe`,
+`notification-test`, `notification-close`, `logout`, `power-status`,
+`power-reprobe`, `poweroff`, `reboot`, `suspend` and `lock`. `power-status`
+observes the retained parent status; `power-reprobe` explicitly rediscovers the
+fixed providers without issuing a power action. `lock` requests the fixed parent
+locker. `suspend` produces an explicit secure-readiness refusal.
+
+Power/locker changes advance the desktop's public generation, so an old caller
+cannot silently acquire a different provider. Public actions require the current
+provider and desktop generation; clients do not send a private provider token.
+The controller sends the observed power generation together with the parent's
+current session/operation tokens. Native power confirmations additionally capture
+those identities and current policy; stale/expired confirmations dismiss without
+mutation. Results retain bounded typed provider observations and request outcomes,
+never confirmation that shutdown or reboot completed. Denial, timeout, loss and
+outcome-unconfirmed never cause fallback or automatic action replay. Notification
+and power failures retain their independent provider observations. Existing
+configured direct/external-session native fallbacks remain available.
+
+Notification text is fixed by the desktop action; this is not an
 arbitrary payload, daemon or method-execution API. Close applies only to the
 desktop's last remembered owned notification. Reprobe authenticates the existing
 address and never replaces a bus after apps start. A completed operation reports
@@ -1124,8 +1171,8 @@ failure. Bus policy changes remain next-login preferences.
 
 These operations share the bounded operation records and retention described
 below. Cancelling a reply wait does not cancel domain work. Session status,
-reprobe and notification operations return `cancellation_unavailable` for a
-domain cancellation. A logout operation can be cancelled with its latest
+reprobe, power, locker and notification operations return
+`cancellation_unavailable` for a domain cancellation. A logout operation can be cancelled with its latest
 operation-record generation until final Quit/XSMP handoff. Cancel/deadline
 stops further cooperative close requests; it cannot retract an already sent
 Delete or restore closed applications. The controller's overall deadline is
@@ -1173,8 +1220,11 @@ query but cannot send these actions.
 The parent alone owns its internal Unix endpoint: eight connections/queued
 requests, one mutation, 16 KiB frames/status, five-second deadlines, private
 owned inode and random inherited capability. Its session generation and current
-operation token protect mutation admission. Same-user processes remain trusted;
-there is no new X11 authentication boundary. The endpoint accepts no shell/FVWM
+operation token protect mutation admission. Private owner messages use version
+2 and power mutations also require a separate provider-generation token. This
+is independent of the optional native worker's JSON version 1 with kind power,
+and of this public Session projection's schema 2. Same-user processes remain
+trusted; there is no new X11 authentication boundary. The endpoint accepts no shell/FVWM
 commands, argv, executable paths or window IDs. MFL remains the public typed
 transport and the core remains authoritative for managed-window effects.
 
@@ -1186,8 +1236,9 @@ the additional session targets are described above. Provider queries advertise
 the full target list, operation limit 16 and terminal retention 300000 ms.
 These scans use the existing two-worker pool and four-job admission limit.
 Other legacy desktop jobs share that limit; duplicate target work returns
-`operation_busy` without admitting a new attempt. No file mutation, arbitrary
-command, power transition or generic job loader is added.
+`operation_busy` without admitting a new attempt. The fixed session targets
+above are the only added power/locker actions; there is no file mutation,
+arbitrary command or generic job loader.
 
 ....
 request {"version":1,"id":"refresh-1","method":"action","resource":"operations","operation":"start","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"applications"}

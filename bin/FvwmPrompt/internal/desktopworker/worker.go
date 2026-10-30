@@ -24,6 +24,7 @@ import (
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopcheck"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopinspect"
+	"github.com/fvwmorg/FvwmPrompt/internal/sessionprovider"
 	"github.com/fvwmorg/FvwmPrompt/transport"
 )
 
@@ -322,21 +323,17 @@ func volume(ctx context.Context, system, action string, env Environment) string 
 }
 
 func power(ctx context.Context, system, action string, env Environment) string {
-	flag := "-r"
-	if action == "poweroff" {
-		flag = "-p"
+	argv, err := sessionprovider.NativePlan(system, action, env.LookPath)
+	if err != nil {
+		return "Power service is unavailable."
 	}
-	argv := []string{"shutdown", flag, "now"}
-	if system == "Linux" && available(env, "systemctl") {
-		argv = []string{"systemctl", action}
-	}
-	_, err := env.Run(ctx, argv, 3*time.Second)
+	_, err = env.Run(ctx, argv, 3*time.Second)
 	if err == nil {
 		return "Power request sent."
 	}
 	var failure *exec.ExitError
 	if errors.As(err, &failure) {
-		return "Power request denied by the system. Check session permissions."
+		return "Power command failed. Authorization and request outcome are unconfirmed."
 	}
-	return "Power service is unavailable or did not respond."
+	return "Power request outcome is unconfirmed."
 }

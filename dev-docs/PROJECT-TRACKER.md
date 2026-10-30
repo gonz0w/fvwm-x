@@ -7,17 +7,107 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [session control and optional services](#r1-session-control-and-optional-services--2026-10-29)
-under #72/#77, with a finite #76 notification-client consumer. PR304 is merged as
-`94cf28be170bb66258de7c931feb420250e02128`; canonical signature/tree/author DCO
-verified and owned branches retired. Performance is 4/5 from PR299, advancing to
-5/5 only on the next runtime merge; comparison follows that merge.
+Current checkpoint: [session providers and power coordination](#r1-session-providers-and-power-coordination--2026-10-29)
+under #72/#77, with a bounded #225 manual-lock consumer. PR305 merged as
+`8402e098c0fe3fcab8b14f2ff9c52346f7ff7d9b`; canonical signature, reviewed tree
+and Cam author DCO verified, matching source branches retired. The [due core comparison](verification/PERFORMANCE-2026-10-29-SESSION-CORE.md)
+compares retained PR299/PR305 artifacts; the counter resets to 0/5 at PR305.
+Command ranges overlap; idle timer median rises 0.324 ms and median per-run peak core RSS 56 KiB.
+This does not measure the new session parent or whole default desktop.
+
+## R1 session providers and power coordination — 2026-10-29
+
+Owner: Cam; `codex/r1-session-providers`; base merged PR305 above.
+Status: reviewed implementation and focused qualification complete; PR handoff
+pending. The finite eight-story contract was frozen before implementation.
+User authorized merge/cleanup and the next larger related milestone batch.
+
+Deliver one coherent #72/#77 checkpoint: (1) fixed native/login1-compatible power
+and xlock/slock discovery, (2) truthful per-action permissions/capability states,
+(3) generation-bound poweroff/reboot, (4) parent-retained manual-lock observation
+across Desktop/core restart, (5) explicit coordinated-suspend refusal without a
+qualified secure-readiness witness, (6) one shared session_power preference,
+(7) native Session/menu/public operation projection and (8) independent bounded
+absence/stall/loss/reprobe behavior. Reuse existing defaults/direct paths and
+literal native command policy. No arbitrary provider/argv registry, mandatory
+package, authentication implementation, system-bus creation, automatic daemon
+activation, inhibitor FD/event loop or invented secure-lock readiness.
+
+Add session_power=portable|login1, default portable, live after an owner
+configuration handshake in the existing atomic settings store (schema 6,
+fifteen preferences plus retained wallpaper). Old saved schemas read automatically;
+appearance edit-all remains eleven fields and compact session editing grows to
+four. Keep the fixed five service inventory items and add explicit typed bounded
+Power/Locker observations. Update private producer/consumer version together;
+provider-specific failures must not clear notification IDs or mark the session
+bus failed. Session-bus death must not disable portable/system-provider controls.
+Keep public MFL 8 KiB and private 16 KiB ceilings, finite target whitelists and
+stale-provider/observation checks; no new native packet types.
+
+Native power reuses one shared literal policy: Linux systemctl when installed,
+otherwise shutdown; BSD shutdown retains existing poweroff/reboot flags. Resolve
+fixed executables through conservative absolute PATH roots. Executable discovery
+reports installed/request-capable with authorization unknown; never probe by
+issuing a power action. An action result acknowledges a request or reports
+unavailable/denied/stale/failed/outcome-unconfirmed, never a completed shutdown.
+No fallback/replay after denial, timeout, disconnect or ambiguous submission.
+Existing direct/external-session paths retain their documented native fallback.
+
+The optional existing system-bus client uses only the fixed org.freedesktop.login1
+Manager, GetId/GetNameOwner, CanPowerOff/CanReboot/CanSuspend and guarded
+PowerOff/Reboot calls. Never start a system bus or autolaunch the service. Pin the
+observed bus/unique owner; recheck permission before mutation, invoke only an
+explicit yes with interactive=false, and report challenge, denied, unavailable,
+inhibited and unknown states independently. Unknown capability strings refuse.
+The current primary specification also defines inhibited, inhibitor-blocked and
+challenge-inhibitor-blocked; none authorizes bypassing an inhibitor. No Suspend
+method is sent because no qualified secure-lock witness exists in this slice.
+The default-disabled worker retains no libdbus linkage; notifications remain a
+separate fixed worker branch. Preserve bounded message/output and actual-reap
+admission leases with finite deadlines; one kernel-blocked call is not preemptible.
+
+Default manual Lock uses one parent-observed xlock/slock child and exact Wait
+ownership. Reject duplicate admission while pending/running. Once admitted, do
+not terminate an active locker on requester disconnect, controller restart,
+request deadline or WM exit. Process start/running/exit never attests protection;
+report secure readiness unconfirmed and coordinated sleep unavailable. Preserve
+independent applications and existing direct-session fallback; no new auth or
+physical-lock claim. Generation-bound power confirmations cannot silently change
+provider/policy between presentation and submission. Managed-window commands
+continue through the existing core engine.
+
+Implement the full group before one combined incremental Linux build/policy/
+race/vet/native-X checkpoint. Native tests use owned fake native tools and a
+private fixture bus/provider; never power off/reboot/suspend the lab/host or use
+real authentication. Exercise denied/auth/inhibited/unknown/stale, no replay,
+loss/reconnect, independent notifications, surviving manual-lock child/duplicate
+refusal, secure-suspend refusal, real menus/confirmations and three themes,
+including enlarged Classic with explicit legacy colors. Reuse established builds,
+SDK/caches, install and source-bound unaffected evidence. Check actual changed
+platform APIs/argv contracts early when needed; no automatic all-OS matrix.
+Due performance observation retains its exact workload/binary scope rather than
+claiming whole-desktop effects. Full #72/#77/#225 service/platform/security and
+release acceptance remains open until actually qualified; #257/#258 stay parked.
+
+The [focused report](verification/VERIFICATION-2026-10-29-SESSION-PROVIDERS.md)
+records seven-package composed ordinary/race checks (472 each), vet, C policy,
+six optional-helper ASan/UBSan cases, default refusal/linkage, tagged install,
+manuals, compile-only BSD builds and nineteen composed native cases. Passing
+portable source01 evidence is reused; only the controller, changed provider
+fixture and three UI groups repeat after corrections. Three inspected captures
+and configuration examples are in the [development preview](../doc/development-preview.md#session-power-providers-and-manual-lock).
+Separate source review closes the probe-token race, public-size regression and
+two fixture gaps; final artifact review is recorded in the PR handoff.
+Owned lab stopped normally; 513 raw files verify in a 2,097,981-byte host archive,
+and 72,458,115 duplicate guest bytes retired. Current builds/source/prefix/caches
+and useful performance references remain. Full owner acceptance stays open.
 
 ## R1 session control and optional services — 2026-10-29
 
 Owner: Cam; `codex/r1-session-services`; #72 / #77 / #76.
 Base merged PR304 `94cf28be170bb66258de7c931feb420250e02128`.
-Status: implemented; focused batch passes; prepared for PR review. The finite
+Status: merged in PR305 as `8402e098c0fe3fcab8b14f2ff9c52346f7ff7d9b`;
+canonical signature, reviewed tree and author DCO verified; source branches retired. The finite
 batch contract was frozen before implementation. User
 explicitly requested larger related session/services batches and one combined
 focused gate after implementation, repeating only affected failures.

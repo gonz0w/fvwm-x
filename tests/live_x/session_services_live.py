@@ -37,7 +37,8 @@ class ClassHint(C.Structure):
 
 
 class Session:
-    def __init__(self, runtime, options, out, profile, bus='off', address=None):
+    def __init__(self, runtime, options, out, profile, bus='off', address=None,
+                 power='portable', extra_env=None):
         self.runtime, self.options, self.out = runtime, options, out
         self.profile = profile
         self.connections, self.probes = [], []
@@ -100,10 +101,13 @@ class Session:
         (autostart / 'environment.desktop').write_text(
             '[Desktop Entry]\nType=Application\nName=Session environment witness\n'
             'Exec="' + sys.executable + '" "' + str(recorder) + '"\n')
-        if bus != 'off':
+        if bus != 'off' or power != 'portable':
             state = self.user / 'desktop-state.json'
-            state.write_text(json.dumps({'session_bus': bus,
-                'session_notifications': 'external', 'notification_dnd': False}) + '\n')
+            saved = {'session_bus': bus, 'notification_dnd': False,
+                'session_notifications': 'external' if bus != 'off' else 'off'}
+            if power != 'portable':
+                saved['session_power'] = power
+            state.write_text(json.dumps(saved) + '\n')
             state.chmod(0o600)
         self.env = runtime.environment({'DISPLAY': self.display,
             'HOME': str(self.home), 'FVWM_USERDIR': str(self.user),
@@ -120,6 +124,8 @@ class Session:
             self.env.pop(key, None)
         if address:
             self.env['DBUS_SESSION_BUS_ADDRESS'] = address
+        if extra_env:
+            self.env.update(extra_env)
         self.process = runtime.start(profile, [str(binaries / 'fvwm-session'),
             '--', '-d', self.display, '-f', str(self.config)], profile + '.log', self.env)
         endpoint = self.home / ('fvwm_mfl_' + self.display.replace(':', '_') + '.sock')
@@ -200,7 +206,7 @@ class Session:
         snapshot = packet['result']
         if snapshot.get('settings', {}).get('palette', {}).get('application') != 'submitted-to-fvwm':
             return False
-        assert len(snapshot['settings']) == 14, snapshot
+        assert len(snapshot['settings']) == 15, snapshot
         self.settings = snapshot
         return snapshot
 
@@ -212,9 +218,31 @@ class Session:
         return self.request(resource='session', provider=self.provider)
 
     def change(self, values):
-        snapshot = self.request(resource='settings', scope='all')
-        self.settings = self.request('action', operation='set',
-            provider=snapshot['provider'], generation=snapshot['generation'], values=values)
+        deadline = time.monotonic() + 8
+        for attempt in range(64):
+            snapshot = self.request(resource='settings', scope='all')
+            self.serial += 1
+            token = 'session-set-' + str(self.serial)
+            self.rpc.send(frame(token, method='action', resource='settings',
+                operation='set', provider=snapshot['provider'],
+                generation=snapshot['generation'], values=values))
+            packet = self.rpc.record()['reply']
+            assert packet['id'] == token, packet
+            code = packet.get('error', {}).get('code')
+            self.evidence.setdefault('settings_change_admissions', []).append({
+                'id': token, 'attempt': attempt + 1, 'status': packet['status'],
+                'error': code, 'generation': snapshot['generation']})
+            if packet['status'] == 'ok':
+                self.settings = packet['result']
+                break
+            # A rejected CAS performed no mutation. Only that explicit reply
+            # permits rereading the generation and resubmitting these values.
+            # Disconnects, timeouts and every other error remain failures.
+            assert packet['status'] == 'error' and code == 'stale_generation', packet
+            assert time.monotonic() < deadline, packet
+            time.sleep(.05)
+        else:
+            raise AssertionError('settings CAS admission retry limit exhausted')
         self.barrier()
         return self.settings
 

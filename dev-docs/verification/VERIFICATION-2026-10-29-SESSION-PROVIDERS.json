@@ -1,0 +1,5469 @@
+{
+  "schema_version": 1,
+  "checkpoint": "R1 session providers and power coordination",
+  "base": "8402e098c0fe3fcab8b14f2ff9c52346f7ff7d9b",
+  "qualified_closures": {
+    "source01": "90e0052f4025da895c9085d7462ca94aea1a1d44f0da56799ca13dfa1b5d42cf",
+    "source02": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd"
+  },
+  "results": {
+    "result01.json": {
+      "status": "failed",
+      "source_pre": "90e0052f4025da895c9085d7462ca94aea1a1d44f0da56799ca13dfa1b5d42cf",
+      "changed": [
+        "INSTALL.md",
+        "README.md",
+        "bin/FvwmPrompt/cmd/fvwmsession/main.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go",
+        "bin/FvwmPrompt/internal/desktopworker/worker.go",
+        "bin/FvwmPrompt/internal/desktopworker/worker_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/control.go",
+        "bin/FvwmPrompt/internal/sessionowner/control_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/providers.go",
+        "bin/FvwmPrompt/internal/sessionowner/providers_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/service_control.go",
+        "bin/FvwmPrompt/internal/sessionowner/services.go",
+        "bin/FvwmPrompt/internal/sessionowner/services_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/session.go",
+        "bin/FvwmPrompt/internal/sessionprovider/policy.go",
+        "bin/FvwmPrompt/internal/sessionprovider/policy_test.go",
+        "bin/FvwmPrompt/internal/sessionservice/types.go",
+        "bin/FvwmPrompt/internal/sessionservice/wire_test.go",
+        "bin/FvwmPrompt/meson.build",
+        "bin/session_bus.c",
+        "bin/session_bus_disabled.c",
+        "dev-docs/ARCHITECTURE.md",
+        "dev-docs/PROJECT-TRACKER.md",
+        "dev-docs/decisions/README.md",
+        "dev-docs/decisions/SESSION-POWER-PROVIDERS-2026-10-29.md",
+        "dev-docs/verification/README.md",
+        "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-SERVICES.json",
+        "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-SERVICES.md",
+        "doc/FvwmDesktop.adoc",
+        "doc/FvwmMFL.adoc",
+        "doc/development-preview.md",
+        "doc/fvwm-session.adoc",
+        "doc/screenshots/session-services-classic-customization.fvwm",
+        "doc/screenshots/session-services-classic-large-waiting.png",
+        "doc/screenshots/session-services-classic-large.fvwm",
+        "doc/screenshots/session-services-dune-light-settings.png",
+        "doc/screenshots/session-services-dune-light.fvwm",
+        "doc/screenshots/session-services-manifest.json",
+        "doc/screenshots/session-services-slate-dark-panel.png",
+        "doc/screenshots/session-services-slate-dark.fvwm",
+        "modules/FvwmMFL/request.c",
+        "tests/live_x/session_providers_live.py",
+        "tests/live_x/session_services_live.py",
+        "tests/meson.build",
+        "tests/session_power_provider.c",
+        "tests/test_mfl_request.c"
+      ],
+      "commands": [
+        {
+          "label": "normal-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "-Dsession-dbus=enabled",
+            "-Dmandoc=true"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 1.4108705140001803
+        },
+        {
+          "label": "normal-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmForm/FvwmForm",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/fvwm-session-bus",
+            "tests/session-power-provider",
+            "tests/test-mfl-request",
+            "doc/fvwm-session.1",
+            "doc/FvwmDesktop.1",
+            "doc/FvwmMFL.1"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 1.3008348989999376
+        },
+        {
+          "label": "go-normal",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-json",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/sessionprovider"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 1,
+          "seconds": 7.5563719059998675
+        },
+        {
+          "label": "go-race",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/sessionprovider"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 1,
+          "seconds": 12.302233921999914
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-mod=vendor",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/sessionprovider"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 0.2531741800000873
+        },
+        {
+          "label": "go-cross-freebsd",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/cross-freebsd",
+            "./cmd/fvwmsession",
+            "./cmd/fvwmdesktop"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 0.5756243599998925
+        },
+        {
+          "label": "go-cross-openbsd",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/cross-openbsd",
+            "./cmd/fvwmsession",
+            "./cmd/fvwmdesktop"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 0.5719481339999675
+        },
+        {
+          "label": "catalog-contract",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/test_command_catalog.py"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.02628379399993719
+        },
+        {
+          "label": "fixture-syntax",
+          "command": [
+            "python3",
+            "-m",
+            "py_compile",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.01684049799996501
+        },
+        {
+          "label": "normal-policy",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "mfl-request"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.12475626800005557
+        },
+        {
+          "label": "installed-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.08625149899989992
+        },
+        {
+          "label": "tagged-install",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/stage",
+            "--tags",
+            "session-startup"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.08836446800000886
+        },
+        {
+          "label": "native-providers",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--provider",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-x01"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 1,
+          "seconds": 20.652841283999805
+        },
+        {
+          "label": "sanitizer-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "-Dsession-dbus=disabled"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 1.199347577000026
+        },
+        {
+          "label": "sanitizer-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "tests/test-mfl-request",
+            "bin/fvwm-session-bus"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.35905760700006795
+        },
+        {
+          "label": "sanitizer-policy",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "mfl-request"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.1363361989999703
+        },
+        {
+          "label": "disabled-stub",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+            "probe"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.002994055999806733
+        },
+        {
+          "label": "disabled-closure",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.003465890999905241
+        }
+      ],
+      "source_post": "90e0052f4025da895c9085d7462ca94aea1a1d44f0da56799ca13dfa1b5d42cf"
+    },
+    "result02.json": {
+      "status": "running",
+      "source_pre": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+      "changed": [
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go",
+        "dev-docs/PROJECT-TRACKER.md",
+        "dev-docs/verification/PERFORMANCE-2026-10-29-SESSION-CORE.json",
+        "dev-docs/verification/PERFORMANCE-2026-10-29-SESSION-CORE.md",
+        "dev-docs/verification/README.md",
+        "doc/FvwmMFL.adoc",
+        "tests/live_x/session_providers_live.py",
+        "tests/live_x/session_services_live.py",
+        "tests/session_power_provider.c"
+      ],
+      "commands": [
+        {
+          "label": "repeat-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "tests/session-power-provider",
+            "doc/FvwmMFL.1"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.4079295319997982
+        },
+        {
+          "label": "repeat-controller-normal",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopcontroller"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 2.468551460999606
+        },
+        {
+          "label": "repeat-controller-race",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "./internal/desktopcontroller"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 4.586496043999887
+        },
+        {
+          "label": "repeat-controller-vet",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-mod=vendor",
+            "./internal/desktopcontroller"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 0.11711336300004405
+        }
+      ],
+      "source_post": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd"
+    },
+    "result03.json": {
+      "status": "passed",
+      "source_pre": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+      "changed": [],
+      "commands": [
+        {
+          "label": "repeat-fixture-syntax",
+          "command": [
+            "python3",
+            "-m",
+            "py_compile",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.0201938479999626
+        },
+        {
+          "label": "repeat-providers",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--provider",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+            "--providers-only",
+            "--provider-cases",
+            "locker",
+            "login1",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-providers03"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 15.380605414000001
+        },
+        {
+          "label": "repeat-ui",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--provider",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+            "--ui-only",
+            "--profiles",
+            "slate-dark",
+            "dune-light",
+            "classic-large",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-ui03"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 6.556716350999977
+        }
+      ],
+      "source_post": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd"
+    },
+    "sanitizer-power01/result.json": {
+      "status": "passed",
+      "records": [
+        {
+          "mode": "normal",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.0",
+            "detail": "power_capabilities_observed"
+          },
+          "stale": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "stale",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.0",
+            "detail": "stale_power_provider"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "requested",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.0",
+            "detail": "power_request_acknowledged"
+          },
+          "calls": [
+            "PowerOff interactive=false mode=normal"
+          ]
+        },
+        {
+          "mode": "deny",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.4",
+            "detail": "power_capabilities_observed"
+          },
+          "stale": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "stale",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.4",
+            "detail": "stale_power_provider"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "denied",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.4",
+            "detail": "power_request_access_denied"
+          },
+          "calls": [
+            "PowerOff interactive=false mode=deny"
+          ]
+        },
+        {
+          "mode": "challenge",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.8",
+            "detail": "power_capabilities_observed"
+          },
+          "stale": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "stale",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.8",
+            "detail": "stale_power_provider"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "authentication-required",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.8",
+            "detail": "power_request_authentication_required"
+          },
+          "calls": [
+            "PowerOff interactive=false mode=challenge"
+          ]
+        },
+        {
+          "mode": "stall-request",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.12",
+            "detail": "power_capabilities_observed"
+          },
+          "stale": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "stale",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.12",
+            "detail": "stale_power_provider"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "outcome-unconfirmed",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.12",
+            "detail": "power_request_outcome_unconfirmed"
+          },
+          "calls": [
+            "PowerOff interactive=false mode=stall-request"
+          ]
+        },
+        {
+          "mode": "loss",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.16",
+            "detail": "power_capabilities_observed"
+          },
+          "stale": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "stale",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.16",
+            "detail": "stale_power_provider"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "outcome-unconfirmed",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.16",
+            "detail": "power_request_outcome_unconfirmed"
+          },
+          "calls": [
+            "PowerOff interactive=false mode=loss"
+          ]
+        },
+        {
+          "mode": "permission-no",
+          "probe": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "no",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "ready",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.20",
+            "detail": "power_capabilities_observed"
+          },
+          "request": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "no",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "denied",
+            "bus_id": "03d503f3dd9d9f74b48b29176ae3fe11",
+            "server_owner": ":1.20",
+            "detail": "permission_observed"
+          },
+          "calls": []
+        }
+      ],
+      "helper_sha256": "6f32fb6c25eee8a1a1ab7b47de6e57396376f2aa7fccc49074ed290343d97717",
+      "sources": {
+        "bin/session_bus.c": "d117a472e8d19abbfaf4e2a22f1809cbc70dc40b8ef73eacfa93f5ce9993d176",
+        "libs/cJSON.c": "0027420b409663cbd44e5aeeb2accaf0d6a9ad67c59631e06e4c4cbf6415c3ae"
+      },
+      "scope": "Native Linux ARM64 transient optional C power branch; libdbus uninstrumented; no real OS power/auth, Go/kernel/physical lock not qualified"
+    },
+    "disabled-power.json": {
+      "status": "passed",
+      "records": [
+        {
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+            "power-probe"
+          ],
+          "exit": 0,
+          "stdout": {
+            "version": 1,
+            "kind": "power",
+            "available": false,
+            "state": "unavailable",
+            "bus_id": "",
+            "server_owner": "",
+            "detail": "optional_bus_support_disabled",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              }
+            ]
+          },
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+            "power-request",
+            "poweroff",
+            ":1.1",
+            "00000000000000000000000000000000"
+          ],
+          "exit": 0,
+          "stdout": {
+            "version": 1,
+            "kind": "power",
+            "available": false,
+            "state": "unavailable",
+            "bus_id": "",
+            "server_owner": "",
+            "detail": "optional_bus_support_disabled",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "optional_bus_support_disabled"
+              }
+            ]
+          },
+          "stderr": ""
+        }
+      ]
+    },
+    "go-normal": {
+      "passes": 470,
+      "failed": [
+        "TestAllFifteenSettingsHaveOneBoundedPublicSnapshot",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller"
+      ],
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionowner",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionprovider",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
+      ],
+      "by_package": {
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession": 3,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller": 279,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings": 57,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker": 37,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionowner": 88,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionprovider": 3,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionservice": 3
+      }
+    },
+    "go-race": {
+      "passes": 470,
+      "failed": [
+        "TestAllFifteenSettingsHaveOneBoundedPublicSnapshot",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller"
+      ],
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings",
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionowner",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionprovider",
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
+      ],
+      "by_package": {
+        "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession": 3,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller": 279,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopsettings": 57,
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopworker": 37,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionowner": 88,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionprovider": 3,
+        "github.com/fvwmorg/FvwmPrompt/internal/sessionservice": 3
+      }
+    },
+    "repeat-controller-normal": {
+      "passes": 281,
+      "failed": [],
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller"
+      ],
+      "by_package": {
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller": 281
+      }
+    },
+    "repeat-controller-race": {
+      "passes": 281,
+      "failed": [],
+      "packages": [
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller"
+      ],
+      "by_package": {
+        "github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller": 281
+      }
+    },
+    "native-x01": {
+      "status": "failed",
+      "groups": {
+        "native": {
+          "status": "passed"
+        },
+        "locker": {
+          "status": "failed",
+          "type": "AssertionError",
+          "message": "{'admission': 'accepted', 'id': '19a9a0deece1a67d3ca1eeffa21ff3b5', 'target': 'lock', 'operation': {'application': 'unknown', 'cancel_requested': False, 'error': 'session_unavailable', 'generation': '5084909e5b82639a36c5cc672eacb864', 'id': '19a9a0deece1a67d3ca1eeffa21ff3b5', 'progress': {'completed': None, 'total': None, 'unit': 'unknown'}, 'result': {'locker': {'generation': 'b21307016a2da00bfaef3b37a2c0c349', 'state': 'running', 'detail': 'observed locker child running; secure readiness ', 'secure_ready': False}, 'outcome': 'busy', 'power': {'provider': 'portable', 'generation': 'a5d323a56db5a00d761766db9e59ac2e', 'state': 'ready', 'detail': 'fixed native commands; authorization unknown', 'capabilities': [{'action': 'poweroff', 'permission': 'unknown', 'detail': 'installed; authorization unknown; request capabl'}, {'action': 'reboot', 'permission': 'unknown', 'detail': 'installed; authorization unknown; request capabl'}, {'action': 'suspend', 'permission': 'na', 'detail': 'secure locker readiness is unconfirmed'}]}}, 'retention_ms': 299947, 'rollback': False, 'state': 'failed', 'target': 'lock', 'worker_stop': 'unknown'}}"
+        },
+        "login1": {
+          "status": "passed"
+        },
+        "slate-dark": {
+          "status": "failed",
+          "type": "AssertionError",
+          "message": "{'version': 1, 'id': 'session-50', 'status': 'error', 'error': {'code': 'stale_generation'}}"
+        },
+        "dune-light": {
+          "status": "failed",
+          "type": "AssertionError",
+          "message": "{'version': 1, 'id': 'session-50', 'status': 'error', 'error': {'code': 'stale_generation'}}"
+        },
+        "classic-large": {
+          "status": "failed",
+          "type": "AssertionError",
+          "message": "{'version': 1, 'id': 'session-51', 'status': 'error', 'error': {'code': 'stale_generation'}}"
+        }
+      },
+      "limits": [
+        "Nested Xvfb only; no physical authentication, real power or secure-lock claim.",
+        "The supplied wrapper must already select the coherent built/installed optional helper.",
+        "Provider fixture has finite 30-second/256-message life; each scenario starts a fresh owner.",
+        "Notification IDs use the separate session-services optional consumer qualification.",
+        "Native-CPU/sanitizer and full platform/release qualification are separate."
+      ],
+      "executor": {
+        "system": "Linux",
+        "release": "6.18.10-200.fc43.aarch64",
+        "machine": "aarch64",
+        "cpu_execution": "not inferred from uname"
+      },
+      "argv": [
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--session",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "--provider",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+        "--helper",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-x01"
+      ],
+      "inputs": {
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "ac32c45a8073d78bae9680fa9c838e46a78b151fd41d28ab0ed22abf1020c687",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "4c65220f0c2e111ddf20ceaadc48f18f2cd8055ef8575af40060664cf99a04d5",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": "a8ce029f6684d4ee878facb33f9caa6e583b422f721b231660cbc1b6132ba831",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider": "83684fbbedd23e3d29a91a0bd7d56a5418612695ee44c97c408ea35bcbc60153",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "b8eb7da7b9fc278dea72a392a56a06cfedbbe273d39956fbba2e05646945c21d",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "551fc268594406e501bee44f5ae85a80b9bb459968483a1ec8989220dcce58bf"
+      },
+      "selectors": {
+        "providers_only": false,
+        "ui_only": false,
+        "provider_cases": [
+          "native",
+          "locker",
+          "login1"
+        ],
+        "profiles": [
+          "slate-dark",
+          "dune-light",
+          "classic-large"
+        ]
+      }
+    },
+    "native-providers03": {
+      "status": "passed",
+      "groups": {
+        "locker": {
+          "status": "passed"
+        },
+        "login1": {
+          "status": "passed"
+        }
+      },
+      "limits": [
+        "Nested Xvfb only; no physical authentication, real power or secure-lock claim.",
+        "The supplied wrapper must already select the coherent built/installed optional helper.",
+        "Provider fixture has finite 30-second/256-message life; each scenario starts a fresh owner.",
+        "Notification IDs use the separate session-services optional consumer qualification.",
+        "Native-CPU/sanitizer and full platform/release qualification are separate."
+      ],
+      "executor": {
+        "system": "Linux",
+        "release": "6.18.10-200.fc43.aarch64",
+        "machine": "aarch64",
+        "cpu_execution": "not inferred from uname"
+      },
+      "argv": [
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--session",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "--provider",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+        "--helper",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+        "--providers-only",
+        "--provider-cases",
+        "locker",
+        "login1",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-providers03"
+      ],
+      "inputs": {
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "ac32c45a8073d78bae9680fa9c838e46a78b151fd41d28ab0ed22abf1020c687",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": "a8ce029f6684d4ee878facb33f9caa6e583b422f721b231660cbc1b6132ba831",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider": "d15d3ca8e3f9c353e8127cc68f98e1466a4ae2e3a3bb83ee40d92699a768101e",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "5b769de4a4a80e2c4cfea22017988747dec19901b1003907ade119764ed9d0ea",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "35ff53c432f7382e6cca78e4f959697ad0c7dbc39aea58cca029507b02c274f5"
+      },
+      "selectors": {
+        "providers_only": true,
+        "ui_only": false,
+        "provider_cases": [
+          "locker",
+          "login1"
+        ],
+        "profiles": [
+          "slate-dark",
+          "dune-light",
+          "classic-large"
+        ]
+      }
+    },
+    "native-ui03": {
+      "status": "passed",
+      "groups": {
+        "slate-dark": {
+          "status": "passed"
+        },
+        "dune-light": {
+          "status": "passed"
+        },
+        "classic-large": {
+          "status": "passed"
+        }
+      },
+      "limits": [
+        "Nested Xvfb only; no physical authentication, real power or secure-lock claim.",
+        "The supplied wrapper must already select the coherent built/installed optional helper.",
+        "Provider fixture has finite 30-second/256-message life; each scenario starts a fresh owner.",
+        "Notification IDs use the separate session-services optional consumer qualification.",
+        "Native-CPU/sanitizer and full platform/release qualification are separate."
+      ],
+      "executor": {
+        "system": "Linux",
+        "release": "6.18.10-200.fc43.aarch64",
+        "machine": "aarch64",
+        "cpu_execution": "not inferred from uname"
+      },
+      "argv": [
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--session",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "--provider",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider",
+        "--helper",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+        "--ui-only",
+        "--profiles",
+        "slate-dark",
+        "dune-light",
+        "classic-large",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-session-providers-current/native-ui03"
+      ],
+      "inputs": {
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "ac32c45a8073d78bae9680fa9c838e46a78b151fd41d28ab0ed22abf1020c687",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": "a8ce029f6684d4ee878facb33f9caa6e583b422f721b231660cbc1b6132ba831",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/tests/session-power-provider": "d15d3ca8e3f9c353e8127cc68f98e1466a4ae2e3a3bb83ee40d92699a768101e",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "5b769de4a4a80e2c4cfea22017988747dec19901b1003907ade119764ed9d0ea",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "35ff53c432f7382e6cca78e4f959697ad0c7dbc39aea58cca029507b02c274f5"
+      },
+      "selectors": {
+        "providers_only": false,
+        "ui_only": true,
+        "provider_cases": [
+          "native",
+          "locker",
+          "login1"
+        ],
+        "profiles": [
+          "slate-dark",
+          "dune-light",
+          "classic-large"
+        ]
+      }
+    },
+    "binaries": {
+      "fvwm3": {
+        "bytes": 5689360,
+        "sha256": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b"
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "bytes": 453504,
+        "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+      },
+      "modules/FvwmForm/FvwmForm": {
+        "bytes": 1804472,
+        "sha256": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c"
+      },
+      "bin/FvwmPrompt/fvwm-session": {
+        "bytes": 5237967,
+        "sha256": "ac32c45a8073d78bae9680fa9c838e46a78b151fd41d28ab0ed22abf1020c687"
+      },
+      "bin/FvwmPrompt/FvwmDesktop": {
+        "bytes": 6577895,
+        "sha256": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce"
+      },
+      "bin/FvwmPrompt/fvwm-desktop-worker": {
+        "bytes": 5895077,
+        "sha256": "c72adba6b67d0159c6051b3dcfdf88412dd1ad23a5b7f2bcbdb353ef3cd4dfca"
+      },
+      "bin/fvwm-session-bus": {
+        "bytes": 189824,
+        "sha256": "a8ce029f6684d4ee878facb33f9caa6e583b422f721b231660cbc1b6132ba831"
+      },
+      "tests/session-power-provider": {
+        "bytes": 94824,
+        "sha256": "d15d3ca8e3f9c353e8127cc68f98e1466a4ae2e3a3bb83ee40d92699a768101e"
+      }
+    }
+  },
+  "composed_go_passes": {
+    "normal": 472,
+    "race": 472,
+    "packages": 7
+  },
+  "cases": {
+    "r1-session-providers-current/native-providers03/locker/case-retained-locker-and-suspend-refusal.json": {
+      "status": "passed",
+      "observations": {
+        "started": {
+          "admission": "accepted",
+          "id": "0475f897af645b01ddfe6b8a388ce035",
+          "target": "lock",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": null,
+            "generation": "af8001d645337a5d7508cfd8f06b7103",
+            "id": "0475f897af645b01ddfe6b8a388ce035",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+                "state": "running",
+                "detail": "observed locker child running; secure readiness ",
+                "secure_ready": false
+              },
+              "outcome": "started",
+              "power": {
+                "provider": "portable",
+                "generation": "408f03c7930d3f6991dc774f1c5782c9",
+                "state": "ready",
+                "detail": "fixed native commands; authorization unknown",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "na",
+                    "detail": "secure locker readiness is unconfirmed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299938,
+            "rollback": false,
+            "state": "completed",
+            "target": "lock",
+            "worker_stop": "unknown"
+          }
+        },
+        "locker_pid": 2670,
+        "requester-disconnect": {
+          "status": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "77480d15d66a8c685d961026876a9019",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+              "state": "running",
+              "detail": "observed locker child running; secure readiness ",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "portable",
+              "generation": "408f03c7930d3f6991dc774f1c5782c9",
+              "state": "ready",
+              "detail": "fixed native commands; authorization unknown",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "na",
+                  "detail": "secure locker readiness is unconfirmed"
+                }
+              ]
+            },
+            "provider": "c0b267bfb4ae194fc76e5fe706623f46",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "36742990b94cf59ea7374e8011dd0ff5",
+            "state": "observed"
+          },
+          "duplicate": {
+            "admission": "accepted",
+            "id": "2a006219020f3087f558ce065deba81e",
+            "target": "lock",
+            "operation": {
+              "application": "unknown",
+              "cancel_requested": false,
+              "error": "session_unavailable",
+              "generation": "50ae9afe41a5de002af5a48c1338d55a",
+              "id": "2a006219020f3087f558ce065deba81e",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+                  "state": "running",
+                  "detail": "observed locker child running; secure readiness ",
+                  "secure_ready": false
+                },
+                "outcome": "busy",
+                "power": {
+                  "provider": "portable",
+                  "generation": "408f03c7930d3f6991dc774f1c5782c9",
+                  "state": "ready",
+                  "detail": "fixed native commands; authorization unknown",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299943,
+              "rollback": false,
+              "state": "failed",
+              "target": "lock",
+              "worker_stop": "unknown"
+            }
+          }
+        },
+        "desktop_providers": [
+          "c0b267bfb4ae194fc76e5fe706623f46",
+          "a027c11c83488546f07a9d41f20ca4f7"
+        ],
+        "desktop-restart": {
+          "status": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "b2f4df190704ecfd037e79e429ccb7a8",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+              "state": "running",
+              "detail": "observed locker child running; secure readiness ",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "portable",
+              "generation": "408f03c7930d3f6991dc774f1c5782c9",
+              "state": "ready",
+              "detail": "fixed native commands; authorization unknown",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "na",
+                  "detail": "secure locker readiness is unconfirmed"
+                }
+              ]
+            },
+            "provider": "a027c11c83488546f07a9d41f20ca4f7",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "36742990b94cf59ea7374e8011dd0ff5",
+            "state": "observed"
+          },
+          "duplicate": {
+            "admission": "accepted",
+            "id": "db578b00af122379e3c54a0bdaabaea2",
+            "target": "lock",
+            "operation": {
+              "application": "unknown",
+              "cancel_requested": false,
+              "error": "session_unavailable",
+              "generation": "c85f0681c4bc3a700fd29a0a06ab3bce",
+              "id": "db578b00af122379e3c54a0bdaabaea2",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+                  "state": "running",
+                  "detail": "observed locker child running; secure readiness ",
+                  "secure_ready": false
+                },
+                "outcome": "busy",
+                "power": {
+                  "provider": "portable",
+                  "generation": "408f03c7930d3f6991dc774f1c5782c9",
+                  "state": "ready",
+                  "detail": "fixed native commands; authorization unknown",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299939,
+              "rollback": false,
+              "state": "failed",
+              "target": "lock",
+              "worker_stop": "unknown"
+            }
+          }
+        },
+        "core-restart": {
+          "status": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "9d9db058a0ac0b4de8d3a38921c94c8f",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+              "state": "running",
+              "detail": "observed locker child running; secure readiness ",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "portable",
+              "generation": "408f03c7930d3f6991dc774f1c5782c9",
+              "state": "ready",
+              "detail": "fixed native commands; authorization unknown",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "na",
+                  "detail": "secure locker readiness is unconfirmed"
+                }
+              ]
+            },
+            "provider": "fc9fdbc12f14817a76e983fe747551e7",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "portable"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "36742990b94cf59ea7374e8011dd0ff5",
+            "state": "observed"
+          },
+          "duplicate": {
+            "admission": "accepted",
+            "id": "fefee1a26d85468f90f2c5c12f46e06c",
+            "target": "lock",
+            "operation": {
+              "application": "unknown",
+              "cancel_requested": false,
+              "error": "session_unavailable",
+              "generation": "4ea7b6534779e4b42c1a6cd6943b1ece",
+              "id": "fefee1a26d85468f90f2c5c12f46e06c",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+                  "state": "running",
+                  "detail": "observed locker child running; secure readiness ",
+                  "secure_ready": false
+                },
+                "outcome": "busy",
+                "power": {
+                  "provider": "portable",
+                  "generation": "408f03c7930d3f6991dc774f1c5782c9",
+                  "state": "ready",
+                  "detail": "fixed native commands; authorization unknown",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299941,
+              "rollback": false,
+              "state": "failed",
+              "target": "lock",
+              "worker_stop": "unknown"
+            }
+          }
+        },
+        "suspend": {
+          "admission": "accepted",
+          "id": "0b2832fb01b13c36081d0a61dcd5e456",
+          "target": "suspend",
+          "operation": {
+            "application": "unknown",
+            "cancel_requested": false,
+            "error": "session_unavailable",
+            "generation": "96c9b93e50dcf45835442a3d73b3906a",
+            "id": "0b2832fb01b13c36081d0a61dcd5e456",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "96f55f959d9346f0ddd4b23340f8bfc3",
+                "state": "running",
+                "detail": "observed locker child running; secure readiness ",
+                "secure_ready": false
+              },
+              "outcome": "unavailable",
+              "power": {
+                "provider": "portable",
+                "generation": "408f03c7930d3f6991dc774f1c5782c9",
+                "state": "ready",
+                "detail": "fixed native commands; authorization unknown",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "na",
+                    "detail": "secure locker readiness is unconfirmed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299941,
+            "rollback": false,
+            "state": "failed",
+            "target": "suspend",
+            "worker_stop": "unknown"
+          }
+        },
+        "survives_wrapper_exit": true,
+        "secure_readiness_claim": false
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-live-shared-power-policy.json": {
+      "status": "passed",
+      "observations": {
+        "portable": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "f48aa88b4fba58897044d9c2a7de24dc",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "6435932abfcc3984446b43f70687a3d4",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "portable",
+            "generation": "81b39bb6595dd203f4cd3c4cfd7025de",
+            "state": "ready",
+            "detail": "fixed native commands; authorization unknown",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "suspend",
+                "permission": "na",
+                "detail": "secure locker readiness is unconfirmed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        },
+        "login1": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "44b7c53778173cf591733b67ef7dd39a",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "14a29e82cc08d156935d724bb40e312f",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "login1",
+            "generation": "ead1d61f12389267c0b24e600eceb444",
+            "state": "ready",
+            "detail": "power_capabilities_observed",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        }
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-login1-absent.json": {
+      "status": "passed",
+      "observations": {
+        "helper": {
+          "capabilities": [
+            {
+              "action": "poweroff",
+              "permission": "unknown",
+              "detail": "not_observed"
+            },
+            {
+              "action": "reboot",
+              "permission": "unknown",
+              "detail": "not_observed"
+            },
+            {
+              "action": "suspend",
+              "permission": "unknown",
+              "detail": "not_observed"
+            }
+          ],
+          "version": 1,
+          "kind": "power",
+          "available": true,
+          "state": "unavailable",
+          "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+          "server_owner": "",
+          "detail": "power_service_unavailable"
+        },
+        "parent": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "4a2e7523b53443b159599923f9c19596",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "9e95497243f0c382f760ec37476626be",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "login1",
+            "generation": "9486c1fbb7fb65d77d6e07e8ebc413e7",
+            "state": "unavailable",
+            "detail": "power_service_unavailable",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        }
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-login1-denial-loss-stall-recovery.json": {
+      "status": "passed",
+      "observations": {
+        "deny": {
+          "admission": "accepted",
+          "id": "02b3c9bc91fbf8f95bf253d6653b7072",
+          "target": "poweroff",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": "session_request_refused",
+            "generation": "d650d81a25b50d62b5b88c9bcc055d2b",
+            "id": "02b3c9bc91fbf8f95bf253d6653b7072",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "7ad187dda2286116af8d90e2f4a05e3c",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "denied",
+              "power": {
+                "provider": "login1",
+                "generation": "5ccc846a6d5e74223cf6d57af7d46b5f",
+                "state": "denied",
+                "detail": "power_request_access_denied",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299946,
+            "rollback": false,
+            "state": "failed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "challenge": {
+          "admission": "accepted",
+          "id": "178a715b041f6ab1b11e33b8940afdd8",
+          "target": "poweroff",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": "session_request_refused",
+            "generation": "49690abb469d1840a794d75edc4368c9",
+            "id": "178a715b041f6ab1b11e33b8940afdd8",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "5738814cf5ebef15d88709afd79976f2",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "authentication-required",
+              "power": {
+                "provider": "login1",
+                "generation": "c61f693bb365faf840708f93b7e74efb",
+                "state": "authentication-required",
+                "detail": "power_request_authentication_required",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299943,
+            "rollback": false,
+            "state": "failed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "stall-request": {
+          "admission": "accepted",
+          "id": "0abffd5164a46573974848e1545757f3",
+          "target": "poweroff",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": "session_request_refused",
+            "generation": "69a541b166629af6445b3a95e28fca9c",
+            "id": "0abffd5164a46573974848e1545757f3",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "9bb0fde60e7eaec2e69ef856822b355e",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "outcome-unconfirmed",
+              "power": {
+                "provider": "login1",
+                "generation": "b95b88a479e87cd2f7803afd3d21a09f",
+                "state": "outcome-unconfirmed",
+                "detail": "power_request_outcome_unconfirmed",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299938,
+            "rollback": false,
+            "state": "failed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "loss": {
+          "admission": "accepted",
+          "id": "1e353e81bc56ba93c8e36700d5fbe7de",
+          "target": "poweroff",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": "session_request_refused",
+            "generation": "be72f7b22cf7227f70e35f488f7af2f7",
+            "id": "1e353e81bc56ba93c8e36700d5fbe7de",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "57b375d78f6d5767f152267f0af6717e",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "outcome-unconfirmed",
+              "power": {
+                "provider": "login1",
+                "generation": "50fbb39391a008c532ed94cffe51be11",
+                "state": "outcome-unconfirmed",
+                "detail": "power_request_outcome_unconfirmed",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299938,
+            "rollback": false,
+            "state": "failed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "stall": {
+          "seconds": 3.091270164999969,
+          "observed": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "9bcda3f83cddb576e35de7625545eded",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "d2360d69d8b9d6000cbcc0c85e9aefd6",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "533cb035f3df8cc09b82e2cb7634ffad",
+              "state": "ready",
+              "detail": "power_capabilities_incomplete",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "permission_query_failed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "unknown",
+                  "detail": "permission_query_failed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "unknown",
+                  "detail": "permission_query_failed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "recovered": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "7d253e4614c345494a0d06d0ed476012",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "8165b548536318352283a7642e7ba525",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "144d60dffcecbdab4b957edc53c9a6aa",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          }
+        }
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-login1-guards-replacement-and-requests.json": {
+      "status": "passed",
+      "observations": {
+        "old": {
+          "capabilities": [
+            {
+              "action": "poweroff",
+              "permission": "yes",
+              "detail": "permission_observed"
+            },
+            {
+              "action": "reboot",
+              "permission": "yes",
+              "detail": "permission_observed"
+            },
+            {
+              "action": "suspend",
+              "permission": "yes",
+              "detail": "permission_observed"
+            }
+          ],
+          "version": 1,
+          "kind": "power",
+          "available": true,
+          "state": "ready",
+          "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+          "server_owner": ":1.31",
+          "detail": "power_capabilities_observed"
+        },
+        "replacement": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "fdadf435a4fcf764a0f2bb8f8c7e339a",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "e2c3bce4e23413f10a248e7525eae568",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "login1",
+            "generation": "7c25f25ca05646b6c174b124836e91c7",
+            "state": "ready",
+            "detail": "power_capabilities_observed",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        },
+        "requests": {
+          "poweroff": {
+            "admission": "accepted",
+            "id": "3bb3a2734ca286bde6abaf4e242b97cc",
+            "target": "poweroff",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "9f3a2169c89c7135ba87f7ef344bd5e4",
+              "id": "3bb3a2734ca286bde6abaf4e242b97cc",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "223bd8a0479412f697953c59470ba7b1",
+                  "state": "installed",
+                  "detail": "fixed locker installed; secure readiness unconfi",
+                  "secure_ready": false
+                },
+                "outcome": "requested",
+                "power": {
+                  "provider": "login1",
+                  "generation": "caadcb69f3af044122cc9d9d83db9578",
+                  "state": "requested",
+                  "detail": "power_request_acknowledged",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299945,
+              "rollback": false,
+              "state": "completed",
+              "target": "poweroff",
+              "worker_stop": "unknown"
+            }
+          },
+          "reboot": {
+            "admission": "accepted",
+            "id": "0e98e396b7ff7269d73bb8a6697f5ec3",
+            "target": "reboot",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "68f43aaf715c418a42c80566f294829a",
+              "id": "0e98e396b7ff7269d73bb8a6697f5ec3",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "8f7376af654934e3fd46544ca13680e7",
+                  "state": "installed",
+                  "detail": "fixed locker installed; secure readiness unconfi",
+                  "secure_ready": false
+                },
+                "outcome": "requested",
+                "power": {
+                  "provider": "login1",
+                  "generation": "403454a454eaaf567611646c0e0fd202",
+                  "state": "requested",
+                  "detail": "power_request_acknowledged",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "yes",
+                      "detail": "permission_observed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299946,
+              "rollback": false,
+              "state": "completed",
+              "target": "reboot",
+              "worker_stop": "unknown"
+            }
+          }
+        },
+        "suspend": {
+          "admission": "accepted",
+          "id": "0847175168c4c5ff7cf35e7379a913ed",
+          "target": "suspend",
+          "operation": {
+            "application": "unknown",
+            "cancel_requested": false,
+            "error": "session_unavailable",
+            "generation": "2ce84d3cd7471f852b4747230b674306",
+            "id": "0847175168c4c5ff7cf35e7379a913ed",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "8f7376af654934e3fd46544ca13680e7",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "unavailable",
+              "power": {
+                "provider": "login1",
+                "generation": "403454a454eaaf567611646c0e0fd202",
+                "state": "requested",
+                "detail": "power_request_acknowledged",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "yes",
+                    "detail": "permission_observed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299947,
+            "rollback": false,
+            "state": "failed",
+            "target": "suspend",
+            "worker_stop": "unknown"
+          }
+        }
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-login1-independent-permissions.json": {
+      "status": "passed",
+      "observations": {
+        "no": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "no",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "denied",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.3",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "6b64a8f5159a9308c99d25f5979b4139",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "b2581c1de414545c19ed8cb201b9dc69",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "fe9e67663ae038a6e8fc2da9d666c39d",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "no",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "challenge": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "challenge",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "authentication-required",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.7",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "123f113516145fb8178a2cddc6a4839a",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "a658a3ceb88e324194cf8ee3384a09d4",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "60e2615bc04bc41b4eea588c31b42ef8",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "challenge",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "na": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "na",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "unavailable",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.11",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "ce462c160e1da6a63fdce10c2fc14029",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "d20ea7d861eb6833af122a71101fab41",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "fceff2ae836e0996b44a45653320f08b",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "na",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "inhibited": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "inhibited",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "inhibited",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.15",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "a21fa9b683495b81feeb7ebfe5ac7d53",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "b8afcf1f673465ce28622443c7ddc8a1",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "5d140bcdca511f75e8d1b8a44435f181",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "inhibited",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "inhibitor-blocked": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "inhibitor-blocked",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "inhibited",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.19",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "12264ecab21f5767e18541c424fb7f7f",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "76c1246a80db3640fcfeebed734bfc4b",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "79497c411f955c2e71f1a3e31ee9b0a2",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "inhibitor-blocked",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "challenge-inhibitor-blocked": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "challenge-inhibitor-blocked",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "inhibited",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.23",
+            "detail": "permission_observed"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "20fb853da416ad4355705a013e198cd3",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "a0aab72b928e9b450c74845971bc37d1",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "9b412821ada8ef234489bc6214247ddd",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "challenge-inhibitor-blocked",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        },
+        "unknown": {
+          "helper": {
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "unrecognized_permission"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ],
+            "version": 1,
+            "kind": "power",
+            "available": true,
+            "state": "failed",
+            "bus_id": "289f9dfc095f402a8c1e98f76ae3feaf",
+            "server_owner": ":1.27",
+            "detail": "unrecognized_permission"
+          },
+          "public": {
+            "active": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "active_bus_policy": "off",
+            "availability": "available",
+            "bus_policy": "next-login",
+            "disconnect": "continue",
+            "generation": "5b9749e71dd528da935e324da42c698b",
+            "items": [
+              {
+                "id": "core",
+                "state": "ready",
+                "ownership": "owned",
+                "detail": "core startup acknowledged; modules/apps have sep",
+                "attempts": 0
+              },
+              {
+                "id": "scan",
+                "state": "stopped",
+                "ownership": "owned",
+                "detail": "bounded autostart acquisition completed",
+                "attempts": 1
+              },
+              {
+                "id": "bus",
+                "state": "stopped",
+                "ownership": "none",
+                "detail": "bus policy off; inherited environment preserved",
+                "attempts": 0
+              },
+              {
+                "id": "notifications",
+                "state": "stopped",
+                "ownership": "borrowed",
+                "detail": "notifications disabled",
+                "attempts": 0
+              },
+              {
+                "id": "applications",
+                "state": "stopped",
+                "ownership": "independent",
+                "detail": "all observed independent application children ex",
+                "attempts": 0,
+                "started": 1,
+                "exited": 1
+              }
+            ],
+            "locker": {
+              "generation": "8ad2a12df0c6a628959c90e00f250581",
+              "state": "installed",
+              "detail": "fixed locker installed; secure readiness unconfi",
+              "secure_ready": false
+            },
+            "notification_server": false,
+            "operation_targets": [
+              "session-status",
+              "session-reprobe",
+              "notification-test",
+              "notification-close",
+              "logout",
+              "power-status",
+              "power-reprobe",
+              "poweroff",
+              "reboot",
+              "suspend",
+              "lock"
+            ],
+            "owner": "FvwmDesktop",
+            "power": {
+              "provider": "login1",
+              "generation": "03051b0faa7686c4af3028943229674d",
+              "state": "ready",
+              "detail": "power_capabilities_observed",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "unrecognized_permission"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "yes",
+                  "detail": "permission_observed"
+                }
+              ]
+            },
+            "provider": "fdfd328517444781601f80fc3f1837d2",
+            "requested": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "saved": {
+              "session_bus": "off",
+              "session_notifications": "off",
+              "notification_dnd": false,
+              "session_power": "login1"
+            },
+            "schema_version": 2,
+            "scope": "session-services",
+            "service_lifecycle": true,
+            "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+            "state": "observed"
+          },
+          "refusal": {
+            "admission": "refused",
+            "code": "operation_unavailable",
+            "target": "poweroff"
+          }
+        }
+      }
+    },
+    "r1-session-providers-current/native-providers03/login1/case-private-system-bus-loss-and-reconnect.json": {
+      "status": "passed",
+      "observations": {
+        "lost": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "686754669ef7ed994d4beba2889f378f",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "83aa4f51629011ea4e4118158159be1b",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "login1",
+            "generation": "00fa6a390d9ffceeadaaf5d573c0adac",
+            "state": "unavailable",
+            "detail": "system_bus_connection_failed",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "not_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "unknown",
+                "detail": "not_observed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        },
+        "refusal": {
+          "admission": "refused",
+          "code": "operation_unavailable",
+          "target": "poweroff"
+        },
+        "replacement_guard": {
+          "capabilities": [
+            {
+              "action": "poweroff",
+              "permission": "unknown",
+              "detail": "not_observed"
+            },
+            {
+              "action": "reboot",
+              "permission": "unknown",
+              "detail": "not_observed"
+            },
+            {
+              "action": "suspend",
+              "permission": "unknown",
+              "detail": "not_observed"
+            }
+          ],
+          "version": 1,
+          "kind": "power",
+          "available": true,
+          "state": "stale",
+          "bus_id": "dd86f2e1e66be6fc27fea47e6ae3febc",
+          "server_owner": ":1.0",
+          "detail": "stale_power_provider"
+        },
+        "recovered": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "a116c2a87201a6d8f68756ef473134c7",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "4abaf6540714ae417e40f0f3080bc790",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "login1",
+            "generation": "fe1a737097c8cd4ce7df3a33bedcf365",
+            "state": "ready",
+            "detail": "power_capabilities_observed",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "reboot",
+                "permission": "yes",
+                "detail": "permission_observed"
+              },
+              {
+                "action": "suspend",
+                "permission": "yes",
+                "detail": "permission_observed"
+              }
+            ]
+          },
+          "provider": "fdfd328517444781601f80fc3f1837d2",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "login1"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "85ea25b36e049f21c7260bb9b0f033ff",
+          "state": "observed"
+        },
+        "independent_inventory": {
+          "bus": {
+            "id": "bus",
+            "state": "stopped",
+            "ownership": "none",
+            "detail": "bus policy off; inherited environment preserved",
+            "attempts": 0
+          },
+          "notifications": {
+            "id": "notifications",
+            "state": "stopped",
+            "ownership": "borrowed",
+            "detail": "notifications disabled",
+            "attempts": 0
+          }
+        }
+      }
+    },
+    "r1-session-providers-current/native-ui03/classic-large/case-native-confirmation-stale-cas.json": {
+      "status": "passed",
+      "observations": {
+        "native_calls": 0,
+        "changed_shared_setting": "motion",
+        "settings_generation_guard": "native submit refused after shared generation change",
+        "power_generation_guard": "native confirmation retired",
+        "policy_guard": "native confirmation retired"
+      }
+    },
+    "r1-session-providers-current/native-ui03/classic-large/case-native-confirmation-submit.json": {
+      "status": "passed",
+      "observations": {
+        "status": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "4c6b3f7bd6f56e7c10f91a6516c5ace2",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "9db2f63e377eb8adb922fa94ff2dae28",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "portable",
+            "generation": "890454f59f2934a648e4640ef4823a0c",
+            "state": "requested",
+            "detail": "native request acknowledged; completion is not o",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "suspend",
+                "permission": "na",
+                "detail": "secure locker readiness is unconfirmed"
+              }
+            ]
+          },
+          "provider": "b4381f70e4ac45b9fd7a1e021f4f2b00",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "db91cce234442de92493873b1e45a34d",
+          "state": "observed"
+        },
+        "tool": {
+          "tool": "systemctl",
+          "event": "started",
+          "pid": 3234,
+          "birth": "228021",
+          "argv": [
+            "poweroff"
+          ]
+        },
+        "completion_observed": false
+      }
+    },
+    "r1-session-providers-current/native-ui03/classic-large/case-native-provider-consumers.json": {
+      "status": "passed",
+      "observations": {
+        "settings_count": 15,
+        "session_fields": 4,
+        "confirmation_cancel_calls": 0
+      }
+    },
+    "r1-session-providers-current/native-ui03/dune-light/case-native-confirmation-stale-cas.json": {
+      "status": "passed",
+      "observations": {
+        "native_calls": 0,
+        "changed_shared_setting": "motion",
+        "settings_generation_guard": "native submit refused after shared generation change",
+        "power_generation_guard": "native confirmation retired",
+        "policy_guard": "native confirmation retired"
+      }
+    },
+    "r1-session-providers-current/native-ui03/dune-light/case-native-confirmation-submit.json": {
+      "status": "passed",
+      "observations": {
+        "status": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "44888fcd82ec42cd01d473d31f54f22f",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "139d26337779bc4169d09e5254ab02bf",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "portable",
+            "generation": "f73058bf18e6b9fd7e65fac8696dfc8f",
+            "state": "requested",
+            "detail": "native request acknowledged; completion is not o",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "suspend",
+                "permission": "na",
+                "detail": "secure locker readiness is unconfirmed"
+              }
+            ]
+          },
+          "provider": "435f21011c586e780564cff6b03b6f5f",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "c6b150a73e903ccf979b2e5eddd10a42",
+          "state": "observed"
+        },
+        "tool": {
+          "tool": "systemctl",
+          "event": "started",
+          "pid": 3142,
+          "birth": "227796",
+          "argv": [
+            "poweroff"
+          ]
+        },
+        "completion_observed": false
+      }
+    },
+    "r1-session-providers-current/native-ui03/dune-light/case-native-provider-consumers.json": {
+      "status": "passed",
+      "observations": {
+        "settings_count": 15,
+        "session_fields": 4,
+        "confirmation_cancel_calls": 0
+      }
+    },
+    "r1-session-providers-current/native-ui03/slate-dark/case-native-confirmation-stale-cas.json": {
+      "status": "passed",
+      "observations": {
+        "native_calls": 0,
+        "changed_shared_setting": "motion",
+        "settings_generation_guard": "native submit refused after shared generation change",
+        "power_generation_guard": "native confirmation retired",
+        "policy_guard": "native confirmation retired"
+      }
+    },
+    "r1-session-providers-current/native-ui03/slate-dark/case-native-confirmation-submit.json": {
+      "status": "passed",
+      "observations": {
+        "status": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "8e134ec1670c4a87177a453b4a624bc1",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "00610052c233d81edde296289d067169",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "portable",
+            "generation": "b2d89597d176f4bb75781a9309232b08",
+            "state": "requested",
+            "detail": "native request acknowledged; completion is not o",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "reboot",
+                "permission": "unknown",
+                "detail": "installed; authorization unknown; request capabl"
+              },
+              {
+                "action": "suspend",
+                "permission": "na",
+                "detail": "secure locker readiness is unconfirmed"
+              }
+            ]
+          },
+          "provider": "bd4f3a85e95d9bac5a377b8315af798e",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "86ceefe852452532a487dc0352ab4b2b",
+          "state": "observed"
+        },
+        "tool": {
+          "tool": "systemctl",
+          "event": "started",
+          "pid": 3051,
+          "birth": "227584",
+          "argv": [
+            "poweroff"
+          ]
+        },
+        "completion_observed": false
+      }
+    },
+    "r1-session-providers-current/native-ui03/slate-dark/case-native-provider-consumers.json": {
+      "status": "passed",
+      "observations": {
+        "settings_count": 15,
+        "session_fields": 4,
+        "confirmation_cancel_calls": 0
+      }
+    },
+    "r1-session-providers-current/native-x01/native/case-native-failure-no-replay.json": {
+      "status": "passed",
+      "observations": {
+        "request": {
+          "admission": "accepted",
+          "id": "5c83cb031c84397638907233f3b52fe7",
+          "target": "poweroff",
+          "operation": {
+            "application": "unknown",
+            "cancel_requested": false,
+            "error": "session_unavailable",
+            "generation": "a471b3654e6f96d869feefd963fe6314",
+            "id": "5c83cb031c84397638907233f3b52fe7",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "3e80b114c73a762ae79b5cc622ae29ba",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "outcome-unconfirmed",
+              "power": {
+                "provider": "portable",
+                "generation": "1216a0d77a3d76bddbf807f5d0cf4fc8",
+                "state": "outcome-unconfirmed",
+                "detail": "power request: exit status 1; no replay or fallb",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "na",
+                    "detail": "secure locker readiness is unconfirmed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299944,
+            "rollback": false,
+            "state": "failed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "calls": [
+          {
+            "tool": "systemctl",
+            "event": "started",
+            "pid": 1613,
+            "argv": [
+              "poweroff"
+            ]
+          },
+          {
+            "tool": "systemctl",
+            "event": "started",
+            "pid": 1619,
+            "argv": [
+              "reboot"
+            ]
+          },
+          {
+            "tool": "systemctl",
+            "event": "started",
+            "pid": 1625,
+            "argv": [
+              "poweroff"
+            ]
+          }
+        ],
+        "observation_seconds": 0.3
+      }
+    },
+    "r1-session-providers-current/native-x01/native/case-native-fallback-and-absence.json": {
+      "status": "passed",
+      "observations": {
+        "fallback": {
+          "poweroff": {
+            "admission": "accepted",
+            "id": "ab66602b25eef093afd7ca85b9178796",
+            "target": "poweroff",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "b4a7d3cad52a4d2583e341aca879ca67",
+              "id": "ab66602b25eef093afd7ca85b9178796",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "11d99d48538f3ea1097b2e2240b3a9ba",
+                  "state": "installed",
+                  "detail": "fixed locker installed; secure readiness unconfi",
+                  "secure_ready": false
+                },
+                "outcome": "requested",
+                "power": {
+                  "provider": "portable",
+                  "generation": "a608dd969e8af7c863adaa24b960f764",
+                  "state": "requested",
+                  "detail": "native request acknowledged; completion is not o",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299945,
+              "rollback": false,
+              "state": "completed",
+              "target": "poweroff",
+              "worker_stop": "unknown"
+            }
+          },
+          "reboot": {
+            "admission": "accepted",
+            "id": "d44c6d1cd2bf52e2e0ea6379a9d77fb8",
+            "target": "reboot",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "4f1124550db238705d07a435a534306e",
+              "id": "d44c6d1cd2bf52e2e0ea6379a9d77fb8",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "4002d611146f15f4e1732b1c4d561670",
+                  "state": "installed",
+                  "detail": "fixed locker installed; secure readiness unconfi",
+                  "secure_ready": false
+                },
+                "outcome": "requested",
+                "power": {
+                  "provider": "portable",
+                  "generation": "99dad168b1c5c1ff4a8a843a59c42f99",
+                  "state": "requested",
+                  "detail": "native request acknowledged; completion is not o",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299946,
+              "rollback": false,
+              "state": "completed",
+              "target": "reboot",
+              "worker_stop": "unknown"
+            }
+          }
+        },
+        "absent": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "d366154097e216f6ed2ad3c939b775a1",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have sep",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "stopped",
+              "ownership": "independent",
+              "detail": "all observed independent application children ex",
+              "attempts": 0,
+              "started": 1,
+              "exited": 1
+            }
+          ],
+          "locker": {
+            "generation": "5aede5394d8fc97d438a152e32a05cf7",
+            "state": "installed",
+            "detail": "fixed locker installed; secure readiness unconfi",
+            "secure_ready": false
+          },
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout",
+            "power-status",
+            "power-reprobe",
+            "poweroff",
+            "reboot",
+            "suspend",
+            "lock"
+          ],
+          "owner": "FvwmDesktop",
+          "power": {
+            "provider": "portable",
+            "generation": "cfe4e90cd218f8fc3e8d75003401011f",
+            "state": "unavailable",
+            "detail": "native commands unavailable",
+            "capabilities": [
+              {
+                "action": "poweroff",
+                "permission": "na"
+              },
+              {
+                "action": "reboot",
+                "permission": "na"
+              },
+              {
+                "action": "suspend",
+                "permission": "na",
+                "detail": "secure locker readiness is unconfirmed"
+              }
+            ]
+          },
+          "provider": "2e7bbdb4b14fe0cef75fa46f38e46786",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false,
+            "session_power": "portable"
+          },
+          "schema_version": 2,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "3e1a989086205dbe745bee20d4c8e111",
+          "state": "observed"
+        },
+        "refused": {
+          "admission": "refused",
+          "code": "operation_unavailable",
+          "target": "poweroff"
+        }
+      }
+    },
+    "r1-session-providers-current/native-x01/native/case-native-fixed-requests.json": {
+      "status": "passed",
+      "observations": {
+        "poweroff": {
+          "admission": "accepted",
+          "id": "960b0d6f415d35155d67278b0c39d21e",
+          "target": "poweroff",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": null,
+            "generation": "063f75a49c1ccdc9293a172e095d6534",
+            "id": "960b0d6f415d35155d67278b0c39d21e",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "fc6e4d27d25ea262379a2978900498a6",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "requested",
+              "power": {
+                "provider": "portable",
+                "generation": "9992968e35c6ec920e20cad4ce4ba4a8",
+                "state": "requested",
+                "detail": "native request acknowledged; completion is not o",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "na",
+                    "detail": "secure locker readiness is unconfirmed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299944,
+            "rollback": false,
+            "state": "completed",
+            "target": "poweroff",
+            "worker_stop": "unknown"
+          }
+        },
+        "reboot": {
+          "admission": "accepted",
+          "id": "e93b0d1137f0041b1ead8f163f209213",
+          "target": "reboot",
+          "operation": {
+            "application": "owner-observed",
+            "cancel_requested": false,
+            "error": null,
+            "generation": "5537e81acd78ff20d01c52571eab16c2",
+            "id": "e93b0d1137f0041b1ead8f163f209213",
+            "progress": {
+              "completed": null,
+              "total": null,
+              "unit": "unknown"
+            },
+            "result": {
+              "locker": {
+                "generation": "711dbb4718c03df0b190e8c04341c9f6",
+                "state": "installed",
+                "detail": "fixed locker installed; secure readiness unconfi",
+                "secure_ready": false
+              },
+              "outcome": "requested",
+              "power": {
+                "provider": "portable",
+                "generation": "fadf9e4223fa2eb16097e5cea63a43f5",
+                "state": "requested",
+                "detail": "native request acknowledged; completion is not o",
+                "capabilities": [
+                  {
+                    "action": "poweroff",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "reboot",
+                    "permission": "unknown",
+                    "detail": "installed; authorization unknown; request capabl"
+                  },
+                  {
+                    "action": "suspend",
+                    "permission": "na",
+                    "detail": "secure locker readiness is unconfirmed"
+                  }
+                ]
+              }
+            },
+            "retention_ms": 299946,
+            "rollback": false,
+            "state": "completed",
+            "target": "reboot",
+            "worker_stop": "unknown"
+          }
+        }
+      }
+    }
+  },
+  "archive": {
+    "status": "verified",
+    "files": 513,
+    "archive_sha256": "96cd81e2fb1e7f2f728c68a86191bb25bc84f14b6a33f65cbe81465cf8297d0c",
+    "archive_bytes": 2097981
+  },
+  "limits": [
+    "Nested Xvfb only; no physical authentication, real power or secure-lock claim.",
+    "The supplied wrapper must already select the coherent built/installed optional helper.",
+    "Provider fixture has finite 30-second/256-message life; each scenario starts a fresh owner.",
+    "Notification IDs use the separate session-services optional consumer qualification.",
+    "Native-CPU/sanitizer and full platform/release qualification are separate."
+  ],
+  "retention": {
+    "status": "retired verified duplicates",
+    "archive_sha256": "96cd81e2fb1e7f2f728c68a86191bb25bc84f14b6a33f65cbe81465cf8297d0c",
+    "archived_files": 513,
+    "retired": [
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-providers-current",
+        "bytes": 34099948
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-providers-performance",
+        "bytes": 152158
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-providers-inputs",
+        "bytes": 26403147
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-providers-evidence.tgz",
+        "bytes": 2097981
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-providers-evidence.json",
+        "bytes": 100281
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/m5-performance-providers-20261029/core",
+        "bytes": 5590368
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/m5-performance-providers-20261029/script",
+        "bytes": 2211368
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/m5-performance-providers-20261029/form",
+        "bytes": 1802864
+      }
+    ],
+    "retired_bytes": 72458115,
+    "source_closure": "1a1487e7e819dd778d6f145be536bb0ceb44c3ddc6c707d49cb7c4d4e43d37cd",
+    "fixture_processes_absent": true,
+    "preserved": [
+      "source",
+      "build-gcc",
+      "build-module-waits-asan",
+      "r1-xdg-installed-prefix",
+      "SDK/caches",
+      "m5-performance-session-20261029",
+      "m5-performance-providers-20261029/browser"
+    ],
+    "fixture_process_guard": [
+      "fvwm-pwr-",
+      "fvwm-power-asan-",
+      "r1-session-providers-current",
+      "/tests/session-power-provider"
+    ]
+  },
+  "lab_cleanup": {
+    "records": [
+      {
+        "command": [
+          "podman",
+          "machine",
+          "start",
+          "podman-machine-default"
+        ],
+        "exit": 0,
+        "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "start",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0,
+        "stdout": "fvwm-x-linux-arm64-svg\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "stop",
+          "--time",
+          "15",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0,
+        "stdout": "fvwm-x-linux-arm64-svg\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "machine",
+          "stop",
+          "podman-machine-default"
+        ],
+        "exit": 0,
+        "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+        "stderr": ""
+      }
+    ],
+    "normal_stop": true
+  }
+}

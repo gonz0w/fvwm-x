@@ -139,6 +139,12 @@ func (d *Controller) spawnStartup(argv []string, cwd string, startup *xdgmenu.St
 	go func() { _ = command.Wait(); <-slots }()
 }
 func (d *Controller) lock() {
+	if d.sessionOwnerExpected() {
+		if err := d.startSessionRequest("lock", nil); err != nil {
+			d.notice("Session locker unavailable; protection is unconfirmed. Refresh Session and services.")
+		}
+		return
+	}
 	if d.lockerPending {
 		d.notice("A lock request is already pending; protection is unconfirmed.")
 		return
@@ -173,6 +179,12 @@ func (d *Controller) pollLocker() {
 	}
 }
 func (d *Controller) power(action string) {
+	if d.sessionOwnerExpected() {
+		if err := d.startSessionRequest(action, nil); err != nil {
+			d.notice("Session power request unavailable; no fallback was sent. Refresh Session and services.")
+		}
+		return
+	}
 	if d.closed || d.systemBinding.lost {
 		d.notice("Power control is unavailable; wait for a fresh desktop status result.")
 		return

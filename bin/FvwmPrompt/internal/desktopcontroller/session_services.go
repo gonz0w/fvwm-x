@@ -36,16 +36,19 @@ type sessionControl struct {
 	snapshot         *sessionservice.Snapshot
 	work             *sessionWork
 	configure        bool
+	ownerSeen        bool
 	message          string
 	lastNotification uint32
 	logout           *sessionLogout
+	confirmation     *sessionConfirmation
 }
 
 func sessionConfig(v values) sessionservice.Config {
 	bus, _ := v["session_bus"].(string)
 	notifications, _ := v["session_notifications"].(string)
 	dnd, _ := v["notification_dnd"].(bool)
-	return sessionservice.Config{Bus: bus, Notifications: notifications, DND: dnd}
+	power, _ := v["session_power"].(string)
+	return sessionservice.Config{Bus: bus, Notifications: notifications, DND: dnd, Power: power}
 }
 func (d *Controller) requestedSessionConfig() sessionservice.Config {
 	return sessionConfig(merged(d.saved, d.overrides))
@@ -65,21 +68,27 @@ func (d *Controller) sessionObserved() bool { return d.session.snapshot != nil }
 func (d *Controller) retainActiveSession(effective values) {
 	// A preference commit cannot attest to live service application. Keep the
 	// last owner observation until the post-commit handshake actually succeeds.
-	for _, key := range []string{"session_bus", "session_notifications", "notification_dnd"} {
+	for _, key := range []string{"session_bus", "session_notifications", "notification_dnd", "session_power"} {
 		effective[key] = d.effective[key]
 	}
 }
 func (d *Controller) adoptSession(snapshot sessionservice.Snapshot) {
+	d.session.ownerSeen = true
 	snapshot.Items = append([]sessionservice.Item(nil), snapshot.Items...)
+	snapshot.Power.Capabilities = append([]sessionservice.PowerCapability(nil), snapshot.Power.Capabilities...)
 	old := d.session.snapshot
 	if old != nil && (old.Generation != snapshot.Generation || old.Items[3].Operation != snapshot.Items[3].Operation) {
 		d.session.lastNotification = 0
 	}
-	changed := old == nil || old.Generation != snapshot.Generation || old.Config != snapshot.Config || old.ActiveBusPolicy != snapshot.ActiveBusPolicy || !reflect.DeepEqual(old.Items, snapshot.Items)
+	changed := old == nil || old.Generation != snapshot.Generation || old.Config != snapshot.Config || old.ActiveBusPolicy != snapshot.ActiveBusPolicy || !reflect.DeepEqual(old.Items, snapshot.Items) || !reflect.DeepEqual(old.Power, snapshot.Power) || old.Locker != snapshot.Locker
+	if c := d.session.confirmation; c != nil && (c.owner != snapshot.Generation || c.operation != snapshot.Operation || c.provider != snapshot.Power.Generation || c.config != snapshot.Config) {
+		d.dismissSessionConfirmation()
+	}
 	d.session.snapshot = &snapshot
 	d.effective["session_bus"] = snapshot.ActiveBusPolicy
 	d.effective["session_notifications"] = snapshot.Config.Notifications
 	d.effective["notification_dnd"] = snapshot.Config.DND
+	d.effective["session_power"] = snapshot.Config.Power
 	if changed {
 		d.sessionSettingsChanged(false)
 	}
@@ -116,8 +125,15 @@ func (d *Controller) startSessionRequest(verb string, record *operation) error {
 			return errors.New("Session owner unavailable; Refresh before sending a request")
 		}
 		request.Generation, request.Operation = s.Generation, s.Operation
+		if verb == "poweroff" || verb == "reboot" || verb == "suspend" {
+			request.ProviderGeneration = s.Power.Generation
+		}
 	}
 	switch verb {
+	case "poweroff", "reboot":
+		if !d.sessionAction(verb).allowed {
+			return errors.New("Power capability is unavailable; refresh the provider")
+		}
 	case "configure":
 		request.Config = &cfg
 	case "notify":
@@ -163,7 +179,19 @@ func (d *Controller) finishSessionRequest(result job) {
 	failed := result.err != nil || !valid || reply.Error != ""
 	fallback := ""
 	if failed {
-		if !valid {
+		if !valid && sessionPowerWork(work.verb) {
+			// A provider request failure does not attest notification loss or
+			// session-bus death. Retain that independent inventory/ID lease.
+			if s := d.session.snapshot; s != nil {
+				if work.verb == "lock" {
+					s.Locker.Detail = "Locker request outcome unconfirmed; refresh before retry."
+				} else {
+					s.Power.State = "outcome-unconfirmed"
+					s.Power.Detail = "Provider request outcome unconfirmed; no fallback or replay."
+				}
+				d.sessionSettingsChanged(false)
+			}
+		} else if !valid {
 			had := d.session.snapshot != nil
 			d.session.snapshot = nil
 			d.session.lastNotification = 0
@@ -172,6 +200,9 @@ func (d *Controller) finishSessionRequest(result job) {
 			}
 		}
 		d.session.message = "Session request unavailable; desktop and applications remain running."
+		if sessionPowerWork(work.verb) {
+			d.session.message = "Provider request outcome unconfirmed; no fallback or replay. Refresh status."
+		}
 		if work.verb == "configure" {
 			d.session.message = "Preferences saved; live application unavailable. Refresh to retry."
 		}
@@ -194,6 +225,8 @@ func (d *Controller) finishSessionRequest(result job) {
 		case "close":
 			d.session.lastNotification = 0
 			d.session.message = "Own notification close request completed."
+		case "poweroff", "reboot", "suspend", "lock", "power-probe":
+			d.session.message = sessionOutcomeMessage(work.verb, reply.Outcome)
 		case "configure":
 			d.session.message = "Preferences saved; live owner observed. Bus policy applies at next login."
 		default:
@@ -201,14 +234,23 @@ func (d *Controller) finishSessionRequest(result job) {
 		}
 	}
 	if work.record != nil {
-		work.record.result = values{"outcome": reply.Outcome}
+		work.record.result = values{"outcome": shortSessionText(reply.Outcome, 64)}
+		if (sessionPowerWork(work.verb) || work.record.target == "power-status") && valid {
+			power, locker := publicSessionProviders(reply.Status)
+			work.record.result = values{"outcome": shortSessionText(reply.Outcome, 64), "power": power, "locker": locker}
+		}
 		work.record.application = "owner-observed"
 		if failed {
 			work.record.err = "session_unavailable"
 			work.record.application = "unknown"
 			d.operationChanged(work.record, "failed")
 		} else {
-			d.operationChanged(work.record, "completed")
+			if sessionRefusedOutcome(reply.Outcome) {
+				work.record.err = "session_request_refused"
+				d.operationChanged(work.record, "failed")
+			} else {
+				d.operationChanged(work.record, "completed")
+			}
 		}
 	}
 	if work.verb == "configure" && work.config == d.requestedSessionConfig() {
@@ -229,6 +271,7 @@ func (d *Controller) finishSessionRequest(result job) {
 			return
 		}
 	}
+	d.systemMenu()
 	d.showSession()
 	if fallback != "" {
 		d.notice(fallback)
@@ -269,10 +312,11 @@ func (d *Controller) showSession() error {
 	if s := d.session.snapshot; s != nil {
 		names := []string{"Window manager", "Autostart scan", "Session bus", "Notifications", "Applications"}
 		for i, item := range s.Items {
-			add(names[i] + ": " + item.State + " / " + item.Ownership)
+			row := names[i] + ": " + item.State + " / " + item.Ownership
 			if item.Detail != "" {
-				add(item.Detail)
+				row += " - " + item.Detail
 			}
+			add(row)
 		}
 		add(fmt.Sprintf("Bus: saved %v; active %s (next login)", d.saved["session_bus"], s.ActiveBusPolicy))
 		add(fmt.Sprintf("Notifications: saved %v; live %s", d.saved["session_notifications"], s.Config.Notifications))
@@ -282,6 +326,9 @@ func (d *Controller) showSession() error {
 		add("Saved bus: " + fmt.Sprint(d.saved["session_bus"]) + " (next login)")
 		add(fmt.Sprintf("Notifications: saved %v; live unavailable", d.saved["session_notifications"]))
 		add(fmt.Sprintf("Do not disturb: saved %v; live unavailable", d.saved["notification_dnd"]))
+	}
+	for _, row := range d.sessionProviderRows() {
+		add(row)
 	}
 	if d.session.message != "" {
 		add(d.session.message)
@@ -294,7 +341,7 @@ func (d *Controller) showSession() error {
 	if d.session.logout != nil {
 		handoff = d.session.logout.handoff
 	}
-	projection := strings.Join(lines, "\n") + fmt.Sprintf("\ncontrols:%t:%t:%t", d.session.lastNotification != 0, active, handoff)
+	projection := strings.Join(lines, "\n") + fmt.Sprintf("\ncontrols:%t:%t:%t:%s", d.session.lastNotification != 0, active, handoff, d.sessionControlsIdentity())
 	if v.projection == projection {
 		return d.fatal
 	}
@@ -315,6 +362,12 @@ func (d *Controller) showSession() error {
 		}
 	} else {
 		lines = append(lines, `Button continue "Log out..." F3`, "Command "+prefix+"logout")
+	}
+	lines = append(lines, "Line expand", `Button continue "Probe power" F8`, "Command "+prefix+"power-reprobe")
+	for _, action := range []string{"lock", "poweroff", "reboot"} {
+		if d.sessionAction(action).allowed {
+			lines = append(lines, "Button continue "+quote(title(action)), "Command "+prefix+action)
+		}
 	}
 	lines = append(lines, `Timeout 3000 `+quote(prefix+"close")+` ""`)
 	d.form("SlateSessionPanelForm", lines, true)
@@ -356,6 +409,12 @@ func (d *Controller) sessionPanelControl(argument string) error {
 			return d.startSessionRequest("status", nil)
 		}
 		return d.startSessionRequest("reprobe", nil)
+	case "power-reprobe":
+		return d.startSessionRequest("power-probe", nil)
+	case "poweroff", "reboot":
+		return d.confirmSessionAction(words[3])
+	case "lock":
+		d.lock()
 	case "test":
 		if d.requestedSessionConfig().DND {
 			d.session.message = "Do not disturb: notification suppressed."
@@ -425,7 +484,7 @@ func (d *Controller) changeSessionSettings(changes values) error {
 
 func sessionTarget(target string) bool {
 	switch target {
-	case "session-status", "session-reprobe", "notification-test", "notification-close", "logout":
+	case "session-status", "session-reprobe", "notification-test", "notification-close", "logout", "power-status", "power-reprobe", "poweroff", "reboot", "suspend", "lock":
 		return true
 	}
 	return false
@@ -455,7 +514,7 @@ func (d *Controller) startSessionOperation(target string, request values) values
 	if target == "logout" {
 		err = d.startLogout(r)
 	} else {
-		verb := map[string]string{"session-status": "status", "session-reprobe": "reprobe", "notification-test": "notify", "notification-close": "close"}[target]
+		verb := map[string]string{"session-status": "status", "session-reprobe": "reprobe", "notification-test": "notify", "notification-close": "close", "power-status": "status", "power-reprobe": "power-probe", "poweroff": "poweroff", "reboot": "reboot", "suspend": "suspend", "lock": "lock"}[target]
 		if verb == "notify" && d.requestedSessionConfig().DND {
 			r.result = values{"outcome": "suppressed"}
 			r.application = "not-submitted"
@@ -504,10 +563,10 @@ func (d *Controller) sessionRequest(r values) values {
 	// This finite aggregate includes logout state and separately sampled parent
 	// inventory. A settings generation alone cannot attest it is unchanged.
 
-	result := values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "generation": d.generation,
+	result := values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 2, "generation": d.generation,
 		"scope": "session-services", "state": "unavailable", "availability": "owner-unavailable", "bus_policy": "next-login",
 		"saved": sessionConfig(d.saved), "requested": d.requestedSessionConfig(), "service_lifecycle": false,
-		"notification_server": false, "disconnect": "continue", "operation_targets": []string{"session-status", "session-reprobe", "notification-test", "notification-close", "logout"}}
+		"notification_server": false, "disconnect": "continue", "operation_targets": sessionOperationTargets()}
 	if s := d.session.snapshot; s != nil {
 		result["state"], result["availability"] = "observed", "available"
 		result["service_lifecycle"] = true
@@ -520,12 +579,13 @@ func (d *Controller) sessionRequest(r values) values {
 		// Private reasons allow512bytes; public projection reserves room for
 		// worst-case JSON escaping within the unchanged8KiB MFL reply cap.
 		for i := range items {
-			items[i].Detail = shortSessionText(items[i].Detail, 128)
+			items[i].Detail = shortSessionText(items[i].Detail, 48)
 		}
 		result["items"] = items
+		result["power"], result["locker"] = publicSessionProviders(*s)
 	}
 	if l := d.session.logout; l != nil {
-		result["logout"] = values{"state": l.phase, "message": l.message, "cancel_available": d.logoutActive() && !l.handoff, "deadline_ms": max(0, time.Until(l.deadline).Milliseconds()), "closed_applications_restorable": false}
+		result["logout"] = values{"state": l.phase, "message": shortSessionText(l.message, 128), "cancel_available": d.logoutActive() && !l.handoff, "deadline_ms": max(0, time.Until(l.deadline).Milliseconds()), "closed_applications_restorable": false}
 	}
 	return success(result)
 }
@@ -545,9 +605,10 @@ func (d *Controller) failureNotice() {
 }
 
 // Service observations and commits do not invalidate an appearance editor or
-// consume its saved preview draft. Only the explicit three-key editor retires
+// consume its saved preview draft. Only the explicit four-key editor retires
 // on its own commit; all unrelated theme/cache state stays exactly in place.
 func (d *Controller) sessionSettingsChanged(retireSessionEditor bool) {
+	d.dismissSessionConfirmation()
 	d.generation = newID(16)
 	if e := d.editor; e != nil {
 		own := false
@@ -572,6 +633,7 @@ func (d *Controller) sessionSettingsChanged(retireSessionEditor bool) {
 	d.staleInspection("Session settings changed; refresh for current policy.")
 	_ = d.paletteProviders()
 	if d.ready {
+		d.systemMenu()
 		d.announceSettings()
 	}
 }

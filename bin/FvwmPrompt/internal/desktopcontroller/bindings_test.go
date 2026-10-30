@@ -134,7 +134,7 @@ func TestMenuBindingsLossRetainsDataAndFreshCommitRestores(t *testing.T) {
 		}
 	}
 	text := strings.Join((*commands)[before:], "\n")
-	for _, expected := range []string{`SlateLauncherMenu Greyed "Retained"`, `SlateSearchResults Greyed "Retained"`, `SlateSession Greyed "Power off..."`, "old-link", "Status unavailable"} {
+	for _, expected := range []string{`SlateLauncherMenu Greyed "Retained"`, `SlateSearchResults Greyed "Retained"`, `SlateSession Greyed "Poweroff: native request; permission unknown"`, "old-link", "Status unavailable"} {
 		if !strings.Contains(text, expected) {
 			t.Fatal("missing unavailable projection", expected, text)
 		}

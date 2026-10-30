@@ -20,7 +20,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 5
+const StateVersion = 6
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -119,11 +119,14 @@ var registry = []Setting{
 		Description: "Use an existing notification server"},
 	{Key: "notification_dnd", Type: "boolean", Default: false,
 		Group: "session", Description: "Do not disturb"},
+	{Key: "session_power", Type: "enum", Default: "portable",
+		Choices: []string{"portable", "login1"}, Group: "session",
+		Description: "Power provider (live owner handshake)"},
 }
 
 // SessionKey identifies the finite optional-service preference domain.
 func SessionKey(key string) bool {
-	return key == "session_bus" || key == "session_notifications" || key == "notification_dnd"
+	return key == "session_bus" || key == "session_notifications" || key == "notification_dnd" || key == "session_power"
 }
 
 func Registry() map[string]Setting {
@@ -423,7 +426,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -439,6 +442,7 @@ func DecodeState(data []byte) (Values, error) {
 		{"session_bus", 5, "off"},
 		{"session_notifications", 5, "off"},
 		{"notification_dnd", 5, false},
+		{"session_power", 6, "portable"},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

@@ -408,6 +408,12 @@ static bool operation_request(struct mfl_request *request,
 		     strcmp(values[10]->valuestring, "status") == 0 ||
 		     strcmp(values[10]->valuestring, "session-status") == 0 ||
 		     strcmp(values[10]->valuestring, "session-reprobe") == 0 ||
+		     strcmp(values[10]->valuestring, "power-status") == 0 ||
+		     strcmp(values[10]->valuestring, "power-reprobe") == 0 ||
+		     strcmp(values[10]->valuestring, "poweroff") == 0 ||
+		     strcmp(values[10]->valuestring, "reboot") == 0 ||
+		     strcmp(values[10]->valuestring, "suspend") == 0 ||
+		     strcmp(values[10]->valuestring, "lock") == 0 ||
 		     strcmp(values[10]->valuestring, "notification-test") == 0 ||
 		     strcmp(values[10]->valuestring, "notification-close") == 0 ||
 		     strcmp(values[10]->valuestring, "logout") == 0))

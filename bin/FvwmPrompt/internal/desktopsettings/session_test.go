@@ -13,22 +13,22 @@ import (
 )
 
 func TestSessionRegistryAndHistoricalReads(t *testing.T) {
-	if StateVersion != 5 || len(Registry()) != 14 {
+	if StateVersion != 6 || len(Registry()) != 15 {
 		t.Fatal("registry scope")
 	}
 	keys, _ := Scope("group:session")
-	if !reflect.DeepEqual(keys, []string{"session_bus", "session_notifications", "notification_dnd"}) {
+	if !reflect.DeepEqual(keys, []string{"session_bus", "session_notifications", "notification_dnd", "session_power"}) {
 		t.Fatal(keys)
 	}
-	for _, version := range []int{1, 2, 3, 4, 5} {
+	for _, version := range []int{1, 2, 3, 4, 5, 6} {
 		v := versionedFixture(version)
 		data, _ := json.Marshal(v)
 		got, err := DecodeState(data)
-		if err != nil || got["session_bus"] != "off" || got["session_notifications"] != "off" || got["notification_dnd"] != false {
+		if err != nil || got["session_bus"] != "off" || got["session_notifications"] != "off" || got["notification_dnd"] != false || got["session_power"] != "portable" {
 			t.Fatal(version, got, err)
 		}
 	}
-	for key, bad := range map[string][]any{"session_bus": {"system", "auto", true}, "session_notifications": {"start", true, "external;Exec bad"}, "notification_dnd": {"yes", 0, nil}} {
+	for key, bad := range map[string][]any{"session_bus": {"system", "auto", true}, "session_notifications": {"start", true, "external;Exec bad"}, "notification_dnd": {"yes", 0, nil}, "session_power": {"auto", "systemctl", true, "login1;Exec bad"}} {
 		for _, v := range bad {
 			if _, err := Value(key, v, false); err == nil {
 				t.Fatal(key, v)
@@ -49,17 +49,17 @@ func TestSessionEditorIsCompactAndAppearanceDraftRemainsElevenFields(t *testing.
 	if !strings.Contains(strings.Join(appearance.Lines, "\n"), "edit-settings group:session") {
 		t.Fatal("missing scoped navigation")
 	}
-	plan, err := Editor(s, "group:session", false, Values{"session_bus": "start", "session_notifications": "external", "notification_dnd": true}, token)
-	if err != nil || len(plan.Keys) != 3 {
+	plan, err := Editor(s, "group:session", false, Values{"session_bus": "start", "session_notifications": "external", "notification_dnd": true, "session_power": "login1"}, token)
+	if err != nil || len(plan.Keys) != 4 {
 		t.Fatal(plan, err)
 	}
 	text := strings.Join(plan.Lines, "\n")
-	for _, part := range []string{`Title "Session settings"`, "Colorset 2", "ItemColorset 12", "next login", "live handshake", "session_bus_start start on", "notification_dnd_true true on", "apply-settings " + token + " $(session_bus) $(session_notifications) $(notification_dnd)"} {
+	for _, part := range []string{`Title "Session settings"`, "Colorset 2", "ItemColorset 12", "next login", "live handshake", "session_bus_start start on", "notification_dnd_true true on", "apply-settings " + token + " $(session_bus) $(session_notifications) $(notification_dnd) $(session_power)"} {
 		if !strings.Contains(text, part) {
 			t.Fatal(part, text)
 		}
 	}
-	if strings.Contains(text, "preview-") || len(plan.Lines) > 70 {
+	if strings.Contains(text, "preview-") || len(plan.Lines) > 75 {
 		t.Fatal("session editor grew appearance controls")
 	}
 }

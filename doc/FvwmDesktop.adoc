@@ -218,6 +218,8 @@ configuration-center covers these registered preferences:
 * *session_bus*, session group: off; choices off, reuse, start. Next owned login.
 * *session_notifications*, session group: off; choices off, external.
 * *notification_dnd*, session group: boolean, false.
+* *session_power*, session group: portable; choices portable, login1. Live owner
+  handshake, followed by an explicit power-provider probe.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
@@ -276,12 +278,13 @@ the helper closes any predecessor's Form. Callback tokens belong to that editor
 and settings generation, so delayed actions cannot apply an old draft to newer
 state. External saved-file edits are still checked at Apply: reload and reopen
 the editor to adopt them. Query generation is an opaque snapshot identity that
-changes on successful preference publication/reload and helper restart; it is
+changes on successful preference publication/reload, adopted provider
+observations and helper restart; it is
 not an X-server generation or evidence that arbitrary FVWM commands were observed.
 
-The all-settings editor retains its appearance fields. Its Session settings
+The all-settings editor retains its eleven appearance fields. Its Session settings
 button (F8), or *edit-settings group:session*, opens a compact editor for the
-three session preferences. The Session panel also opens this scoped editor.
+four session preferences. The Session panel also opens this scoped editor.
 
 Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
 group:effects, group:session or all. It changes only those saved preferences to registered defaults. It
@@ -319,11 +322,12 @@ rules. Complete schema_version 1 files load with launcher_opacity 94;
 complete version 1 and 2 files gain follow defaults for the two wallpaper choices.
 Complete versions 1 through 3 gain contrast normal. Complete versions 1 through
 4 gain session_bus off, session_notifications off and notification_dnd false.
-No file is rewritten on read. The next successful save writes schema_version 5.
-Version 5 requires all fourteen preferences and retained wallpaper with valid
-types. Versions 1 through 4 require their exact historical fields; incomplete or
-unknown fields are refused. Older helpers cannot read version 5. Unknown versions, duplicate fields, oversized
-or invalid files are preserved. Startup uses defaults and reports a persistence
+Complete versions 1 through 5 gain session_power portable. No file is rewritten
+on read. The next successful save writes schema_version 6. Version 6 requires
+all fifteen preferences and retained wallpaper with valid types. Versions 1
+through 5 require their exact historical fields; incomplete or unknown fields
+are refused. Older helpers cannot read version 6. Unknown versions, duplicate
+fields, oversized or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
 
@@ -682,7 +686,7 @@ editable draft. A successful atomic rename remains committed even if later
 module publication fails.
 
 The adjacent private *fvwm-desktop-worker* owns application discovery, system
-metrics, audio/power jobs, bounded folder-menu listings and read-only
+metrics, audio and direct-session power jobs, bounded folder-menu listings and read-only
 configuration checking. Its results remain data; it cannot commit preferences
 or own a preview lease. The separate native *fvwm-desktop-capture* helper owns its Xlib connection and
 uses the selected libpng dependency. No installed desktop controller/helper
@@ -766,8 +770,9 @@ requests fresh snapshots, so delayed results cannot revive a prior lifetime.
 
 Before the first status result, and after status collection fails, the system
 menu reports unavailable status and disables worker-backed sound and power
-controls. Last working status remains available as explicitly old data. Lock,
-logout and other independent local actions retain their own availability checks.
+controls for direct/external sessions. Last working status remains available as
+explicitly old data. The owned session provider, Lock, logout and other
+independent actions retain their own availability checks.
 A fresh status result restores the worker-backed controls; it does not establish
 that a later sound or power action succeeded. The existing shared five-second
 status sampler remains active; bindings add no polling timer or settings service.
@@ -793,14 +798,13 @@ is disabled. Network information uses ifconfig or an existing ip command.
 Settings needing privileges remain the operating system's responsibility.
 No helper automatically invokes sudo or doas.
 
-Power requests have their own bounded admission slot; an audio job cannot silently
-replace them. Duplicate or capacity-limited requests report that no additional
-request was sent. Backend authorization and errors remain with the operating
-system. A pending locker invocation refuses duplicates within this controller
-instance; construction or unsuccessful exit reports unconfirmed protection.
-Starting a locker is not proof that the screen is locked. Detached lockers and
-applications retain their existing lifetime across controller/WM retirement;
-there is no lock-before-sleep or full session-service readiness guarantee.
+In a direct/external session, native power requests retain their separate job
+identity; an audio job cannot replace them. Their existing native worker and
+controller-local xlock/slock fallback remain available. Owned-session requests
+use the parent provider described below. Duplicate or capacity-limited requests
+report refusal. Backend authorization remains with the operating system. A
+failed or uncertain submission never selects another provider or retries the
+action automatically. Starting or retaining a locker does not prove protection.
 
 Screenshots use Xlib and the configured libpng library in the separately
 supervised native capture helper. A PNG-disabled build immediately reports
@@ -817,12 +821,11 @@ terminal option for another command. Terminal tools require a compatible
 -e option; no terminal is installed automatically.
 
 Lock delegates only to an existing xlock or slock. If neither is available,
-the Session menu disables Lock and a keyboard request explicitly reports
-that the screen has NOT been locked. No decorative lock window is presented
-as a security boundary. A portable bundled authentication locker remains
-separate work. Power off and reboot require confirmation and use existing
-session permissions; denied requests are reported. Log out requests cooperative
-application shutdown as described below. Restart FVWM reloads it without closing
+the Session menu disables Lock and a keyboard request reports unavailable
+protection. No decorative lock window is presented as a security boundary.
+A portable bundled authentication locker remains separate work. Session-menu
+power off and reboot require confirmation; denied requests are reported.
+Log out requests cooperative application shutdown as described below. Restart FVWM reloads it without closing
 application windows or repeating login autostart.
 
 == SESSION AND SERVICES
@@ -837,38 +840,96 @@ The native panel shows the window manager, autostart scanner, session bus,
 notification adapter and independent application observations. Owned, borrowed
 and independent lifetimes remain distinct. Ready is a completed observation,
 not a promise that a future call or application will succeed. Application
-launches are reported without claiming application readiness.
+launches are reported without claiming application readiness. Separate Power
+and Locker observations supplement the same five fixed inventory entries.
+Panel and menu controls use one per-action capability projection. Visible rows
+are bounded and use an ellipsis; identical observations retain one panel and
+its callback identity.
 
 * *Refresh* (F5) obtains owner status, or reprobes the existing address when an
   owner is already known. It does not create a replacement bus.
-* *Settings* (F2) opens the three-key saved session editor. Apply (F3) saves;
+* *Settings* (F2) opens the four-key saved session editor. Apply (F3) saves;
   Defaults (F2) changes only its draft; Cancel leaves preferences unchanged.
 * *Test notification* (F6) sends fixed plain text to an existing server when
   enabled. Do not disturb suppresses it quietly. An unavailable adapter/server
   produces a local native fallback notice.
 * *Close own notice* (F7) appears after a successful send and requests closure
   only of that remembered notification. A changed bus/server owner retires it.
+* *Probe power* (F8) rediscovers the fixed power and locker providers. It sends
+  no power action and does not create a bus or activate a service.
+* *Lock*, *Poweroff* and *Reboot* buttons appear when their action is request-capable.
+  Poweroff and Reboot open confirmation. Suspend remains unavailable.
 * *Log out...* (F3) opens confirmation and starts cooperative logout.
   *Cancel logout* (F4) stops further close requests while cancellation is available.
 * *Close* or Escape dismisses the panel. It does not cancel a logout already
   running; use Cancel logout for that purpose.
 
 Saved session_bus defaults to off and controls the next *fvwm-session* login.
-Off preserves the inherited bus environment and starts no adapter at login. Reuse
+Off preserves the inherited bus environment and starts no session-bus adapter
+at login. Reuse
 requires an actual handshake with an explicitly inherited usable session bus.
 Start first reuses that bus, or creates and confirms an owned foreground
 dbus-daemon before FVWM/apps start. Disabled/missing optional integration does
 not prevent login. The panel shows saved/requested versus active bus policy;
 running applications never silently move to a new bus address.
 
-session_notifications=external and notification_dnd apply after a successful
-live owner handshake. A successful file save with an unavailable owner is
+session_power, session_notifications=external and notification_dnd apply after a
+successful live owner handshake. A successful file save with an unavailable owner is
 reported as saved with live application unavailable; Refresh can retry it.
 The same private desktop-state.json file is used; no separate service preference
 store exists. The default notification policy is off. Outbound messages are
 plain bounded text, use an existing server, and retain at most 32 IDs per actual
-bus/server owner. No notification server, history, tray or secure locker is
-provided. See *fvwm-session*(1) for adapter and ownership limits.
+bus/server owner. No notification server, history, tray or bundled secure locker
+is provided. See *fvwm-session*(1) for adapter and ownership limits.
+
+=== Power and manual lock
+
+The default *session_power=portable* selects fixed native tools. Linux uses an
+installed systemctl, otherwise shutdown; FreeBSD and OpenBSD use shutdown.
+Discovery searches conservative absolute PATH roots. Installed tools are
+request-capable with authorization unknown; discovery never issues a power
+action to test permission. Requests use the operating system's existing policy.
+
+The optional *login1* selection uses only an existing local system bus and the
+fixed org.freedesktop.login1 Manager. Bus GetId/GetNameOwner identify the bus
+and unique service owner; Manager CanPowerOff, CanReboot and CanSuspend are
+queried independently. Raw permissions distinguish yes, no, challenge, na,
+inhibited, inhibitor-blocked
+and challenge-inhibitor-blocked. The menu explains availability, denial,
+authentication, inhibition or unknown state. Only yes permits PowerOff/Reboot.
+Permission and provider identity are checked again before sending
+interactive=false. Unknown or malformed capability replies refuse the action. Authentication and
+inhibitor management are not implemented; no inhibitor is bypassed.
+
+Changing session_power first commits the shared preference, then applies it
+through the live owner handshake. The prior capabilities become unavailable
+until *Probe power* obtains a fresh observation. Missing optional support never
+prevents login. Notification failure does not disable portable/system power;
+power-provider failure does not erase independent notification ownership.
+
+Power confirmations expire after sixty seconds and capture the current policy,
+desktop generation, parent operation and power-provider generation. A changed
+observation, policy or owner dismisses or refuses the old confirmation without
+sending the action. Request results acknowledge a request or report unavailable,
+denied, stale, failed or outcome-unconfirmed; they never confirm completed power
+off or reboot. No provider fallback or automatic replay follows denial, timeout,
+disconnect or uncertain submission. Refresh/probe and inspect the outcome before
+choosing another request. Existing configured commands and direct/external-session
+native fallback remain usable.
+
+For an owned login, the session parent starts and observes at most one fixed
+xlock/slock child. Pending/running observation refuses duplicate admission and
+survives FvwmDesktop or ordinary FVWM Restart. Once started, the parent does not
+terminate the locker on requester loss, request deadline, controller restart or
+WM exit. Started, running and exited describe process state only: protection
+and secure readiness remain unconfirmed. With no observed or intended owner,
+the controller retains its existing local locker fallback.
+
+Coordinated suspend is unavailable. Its typed request is refused before any
+native power command or login1 Suspend method: this slice has no qualified
+secure-lock readiness witness, even when CanSuspend returns yes or a locker is
+running. Authentication, secure readiness, inhibitors and wider service/platform
+qualification remain separately owned.
 
 === Cooperative logout
 
@@ -907,7 +968,7 @@ Super+Enter:: Terminal.
 Super+D:: Files.
 Super+P:: Run command.
 Super+A:: Action palette.
-Super+L:: Request secure screen lock.
+Super+L:: Request an existing locker; protection remains unconfirmed.
 Super+1 through Super+4:: Select workspace.
 Ctrl+F1 through Ctrl+F4:: Select workspace.
 Alt+Tab:: Window list.
@@ -934,6 +995,7 @@ toggle motion
 toggle keep_wallpaper
 set session_bus off|reuse|start
 set session_notifications off|external
+set session_power portable|login1
 toggle notification_dnd
 set wallpaper_palette follow|slate|dune|grove|ink
 set contrast normal|high
@@ -955,6 +1017,7 @@ files
 calendar
 screenshot
 session-panel
+session-power-probe
 ....
 
 refresh reapplies the current theme and restores the clock/workspace display
@@ -1005,8 +1068,8 @@ configuration readiness, supported operations and known persistence error.
 Optional provider watches announce readiness and changed preference generations
 without broadcasting values. Conditional settings queries return unchanged
 when the exact targeted preference generation matches. The separate session
-resource and finite session operation targets expose owner observations and
-cooperative logout, without confirming theme application; see *FvwmMFL*(1) for
+resource (schema 2) and finite session operation targets expose typed power,
+locker and service observations and cooperative logout, without confirming theme application; see *FvwmMFL*(1) for
 framing, limits, stale identities and snapshot recovery.
 
 The structured operations resource can request owned Applications or Status

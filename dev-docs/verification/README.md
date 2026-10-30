@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Notification installed acceptance](VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md): installed module and manual, keyboard and control size, three native configurations, affected platform evidence and scoped feature cost; see the report for source variants, execution modes and remaining checks.
+
+- [PR305→PR310 core performance observation](PERFORMANCE-2026-10-30-NOTIFICATION-CORE.md): paired retained/current core samples, section sizes and scoped memory; notification feature cost is separate.
+
 - [Notification lifecycle and topology](VERIFICATION-2026-10-30-NOTIFICATION-LIFECYCLE.md): bounded startup, real producer/teardown and mixed-scale/dock continuity, process-final font cleanup and focused instrumented UI/BSD evidence; complete #76 acceptance remains open.
 
 - [Initial native notifications](VERIFICATION-2026-10-30-NATIVE-NOTIFICATIONS.md): optional isolated server, bounded protocol/popups/actions/history, shared DND and keyboard center; focused Linux/race/sanitizer, three inspected font/theme profiles and scoped process cost.

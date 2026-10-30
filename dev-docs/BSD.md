@@ -71,6 +71,31 @@ script; pair it with `--reboot-after-prepare`. The
 that exact executed script, source identities and results on both architectures.
 AMD64 default-X fixtures also require the explicit `--openbsd-vga-test` option.
 
+
+## Focused notification default-X fixture
+
+For installed notification checks, use an isolated disposable BSD VM with no
+existing Xorg. Build the current core, MFL, notification test client and
+capture helper with `session-dbus=enabled`; install the `notifications` tag in
+a private prefix. A private D-Bus daemon, Xorg, XTest and the normal runtime
+libraries must be available. Run from the matching source root with a new
+evidence directory:
+
+```sh
+python3 tests/run_bsd_default_x.py --disposable-vm --notify-only \
+    --build-directory /path/to/build \
+    --notify /path/to/private-prefix/libexec/fvwm3/VERSION/FvwmNotify \
+    --execution-profile native-cpu \
+    --artifacts-dir /path/to/new-default-x-evidence
+```
+
+Use `emulated-cpu` for an emulated guest CPU. The driver records the supplied
+CPU label separately from observed OS/architecture, starts its authenticated
+server and checks that an unauthenticated client is refused. It does not qualify
+physical graphics/input or a complete release. See the
+[notification evidence](verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
+for installed identity, theme and target-specific limits.
+
 ## Retained local lab examples
 
 The paths below describe the earlier installed lab layout, not an inventory of

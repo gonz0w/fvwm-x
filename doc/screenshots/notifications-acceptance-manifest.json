@@ -1,0 +1,74 @@
+{
+  "description": "Installed notification module in authenticated default X on OpenBSD 8.0 ARM64 guest; actual captures, no visual post-processing.",
+  "source_closure": "a2cc9a0f460d81c360537e1cae667257d3ce0174405b49d9571d40a3fc40220d",
+  "evidence_result_sha256": "a57cbb3a42523a543ff7756c2236ff0f61ca4584381b92e0202839808b2f764d",
+  "guest_archive_sha256": "edd1e17c619c91555d598bf72285388af8b4510eb7da390fd175633407063001",
+  "fvwm_sha256": "841a6f2eb41b6a8317421822037682591ebadcb1656efd930269f6cb8ceb4775",
+  "installed_notify_sha256": "a89fb8fd65df37386d149ecf8c93c6575be65a13197f34c8e46663dd9022c3ae",
+  "execution": "OpenBSD 8.0 ARM64 guest, ARM64 CPU via HVF, authenticated default Xorg; synthetic clients and notices",
+  "theme_configs": [
+    {
+      "profile": "slate-dark",
+      "configuration": "slate-dark.fvwm",
+      "sha256": "c73a04cf5c3b7af013e5a78965504a48ef5da3f864b6f227e3970a537dea0509",
+      "font": "xft:Sans:size=11",
+      "foreground": "#e5edf5",
+      "background": "#253140",
+      "border": 2
+    },
+    {
+      "profile": "dune-light",
+      "configuration": "dune-light.fvwm",
+      "sha256": "c1cc7b6b9fc0344e6ee7036f2043f4502900e27572e52ebcff1a77968a3f9753",
+      "font": "xft:Serif:size=12",
+      "foreground": "#322a20",
+      "background": "#eee4cb",
+      "border": 1
+    },
+    {
+      "profile": "classic-large",
+      "configuration": "classic-large.fvwm",
+      "sha256": "f6ec28f2136e8c3a57bcd10f93c8be1fc1dc84e42e88f64030f4c33ab4bbedee",
+      "font": "xft:DejaVu Sans Mono:size=18",
+      "foreground": "#ffffe0",
+      "background": "#252550",
+      "border": 5
+    }
+  ],
+  "observed_font_heights_pixels": {
+    "slate-dark": 17,
+    "dune-light": 19,
+    "classic-large": 28
+  },
+  "files": [
+    {
+      "file": "notifications-acceptance-slate-dark.png",
+      "source_capture": "slate-dark.png",
+      "sha256": "b29f665258ad0abf69b8aa15ebf87f2c4f386fb784253bf48735c47aaebea209",
+      "bytes": 26228
+    },
+    {
+      "file": "notifications-acceptance-dune-light-center.png",
+      "source_capture": "dune-light-center.png",
+      "sha256": "ec1e86f6ae8ff14c5c85213f7b2d2660f187d3eb84128116dc9b9175f64a02ec",
+      "bytes": 40596
+    },
+    {
+      "file": "notifications-acceptance-classic-large-center.png",
+      "source_capture": "classic-large-center.png",
+      "sha256": "17d5e259c391f0ed42f94cb177c81bb5d5c8d9e153286c82756cad820bfbb1da",
+      "bytes": 56867
+    },
+    {
+      "file": "notifications-acceptance-four-action-focus.png",
+      "source_capture": "four-action-focus.png",
+      "sha256": "617a8c5bc7fe6bd1c607bd861e60a42cf3c9ac3488c0dfd837a89a04dc73b953",
+      "bytes": 9675
+    }
+  ],
+  "limits": [
+    "Three configurations, not all themes.",
+    "Default-X VM captures do not establish physical display, toolkit, AT-SPI or release qualification.",
+    "Passive popup overlaps the center in center captures; enlarged Classic header can truncate."
+  ]
+}

@@ -113,6 +113,17 @@ def dependency_identity(system, server_log):
 def fixture_commands(args, build, source):
     if args.server_only:
         return []
+    if args.notify_only:
+        paths = {'fvwm': args.fvwm or build / 'fvwm3',
+            'notify': args.notify or build / 'modules/FvwmNotify/FvwmNotify',
+            'mfl': args.mfl or build / 'modules/FvwmMFL/FvwmMFL',
+            'client': args.notify_client or build / 'tests/notify-client',
+            'capture': args.capture or build / 'bin/fvwm-desktop-capture'}
+        options = ['--build', str(build), '--execution-profile',
+                   args.execution_profile]
+        for name, path in paths.items():
+            options.extend(['--' + name, str(path.resolve())])
+        return [('notify', options)]
     if args.desktop_controller_only:
         stage = build / 'install-stage'
         prefix = stage / 'usr/local'
@@ -213,8 +224,9 @@ def run_once(args):
                           'xlock': 'xlock_menu_live.py', 'directory': 'directory_menu_live.py',
                           'script-com': 'script_com_example_live.py',
                           'desktop-menu': 'xdg_menu_live.py',
+                          'notify': 'notify_live.py',
                           'desktop-controller': 'desktop_live.py'}[name]
-                native_options = [] if name == 'desktop-controller' else [
+                native_options = [] if name in ('desktop-controller', 'notify') else [
                     '--fvwm', str(build / 'fvwm3'),
                     '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL')]
                 argv = [sys.executable, str(source / 'tests/live_x' / script),
@@ -222,7 +234,7 @@ def run_once(args):
                     '--display', display, '--artifacts-dir',
                     str(artifacts / name), *extra]
                 child = runtime.start(name, argv, name + '.log', env)
-                timeout = 300 if name == 'desktop-controller' else 90
+                timeout = 300 if name in ('desktop-controller', 'notify') else 90
                 status = child.wait_until_exit(time.monotonic() + timeout)
                 evidence['fixtures'][name] = {'command': argv, 'status': status}
                 if status != 0:
@@ -281,6 +293,9 @@ def run(args):
         raise ValueError('Repeat is restricted to --server-only.')
     if not args.server_only and args.build_directory is None:
         raise ValueError('--build-directory is required for client fixtures.')
+    if not args.notify_only and any((args.fvwm, args.notify, args.mfl,
+                                    args.notify_client, args.capture)):
+        raise ValueError('Notification path overrides require --notify-only.')
     if args.repeat == 1:
         run_once(args)
     else:
@@ -338,6 +353,14 @@ if __name__ == '__main__':
                         help='Run only the installed directory menu fixture.')
     modes.add_argument('--xlock-only', action='store_true',
                         help='Run only the installed xlock menu fixture.')
+    modes.add_argument('--notify-only', action='store_true',
+                        help='Run the native notification fixture on this authenticated display.')
+    for name in ('fvwm', 'notify', 'mfl', 'notify-client', 'capture'):
+        parser.add_argument('--' + name, type=Path,
+                            help='Explicit built/installed path for --notify-only.')
+    parser.add_argument('--execution-profile', default='unspecified',
+                        choices=('unspecified', 'native-cpu', 'emulated-cpu'),
+                        help='Declare CPU execution separately from observed OS/architecture.')
     parser.add_argument('--display-number', type=int, default=197)
     parser.add_argument('--disposable-vm', action='store_true')
     run(parser.parse_args())

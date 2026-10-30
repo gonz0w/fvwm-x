@@ -136,6 +136,34 @@ build/install provenance, default-server, theme, compiler, hardware or release
 qualification. The [installed checkpoint](verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md)
 records those boundaries and the separate target-specific artifact proofs.
 
+
+## Focused installed notification probe
+
+The optional notification module can be checked with the current built core,
+MFL, test client and capture helper. Build with `session-dbus=enabled`, install
+the `notifications` tag into a private prefix, and keep the installed module and
+its build from the same source revision. The fixture needs Python 3, a private
+D-Bus daemon, Xvfb and the X11/XTest dependencies used by the build. Set the
+normal runtime library path if that private build uses non-system libraries.
+Use a new evidence directory from the matching source root:
+
+```sh
+python3 tests/live_x/notify_live.py \
+    --build /path/to/build \
+    --notify /path/to/private-prefix/libexec/fvwm3/VERSION/FvwmNotify \
+    --execution-profile native-cpu \
+    --artifacts-dir /path/to/new-notification-evidence
+```
+
+Choose `emulated-cpu` when the guest CPU is emulated. The label is supplied by
+the caller; the result also records the observed OS and architecture. The
+fixture uses private X and D-Bus resources, exercises actual installed-module
+protocol and keyboard controls, and preserves failure evidence. It does not by
+itself qualify a full installed desktop, physical hardware, assistive provider
+or release profile. BSD default-server instructions are in [BSD.md](BSD.md);
+the [installed acceptance report](verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
+records the scope and target-specific results.
+
 ## Performance observations
 
 The opt-in comparison consumes two already qualified builds on the same quiet

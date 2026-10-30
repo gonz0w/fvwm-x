@@ -12,7 +12,7 @@ Features:
 
 - Session controls, cooperative logout, optional services and scaling.
 - Opt-in native text notifications, actions, keyboard center and bounded history;
-  [initial scope and screenshots](doc/development-preview.md#native-notifications).
+  [scope and theme screenshots](doc/development-preview.md#native-notifications).
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.

@@ -7,18 +7,90 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [notification lifecycle and topology](#r1-notification-lifecycle-and-topology--2026-10-30)
-under NOTIFY-01 #76. PR309 merged as
-`dacd80327f2071ba9d5dc452df554de352e8f2ed`; canonical signature, reviewed
-tree and author DCO verified, matching source branches retired. Performance is
-4/5 from merged PR305; no periodic comparison is due in this batch. Its merge
-reaches the next comparison checkpoint; preserve the existing runnable references.
+Current checkpoint: [notification installed acceptance](#r1-notification-installed-acceptance--2026-10-30)
+under NOTIFY-01 #76. PR310 merged as
+`bcf6d52d6c5e7e550d0c7a53477c6492b569fba3`; canonical signature, reviewed
+tree and author DCO verified, matching source branches retired. The due paired PR305→PR310 observation passes as a bounded observation: executable
+sections fall 0.70%, peak RSS is effectively unchanged and timings are mixed.
+The counter resets through PR310 to 0/5; this runtime candidate becomes 1/5 on
+merge. The verified current runnable reference is retained.
+
+## R1 notification installed acceptance — 2026-10-30
+
+Owner: Cam; `codex/r1-notification-acceptance`; base merged PR310 above.
+Status: review candidate; affected six-target acceptance passes by explicit
+source-bound composition. Merging this candidate completes #76; keep the issue
+In progress until merge. Final artifact review precedes publication. User authorized merge,
+cleanup and continued related milestone work. #76 owns notification delivery;
+#72/#77/#225 retain their broader session/provider/release qualification.
+
+Batch the remaining owning acceptance: (1) portable source/profile-bound installed
+notification fixture and truthful OS/CPU execution labels; (2) actual current
+native module, policy and enabled/disabled installed/manual qualification on the
+six supported OS/architecture profiles; (3) relevant real-X/default-server
+notification/keyboard behavior, composed with unchanged monitor/lifecycle/theme
+and sanitizer evidence; (4) complete scoped notification dependency/process cost
+and limits, distinguishing module/owned broker from the whole desktop;
+(5) the due PR305-to-current paired core observation using retained binaries;
+and (6) finite issue acceptance reconciliation with source-bound reports.
+Source review identified a concrete acceptance defect before edits: fixed-font
+13-pixel text plus six pixels of padding gives only 19-pixel action hit rows at
+1×, below the existing 24-logical-unit project floor. Correct that bounded row
+layout and add four-action keyboard/Shift-Tab/dismiss/Escape/focus-return coverage
+with a focused-state capture in the same existing fixture.
+
+Correct reproduced or source-reviewed affected failures only. No new protocol
+extension, settings store, automatic adoption, tray, dependency replacement or
+Daybreak pickup.
+
+Reuse existing owned incremental builds and prepared SDK/dependency caches.
+Actual provider/physical and native-CPU release evidence cannot be inferred from
+synthetic keyboard, framebuffer or emulated checks. Reconcile their explicit
+owning contract before closing #76; do not silently weaken or expand acceptance.
+Scope reconciliation from the frozen release contract: #76's accessibility
+criterion is usable keyboard actions; the optional AT-SPI bridge belongs to
+#57/A11Y-01, physical-display/input/toolkit release evidence to #79, and locker
+provider guarantees to #225. Historical reports retain their stated limits;
+none of those checks becomes passed by this clarification. Six-target affected
+notification/default-X/install/manual qualification remains required for #76.
+Cost covers this feature's module and independently observed broker contribution,
+not an invented whole-desktop budget (#226/#29).
+
+Implement fixture changes before one combined per-target gate; reuse identical
+passed inputs if a correction affects only a different profile. Keep at most two
+owned VMs active globally, preserve other owners' resources, and retire verified
+consumed copies while retaining current useful builds, prefix and comparison
+references. Full unrelated compiler/feature/desktop matrices are not implied.
+
+The [completed acceptance record](verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
+composes current module/policy/enabled-disabled install/manual receipts across
+Linux, FreeBSD and OpenBSD on both architectures, actual nested/default-X and
+Linux topology checks, four-action/target/focus assertions, and scoped module,
+private-broker and core cost. Original runtime, fixture and guest-package setup
+failures remain preserved. AMD64 CPUs are emulated; AT-SPI, physical/toolkit,
+locker and complete desktop budgets retain their owners. Four inspected installed
+OpenBSD captures cover three configurations and the selected fourth action.
+
+The final fixture adds actual module readiness observation across restart. A
+separate review strengthened dismissal's no-action assertion to include retained
+signals; the stronger predicate passes over the complete actual wire replies in
+all ten accepted profiles. The revised whole fixture was not rerun. Scope and
+per-profile source identities are explicit in the machine-readable report.
+
+Select TRAY-01 #78's finite XEmbed ownership/docking/lifetime checkpoint next,
+then its separate modern-bus protocol owner. Avoid another notification extension
+or requalification of unrelated profiles solely for a PR. #257/#258 stay parked.
+
+The combined portable check reproduced stale generated Perl metadata. Refresh
+only its two rows from unchanged canonical command definitions (`Send_Session`
+and the scoped `Send_Preview` description); native product inputs stay unchanged.
+Retain the failing deterministic-equality receipt and the final passing check.
 
 ## R1 notification lifecycle and topology — 2026-10-30
 
 Owner: Cam; `codex/r1-notification-lifecycle`; base merged PR309 above.
-Status: focused candidate prepared; exact final artifact review is recorded in
-the PR.
+Status: merged in PR310 as `bcf6d52d6c5e7e550d0c7a53477c6492b569fba3`;
+canonical signature, reviewed tree and author DCO verified; source branches retired.
 User authorized merge,
 cleanup and continued related milestone work. NOTIFY-01 #76 owns delivery;
 #72/#77 retain their broader session/service qualification.
@@ -4389,14 +4461,13 @@ is 3/5 after PR229; no benchmark or tuning is due.
 
 ## Current checkpoint status
 
-Current owner selection, 2026-10-28: PR291 is merged; #64, #65 and #68
-are closed. Their finite source-bound acceptance remains complete. The active #67
-Files-menu browser checkpoint implements four related handoff/recovery/display
-outcomes; focused Linux, real installed discovery and three native themes pass.
-Separate final review accepts this checkpoint. #67 stays In progress for its
-remaining role/adapter/support criteria. No shared bus/FileManager1 adoption. See the [current closeout](#r1-pinboard-support-closeout--2026-10-28).
-The earlier maintenance-first scheduling below is historical; the R1 execution
-order remains authoritative.
+Current owner selection, 2026-10-30: PR310 is merged. The active finite #76
+installed notification acceptance composes six affected support targets,
+keyboard/control checks and scoped dependency/process cost. Its current status
+is [above](#r1-notification-installed-acceptance--2026-10-30). TRAY-01's XEmbed
+host follows this owner; broader session, assistive-provider, physical and
+resource-budget qualification retain their separate contracts. The earlier
+maintenance-first scheduling below is historical.
 
 Current release scheduling is the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
 and Execution order above. The table below preserves accepted source/evidence
@@ -5193,7 +5264,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / In progress; optional client/power merged; owned-bus lifetime candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| NOTIFY-01 | P2 / In progress; initial native server focused checks passed, combined acceptance open | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
+| NOTIFY-01 | P2 / Review candidate; frozen component acceptance passes, closes #76 on merge | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |

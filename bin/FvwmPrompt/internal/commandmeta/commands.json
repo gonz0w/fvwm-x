@@ -816,6 +816,12 @@
     "descr": "Internal, used for module communication"
   },
   {
+    "name": "Send_Session",
+    "cursor": "",
+    "window": 0,
+    "descr": "Internal, guarded cooperative session actions"
+  },
+  {
     "name": "Send_WindowList",
     "cursor": "",
     "window": 0,

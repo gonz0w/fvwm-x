@@ -215,6 +215,9 @@ configuration-center covers these registered preferences:
 * *launcher_opacity*, effects group: integer percent, 0 through 100, default 94.
   It affects SlateLauncherStyle when transparency is enabled. Opaque mode
   presents 100% while retaining the saved percentage.
+* *session_bus*, session group: off; choices off, reuse, start. Next owned login.
+* *session_notifications*, session group: off; choices off, external.
+* *notification_dnd*, session group: boolean, false.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
@@ -257,7 +260,9 @@ saved preferences; an override still determines that setting's effective value.
 Opening the editor and changing fields have no effect on the desktop or file.
 
 Apply (F3) validates the entire selected scope and saves it with one atomic
-replacement, then submits the resulting theme and closes the editor. A bad
+replacement, then submits the resulting theme and closes the editor. The separate
+session scope instead requests the live session handshake without replaying
+appearance commands; bus policy still applies at next login. A bad
 value or failed write preserves the draft, file and effective preferences; a
 native notice explains the refusal. Tab moves between time fields; Return moves
 to the next time field. Click Apply or press F3 to apply from either field.
@@ -274,8 +279,12 @@ the editor to adopt them. Query generation is an opaque snapshot identity that
 changes on successful preference publication/reload and helper restart; it is
 not an X-server generation or evidence that arbitrary FVWM commands were observed.
 
-Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule, group:effects
-or all. It changes only those saved preferences to registered defaults. It
+The all-settings editor retains its appearance fields. Its Session settings
+button (F8), or *edit-settings group:session*, opens a compact editor for the
+three session preferences. The Session panel also opens this scoped editor.
+
+Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
+group:effects, group:session or all. It changes only those saved preferences to registered defaults. It
 retains explicit module overrides and the current wallpaper when the effective
 keep_wallpaper choice requests it. A reset that would make day and night equal
 is refused; reset group:schedule to restore both times. Reload rereads the saved
@@ -308,11 +317,12 @@ on failure; source configuration and unrelated files are left alone.
 Unversioned JSON from earlier helpers is read using the original normalization
 rules. Complete schema_version 1 files load with launcher_opacity 94;
 complete version 1 and 2 files gain follow defaults for the two wallpaper choices.
-Complete versions 1 through 3 gain contrast normal. No file is rewritten on read.
-The next successful save writes schema_version 4. Version 4 requires all eleven
-preferences and retained wallpaper with valid types. Versions 1 through 3 require
-their exact historical fields; incomplete or unknown fields are refused. Older
-helpers cannot read version 4. Unknown versions, duplicate fields, oversized
+Complete versions 1 through 3 gain contrast normal. Complete versions 1 through
+4 gain session_bus off, session_notifications off and notification_dnd false.
+No file is rewritten on read. The next successful save writes schema_version 5.
+Version 5 requires all fourteen preferences and retained wallpaper with valid
+types. Versions 1 through 4 require their exact historical fields; incomplete or
+unknown fields are refused. Older helpers cannot read version 5. Unknown versions, duplicate fields, oversized
 or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -811,8 +821,84 @@ the Session menu disables Lock and a keyboard request explicitly reports
 that the screen has NOT been locked. No decorative lock window is presented
 as a security boundary. A portable bundled authentication locker remains
 separate work. Power off and reboot require confirmation and use existing
-session permissions; denied requests are reported. Log out quits FVWM;
-Restart FVWM reloads it without closing application windows.
+session permissions; denied requests are reported. Log out requests cooperative
+application shutdown as described below. Restart FVWM reloads it without closing
+application windows or repeating login autostart.
+
+== SESSION AND SERVICES
+
+Open *Session and services...* in the Session menu, or send:
+
+....
+SendToModule FvwmDesktop session-panel
+....
+
+The native panel shows the window manager, autostart scanner, session bus,
+notification adapter and independent application observations. Owned, borrowed
+and independent lifetimes remain distinct. Ready is a completed observation,
+not a promise that a future call or application will succeed. Application
+launches are reported without claiming application readiness.
+
+* *Refresh* (F5) obtains owner status, or reprobes the existing address when an
+  owner is already known. It does not create a replacement bus.
+* *Settings* (F2) opens the three-key saved session editor. Apply (F3) saves;
+  Defaults (F2) changes only its draft; Cancel leaves preferences unchanged.
+* *Test notification* (F6) sends fixed plain text to an existing server when
+  enabled. Do not disturb suppresses it quietly. An unavailable adapter/server
+  produces a local native fallback notice.
+* *Close own notice* (F7) appears after a successful send and requests closure
+  only of that remembered notification. A changed bus/server owner retires it.
+* *Log out...* (F3) opens confirmation and starts cooperative logout.
+  *Cancel logout* (F4) stops further close requests while cancellation is available.
+* *Close* or Escape dismisses the panel. It does not cancel a logout already
+  running; use Cancel logout for that purpose.
+
+Saved session_bus defaults to off and controls the next *fvwm-session* login.
+Off preserves the inherited bus environment and starts no adapter at login. Reuse
+requires an actual handshake with an explicitly inherited usable session bus.
+Start first reuses that bus, or creates and confirms an owned foreground
+dbus-daemon before FVWM/apps start. Disabled/missing optional integration does
+not prevent login. The panel shows saved/requested versus active bus policy;
+running applications never silently move to a new bus address.
+
+session_notifications=external and notification_dnd apply after a successful
+live owner handshake. A successful file save with an unavailable owner is
+reported as saved with live application unavailable; Refresh can retry it.
+The same private desktop-state.json file is used; no separate service preference
+store exists. The default notification policy is off. Outbound messages are
+plain bounded text, use an existing server, and retain at most 32 IDs per actual
+bus/server owner. No notification server, history, tray or secure locker is
+provided. See *fvwm-session*(1) for adapter and ownership limits.
+
+=== Cooperative logout
+
+Save application work before confirming logout. The controller first collects
+the complete eligible managed-window set, up to 512 entries in pages of 128.
+It requests no closes if the inventory is incomplete or any original eligible
+window lacks permitted cooperative Delete support. It then sends each original
+close once through guarded core commands and observes the remaining set.
+There is no forced application termination or automatic close retry.
+
+The scope covers eligible live managed normal/dialog windows. It excludes
+tear-offs, other EWMH types such as dock/desktop, and windows whose class/instance
+matches an active module. That match is descriptive X11 metadata, not authenticated
+module identity; clients can choose those strings. Unmanaged applications and
+unsaved-work state are outside this inventory.
+
+The overall deadline is thirty seconds, with five seconds per core reply.
+Cancel/deadline sends no further requests and leaves FVWM/services running.
+An already submitted close may finish; closed applications cannot be restored.
+New application allocation identities, stale targets or a changed/incomplete
+snapshot stop logout. A final core action rechecks the current empty eligible
+set immediately before submitting Quit. Once that final request is submitted,
+cancellation is unavailable and a lost acknowledgment is an unknown outcome,
+not permission to retry. A requested final Quit is not confirmed WM exit.
+
+With connected external XSMP, logout is delegated to its existing policy;
+cancellation is unavailable after handoff. Direct/custom sessions can still
+use the core workflow without a portable service owner. Direct FVWM Quit keeps
+its ordinary behavior. Only actual WM exit lets *fvwm-session* stop its owned
+daemon; it never terminates borrowed services or independent applications.
 
 == KEYBOARD
 
@@ -846,10 +932,13 @@ times 07:00 19:00
 toggle transparency
 toggle motion
 toggle keep_wallpaper
+set session_bus off|reuse|start
+set session_notifications off|external
+toggle notification_dnd
 set wallpaper_palette follow|slate|dune|grove|ink
 set contrast normal|high
 set wallpaper_appearance follow|light|dark
-settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects]
+settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects|group:session]
 preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config
@@ -865,6 +954,7 @@ terminal
 files
 calendar
 screenshot
+session-panel
 ....
 
 refresh reapplies the current theme and restores the clock/workspace display
@@ -914,8 +1004,9 @@ The structured FvwmMFL `provider` query reports this helper's preference
 configuration readiness, supported operations and known persistence error.
 Optional provider watches announce readiness and changed preference generations
 without broadcasting values. Conditional settings queries return unchanged
-when the exact targeted preference generation matches. These interfaces do not
-manage session services or confirm theme application; see *FvwmMFL*(1) for
+when the exact targeted preference generation matches. The separate session
+resource and finite session operation targets expose owner observations and
+cooperative logout, without confirming theme application; see *FvwmMFL*(1) for
 framing, limits, stale identities and snapshot recovery.
 
 The structured operations resource can request owned Applications or Status

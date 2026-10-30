@@ -7,16 +7,139 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [portable session startup](#r1-portable-session-startup--2026-10-29)
-under SESSION-01 #72 follows merged PR303. Its canonical signature, reviewed tree
-and Cam author-DCO are verified; owned branch references are retired. Performance
-is 3/5 from merged PR299; no comparison is due.
+Current checkpoint: [session control and optional services](#r1-session-control-and-optional-services--2026-10-29)
+under #72/#77, with a finite #76 notification-client consumer. PR304 is merged as
+`94cf28be170bb66258de7c931feb420250e02128`; canonical signature/tree/author DCO
+verified and owned branches retired. Performance is 4/5 from PR299, advancing to
+5/5 only on the next runtime merge; comparison follows that merge.
+
+## R1 session control and optional services — 2026-10-29
+
+Owner: Cam; `codex/r1-session-services`; #72 / #77 / #76.
+Base merged PR304 `94cf28be170bb66258de7c931feb420250e02128`.
+Status: implemented; focused batch passes; prepared for PR review. The finite
+batch contract was frozen before implementation. User
+explicitly requested larger related session/services batches and one combined
+focused gate after implementation, repeating only affected failures.
+
+Deliver one coherent batch: fixed session/service status and control; explicit
+owned/borrowed optional session bus; truthful readiness/failure/retry; cooperative
+application logout with Cancel/deadline; native Session panel and shared typed
+settings; real outbound standard notifications with local fallback. Preserve
+no-bus login, direct/custom/XSMP paths, ordinary WM Restart and independent apps.
+No arbitrary service registry, automatic package install or forced application
+closure. Managed-window actions and final logout checks stay in the core command
+engine; the portable parent retains only its actual child/service ownership.
+
+Select only three additional named settings in the existing data-only registry:
+session_bus=off|reuse|start (off), session_notifications=off|external (off), and
+notification_dnd boolean (false). Preserve automatic reads of existing saved
+schemas and atomic commits; no second preference store. Bus policy applies at
+next login so existing application environments are not falsely updated. Native
+session editing is a compact scoped form rather than growing the already-large
+appearance form; existing settings command/configuration syntax remains usable.
+
+The parent exposes only an internal private, authenticated, generation-bound
+control channel because it precedes/survives module startup. Public actions use
+existing FvwmDesktop/MFL typed operations. Internal messages are finite lifecycle
+verbs, never shell/FVWM commands, argv, executable paths or window IDs. Cap eight
+connections/queued requests, one active mutation, 16 KiB frames/status and five-
+second client deadlines. Disconnect cancels a request, not the desktop. Session
+and operation identities prevent stale controls after WM/module restart.
+
+Fixed inventory: core (owned), acquisition adapter (owned transient), session
+bus (borrowed or explicitly owned), existing notification server (borrowed), and
+independent autostart applications (launch/exit observation only). Distinguish
+installed/enabled/starting/ready/unavailable/failed/stopping/stopped and owner
+identity; process creation is not service readiness. Explicit retries probe the
+same environment/address with bounded attempts; never silently create a new bus
+after loss and pretend already-running apps inherited its address.
+
+Bus off starts nothing and preserves environment. Reuse requires an actual
+handshake on an explicitly inherited usable session address. Start first reuses
+an inherited usable bus, or creates an owned installed dbus-daemon session bus
+in foreground with a bounded address pipe and confirmed handshake before WM/apps.
+No system-bus startup or borrowed-daemon termination. Failed optional bootstrap
+reports portable fallback. Stop/reap only owned service children after WM exit;
+existing direct/external session paths stay available.
+
+Before protocol adoption, compare the maintained godbus client candidate,
+current no-bus path and optional native libdbus alternative on one finite actual
+consumer; record source pins, complete cost and bounded-work limitations. Select
+only a justified optional adapter with bounded admission/decoding/calls. Default
+godbus resident-server method/signal dispatch is not accepted without proven
+pre-dispatch bounds. No custom D-Bus stack or unreviewed vendor patch. A native
+isolated worker may set explicit message/receive caps and serve fixed bounded
+bus/capability/Notify/Close calls. Default disabled builds keep no bus linkage.
+Full cross-target dependency/protocol adoption and #77 closure remain separate
+unless actually qualified; do not present compile-only results as execution.
+
+Cooperative logout captures eligible managed applications with allocation
+identities, requests ordinary Delete only through guarded core actions, and
+waits without killing clients. Cancel/deadline leaves WM/services running and
+sends no further requests; already-closed applications cannot be restored. New
+applications or stale targets prevent an unconditional final Quit. The final
+core commit rechecks that no eligible application remains. Use existing bounded
+query/action policy where possible, not a new core supervisor. External XSMP
+remains delegated with honest cancellation capability. Preserve direct Quit.
+
+The notification consumer queries an existing server, sends plain bounded text,
+tracks at most 32 own notification IDs per server owner and closes only those
+IDs. Honor DND; no remote labels/actions become commands. Native notices provide
+an honest optional-unavailable fallback. This does not advertise or close a new
+freedesktop notification server; passive popup/history/actions under #76 remain
+open until their dispatch/rendering contracts are implemented and qualified.
+#78 XEmbed/StatusNotifier and #225 secure locker/idle/suspend providers stay
+separately owned; no secure-lock or inhibitor claim follows from this batch.
+
+Verification: implement the complete coherent set before one focused Linux
+normal/race/policy/install/nested-X gate. Add an early bounded dependency/adapter
+comparison only because it selects the protocol dependency. Real owned/borrowed
+bus and provider, absent/failed/disabled modes, WM restart/reconnect, service loss,
+cooperative/refusing/new X clients, cancel/deadline/final commit and three native
+Session theme captures belong to that combined run. Check affected optional
+build/install paths and exact manuals; no six-OS matrix per helper. Add only
+concrete affected portability checks. Source-only Temper agents have explicit
+nonoverlapping ownership; lead owns dependency decisions, Git/GitHub, native/VM,
+tracker and integration. Separate integrated review remains required; backend
+model/effort metadata is unverified. Preserve failures compactly and retire
+superseded task-owned inputs/disks/evidence, retaining reusable builds/caches.
+
+Focused handoff: six Go packages compose 391 ordinary/race passes each; vet,
+normal/scoped sanitizer policies and the actual optional client sanitizer calls
+pass. Initial C/core/UI/manual build takes 4.10 seconds; directed repeats cover
+only affected owner/controller or unfinished native cases. Actual-X Slate/Dune
+and final enlarged Classic with legacy colors/borders pass, including real
+refusing/cooperative/new clients, Cancel, one 30.064-second deadline and guarded
+normal wrapper exit. Optional owned/borrowed buses, existing server send/close/DND,
+provider absence/replacement, public-consumer reconnect, borrowed-bus loss and
+owned teardown pass. Default-disabled no-linkage, tagged install and prior actual
+startup/Restart/direct/external cases are composed; BSD cross-builds are not BSD
+runtime evidence. No full six-target service qualification is claimed.
+
+The [adapter decision](decisions/SESSION-SERVICES-ADAPTER-2026-10-29.md) selects the
+isolated default-disabled native client after the finite actual-consumer comparison.
+The [source-bound report](verification/VERIFICATION-2026-10-29-SESSION-SERVICES.md)
+retains failures, review corrections, measured cost/size limits and three inspected
+screenshots. Runtime source is reviewed separately; final artifact review and
+signed candidate identity belong to the PR handoff. All 264 exported evidence
+files verified; retired 75,997,463 guest duplicate/scratch bytes and 2,552,255 host
+duplicate bytes. Useful prefix/builds/source/caches and performance reference
+remain; owned fixture processes are absent and the Linux lab stopped normally.
+
+#72/#77 remain In progress; #76 receives this finite outbound client without
+claiming its server/history/actions. Finish the remaining named provider/OS and
+release acceptance under existing owners; no issue closes merely for this slice.
+#225/#78 keep locker/power/tray scope; #257/#258 remain parked. Performance stays
+4/5 until this runtime checkpoint merges, when the comparison becomes due.
 
 ## R1 portable session startup — 2026-10-29
 
 Owner: Cam; `codex/r1-session-startup`; SESSION-01 #72.
 Base merged PR303 `886e0d17cd69725e484c8e6a7cee0a28c612a01e`.
-Status: ready for PR review; focused checks and separate integrated review pass.
+Status: merged in PR304 as `94cf28be170bb66258de7c931feb420250e02128`;
+canonical signature, reviewed tree `3a85cfd5e21da801a7d0c91aadb9b250f61ea701`
+and author DCO verified. Owned feature branch references retired.
 The finite contract below was frozen before implementation.
 Early FreeBSD ARM64 production-helper compilation passed, then the first actual
 pipe case exposed the platform's duplex O_RDWR descriptors. The directed helper
@@ -4688,8 +4811,8 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
-| SESSION-01 | P2 / queued, default product scope approved | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| SESSION-02 | P2 / queued, optional contribution scope approved | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-01 | P2 / In progress; startup merged, control/services candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-02 | P2 / In progress; optional client/lifecycle candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |

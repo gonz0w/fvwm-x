@@ -1231,8 +1231,107 @@ static void test_startup_requests(void)
 		&request));
 }
 
+static void test_session_requests(void)
+{
+	struct mfl_request request;
+	const char *token =
+		"000000000000000000000000000000000000000000000001";
+	const char *provider = "00000000000000000000000000000001";
+	char text[512], command[512];
+	const char *invalid[] = {
+		"\"method\":\"query\",\"offset\":1",
+		"\"method\":\"query\",\"limit\":129",
+		"\"method\":\"query\",\"limit\":0",
+		"\"method\":\"query\",\"limit\":1.5",
+		"\"method\":\"query\",\"limit\":\"128\"",
+		"\"method\":\"query\",\"scope\":\"all\"",
+		"\"method\":\"action\",\"operation\":\"delete\"",
+		"\"method\":\"action\",\"operation\":\"quit-if-empty\"",
+		"\"method\":\"action\",\"operation\":\"Destroy\"",
+		"\"method\":\"action\",\"operation\":\"delegate-xsmp\","
+		"\"values\":{}"
+	};
+	const char *operations[] = {"session-status", "session-reprobe",
+		"notification-test", "notification-close", "logout"};
+
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"s\","
+		"\"method\":\"query\","
+		"\"resource\":\"session-clients\"}", &request));
+	assert(request.kind == MFL_REQUEST_SESSION_CLIENTS &&
+		request.limit == 128);
+	assert(mfl_request_is_core_reply(request.kind));
+	assert(!mfl_request_is_action(request.kind));
+	assert(mfl_request_snapshot_command(command, sizeof(command), &request,
+		1, "abc"));
+	assert(strstr(command, " session-clients 0 128 -"));
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+		"\"method\":\"query\",\"resource\":\"session-clients\","
+		"\"offset\":128,\"generation\":\"%s\"}",
+		token);
+	assert(mfl_request_parse(text, &request));
+	assert(request.offset == 128 && request.limit == 128);
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+		"\"method\":\"action\",\"resource\":\"session-clients\","
+		"\"operation\":\"delete\",\"target\":\"%s\"}",
+		token);
+	assert(mfl_request_parse(text, &request));
+	assert(request.kind == MFL_REQUEST_SESSION_DELETE);
+	assert(mfl_request_is_action(request.kind));
+	assert(mfl_request_is_core_reply(request.kind));
+	assert(mfl_request_snapshot_command(command, sizeof(command), &request,
+		2, "abc"));
+	assert(strncmp(command, "Send_Session abc 0000000000000002 delete ",
+		strlen("Send_Session abc 0000000000000002 delete ")) == 0);
+	assert(strstr(command, token));
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+		"\"method\":\"action\",\"resource\":\"session-clients\","
+		"\"operation\":\"quit-if-empty\","
+		"\"generation\":\"%s\"}", token);
+	assert(mfl_request_parse(text, &request));
+	assert(request.kind == MFL_REQUEST_SESSION_QUIT);
+	assert(mfl_request_snapshot_command(command, sizeof(command), &request,
+		3, "abc"));
+	assert(strstr(command, " quit-if-empty - "));
+	assert(mfl_request_parse("{\"version\":1,\"id\":\"s\","
+		"\"method\":\"action\",\"resource\":\"session-clients\","
+		"\"operation\":\"delegate-xsmp\"}",
+		&request));
+	assert(request.kind == MFL_REQUEST_SESSION_XSMP);
+	assert(mfl_request_snapshot_command(command, sizeof(command), &request,
+		4, "abc"));
+	assert(strstr(command, " delegate-xsmp - -"));
+	for (size_t i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+			"\"resource\":\"session-clients\",%s}", invalid[i]);
+		assert(!mfl_request_parse(text, &request));
+	}
+	snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+		"\"method\":\"query\","
+		"\"resource\":\"session\",\"provider\":\"%s\"}", provider);
+	assert(mfl_request_parse(text, &request));
+	assert(request.kind == MFL_REQUEST_SESSION_QUERY);
+	assert(mfl_request_is_settings(request.kind));
+	assert(!mfl_request_is_action(request.kind));
+	assert(strstr(request.settings_payload, "\"resource\":\"session\""));
+	assert(!mfl_request_parse("{\"version\":1,\"id\":\"s\","
+		"\"method\":\"query\","
+		"\"resource\":\"session\"}", &request));
+	for (size_t i = 0; i < sizeof(operations) / sizeof(operations[0]); i++)
+	{
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+			"\"method\":\"action\",\"resource\":\"operations\","
+			"\"operation\":\"start\",\"target\":\"%s\","
+			"\"provider\":\"%s\",\"generation\":\"%s\"}",
+			operations[i], provider, provider);
+		assert(mfl_request_parse(text, &request));
+		assert(request.kind == MFL_REQUEST_OPERATION_START);
+	}
+}
+
 int main(void)
 {
+	test_session_requests();
 	test_startup_requests();
 	test_files_actions();
 	test_directory_role_requests();

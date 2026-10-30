@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Session control and optional services](VERIFICATION-2026-10-29-SESSION-SERVICES.md): cooperative logout, native Session/settings, optional owned/borrowed bus and outbound notifications; focused Linux/race/sanitizer, three themes and explicit remaining release acceptance.
+
 - [Portable session startup](VERIFICATION-2026-10-29-SESSION-STARTUP.md): default login wrapper, startup acknowledgment, controlled autostart and restart ownership; focused Linux install/X/race and real FreeBSD descriptor evidence.
 
 - [Palette and appearance preview](VERIFICATION-2026-10-29-PALETTE-APPEARANCE-PREVIEW.md): shared candidate ownership, selected-key Save/recovery, bounded unsaved overlays and three inspected themes; focused native Linux/race/sanitizer evidence.

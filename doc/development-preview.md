@@ -38,6 +38,54 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Session and services
+
+Open **Session → Session and services…** to inspect the owned core, autostart scan,
+optional bus, existing notification server and independent application outcomes.
+Refresh (F5), Settings (F2), Test notification (F6) and Log out (F3) use the shared
+controller. During cooperative logout, Cancel (F4) leaves the desktop running;
+applications already closed cannot be restored. Unsupported/refusing or newly
+opened applications prevent an unconditional final Quit.
+
+The compact editor saves `session_bus=off|reuse|start`,
+`session_notifications=off|external` and `notification_dnd`. Bus policy applies at
+next login; notifications and DND use a live owner handshake. The defaults keep
+optional integration off. The isolated native bus client requires an explicit
+`-Dsession-dbus=enabled` build and an installed existing provider; no daemon or
+notification server package is installed by the build.
+
+These commands also work in an existing FVWM configuration:
+
+```fvwm
+SendToModule FvwmDesktop session-panel
+SendToModule FvwmDesktop edit-settings group:session
+```
+
+Slate dark: the native Session inventory and controls.
+
+![Slate Session panel](screenshots/session-services-slate-dark-panel.png)
+
+Dune light: the three-field editor, with separate saved/live policy semantics.
+
+![Dune session settings](screenshots/session-services-dune-light-settings.png)
+
+Classic customization: eighteen-point monospace text, custom borders and a
+separate Form using explicit legacy colors while the Session panel keeps its
+semantic colorsets. The observed application is waiting for cooperative closure;
+Cancel remains available.
+
+![Classic cooperative logout and legacy module colors](screenshots/session-services-classic-large-waiting.png)
+
+The [manifest and raw configuration snapshots](screenshots/session-services-manifest.json)
+bind unmodified 1440×1000 captures to their executed inputs. Snapshots contain
+private fixture paths; the Classic overlay records the actual legacy color
+commands. The [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-29-SESSION-SERVICES.md)
+records real-client, bus-loss/replacement, reconnect and timeout outcomes.
+Whole-guest panel counters are not a WM benchmark. Full cross-platform service
+qualification, native notification popups/history, tray and locker/power adapters
+remain in development. See the [session](fvwm-session.adoc) and
+[desktop](FvwmDesktop.adoc) manuals for scope and limits.
+
 ## Preview palette or light/dark appearance
 
 In a Desktop settings editor, choose the candidate, then press **Palette (F6)**

@@ -453,6 +453,10 @@ func (d *Controller) pollJobs() {
 				continue
 			}
 			delete(d.jobs, result.key)
+			if result.key == "session-services" {
+				d.finishSessionRequest(result)
+				continue
+			}
 			if result.key == "inspection" {
 				d.finishInspection(result)
 				continue
@@ -501,7 +505,8 @@ func (d *Controller) pollJobs() {
 					d.operationChanged(record, "completed")
 				}
 			} else if err != nil {
-				d.notice(err.Error())
+				fmt.Fprintln(os.Stderr, "FvwmDesktop: "+err.Error())
+				d.failureNotice()
 			}
 		default:
 			for key, j := range d.jobs {

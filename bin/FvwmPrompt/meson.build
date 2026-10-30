@@ -49,6 +49,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
         'startuplaunch.test', 'sessionowner.test', 'fvwmsession.test',
+        'sessionservice.test',
     ],
     input: fvwmprompt_files,
     command: [
@@ -343,6 +344,12 @@ if not session_wm_linker.contains('\'')
 elif not session_wm_linker.contains('"')
     session_wm_linker = '"' + session_wm_linker + '"'
 endif
+session_bus_linker = 'main.busHelperPath=' + (fvwm_moduledir / 'fvwm-session-bus')
+if not session_bus_linker.contains('\'')
+    session_bus_linker = '\'' + session_bus_linker + '\''
+elif not session_bus_linker.contains('"')
+    session_bus_linker = '"' + session_bus_linker + '"'
+endif
 fvwm_session = custom_target(
     'fvwm-session',
     output: 'fvwm-session',
@@ -351,7 +358,7 @@ fvwm_session = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X ' + session_wm_linker,
+        '-ldflags', '-X ' + session_wm_linker + ' -X ' + session_bus_linker,
         '-o', meson.current_build_dir() / 'fvwm-session',
         './cmd/fvwmsession',
     ],

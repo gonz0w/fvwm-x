@@ -86,6 +86,50 @@ fixed checksum-verified SDKs; configure/build never performs that fetch.
 * libxpm-dev
 * libxrender-dev
 
+### Optional session bus client
+
+Session-bus integration is disabled by default. Every profile installs the
+private `fvwm-session-bus` helper under the configured module directory; disabled
+profiles use a refusal stub and do not link libdbus into the helper, core or Go
+owner. No bus, notification server or desktop package is required for login.
+
+To require the optional isolated native client, install the target's development
+package exposing pkg-config `dbus-1 >= 1.14` (for example `libdbus-1-dev`), then
+configure explicitly:
+
+```sh
+./build -b builddir-session -Dsession-dbus=enabled
+```
+
+Use distributor-supported patched packages; the API minimum is not a security
+baseline. Configure/build never installs a daemon or fetches dependencies. Only
+the transient client helper links libdbus and the project's existing JSON code.
+The default `-Dsession-dbus=disabled` profile remains independent of libdbus.
+
+Compiled capability and service readiness differ. The enabled helper reports
+compiled support even without an address; an actual handshake is needed for bus
+readiness. It accepts one explicit Unix session-bus address, never bus autolaunch
+or a system-bus startup. The owner calls only fixed probe, Notify and Close
+operations, with a two-second parent deadline and 16 KiB output cap. Native
+messages are limited to 16 KiB. The 32 KiB libdbus receive threshold provides
+backpressure and can overshoot; it is not a strict total-memory cap. Per-message
+FD admission is zero; aggregate admission is one so libdbus can still receive
+messages carrying no FDs. The parent watchdog covers potentially blocking
+library authentication/open calls; kernel-delayed termination is still possible.
+
+The shared `session_bus=off|reuse|start` setting defaults to off and applies at
+next owned login. Explicit start first reuses an authenticated inherited bus or
+starts an installed foreground `dbus-daemon` found through absolute PATH roots.
+The wrapper confirms its address before starting the WM/apps and stops only an
+actually owned child after WM exit. Notification integration defaults off, uses
+an existing server and honors DND. See [fvwm-session](doc/fvwm-session.adoc) and
+[FvwmDesktop](doc/FvwmDesktop.adoc) for controls, ownership and logout limits.
+
+The optional adapter has a finite consumer scope; full six-target dependency,
+service-protocol and release qualification remain tracked separately. This does
+not provide a notification server, tray, locker, session restoration or complete
+D-Bus desktop integration.
+
 The optional `fvwm-file-browser` is a development consumer of FvwmForm/FvwmMFL;
 it does not replace the default desktop Files menu. See the
 [development screenshots and configuration examples](doc/development-preview.md)

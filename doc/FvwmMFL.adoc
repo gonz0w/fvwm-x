@@ -110,6 +110,8 @@ receiving its terminal reply; a new connection has its own client-ID scope.
   with the settings owner.
 * `pending` returns this connection's outstanding waits, as described below.
 * `settings` queries the running FvwmDesktop settings owner, as described below.
+* `session` queries the targeted desktop's finite session/service observation;
+  `session-clients` queries the core's cooperative-logout scope, as described below.
 * `files` discovers or queries running browser providers, as described below.
 * `desktop` samples authoritative values through the existing core command
   engine and module-directed `Send_Reply`. It returns `scope:
@@ -878,7 +880,8 @@ request {"version":1,"id":"schedule-1","method":"query","resource":"settings","s
 ....
 
 Optional `scope` defaults to `all`. It accepts one registered key or
-`group:appearance`, `group:wallpaper`, `group:schedule` and `group:effects`, matching FvwmDesktop's
+`group:appearance`, `group:wallpaper`, `group:schedule`, `group:effects` and
+`group:session`, matching FvwmDesktop's
 existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 `schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
 and a `settings`
@@ -896,7 +899,13 @@ projection. A resolved appearance of `auto` remains schedule policy rather than
 the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
 explains why a saved choice is masked by keep_wallpaper. These fields are stable
 for the preference generation; no clock revision or new resource is introduced.
-The IPC schema remains version 1, independently of the version 4 preference file.
+The IPC schema remains version 1, independently of the version 5 preference file.
+The session group contains `session_bus` (off/reuse/start, default off),
+`session_notifications` (off/external, default off) and `notification_dnd`
+(boolean, default false). Bus policy applies at next owned login. Notifications
+and DND require a successful live owner handshake after the atomic preference
+commit; a saved value alone does not attest live application. Older supported
+file schemas gain these defaults on read without rewriting the file.
 
 Typed actions use `method: "action"`, `resource: "settings"`, `operation` and
 the exact provider and generation returned by the preceding query:
@@ -994,7 +1003,7 @@ Omitting `provider` discovers an instance; if several are running, the first
 reply wins. This is not an inventory of all instances. Use the returned exact
 32-character lowercase hexadecimal provider identity for subsequent requests.
 The result includes `owner: "FvwmDesktop"`, `schema_version: 1`, `provider`,
-settings `generation`, `resources: ["settings"]`, supported `operations`,
+settings `generation`, `resources: ["settings","operations","session"]`, supported `operations`,
 `notifications: "invalidation-only"` and `preview: false`.
 
 `lifecycle_scope: "desktop-preferences"` limits `lifecycle` to initial module
@@ -1003,9 +1012,11 @@ configuration: `starting` with `availability: "configuring"`, or `ready` with
 starting before END_CONFIG_INFO. Availability does not promise a successful
 future file write. `persistence_error` reports a known settings-load problem;
 `failure_reason` is otherwise null. Actions still recheck their generation,
-values and persistence conditions. `application_completion: "unknown"` and
-`service_lifecycle: false` are explicit: this does not manage session services,
-confirm painted state, infer process death or certify a power/locker backend.
+values and persistence conditions. `application_completion: "unknown"` does not
+confirm painted state. `service_lifecycle` is true only when the desktop retains
+a valid observation from the portable session owner; use the separate session
+resource for that finite inventory. This is no generic service registry,
+process-death inference or power/locker certification.
 An absent/stalled provider or obsolete target reaches `deadline_exceeded`.
 
 To avoid fetching unchanged preference metadata, a settings query may include
@@ -1066,11 +1077,113 @@ resnapshot after reconnecting. There is no unbounded notification backlog or
 authority to roll back a submitted change. Existing shared-X/local-peer trust
 limits still apply; tokens and notices are not authentication.
 
+=== Session observations and cooperative logout
+
+Discover a desktop provider first, then query its separate session projection:
+
+....
+request {"version":1,"id":"session-1","method":"query","resource":"session","provider":"0123456789abcdef0123456789abcdef"}
+....
+
+The result has `schema_version: 1`, `scope: "session-services"`, saved and
+requested three-key configurations, `bus_policy: "next-login"` and the desktop
+provider/preference generation. A valid parent observation adds
+`state: "observed"`, `availability: "available"`, `session_generation`,
+`active_bus_policy`, `active` and five fixed `items`: core, scan, bus,
+notifications and applications. Each item reports state, ownership, bounded
+detail and relevant attempt/launch/exit counters. Independent application
+observations do not establish readiness. The notifications item's opaque
+operation identity changes when the actual bus/server owner changes; stale
+notification IDs are retired. Details in this public projection are shortened
+to preserve the existing reply cap.
+
+Without a known portable owner, the result reports unavailable with
+`service_lifecycle: false`; direct/custom and external XSMP paths remain usable.
+The `notification_server` capability is false: this is an outbound client, not
+a server. Optional logout metadata reports state, cancellation availability,
+remaining deadline and `closed_applications_restorable: false`.
+This aggregate is a retained observation. An optional preference generation
+does not make its independently changing service/logout state unchanged.
+
+Public controls use the existing operations resource and provider/generation
+admission, not the parent's private protocol:
+
+....
+request {"version":1,"id":"observe-owner","method":"action","resource":"operations","operation":"start","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"session-status"}
+request {"version":1,"id":"probe-owner","method":"action","resource":"operations","operation":"start","provider":"0123456789abcdef0123456789abcdef","generation":"0123456789abcdef0123456789abcdef","target":"session-reprobe"}
+....
+
+The other fixed targets are `notification-test`, `notification-close` and
+`logout`. Notification text is fixed by the desktop action; this is not an
+arbitrary payload, daemon or method-execution API. Close applies only to the
+desktop's last remembered owned notification. Reprobe authenticates the existing
+address and never replaces a bus after apps start. A completed operation reports
+its observed outcome, such as ready, sent, suppressed or closed; it does not
+attest that a user saw a popup. Unavailable adapters/providers return an explicit
+failure. Bus policy changes remain next-login preferences.
+
+These operations share the bounded operation records and retention described
+below. Cancelling a reply wait does not cancel domain work. Session status,
+reprobe and notification operations return `cancellation_unavailable` for a
+domain cancellation. A logout operation can be cancelled with its latest
+operation-record generation until final Quit/XSMP handoff. Cancel/deadline
+stops further cooperative close requests; it cannot retract an already sent
+Delete or restore closed applications. The controller's overall deadline is
+thirty seconds. A final request means requested, not confirmed WM exit.
+
+The core-owned `session-clients` resource is separately available without a
+desktop service owner:
+
+....
+request {"version":1,"id":"logout-scope","method":"query","resource":"session-clients","offset":0,"limit":32}
+....
+
+It returns observed scope/coverage, a 48-character lowercase hexadecimal
+membership `generation`, `clients`, offset/next_offset/total, truncated and xsmp.
+Each client has a 48-character allocation `target`, bounded title, `wm_delete`
+and `can_delete`. At most 512 eligible clients are admitted, in pages of up to
+128; use smaller pages if the public reply cap requires it. Continuation offsets
+require the observed membership generation. A stale generation, oversized
+scope or incomplete snapshot must not be used for logout decisions.
+
+The scope covers eligible live managed normal/dialog windows. It excludes
+tear-offs, other EWMH window types such as dock/desktop, and class/instance pairs
+matching active modules. Those class strings are descriptive client metadata,
+not authenticated module identity; a client can choose matching strings.
+There is no claim that every application, unmanaged client or unsaved document
+is represented.
+
+Fixed guarded core actions use the shared command engine:
+
+....
+request {"version":1,"id":"close-client","method":"action","resource":"session-clients","operation":"delete","target":"0123456789abcdef0123456789abcdef0123456789abcdef"}
+request {"version":1,"id":"final-quit","method":"action","resource":"session-clients","operation":"quit-if-empty","generation":"0123456789abcdef0123456789abcdef0123456789abcdef"}
+request {"version":1,"id":"external-logout","method":"action","resource":"session-clients","operation":"delegate-xsmp"}
+....
+
+Delete rechecks the allocation target and permitted WM_DELETE support; it never
+forces a client closed. Quit-if-empty rechecks current membership and an empty
+eligible set immediately before the ordinary Quit engine. New eligible clients
+prevent it. Connected XSMP refuses these local close/quit actions; explicit
+delegation uses the existing external manager and reports cancellation unsupported.
+Results distinguish requested, stale and refused, with a bounded reason where
+applicable. Ordinary direct FVWM Quit is unchanged. Read-only connections may
+query but cannot send these actions.
+
+The parent alone owns its internal Unix endpoint: eight connections/queued
+requests, one mutation, 16 KiB frames/status, five-second deadlines, private
+owned inode and random inherited capability. Its session generation and current
+operation token protect mutation admission. Same-user processes remain trusted;
+there is no new X11 authentication boundary. The endpoint accepts no shell/FVWM
+commands, argv, executable paths or window IDs. MFL remains the public typed
+transport and the core remains authoritative for managed-window effects.
+
 === Owned desktop background operations
 
 FvwmDesktop can own correlated refresh operations for its existing application
-catalog and status collector. Provider queries advertise `operation_targets:
-["applications", "status"]`, operation limit 16 and terminal retention 300000 ms.
+catalog and status collector. Their targets are `applications` and `status`;
+the additional session targets are described above. Provider queries advertise
+the full target list, operation limit 16 and terminal retention 300000 ms.
 These scans use the existing two-worker pool and four-job admission limit.
 Other legacy desktop jobs share that limit; duplicate target work returns
 `operation_busy` without admitting a new attempt. No file mutation, arbitrary

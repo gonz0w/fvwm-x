@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "checkpoint": "R1 session control and optional services",
+  "base": "94cf28be170bb66258de7c931feb420250e02128",
+  "files": [
+    {
+      "profile": "slate-dark",
+      "file": "session-services-slate-dark-panel.png",
+      "sha256": "e7b4847b0e3f98abf27291aa62c71d73ab21c892043b0a4655ad83978fb85ff5",
+      "bytes": 67133,
+      "configuration_file": "session-services-slate-dark.fvwm",
+      "configuration_sha256": "3380bfbbdb0733bbac8bb87ca0e8661ad9599893d2d0b7917b0981bddd0c90c7",
+      "source": "native-x04",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true
+    },
+    {
+      "profile": "dune-light",
+      "file": "session-services-dune-light-settings.png",
+      "sha256": "201b02c929901d97da7e17f7d544651932c0ce6d20361631768d4c5449273bbb",
+      "bytes": 62167,
+      "configuration_file": "session-services-dune-light.fvwm",
+      "configuration_sha256": "3bc97bdd0676637deb34d68a24ee7e8f1ccb56d657c68682d7a459a70b216038",
+      "source": "native-x04",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true
+    },
+    {
+      "profile": "classic-large",
+      "file": "session-services-classic-large-waiting.png",
+      "sha256": "cc92996358566c2ddd81d3cded9a5adb3862f1e2c6f178fdff2c22da337b6f99",
+      "bytes": 144477,
+      "configuration_file": "session-services-classic-large.fvwm",
+      "configuration_sha256": "ac389e1066ce7e4a09b4b92ac2f1dc91ff37719c4b563cef469fff5e4122d1df",
+      "source": "native-x07",
+      "geometry": [
+        1440,
+        1000
+      ],
+      "inspected": true,
+      "customization": {
+        "file": "session-services-classic-customization.fvwm",
+        "sha256": "05f5901dc5396e35e90e70dba3bcf709cba4c7073a4dc7f7cf5f7e8a9693f2c1"
+      }
+    }
+  ],
+  "limits": [
+    "Original nested-X captures; no image edits",
+    "Palette selected through shared typed settings; Classic loads saved normal FVWM overlay",
+    "Configuration snapshots contain private fixture paths and are evidence, not install-ready themes",
+    "Whole-guest panel counters are not WM benchmarks"
+  ]
+}

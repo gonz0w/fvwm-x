@@ -1,0 +1,3050 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-29",
+  "owner": "Cam",
+  "issues": [
+    72,
+    77,
+    76
+  ],
+  "branch": "codex/r1-session-services",
+  "base": "94cf28be170bb66258de7c931feb420250e02128",
+  "status": "focused batch passes; broader issue/release acceptance remains open",
+  "source_bindings": {
+    "source01": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "closure": "fd5bab9c2d3a2601c646490c49ad4ecea657ce8be8cb6a91d7234301636c8cf4",
+      "archive_sha256": "67c0a866fea048d032e0a242e2b98fe96aeac938b3e8373a6fe9df075aa442cb",
+      "archive_bytes": 24590292
+    },
+    "source02": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "fd5bab9c2d3a2601c646490c49ad4ecea657ce8be8cb6a91d7234301636c8cf4",
+      "archive_files": [
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/service_control.go",
+        "bin/FvwmPrompt/internal/sessionowner/services_test.go",
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "763d16768532bd55b5bec59ef7602ca6b447c79fff83369b8ffa7c943735d6a1",
+      "archive_sha256": "10a5a3df8ee3bd172e12b6eb41c410c1c5dfb54d5f04df132e6a2bf752b74bc8",
+      "archive_bytes": 28767
+    },
+    "source03": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "763d16768532bd55b5bec59ef7602ca6b447c79fff83369b8ffa7c943735d6a1",
+      "archive_files": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "2235f5dbe6a1862e861e9ba618a8b37f1a453c3cdd6fc5cd1c5b8aeb7b26be50",
+      "archive_sha256": "e834881f179e63d4b57c0032e28f39224617d40f23ce4b8cbca986adaea0d473",
+      "archive_bytes": 10413
+    },
+    "source04": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "2235f5dbe6a1862e861e9ba618a8b37f1a453c3cdd6fc5cd1c5b8aeb7b26be50",
+      "archive_files": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "41e6b8e675ec6aa94326ea3a614d8b252d0d41efec0cb3df51b485823f4eb37b",
+      "archive_sha256": "0339612d54a3c224adbf9483f60cc94e618e1b5567b32d9a6045610166e031be",
+      "archive_bytes": 10652
+    },
+    "source05": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "41e6b8e675ec6aa94326ea3a614d8b252d0d41efec0cb3df51b485823f4eb37b",
+      "archive_files": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "04ecabe45151a8c595b9d03e72992e22ee1dd5fe8ddd201fb0d679de8a0f4d7b",
+      "archive_sha256": "8317f3b475fe7d884bbf63da118c980e88cb67ab681f9ff6d81b4b23d2a948bb",
+      "archive_bytes": 11357
+    },
+    "source06": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "04ecabe45151a8c595b9d03e72992e22ee1dd5fe8ddd201fb0d679de8a0f4d7b",
+      "archive_files": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "ab8659e83423cdcc01317ccdffa7f4e35323d5df80e6b94c0f9b21fed351b9ad",
+      "archive_sha256": "c4bf9bd280edf938002b8ec055abaf8b917096a07b4abd630e826475ce680670",
+      "archive_bytes": 11360
+    },
+    "source07": {
+      "base": "94cf28be170bb66258de7c931feb420250e02128",
+      "tree": null,
+      "predecessor": "ab8659e83423cdcc01317ccdffa7f4e35323d5df80e6b94c0f9b21fed351b9ad",
+      "archive_files": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "closure": "86aaf460cf51a9b6d3b308171016a10b23d730d2703fffa9f4b0f2e4ef8ccc00",
+      "archive_sha256": "d835e9192206ca38cb5dfcef3b2d57ff52d224ec0f652b740a1d00c671112684",
+      "archive_bytes": 11806
+    }
+  },
+  "runtime_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmsession/main.go": {
+      "sha256": "c885b4dfa7ebd232c4afc697f6f9deef044480bfcbc3d217120407a0d34f4bdd",
+      "bytes": 3638,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": {
+      "sha256": "3a69da28f58b60c339267089efdd58677ba22cd560ae44fb747dfa58173fd34f",
+      "bytes": 12883,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": {
+      "sha256": "53b2c48f471589811533c9e5b181454a65ae5de48ddd0e16f5d53b9e93ff383e",
+      "bytes": 12185,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": {
+      "sha256": "2914968c0d32a286f713aa5d7b578c0f7e0f0feac11855c5bdfbcd9bfc38eea2",
+      "bytes": 13790,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/module.go": {
+      "sha256": "65897181b37b2bb0002462f3e22f2e03d3f7c9de57f3311b3370ddcc3cc6b7d0",
+      "bytes": 6665,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": {
+      "sha256": "e05ae691597c4d3e26cc752c43566dfce20b7f2cba1debcf1fe89344a88b025b",
+      "bytes": 18231,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/services.go": {
+      "sha256": "c9e3d6abab120e34b546afac98c1c58a1eefd36ca3975a6b30d8e283f360ea18",
+      "bytes": 16491,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": {
+      "sha256": "670dd6cc3215dc519ed9b4ec0a3183e05335f41acf81ed8c86137cbce5f679f0",
+      "bytes": 13869,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": {
+      "sha256": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+      "bytes": 8256,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": {
+      "sha256": "c592c180b2f2c6d1626534d94edb3a0332feb858ba286109f474de27b5c9103c",
+      "bytes": 20301,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": {
+      "sha256": "386dee8cd856be106d719b7c4586ce9c81df40781e2cfbeaadd464e283588a53",
+      "bytes": 13950,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": {
+      "sha256": "07719985d91811662f6e2a9d05fc6423a7e9eabcce19db16bd6520a1d3ae046f",
+      "bytes": 13089,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": {
+      "sha256": "d1ce9e7c9f9a8b508d0894bf00502e53c16ecd192aea238478f16b8e9ced5000",
+      "bytes": 15147,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": {
+      "sha256": "0df94d4e3576c9a638b950f1e76bfdc280285087531d5921d3e9bb7c79ecd31d",
+      "bytes": 17668,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": {
+      "sha256": "cef668698651cffe43ea72756a99bab745c1aee31038761dc6f55f60ae8cb18f",
+      "bytes": 3687,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/policy.go": {
+      "sha256": "cd68e728822c0e9cc83bc33d499d4f9c6d8195b4b1e4f39974a3958e535e2ebd",
+      "bytes": 11969,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": {
+      "sha256": "3b080d8185c2e21bfd0d707752967f516ad52bdb2de10c980f06d15c77582659",
+      "bytes": 9210,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/request.go": {
+      "sha256": "1f07f6f759dfb4eeba59715fa43c7aef0cef544766c782607d9443b56bc0f754",
+      "bytes": 6038,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/session_test.go": {
+      "sha256": "a98c7e612a1543abfc1832f03053f8f6fd02b3ccb2491256344bde70efcd8be6",
+      "bytes": 3223,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": {
+      "sha256": "ab32c58c65a749544b7e481e42413ddeb72c59075e2bc0fd9f21aba18b642893",
+      "bytes": 16607,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/control.go": {
+      "sha256": "2f70fcde4c9387f7b90ae07f4b3c559de1dfdc6332a4291b62234c3feb7601a0",
+      "bytes": 6023,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/control_test.go": {
+      "sha256": "7a0d6c2b9316777ef3f479d1288d3b2828985de4cfb9fd2a04d0193087efaf68",
+      "bytes": 4516,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/service_control.go": {
+      "sha256": "9ea144c60430f49f9ee14049c20ca1ade36c8ea6a5a7d4fa9fe7e275841b9fe4",
+      "bytes": 4565,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/services.go": {
+      "sha256": "a79a7f512f26dd9daad7810f50b0db5f7157426a995a4384d94f84aa465d8497",
+      "bytes": 16600,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/services_test.go": {
+      "sha256": "b4b777fa9b1faec23604a44646663ccd045a3c8eb071b5ffbd0f50fe79655183",
+      "bytes": 18047,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/session.go": {
+      "sha256": "f69886a7b7089b2b8974b72aeb39a6a32ecb9a9b3666449fd6812befe7cb65d3",
+      "bytes": 13944,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionowner/session_test.go": {
+      "sha256": "0ea5c96dd0c6fce00ca149beb64dc6b06f39e0ab114191dd305a8e43891f4445",
+      "bytes": 12736,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionservice/types.go": {
+      "sha256": "3b7b2e386fe7b24bfa00f9256bf43495be5bcba6b222b7cf5d7723466f6f64a5",
+      "bytes": 5322,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionservice/wire.go": {
+      "sha256": "87e783d5a5c6b3635486354025f860f94369a4ccaeba6908db735007e545e28b",
+      "bytes": 4582,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/sessionservice/wire_test.go": {
+      "sha256": "a25ef3ba1fc4180d54b4127bc322093a4ac632d1e123ae7b7198f8259e91e6c4",
+      "bytes": 2618,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/meson.build": {
+      "sha256": "0b92b12603e7e53414af499c0cd896447eb8f6a864201258533fd36e95eb64d8",
+      "bytes": 14103,
+      "mode": 420
+    },
+    "bin/meson.build": {
+      "sha256": "738e466e801873de044e71a138e2ab9460bde13574607cedad037fbbc053877e",
+      "bytes": 3631,
+      "mode": 420
+    },
+    "bin/session_bus.c": {
+      "sha256": "4838d3f35f3809217476dfa0fefa24910d810c696aca1411b9a73a8cb69c6fba",
+      "bytes": 12833,
+      "mode": 420
+    },
+    "bin/session_bus_disabled.c": {
+      "sha256": "a8bffa05f9366c995004ed4180d72af9df8169758d10e039cf3b8320e1bb8730",
+      "bytes": 500,
+      "mode": 420
+    },
+    "fvwm/commands.h": {
+      "sha256": "becc26aeb5dd8ee8bf8c26df2393878976aa92a9a065b2d269532af82bc871dc",
+      "bytes": 8895,
+      "mode": 420
+    },
+    "fvwm/functable.c": {
+      "sha256": "e4df25844bf8d74a49431ae3f77d311db3785c991d2b0c6d94693e0b7abc7d41",
+      "bytes": 23513,
+      "mode": 420
+    },
+    "fvwm/meson.build": {
+      "sha256": "80031889f759657ae19b7b7c65c5f3acad4db43468114ad46c3b25647bcd1daf",
+      "bytes": 2271,
+      "mode": 420
+    },
+    "fvwm/module_interface.c": {
+      "sha256": "a2a2ce33a24d75dbe1c85bb72303d103d395b5f3b59af190f743801890301688",
+      "bytes": 38930,
+      "mode": 420
+    },
+    "fvwm/query_json.c": {
+      "sha256": "50c801a90fc034c814ca83971f42220a2ee4503843f5ef9811ef44693fc6048b",
+      "bytes": 26572,
+      "mode": 420
+    },
+    "fvwm/session.c": {
+      "sha256": "e395597b17d65802953f4bec30cc7259e690b302146b1dd2939332f1ccf74d2b",
+      "bytes": 42419,
+      "mode": 420
+    },
+    "fvwm/session.h": {
+      "sha256": "b392c6495c24b654413efb2373ef49140e2baf3a7e0970f05649ade0bb715ee7",
+      "bytes": 2060,
+      "mode": 420
+    },
+    "fvwm/session_clients.c": {
+      "sha256": "e8890f661e2bec74e4d4830257f478ae1a01832e6b5bc6bc9fb55154ccf52beb",
+      "bytes": 8299,
+      "mode": 420
+    },
+    "fvwm/session_clients.h": {
+      "sha256": "6d0e4ab6828cac9fe10d99c749f2e2e1a5d5ee1901a21e5c406b47ba7808ae63",
+      "bytes": 556,
+      "mode": 420
+    },
+    "fvwm/session_clients_policy.c": {
+      "sha256": "4c9268adad704850794be70d3c5381a67e50ae041cd4595d7491e295b08adaaf",
+      "bytes": 3107,
+      "mode": 420
+    },
+    "fvwm/session_clients_policy.h": {
+      "sha256": "068878ef94388445e6af9094fa817a12bec5c49e27e1bfd8dc190d557a303b4b",
+      "bytes": 1149,
+      "mode": 420
+    },
+    "meson.options": {
+      "sha256": "0fec96916c22e652f5edc5b138ecb84ec221934e097de8a53be590375a7ff279",
+      "bytes": 3798,
+      "mode": 420
+    },
+    "modules/FvwmMFL/FvwmMFL.c": {
+      "sha256": "7b2f76abf0418bdc96225f3ea57d6430a39214bb4b900fb658b7f6665d76e7b4",
+      "bytes": 54509,
+      "mode": 420
+    },
+    "modules/FvwmMFL/request.c": {
+      "sha256": "7bfa468ccc8500764d208da6164193563160bc06b44b29cae1d489f7956cdc0a",
+      "bytes": 54668,
+      "mode": 420
+    },
+    "modules/FvwmMFL/request.h": {
+      "sha256": "4a1c852db071a64cb92528d43e73b0d0a3a6906ec1e4128212894084f4ca80c6",
+      "bytes": 5226,
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "61ca94ff125ba7ba0566e335df375636bf95614e43211f86aa81b076b34fcd62",
+      "bytes": 182096,
+      "mode": 420
+    },
+    "tests/test_mfl_request.c": {
+      "sha256": "be44ce2a0a767cb5028b9cc883191dc92cdcdcf4bef1d2e89391bae0f5fca8f7",
+      "bytes": 54248,
+      "mode": 420
+    },
+    "tests/test_query_json.c": {
+      "sha256": "d41b6beb2fe89154d612448fff4d3d2924d0f61b622362bb68ad18c035b30945",
+      "bytes": 16698,
+      "mode": 420
+    },
+    "tests/test_session_clients_policy.c": {
+      "sha256": "d022733c5bee111f51c480b089ed6c68773008ef204a09a0558381834bdfb9ac",
+      "bytes": 4105,
+      "mode": 420
+    }
+  },
+  "gates": [
+    {
+      "receipt": "result01.json",
+      "status": "failed",
+      "source_pre": "fd5bab9c2d3a2601c646490c49ad4ecea657ce8be8cb6a91d7234301636c8cf4",
+      "changed": [
+        "INSTALL.md",
+        "README.md",
+        "bin/FvwmPrompt/cmd/fvwmsession/main.go",
+        "bin/FvwmPrompt/internal/commandmeta/commands.json",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go",
+        "bin/FvwmPrompt/internal/sessionowner/control.go",
+        "bin/FvwmPrompt/internal/sessionowner/control_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/service_control.go",
+        "bin/FvwmPrompt/internal/sessionowner/services.go",
+        "bin/FvwmPrompt/internal/sessionowner/services_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/session.go",
+        "bin/FvwmPrompt/internal/sessionowner/session_test.go",
+        "bin/FvwmPrompt/internal/sessionservice/types.go",
+        "bin/FvwmPrompt/internal/sessionservice/wire.go",
+        "bin/FvwmPrompt/internal/sessionservice/wire_test.go",
+        "bin/FvwmPrompt/meson.build",
+        "bin/meson.build",
+        "bin/session_bus.c",
+        "bin/session_bus_disabled.c",
+        "dev-docs/ARCHITECTURE.md",
+        "dev-docs/PROJECT-TRACKER.md",
+        "dev-docs/decisions/README.md",
+        "dev-docs/decisions/SESSION-SERVICES-ADAPTER-2026-10-29.md",
+        "dev-docs/verification/README.md",
+        "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-STARTUP.json",
+        "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-STARTUP.md",
+        "doc/FvwmDesktop.adoc",
+        "doc/FvwmMFL.adoc",
+        "doc/fvwm-session.adoc",
+        "fvwm/commands.h",
+        "fvwm/functable.c",
+        "fvwm/meson.build",
+        "fvwm/module_interface.c",
+        "fvwm/query_json.c",
+        "fvwm/session.c",
+        "fvwm/session.h",
+        "fvwm/session_clients.c",
+        "fvwm/session_clients.h",
+        "fvwm/session_clients_policy.c",
+        "fvwm/session_clients_policy.h",
+        "meson.options",
+        "modules/FvwmMFL/FvwmMFL.c",
+        "modules/FvwmMFL/request.c",
+        "modules/FvwmMFL/request.h",
+        "tests/live_x/session_services_live.py",
+        "tests/meson.build",
+        "tests/test_mfl_request.c",
+        "tests/test_query_json.c",
+        "tests/test_session_clients_policy.c"
+      ],
+      "commands": [
+        {
+          "label": "normal-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "-Dsession-dbus=enabled",
+            "-Dmandoc=true"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 1.288530608999963
+        },
+        {
+          "label": "normal-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmForm/FvwmForm",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/fvwm-session-bus",
+            "bin/fvwm-desktop-capture",
+            "tests/test-session-clients-policy",
+            "tests/test-query-json",
+            "tests/test-mfl-request",
+            "doc/fvwm-session.1",
+            "doc/FvwmDesktop.1",
+            "doc/FvwmMFL.1"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 4.102226671999915
+        },
+        {
+          "label": "go-normal",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-json",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/commandmeta"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 1,
+          "seconds": 7.509854437000058
+        },
+        {
+          "label": "go-race",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/commandmeta"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 1,
+          "seconds": 8.887019090999956
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-mod=vendor",
+            "./internal/sessionowner",
+            "./internal/sessionservice",
+            "./cmd/fvwmsession",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/commandmeta"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 0.27681020999989414
+        },
+        {
+          "label": "go-cross-freebsd",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-freebsd",
+            "./cmd/fvwmsession",
+            "./cmd/fvwmdesktop"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 1.009233100000074
+        },
+        {
+          "label": "go-cross-openbsd",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "build",
+            "-mod=vendor",
+            "-o",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-openbsd",
+            "./cmd/fvwmsession",
+            "./cmd/fvwmdesktop"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "exit": 0,
+          "seconds": 1.0264069419999942
+        },
+        {
+          "label": "catalog-contract",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/test_command_catalog.py"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.027425704000052065
+        },
+        {
+          "label": "fixture-syntax",
+          "command": [
+            "python3",
+            "-m",
+            "py_compile",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.016872048000095674
+        },
+        {
+          "label": "normal-policy",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "session-clients-policy",
+            "core-query-json",
+            "mfl-request"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.1439469540000573
+        },
+        {
+          "label": "installed-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.08612012200001118
+        },
+        {
+          "label": "tagged-install",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--destdir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/stage",
+            "--tags",
+            "session-startup"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.09237368199978846
+        },
+        {
+          "label": "native-services",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x01",
+            "--optional-bus",
+            "--deadline"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 1,
+          "seconds": 5.503542520999872
+        },
+        {
+          "label": "startup-regression",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_startup_live.py",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/startup-x01"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 16.851409289000003
+        },
+        {
+          "label": "sanitizer-configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "-Dsession-dbus=disabled"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 1.2107358450000447
+        },
+        {
+          "label": "sanitizer-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "tests/test-session-clients-policy",
+            "tests/test-query-json",
+            "tests/test-mfl-request",
+            "bin/fvwm-session-bus"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.4356136230001084
+        },
+        {
+          "label": "sanitizer-policy",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "session-clients-policy",
+            "core-query-json",
+            "mfl-request"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.14227436600003784
+        },
+        {
+          "label": "disabled-stub",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+            "probe"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.0031808840001303906
+        },
+        {
+          "label": "disabled-closure",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus"
+          ],
+          "cwd": "/tmp/fvwm-module-waits-20261015/source",
+          "exit": 0,
+          "seconds": 0.0021484649998910754
+        }
+      ],
+      "source_post": "fd5bab9c2d3a2601c646490c49ad4ecea657ce8be8cb6a91d7234301636c8cf4"
+    },
+    {
+      "receipt": "result02.json",
+      "status": "failed",
+      "source_pre": "763d16768532bd55b5bec59ef7602ca6b447c79fff83369b8ffa7c943735d6a1",
+      "changes": [
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go",
+        "bin/FvwmPrompt/internal/sessionowner/service_control.go",
+        "bin/FvwmPrompt/internal/sessionowner/services_test.go",
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "go-controller-normal02",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopcontroller",
+            "./internal/sessionowner"
+          ],
+          "exit": 0,
+          "seconds": 7.897403782999845
+        },
+        {
+          "label": "go-controller-race02",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-mod=vendor",
+            "-race",
+            "-json",
+            "./internal/desktopcontroller",
+            "./internal/sessionowner"
+          ],
+          "exit": 0,
+          "seconds": 9.332217968000123
+        },
+        {
+          "label": "go-controller-vet02",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-mod=vendor",
+            "./internal/desktopcontroller",
+            "./internal/sessionowner"
+          ],
+          "exit": 0,
+          "seconds": 0.14092370200000914
+        },
+        {
+          "label": "desktop-build02",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-session"
+          ],
+          "exit": 0,
+          "seconds": 0.40864372700002605
+        },
+        {
+          "label": "native-services02",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x02",
+            "--optional-bus",
+            "--deadline"
+          ],
+          "exit": 1,
+          "seconds": 5.829234109000026
+        }
+      ],
+      "native_status": "failed",
+      "optional_status": "not-run",
+      "source_post": "763d16768532bd55b5bec59ef7602ca6b447c79fff83369b8ffa7c943735d6a1"
+    },
+    {
+      "receipt": "result03.json",
+      "status": "failed",
+      "source_pre": "2235f5dbe6a1862e861e9ba618a8b37f1a453c3cdd6fc5cd1c5b8aeb7b26be50",
+      "changes": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "native-services03",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x03",
+            "--optional-bus",
+            "--deadline"
+          ],
+          "exit": 1,
+          "seconds": 0.7341157890000432
+        }
+      ],
+      "native_status": "failed",
+      "optional_status": "not-run",
+      "source_post": "2235f5dbe6a1862e861e9ba618a8b37f1a453c3cdd6fc5cd1c5b8aeb7b26be50"
+    },
+    {
+      "receipt": "result04.json",
+      "status": "failed",
+      "source_pre": "41e6b8e675ec6aa94326ea3a614d8b252d0d41efec0cb3df51b485823f4eb37b",
+      "changes": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "native-services04",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x04",
+            "--optional-bus",
+            "--deadline"
+          ],
+          "exit": 1,
+          "seconds": 38.24847476600007
+        }
+      ],
+      "native_status": "failed",
+      "optional_status": "not-run",
+      "source_post": "41e6b8e675ec6aa94326ea3a614d8b252d0d41efec0cb3df51b485823f4eb37b"
+    },
+    {
+      "receipt": "result05.json",
+      "status": "failed",
+      "source_pre": "04ecabe45151a8c595b9d03e72992e22ee1dd5fe8ddd201fb0d679de8a0f4d7b",
+      "changes": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "native-services05",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x05",
+            "--optional-only"
+          ],
+          "exit": 1,
+          "seconds": 0.7171146949999638
+        }
+      ],
+      "native_status": "failed",
+      "optional_status": "not-run",
+      "source_post": "04ecabe45151a8c595b9d03e72992e22ee1dd5fe8ddd201fb0d679de8a0f4d7b"
+    },
+    {
+      "receipt": "result06.json",
+      "status": "passed",
+      "source_pre": "ab8659e83423cdcc01317ccdffa7f4e35323d5df80e6b94c0f9b21fed351b9ad",
+      "changes": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "native-services06",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x06",
+            "--optional-only"
+          ],
+          "exit": 0,
+          "seconds": 2.3445808470000884
+        }
+      ],
+      "native_status": "passed",
+      "optional_status": "passed",
+      "source_post": "ab8659e83423cdcc01317ccdffa7f4e35323d5df80e6b94c0f9b21fed351b9ad"
+    },
+    {
+      "receipt": "result07.json",
+      "status": "passed",
+      "source_pre": "86aaf460cf51a9b6d3b308171016a10b23d730d2703fffa9f4b0f2e4ef8ccc00",
+      "changes": [
+        "tests/live_x/session_services_live.py"
+      ],
+      "commands": [
+        {
+          "label": "native-services07",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--session",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-session-services-current/native-x07",
+            "--profiles",
+            "classic-large"
+          ],
+          "exit": 0,
+          "seconds": 2.5931833699996787
+        }
+      ],
+      "native_status": "passed",
+      "optional_status": "skipped",
+      "source_post": "86aaf460cf51a9b6d3b308171016a10b23d730d2703fffa9f4b0f2e4ef8ccc00"
+    }
+  ],
+  "go": {
+    "ordinary": {
+      "sessionowner": {
+        "receipt": "go-controller-normal02.stdout",
+        "source": "source02",
+        "passed_test_records": 74,
+        "failed_test_records": 0
+      },
+      "sessionservice": {
+        "receipt": "go-normal.stdout",
+        "source": "source01",
+        "passed_test_records": 2,
+        "failed_test_records": 0
+      },
+      "fvwmsession": {
+        "receipt": "go-normal.stdout",
+        "source": "source01",
+        "passed_test_records": 3,
+        "failed_test_records": 0
+      },
+      "desktopsettings": {
+        "receipt": "go-normal.stdout",
+        "source": "source01",
+        "passed_test_records": 57,
+        "failed_test_records": 0
+      },
+      "desktopcontroller": {
+        "receipt": "go-controller-normal02.stdout",
+        "source": "source02",
+        "passed_test_records": 254,
+        "failed_test_records": 0
+      },
+      "commandmeta": {
+        "receipt": "go-normal.stdout",
+        "source": "source01",
+        "passed_test_records": 1,
+        "failed_test_records": 0
+      }
+    },
+    "race": {
+      "sessionowner": {
+        "receipt": "go-controller-race02.stdout",
+        "source": "source02",
+        "passed_test_records": 74,
+        "failed_test_records": 0
+      },
+      "sessionservice": {
+        "receipt": "go-race.stdout",
+        "source": "source01",
+        "passed_test_records": 2,
+        "failed_test_records": 0
+      },
+      "fvwmsession": {
+        "receipt": "go-race.stdout",
+        "source": "source01",
+        "passed_test_records": 3,
+        "failed_test_records": 0
+      },
+      "desktopsettings": {
+        "receipt": "go-race.stdout",
+        "source": "source01",
+        "passed_test_records": 57,
+        "failed_test_records": 0
+      },
+      "desktopcontroller": {
+        "receipt": "go-controller-race02.stdout",
+        "source": "source02",
+        "passed_test_records": 254,
+        "failed_test_records": 0
+      },
+      "commandmeta": {
+        "receipt": "go-race.stdout",
+        "source": "source01",
+        "passed_test_records": 1,
+        "failed_test_records": 0
+      }
+    }
+  },
+  "native_profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "profile": "slate-dark",
+      "bus_policy": "off",
+      "cases": {
+        "default-no-bus": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "154c0dfb404198164d5cb8e5c34db53b",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have separate readiness",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "enabled",
+              "ownership": "independent",
+              "detail": "independent application launch observations; no readiness/termination ownership",
+              "attempts": 0,
+              "started": 1
+            }
+          ],
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout"
+          ],
+          "owner": "FvwmDesktop",
+          "provider": "2528a6e207076ecfb3fe03aacf6c80a9",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "schema_version": 1,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "25a6f5a8a6a0f0320d3092875e442d74",
+          "state": "observed"
+        },
+        "native-notification-unavailable-fallback": {
+          "status": "passed",
+          "witness": "real F6 request returned a native fallback notice"
+        },
+        "unsupported-before-any-delete": {
+          "status": "passed",
+          "ordinary_messages": 0,
+          "non_delete_messages": 0
+        },
+        "native-cancel-waiting": {
+          "status": "passed",
+          "delete_messages": 1,
+          "application_alive": true
+        },
+        "thirty-second-deadline": {
+          "status": "passed",
+          "seconds": 30.064086848999978,
+          "delete_messages": 1,
+          "desktop_alive": true
+        },
+        "new-allocation-blocks-final-quit": {
+          "status": "passed",
+          "new_application_messages": 0
+        },
+        "core-stale-final-empty-check": {
+          "state": "stale",
+          "operation": "quit-if-empty",
+          "reason": "stale_generation"
+        },
+        "cooperative-session-exit": {
+          "status": "passed",
+          "delete_messages": 1,
+          "client_destroyed_by_itself": true,
+          "wrapper_exit_status": 0,
+          "operation": "943dca91f7cf486f01b9f9bed4c05b6b",
+          "witness": "actual WM_DELETE + client destroy + owned wrapper wait status"
+        }
+      },
+      "captures": [
+        {
+          "file": "session-panel.png",
+          "bytes": 67133,
+          "sha256": "e7b4847b0e3f98abf27291aa62c71d73ab21c892043b0a4655ad83978fb85ff5"
+        },
+        {
+          "file": "notification-unavailable-fallback.png",
+          "bytes": 61997,
+          "sha256": "b21e5c1b56b0d22f47250530ce5267edd7b4bc50f1e6c08a4a5a854d3aaa2370"
+        },
+        {
+          "file": "session-settings.png",
+          "bytes": 61612,
+          "sha256": "2239977abb1e82cb92c1970aef54344d83fddf141d4963fc192d46b30c1eb588"
+        },
+        {
+          "file": "session-waiting.png",
+          "bytes": 72401,
+          "sha256": "4300c44d44d331244390d45572905d926c23520031825b2039a5abd3a38e0fd8"
+        }
+      ],
+      "limits": [
+        "Nested Xvfb only; no physical hardware or full platform claim.",
+        "Eligible application classification is descriptive, not process authentication.",
+        "Core action replies attest requests; wrapper exit and client observations are separate.",
+        "External XSMP cancellation and passive notification-server UI remain out of scope."
+      ],
+      "observer_unexpected_x_errors": [],
+      "observer_retired_windows": 19,
+      "configuration_sha256": "3380bfbbdb0733bbac8bb87ca0e8661ad9599893d2d0b7917b0981bddd0c90c7",
+      "form_geometry": [
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "FVWM-X",
+          "x": 514,
+          "y": 472,
+          "width": 420,
+          "height": 64,
+          "frame": {
+            "x": 510,
+            "y": 468,
+            "width": 428,
+            "height": 72
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session settings",
+          "x": 493,
+          "y": 417,
+          "width": 462,
+          "height": 229,
+          "frame": {
+            "x": 489,
+            "y": 385,
+            "width": 470,
+            "height": 265
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 299,
+          "width": 376,
+          "height": 466,
+          "frame": {
+            "x": 532,
+            "y": 267,
+            "width": 384,
+            "height": 502
+          },
+          "mapped_session_panels": 1
+        }
+      ],
+      "fallback_stacking": {
+        "notice_frame": 2097418,
+        "panel_frame": 2097403,
+        "root_bottom_to_top": [
+          2097252,
+          2097403,
+          2097418,
+          2097178,
+          2097234,
+          2097235,
+          2097236,
+          2097237,
+          2097250
+        ],
+        "raised_by_fixture_before_capture": false
+      },
+      "notice_cleanup": [
+        {
+          "window": 14680071,
+          "witness": "core-engine WM_DELETE cleanup",
+          "focus_policy": "shipped NeverFocus preserved",
+          "legacy_dismiss_button": "not exercised by this focused gate"
+        }
+      ]
+    },
+    "dune-light": {
+      "status": "passed",
+      "profile": "dune-light",
+      "bus_policy": "off",
+      "cases": {
+        "default-no-bus": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "56a084981b3caaff1e3b368dec1e47fc",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have separate readiness",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "enabled",
+              "ownership": "independent",
+              "detail": "independent application launch observations; no readiness/termination ownership",
+              "attempts": 0,
+              "started": 1
+            }
+          ],
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout"
+          ],
+          "owner": "FvwmDesktop",
+          "provider": "1d88fb205093009deb73a5176cd04e49",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "schema_version": 1,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "54e523705b7024fdb3bd31c8a7cc5969",
+          "state": "observed"
+        },
+        "native-notification-unavailable-fallback": {
+          "status": "passed",
+          "witness": "real F6 request returned a native fallback notice"
+        },
+        "unsupported-before-any-delete": {
+          "status": "passed",
+          "ordinary_messages": 0,
+          "non_delete_messages": 0
+        },
+        "native-cancel-waiting": {
+          "status": "passed",
+          "delete_messages": 1,
+          "application_alive": true
+        },
+        "thirty-second-deadline": {
+          "status": "skipped",
+          "reason": "select --deadline for one real30-second timeout in the first profile"
+        },
+        "new-allocation-blocks-final-quit": {
+          "status": "passed",
+          "new_application_messages": 0
+        },
+        "core-stale-final-empty-check": {
+          "state": "stale",
+          "operation": "quit-if-empty",
+          "reason": "stale_generation"
+        },
+        "cooperative-session-exit": {
+          "status": "passed",
+          "delete_messages": 1,
+          "client_destroyed_by_itself": true,
+          "wrapper_exit_status": 0,
+          "operation": "6df7bd84472de74a9806ffe2e70de28d",
+          "witness": "actual WM_DELETE + client destroy + owned wrapper wait status"
+        }
+      },
+      "captures": [
+        {
+          "file": "session-panel.png",
+          "bytes": 67645,
+          "sha256": "772f8bc131649c2c1c1a67f978b6fda81abcb918ace113bcbd8e3a8fa1c62d99"
+        },
+        {
+          "file": "notification-unavailable-fallback.png",
+          "bytes": 62471,
+          "sha256": "aab3bd3f6b5732f3ac2714b0a7327b946e10c89eee2ea69f4bafc7c039505a6f"
+        },
+        {
+          "file": "session-settings.png",
+          "bytes": 62167,
+          "sha256": "201b02c929901d97da7e17f7d544651932c0ce6d20361631768d4c5449273bbb"
+        },
+        {
+          "file": "session-waiting.png",
+          "bytes": 72938,
+          "sha256": "dd6246405fddd58d798d7754fc5d1a2c837f78974dc47d8f7821c64dda604194"
+        }
+      ],
+      "limits": [
+        "Nested Xvfb only; no physical hardware or full platform claim.",
+        "Eligible application classification is descriptive, not process authentication.",
+        "Core action replies attest requests; wrapper exit and client observations are separate.",
+        "External XSMP cancellation and passive notification-server UI remain out of scope."
+      ],
+      "observer_unexpected_x_errors": [],
+      "observer_retired_windows": 19,
+      "configuration_sha256": "3bc97bdd0676637deb34d68a24ee7e8f1ccb56d657c68682d7a459a70b216038",
+      "form_geometry": [
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "FVWM-X",
+          "x": 514,
+          "y": 472,
+          "width": 420,
+          "height": 64,
+          "frame": {
+            "x": 510,
+            "y": 468,
+            "width": 428,
+            "height": 72
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 309,
+          "width": 376,
+          "height": 445,
+          "frame": {
+            "x": 532,
+            "y": 277,
+            "width": 384,
+            "height": 481
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session settings",
+          "x": 493,
+          "y": 417,
+          "width": 462,
+          "height": 229,
+          "frame": {
+            "x": 489,
+            "y": 385,
+            "width": 470,
+            "height": 265
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 536,
+          "y": 299,
+          "width": 376,
+          "height": 466,
+          "frame": {
+            "x": 532,
+            "y": 267,
+            "width": 384,
+            "height": 502
+          },
+          "mapped_session_panels": 1
+        }
+      ],
+      "fallback_stacking": {
+        "notice_frame": 2097424,
+        "panel_frame": 2097409,
+        "root_bottom_to_top": [
+          2097252,
+          2097409,
+          2097424,
+          2097178,
+          2097234,
+          2097235,
+          2097236,
+          2097237,
+          2097250
+        ],
+        "raised_by_fixture_before_capture": false
+      },
+      "notice_cleanup": [
+        {
+          "window": 14680071,
+          "witness": "core-engine WM_DELETE cleanup",
+          "focus_policy": "shipped NeverFocus preserved",
+          "legacy_dismiss_button": "not exercised by this focused gate"
+        }
+      ]
+    },
+    "classic-large": {
+      "status": "passed",
+      "profile": "classic-large",
+      "bus_policy": "off",
+      "cases": {
+        "default-no-bus": {
+          "active": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "active_bus_policy": "off",
+          "availability": "available",
+          "bus_policy": "next-login",
+          "disconnect": "continue",
+          "generation": "6f380effd00b5be2bbf7bb079ebd92a3",
+          "items": [
+            {
+              "id": "core",
+              "state": "ready",
+              "ownership": "owned",
+              "detail": "core startup acknowledged; modules/apps have separate readiness",
+              "attempts": 0
+            },
+            {
+              "id": "scan",
+              "state": "stopped",
+              "ownership": "owned",
+              "detail": "bounded autostart acquisition completed",
+              "attempts": 1
+            },
+            {
+              "id": "bus",
+              "state": "stopped",
+              "ownership": "none",
+              "detail": "bus policy off; inherited environment preserved",
+              "attempts": 0
+            },
+            {
+              "id": "notifications",
+              "state": "stopped",
+              "ownership": "borrowed",
+              "detail": "notifications disabled",
+              "attempts": 0
+            },
+            {
+              "id": "applications",
+              "state": "enabled",
+              "ownership": "independent",
+              "detail": "independent application launch observations; no readiness/termination ownership",
+              "attempts": 0,
+              "started": 1
+            }
+          ],
+          "notification_server": false,
+          "operation_targets": [
+            "session-status",
+            "session-reprobe",
+            "notification-test",
+            "notification-close",
+            "logout"
+          ],
+          "owner": "FvwmDesktop",
+          "provider": "f15f993d3faf341b2337c46b3a451961",
+          "requested": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "saved": {
+            "session_bus": "off",
+            "session_notifications": "off",
+            "notification_dnd": false
+          },
+          "schema_version": 1,
+          "scope": "session-services",
+          "service_lifecycle": true,
+          "session_generation": "1b5be3e994efbf2a07bf56ba269ab6e1",
+          "state": "observed"
+        },
+        "native-notification-unavailable-fallback": {
+          "status": "passed",
+          "witness": "real F6 request returned a native fallback notice"
+        },
+        "unsupported-before-any-delete": {
+          "status": "passed",
+          "ordinary_messages": 0,
+          "non_delete_messages": 0
+        },
+        "native-cancel-waiting": {
+          "status": "passed",
+          "delete_messages": 1,
+          "application_alive": true
+        },
+        "thirty-second-deadline": {
+          "status": "skipped",
+          "reason": "select --deadline for one real30-second timeout in the first profile"
+        },
+        "new-allocation-blocks-final-quit": {
+          "status": "passed",
+          "new_application_messages": 0
+        },
+        "core-stale-final-empty-check": {
+          "state": "stale",
+          "operation": "quit-if-empty",
+          "reason": "stale_generation"
+        },
+        "cooperative-session-exit": {
+          "status": "passed",
+          "delete_messages": 1,
+          "client_destroyed_by_itself": true,
+          "wrapper_exit_status": 0,
+          "operation": "6d2f8647bca57afac87c7f4a74c778e7",
+          "witness": "actual WM_DELETE + client destroy + owned wrapper wait status"
+        }
+      },
+      "captures": [
+        {
+          "file": "session-panel.png",
+          "bytes": 134556,
+          "sha256": "934d5d85c70637a88254b5d83022d814acc82c4f395fce9cc3ef5f13a6f0c175"
+        },
+        {
+          "file": "notification-unavailable-fallback.png",
+          "bytes": 128166,
+          "sha256": "81de53a18f0208e217f5bc0115a930053238484400c905f176718051d5216dee"
+        },
+        {
+          "file": "session-settings.png",
+          "bytes": 132469,
+          "sha256": "602cac23837f13634c99ce3321bf36a2d726a1bfb55415c6b5ed5806232db3ca"
+        },
+        {
+          "file": "session-waiting.png",
+          "bytes": 144477,
+          "sha256": "cc92996358566c2ddd81d3cded9a5adb3862f1e2c6f178fdff2c22da337b6f99"
+        }
+      ],
+      "limits": [
+        "Nested Xvfb only; no physical hardware or full platform claim.",
+        "Eligible application classification is descriptive, not process authentication.",
+        "Core action replies attest requests; wrapper exit and client observations are separate.",
+        "External XSMP cancellation and passive notification-server UI remain out of scope."
+      ],
+      "observer_unexpected_x_errors": [],
+      "observer_retired_windows": 0,
+      "configuration_sha256": "ac389e1066ce7e4a09b4b92ac2f1dc91ff37719c4b563cef469fff5e4122d1df",
+      "form_geometry": [
+        {
+          "title": "Legacy colors",
+          "x": 1116,
+          "y": 115,
+          "width": 221,
+          "height": 90,
+          "frame": {
+            "x": 1110,
+            "y": 80,
+            "width": 233,
+            "height": 131
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 368,
+          "y": 189,
+          "width": 716,
+          "height": 692,
+          "frame": {
+            "x": 362,
+            "y": 154,
+            "width": 728,
+            "height": 733
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 368,
+          "y": 189,
+          "width": 716,
+          "height": 692,
+          "frame": {
+            "x": 362,
+            "y": 154,
+            "width": 728,
+            "height": 733
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "FVWM-X",
+          "x": 263,
+          "y": 461,
+          "width": 926,
+          "height": 90,
+          "frame": {
+            "x": 257,
+            "y": 455,
+            "width": 938,
+            "height": 102
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 368,
+          "y": 189,
+          "width": 716,
+          "height": 692,
+          "frame": {
+            "x": 362,
+            "y": 154,
+            "width": 728,
+            "height": 733
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session and services",
+          "x": 368,
+          "y": 189,
+          "width": 716,
+          "height": 692,
+          "frame": {
+            "x": 362,
+            "y": 154,
+            "width": 728,
+            "height": 733
+          },
+          "mapped_session_panels": 1
+        },
+        {
+          "title": "Session settings",
+          "x": 270,
+          "y": 362,
+          "width": 911,
+          "height": 346,
+          "frame": {
+            "x": 264,
+            "y": 327,
+            "width": 923,
+            "height": 387
+          }
+        },
+        {
+          "title": "Session and services",
+          "x": 368,
+          "y": 172,
+          "width": 716,
+          "height": 726,
+          "frame": {
+            "x": 362,
+            "y": 137,
+            "width": 728,
+            "height": 767
+          },
+          "mapped_session_panels": 1
+        }
+      ],
+      "classic_customization": {
+        "file": "classic-customization.fvwm",
+        "sha256": "05f5901dc5396e35e90e70dba3bcf709cba4c7073a4dc7f7cf5f7e8a9693f2c1",
+        "font": "DejaVu Sans Mono:size=18:antialias=True",
+        "legacy_colors": "Fore/Back/ItemFore/ItemBack; separate no-colorset Form",
+        "session_colors": "explicit semantic colorsets take precedence",
+        "borders": "BorderWidth3 HandleWidth6"
+      },
+      "fallback_stacking": {
+        "notice_frame": 2097462,
+        "panel_frame": 2097447,
+        "root_bottom_to_top": [
+          2097272,
+          2097252,
+          2097447,
+          2097462,
+          2097178,
+          2097234,
+          2097235,
+          2097236,
+          2097237,
+          2097250
+        ],
+        "raised_by_fixture_before_capture": false
+      },
+      "notice_cleanup": [
+        {
+          "window": 16777223,
+          "witness": "core-engine WM_DELETE cleanup",
+          "focus_policy": "shipped NeverFocus preserved",
+          "legacy_dismiss_button": "not exercised by this focused gate"
+        }
+      ]
+    }
+  },
+  "optional_bus": {
+    "status": "passed",
+    "cases": {
+      "reuse": {
+        "status": "passed",
+        "bus": {
+          "id": "bus",
+          "state": "ready",
+          "ownership": "borrowed",
+          "detail": "authenticated session bus",
+          "attempts": 1
+        },
+        "notify": {
+          "application": "owner-observed",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "2e1594193a942d5793405dabc849aa63",
+          "id": "d265434b7216aa07757c929e55948f5c",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "sent"
+          },
+          "retention_ms": 299946,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-test",
+          "worker_stop": "unknown"
+        },
+        "close": {
+          "application": "owner-observed",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "4e1eef0760f0814bb2fe958454945ace",
+          "id": "ad200898110eff9d670a565120497bcb",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "closed"
+          },
+          "retention_ms": 299943,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-close",
+          "worker_stop": "unknown"
+        },
+        "dnd": {
+          "application": "not-submitted",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "62a4eb974bc88a3bbd8b726ad30db2e1",
+          "id": "91f407a84a1106d2ae28b03a923e8957",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "suppressed"
+          },
+          "retention_ms": 299999,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-test",
+          "worker_stop": "unknown"
+        },
+        "borrowed_bus_survives_session": true,
+        "provider_absent_after_stop": {
+          "id": "notifications",
+          "state": "unavailable",
+          "ownership": "borrowed",
+          "detail": "no existing notification server",
+          "operation": "0470da452a23a5567244db366f022ffe",
+          "attempts": 2
+        },
+        "replacement_provider": {
+          "id": "notifications",
+          "state": "ready",
+          "ownership": "borrowed",
+          "detail": "existing notification server; outbound plain text only",
+          "operation": "8209d7ec8ec1718fed535a254d6fcb43",
+          "attempts": 2
+        },
+        "desktop_reconnect": {
+          "old_provider": "790aaea6ae7e3a1a93e4c300efb32e3e",
+          "new_provider": "52dde597b0fd6103f1fb3cc23a9448b8",
+          "parent_generation": "b1433449eb51522386d36338297595b1"
+        }
+      },
+      "borrowed-loss": {
+        "status": "passed",
+        "bus": {
+          "id": "bus",
+          "state": "failed",
+          "ownership": "borrowed",
+          "detail": "optional bus adapter: session_bus_connection_failed",
+          "operation": "4db69705d955268d3bb0947dee874cb9",
+          "attempts": 2
+        },
+        "desktop_alive_after_loss": true,
+        "wrapper_exit_status": 0
+      },
+      "start": {
+        "status": "passed",
+        "bus": {
+          "id": "bus",
+          "state": "ready",
+          "ownership": "owned",
+          "detail": "authenticated session bus",
+          "attempts": 1
+        },
+        "notify": {
+          "application": "owner-observed",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "77efcfce47c14de3369820ffe8d0894b",
+          "id": "c22939f936c460e2fe2c51985071a198",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "sent"
+          },
+          "retention_ms": 299947,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-test",
+          "worker_stop": "unknown"
+        },
+        "close": {
+          "application": "owner-observed",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "ddbb62f41292803839b2f4d669b4e02b",
+          "id": "b449bd3eb00701aa02fb321aeb81e10a",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "closed"
+          },
+          "retention_ms": 299948,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-close",
+          "worker_stop": "unknown"
+        },
+        "dnd": {
+          "application": "not-submitted",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "7da3721ea7c75e4f06df90e3149142ff",
+          "id": "39da609376d33abce62a1b55d817677a",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "outcome": "suppressed"
+          },
+          "retention_ms": 299998,
+          "rollback": false,
+          "state": "completed",
+          "target": "notification-test",
+          "worker_stop": "unknown"
+        },
+        "borrowed_bus_survives_session": null,
+        "provider_absent_after_stop": {
+          "id": "notifications",
+          "state": "unavailable",
+          "ownership": "borrowed",
+          "detail": "no existing notification server",
+          "operation": "0a9b7a3b98050a16924abd54e78d74af",
+          "attempts": 2
+        },
+        "replacement_provider": {
+          "id": "notifications",
+          "state": "ready",
+          "ownership": "borrowed",
+          "detail": "existing notification server; outbound plain text only",
+          "operation": "38c1c733258a47cb71f017bec0951ae7",
+          "attempts": 2
+        },
+        "desktop_reconnect": {
+          "old_provider": "a56d8927488a17817c2f44e04fe664ef",
+          "new_provider": "1da7d634a9647f268e6fd353ce9a9f05",
+          "parent_generation": "fdfdda6a6ac7d99cee8c4a4da76ba0bb"
+        },
+        "owned_bus_stopped_after_session": {
+          "capabilities": [],
+          "version": 1,
+          "available": true,
+          "state": "failed",
+          "bus_id": "",
+          "server_owner": "",
+          "notification_id": 0,
+          "detail": "session_bus_connection_failed"
+        }
+      }
+    }
+  },
+  "startup_regression": {
+    "status": "passed",
+    "cases": {
+      "owned-restart": {
+        "status": "passed",
+        "wrapper_pid": 2270,
+        "wm_pid": 2278,
+        "process_identity_before": [
+          2278,
+          2270
+        ],
+        "process_identity_after": [
+          2278,
+          2270
+        ],
+        "independent_application": {
+          "argv": [
+            "spaces retained",
+            "literal;pipe|&"
+          ],
+          "pid": 2287,
+          "environment": {
+            "DISPLAY": ":0",
+            "XAUTHORITY": null,
+            "XDG_CURRENT_DESKTOP": "FVWM3:FVWM",
+            "XDG_SESSION_TYPE": "x11",
+            "SESSION_MANAGER": null,
+            "FVWM_SESSION_READY_FD": null,
+            "FVWM_SESSION_TEST_PRESERVE": "kept"
+          }
+        },
+        "autostart_count": 1,
+        "reconnect": "new MFL connection after old EOF"
+      },
+      "no-autostart": {
+        "status": "passed",
+        "autostart_count": 0
+      },
+      "external": {
+        "status": "passed",
+        "autostart_count": 0
+      },
+      "direct": {
+        "status": "passed",
+        "autostart_count": 0
+      },
+      "packaged-desktop-startup": {
+        "status": "passed",
+        "autostart_count": 1,
+        "source_config": "default-config/config",
+        "scope": "source-owned default config and reusable built modules in private stage"
+      },
+      "stalled-core-startup": {
+        "status": "passed",
+        "autostart_count": 0,
+        "core_usable_after_deadline": true
+      }
+    },
+    "limits": [
+      "Focused nested-X startup, not full login-manager/XSMP/service qualification.",
+      "Application marker proves literal invocation/environment, not readiness.",
+      "No UI change or new screenshot set; no physical/native-CPU claim."
+    ],
+    "artifacts": {
+      "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "0906a11f3eb70db6a1645e4268ee32551ae38981a524335d4f787c527b26a12b",
+      "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+      "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "ea499dcffe250ef913ec6ebdce7e3dd13ffb5453bf00041c494649467dbd9dd0"
+    }
+  },
+  "adapter_sanitizer": {
+    "status": "passed",
+    "source": {
+      "bin/session_bus.c": "4838d3f35f3809217476dfa0fefa24910d810c696aca1411b9a73a8cb69c6fba",
+      "libs/cJSON.c": "0027420b409663cbd44e5aeeb2accaf0d6a9ad67c59631e06e4c4cbf6415c3ae",
+      "libs/cJSON.h": "25b0145150d500498e4d209cec69c18c42cf818bffcc54690be3b895a2a16dee"
+    },
+    "commands": [
+      {
+        "label": "adapter-sanitizer-build",
+        "command": [
+          "cc",
+          "-std=c11",
+          "-O1",
+          "-g",
+          "-fsanitize=address,undefined",
+          "-fno-omit-frame-pointer",
+          "-I/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-I/tmp/fvwm-module-waits-20261015/source",
+          "/tmp/fvwm-module-waits-20261015/source/bin/session_bus.c",
+          "/tmp/fvwm-module-waits-20261015/source/libs/cJSON.c",
+          "-I/usr/include/dbus-1.0",
+          "-I/usr/lib/aarch64-linux-gnu/dbus-1.0/include",
+          "-ldbus-1",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized"
+        ],
+        "exit": 0,
+        "seconds": 0.4810262229998443
+      },
+      {
+        "label": "adapter-sanitizer-no-address",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "probe"
+        ],
+        "exit": 0,
+        "seconds": 0.003995513000063511
+      },
+      {
+        "label": "adapter-sanitizer-no-provider",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "probe"
+        ],
+        "exit": 0,
+        "seconds": 0.00445401499973741
+      },
+      {
+        "label": "adapter-sanitizer-probe",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "probe"
+        ],
+        "exit": 0,
+        "seconds": 0.004895724000107293
+      },
+      {
+        "label": "adapter-sanitizer-probe",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "probe"
+        ],
+        "exit": 0,
+        "seconds": 0.005739018999975087
+      },
+      {
+        "label": "adapter-sanitizer-notify",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "notify",
+          "FVWM-X sanitizer",
+          "Plain <text> & symbols",
+          ":1.2",
+          "4f52ed1277be0a4be1cdd4506ae3ea66"
+        ],
+        "exit": 0,
+        "seconds": 0.005741184999806137
+      },
+      {
+        "label": "adapter-sanitizer-close",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+          "close",
+          "2",
+          ":1.2",
+          "4f52ed1277be0a4be1cdd4506ae3ea66"
+        ],
+        "exit": 0,
+        "seconds": 0.008293942999898718
+      }
+    ],
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "cases": {
+      "absent": {
+        "capabilities": [],
+        "version": 1,
+        "available": true,
+        "state": "ready",
+        "bus_id": "4f52ed1277be0a4be1cdd4506ae3ea66",
+        "server_owner": "",
+        "notification_id": 0,
+        "detail": "notification_server_unavailable"
+      },
+      "provider": {
+        "capabilities": [
+          "actions",
+          "body",
+          "body-hyperlinks",
+          "icon-static",
+          "synchronous",
+          "private-synchronous",
+          "x-canonical-private-synchronous",
+          "x-dunst-stack-tag",
+          "body-markup"
+        ],
+        "version": 1,
+        "available": true,
+        "state": "ready",
+        "bus_id": "4f52ed1277be0a4be1cdd4506ae3ea66",
+        "server_owner": ":1.2",
+        "notification_id": 0,
+        "detail": "ready"
+      },
+      "sent": {
+        "capabilities": [
+          "actions",
+          "body",
+          "body-hyperlinks",
+          "icon-static",
+          "synchronous",
+          "private-synchronous",
+          "x-canonical-private-synchronous",
+          "x-dunst-stack-tag",
+          "body-markup"
+        ],
+        "version": 1,
+        "available": true,
+        "state": "sent",
+        "bus_id": "4f52ed1277be0a4be1cdd4506ae3ea66",
+        "server_owner": ":1.2",
+        "notification_id": 2,
+        "detail": "sent"
+      },
+      "closed": {
+        "capabilities": [],
+        "version": 1,
+        "available": true,
+        "state": "closed",
+        "bus_id": "4f52ed1277be0a4be1cdd4506ae3ea66",
+        "server_owner": ":1.2",
+        "notification_id": 2,
+        "detail": "closed"
+      }
+    }
+  },
+  "dependency_comparison": {
+    "status": "passed",
+    "source_archive": "8ffa228a2075df6b6c71474f195940bc27b21865fb9cf2ea087cba23367af40e",
+    "summary": {
+      "no-bus": {
+        "seconds": [
+          0.0007935440000892413,
+          0.0021222569999963525,
+          0.0005612520000113363,
+          0.0005537519999734286,
+          0.0005149589999291493
+        ],
+        "median_seconds": 0.0005612520000113363,
+        "rss_kib": [
+          1060,
+          996,
+          996,
+          1044,
+          996
+        ],
+        "median_rss_kib": 996
+      },
+      "native": {
+        "seconds": [
+          0.0012832959999968807,
+          0.00138012999991588,
+          0.0013551710000001549,
+          0.0012020870000242212,
+          0.0012072529999613835
+        ],
+        "median_seconds": 0.0012832959999968807,
+        "rss_kib": [
+          2784,
+          2784,
+          2912,
+          2912,
+          2912
+        ],
+        "median_rss_kib": 2912
+      },
+      "godbus": {
+        "seconds": [
+          0.0019823400000404945,
+          0.0016506719999824782,
+          0.0017981309999868245,
+          0.0016626299999416005,
+          0.005266309000035108
+        ],
+        "median_seconds": 0.0017981309999868245,
+        "rss_kib": [
+          4964,
+          5080,
+          5220,
+          5204,
+          5220
+        ],
+        "median_rss_kib": 5204
+      }
+    },
+    "artifacts": {
+      "native-client-fixed": {
+        "sha256": "929fe9401b67c1ddb765046e17367c4e267368022fa40ec1d3621eae6a4343a8",
+        "bytes": 78024
+      },
+      "disabled-client": {
+        "sha256": "596d2ba6724f8ec08ddfd49b21eb33a9646ca66bda1abc6641d9e1beba5488f3",
+        "bytes": 70336
+      },
+      "godbus-client-bin": {
+        "sha256": "0274e7388bea78daf751c9372d4ef5cde2bbbefa2c203a0568bbd5a0430825f2",
+        "bytes": 5163363
+      }
+    },
+    "closures": {
+      "native": "\tlinux-vdso.so.1 (0x0000ffffbb0f6000)\n\tlibdbus-1.so.3 => /lib/aarch64-linux-gnu/libdbus-1.so.3 (0x0000ffffbb000000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffffbae40000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffffbb0b0000)\n\tlibsystemd.so.0 => /lib/aarch64-linux-gnu/libsystemd.so.0 (0x0000ffffbad40000)\n\tlibcap.so.2 => /lib/aarch64-linux-gnu/libcap.so.2 (0x0000ffffbad10000)\n\tlibgcrypt.so.20 => /lib/aarch64-linux-gnu/libgcrypt.so.20 (0x0000ffffbac00000)\n\tliblz4.so.1 => /lib/aarch64-linux-gnu/liblz4.so.1 (0x0000ffffbabc0000)\n\tliblzma.so.5 => /lib/aarch64-linux-gnu/liblzma.so.5 (0x0000ffffbab70000)\n\tlibzstd.so.1 => /lib/aarch64-linux-gnu/libzstd.so.1 (0x0000ffffbaab0000)\n\tlibgpg-error.so.0 => /lib/aarch64-linux-gnu/libgpg-error.so.0 (0x0000ffffbaa60000)\n",
+      "godbus": "\tlinux-vdso.so.1 (0x0000ffff83f06000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff83d00000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff83ec0000)\n"
+    },
+    "versions": "dbus-daemon\t1.14.10-4ubuntu4.1\ndunst\t1.9.2-1build2\nlibdbus-1-3:arm64\t1.14.10-4ubuntu4.1\nlibdbus-1-dev:arm64\t1.14.10-4ubuntu4.1\ntime\t1.9-0.2build1\n",
+    "candidate_go_mod": "module fvwm-session-bus-comparison\n\ngo 1.20\n\nrequire github.com/godbus/dbus/v5 v5.2.4\n\nreplace github.com/godbus/dbus/v5 => ../godbus-source\n",
+    "candidate_go_sum": null,
+    "notification_cases": {
+      "native-notification": {
+        "sent": {
+          "capabilities": [
+            "actions",
+            "body",
+            "body-hyperlinks",
+            "icon-static",
+            "synchronous",
+            "private-synchronous",
+            "x-canonical-private-synchronous",
+            "x-dunst-stack-tag"
+          ],
+          "version": 1,
+          "available": true,
+          "state": "sent",
+          "bus_id": "3415008743d5a5049cef32006ae3e575",
+          "server_owner": ":1.1",
+          "notification_id": 2,
+          "detail": "sent"
+        },
+        "closed": {
+          "capabilities": [],
+          "version": 1,
+          "available": true,
+          "state": "closed",
+          "bus_id": "3415008743d5a5049cef32006ae3e575",
+          "server_owner": ":1.1",
+          "notification_id": 2,
+          "detail": "closed"
+        }
+      },
+      "godbus-notification": {
+        "sent": {
+          "available": true,
+          "bus_id": "3415008743d5a5049cef32006ae3e575",
+          "capabilities": [
+            "actions",
+            "body",
+            "body-hyperlinks",
+            "icon-static",
+            "synchronous",
+            "private-synchronous",
+            "x-canonical-private-synchronous",
+            "x-dunst-stack-tag"
+          ],
+          "detail": "ready",
+          "notification_id": 3,
+          "server_owner": ":1.1",
+          "state": "sent",
+          "version": 1
+        },
+        "closed": {
+          "available": true,
+          "bus_id": "3415008743d5a5049cef32006ae3e575",
+          "capabilities": [
+            "actions",
+            "body",
+            "body-hyperlinks",
+            "icon-static",
+            "synchronous",
+            "private-synchronous",
+            "x-canonical-private-synchronous",
+            "x-dunst-stack-tag"
+          ],
+          "detail": "ready",
+          "notification_id": 3,
+          "server_owner": ":1.1",
+          "state": "closed",
+          "version": 1
+        }
+      },
+      "native-no-address": {
+        "capabilities": [],
+        "version": 1,
+        "available": true,
+        "state": "unavailable",
+        "bus_id": "",
+        "server_owner": "",
+        "notification_id": 0,
+        "detail": "missing_inherited_session_address"
+      }
+    },
+    "limits": [
+      "local ARM64 Linux container on macOS; not native CPU qualification",
+      "prototype sizes unstripped; C O2 vs normal Go build; shared dependencies excluded from file bytes",
+      "five startup probes each; time includes GNU time launcher; CPU below reporting precision",
+      "discarded fork-inherited RSS fallback; no full resident-session or six-target measurement"
+    ]
+  },
+  "artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3": {
+      "sha256": "d66a52661b4507fa5084241ae540438e6948d0ae70acd12a622212852cbc7a0b",
+      "bytes": 5689360
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "ea499dcffe250ef913ec6ebdce7e3dd13ffb5453bf00041c494649467dbd9dd0",
+      "bytes": 453232
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "c12e17cc2407eb0e105c31016bbfe102e667266bd5592fa680deca7a850b5bdc",
+      "bytes": 6505437
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-session": {
+      "sha256": "cc1ff110243a878b364071dddfa0f591cea0fdeebd767d1d8a3b0e0f0ecdd0aa",
+      "bytes": 5221580
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": {
+      "sha256": "823737e4bca3b054fb8bf9c266050eb8f64eb713759f39cd308818915a9704a9",
+      "bytes": 178816
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus": {
+      "sha256": "e044b42209d33c52de70d32be2a451f836b5dd28a6a2d1d6699f87b6eb2d9eba",
+      "bytes": 1828568
+    },
+    "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-session-clients-policy": {
+      "sha256": "327e8dd9c32d5e4a7aa69f9e6442e14f01f2892fcd081bedaa8392342b5fe453",
+      "bytes": 94600
+    }
+  },
+  "compilers": {
+    "host": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    },
+    "build": {
+      "c": {
+        "id": "gcc",
+        "exelist": [
+          "cc"
+        ],
+        "linker_exelist": [
+          "cc"
+        ],
+        "file_suffixes": [
+          "c"
+        ],
+        "default_suffix": "c",
+        "version": "13.3.0",
+        "full_version": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+        "linker_id": "ld.bfd"
+      }
+    }
+  },
+  "go_sdk": "go1.27.2\ntime 2026-10-02T20:28:03Z\n",
+  "uname": [
+    "Linux",
+    "288f898505a4",
+    "6.18.10-200.fc43.aarch64",
+    "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+    "aarch64"
+  ],
+  "wrapper_size": {
+    "previous_bytes": 4755247,
+    "current_bytes": 5221580,
+    "delta_bytes": 466333,
+    "scope": "unstripped ARM64 executable; not RSS or whole-desktop footprint"
+  },
+  "screenshots": {
+    "schema_version": 1,
+    "checkpoint": "R1 session control and optional services",
+    "base": "94cf28be170bb66258de7c931feb420250e02128",
+    "files": [
+      {
+        "profile": "slate-dark",
+        "file": "session-services-slate-dark-panel.png",
+        "sha256": "e7b4847b0e3f98abf27291aa62c71d73ab21c892043b0a4655ad83978fb85ff5",
+        "bytes": 67133,
+        "configuration_file": "session-services-slate-dark.fvwm",
+        "configuration_sha256": "3380bfbbdb0733bbac8bb87ca0e8661ad9599893d2d0b7917b0981bddd0c90c7",
+        "source": "native-x04",
+        "geometry": [
+          1440,
+          1000
+        ],
+        "inspected": true
+      },
+      {
+        "profile": "dune-light",
+        "file": "session-services-dune-light-settings.png",
+        "sha256": "201b02c929901d97da7e17f7d544651932c0ce6d20361631768d4c5449273bbb",
+        "bytes": 62167,
+        "configuration_file": "session-services-dune-light.fvwm",
+        "configuration_sha256": "3bc97bdd0676637deb34d68a24ee7e8f1ccb56d657c68682d7a459a70b216038",
+        "source": "native-x04",
+        "geometry": [
+          1440,
+          1000
+        ],
+        "inspected": true
+      },
+      {
+        "profile": "classic-large",
+        "file": "session-services-classic-large-waiting.png",
+        "sha256": "cc92996358566c2ddd81d3cded9a5adb3862f1e2c6f178fdff2c22da337b6f99",
+        "bytes": 144477,
+        "configuration_file": "session-services-classic-large.fvwm",
+        "configuration_sha256": "ac389e1066ce7e4a09b4b92ac2f1dc91ff37719c4b563cef469fff5e4122d1df",
+        "source": "native-x07",
+        "geometry": [
+          1440,
+          1000
+        ],
+        "inspected": true,
+        "customization": {
+          "file": "session-services-classic-customization.fvwm",
+          "sha256": "05f5901dc5396e35e90e70dba3bcf709cba4c7073a4dc7f7cf5f7e8a9693f2c1"
+        }
+      }
+    ],
+    "limits": [
+      "Original nested-X captures; no image edits",
+      "Palette selected through shared typed settings; Classic loads saved normal FVWM overlay",
+      "Configuration snapshots contain private fixture paths and are evidence, not install-ready themes",
+      "Whole-guest panel counters are not WM benchmarks"
+    ]
+  },
+  "evidence_archive": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-29/r1-session-services/evidence02.tgz",
+    "sha256": "ea0c8c86cfbc0582c2389aa0b8a69ac10585405fc3ddebc0d50c72f9a70d1391",
+    "bytes": 3028659,
+    "files": 264
+  },
+  "retention": {
+    "guest": {
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current",
+          "files": 273,
+          "bytes": 36029725,
+          "generated_binaries": [
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/session-bus-sanitized",
+              "sha256": "7e92dea4e1275b74b736618367da39d47d6cf22d2258e6b925862b9d56f75de8",
+              "bytes": 576024
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-freebsd/fvwmsession",
+              "sha256": "2eae0ea13b3944fb724b1aa3a903459cb225a452b55d8ea1887b7efe27b103a1",
+              "bytes": 4977175
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-freebsd/fvwmdesktop",
+              "sha256": "fac696373414115bb0d62b5cf5fb343db9d2fc2a85754a09763957497e3ccb85",
+              "bytes": 6244586
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-openbsd/fvwmsession",
+              "sha256": "b8fe2472bf145f47901001a914f34881d021621f6c532d0f9dd2abeccd80d695",
+              "bytes": 4975833
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/cross-openbsd/fvwmdesktop",
+              "sha256": "b7cc4259da9663ecbf203c4ff7fb8294655cc3211604847dfea9181cf2871965",
+              "bytes": 6239338
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/stage/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+              "sha256": "0906a11f3eb70db6a1645e4268ee32551ae38981a524335d4f787c527b26a12b",
+              "bytes": 5221492
+            },
+            {
+              "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-current/stage/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+              "sha256": "823737e4bca3b054fb8bf9c266050eb8f64eb713759f39cd308818915a9704a9",
+              "bytes": 178816
+            }
+          ]
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-inputs",
+          "files": 14,
+          "bytes": 28640623,
+          "generated_binaries": []
+        },
+        {
+          "path": "/tmp/fvwm-session-services-eval",
+          "files": 134,
+          "bytes": 5775499,
+          "generated_binaries": [
+            {
+              "path": "/tmp/fvwm-session-services-eval/native-client",
+              "sha256": "8e2be40f20625ac60b1c342d24b8e8ac1b3b05d28e3789f772ca279c45fee17a",
+              "bytes": 78016
+            },
+            {
+              "path": "/tmp/fvwm-session-services-eval/disabled-client",
+              "sha256": "596d2ba6724f8ec08ddfd49b21eb33a9646ca66bda1abc6641d9e1beba5488f3",
+              "bytes": 70336
+            },
+            {
+              "path": "/tmp/fvwm-session-services-eval/godbus-client-bin",
+              "sha256": "0274e7388bea78daf751c9372d4ef5cde2bbbefa2c203a0568bbd5a0430825f2",
+              "bytes": 5163363
+            },
+            {
+              "path": "/tmp/fvwm-session-services-eval/native-client-fixed",
+              "sha256": "929fe9401b67c1ddb765046e17367c4e267368022fa40ec1d3621eae6a4343a8",
+              "bytes": 78024
+            }
+          ]
+        },
+        {
+          "path": "/tmp/fvwm-session-services-comparison-input.tgz",
+          "files": 1,
+          "bytes": 88581,
+          "generated_binaries": []
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-evidence01.tgz",
+          "files": 1,
+          "bytes": 2354494,
+          "generated_binaries": []
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-evidence01.json",
+          "files": 1,
+          "bytes": 38702,
+          "generated_binaries": []
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-evidence02.tgz",
+          "files": 1,
+          "bytes": 3028659,
+          "generated_binaries": []
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-session-services-evidence02.json",
+          "files": 1,
+          "bytes": 41180,
+          "generated_binaries": []
+        }
+      ],
+      "total_bytes": 75997463,
+      "verified_host_archive_sha256": "ea0c8c86cfbc0582c2389aa0b8a69ac10585405fc3ddebc0d50c72f9a70d1391",
+      "verified_host_files": 264,
+      "live_owned_fixture_processes": [],
+      "preserved": [
+        "source",
+        "build-gcc",
+        "build-module-waits-asan",
+        "r1-xdg-installed-prefix",
+        "SDK/dependency caches",
+        "PR299 performance reference",
+        "last source/receipt"
+      ]
+    },
+    "host": {
+      "retired": [
+        {
+          "path": "evidence.tgz",
+          "bytes": 2354494
+        },
+        {
+          "path": "early-ui/notification-fallback02.png",
+          "bytes": 62051
+        },
+        {
+          "path": "early-ui/notification-unavailable-fallback.png",
+          "bytes": 68055
+        },
+        {
+          "path": "early-ui/session-panel.png",
+          "bytes": 67655
+        }
+      ],
+      "verified_mapping": {
+        "adapter-sanitizer-build.stderr": "adapter-sanitizer-build.stderr",
+        "adapter-sanitizer-build.stdout": "adapter-sanitizer-build.stdout",
+        "adapter-sanitizer-bus.stderr": "adapter-sanitizer-bus.stderr",
+        "adapter-sanitizer-close.stderr": "adapter-sanitizer-close.stderr",
+        "adapter-sanitizer-close.stdout": "adapter-sanitizer-close.stdout",
+        "adapter-sanitizer-dunst.log": "adapter-sanitizer-dunst.log",
+        "adapter-sanitizer-no-address.stderr": "adapter-sanitizer-no-address.stderr",
+        "adapter-sanitizer-no-address.stdout": "adapter-sanitizer-no-address.stdout",
+        "adapter-sanitizer-no-provider.stderr": "adapter-sanitizer-no-provider.stderr",
+        "adapter-sanitizer-no-provider.stdout": "adapter-sanitizer-no-provider.stdout",
+        "adapter-sanitizer-notify.stderr": "adapter-sanitizer-notify.stderr",
+        "adapter-sanitizer-notify.stdout": "adapter-sanitizer-notify.stdout",
+        "adapter-sanitizer-probe.stderr": "adapter-sanitizer-probe.stderr",
+        "adapter-sanitizer-probe.stdout": "adapter-sanitizer-probe.stdout",
+        "adapter-sanitizer-result.json": "adapter-sanitizer-result.json",
+        "adapter-sanitizer-xserver.log": "adapter-sanitizer-xserver.log",
+        "catalog-contract.stderr": "catalog-contract.stderr",
+        "catalog-contract.stdout": "catalog-contract.stdout",
+        "commands01.json": "commands01.json",
+        "commands02.json": "commands02.json",
+        "commands03.json": "commands03.json",
+        "commands04.json": "commands04.json",
+        "commands05.json": "commands05.json",
+        "commands06.json": "commands06.json",
+        "comparison-comparison-result.json": "comparison-comparison-result.json",
+        "comparison-comparison02-result.json": "comparison-comparison02-result.json",
+        "comparison-comparison03-result.json": "comparison-comparison03-result.json",
+        "comparison-comparison05-result.json": "comparison-comparison05-result.json",
+        "comparison-cost-receipt.json": "comparison-cost-receipt.json",
+        "comparison-godbus-closure.stdout": "comparison-godbus-closure.stdout",
+        "comparison-native-closure.stdout": "comparison-native-closure.stdout",
+        "desktop-build02.stderr": "desktop-build02.stderr",
+        "desktop-build02.stdout": "desktop-build02.stdout",
+        "disabled-closure.stderr": "disabled-closure.stderr",
+        "disabled-closure.stdout": "disabled-closure.stdout",
+        "disabled-stub.stderr": "disabled-stub.stderr",
+        "disabled-stub.stdout": "disabled-stub.stdout",
+        "final-observations.json": "final-observations01.json",
+        "fixture-syntax.stderr": "fixture-syntax.stderr",
+        "fixture-syntax.stdout": "fixture-syntax.stdout",
+        "go-controller-normal02.stderr": "go-controller-normal02.stderr",
+        "go-controller-normal02.stdout": "go-controller-normal02.stdout",
+        "go-controller-race02.stderr": "go-controller-race02.stderr",
+        "go-controller-race02.stdout": "go-controller-race02.stdout",
+        "go-controller-vet02.stderr": "go-controller-vet02.stderr",
+        "go-controller-vet02.stdout": "go-controller-vet02.stdout",
+        "go-cross-freebsd.stderr": "go-cross-freebsd.stderr",
+        "go-cross-freebsd.stdout": "go-cross-freebsd.stdout",
+        "go-cross-openbsd.stderr": "go-cross-openbsd.stderr",
+        "go-cross-openbsd.stdout": "go-cross-openbsd.stdout",
+        "go-normal.stderr": "go-normal.stderr",
+        "go-normal.stdout": "go-normal.stdout",
+        "go-race.stderr": "go-race.stderr",
+        "go-race.stdout": "go-race.stdout",
+        "go-vet.stderr": "go-vet.stderr",
+        "go-vet.stdout": "go-vet.stdout",
+        "installed-map.stderr": "installed-map.stderr",
+        "installed-map.stdout": "installed-map.stdout",
+        "native-services.stderr": "native-services.stderr",
+        "native-services.stdout": "native-services.stdout",
+        "native-services02.stderr": "native-services02.stderr",
+        "native-services02.stdout": "native-services02.stdout",
+        "native-services03.stderr": "native-services03.stderr",
+        "native-services03.stdout": "native-services03.stdout",
+        "native-services04.stderr": "native-services04.stderr",
+        "native-services04.stdout": "native-services04.stdout",
+        "native-services05.stderr": "native-services05.stderr",
+        "native-services05.stdout": "native-services05.stdout",
+        "native-services06.stderr": "native-services06.stderr",
+        "native-services06.stdout": "native-services06.stdout",
+        "native-x01/evidence.json": "native-x01/evidence.json",
+        "native-x01/slate-dark/configuration.fvwm": "native-x01/slate-dark/configuration.fvwm",
+        "native-x01/slate-dark/evidence.json": "native-x01/slate-dark/evidence.json",
+        "native-x01/slate-dark/notification-unavailable-fallback.png": "native-x01/slate-dark/notification-unavailable-fallback.png",
+        "native-x01/slate-dark/session-panel.png": "native-x01/slate-dark/session-panel.png",
+        "native-x01/slate-dark/slate-dark.log": "native-x01/slate-dark/slate-dark.log",
+        "native-x01/slate-dark/xserver.log": "native-x01/slate-dark/xserver.log",
+        "native-x02/evidence.json": "native-x02/evidence.json",
+        "native-x02/slate-dark/configuration.fvwm": "native-x02/slate-dark/configuration.fvwm",
+        "native-x02/slate-dark/evidence.json": "native-x02/slate-dark/evidence.json",
+        "native-x02/slate-dark/notification-unavailable-fallback.png": "native-x02/slate-dark/notification-unavailable-fallback.png",
+        "native-x02/slate-dark/session-panel.png": "native-x02/slate-dark/session-panel.png",
+        "native-x02/slate-dark/slate-dark.log": "native-x02/slate-dark/slate-dark.log",
+        "native-x02/slate-dark/xserver.log": "native-x02/slate-dark/xserver.log",
+        "native-x03/evidence.json": "native-x03/evidence.json",
+        "native-x03/slate-dark/configuration.fvwm": "native-x03/slate-dark/configuration.fvwm",
+        "native-x03/slate-dark/evidence.json": "native-x03/slate-dark/evidence.json",
+        "native-x03/slate-dark/session-panel.png": "native-x03/slate-dark/session-panel.png",
+        "native-x03/slate-dark/slate-dark.log": "native-x03/slate-dark/slate-dark.log",
+        "native-x03/slate-dark/xserver.log": "native-x03/slate-dark/xserver.log",
+        "native-x04/classic-large/classic-large.log": "native-x04/classic-large/classic-large.log",
+        "native-x04/classic-large/configuration.fvwm": "native-x04/classic-large/configuration.fvwm",
+        "native-x04/classic-large/dune-light.log": "native-x04/classic-large/dune-light.log",
+        "native-x04/classic-large/evidence.json": "native-x04/classic-large/evidence.json",
+        "native-x04/classic-large/notification-unavailable-fallback.png": "native-x04/classic-large/notification-unavailable-fallback.png",
+        "native-x04/classic-large/session-panel.png": "native-x04/classic-large/session-panel.png",
+        "native-x04/classic-large/session-settings.png": "native-x04/classic-large/session-settings.png",
+        "native-x04/classic-large/session-waiting.png": "native-x04/classic-large/session-waiting.png",
+        "native-x04/classic-large/slate-dark.log": "native-x04/classic-large/slate-dark.log",
+        "native-x04/classic-large/xserver.log": "native-x04/classic-large/xserver.log",
+        "native-x04/dune-light/configuration.fvwm": "native-x04/dune-light/configuration.fvwm",
+        "native-x04/dune-light/dune-light.log": "native-x04/dune-light/dune-light.log",
+        "native-x04/dune-light/evidence.json": "native-x04/dune-light/evidence.json",
+        "native-x04/dune-light/notification-unavailable-fallback.png": "native-x04/dune-light/notification-unavailable-fallback.png",
+        "native-x04/dune-light/session-panel.png": "native-x04/dune-light/session-panel.png",
+        "native-x04/dune-light/session-settings.png": "native-x04/dune-light/session-settings.png",
+        "native-x04/dune-light/session-waiting.png": "native-x04/dune-light/session-waiting.png",
+        "native-x04/dune-light/slate-dark.log": "native-x04/dune-light/slate-dark.log",
+        "native-x04/dune-light/xserver.log": "native-x04/dune-light/xserver.log",
+        "native-x04/evidence.json": "native-x04/evidence.json",
+        "native-x04/optional-reuse/borrowed-bus.log": "native-x04/optional-reuse/borrowed-bus.log",
+        "native-x04/optional-reuse/classic-large.log": "native-x04/optional-reuse/classic-large.log",
+        "native-x04/optional-reuse/configuration.fvwm": "native-x04/optional-reuse/configuration.fvwm",
+        "native-x04/optional-reuse/dune-light.log": "native-x04/optional-reuse/dune-light.log",
+        "native-x04/optional-reuse/evidence.json": "native-x04/optional-reuse/evidence.json",
+        "native-x04/optional-reuse/notification-reuse.log": "native-x04/optional-reuse/notification-reuse.log",
+        "native-x04/optional-reuse/optional-reuse.log": "native-x04/optional-reuse/optional-reuse.log",
+        "native-x04/optional-reuse/slate-dark.log": "native-x04/optional-reuse/slate-dark.log",
+        "native-x04/optional-reuse/xserver.log": "native-x04/optional-reuse/xserver.log",
+        "native-x04/slate-dark/configuration.fvwm": "native-x04/slate-dark/configuration.fvwm",
+        "native-x04/slate-dark/evidence.json": "native-x04/slate-dark/evidence.json",
+        "native-x04/slate-dark/notification-unavailable-fallback.png": "native-x04/slate-dark/notification-unavailable-fallback.png",
+        "native-x04/slate-dark/session-panel.png": "native-x04/slate-dark/session-panel.png",
+        "native-x04/slate-dark/session-settings.png": "native-x04/slate-dark/session-settings.png",
+        "native-x04/slate-dark/session-waiting.png": "native-x04/slate-dark/session-waiting.png",
+        "native-x04/slate-dark/slate-dark.log": "native-x04/slate-dark/slate-dark.log",
+        "native-x04/slate-dark/xserver.log": "native-x04/slate-dark/xserver.log",
+        "native-x05/evidence.json": "native-x05/evidence.json",
+        "native-x05/optional-reuse/borrowed-bus.log": "native-x05/optional-reuse/borrowed-bus.log",
+        "native-x05/optional-reuse/configuration.fvwm": "native-x05/optional-reuse/configuration.fvwm",
+        "native-x05/optional-reuse/evidence.json": "native-x05/optional-reuse/evidence.json",
+        "native-x05/optional-reuse/notification-reuse.log": "native-x05/optional-reuse/notification-reuse.log",
+        "native-x05/optional-reuse/optional-reuse.log": "native-x05/optional-reuse/optional-reuse.log",
+        "native-x05/optional-reuse/xserver.log": "native-x05/optional-reuse/xserver.log",
+        "native-x06/evidence.json": "native-x06/evidence.json",
+        "native-x06/optional-lost-bus/borrowed-bus.log": "native-x06/optional-lost-bus/borrowed-bus.log",
+        "native-x06/optional-lost-bus/configuration.fvwm": "native-x06/optional-lost-bus/configuration.fvwm",
+        "native-x06/optional-lost-bus/evidence.json": "native-x06/optional-lost-bus/evidence.json",
+        "native-x06/optional-lost-bus/notification-reuse.log": "native-x06/optional-lost-bus/notification-reuse.log",
+        "native-x06/optional-lost-bus/optional-lost-bus.log": "native-x06/optional-lost-bus/optional-lost-bus.log",
+        "native-x06/optional-lost-bus/optional-reuse.log": "native-x06/optional-lost-bus/optional-reuse.log",
+        "native-x06/optional-lost-bus/replacement-notification-reuse.log": "native-x06/optional-lost-bus/replacement-notification-reuse.log",
+        "native-x06/optional-lost-bus/xserver.log": "native-x06/optional-lost-bus/xserver.log",
+        "native-x06/optional-reuse/borrowed-bus.log": "native-x06/optional-reuse/borrowed-bus.log",
+        "native-x06/optional-reuse/configuration.fvwm": "native-x06/optional-reuse/configuration.fvwm",
+        "native-x06/optional-reuse/evidence.json": "native-x06/optional-reuse/evidence.json",
+        "native-x06/optional-reuse/notification-reuse.log": "native-x06/optional-reuse/notification-reuse.log",
+        "native-x06/optional-reuse/optional-reuse.log": "native-x06/optional-reuse/optional-reuse.log",
+        "native-x06/optional-reuse/replacement-notification-reuse.log": "native-x06/optional-reuse/replacement-notification-reuse.log",
+        "native-x06/optional-reuse/xserver.log": "native-x06/optional-reuse/xserver.log",
+        "native-x06/optional-start/borrowed-bus.log": "native-x06/optional-start/borrowed-bus.log",
+        "native-x06/optional-start/configuration.fvwm": "native-x06/optional-start/configuration.fvwm",
+        "native-x06/optional-start/evidence.json": "native-x06/optional-start/evidence.json",
+        "native-x06/optional-start/notification-reuse.log": "native-x06/optional-start/notification-reuse.log",
+        "native-x06/optional-start/notification-start.log": "native-x06/optional-start/notification-start.log",
+        "native-x06/optional-start/optional-lost-bus.log": "native-x06/optional-start/optional-lost-bus.log",
+        "native-x06/optional-start/optional-reuse.log": "native-x06/optional-start/optional-reuse.log",
+        "native-x06/optional-start/optional-start.log": "native-x06/optional-start/optional-start.log",
+        "native-x06/optional-start/replacement-notification-reuse.log": "native-x06/optional-start/replacement-notification-reuse.log",
+        "native-x06/optional-start/replacement-notification-start.log": "native-x06/optional-start/replacement-notification-start.log",
+        "native-x06/optional-start/xserver.log": "native-x06/optional-start/xserver.log",
+        "normal-build.stderr": "normal-build.stderr",
+        "normal-build.stdout": "normal-build.stdout",
+        "normal-configure.stderr": "normal-configure.stderr",
+        "normal-configure.stdout": "normal-configure.stdout",
+        "normal-policy.stderr": "normal-policy.stderr",
+        "normal-policy.stdout": "normal-policy.stdout",
+        "result01.json": "result01.json",
+        "result02.json": "result02.json",
+        "result03.json": "result03.json",
+        "result04.json": "result04.json",
+        "result05.json": "result05.json",
+        "result06.json": "result06.json",
+        "sanitizer-build.stderr": "sanitizer-build.stderr",
+        "sanitizer-build.stdout": "sanitizer-build.stdout",
+        "sanitizer-configure.stderr": "sanitizer-configure.stderr",
+        "sanitizer-configure.stdout": "sanitizer-configure.stdout",
+        "sanitizer-policy.stderr": "sanitizer-policy.stderr",
+        "sanitizer-policy.stdout": "sanitizer-policy.stdout",
+        "scoped-install.json": "scoped-install.json",
+        "source01.json": "source01.json",
+        "source02.json": "source02.json",
+        "source03.json": "source03.json",
+        "source04.json": "source04.json",
+        "source05.json": "source05.json",
+        "source06.json": "source06.json",
+        "startup-regression.stderr": "startup-regression.stderr",
+        "startup-regression.stdout": "startup-regression.stdout",
+        "startup-x01/direct/configuration.fvwm": "startup-x01/direct/configuration.fvwm",
+        "startup-x01/direct/system/autostart/a-visible.desktop": "startup-x01/direct/system/autostart/a-visible.desktop",
+        "startup-x01/direct/system/autostart/b-hidden.desktop": "startup-x01/direct/system/autostart/b-hidden.desktop",
+        "startup-x01/direct/system/autostart/c-malformed.desktop": "startup-x01/direct/system/autostart/c-malformed.desktop",
+        "startup-x01/direct/system/autostart/d-filter.desktop": "startup-x01/direct/system/autostart/d-filter.desktop",
+        "startup-x01/direct/system/autostart/e-missing.desktop": "startup-x01/direct/system/autostart/e-missing.desktop",
+        "startup-x01/direct/user/autostart/b-hidden.desktop": "startup-x01/direct/user/autostart/b-hidden.desktop",
+        "startup-x01/direct/user/autostart/c-malformed.desktop": "startup-x01/direct/user/autostart/c-malformed.desktop",
+        "startup-x01/direct.log": "startup-x01/direct.log",
+        "startup-x01/evidence.json": "startup-x01/evidence.json",
+        "startup-x01/external/configuration.fvwm": "startup-x01/external/configuration.fvwm",
+        "startup-x01/external/system/autostart/a-visible.desktop": "startup-x01/external/system/autostart/a-visible.desktop",
+        "startup-x01/external/system/autostart/b-hidden.desktop": "startup-x01/external/system/autostart/b-hidden.desktop",
+        "startup-x01/external/system/autostart/c-malformed.desktop": "startup-x01/external/system/autostart/c-malformed.desktop",
+        "startup-x01/external/system/autostart/d-filter.desktop": "startup-x01/external/system/autostart/d-filter.desktop",
+        "startup-x01/external/system/autostart/e-missing.desktop": "startup-x01/external/system/autostart/e-missing.desktop",
+        "startup-x01/external/user/autostart/b-hidden.desktop": "startup-x01/external/user/autostart/b-hidden.desktop",
+        "startup-x01/external/user/autostart/c-malformed.desktop": "startup-x01/external/user/autostart/c-malformed.desktop",
+        "startup-x01/external.log": "startup-x01/external.log",
+        "startup-x01/no-autostart/configuration.fvwm": "startup-x01/no-autostart/configuration.fvwm",
+        "startup-x01/no-autostart/system/autostart/a-visible.desktop": "startup-x01/no-autostart/system/autostart/a-visible.desktop",
+        "startup-x01/no-autostart/system/autostart/b-hidden.desktop": "startup-x01/no-autostart/system/autostart/b-hidden.desktop",
+        "startup-x01/no-autostart/system/autostart/c-malformed.desktop": "startup-x01/no-autostart/system/autostart/c-malformed.desktop",
+        "startup-x01/no-autostart/system/autostart/d-filter.desktop": "startup-x01/no-autostart/system/autostart/d-filter.desktop",
+        "startup-x01/no-autostart/system/autostart/e-missing.desktop": "startup-x01/no-autostart/system/autostart/e-missing.desktop",
+        "startup-x01/no-autostart/user/autostart/b-hidden.desktop": "startup-x01/no-autostart/user/autostart/b-hidden.desktop",
+        "startup-x01/no-autostart/user/autostart/c-malformed.desktop": "startup-x01/no-autostart/user/autostart/c-malformed.desktop",
+        "startup-x01/no-autostart.log": "startup-x01/no-autostart.log",
+        "startup-x01/owned/application.jsonl": "startup-x01/owned/application.jsonl",
+        "startup-x01/owned/configuration.fvwm": "startup-x01/owned/configuration.fvwm",
+        "startup-x01/owned/system/autostart/a-visible.desktop": "startup-x01/owned/system/autostart/a-visible.desktop",
+        "startup-x01/owned/system/autostart/b-hidden.desktop": "startup-x01/owned/system/autostart/b-hidden.desktop",
+        "startup-x01/owned/system/autostart/c-malformed.desktop": "startup-x01/owned/system/autostart/c-malformed.desktop",
+        "startup-x01/owned/system/autostart/d-filter.desktop": "startup-x01/owned/system/autostart/d-filter.desktop",
+        "startup-x01/owned/system/autostart/e-missing.desktop": "startup-x01/owned/system/autostart/e-missing.desktop",
+        "startup-x01/owned/user/autostart/b-hidden.desktop": "startup-x01/owned/user/autostart/b-hidden.desktop",
+        "startup-x01/owned/user/autostart/c-malformed.desktop": "startup-x01/owned/user/autostart/c-malformed.desktop",
+        "startup-x01/owned.log": "startup-x01/owned.log",
+        "startup-x01/packaged/application.jsonl": "startup-x01/packaged/application.jsonl",
+        "startup-x01/packaged/configuration.fvwm": "startup-x01/packaged/configuration.fvwm",
+        "startup-x01/packaged/system/autostart/a-visible.desktop": "startup-x01/packaged/system/autostart/a-visible.desktop",
+        "startup-x01/packaged/system/autostart/b-hidden.desktop": "startup-x01/packaged/system/autostart/b-hidden.desktop",
+        "startup-x01/packaged/system/autostart/c-malformed.desktop": "startup-x01/packaged/system/autostart/c-malformed.desktop",
+        "startup-x01/packaged/system/autostart/d-filter.desktop": "startup-x01/packaged/system/autostart/d-filter.desktop",
+        "startup-x01/packaged/system/autostart/e-missing.desktop": "startup-x01/packaged/system/autostart/e-missing.desktop",
+        "startup-x01/packaged/user/autostart/b-hidden.desktop": "startup-x01/packaged/user/autostart/b-hidden.desktop",
+        "startup-x01/packaged/user/autostart/c-malformed.desktop": "startup-x01/packaged/user/autostart/c-malformed.desktop",
+        "startup-x01/packaged.log": "startup-x01/packaged.log",
+        "startup-x01/stalled/configuration.fvwm": "startup-x01/stalled/configuration.fvwm",
+        "startup-x01/stalled/system/autostart/a-visible.desktop": "startup-x01/stalled/system/autostart/a-visible.desktop",
+        "startup-x01/stalled/system/autostart/b-hidden.desktop": "startup-x01/stalled/system/autostart/b-hidden.desktop",
+        "startup-x01/stalled/system/autostart/c-malformed.desktop": "startup-x01/stalled/system/autostart/c-malformed.desktop",
+        "startup-x01/stalled/system/autostart/d-filter.desktop": "startup-x01/stalled/system/autostart/d-filter.desktop",
+        "startup-x01/stalled/system/autostart/e-missing.desktop": "startup-x01/stalled/system/autostart/e-missing.desktop",
+        "startup-x01/stalled/user/autostart/b-hidden.desktop": "startup-x01/stalled/user/autostart/b-hidden.desktop",
+        "startup-x01/stalled/user/autostart/c-malformed.desktop": "startup-x01/stalled/user/autostart/c-malformed.desktop",
+        "startup-x01/stalled.log": "startup-x01/stalled.log",
+        "startup-x01/xserver.log": "startup-x01/xserver.log",
+        "tagged-install.stderr": "tagged-install.stderr",
+        "tagged-install.stdout": "tagged-install.stdout"
+      },
+      "current_archive_sha256": "ea0c8c86cfbc0582c2389aa0b8a69ac10585405fc3ddebc0d50c72f9a70d1391"
+    },
+    "lab_normal_stop": true
+  },
+  "review": {
+    "type": "separate Temper source review; not human approval",
+    "findings": "all reported runtime lifecycle and panel findings resolved",
+    "source04_closure": "41e6b8e675ec6aa94326ea3a614d8b252d0d41efec0cb3df51b485823f4eb37b",
+    "final_artifact_review": "recorded with final candidate handoff outside its own Git tree",
+    "backend_model_effort": "unverified"
+  },
+  "limits": [
+    "Linux ARM64 container on macOS; no native-CPU performance qualification",
+    "BSD cross-builds are compile-only and precede the portable terminal-admission/panel fixes; no BSD runtime/session pass",
+    "No full six-target enabled/disabled service or default-display matrix in this focused batch",
+    "No passive notification server/history/actions, tray, secure locker, power/inhibitor or selected-agent/portal implementation",
+    "Eligibility covers live managed normal/dialog windows, excluding active exact module classes, other EWMH types and tear-offs; descriptive not authenticated",
+    "No forced application close, session restoration or hard preemption of a kernel-blocked call",
+    "Full #72/#77/#76 criteria remain open; #257/#258 remain parked"
+  ]
+}

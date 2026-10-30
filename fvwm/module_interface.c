@@ -56,6 +56,7 @@
 #include "query_json.h"
 #include "appearance_preview.h"
 #include "startup_notification.h"
+#include "session_clients.h"
 #include "action_palette.h"
 #include "colorset.h"
 #include "menustyle.h"
@@ -1170,6 +1171,8 @@ void CMD_Send_Query(F_CMD_ARGS)
 			FScreenGetTopologySnapshot(), &error);
 	else if (strcmp(spec.resource, "startups") == 0)
 		result = startup_notification_query(&spec, &error);
+	else if (strcmp(spec.resource, "session-clients") == 0)
+		result = session_clients_query(&spec, &error);
 	else if (strcmp(spec.resource, "palette") == 0)
 		result = action_palette_query(module, &spec, &error);
 	else if (strcmp(spec.resource, "workspaces") == 0)
@@ -1223,6 +1226,48 @@ void CMD_Send_Preview(F_CMD_ARGS)
 		return;
 	result = appearance_preview_request(module, &request, &error);
 	send_query_result(module, request.cookie, request.serial, result, error);
+}
+
+void CMD_Send_Session(F_CMD_ARGS)
+{
+	struct session_clients_request request;
+	fmodule *module = exc->m.module;
+	const char *error = NULL;
+	char command[96];
+	cJSON *result;
+
+	if (!module || !session_clients_parse(action, &request))
+		return;
+	result = session_clients_action(&request, command, &error);
+	if (result && command[0] &&
+	    request.operation == SESSION_CLIENTS_QUIT_IF_EMPTY)
+	{
+		/* Quit may never return. Publish only a request acknowledgment,
+		 * then repeat the final guard after output handling. No
+		 * dispatch/flush/callback between that guard and the engine. */
+		send_query_result(module, request.cookie, request.serial,
+			result, NULL);
+		if (!MOD_IS_RETIRED(module) &&
+		    session_clients_quit_ready(request.generation))
+			execute_function_override_window(NULL, exc,
+				command, NULL,
+				FUNC_DONT_EXPAND_COMMAND, NULL);
+		return;
+	}
+	if (result && command[0])
+	{
+		/* The helper copied a fixed command after the identity check.
+		 * No borrowed window survives this recursive engine call. */
+		execute_function_override_window(NULL, exc, command, NULL,
+			FUNC_DONT_EXPAND_COMMAND, NULL);
+		if (MOD_IS_RETIRED(module))
+		{
+			cJSON_Delete(result);
+			return;
+		}
+	}
+	send_query_result(module, request.cookie, request.serial,
+		result, error);
 }
 
 void CMD_Send_Palette(F_CMD_ARGS)

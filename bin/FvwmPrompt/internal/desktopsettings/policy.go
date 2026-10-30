@@ -20,7 +20,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 4
+const StateVersion = 5
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -111,6 +111,19 @@ var registry = []Setting{
 		Choices:     []string{"normal", "high"},
 		Group:       "appearance",
 		Description: "Normal or high contrast desktop presentation"},
+	{Key: "session_bus", Type: "enum", Default: "off",
+		Choices: []string{"off", "reuse", "start"}, Group: "session",
+		Description: "Session bus (next login)"},
+	{Key: "session_notifications", Type: "enum", Default: "off",
+		Choices: []string{"off", "external"}, Group: "session",
+		Description: "Use an existing notification server"},
+	{Key: "notification_dnd", Type: "boolean", Default: false,
+		Group: "session", Description: "Do not disturb"},
+}
+
+// SessionKey identifies the finite optional-service preference domain.
+func SessionKey(key string) bool {
+	return key == "session_bus" || key == "session_notifications" || key == "notification_dnd"
 }
 
 func Registry() map[string]Setting {
@@ -410,7 +423,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -423,6 +436,9 @@ func DecodeState(data []byte) (Values, error) {
 		{"wallpaper_palette", 3, "follow"},
 		{"wallpaper_appearance", 3, "follow"},
 		{"contrast", 4, "normal"},
+		{"session_bus", 5, "off"},
+		{"session_notifications", 5, "off"},
+		{"notification_dnd", 5, false},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

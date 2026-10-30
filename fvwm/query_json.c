@@ -104,7 +104,8 @@ bool fvwm_query_parse(const char *text, struct fvwm_query_spec *spec)
 		strlen(parsed.cookie) || !hex_token(parsed.serial, 16) ||
 	    !decimal(offset, strcmp(parsed.resource, "colorset") == 0 ?
 		INT_MAX : MODULE_QUERY_OFFSET_MAX, &parsed.offset) ||
-	    !decimal(limit, MODULE_QUERY_PAGE_MAX, &parsed.limit) ||
+	    !decimal(limit, strcmp(parsed.resource, "session-clients") == 0 ?
+		128 : MODULE_QUERY_PAGE_MAX, &parsed.limit) ||
 	    parsed.limit == 0 ||
 	    (strcmp(parsed.generation, "-") != 0 &&
 		!hex_token(parsed.generation, MODULE_QUERY_GENERATION_LEN)))

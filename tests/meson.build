@@ -88,6 +88,16 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             fvwm_event, fvwm_pager, fvwm_iconman],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 300)
+    test('session-services-xvfb', py,
+        args: [files('live_x/session_services_live.py'),
+            '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'session-services'],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop, fvwm_session,
+            fvwm_session_bus, fvwm_desktop_worker, fvwm_form,
+            fvwm_desktop_capture, fvwm_backer, fvwm_buttons,
+            fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 240)
     test('theme-composition-xvfb', py,
         args: [files('live_x/theme_composition_live.py'),
             '--build', meson.project_build_root(),
@@ -746,6 +756,15 @@ session_ready_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('session-ready', session_ready_test)
+
+session_clients_policy_test = executable(
+    'test-session-clients-policy',
+    ['test_session_clients_policy.c', '../fvwm/session_clients_policy.c',
+     '../fvwm/palette_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('session-clients-policy', session_clients_policy_test)
 
 mfl_stream_test = executable(
     'test-mfl-stream',

@@ -1012,14 +1012,23 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			"register"};
 		const char *binding_scopes[] = {"global", "menu",
 			"menu-fallback", "placement", "policy"};
+		const char *session_actions[] = {"delete", "quit-if-empty",
+			"delegate-xsmp"};
+		const char *session_operations[] = {"session-status",
+			"session-reprobe",
+			"notification-test", "notification-close", "logout"};
 		const char *resources[] = {"capabilities", "connection", "desktop",
 			"settings", "pending", "topology", "workspaces",
 			"bindings", "provider", "operations", "colorsets",
 			"appearance", "menu-styles", "decorations", "startups", "preview",
-			"files"};
+			"files", "session", "session-clients"};
 
 		if (!request_add_strings(result, "methods", methods, 9) ||
-		    !request_add_strings(result, "resources", resources, 17) ||
+		    !request_add_strings(result, "resources", resources, 19) ||
+		    !request_add_strings(result, "session_client_actions",
+			session_actions, 3) ||
+		    !request_add_strings(result, "session_operation_targets",
+			session_operations, 5) ||
 		    !cJSON_AddNumberToObject(result, "files_provider_limit",
 			MFL_FILES_PROVIDER_LIMIT) ||
 		    !cJSON_AddNumberToObject(result, "files_page_max",

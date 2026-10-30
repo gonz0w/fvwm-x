@@ -4568,3 +4568,11 @@ if session_dbus.found()
         build_by_default: false,
     )
 endif
+
+notify_startup_test = executable(
+    'test-notify-startup',
+    ['test_notify_startup.c', '../modules/FvwmNotify/notify_startup.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('notify-startup', notify_startup_test, timeout: 20)

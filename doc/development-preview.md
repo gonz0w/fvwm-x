@@ -1121,3 +1121,31 @@ Body/actions are the only advertised capabilities. Image/markup/sound support,
 persistent history and automatic service activation are not implemented. Full
 NOTIFY-01 acceptance remains open for its named combined platform/lifecycle and
 accessibility checks; these screenshots do not close the issue.
+
+## Notification lifecycle and mixed scale
+
+The current notification module follows dock reservations and committed monitor
+changes while preserving its live popup and keyboard-center windows. The native
+Xorg-dummy checkpoint switches the primary output from 1× to 2×, changes actual
+DPI to 1.5×, disables/re-enables the output and verifies an application action
+after reflow. A 96-pixel dock reservation also moves both views automatically.
+These are actual RandR transitions in a synthetic X server; physical hotplug,
+accessibility and full support-profile acceptance remain open.
+
+These captures use the same live notification/center at 2× with the existing
+[Slate](screenshots/notifications-slate-dark.fvwm),
+[Dune](screenshots/notifications-dune-light.fvwm) and
+[enlarged Classic](screenshots/notifications-classic-large.fvwm) overlays. They
+come from the final instrumented UI run, with leak detection enabled. The passive
+popup overlaps part of the explicit center in this fixture; it does not take
+focus. Text wraps within bounded content, including splitting long words; the
+large center header can truncate. Development is still in progress.
+
+![Slate native notification and center at 2×](screenshots/notifications-mixed-scale-slate-dark.png)
+
+![Dune native notification and center at 2×](screenshots/notifications-mixed-scale-dune-light.png)
+
+![Classic enlarged native notification and center at 2×](screenshots/notifications-mixed-scale-classic-large.png)
+
+[Source-bound lifecycle, topology and sanitizer evidence](../dev-docs/verification/VERIFICATION-2026-10-30-NOTIFICATION-LIFECYCLE.md)
+records the startup/producer tests, corrected defects and remaining release gates.

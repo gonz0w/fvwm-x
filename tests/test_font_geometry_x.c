@@ -97,6 +97,19 @@ static void test_fontset_width(Display *display, char *text)
 	FlocaleUnloadFont(display, font);
 }
 
+static void test_fallback_cache(Display *display, FlocaleFont *font)
+{
+	char missing[] = "\xf4\x8f\xbf\xbf";
+	int width;
+
+	/* U+10FFFF is absent from the fixture's Sans face. Two real lookups
+	 * populate then reuse the fallback cache retired at process teardown. */
+	assert(!XftCharExists(display, font->fftf.fftfont[0], 0x10ffff));
+	width = FftTextWidth(display, font, missing, sizeof(missing) - 1);
+	assert(width >= 0);
+	assert(FftTextWidth(display, font, missing, sizeof(missing) - 1) == width);
+}
+
 static void test_shadow_positions(Display *display)
 {
 	char description[128];
@@ -237,6 +250,7 @@ int main(void)
 	test_utf8_boundaries();
 	font = FlocaleLoadFont(display, ordinary, "font-geometry-test");
 	assert(font && font->fftf.fftfont[0] != NULL);
+	test_fallback_cache(display, font);
 	memset(text, 'a', 65539);
 	text[65539] = '\0';
 	test_fontset_width(display, text);
@@ -327,6 +341,6 @@ int main(void)
 	FlocaleUnloadFont(display, font);
 	free(text);
 	XCloseDisplay(display);
-	FcFini(); /* Release Fontconfig's process cache for leak checking. */
+	FftFini();
 	return 0;
 }

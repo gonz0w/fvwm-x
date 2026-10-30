@@ -33,6 +33,9 @@ FftFontType *FftGetFontAtScale(
 	Display *dpy, char *fontname, char *module,
 	monitor_scale_factor factor);
 void FftCloseFont(Display *dpy, FftFontType *fftf);
+/* Process-final only: unload all fonts and close all displays first. Releases
+ * fallback patterns and Fontconfig state; no subsequent font use is allowed. */
+void FftFini(void);
 
 void FftDrawString(
 	Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,

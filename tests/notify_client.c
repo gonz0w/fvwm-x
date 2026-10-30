@@ -21,6 +21,13 @@
 #define PATH "/org/freedesktop/Notifications"
 #define LINE_MAXIMUM 20000
 #define COMMAND_MAXIMUM 512
+#define BURST_MAXIMUM 256
+
+struct burst_state
+{
+	dbus_uint32_t serials[BURST_MAXIMUM];
+	unsigned int count;
+};
 
 static bool private_address(const char *address)
 {
@@ -185,7 +192,134 @@ static cJSON *collect_signals(DBusConnection *connection)
 	return result;
 }
 
-static cJSON *execute(DBusConnection *connection, cJSON *command)
+/* A fixed short-message producer. The caller intentionally leaves replies
+ * unread after this returns and retains the process watchdog around flush:
+ * one transport write can still block in the kernel. No reply is popped or
+ * dispatched here. The resident stdin wait then performs no bus reads. */
+static bool burst(DBusConnection *connection, cJSON *command, cJSON *result,
+	struct burst_state *state)
+{
+	double number;
+	unsigned int queued = 0;
+
+	if (state->count || !number_field(command, "count", BURST_MAXIMUM,
+	    1, BURST_MAXIMUM, &number))
+		return false;
+	for (unsigned int i = 0; i < (unsigned int)number; i++)
+	{
+		DBusMessage *message = dbus_message_new_method_call(NAME, PATH,
+			NAME, "Notify");
+		bool sent;
+
+		if (!message)
+			return false;
+		dbus_message_set_auto_start(message, FALSE);
+		/* NULL selects the existing fixed short defaults, not a second
+		 * caller-controlled payload multiplied by the burst count. */
+		sent = append_notify(message, NULL) &&
+		    dbus_connection_get_outgoing_size(connection) < 262144 &&
+		    dbus_connection_send(connection, message,
+			&state->serials[state->count]);
+		dbus_message_unref(message);
+		if (!sent)
+			return false;
+		state->count++;
+		queued++;
+	}
+	dbus_connection_flush(connection);
+	cJSON_AddNumberToObject(result, "queued", queued);
+	cJSON_AddNumberToObject(result, "outgoing_bytes",
+		dbus_connection_get_outgoing_size(connection));
+	cJSON_AddBoolToObject(result, "replies_popped", false);
+	return dbus_connection_get_is_connected(connection);
+}
+
+/* Drain exactly the preceding fixed burst, matching captured Notify serials.
+ * The read allowance is at most forty 50-ms waits and 512 popped messages;
+ * the caller additionally retains its three-second process watchdog. Other
+ * notification signals are errors, never counted as discarded replies. */
+static bool drain(DBusConnection *connection, cJSON *command, cJSON *result,
+	struct burst_state *state)
+{
+	double number;
+	unsigned int replies = 0, returns = 0, errors = 0, controls = 0;
+	unsigned int reads = 0, popped = 0, expected = state->count;
+	bool valid = true;
+
+	if (!number_field(command, "count", BURST_MAXIMUM, 1, BURST_MAXIMUM,
+	    &number) || expected != (unsigned int)number)
+		return false;
+	while (state->count && popped < 512)
+	{
+		DBusMessage *message = dbus_connection_pop_message(connection);
+		dbus_uint32_t serial;
+		unsigned int index;
+		int type;
+
+		if (!message)
+		{
+			if (reads >= 40)
+				break;
+			reads++;
+			if (!dbus_connection_read_write(connection, 50))
+				break;
+			continue;
+		}
+		popped++;
+		serial = dbus_message_get_reply_serial(message);
+		type = dbus_message_get_type(message);
+		for (index = 0; index < expected; index++)
+			if (serial && state->serials[index] == serial)
+				break;
+		if (index < expected && (type == DBUS_MESSAGE_TYPE_METHOD_RETURN ||
+		    type == DBUS_MESSAGE_TYPE_ERROR))
+		{
+			dbus_uint32_t id = 0;
+
+			valid = type == DBUS_MESSAGE_TYPE_ERROR ?
+			    dbus_message_get_error_name(message) != NULL :
+			    dbus_message_get_args(message, NULL,
+				DBUS_TYPE_UINT32, &id, DBUS_TYPE_INVALID) && id;
+			if (valid)
+			{
+				state->serials[index] = 0;
+				state->count--;
+				replies++;
+				returns += type == DBUS_MESSAGE_TYPE_METHOD_RETURN;
+				errors += type == DBUS_MESSAGE_TYPE_ERROR;
+			}
+		}
+		else
+		{
+			const char *name = NULL;
+			const char *sender = dbus_message_get_sender(message);
+
+			/* Registration may leave this one control signal queued.
+			 * It is reported separately, not a Notify reply or action. */
+			valid = !controls && sender &&
+			    !strcmp(sender, DBUS_SERVICE_DBUS) &&
+			    dbus_message_is_signal(message, DBUS_INTERFACE_DBUS,
+				"NameAcquired") &&
+			    dbus_message_get_args(message, NULL, DBUS_TYPE_STRING,
+				&name, DBUS_TYPE_INVALID) &&
+			    !strcmp(name, dbus_bus_get_unique_name(connection));
+			controls += valid;
+		}
+		dbus_message_unref(message);
+		if (!valid)
+			break;
+	}
+	cJSON_AddNumberToObject(result, "notification_replies_drained", replies);
+	cJSON_AddNumberToObject(result, "method_returns", returns);
+	cJSON_AddNumberToObject(result, "method_errors", errors);
+	cJSON_AddNumberToObject(result, "registration_control_signals", controls);
+	cJSON_AddNumberToObject(result, "read_rounds", reads);
+	cJSON_AddNumberToObject(result, "remaining", state->count);
+	return valid && !state->count && replies == expected;
+}
+
+static cJSON *execute(DBusConnection *connection, cJSON *command,
+	struct burst_state *state)
 {
 	const char *verb = string_field(command, "verb", "", 32), *method;
 	DBusMessage *message = NULL, *reply = NULL;
@@ -194,6 +328,29 @@ static cJSON *execute(DBusConnection *connection, cJSON *command)
 	bool valid = true;
 
 	if (!verb)
+		goto invalid;
+	if (!strcmp(verb, "identity"))
+	{
+		const char *name = dbus_bus_get_unique_name(connection);
+
+		if (!name)
+			goto invalid;
+		cJSON_AddStringToObject(result, "unique", name);
+		return result;
+	}
+	if (!strcmp(verb, "burst"))
+	{
+		if (!burst(connection, command, result, state))
+			goto invalid;
+		return result;
+	}
+	if (!strcmp(verb, "drain"))
+	{
+		if (!drain(connection, command, result, state))
+			goto invalid;
+		return result;
+	}
+	if (state->count)
 		goto invalid;
 	if (!strcmp(verb, "signals"))
 	{
@@ -314,6 +471,7 @@ int main(int argc, char **argv)
 	DBusError error;
 	char line[LINE_MAXIMUM + 2];
 	unsigned int count = 0;
+	struct burst_state state = {0};
 
 	if (argc != 3 || strcmp(argv[1], "--private-bus") ||
 	    !private_address(argv[2]))
@@ -338,7 +496,7 @@ int main(int argc, char **argv)
 		if (!strchr(line, '\n'))
 			break;
 		command = cJSON_Parse(line);
-		result = execute(connection, command);
+		result = execute(connection, command, &state);
 		output = cJSON_PrintUnformatted(result);
 		if (!output || strlen(output) > 32768 || puts(output) < 0 ||
 		    fflush(stdout))

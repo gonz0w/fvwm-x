@@ -362,7 +362,11 @@ def run(options):
             lambda: native.property(center) == [first_choice] and
                 native.focus() == center, time.monotonic() + 5,
             process=native.process)
-        native.press_sequence(['Down', 'Return'])
+        # Cross the module's 32-X-event turn boundary while keeping every
+        # key queued before the one final XSync. Modifier-only keys have no
+        # center action; the following Down/Return retain semantic order even
+        # when the owner paints between those two queued events.
+        native.press_sequence(['Shift_L'] * 31 + ['Down', 'Return'])
         peer.signal('action', next_choice, key='selected-record')
         peer.signal('closed', next_choice, reason=2)
         native.popup(first_choice)
@@ -372,7 +376,7 @@ def run(options):
         evidence['cases']['queued_keyboard_navigation'] = {
             'sequence': ['Down', 'Return'], 'untouched_id': first_choice,
             'invoked_id': next_choice, 'key': 'selected-record',
-            'one_final_xsync': True}
+            'one_final_xsync': True, 'modifier_key_prelude': 31}
         expiring = peer.notice(summary='Expires independently', timeout=150)
         peer.signal('closed', expiring, reason=1)
         native.absent(expiring)

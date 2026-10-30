@@ -289,6 +289,22 @@ static struct font_cache {
 	FcPattern *patterns[CACHE_ENTIRES];
 } g_font_cache;
 
+void FftFini(void)
+{
+	/* Each active FIFO slot owns two duplicated patterns. Retire them before
+	 * Fontconfig's process state; no font or display may remain in use. */
+	for (int i = 0; i < CACHE_ENTIRES &&
+	    g_font_cache.fifo_start < g_font_cache.fifo_end; i++)
+	{
+		int index = g_font_cache.fifo_start % CACHE_ENTIRES;
+		FcPatternDestroy(g_font_cache.srcs[index]);
+		FcPatternDestroy(g_font_cache.patterns[index]);
+		g_font_cache.fifo_start++;
+	}
+	memset(&g_font_cache, 0, sizeof(g_font_cache));
+	FcFini();
+}
+
 static FcPattern *MatchCacheFont(FcChar32 code, FcPattern *src, FcResult *result)
 {
 	unsigned short hash = FcPatternHash(src);

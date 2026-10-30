@@ -7,18 +7,78 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [native notification server](#r1-native-notification-server--2026-10-30)
-under NOTIFY-01 #76, coordinating #72/#77's accepted bus/client lifecycle.
-PR308 merged as `6fd12b7e1dd21dc5e0530b912e90d1005c13a51e`; canonical
-signature, reviewed tree and author DCO verified; matching source branches retired.
-Performance is 3/5 from merged PR305; no periodic comparison is due.
+Current checkpoint: [notification lifecycle and topology](#r1-notification-lifecycle-and-topology--2026-10-30)
+under NOTIFY-01 #76. PR309 merged as
+`dacd80327f2071ba9d5dc452df554de352e8f2ed`; canonical signature, reviewed
+tree and author DCO verified, matching source branches retired. Performance is
+4/5 from merged PR305; no periodic comparison is due in this batch. Its merge
+reaches the next comparison checkpoint; preserve the existing runnable references.
+
+## R1 notification lifecycle and topology — 2026-10-30
+
+Owner: Cam; `codex/r1-notification-lifecycle`; base merged PR309 above.
+Status: focused candidate prepared; exact final artifact review is recorded in
+the PR.
+User authorized merge,
+cleanup and continued related milestone work. NOTIFY-01 #76 owns delivery;
+#72/#77 retain their broader session/service qualification.
+
+Batch six related outcomes: (1) a five-second startup termination timer for this
+isolated optional process's X/bus connection/registration/name acquisition,
+(2) real stalled private-bus startup and termination with a responsive core,
+(3) nonreading producer and producer churn/action callback teardown/restart,
+(4) actual RandR primary/scale/work-area/topology continuity with live notices
+and keyboard center, (5) instrumented UI execution through those current native
+contracts, and (6) scoped affected signal/process support evidence and an honest
+remaining-acceptance reconciliation. Fix only reproduced or source-reviewed
+contract defects found in those outcomes; no generic supervisor, new bus bridge,
+auto activation/adoption, dependency replacement, tray or new feature intake.
+
+Use a small process-local POSIX startup timer with default termination; no Xlib
+or D-Bus calls in a signal handler. Arm before optional X/bus startup and disarm
+before the resident loop. Explicitly distinguish a requested termination deadline
+from actual kernel-blocked exit; do not claim preemption of an uninterruptible
+call. The simpler existing source leaves the module indefinitely blocked in
+startup; a separate supervisor would add another actor/ownership protocol for a
+single fixed leaf operation. Keep the existing core startup acknowledgment before
+optional work, name non-replacement, private-address policy, DND and client defaults.
+
+Before one combined gate, implement the bounded timer/native fixtures and any
+necessary focused correction. Run the affected incremental Linux build/policies,
+one normal lifecycle scenario, one actual Xorg-dummy topology scenario and scoped
+ASan/UBSan UI. Check the changed signal contract early with one small actual BSD
+unit when available. Reuse unaffected Go/protocol/install/theme evidence unless
+changed inputs invalidate it; capture the affected topology UI, including the
+representative theme/font set at the shared checkpoint. Do not boot six guests
+solely because a PR is created. The complete #76 installed/support, slow-consumer
+and accessibility/physical criteria remain open until their actual evidence
+passes; retain failed/unavailable results. #257/#258 stay parked.
+
+The [focused results](verification/VERIFICATION-2026-10-30-NOTIFICATION-LIFECYCLE.md)
+record six Linux lifecycle and six actual Xorg-dummy topology groups, eleven
+instrumented protocol/UI groups, normal/scoped sanitizer model/startup policies,
+a real fallback-font shutdown regression and the unchanged early FreeBSD signal
+unit. Work-area refresh, managed-center size hints, cross-turn keyboard intent,
+idempotent history configuration and process-final font ownership are corrected.
+The original baseline/combined-gate failures and Fontconfig leak reports are
+retained; the directed final sanitizer run passes with leak detection enabled
+and no new reports. Three inspected scaled theme/font captures are linked.
+The current Linux installed notification module/manual are refreshed for handoff;
+its actual lifecycle run is recorded separately. Current build/cache/reference
+inputs remain useful; only verified checkpoint duplicates are retired.
+
+Full #76/#72/#77/#225 remain open for the combined installed/default-X/support,
+physical/accessibility and complete runtime/dependency-cost acceptance. Select
+that finite #76 closure checkpoint next, then TRAY-01's XEmbed host. Do not add
+another notification protocol extension or revive #257/#258. On this batch's
+merge the performance counter reaches 5/5; run the due paired comparison at that
+next checkpoint using the preserved PR305 references.
 
 ## R1 native notification server — 2026-10-30
 
 Owner: Cam; `codex/r1-native-notifications`; base merged PR308 above.
-Status: implementation and focused qualification complete; separately reviewed
-candidate ready for maintainer review. Signed commit/tree and the open PR are
-linked from the owning GitHub issue at handoff. User authorized
+Status: merged in PR309 as `dacd80327f2071ba9d5dc452df554de352e8f2ed`;
+canonical signature, reviewed tree and author DCO verified; source branches retired. User authorized
 merge/cleanup and the next related milestone batch. NOTIFY-01 #76 owns delivery;
 #72/#77 retain broader session/service acceptance.
 

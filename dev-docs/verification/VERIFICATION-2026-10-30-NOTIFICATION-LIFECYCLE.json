@@ -1,0 +1,3071 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "owner": "NOTIFY-01 #76",
+  "base": "dacd80327f2071ba9d5dc452df554de352e8f2ed",
+  "branch": "codex/r1-notification-lifecycle",
+  "status": "focused pass; complete release acceptance open",
+  "tested_source_closure": "6e53c981d6c1a2cd5a4789b6b0f9aae428a07d55d26cd77c6e9d32f03a88e116",
+  "tested_inputs": {
+    "libs/Fft.c": {
+      "sha256": "e84e8a90e07d07557ccae428602ae56a5cccfc6e934a121c694518337f7fbabb",
+      "bytes": 15395,
+      "mode": 420
+    },
+    "libs/FftInterface.h": {
+      "sha256": "92e21a859a7f44b9fcf35910d631c66b9556adcbf199a200372578a7f31976c3",
+      "bytes": 1197,
+      "mode": 420
+    },
+    "modules/FvwmNotify/meson.build": {
+      "sha256": "2b8192fe26905a291ac95f880078f223c3451e75819a300517b032053724326e",
+      "bytes": 350,
+      "mode": 420
+    },
+    "modules/FvwmNotify/notify.c": {
+      "sha256": "ce5e93430657b9ffcbe33ece0471e9ee0984755050e4985bee0f64e99b5de65f",
+      "bytes": 30383,
+      "mode": 420
+    },
+    "modules/FvwmNotify/notify_model.c": {
+      "sha256": "084a3308fd13e05c3fb8c58ec1aad66a62a60ec2506a013cf1a4798fe2b1eba7",
+      "bytes": 6102,
+      "mode": 420
+    },
+    "modules/FvwmNotify/notify_startup.c": {
+      "sha256": "a6900d3f1054ea9950ec1ea50aa2acee923da4e880cf7afee8e6f29ad8dea286",
+      "bytes": 906,
+      "mode": 420
+    },
+    "modules/FvwmNotify/notify_startup.h": {
+      "sha256": "a7d3ade56452ae67d03b3d89715936ea50c3d65255471a7dee8c6c89b2ea7550",
+      "bytes": 660,
+      "mode": 420
+    },
+    "tests/live_x/notify_lifecycle_live.py": {
+      "sha256": "c1cce5775028baa3bf3656383a15c04aac7d20003ed1252e57c8281017b8cedf",
+      "bytes": 22734,
+      "mode": 420
+    },
+    "tests/live_x/notify_live.py": {
+      "sha256": "73756d695eb4c45400a05d08af9b1f256d5fc8bbf495ed5af4f8dceaeb6f2468",
+      "bytes": 27791,
+      "mode": 420
+    },
+    "tests/live_x/notify_topology_live.py": {
+      "sha256": "269fd4465cd6ab535cf1d2e22b9100801acc7df2a41ef0ddd35262df79baa006",
+      "bytes": 19199,
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "a165b5afe8480d543d70024956afbdf18510e0604f61413a2d97aa4a4c11b079",
+      "bytes": 183926,
+      "mode": 420
+    },
+    "tests/notify_client.c": {
+      "sha256": "e6258692f3deab920aea6eff1bebfa7d0c39f6e37b5a515d9147d7e691b75d2d",
+      "bytes": 16529,
+      "mode": 420
+    },
+    "tests/test_font_geometry_x.c": {
+      "sha256": "f711f29e52aad0356543e1f9ae95a04cc43177c8ecc42d635ee5ab9af50e4868",
+      "bytes": 11305,
+      "mode": 420
+    },
+    "tests/test_notify_model.c": {
+      "sha256": "564a6e1556295285fbb1230b9d299da0a4c1696dd21175561442dcef938640fd",
+      "bytes": 7909,
+      "mode": 420
+    },
+    "tests/test_notify_startup.c": {
+      "sha256": "73f7ae04534a9a97bb832215bd649c05a8da25dc80dd2931fdc410cd461f27f6",
+      "bytes": 5832,
+      "mode": 420
+    }
+  },
+  "identity": {
+    "kernel": "Linux 288f898505a4 6.18.10-200.fc43.aarch64 #1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026 aarch64 aarch64 aarch64 GNU/Linux\n",
+    "compiler": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "dbus": "1.14.10\n",
+    "profiles": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc": [
+        {
+          "name": "buildtype",
+          "value": "debugoptimized"
+        },
+        {
+          "name": "debug",
+          "value": true
+        },
+        {
+          "name": "optimization",
+          "value": "2"
+        },
+        {
+          "name": "strip",
+          "value": false
+        },
+        {
+          "name": "b_sanitize",
+          "value": "none"
+        },
+        {
+          "name": "prefix",
+          "value": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix"
+        },
+        {
+          "name": "session-dbus",
+          "value": "enabled"
+        }
+      ],
+      "/tmp/fvwm-module-waits-20261015/build-module-waits-asan": [
+        {
+          "name": "buildtype",
+          "value": "debug"
+        },
+        {
+          "name": "debug",
+          "value": true
+        },
+        {
+          "name": "optimization",
+          "value": "0"
+        },
+        {
+          "name": "strip",
+          "value": false
+        },
+        {
+          "name": "b_sanitize",
+          "value": "address,undefined"
+        },
+        {
+          "name": "prefix",
+          "value": "/usr/local"
+        },
+        {
+          "name": "session-dbus",
+          "value": "enabled"
+        }
+      ]
+    }
+  },
+  "commands": {
+    "commands01.json": [
+      {
+        "label": "normal-incremental-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/notify-client",
+          "tests/test-notify-startup",
+          "doc/FvwmNotify.1"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.738812026000005
+      },
+      {
+        "label": "normal-startup-unit",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "notify-startup"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 3.458725113000014
+      },
+      {
+        "label": "normal-lifecycle",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_lifecycle_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/lifecycle01"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 1,
+        "seconds": 7.087861301999965
+      },
+      {
+        "label": "normal-topology",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/topology01"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 1,
+        "seconds": 8.447023416999969
+      },
+      {
+        "label": "sanitizer-enabled-configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "/tmp/fvwm-module-waits-20261015/source",
+          "-Dsession-dbus=enabled"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.2784659870000041
+      },
+      {
+        "label": "sanitizer-ui-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/test-notify-startup"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.2945399999999836
+      },
+      {
+        "label": "sanitizer-startup-unit",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "notify-startup"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 3.473147475000019
+      },
+      {
+        "label": "sanitizer-ui-legacy",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-legacy01"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 1,
+        "seconds": 4.670013572000016
+      },
+      {
+        "label": "sanitizer-ui-topology",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-topology01"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 1,
+        "seconds": 8.45723530500004
+      }
+    ],
+    "commands02.json": [
+      {
+        "label": "normal-corrections-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/notify-client",
+          "tests/test-notify-model",
+          "doc/FvwmNotify.1"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.3434039309997843
+      },
+      {
+        "label": "normal-model-unit",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "notify-model"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.13759710799990899
+      },
+      {
+        "label": "normal-lifecycle",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_lifecycle_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/lifecycle02"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 6.11871263199987
+      },
+      {
+        "label": "normal-topology",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/topology02"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.7488844530000733
+      },
+      {
+        "label": "sanitizer-corrections-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/test-notify-model"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.22676357600016672
+      },
+      {
+        "label": "sanitizer-model-unit",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "notify-model"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.13450279100015905
+      },
+      {
+        "label": "sanitizer-ui-legacy",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-legacy02"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 2.202313561999972
+      },
+      {
+        "label": "sanitizer-ui-topology",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-topology02"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.728554665000047
+      }
+    ],
+    "commands03.json": [
+      {
+        "label": "normal-shutdown-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/test-font-geometry-x",
+          "doc/FvwmNotify.1"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.5715943639997931
+      },
+      {
+        "label": "normal-font-cache-exit",
+        "command": [
+          "xvfb-run",
+          "-a",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-font-geometry-x"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.439069156999949
+      },
+      {
+        "label": "normal-shutdown-lifecycle",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_lifecycle_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/lifecycle03"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 6.169317030999991
+      },
+      {
+        "label": "sanitizer-shutdown-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "modules/FvwmNotify/FvwmNotify",
+          "tests/test-font-geometry-x"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.40150644499999544
+      },
+      {
+        "label": "sanitizer-font-cache-exit",
+        "command": [
+          "xvfb-run",
+          "-a",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-font-geometry-x"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 4.35630504400001
+      },
+      {
+        "label": "sanitizer-ui-legacy",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-legacy03"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 2.1826292240000384
+      },
+      {
+        "label": "sanitizer-ui-topology",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--notify",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/sanitizer-topology03"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.7504800379999779
+      }
+    ]
+  },
+  "results": {
+    "lifecycle03/result.json": {
+      "status": "passed",
+      "cases": {
+        "missing-bus": {
+          "harness": "direct actual module with owned module pipes",
+          "stderr_log": "missing-bus-module.log",
+          "expected_exit": 1,
+          "pid": 600,
+          "initial": {
+            "pid": 600,
+            "state": "R",
+            "ppid": 585,
+            "birth": "194306"
+          },
+          "wait_observed": true,
+          "exit": 1,
+          "seconds": 0.005995380999820554,
+          "startup_pipe_hex": "000000000000000014000000000000004e4f502046494e495348454420535441525455500100000000000000",
+          "core_echo": "passed",
+          "owner_absent": true
+        },
+        "stalled-startup": {
+          "address": "unix:path=/tmp/fvwm-notify-lifecycle-einvechy/native-notify/stalled-bus/socket",
+          "module_startup_seconds": 5,
+          "reaping_attested_by_observer": false,
+          "exit_signal_status": "not available to nonparent pidfd observer",
+          "accepted_at_seconds": 0.003913071999932072,
+          "authentication_bytes_hex": "00415554482045585445524e414c2033300d0a",
+          "core_echo_while_blocked": "passed",
+          "retired": {
+            "identity": {
+              "pid": 602,
+              "state": "R",
+              "ppid": 592,
+              "birth": "194318"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "seconds": 5.039130281000098,
+          "owner_absent": true,
+          "peer_closed_before_module_exit": false,
+          "core_echo_after": "passed"
+        },
+        "slow-reader": {
+          "unique": ":1.5",
+          "bursts": [
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            }
+          ],
+          "drains": [
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 32,
+              "method_errors": 224,
+              "registration_control_signals": 1,
+              "read_rounds": 10,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            }
+          ],
+          "queued_calls": 1024,
+          "active_cap_observed": 32,
+          "other_peer_capabilities_notify_close": "passed",
+          "core_echo": "passed",
+          "explicit_notification_reply_pops": 1024,
+          "sender_barrier": {
+            "signature": "as",
+            "capabilities": [
+              "body",
+              "actions"
+            ]
+          },
+          "burst_reply_phase": "each fixed burst drained before the next burst",
+          "nonreading_closure_interval": "no D-Bus calls after barrier until close",
+          "peer_exit": 0,
+          "before": {
+            "identity": {
+              "pid": 603,
+              "state": "S",
+              "ppid": 592,
+              "birth": "194822"
+            },
+            "KiB": {
+              "Rss": 5588,
+              "Pss": 2163
+            }
+          },
+          "after": {
+            "identity": {
+              "pid": 603,
+              "state": "S",
+              "ppid": 592,
+              "birth": "194822"
+            },
+            "KiB": {
+              "Rss": 5844,
+              "Pss": 2383
+            }
+          },
+          "limit": "Finite workload and module RSS only; no external broker memory bound."
+        },
+        "churn": {
+          "departed": [
+            {
+              "unique": ":1.6",
+              "id": 34,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.7",
+              "id": 35,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.8",
+              "id": 36,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.9",
+              "id": 37,
+              "peer_exit": 0
+            }
+          ],
+          "fresh_unique": ":1.10",
+          "absent_owner_action_retired": 34,
+          "reconnected_peer_received_stale_callback": false,
+          "live_action_id": 38,
+          "live_action": "passed"
+        },
+        "teardown": {
+          "old_owner": ":1.4",
+          "new_owner": ":1.11",
+          "old_ids": [
+            39,
+            40,
+            41
+          ],
+          "old_center": 6291541,
+          "retired": {
+            "identity": {
+              "pid": 603,
+              "state": "S",
+              "ppid": 592,
+              "birth": "194822"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "new_id": 1,
+          "empty_restart_state": {
+            "dnd": 0,
+            "active": 0,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 13,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 1
+          },
+          "numeric_id_reuse_is_scoped_to_new_server_owner": false,
+          "new_connection_stale_signals": false
+        },
+        "idle-term": {
+          "retired": {
+            "identity": {
+              "pid": 610,
+              "state": "S",
+              "ppid": 592,
+              "birth": "194876"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "seconds": 0.05768795299991325,
+          "core_echo": "passed",
+          "owner_absent": true
+        }
+      },
+      "inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "1c23f872db43d2fb87325911ccd1e4cfd1db23d21ff3142c2eeba3bb2a20e818"
+        },
+        "notify": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmNotify/FvwmNotify",
+          "sha256": "0043c8a1972504b2ec26d32d88227af2a4b0bbb46a539329b798e8259fdd09f6"
+        },
+        "client": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/notify-client",
+          "sha256": "2536a11a2345f438d0f5b3f2f2bda5da1a6ca36b4884ab24c0e525769ba2f9dc"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        }
+      },
+      "limits": [
+        "Linux nested X/private bus only, not complete platform or physical acceptance.",
+        "pidfd retirement is process-exit observation, not a claim of parent waitpid.",
+        "A requested startup termination timer cannot preempt uninterruptible kernel work.",
+        "Finite nonreading-peer workload does not bound external broker buffers."
+      ]
+    },
+    "installed-lifecycle03/result.json": {
+      "status": "passed",
+      "cases": {
+        "missing-bus": {
+          "harness": "direct actual module with owned module pipes",
+          "stderr_log": "missing-bus-module.log",
+          "expected_exit": 1,
+          "pid": 755,
+          "initial": {
+            "pid": 755,
+            "state": "R",
+            "ppid": 742,
+            "birth": "207766"
+          },
+          "wait_observed": true,
+          "exit": 1,
+          "seconds": 0.005296833000102197,
+          "startup_pipe_hex": "000000000000000014000000000000004e4f502046494e495348454420535441525455500100000000000000",
+          "core_echo": "passed",
+          "owner_absent": true
+        },
+        "stalled-startup": {
+          "address": "unix:path=/tmp/fvwm-notify-lifecycle-728ax5jd/native-notify/stalled-bus/socket",
+          "module_startup_seconds": 5,
+          "reaping_attested_by_observer": false,
+          "exit_signal_status": "not available to nonparent pidfd observer",
+          "accepted_at_seconds": 0.0030945660000725184,
+          "authentication_bytes_hex": "00415554482045585445524e414c2033300d0a",
+          "core_echo_while_blocked": "passed",
+          "retired": {
+            "identity": {
+              "pid": 757,
+              "state": "R",
+              "ppid": 747,
+              "birth": "207778"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "seconds": 5.048250186000132,
+          "owner_absent": true,
+          "peer_closed_before_module_exit": false,
+          "core_echo_after": "passed"
+        },
+        "slow-reader": {
+          "unique": ":1.5",
+          "bursts": [
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            },
+            {
+              "queued": 256,
+              "outgoing_bytes": 0,
+              "replies_popped": false
+            }
+          ],
+          "drains": [
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 32,
+              "method_errors": 224,
+              "registration_control_signals": 1,
+              "read_rounds": 10,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            },
+            {
+              "notification_replies_drained": 256,
+              "method_returns": 0,
+              "method_errors": 256,
+              "registration_control_signals": 0,
+              "read_rounds": 11,
+              "remaining": 0
+            }
+          ],
+          "queued_calls": 1024,
+          "active_cap_observed": 32,
+          "other_peer_capabilities_notify_close": "passed",
+          "core_echo": "passed",
+          "explicit_notification_reply_pops": 1024,
+          "sender_barrier": {
+            "signature": "as",
+            "capabilities": [
+              "body",
+              "actions"
+            ]
+          },
+          "burst_reply_phase": "each fixed burst drained before the next burst",
+          "nonreading_closure_interval": "no D-Bus calls after barrier until close",
+          "peer_exit": 0,
+          "before": {
+            "identity": {
+              "pid": 758,
+              "state": "S",
+              "ppid": 747,
+              "birth": "208283"
+            },
+            "KiB": {
+              "Rss": 5612,
+              "Pss": 2172
+            }
+          },
+          "after": {
+            "identity": {
+              "pid": 758,
+              "state": "S",
+              "ppid": 747,
+              "birth": "208283"
+            },
+            "KiB": {
+              "Rss": 5856,
+              "Pss": 2380
+            }
+          },
+          "limit": "Finite workload and module RSS only; no external broker memory bound."
+        },
+        "churn": {
+          "departed": [
+            {
+              "unique": ":1.6",
+              "id": 34,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.7",
+              "id": 35,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.8",
+              "id": 36,
+              "peer_exit": 0
+            },
+            {
+              "unique": ":1.9",
+              "id": 37,
+              "peer_exit": 0
+            }
+          ],
+          "fresh_unique": ":1.10",
+          "absent_owner_action_retired": 34,
+          "reconnected_peer_received_stale_callback": false,
+          "live_action_id": 38,
+          "live_action": "passed"
+        },
+        "teardown": {
+          "old_owner": ":1.4",
+          "new_owner": ":1.11",
+          "old_ids": [
+            39,
+            40,
+            41
+          ],
+          "old_center": 6291544,
+          "retired": {
+            "identity": {
+              "pid": 758,
+              "state": "S",
+              "ppid": 747,
+              "birth": "208283"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "new_id": 1,
+          "empty_restart_state": {
+            "dnd": 0,
+            "active": 0,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 13,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 1
+          },
+          "numeric_id_reuse_is_scoped_to_new_server_owner": false,
+          "new_connection_stale_signals": false
+        },
+        "idle-term": {
+          "retired": {
+            "identity": {
+              "pid": 765,
+              "state": "S",
+              "ppid": 747,
+              "birth": "208337"
+            },
+            "pidfd_exit_observed": true,
+            "reaping_attested_by_observer": false
+          },
+          "seconds": 0.05919179800002894,
+          "core_echo": "passed",
+          "owner_absent": true
+        }
+      },
+      "inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "1c23f872db43d2fb87325911ccd1e4cfd1db23d21ff3142c2eeba3bb2a20e818"
+        },
+        "notify": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmNotify",
+          "sha256": "00a71d06d7af3e3ee440a4cc1663ece4240e7464d07dccc9a9cf85d396325ea1"
+        },
+        "client": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/notify-client",
+          "sha256": "2536a11a2345f438d0f5b3f2f2bda5da1a6ca36b4884ab24c0e525769ba2f9dc"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        }
+      },
+      "limits": [
+        "Linux nested X/private bus only, not complete platform or physical acceptance.",
+        "pidfd retirement is process-exit observation, not a claim of parent waitpid.",
+        "A requested startup termination timer cannot preempt uninterruptible kernel work.",
+        "Finite nonreading-peer workload does not bound external broker buffers."
+      ]
+    },
+    "sanitizer-legacy03/result.json": {
+      "status": "passed",
+      "cases": {
+        "wire_information": {
+          "info": {
+            "signature": "ssss",
+            "name": "FvwmNotify",
+            "vendor": "FVWM-X",
+            "version": "1.1.6",
+            "spec": "1.3"
+          },
+          "capabilities": {
+            "signature": "as",
+            "capabilities": [
+              "body",
+              "actions"
+            ]
+          }
+        },
+        "passive_replacement": {
+          "id": 1,
+          "window": 6291460,
+          "focus_before_after": 4194305,
+          "bounds": [
+            1050,
+            10,
+            380,
+            176
+          ]
+        },
+        "standard_cross_connection_ids": "passed",
+        "malformed_refusal_and_retention": "passed",
+        "keyboard_action": {
+          "center": 6291472,
+          "id": 1,
+          "key": "show",
+          "close_reason": 2
+        },
+        "queued_keyboard_navigation": {
+          "sequence": [
+            "Down",
+            "Return"
+          ],
+          "untouched_id": 3,
+          "invoked_id": 4,
+          "key": "selected-record",
+          "one_final_xsync": true,
+          "modifier_key_prelude": 31
+        },
+        "expiry_close_dnd": "passed",
+        "flood_refusal_recovery": {
+          "active_limit": 32,
+          "visible_limit": 3,
+          "ids": [
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31,
+            32,
+            33,
+            34,
+            35,
+            36,
+            37,
+            38,
+            39,
+            40
+          ],
+          "recovered_id": 41
+        },
+        "history_display_only": {
+          "window": 6291887,
+          "selected_live_id": 0,
+          "configured_limit": 16
+        },
+        "competing_owner_preserved": ":1.2",
+        "explicit_restart_and_bus_loss": {
+          "old": ":1.2",
+          "new": ":1.4",
+          "desktop_echo": "passed"
+        }
+      },
+      "inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "1c23f872db43d2fb87325911ccd1e4cfd1db23d21ff3142c2eeba3bb2a20e818"
+        },
+        "notify": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "sha256": "a83f8df867210c2525fe84939e72cbe9007736c7cdd43b85196b85472b10316f"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        },
+        "client": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/notify-client",
+          "sha256": "2536a11a2345f438d0f5b3f2f2bda5da1a6ca36b4884ab24c0e525769ba2f9dc"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "limits": [
+        "Nested Linux Xvfb/private D-Bus only; not physical or full support acceptance.",
+        "Three materially different native configs exercise colors/fonts/borders, not every FVWM theme.",
+        "Mixed-DPI/hotplug and slow nonreading wire consumers remain separate qualification.",
+        "Shared desktop DND projection runs only when --desktop is supplied; direct DND commands exercise the standalone path."
+      ]
+    },
+    "sanitizer-topology03/result.json": {
+      "status": "passed",
+      "cases": {
+        "automatic_work_area": "passed",
+        "primary_mixed_scale_continuity": {
+          "same_popup": 6291460,
+          "same_center": 6291490
+        },
+        "actual_dpi_change": "passed",
+        "output_disable_continuity": {
+          "actual_randr_disable": true,
+          "physical_disconnect_claimed": false
+        },
+        "reflow_action_continuity": "passed",
+        "representative_scaled_themes": "passed"
+      },
+      "inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "1c23f872db43d2fb87325911ccd1e4cfd1db23d21ff3142c2eeba3bb2a20e818"
+        },
+        "notify": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmNotify/FvwmNotify",
+          "sha256": "a83f8df867210c2525fe84939e72cbe9007736c7cdd43b85196b85472b10316f"
+        },
+        "client": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/notify-client",
+          "sha256": "2536a11a2345f438d0f5b3f2f2bda5da1a6ca36b4884ab24c0e525769ba2f9dc"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        },
+        "xorg_config": {
+          "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+          "sha256": "af9d9ff9259ae0fd043489fe9f469077709a2034abbf53174440f6d705d849b9"
+        }
+      },
+      "limits": [
+        "Owned Linux Xorg-dummy/private bus only; no physical hotplug or hardware qualification.",
+        "Native server intentionally follows the primary monitor, not arbitrary per-popup monitor selection.",
+        "Core cached work-area queries and actual X rectangles are separate observations; no atomic freshness claim.",
+        "This fixture does not establish all six target, toolkit, compositor or assistive technology acceptance."
+      ],
+      "captures": [
+        {
+          "file": "strut-reservation.png",
+          "bytes": 31721,
+          "sha256": "8a5c88b24ba93150b29c6f1e326ecec35194960d47496d62f16581e2a86e6bff"
+        },
+        {
+          "file": "primary-2x.png",
+          "bytes": 60643,
+          "sha256": "bf4da1a07bacd0718c2ac8cc2e88610bb91d3454c435487293094aeffb8c7b1f"
+        },
+        {
+          "file": "slate-dark-2x.png",
+          "bytes": 50998,
+          "sha256": "b311a70d191926769555b776979c2c996e3bea30f9ac9d15ca99e313eb27f39b"
+        },
+        {
+          "file": "dune-light-2x.png",
+          "bytes": 55523,
+          "sha256": "6b862e7efcd2a187d564ca284c2e221e93d315bc0cd967962b39b030fdca13ef"
+        },
+        {
+          "file": "classic-large-2x.png",
+          "bytes": 98439,
+          "sha256": "33978e8b7149897dd962ebf0e8a81c344601dbd7f66d6b47384fd4007645deee"
+        }
+      ],
+      "samples": {
+        "initial-primary": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 17,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 1
+          },
+          "topology": {
+            "epoch": "0000000000000001",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": true,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": false,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 1530,
+                "y": 10,
+                "width": 380,
+                "height": 185,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY0",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 717,
+              "y": 36,
+              "width": 500,
+              "height": 162,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 710,
+              "y": 10,
+              "width": 514,
+              "height": 195,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        "automatic-strut-reservation": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 17,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 1
+          },
+          "topology": {
+            "epoch": "0000000000000001",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": true,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": false,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 96,
+                  "width": 1920,
+                  "height": 984
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 96,
+                  "width": 1920,
+                  "height": 984
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            96,
+            3200,
+            984
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 1530,
+                "y": 106,
+                "width": 380,
+                "height": 185,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY0",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 717,
+              "y": 132,
+              "width": 500,
+              "height": 162,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 710,
+              "y": 106,
+              "width": 514,
+              "height": 195,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 0,
+            "y": 96,
+            "width": 1920,
+            "height": 984
+          }
+        },
+        "automatic-strut-revocation": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 17,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 1
+          },
+          "topology": {
+            "epoch": "0000000000000001",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": true,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": false,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 1530,
+                "y": 10,
+                "width": 380,
+                "height": 185,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY0",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 717,
+              "y": 36,
+              "width": 500,
+              "height": 162,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 710,
+              "y": 10,
+              "width": 514,
+              "height": 195,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        "second-primary-2x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 35,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 2
+          },
+          "topology": {
+            "epoch": "0000000000000002",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 2420,
+                "y": 20,
+                "width": 760,
+                "height": 377,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 2067,
+              "y": 46,
+              "width": 1000,
+              "height": 330,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2060,
+              "y": 20,
+              "width": 1014,
+              "height": 363,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        },
+        "second-primary-1.5x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 27,
+            "quarters": 6,
+            "pending": 0,
+            "epoch": 3
+          },
+          "topology": {
+            "epoch": "0000000000000003",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 226,
+                  "height": 181
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 6,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 2615,
+                "y": 15,
+                "width": 570,
+                "height": 288,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 2196,
+              "y": 53,
+              "width": 750,
+              "height": 288,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2185,
+              "y": 15,
+              "width": 772,
+              "height": 337,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        },
+        "disabled-primary-fallback": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 17,
+            "quarters": 4,
+            "pending": 0,
+            "epoch": 4
+          },
+          "topology": {
+            "epoch": "0000000000000004",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": true,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 6,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            1920,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 1530,
+                "y": 10,
+                "width": 380,
+                "height": 185,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY0",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 717,
+              "y": 36,
+              "width": 500,
+              "height": 162,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 710,
+              "y": 10,
+              "width": 514,
+              "height": 195,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          }
+        },
+        "reenabled-primary-2x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 0,
+            "history_limit": 16,
+            "font_height": 35,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          },
+          "topology": {
+            "epoch": "0000000000000005",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "1": {
+              "window": 6291460,
+              "rect": {
+                "x": 2420,
+                "y": 20,
+                "width": 760,
+                "height": 377,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291490,
+            "frame": 2097234,
+            "client_rect": {
+              "x": 2067,
+              "y": 46,
+              "width": 1000,
+              "height": 330,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2060,
+              "y": 20,
+              "width": 1014,
+              "height": 363,
+              "border": 0
+            },
+            "selected_id": [
+              1
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        },
+        "slate-dark-2x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 1,
+            "history_limit": 16,
+            "font_height": 35,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          },
+          "topology": {
+            "epoch": "0000000000000005",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "2": {
+              "window": 6291460,
+              "rect": {
+                "x": 2420,
+                "y": 20,
+                "width": 760,
+                "height": 377,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291777,
+            "frame": 2097310,
+            "client_rect": {
+              "x": 2074,
+              "y": 68,
+              "width": 1000,
+              "height": 330,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2060,
+              "y": 20,
+              "width": 1028,
+              "height": 392,
+              "border": 0
+            },
+            "selected_id": [
+              2
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        },
+        "dune-light-2x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 2,
+            "history_limit": 16,
+            "font_height": 37,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          },
+          "topology": {
+            "epoch": "0000000000000005",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "3": {
+              "window": 6291460,
+              "rect": {
+                "x": 2420,
+                "y": 20,
+                "width": 760,
+                "height": 391,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291840,
+            "frame": 2097340,
+            "client_rect": {
+              "x": 2074,
+              "y": 68,
+              "width": 1000,
+              "height": 342,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2060,
+              "y": 20,
+              "width": 1028,
+              "height": 404,
+              "border": 0
+            },
+            "selected_id": [
+              3
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        },
+        "classic-large-2x": {
+          "native": {
+            "dnd": 0,
+            "active": 1,
+            "history": 3,
+            "history_limit": 16,
+            "font_height": 56,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          },
+          "topology": {
+            "epoch": "0000000000000005",
+            "monitors": [
+              {
+                "name": "DUMMY0",
+                "name_atom": 230,
+                "primary": false,
+                "geometry": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "physical_mm": {
+                  "width": 508,
+                  "height": 286
+                },
+                "outputs": [
+                  78
+                ]
+              },
+              {
+                "name": "DUMMY1",
+                "name_atom": 231,
+                "primary": true,
+                "geometry": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "physical_mm": {
+                  "width": 169,
+                  "height": 135
+                },
+                "outputs": [
+                  79
+                ]
+              }
+            ]
+          },
+          "workspace": {
+            "state": "observed",
+            "scope": "core-monitors",
+            "monitors": [
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY0",
+                "desk": 0,
+                "scale_quarters": 4,
+                "work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                },
+                "dynamic_work_area": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 1920,
+                  "height": 1080
+                }
+              },
+              {
+                "viewport": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 3200,
+                  "height": 1080
+                },
+                "pages": {
+                  "width": 1,
+                  "height": 1
+                },
+                "name": "DUMMY1",
+                "desk": 0,
+                "scale_quarters": 8,
+                "work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                },
+                "dynamic_work_area": {
+                  "x": 1920,
+                  "y": 0,
+                  "width": 1280,
+                  "height": 1024
+                }
+              }
+            ],
+            "units": "actual-pixels",
+            "desktop_mode": "per-monitor",
+            "work_area_freshness": "cached"
+          },
+          "root_work_area": [
+            0,
+            0,
+            3200,
+            1080
+          ],
+          "popups": {
+            "4": {
+              "window": 6291460,
+              "rect": {
+                "x": 2420,
+                "y": 20,
+                "width": 760,
+                "height": 660,
+                "border": 0
+              }
+            }
+          },
+          "primary": "DUMMY1",
+          "center": {
+            "window": 6291911,
+            "frame": 2097370,
+            "client_rect": {
+              "x": 2074,
+              "y": 68,
+              "width": 1000,
+              "height": 592,
+              "border": 0
+            },
+            "frame_rect": {
+              "x": 2060,
+              "y": 20,
+              "width": 1028,
+              "height": 654,
+              "border": 0
+            },
+            "selected_id": [
+              4
+            ]
+          },
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        }
+      },
+      "theme_configs": [
+        {
+          "profile": "slate-dark",
+          "file": "slate-dark.fvwm",
+          "sha256": "c73a04cf5c3b7af013e5a78965504a48ef5da3f864b6f227e3970a537dea0509",
+          "observed": {
+            "dnd": 0,
+            "active": 1,
+            "history": 1,
+            "history_limit": 16,
+            "font_height": 35,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          }
+        },
+        {
+          "profile": "dune-light",
+          "file": "dune-light.fvwm",
+          "sha256": "c1cc7b6b9fc0344e6ee7036f2043f4502900e27572e52ebcff1a77968a3f9753",
+          "observed": {
+            "dnd": 0,
+            "active": 1,
+            "history": 2,
+            "history_limit": 16,
+            "font_height": 37,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          }
+        },
+        {
+          "profile": "classic-large",
+          "file": "classic-large.fvwm",
+          "sha256": "f6ec28f2136e8c3a57bcd10f93c8be1fc1dc84e42e88f64030f4c33ab4bbedee",
+          "observed": {
+            "dnd": 0,
+            "active": 1,
+            "history": 3,
+            "history_limit": 16,
+            "font_height": 56,
+            "quarters": 8,
+            "pending": 0,
+            "epoch": 5
+          }
+        }
+      ]
+    }
+  },
+  "sanitizer_final_scan": {
+    "files": [],
+    "status": "passed",
+    "historical_reports": "01/02 reports retained separately, not deleted"
+  },
+  "bsd": {
+    "status": "passed",
+    "profile": "freebsd-arm64",
+    "acceleration": "hvf",
+    "run_status": 0,
+    "qemu_exit_status": 0,
+    "inputs": {
+      "files": {
+        "modules/FvwmNotify/notify_startup.c": {
+          "sha256": "a6900d3f1054ea9950ec1ea50aa2acee923da4e880cf7afee8e6f29ad8dea286",
+          "bytes": 906
+        },
+        "modules/FvwmNotify/notify_startup.h": {
+          "sha256": "a7d3ade56452ae67d03b3d89715936ea50c3d65255471a7dee8c6c89b2ea7550",
+          "bytes": 660
+        },
+        "tests/test_notify_startup.c": {
+          "sha256": "73f7ae04534a9a97bb832215bd649c05a8da25dc80dd2931fdc410cd461f27f6",
+          "bytes": 5832
+        }
+      },
+      "archive_sha256": "9b4b0cc75cee2a26149b40f91b9b7e3f19a1fdc647dcfd5fcd5d54abc8c09bd6"
+    },
+    "logs": {
+      "builddir-bsd/compiler.txt": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\nTarget: aarch64-unknown-freebsd15.1\nThread model: posix\nInstalledDir: /usr/bin\n",
+      "builddir-bsd/SHA256SUMS": "SHA256 (modules/FvwmNotify/notify_startup.c) = a6900d3f1054ea9950ec1ea50aa2acee923da4e880cf7afee8e6f29ad8dea286\nSHA256 (modules/FvwmNotify/notify_startup.h) = a7d3ade56452ae67d03b3d89715936ea50c3d65255471a7dee8c6c89b2ea7550\nSHA256 (tests/test_notify_startup.c) = 73f7ae04534a9a97bb832215bd649c05a8da25dc80dd2931fdc410cd461f27f6\nSHA256 (builddir-bsd/test-notify-startup) = bc4134d172918223ecb3d39fd79f682bd35be5afe09e817451611a745b219abd\n",
+      "builddir-bsd/notify-startup.stdout": "",
+      "builddir-bsd/kernel.txt": "FreeBSD freebsd 15.1-RELEASE-p3 FreeBSD 15.1-RELEASE-p3 releng/15.1-n283611-88e7371d9dc2 GENERIC arm64\n",
+      "builddir-bsd/notify-startup.stderr": "",
+      "builddir-bsd/include/config.h": "/* Focused optional-process startup timer; no X or bus dependency. */\n"
+    }
+  },
+  "artifacts": {
+    "root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle/evidence03",
+    "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle/review03.tgz",
+    "archive_sha256": "b47e55ab0e7756222339273a312d340f5ad2a9a27c57d35205a2e091bad24aee",
+    "files_verified": 359,
+    "manifest_sha256": "9e5e8bd43f917fb6af2f178d3787c524bc9bfa47e36569c95b5ad3e14fcae48a"
+  },
+  "screenshots": {
+    "doc/screenshots/notifications-mixed-scale-slate-dark.png": {
+      "sha256": "b311a70d191926769555b776979c2c996e3bea30f9ac9d15ca99e313eb27f39b",
+      "source": "sanitizer-topology03/slate-dark-2x.png"
+    },
+    "doc/screenshots/notifications-mixed-scale-dune-light.png": {
+      "sha256": "6b862e7efcd2a187d564ca284c2e221e93d315bc0cd967962b39b030fdca13ef",
+      "source": "sanitizer-topology03/dune-light-2x.png"
+    },
+    "doc/screenshots/notifications-mixed-scale-classic-large.png": {
+      "sha256": "33978e8b7149897dd962ebf0e8a81c344601dbd7f66d6b47384fd4007645deee",
+      "source": "sanitizer-topology03/classic-large-2x.png"
+    }
+  },
+  "handoff": {
+    "source_closure": "6e53c981d6c1a2cd5a4789b6b0f9aae428a07d55d26cd77c6e9d32f03a88e116",
+    "markers": [
+      "r1-notification-lifecycle-last-source.json",
+      "r1-native-notifications-last-source.json",
+      "r1-owned-bus-lifetime-last-source.json",
+      "r1-session-recovery-last-source.json",
+      "r1-session-providers-last-source.json",
+      "r1-session-services-last-source.json"
+    ],
+    "prefix": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+    "module": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmNotify",
+      "sha256": "00a71d06d7af3e3ee440a4cc1663ece4240e7464d07dccc9a9cf85d396325ea1",
+      "build_sha256": "0043c8a1972504b2ec26d32d88227af2a4b0bbb46a539329b798e8259fdd09f6",
+      "installed_text_matches": true,
+      "installed_run": "installed-lifecycle03/result.json",
+      "bytes": 1449312
+    },
+    "manual": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmNotify.1",
+      "sha256": "b939baa8d68030ae0582f04ae97ec75560f8dccd11211f392a179beacc777898"
+    },
+    "normal_build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+    "sanitizer_build": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+    "preserve": [
+      "/tmp/fvwm-module-waits-20261015/m5-performance-session-20261029",
+      "/tmp/fvwm-module-waits-20261015/m5-performance-providers-20261029/browser"
+    ]
+  },
+  "failures": {
+    "baseline": {
+      "command": [
+        "python3",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/notify_topology_live.py",
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--notify",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmNotify",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/topology-baseline"
+      ],
+      "exit": 1,
+      "seconds": 8.560182886999996,
+      "baseline_source": "04b20aa13b90b49d51e47f086551bb105fb8b3969c8db485f97322236c2763f3",
+      "fixture_sha256": "52fa0455b4e02aed39c7281180e96567d7ee775e6432360207471319335d102d"
+    },
+    "first_gate": "failed",
+    "second_gate": "failed",
+    "original_sanitizer_reports": {
+      "files": [
+        "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/ubsan-topology.268",
+        "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/ubsan-legacy02.459",
+        "/tmp/fvwm-module-waits-20261015/r1-notification-lifecycle-current/ubsan-legacy02.470"
+      ],
+      "status": "failed"
+    },
+    "collector_path_failure": "collect03-path-failure.json",
+    "collector_build_installed_hash_failure": "collect03-prefix-failure.json",
+    "resolution": "Existing Meson path used; install-time ELF transformation preserves .text; actual installed lifecycle passes."
+  },
+  "reused": [
+    "PR309 unchanged Go 282 ordinary/race, protocol/decoder and disabled install contract; not rerun",
+    "source01 startup helper normal/ASan and early FreeBSD unchanged by source03",
+    "source02 model normal/ASan and normal topology unchanged except terminal Fft cleanup"
+  ],
+  "remaining": [
+    "six-target installed/default-X module qualification",
+    "physical display/input and relevant accessibility evidence",
+    "complete runtime/dependency/peak cost reconciliation"
+  ],
+  "performance": {
+    "after_merged309": "4/5",
+    "after_this_merge": "5/5; paired comparison due next checkpoint",
+    "references": [
+      "/tmp/fvwm-module-waits-20261015/m5-performance-session-20261029",
+      "/tmp/fvwm-module-waits-20261015/m5-performance-providers-20261029/browser"
+    ]
+  },
+  "review": {
+    "role": "temper_reviewer",
+    "backend_metadata": "unverified",
+    "human_approval": false,
+    "artifact": "final tree bound in PR"
+  },
+  "retention": {
+    "host_bytes_recovered": 4340082,
+    "guest_bytes_recovered": 10440116,
+    "bsd_disk_and_duplicate_inputs": {
+      "raw_available": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle/freebsd01/guest-evidence.tgz",
+      "raw_files": {
+        "builddir-bsd/compiler.txt": {
+          "sha256": "41e02021522c4628079f59e5cc9f01b47c931574744f263a480ee10fa483294b",
+          "bytes": 182
+        },
+        "builddir-bsd/SHA256SUMS": {
+          "sha256": "400d053f4f00a8fffd46ec82f46740d35a501fd08495bb27edb6cf57cd8b70ff",
+          "bytes": 437
+        },
+        "builddir-bsd/notify-startup.stdout": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "builddir-bsd/kernel.txt": {
+          "sha256": "eaeeda75bd854de284046cf49017145f1d0ceb9656f51d1fb88c65267f7f4302",
+          "bytes": 103
+        },
+        "builddir-bsd/notify-startup.stderr": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "bytes": 0
+        },
+        "builddir-bsd/test-notify-startup": {
+          "sha256": "bc4134d172918223ecb3d39fd79f682bd35be5afe09e817451611a745b219abd",
+          "bytes": 15744
+        },
+        "builddir-bsd/include/config.h": {
+          "sha256": "bb965a411ebd0263cfb9a567e117ad5350c1db38545345138e3a69cbf61d8f4e",
+          "bytes": 70
+        }
+      },
+      "retired": [
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle/freebsd01/disk.qcow2",
+          "bytes": 3226861568
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle/freebsd01/inputs",
+          "bytes": 984730679
+        }
+      ],
+      "bytes": 4211592247,
+      "qemu_stopped": true
+    },
+    "preserved": [
+      "source",
+      "normal/sanitizer builds",
+      "current prefix",
+      "SDK/cache",
+      "all last-source markers",
+      "performance references"
+    ],
+    "receipt_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-notification-lifecycle"
+  },
+  "local_checks": {
+    "make check lint": "passed; source/documentation foundation, whitespace, Python compilation and hook shell syntax only"
+  },
+  "labs": {
+    "linux": "owned holder confirms normal container and machine stop",
+    "freebsd": "stopped; verified disk/input retirement receipt retained"
+  }
+}

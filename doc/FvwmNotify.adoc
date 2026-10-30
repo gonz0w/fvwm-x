@@ -22,6 +22,14 @@ notification server. If another server owns `org.freedesktop.Notifications`, thi
 instance exits. Bus disconnection ends the instance; restart it explicitly after
 restoring the bus.
 
+A process-local timer requests termination after five seconds if initial X/bus
+connection, registration or name acquisition has not completed. The core receives
+its module startup acknowledgment before this optional work. Once bus ownership
+succeeds, the timer is canceled before normal service. This is not a supervisor
+or automatic retry: restore the bus and start the module explicitly. A kernel-
+blocked operation can delay actual signal termination; the timer does not promise
+to preempt uninterruptible work.
+
 This feature is in development. The initial implementation supports plain UTF-8
 text, up to four text actions, urgency, replacement, expiration and closure.
 Capabilities advertise only `body` and `actions`. Markup, images, icons, sounds,
@@ -61,6 +69,10 @@ SendToModule FvwmNotify DND 0
 The initial module has a fixed name and does not accept aliases. Store module
 configuration in the normal FVWM configuration and reload it with the command
 below. Colorsets and committed monitor/scale publications update live.
+Changes to the root work-area property also refresh existing popups and the
+keyboard center, so added or removed dock reservations do not require a reload.
+These updates share one pending configuration request and one refresh flag;
+unknown or incomplete monitor updates retain the last good publication.
 
 ----
 *FvwmNotify: Colorset 2
@@ -89,6 +101,12 @@ Key H A M SendToModule FvwmNotify History
 
 In the center, Up and Down select a notification. Tab or Shift-Tab selects an
 action or dismissal; Enter or Space performs it. Escape closes the center.
+The center uses ordinary resizable window hints so the core can move and resize
+it when monitor scale or dock reservations change. Its bounded content layout
+is prepared by the module; manual window resizing does not yet reflow that
+content. Normal user styles can restrict move/resize as for other managed
+windows. Escape remains the explicit keyboard close action.
+
 History is display-only. Popup action buttons send the selected action identifier
 to the creating application. Dismissal removes a live notification; an expired or
 replaced view cannot retain an actionable selection.
@@ -125,8 +143,9 @@ output queue ends this instance instead of silently losing an acknowledged
 operation. X11 and connection/authentication calls can still block inside this
 isolated process; no time budget can preempt one kernel call.
 
-IDs are nonzero and increase without recycling. Replacement and close use the
-standard server-global active IDs; they are not an authentication boundary.
+IDs are nonzero and increase without recycling during one server process. A new
+server owner starts a new ID sequence; clients must discard old IDs when that
+owner changes. Replacement and close use the standard server-global active IDs; they are not an authentication boundary.
 This supports clients that use a new bus connection for each request, including
 FVWM-X's transient notification helper. A replacement binds subsequent actions
 and closure signals to the new submitting connection. Unknown replacement IDs

@@ -2,6 +2,7 @@
  * under the GNU General Public License, version 2 or any later version. */
 #include "config.h"
 #include "notify_bus.h"
+#include "notify_startup.h"
 #include "libs/Module.h"
 #include "libs/module_packet_reader.h"
 #include "libs/fd_safety.h"
@@ -11,6 +12,7 @@
 #include "libs/Parse.h"
 #include "libs/PictureUtils.h"
 #include "libs/flocale_font_types.h"
+#include "libs/FftInterface.h"
 #include "libs/safemalloc.h"
 #include "libs/log.h"
 #include <X11/keysym.h>
@@ -36,7 +38,7 @@ typedef struct
 	Window window;
 	uint32_t id;
 	uint64_t revision;
-	unsigned long serial;
+	unsigned long serial, key_serial;
 	int x, y, width, height, button_y, line;
 	unsigned int actions;
 	bool mapped;
@@ -46,7 +48,7 @@ typedef struct
 {
 	Display *display;
 	Window root;
-	Atom id_atom, delete_atom;
+	Atom id_atom, delete_atom, workarea_atom;
 	ModuleArgs *module;
 	int channel[2], wake[2], colorset;
 	GC gc;
@@ -293,8 +295,8 @@ static void center_close(notify_ui *ui)
 	memset(&ui->center, 0, sizeof(ui->center));
 }
 
-/* A view records the model revision and request serial of its pixels. Events
- * queued for replaced content never dispatch a new action by index. */
+/* Pointer hit boxes follow painted pixels. Keyboard intent survives local
+ * repaints, but not replaced model content or an explicit center reset. */
 static void draw_view(notify_ui *ui, notify_view *view,
 	const notify_record *record, bool history, unsigned int position,
 	unsigned int total, int x, int y, int width, int maximum_height)
@@ -333,6 +335,8 @@ static void draw_view(notify_ui *ui, notify_view *view,
 	if (fresh)
 		view->window = create_window(ui, view != &ui->center);
 	view->serial = NextRequest(ui->display);
+	if (fresh || view->revision != ui->bus.model.revision)
+		view->key_serial = view->serial;
 	view->revision = ui->bus.model.revision;
 	view->id = id;
 	view->actions = actions;
@@ -341,12 +345,12 @@ static void draw_view(notify_ui *ui, notify_view *view,
 	view->width = width;
 	view->height = height;
 	view->line = line;
-	if (view == &ui->center)
+	if (view == &ui->center && fresh)
 	{
-		XSizeHints sizes = {.flags = USPosition | USSize | PMinSize | PMaxSize,
+		/* Fixed equal bounds would deny the core's later ResizeMove. */
+		XSizeHints sizes = {.flags = USPosition | USSize | PMinSize,
 		    .x = x, .y = y, .width = width, .height = height,
-		    .min_width = width, .max_width = width,
-		    .min_height = height, .max_height = height};
+		    .min_width = 1, .min_height = 1};
 		XSetWMNormalHints(ui->display, view->window, &sizes);
 	}
 	if (view != &ui->center || fresh)
@@ -518,6 +522,8 @@ static void center_open(notify_ui *ui, bool history)
 	ui->history_open = history;
 	ui->history_index = ui->selected = ui->action = 0;
 	ui->selected_id = 0;
+	/* Reusing the mapped center still invalidates keys for its old mode. */
+	ui->center.key_serial = NextRequest(ui->display);
 	ui->focus_pending = true;
 	ui->dirty = true;
 	/* A previously mapped center has no second MapNotify. Focus is still
@@ -742,6 +748,16 @@ static void x_event(notify_ui *ui, XEvent *event)
 {
 	notify_view *view = NULL;
 
+	if (event->xany.window == ui->root)
+	{
+		/* Dock struts can change without a monitor epoch. Ask the core
+		 * for its validated work areas; bursts share the existing pending
+		 * request and one refresh bit, without caching root property data. */
+		if (event->type == PropertyNotify &&
+		    event->xproperty.atom == ui->workarea_atom)
+			request_config(ui);
+		return;
+	}
 	if (event->xany.window == ui->center.window)
 		view = &ui->center;
 	for (unsigned int i = 0; i < NOTIFY_POPUPS; i++)
@@ -773,14 +789,16 @@ static void x_event(notify_ui *ui, XEvent *event)
 		return;
 	}
 	if (!view->mapped || event->xany.send_event ||
-	    event->xany.serial < view->serial ||
 	    view->revision != ui->bus.model.revision)
 		return;
 	if (view == &ui->center && event->type == KeyPress)
 	{
-		center_key(ui, &event->xkey);
+		if (event->xany.serial >= view->key_serial)
+			center_key(ui, &event->xkey);
 		return;
 	}
+	if (event->xany.serial < view->serial)
+		return;
 	if (event->type == ButtonPress)
 	{
 		const notify_record *record;
@@ -819,6 +837,7 @@ int main(int argc, char **argv)
 {
 	ModuleArgs *module = ParseModuleArgs(argc, argv, 0);
 	notify_ui *ui;
+	bool startup_armed = false;
 	int status = 1;
 
 	if (!module || argc != 6 || strcmp(module->name, "FvwmNotify"))
@@ -845,6 +864,15 @@ int main(int argc, char **argv)
 	/* Optional bus authentication is isolated here. It must never keep the
 	 * core's module startup barrier waiting on another service. */
 	SendFinishedStartupNotification(ui->channel);
+	/* The timer owns no callback or managed-window state. Default SIGALRM
+	 * requests process termination if optional startup stops making progress;
+	 * an uninterruptible kernel operation can still delay actual exit. */
+	if (!notify_startup_begin(NOTIFY_STARTUP_SECONDS))
+	{
+		fvwm_debug(__func__, "FvwmNotify: cannot arm startup timer");
+		goto out;
+	}
+	startup_armed = true;
 	FlocaleInit(LC_CTYPE, "", "", module->name);
 	ui->display = XOpenDisplay(NULL);
 	if (!ui->display)
@@ -853,6 +881,8 @@ int main(int argc, char **argv)
 	ui->root = DefaultRootWindow(ui->display);
 	ui->id_atom = XInternAtom(ui->display, "_FVWM_NOTIFY_ID", False);
 	ui->delete_atom = XInternAtom(ui->display, "WM_DELETE_WINDOW", False);
+	ui->workarea_atom = XInternAtom(ui->display, "_NET_WORKAREA", False);
+	XSelectInput(ui->display, ui->root, PropertyChangeMask);
 	flib_init_graphics(ui->display);
 	if (!AllocColorset(0))
 		goto out;
@@ -862,6 +892,8 @@ int main(int argc, char **argv)
 		fvwm_debug(__func__, "FvwmNotify: optional bus unavailable or name owned");
 		goto out;
 	}
+	notify_startup_finish();
+	startup_armed = false;
 	notify_bus_dnd(&ui->bus, true);
 	SetMessageMask(ui->channel,
 	    M_STRING | M_CONFIG_INFO | M_END_CONFIG_INFO | M_SENDCONFIG);
@@ -965,6 +997,12 @@ out:
 			XFreeGC(ui->display, ui->gc);
 		XCloseDisplay(ui->display);
 	}
+	FftFini();
+	/* Keep the startup timer through failure cleanup: closing an X
+	 * connection may itself wait on that server. Resident shutdown has
+	 * already relinquished the timer before entering the event loop. */
+	if (startup_armed)
+		notify_startup_finish();
 	close(ui->channel[0]);
 	close(ui->channel[1]);
 	free(ui);

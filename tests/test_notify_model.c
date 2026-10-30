@@ -133,7 +133,7 @@ static void invalid_records(notify_model *model, notify_model *before)
 	}
 }
 
-static void expiration_and_history(notify_model *model)
+static void expiration_and_history(notify_model *model, notify_model *before)
 {
 	notify_request value = request();
 	notify_record closed;
@@ -167,12 +167,28 @@ static void expiration_and_history(notify_model *model)
 	assert(!model->history[0].record.owner[0]);
 	assert(!model->history[0].record.actions[0].key[0]);
 	assert(!model->history[0].record.action_count);
+	*before = *model;
+	assert(notify_model_history_limit(model, 2));
+	assert(!memcmp(model, before, sizeof(*model)));
 	assert(!notify_model_history_limit(model, NOTIFY_HISTORY_MAX + 1));
-	assert(model->history_count == 2);
+	assert(!memcmp(model, before, sizeof(*model)));
+	assert(notify_model_history_limit(model, 1));
+	assert(model->revision == before->revision + 1);
+	assert(model->history_count == 1 && model->history_limit == 1);
+	assert(!memcmp(&model->history[0], &before->history[0],
+	    sizeof(model->history[0])));
+	assert(!model->history[1].record.id);
 	assert(notify_model_history_limit(model, 0));
 	assert(!model->history_count && !model->history[0].record.summary[0]);
+	*before = *model;
+	assert(notify_model_history_limit(model, 0));
+	assert(!memcmp(model, before, sizeof(*model)));
 	assert(notify_model_close(model, ids[3], 3, NULL));
 	assert(!model->history_count);
+	assert(notify_model_history_limit(model, NOTIFY_HISTORY_MAX));
+	*before = *model;
+	assert(notify_model_history_limit(model, NOTIFY_HISTORY_MAX));
+	assert(!memcmp(model, before, sizeof(*model)));
 }
 
 int main(void)
@@ -184,7 +200,7 @@ int main(void)
 	atomic_replacement(model, before);
 	bounded_records(model, before);
 	invalid_records(model, before);
-	expiration_and_history(model);
+	expiration_and_history(model, before);
 	free(before);
 	free(model);
 	return 0;

@@ -199,6 +199,8 @@ bool notify_model_history_limit(notify_model *model, unsigned int limit)
 {
 	if (limit > NOTIFY_HISTORY_MAX)
 		return false;
+	if (limit == model->history_limit)
+		return true;
 	if (model->history_count > limit)
 		model->history_count = limit;
 	memset(&model->history[model->history_count], 0,

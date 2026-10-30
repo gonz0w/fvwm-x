@@ -1,0 +1,149 @@
+= FvwmNotify(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+:manversion: @VERSION@
+
+== Name
+
+FvwmNotify - optional native desktop notifications
+
+== Synopsis
+
+Module FvwmNotify
+
+== Description
+
+FvwmNotify displays passive text notifications from applications on an explicitly
+selected local session bus. It runs in a separate native process. It requires the
+optional `session-dbus` build feature and its existing libdbus dependency. It does
+not start a bus, activate another service, install packages or replace an existing
+notification server. If another server owns `org.freedesktop.Notifications`, this
+instance exits. Bus disconnection ends the instance; restart it explicitly after
+restoring the bus.
+
+This feature is in development. The initial implementation supports plain UTF-8
+text, up to four text actions, urgency, replacement, expiration and closure.
+Capabilities advertise only `body` and `actions`. Markup, images, icons, sounds,
+persistent history and activation tokens are not implemented. Optional image and
+other hints are ignored within the overall wire limits. Notification labels,
+bodies and action identifiers are data; they never become FVWM or shell commands.
+
+== Enable the service
+
+Build with `-Dsession-dbus=enabled`, use an existing local session bus or the
+explicit `session_bus=start` policy described in *fvwm-session*(1), and add:
+
+----
+AddToFunc StartFunction I Module FvwmNotify
+----
+
+The portable default build does not install FvwmNotify. Without a usable bus,
+the rest of the desktop remains available. Do not add a second server if your
+session already starts one.
+
+The existing `session_notifications=external` preference allows FVWM-X's
+notification client to use this server, just as it uses another selected server.
+It does not start FvwmNotify. The `off` preference disables that outbound client;
+it does not stop applications from using a manually started server.
+
+FvwmNotify starts with do-not-disturb enabled. It asks FvwmDesktop for the existing
+committed `notification_dnd` preference. The desktop also projects changes live.
+This does not add another settings file or claim that a submitted update has
+already been observed by a service. Without FvwmDesktop, enable display explicitly:
+
+----
+SendToModule FvwmNotify DND 0
+----
+
+== Configuration
+
+The initial module has a fixed name and does not accept aliases. Store module
+configuration in the normal FVWM configuration and reload it with the command
+below. Colorsets and committed monitor/scale publications update live.
+
+----
+*FvwmNotify: Colorset 2
+*FvwmNotify: Font "xft:Sans:size=10"
+*FvwmNotify: History 0
+SendToModule FvwmNotify Reload
+----
+
+*Colorset* uses an existing FVWM colorset. *Font* uses the existing native font
+syntax and follows the selected monitor scale. *History* is a count from 0 to 16;
+zero, the default, retains no closed messages. History is memory-only and clears
+when this process exits. History entries contain display text and closure reason,
+without a live application-action capability. Lowering the limit removes older
+entries immediately.
+
+== Controls
+
+Passive popups do not take keyboard focus. Use an explicit binding to open the
+managed notification center and focus it through the normal window-manager
+command engine:
+
+----
+Key N A M SendToModule FvwmNotify Focus
+Key H A M SendToModule FvwmNotify History
+----
+
+In the center, Up and Down select a notification. Tab or Shift-Tab selects an
+action or dismissal; Enter or Space performs it. Escape closes the center.
+History is display-only. Popup action buttons send the selected action identifier
+to the creating application. Dismissal removes a live notification; an expired or
+replaced view cannot retain an actionable selection.
+
+Other fixed commands are:
+
+----
+SendToModule FvwmNotify Status
+SendToModule FvwmNotify DismissAll
+SendToModule FvwmNotify DND 1
+SendToModule FvwmNotify DND 0
+----
+
+*Status* emits one numeric `FVWM_NOTIFY_STATUS` Echo record: DND, active count,
+history count, history limit, loaded font height, scale in quarters, configuration
+pending flag and monitor epoch. This reports this module's observation; it does
+not attest to another session service or a complete theme/accessibility profile.
+
+Do-not-disturb closes current notifications and suppresses newly submitted ones.
+Turning it off does not replay a hidden backlog. A later desktop preference
+projection replaces a manual DND value.
+
+== Limits and protocol behavior
+
+The server retains at most 32 active notifications and displays at most three
+passive popups. Admission beyond capacity fails explicitly; closing a notification
+makes room again. Text and actions are bounded: application name 128 bytes,
+summary 256, body 2048, action key 64 and action label 128. Action pairs are limited
+to four. The wire message limit is 16 KiB; received and outgoing queue limits are
+64 KiB. Libdbus may admit one final message beyond the receive threshold,
+so queued received payload can reach about 80 KiB; these are not total process
+memory limits. Dispatch is bounded per event-loop turn. A transport failure or exhausted
+output queue ends this instance instead of silently losing an acknowledged
+operation. X11 and connection/authentication calls can still block inside this
+isolated process; no time budget can preempt one kernel call.
+
+IDs are nonzero and increase without recycling. Replacement and close use the
+standard server-global active IDs; they are not an authentication boundary.
+This supports clients that use a new bus connection for each request, including
+FVWM-X's transient notification helper. A replacement binds subsequent actions
+and closure signals to the new submitting connection. Unknown replacement IDs
+are refused rather than adopted, an explicit initial interoperability limit.
+Closing an unknown or already retired ID returns an error.
+
+Timeout -1 selects the server default: three seconds for low urgency, five for
+normal, and no automatic expiration for critical urgency. Zero never expires.
+Positive timeouts are accepted up to one day; other negative values and larger
+timeouts are refused. Expiration begins at admission, including a notification
+waiting behind the three visible popups. Replacing a record resets its timeout.
+
+Closure signals distinguish expiration (1), user dismissal (2), an application
+close request (3), and suppression (4). A live ID is invalidated before its closure
+signal. Action and closure signals are directed to the creating unique bus
+connection. Actions do not run programs. Closed history does not replay actions.
+
+== See also
+
+*fvwm-session*(1), *FvwmDesktop*(1), *fvwm3*(1)

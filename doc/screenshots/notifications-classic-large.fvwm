@@ -1,0 +1,4 @@
+Colorset 42 fg #ffffe0, bg #252550
+Style * BorderWidth 5
+*FvwmNotify Font "xft:DejaVu Sans Mono:size=18"
+SendToModule FvwmNotify Reload

@@ -165,6 +165,8 @@ if get_option('mandoc')
             page_install = {'install_tag': 'pinboard'}
         elif doc_name_attribute == 'fvwm-session'
             page_install = {'install_tag': 'session-startup'}
+        elif doc_name_attribute == 'FvwmNotify'
+            page_install = {'install_tag': 'notifications'}
         endif
         man_pages += custom_target(
             dest,

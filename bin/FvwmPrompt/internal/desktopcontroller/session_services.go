@@ -637,3 +637,17 @@ func (d *Controller) sessionSettingsChanged(retireSessionEditor bool) {
 		d.announceSettings()
 	}
 }
+
+// The optional native module borrows the already committed desktop preference.
+// This projection neither starts a server nor attests to its application. A
+// startup query and ordered live announcements share this literal fixed record.
+func (d *Controller) projectNotificationPolicy() {
+	if !d.ready || d.closed {
+		return
+	}
+	value := 0
+	if d.requestedSessionConfig().DND {
+		value = 1
+	}
+	d.emit(fmt.Sprintf("SendToModule FvwmNotify DND %d", value))
+}

@@ -110,6 +110,9 @@ Client calls are transient; a fixed native guardian stays resident only when
 lifetime with the parent/core and makes no D-Bus calls of its own. Borrowed/off
 paths add no guardian.
 The default `-Dsession-dbus=disabled` profile remains independent of libdbus.
+The enabled profile also installs the opt-in native `FvwmNotify` module; it
+shares this dependency decision and starts only through explicit module
+configuration. See `FvwmNotify(1)` for the initial protocol limits and controls.
 
 Compiled capability and service readiness differ. The enabled helper reports
 compiled support even without an address; an actual handshake is needed for bus

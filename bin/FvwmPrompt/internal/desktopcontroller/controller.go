@@ -213,6 +213,7 @@ func (d *Controller) changed(generation string) {
 	}
 }
 func (d *Controller) announceSettings() {
+	d.projectNotificationPolicy()
 	d.emit("SendToModule FvwmMFL MFL_PROVIDER_1 " + d.instance + " " + d.generation)
 }
 func (d *Controller) configure(key, text string) error {

@@ -377,3 +377,36 @@ func TestNotificationFallbackFollowsPanelReconciliation(t *testing.T) {
 		})
 	}
 }
+
+func TestNativeNotificationPolicyProjectsCommittedSettingWithoutActivation(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	*commands = nil
+	if err := d.handle("notification-policy", ""); err != nil {
+		t.Fatal(err)
+	}
+	text := literalCommands(t, *commands)
+	if !strings.Contains(text, "SendToModule FvwmNotify DND 0") || strings.Contains("\n"+text, "\nModule FvwmNotify") {
+		t.Fatal("query did not project bounded non-activating policy", text)
+	}
+	*commands = nil
+	d.saved["notification_dnd"] = true
+	d.announceSettings()
+	text = literalCommands(t, *commands)
+	if !strings.Contains(text, "SendToModule FvwmNotify DND 1") {
+		t.Fatal("committed DND not projected", text)
+	}
+	*commands = nil
+	for _, invalid := range []string{"FvwmOther", "0", "DND 0", "extra words"} {
+		if err := d.handle("notification-policy", invalid); err == nil {
+			t.Fatal("arbitrary destination or record admitted", invalid)
+		}
+	}
+	if len(*commands) != 0 {
+		t.Fatal("invalid projection emitted commands", *commands)
+	}
+	d.closed = true
+	d.projectNotificationPolicy()
+	if len(*commands) != 0 {
+		t.Fatal("closed owner projected policy", *commands)
+	}
+}

@@ -7,17 +7,76 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [owned session-bus lifetime](#r1-owned-session-bus-lifetime--2026-10-30)
-under #72/#77. PR307 merged as
-`7649a50b6f24286989e34da16dd8e288e1cd4e07`; canonical signature, reviewed tree
-and Cam author DCO verified, matching source branches retired. Performance is
-2/5 from merged PR305; no comparison is due.
+Current checkpoint: [native notification server](#r1-native-notification-server--2026-10-30)
+under NOTIFY-01 #76, coordinating #72/#77's accepted bus/client lifecycle.
+PR308 merged as `6fd12b7e1dd21dc5e0530b912e90d1005c13a51e`; canonical
+signature, reviewed tree and author DCO verified; matching source branches retired.
+Performance is 3/5 from merged PR305; no periodic comparison is due.
+
+## R1 native notification server — 2026-10-30
+
+Owner: Cam; `codex/r1-native-notifications`; base merged PR308 above.
+Status: implementation and focused qualification complete; separately reviewed
+candidate ready for maintainer review. Signed commit/tree and the open PR are
+linked from the owning GitHub issue at handoff. User authorized
+merge/cleanup and the next related milestone batch. NOTIFY-01 #76 owns delivery;
+#72/#77 retain broader session/service acceptance.
+
+Deliver one optional native module using the existing selected libdbus feature
+and native rendering/module primitives. Eight related outcomes: exclusive
+non-replacing notification-name ownership; bounded standard method admission
+and monotonic IDs/atomic replacement; urgency/expiration/close signals;
+application-directed opaque action replies; passive wrapping popup stack with
+monitor/work-area/scale placement; explicit keyboard focus and dismissal;
+live colorset/font/topology changes; shared DND projection plus dismiss-all and
+bounded optional in-memory history. Start explicitly with `Module FvwmNotify`;
+existing off/external client preferences keep their meaning. No automatic service
+activation or new preference store, mandatory package/toolkit, image/markup/sound
+renderer, persistence, generic bus bridge, arbitrary command execution or tray.
+Advertise only implemented capabilities and document ignored optional hints.
+Validate complete bounded wire types/UTF-8/length/count/timeout data before
+publishing state; cap incoming/outgoing queues and dispatch work. Respect existing
+servers, refuse unknown replacement/close IDs, and exit on bus/module loss
+without adoption/replay. Labels, action keys and message bodies remain data.
+Integration inspection clarified the initial ownership proposal before the gate:
+notification IDs follow the standard server-global scope, so the existing
+transient client can close its earlier notification from a new bus connection.
+They are not an authentication boundary. A replacement binds subsequent actions
+to the new submitting connection; only that current creator receives signals.
+
+Use a pure bounded model, one libdbus adapter and native module renderer with
+existing Flocale/colorset/module scale/work-area helpers. Compare this with a
+Form per popup: that introduces per-notification processes and escaping/lifetime
+coupling, so keep one isolated native owner. Reuse accepted optional dependency
+and bus lifecycle rather than creating a second daemon or transport.
+
+Implement the coherent set before one incremental Linux optional build, pure
+policy/protocol tests, scoped sanitizers, real-X lifecycle/focus/action/expiry/
+flood/recovery and three inspected theme configurations including enlarged text.
+Check enabled installation and disabled absence/manual behavior. Review affected
+BSD API/build coverage; reserve full six-target and physical qualification for
+the combined acceptance checkpoint. Record all gaps honestly; #76 closes only
+when its complete frozen release criteria have linked results. No performance
+comparison is due, but record scoped runtime/dependency cost. #257/#258 stay parked.
+
+The [focused report](verification/VERIFICATION-2026-10-30-NATIVE-NOTIFICATIONS.md)
+records 282 ordinary/race passes each, two normal/scoped sanitizer policies,
+installed enabled module/manual and disabled absence, real private-bus/X
+protocol/lifecycle/keyboard/flood/shared-DND checks and three inspected themes.
+The corrected xft fonts have observed heights 17/20/29. Original startup FD-limit
+failure, queued-navigation source finding, fixed-font capture and cost-observer
+accessor failure are retained with directed corrections; unchanged checks are
+reused. Scoped module idle RSS/PSS 5488/2215 KiB, full-capacity 5744/2435 KiB, are
+short snapshots, not whole-session/peak or comparative performance claims.
+Full #76/#72/#77 stay open. The next finite #76 checkpoint is remaining
+installed/support and mixed-DPI/lifecycle/consumer-fault coverage, followed by
+TRAY-01's XEmbed host; no new feature intake or Daybreak work is implied.
 
 ## R1 owned session-bus lifetime — 2026-10-30
 
 Owner: Cam; `codex/r1-owned-bus-lifetime`; base merged PR307 above.
-Status: source-reviewed implementation and focused qualification complete; PR
-handoff pending. The finite six-outcome contract was frozen before implementation.
+Status: merged in PR308 as `6fd12b7e1dd21dc5e0530b912e90d1005c13a51e`;
+canonical signature, reviewed tree and author DCO verified; source branches retired. The finite six-outcome contract was frozen before implementation.
 User authorized merge/cleanup and the next related open-milestone issue batch.
 
 Close the identified #72/#77 parent-crash bus disposition gap for coherent
@@ -5074,7 +5133,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / In progress; optional client/power merged; owned-bus lifetime candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
+| NOTIFY-01 | P2 / In progress; initial native server focused checks passed, combined acceptance open | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |

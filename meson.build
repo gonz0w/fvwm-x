@@ -722,6 +722,11 @@ fvwm3 = executable(
     install: true,
 )
 
+# Keep the existing optional bus dependency target-local. Its native server
+# module and transient client share this one feature decision.
+session_dbus = dependency('dbus-1', version: '>=1.14',
+    required: get_option('session-dbus'))
+
 # Core modules
 modules = {
     'FvwmAnimate': {'subdir': 'modules/FvwmAnimate'},
@@ -743,6 +748,10 @@ modules = {
 foreach m, _ : modules
     subdir(modules[m]['subdir'])
 endforeach
+
+if session_dbus.found()
+    subdir('modules/FvwmNotify')
+endif
 
 # FvwmPrompt and FvwmCommand
 subdir('bin')

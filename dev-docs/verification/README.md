@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Initial native notifications](VERIFICATION-2026-10-30-NATIVE-NOTIFICATIONS.md): optional isolated server, bounded protocol/popups/actions/history, shared DND and keyboard center; focused Linux/race/sanitizer, three inspected font/theme profiles and scoped process cost.
+
 - [Owned session-bus lifetime](VERIFICATION-2026-10-30-OWNED-BUS-LIFETIME.md): shared parent/core retention, exact daemon receipts, passive reaping and terminal fences; focused Linux/race/sanitizer, early BSD, ten native groups and scoped resident cost.
 
 - [Portable session recovery](VERIFICATION-2026-10-30-SESSION-RECOVERY.md): shared lease across parent loss/native Restart, positive handoff and bounded direct-WM stop; focused Linux/race/sanitizer, actual FreeBSD descriptor/exec and retained broader acceptance.

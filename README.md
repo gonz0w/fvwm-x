@@ -7,11 +7,12 @@ Responsive, maintainable code preserves FVWM configuration/theme compatibility.
 No compositor or Wayland backend.
 
 **Status:** in development toward R1: a configurable, fast, low-memory desktop
-lite. Features target R1; maintenance targets R2/R3. Builds require Go;
-installed utilities need no compiler or Python packages. [Build/upgrade notes](INSTALL.md).
+lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 Features:
 
 - Session controls, cooperative logout, optional services and scaling.
+- Opt-in native text notifications, actions, keyboard center and bounded history;
+  [initial scope and screenshots](doc/development-preview.md#native-notifications).
 - Atomic button updates, responsive layout and settings/editor.
 - Source-aware errors and paged configuration reports.
 - Structured IPC queries/actions and scoped settings preview/recovery.

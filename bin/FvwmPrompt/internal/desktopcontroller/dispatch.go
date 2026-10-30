@@ -364,6 +364,14 @@ func (d *Controller) handle(command, argument string) error {
 		if argument == "up" || argument == "down" || argument == "mute" {
 			d.workerJob("volume", "volume", values{"system": d.system, "action": argument})
 		}
+	case "notification-policy":
+		if argument != "" {
+			return errors.New("notification-policy takes no arguments")
+		}
+		if !d.ready || d.closed {
+			return errors.New("Desktop is not ready")
+		}
+		d.projectNotificationPolicy()
 	case "session-panel":
 		if argument != "" {
 			return errors.New("session-panel takes no arguments")

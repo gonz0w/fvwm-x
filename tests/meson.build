@@ -4541,3 +4541,30 @@ if get_option('live-x-tests') and session_dbus.found()
         build_by_default: false,
     )
 endif
+
+notify_model_test = executable(
+    'test-notify-model',
+    ['test_notify_model.c', '../modules/FvwmNotify/notify_model.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('notify-model', notify_model_test)
+
+if session_dbus.found()
+    notify_bus_test = executable(
+        'test-notify-bus',
+        ['test_notify_bus.c', '../modules/FvwmNotify/notify_bus.c',
+            '../modules/FvwmNotify/notify_model.c'],
+        dependencies: [session_dbus],
+        include_directories: includedirs,
+        c_args: ['-UNDEBUG'],
+    )
+    test('notify-bus', notify_bus_test)
+    notify_client = executable(
+        'notify-client',
+        ['notify_client.c', '../libs/cJSON.c'],
+        dependencies: [session_dbus],
+        include_directories: includedirs,
+        build_by_default: false,
+    )
+endif

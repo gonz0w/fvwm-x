@@ -1,0 +1,4 @@
+Colorset 42 fg #e5edf5, bg #253140
+Style * BorderWidth 2
+*FvwmNotify Font "xft:Sans:size=11"
+SendToModule FvwmNotify Reload

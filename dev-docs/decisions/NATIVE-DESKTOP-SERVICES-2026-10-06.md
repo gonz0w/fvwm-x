@@ -7,9 +7,22 @@ only; a new native authentication implementation remains unselected. Portable
 session/bus ownership and current accepted components stay unchanged. See the
 [modernization order](MODERNIZATION-ORDER-2026-10-25.md).
 
+Implementation selection, 2026-10-30: the first NOTIFY-01 server batch uses
+`FvwmNotify`, one optional native module with separate bounded model, libdbus
+adapter and X renderer. The shared dependency/lifecycle choice is already
+accepted in PR305–308; use the existing `session-dbus` feature. Explicit module
+startup preserves existing `session_notifications=off|external` semantics.
+The desktop projects its existing committed DND preference; no second store.
+Passive popups remain unmanaged/noninput. An explicit managed action/history
+center receives focus through the core command engine. The initial supported
+capabilities are plain body text and actions; image/markup/sound/persistence are
+not advertised. See the finite tracker checkpoint and `FvwmNotify(1)` for limits,
+configuration, server-global IDs, directed signals and interoperability limits.
+This selection is not complete NOTIFY-01 or six-target release acceptance.
+
 Owners: NOTIFY-01 and TRAY-01. Status: the user approved adding both services
-to the roadmap on 2026-10-06. Runtime implementation, concrete command syntax
-and dependency selection remain pending in the build thread. The locker is
+to the roadmap on 2026-10-06. The initial server implementation is now selected above; later tray protocol
+and complete service qualification remain pending in the build thread. The locker is
 deferred and is not added to the implementation queue.
 
 ## Placement and shared design

@@ -1077,3 +1077,47 @@ captures from the three configurations were inspected. Notice dismissal uses
 actual XTest pointer clicks; report navigation exercises native Form key
 handlers. This is in-progress development, with broader effective-value/origin
 inspection, text/assistive and release acceptance retaining their own scope.
+
+## Native notifications
+
+The opt-in `FvwmNotify` prototype now serves plain text notifications on the
+selected optional session bus, with replacement, expiry, action replies, DND and
+bounded memory-only history. Passive popups preserve focus; an explicitly opened
+managed center provides keyboard actions. The existing desktop DND preference
+is projected after commit. No new GUI toolkit or mandatory desktop package is
+required. See the [manual](FvwmNotify.adoc) for setup, controls and initial limits,
+and the [focused evidence](../dev-docs/verification/VERIFICATION-2026-10-30-NATIVE-NOTIFICATIONS.md)
+for source identities and remaining qualification.
+
+These are synthetic notifications in one owned Linux nested-X environment.
+The three native configurations use different colors, font families and border
+widths; observed loaded font heights are 17, 20 and 29 pixels at scale 1.0.
+This verifies enlarged text is actually loaded. It does not establish mixed-DPI,
+physical hardware, accessibility or complete support-profile acceptance. Long
+text is bounded and clipped/wrapped; the large-text header can truncate.
+
+Slate, Sans 11, dark palette:
+
+![Slate passive native notification](screenshots/notifications-slate-dark.png)
+
+Dune, Serif 12, light palette, explicit keyboard center:
+
+![Dune native notification center](screenshots/notifications-dune-light-center.png)
+
+Classic, Mono 18, enlarged text and legacy frame borders:
+
+![Classic enlarged native notification center](screenshots/notifications-classic-large-center.png)
+
+The exact module overlays are retained as
+[Slate](screenshots/notifications-slate-dark.fvwm),
+[Dune](screenshots/notifications-dune-light.fvwm) and
+[Classic](screenshots/notifications-classic-large.fvwm). Load an overlay only after
+enabling the optional module and choosing a free colorset ID. These examples
+change colorset 42 and normal FVWM border width; adapt those to your configuration.
+The standalone fixture uses explicit DND commands; its final check also starts
+the actual desktop controller and observes committed shared DND updates.
+
+Body/actions are the only advertised capabilities. Image/markup/sound support,
+persistent history and automatic service activation are not implemented. Full
+NOTIFY-01 acceptance remains open for its named combined platform/lifecycle and
+accessibility checks; these screenshots do not close the issue.

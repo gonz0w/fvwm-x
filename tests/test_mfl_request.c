@@ -1252,7 +1252,8 @@ static void test_session_requests(void)
 		"\"values\":{}"
 	};
 	const char *operations[] = {"session-status", "session-reprobe",
-		"notification-test", "notification-close", "logout"};
+		"notification-test", "notification-close", "logout", "power-status",
+		"power-reprobe", "poweroff", "reboot", "suspend", "lock"};
 
 	assert(mfl_request_parse("{\"version\":1,\"id\":\"s\","
 		"\"method\":\"query\","
@@ -1326,6 +1327,18 @@ static void test_session_requests(void)
 			operations[i], provider, provider);
 		assert(mfl_request_parse(text, &request));
 		assert(request.kind == MFL_REQUEST_OPERATION_START);
+	}
+	for (size_t i = 0; i < 3; i++)
+	{
+		const char *bad[] = {"power-Exec", "poweroff;Exec bad",
+			"provider-arbitrary"};
+
+		snprintf(text, sizeof(text), "{\"version\":1,\"id\":\"s\","
+			"\"method\":\"action\",\"resource\":\"operations\","
+			"\"operation\":\"start\",\"target\":\"%s\","
+			"\"provider\":\"%s\",\"generation\":\"%s\"}",
+			bad[i], provider, provider);
+		assert(!mfl_request_parse(text, &request));
 	}
 }
 

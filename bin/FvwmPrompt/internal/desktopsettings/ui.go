@@ -117,7 +117,7 @@ func Editor(s Snapshot,
 	if len(keys) > 0 && SessionKey(keys[0]) {
 		lines[0] = `Title "Session settings"`
 		lines = append(lines, "Line left", `Text "Bus policy applies at next login."`,
-			"Line left", `Text "Notifications and DND apply after the live handshake."`)
+			"Line left", `Text "Power, notifications and DND need a live handshake."`)
 	}
 	previous := ""
 	for _, key := range plan.Keys {

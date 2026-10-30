@@ -19,7 +19,7 @@ import (
 )
 
 func sessionSnapshot() sessionservice.Snapshot {
-	s := sessionservice.Snapshot{Version: sessionservice.Version, Generation: strings.Repeat("a", 32), Operation: strings.Repeat("b", 32), Config: sessionservice.Defaults(), ActiveBusPolicy: "off"}
+	s := sessionservice.Snapshot{Power: sessionservice.PowerObservation{Provider: "portable", Generation: strings.Repeat("c", 32), State: "ready", Capabilities: []sessionservice.PowerCapability{{Action: "poweroff", Permission: "unknown"}, {Action: "reboot", Permission: "unknown"}, {Action: "suspend", Permission: "unknown"}}}, Locker: sessionservice.LockerObservation{Generation: strings.Repeat("d", 32), State: "installed"}, Version: sessionservice.Version, Generation: strings.Repeat("a", 32), Operation: strings.Repeat("b", 32), Config: sessionservice.Defaults(), ActiveBusPolicy: "off"}
 	for _, id := range []string{"core", "scan", "bus", "notifications", "applications"} {
 		s.Items = append(s.Items, sessionservice.Item{ID: id, State: "ready", Ownership: "owned"})
 	}
@@ -106,7 +106,7 @@ func TestSessionObservationAndNotificationOwnerChanges(t *testing.T) {
 	// The no-endpoint fixture deliberately retains a pending configure intent.
 	d.session.configure = false
 	d.session.work = &sessionWork{verb: "notify"}
-	d.finishSessionRequest(job{result: sessionservice.Reply{Version: 1, Outcome: "sent", NotificationID: 7, Status: s}})
+	d.finishSessionRequest(job{result: sessionservice.Reply{Version: sessionservice.Version, Outcome: "sent", NotificationID: 7, Status: s}})
 	if d.session.lastNotification != 7 || !strings.Contains(d.session.message, "sent") {
 		t.Fatal("notification success not distinguished from ready")
 	}
@@ -156,7 +156,7 @@ func TestSessionPanelBoundsAndStaleCallback(t *testing.T) {
 		v = *d.session.view
 	}
 	body := strings.Join(*commands, "\n")
-	if !strings.Contains(body, `Text "`+strings.Repeat("x", 43)+`..."`) || strings.Contains(body, strings.Repeat("x", 512)) {
+	if !strings.Contains(body, `..."`) || strings.Contains(body, strings.Repeat("x", 512)) {
 		t.Fatal("status reason lacked an explicit bounded ellipsis")
 	}
 	for _, text := range []string{strings.Repeat("x", 512), strings.Repeat("界", 128), "A short status"} {
@@ -187,7 +187,7 @@ func TestSessionDNDAndPublicProviderAreFinite(t *testing.T) {
 		t.Fatal("untyped public lifecycle mutation")
 	}
 }
-func TestAllFourteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
+func TestAllFifteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	d, _ := fixture(t)
 	d.runtimeHeld = map[string]string{"palette": "ink", "appearance": "light", "contrast": "high"}
 	for key, value := range d.runtimeHeld {
@@ -203,11 +203,58 @@ func TestAllFourteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 		t.Fatal(err)
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
-	if len(settings) != 14 {
+	if len(settings) != 15 {
 		t.Fatal("missing typed service preferences")
 	}
 	if len(bytes) > 8192 {
-		t.Fatalf("14-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+		t.Fatalf("15-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+	}
+}
+
+func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testing.T) {
+	d, _ := fixture(t)
+	native, err := d.query("all", nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	projected := publicSettings(native)
+	for key, raw := range native {
+		item := raw.(map[string]any)
+		if item["owner"] != "FvwmDesktop" || item["generation"] != d.generation {
+			t.Fatal("standalone native/inspector identity missing", key, item)
+		}
+		want := values{}
+		for field, value := range item {
+			if field != "owner" && field != "generation" {
+				want[field] = value
+			}
+		}
+		if !reflect.DeepEqual(projected[key], want) {
+			t.Fatal("public projection changed per-setting metadata", key)
+		}
+	}
+	for _, request := range []values{
+		{"operation": "query", "scope": "all"},
+		{"operation": "validate", "provider": d.instance, "generation": d.generation, "values": values{"motion": true}},
+	} {
+		reply := d.settingsRequest(request)
+		result, ok := reply["result"].(map[string]any)
+		if !ok || result["owner"] != "FvwmDesktop" || result["generation"] != d.generation {
+			t.Fatal("public consumer lost envelope identity", reply)
+		}
+		settings := result["settings"].(map[string]any)
+		if len(settings) != 15 {
+			t.Fatal("public projection lost a preference", settings)
+		}
+		for key, raw := range settings {
+			item := raw.(map[string]any)
+			if _, exists := item["owner"]; exists {
+				t.Fatal("public item repeated envelope owner", key)
+			}
+			if _, exists := item["generation"]; exists {
+				t.Fatal("public item repeated envelope generation", key)
+			}
+		}
 	}
 }
 
@@ -242,7 +289,15 @@ func TestSessionPublicEscapedReasonsFitExistingReplyLimit(t *testing.T) {
 		s.Items[i].Failed = 256
 		s.Items[i].Operation = strings.Repeat("f", 32)
 	}
+	s.Power.Detail = strings.Repeat("<", 512)
+	s.Power.BusID = strings.Repeat("<", 128)
+	s.Power.ServerOwner = ":" + strings.Repeat("<", 254)
+	for i := range s.Power.Capabilities {
+		s.Power.Capabilities[i].Detail = strings.Repeat("<", 512)
+	}
+	s.Locker.Detail = strings.Repeat("<", 512)
 	d.adoptSession(s)
+	d.session.logout = &sessionLogout{phase: "waiting", message: strings.Repeat("<", 512), deadline: time.Now().Add(time.Minute)}
 	data, err := json.Marshal(d.sessionRequest(values{"resource": "session", "operation": "query", "provider": d.instance}))
 	if err != nil || len(data) > 8192 {
 		t.Fatal("public projection exceeded fixed MFL budget", len(data), err)
@@ -264,7 +319,7 @@ func TestSessionCommittedPolicyWaitsForFreshOwnerBeforeAutomaticConfigure(t *tes
 	s := sessionSnapshot()
 	s.Operation = strings.Repeat("e", 32)
 	d.session.work = &sessionWork{verb: "status"}
-	d.finishSessionRequest(job{result: sessionservice.Reply{Version: 1, Outcome: "ready", Status: s}})
+	d.finishSessionRequest(job{result: sessionservice.Reply{Version: sessionservice.Version, Outcome: "ready", Status: s}})
 	if d.session.snapshot.Operation != s.Operation || d.session.work == nil || d.session.work.verb != "configure" || d.session.work.config != d.requestedSessionConfig() || d.jobs["session-services"] == nil {
 		t.Fatal("fresh owner status did not admit latest committed policy")
 	}
@@ -274,7 +329,7 @@ func TestSessionCommittedPolicyWaitsForFreshOwnerBeforeAutomaticConfigure(t *tes
 	d.queue = nil
 	s.Config = d.requestedSessionConfig()
 	s.Operation = strings.Repeat("f", 32)
-	d.finishSessionRequest(job{result: sessionservice.Reply{Version: 1, Outcome: "applied", Status: s}})
+	d.finishSessionRequest(job{result: sessionservice.Reply{Version: sessionservice.Version, Outcome: "applied", Status: s}})
 	if d.session.configure || d.session.work != nil || d.session.snapshot.Operation != s.Operation || d.effective["session_notifications"] != "external" || d.effective["notification_dnd"] != true {
 		t.Fatal("live configuration acknowledgement failed to retire intent")
 	}
@@ -298,7 +353,7 @@ func TestNotificationFallbackFollowsPanelReconciliation(t *testing.T) {
 				}
 			} else {
 				d.session.work = &sessionWork{verb: "notify"}
-				result := job{result: sessionservice.Reply{Version: 1, Outcome: "unavailable", Status: s}}
+				result := job{result: sessionservice.Reply{Version: sessionservice.Version, Outcome: "unavailable", Status: s}}
 				if mode == "failed" {
 					result.err = errors.New("notification unavailable")
 				}

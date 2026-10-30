@@ -17,7 +17,9 @@ The packaged FVWM desktop entry starts this login parent. It establishes the
 session environment, starts the installed *fvwm3*, and runs eligible XDG
 autostart applications once after the core acknowledges initial startup.
 It uses the existing Go runtime and requires no session bus or desktop toolkit.
-Optional session-bus and outbound-notification integration is disabled by default.
+Optional D-Bus power and outbound-notification integration is disabled by
+default; portable power discovery and fixed manual-lock coordination remain
+available without it.
 The native *FvwmDesktop* Session panel observes the owner and coordinates
 cooperative application logout through the core. Complete service integration
 and release qualification remain separate work.
@@ -46,7 +48,7 @@ rather than inferring an ownership display.
 Missing *XDG_CURRENT_DESKTOP* becomes *FVWM3:FVWM*, and missing
 *XDG_SESSION_TYPE* becomes *x11*. Existing values, *DISPLAY*, *XAUTHORITY*,
 *HOME*, *PATH* and *XDG_RUNTIME_DIR* are preserved. The default bus policy also
-preserves the inherited bus environment and starts no bus adapter. The wrapper
+preserves the inherited bus environment and starts no session-bus adapter. The wrapper
 does not invent a runtime-directory environment variable.
 
 A nonempty *SESSION_MANAGER* selects the existing externally managed XSMP path:
@@ -70,7 +72,7 @@ The parent does not terminate them or borrowed services.
 
 == OPTIONAL SERVICES AND SETTINGS
 
-The shared *$FVWM_USERDIR/desktop-state.json* preference file supplies three
+The shared *$FVWM_USERDIR/desktop-state.json* preference file supplies four
 settings in *group:session*. The default user directory is *$HOME/.fvwm*.
 Use *FvwmDesktop* Session settings to change them; there is no second session
 preference store.
@@ -83,22 +85,27 @@ preference store.
   handshake. It does not start a notification server.
 * *notification_dnd*: boolean, default *false*. Do not disturb suppresses
   outbound notices quietly. It applies after the live handshake.
+* *session_power*: *portable* (default) or *login1*. It applies after the live
+  owner handshake; changing provider invalidates old capabilities until an
+  explicit power probe. It does not change the session-bus policy.
 
-With *session_bus=off*, login starts no bus helper and preserves the inherited
-address. *reuse* authenticates an explicitly inherited usable session address;
-an absent or failed service leaves the portable desktop available. *start*
+With *session_bus=off*, login starts no session-bus helper and preserves the
+inherited address. Portable power discovery does not require a bus. *reuse* authenticates
+an explicitly inherited usable session address; an absent or failed service leaves the portable desktop available. *start*
 first reuses a working inherited bus. Otherwise, if the optional adapter is
 available, it starts an installed *dbus-daemon* in the foreground and confirms
 its address and handshake before launching FVWM or autostart applications.
 Only absolute *PATH* components are searched for the fixed daemon name.
 There is no package installation, system-bus startup or implicit bus autolaunch.
 
-The optional native adapter accepts one explicit Unix bus address. It is built
-with *-Dsession-dbus=enabled* and requires libdbus-1 >=1.14; default builds install
-an unavailable stub without linking that library. The startup budget is five
-seconds; each isolated adapter call has a two-second
-deadline, a 16 KiB output cap and finite message limits. A new daemon address
-is limited to 4096 bytes. Missing or disabled support reports unavailable and
+The optional native adapter has independent session-notification and existing
+system-bus power branches. The notification branch accepts one explicit Unix
+session-bus address. Build with *-Dsession-dbus=enabled* and libdbus-1 >=1.14;
+default builds install an unavailable stub without linking that library. The startup budget is five
+seconds; each isolated notification adapter call has a two-second deadline,
+and power acquisition/calls have a four-second parent deadline. Output is
+capped at 16 KiB with finite message limits. Each D-Bus method call has a
+one-second timeout. A new daemon address is limited to 4096 bytes. Missing or disabled support reports unavailable and
 preserves login. Full platform/service qualification remains separate; see
 *INSTALL.md* in the source distribution. A compiled adapter reporting available
 does not establish a connected bus; readiness requires the actual handshake.
@@ -113,7 +120,51 @@ owner. It sends plain UTF-8 summaries up to 160 bytes and bodies up to 1024
 bytes, with control characters refused. Close requests apply only to its own
 IDs and the same server owner. Server replacement invalidates those IDs.
 Unavailable notifications use a local native notice where the desktop action
-provides one. No notification history, server, tray or secure locker is added.
+provides one. No notification history, server, tray or bundled authentication
+locker is added.
+Power failures do not erase these IDs, and session-notification loss does not
+disable independent portable/system power providers.
+
+== POWER AND MANUAL LOCK
+
+The default portable provider resolves fixed native commands through conservative
+absolute PATH roots. Linux prefers installed systemctl, otherwise shutdown;
+FreeBSD and OpenBSD use shutdown. Installed means request-capable with unknown
+authorization; discovery never executes a power request to test permission.
+No arbitrary provider, executable path or argument registry is accepted.
+
+The optional login1 provider connects only to an existing local system bus,
+using an explicit inherited local address or the conventional existing socket.
+It never starts a system bus or activates login1. Bus GetId/GetNameOwner
+identify the bus and unique service owner. The fixed login1 Manager supplies
+CanPowerOff, CanReboot and CanSuspend observations.
+PowerOff/Reboot recheck permission and pinned bus/unique-owner identity, and
+send interactive=false only for yes. No, challenge, na, inhibited,
+inhibitor-blocked, challenge-inhibitor-blocked and unknown do not authorize a
+request. Authentication and inhibitor management are outside this provider.
+The compiled-disabled helper reports unavailable without libdbus linkage.
+
+Session and its menus report per-action capability and bounded request outcomes.
+A request acknowledgment is not completed shutdown. After a denied, timed-out,
+disconnected or uncertain request, no fallback or automatic replay is attempted.
+Refresh and explicitly probe before deciding whether to request again. The
+existing direct FVWM/external-session native fallback remains usable. Power
+and notification providers have independent failure state.
+
+Manual Lock starts only an installed xlock or slock. The parent retains exactly
+one observed child across FvwmDesktop/controller and ordinary FVWM Restart and
+refuses duplicate admission while pending/running. Once Start succeeds, requester
+disconnect, request deadline, controller restart and WM exit do not terminate the
+locker. Its waiter records exit; started, running and exited never attest screen
+protection. This is manual-lock process coordination, not a secure-readiness
+implementation.
+
+Coordinated suspend is explicitly unavailable. The parent refuses it before
+constructing a native power request or sending a Suspend method, regardless of
+backend capability or a running locker. This slice has no qualified positive
+secure-lock witness, authentication implementation or inhibitor coordination.
+See *FvwmDesktop*(1) for controls and *FvwmMFL*(1) for the typed public operations.
+Full service, platform, physical-lock and release acceptance remain separate.
 
 == PRIVATE OWNER CONTROL
 
@@ -126,9 +177,13 @@ unavailable without preventing login.
 
 This internal channel admits eight connections/queued requests, one active
 mutation, 16 KiB frames/status and five-second request deadlines. Disconnect
-cancels a request, not the desktop. Session-generation and current-operation
-tokens reject stale mutation controls. Session generation belongs to the
-parent lifetime; it is not a detector for each same-process FVWM exec.
+cancels a request, not the desktop or an already started locker. Session
+generation and current-operation tokens reject stale mutation controls. Private
+messages use version 2, and power mutations require a separate current provider-generation token. The
+optional native client retains JSON version 1 with kind power; public Session
+queries use schema 2. These are separate internal/public contracts. Session
+generation belongs to the parent lifetime; it is not a detector for each
+same-process FVWM exec.
 The channel accepts no arbitrary commands, argument arrays, executable paths
 or window IDs. Public clients use the existing *FvwmMFL* typed session/settings
 and operation interfaces; they should not construct this private protocol.
@@ -232,8 +287,10 @@ User Desktop Entry files with the _.desktop_ suffix; *$HOME/.config* is the defa
 System Desktop Entry files with the _.desktop_ suffix in root order; */etc/xdg* is the default configuration root.
 
 *$FVWM_USERDIR/desktop-state.json*::
-Shared desktop preferences, including the three session settings. Existing
-supported schemas load automatically; a successful save writes schema 5.
+Shared desktop preferences: fifteen registered keys plus retained wallpaper,
+including the four session settings. Supported old schemas load automatically;
+a successful save writes schema 6. The compact Session editor has four fields;
+the appearance edit-all form retains eleven.
 
 == SEE ALSO
 

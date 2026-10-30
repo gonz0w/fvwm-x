@@ -4,8 +4,9 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation; either version 2, or any later version.
 
-// Package sessionowner supervises only its direct WM and acquisition worker.
-// Applications are independent children: a successful Start is not readiness.
+// Package sessionowner retains direct WM, helper and manual-locker observations.
+// Applications remain independent. A process Start never establishes readiness,
+// and an admitted locker is never terminated by session lifecycle cleanup.
 package sessionowner
 
 import (
@@ -326,8 +327,41 @@ func Run(input Config) int {
 			report.write("WM signal failed: %v", err)
 		}
 	}
+	pendingProviderProbe := false
+	startJob := func(request controlRequest) {
+		result := make(chan serviceJob, 1)
+		jobDone = result
+		jobCtx, jobCancel := context.WithCancel(ctx)
+		stopDisconnect := context.AfterFunc(request.ctx, jobCancel)
+		cancelServiceJob = func() { stopDisconnect(); jobCancel() }
+		request.ctx = jobCtx
+		identity, count := services.identity, len(services.ids)
+		power, plans := services.snapshot.Power, services.plans
+		go func() {
+			if request.message.Verb == "power-probe" || sessionservice.IsPowerVerb(request.message.Verb) || request.message.Verb == "lock" {
+				result <- runProviderJob(request, cfg, power, plans)
+			} else {
+				result <- runServiceJob(request, cfg, identity, count)
+			}
+		}()
+	}
 	for {
+		if pendingProviderProbe && jobDone == nil && !shuttingDown {
+			pendingProviderProbe = false
+			request := controlRequest{ctx: ctx, message: sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "power-probe", Generation: services.snapshot.Generation, Operation: services.snapshot.Operation}, reply: make(chan sessionservice.Reply, 1)}
+			if start, _ := services.admit(request, cfg, false); start {
+				startJob(request)
+			}
+		}
+		var lockerDone <-chan error
+		if services != nil && services.locker != nil {
+			lockerDone = services.locker.done
+		}
 		select {
+		case lockerErr := <-lockerDone:
+			services.locker = nil
+			services.snapshot.Locker.State = "exited"
+			services.snapshot.Locker.Detail = detail(fmt.Sprintf("observed locker exited with status %d; secure readiness remains unconfirmed", exitCode(lockerErr)))
 		case request := <-controls:
 			if services == nil {
 				continue
@@ -341,14 +375,7 @@ func Run(input Config) int {
 				request.reply <- reply
 				continue
 			}
-			result := make(chan serviceJob, 1)
-			jobDone = result
-			jobCtx, jobCancel := context.WithCancel(ctx)
-			stopDisconnect := context.AfterFunc(request.ctx, jobCancel)
-			cancelServiceJob = func() { stopDisconnect(); jobCancel() }
-			request.ctx = jobCtx
-			identity, count := services.identity, len(services.ids)
-			go func() { result <- runServiceJob(request, cfg, identity, count) }()
+			startJob(request)
 		case job := <-jobDone:
 			jobDone = nil
 			cancelServiceJob()
@@ -386,6 +413,9 @@ func Run(input Config) int {
 			}
 			setState(0, "ready", "core startup acknowledged; modules/apps have separate readiness")
 			report.write("core startup acknowledged")
+			if services != nil {
+				pendingProviderProbe = true
+			}
 			if cfg.NoAutostart {
 				continue
 			}

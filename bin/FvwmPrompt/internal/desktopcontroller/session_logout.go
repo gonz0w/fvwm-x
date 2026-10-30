@@ -364,6 +364,9 @@ func (d *Controller) logoutReply(message string) bool {
 	return true
 }
 func (d *Controller) sessionTick() {
+	if c := d.session.confirmation; c != nil && !time.Now().Before(c.deadline) {
+		d.dismissSessionConfirmation()
+	}
 	if v := d.session.view; v != nil && !time.Now().Before(v.deadline) {
 		d.closeSessionPanel()
 	}

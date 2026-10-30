@@ -4,9 +4,20 @@
  */
 #include "config.h"
 #include <stdio.h>
+#include <string.h>
 
-int main(void)
+int main(int argc, char **argv)
 {
+	if (argc > 1 && strncmp(argv[1], "power-", 6) == 0)
+		return puts("{\"version\":1,\"kind\":\"power\",\"available\":false,"
+			"\"state\":\"unavailable\",\"bus_id\":\"\",\"server_owner\":\"\","
+			"\"detail\":\"optional_bus_support_disabled\",\"capabilities\":["
+			"{\"action\":\"poweroff\",\"permission\":\"unknown\","
+			"\"detail\":\"optional_bus_support_disabled\"},"
+			"{\"action\":\"reboot\",\"permission\":\"unknown\","
+			"\"detail\":\"optional_bus_support_disabled\"},"
+			"{\"action\":\"suspend\",\"permission\":\"unknown\","
+			"\"detail\":\"optional_bus_support_disabled\"}]}") < 0;
 	return puts("{\"version\":1,\"available\":false,\"state\":\"unavailable\","
 		"\"bus_id\":\"\",\"server_owner\":\"\",\"capabilities\":[],"
 		"\"notification_id\":0,\"detail\":\"optional_bus_support_disabled\"}")

@@ -41,6 +41,25 @@ func exact(r values, keys ...string) bool {
 }
 func failure(code string) values   { return values{"error": values{"code": code}} }
 func success(result values) values { return values{"result": result} }
+
+// Public settings already belong to the envelope's owner and generation.
+// Keep each standalone native/inspector record self-contained, but avoid
+// repeating those identical identities fifteen times inside one bounded reply.
+// Copies preserve the standalone metadata if a caller retains that query.
+func publicSettings(settings values) values {
+	result := values{}
+	for key, raw := range settings {
+		item := values{}
+		for field, value := range raw.(map[string]any) {
+			if field != "owner" && field != "generation" {
+				item[field] = value
+			}
+		}
+		result[key] = item
+	}
+	return result
+}
+
 func (d *Controller) settingsRequest(r values) values {
 	if r == nil {
 		return failure("invalid_request")
@@ -94,7 +113,7 @@ func (d *Controller) settingsRequest(r values) values {
 		return success(values{"owner": "FvwmDesktop", "schema_version": 1, "provider": d.instance, "generation": d.generation,
 			"lifecycle": lifecycle, "lifecycle_scope": "desktop-preferences", "availability": available,
 			"failure_reason": nil, "persistence_error": persistence, "resources": []string{"settings", "operations", "session"},
-			"operations": []string{"query", "validate", "set", "reset", "reload"}, "operation_targets": []string{"applications", "status", "session-status", "session-reprobe", "notification-test", "notification-close", "logout"},
+			"operations": []string{"query", "validate", "set", "reset", "reload"}, "operation_targets": append([]string{"applications", "status"}, sessionOperationTargets()...),
 			"operation_limit": 16, "operation_retention_ms": 300000, "notifications": "invalidation-only", "preview": false,
 			"application_completion": "unknown", "service_lifecycle": d.sessionObserved()})
 	}
@@ -157,7 +176,7 @@ func (d *Controller) settingsRequest(r values) values {
 			return failure("invalid_value")
 		}
 		return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "state": "validated",
-			"generation": d.generation, "saved_revision": d.revision, "settings": settings, "persistence": "not-attempted",
+			"generation": d.generation, "saved_revision": d.revision, "settings": publicSettings(settings), "persistence": "not-attempted",
 			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false})
 	}
 	before := d.generation
@@ -205,7 +224,7 @@ func (d *Controller) settingsRequest(r values) values {
 		application = "submission-failed"
 	}
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "generation": d.generation,
-		"state": state, "settings": settings, "saved_revision": d.revision, "application": application,
+		"state": state, "settings": publicSettings(settings), "saved_revision": d.revision, "application": application,
 		"asynchronous_completion": "unknown", "preview": false})
 }
 

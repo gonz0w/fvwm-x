@@ -97,6 +97,9 @@ func readSessionConfig(environment []string) (sessionservice.Config, error) {
 	if value, ok := values["session_notifications"].(string); ok {
 		config.Notifications = value
 	}
+	if value, ok := values["session_power"].(string); ok {
+		config.Power = value
+	}
 	if value, ok := values["notification_dnd"].(bool); ok {
 		config.DND = value
 	}
@@ -341,6 +344,8 @@ type serviceState struct {
 	bus      *ownedBus
 	identity busReply
 	ids      map[uint32]bool
+	plans    providerPlans
+	locker   *ownedLocker
 }
 
 func newServices(cfg *Config, report *reporter) (*serviceState, error) {
@@ -353,9 +358,11 @@ func newServices(cfg *Config, report *reporter) (*serviceState, error) {
 		return nil, err
 	}
 	config, configErr := readSessionConfig(cfg.Environment)
-	state := &serviceState{snapshot: sessionservice.Snapshot{Version: 1, Generation: generation, Operation: operation, Config: config, ActiveBusPolicy: config.Bus, Items: []sessionservice.Item{
+	state := &serviceState{snapshot: sessionservice.Snapshot{Version: sessionservice.Version, Generation: generation, Operation: operation, Config: config, ActiveBusPolicy: config.Bus, Items: []sessionservice.Item{
 		{ID: "core", State: "starting", Ownership: "owned"}, {ID: "scan", State: "enabled", Ownership: "owned"}, {ID: "bus", State: "stopped", Ownership: "none"}, {ID: "notifications", State: "stopped", Ownership: "borrowed"}, {ID: "applications", State: "enabled", Ownership: "independent"},
 	}}, ids: make(map[uint32]bool)}
+	state.snapshot.Power = unavailablePower(config.Power, generation, "provider probe pending after core startup")
+	state.snapshot.Locker = sessionservice.LockerObservation{Generation: generation, State: "unavailable", Detail: "locker discovery pending; secure readiness unconfirmed"}
 	if cfg.NoAutostart {
 		state.snapshot.Items[1].State = "stopped"
 		state.snapshot.Items[4].State = "stopped"
@@ -457,6 +464,9 @@ type serviceJob struct {
 	result  busReply
 	err     error
 	outcome string
+	power   sessionservice.PowerObservation
+	plans   providerPlans
+	locker  *ownedLocker
 }
 
 func runServiceJob(request controlRequest, cfg Config, identity busReply, ownedIDs int) serviceJob {

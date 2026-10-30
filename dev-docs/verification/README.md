@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Session providers and power coordination](VERIFICATION-2026-10-29-SESSION-PROVIDERS.md): eight related stories, one shared power policy, truthful permissions and retained manual locker; focused Linux/race/sanitizer, three themes and explicit remaining acceptance.
+
+- [PR299→PR305 core performance observation](PERFORMANCE-2026-10-29-SESSION-CORE.md): retained paired core samples, separate command/timer/CPU results and explicit size/RSS growth; no whole-desktop claim.
+
 - [Session control and optional services](VERIFICATION-2026-10-29-SESSION-SERVICES.md): cooperative logout, native Session/settings, optional owned/borrowed bus and outbound notifications; focused Linux/race/sanitizer, three themes and explicit remaining release acceptance.
 
 - [Portable session startup](VERIFICATION-2026-10-29-SESSION-STARTUP.md): default login wrapper, startup acknowledgment, controlled autostart and restart ownership; focused Linux install/X/race and real FreeBSD descriptor evidence.

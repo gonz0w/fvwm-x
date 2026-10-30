@@ -369,12 +369,17 @@ func (d *Controller) handle(command, argument string) error {
 			return errors.New("session-panel takes no arguments")
 		}
 		return d.startSessionPanel()
+	case "session-power-probe":
+		if argument != "" {
+			return errors.New("session-power-probe takes no arguments")
+		}
+		return d.startSessionRequest("power-probe", nil)
 	case "session-control":
 		return d.sessionPanelControl(argument)
 	case "confirm":
-		if argument == "logout" || argument == "poweroff" || argument == "reboot" {
-			d.form("SlateSessionForm", []string{`Title "Session"`, "Line left", "Text " + quote("Confirm "+argument+"? Save your work first."), "Line expand", `Button quit "Cancel" ^[`, "Command Nop", "Button quit " + quote(title(argument)), "Command SendToModule FvwmDesktop session " + argument}, false)
-		}
+		return d.confirmSessionAction(argument)
+	case "session-confirm":
+		return d.sessionConfirmationControl(argument)
 	case "session":
 		if argument == "logout" {
 			return d.startLogout(nil)

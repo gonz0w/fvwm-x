@@ -38,6 +38,36 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Session power providers and manual Lock
+
+Session now projects the shared portable or optional login1 power policy,
+per-action permission states, an explicit power probe and manual Lock. Poweroff
+and Reboot require a confirmation bound to the observed provider and settings.
+Changing policy requires a live owner handshake and explicit reprobe. Old private
+parent versions need a fresh login after upgrade; see the
+[session manual](fvwm-session.adoc).
+
+Slate shows the native status and controls; diagnostic rows elide to fit.
+
+![Slate session provider controls](screenshots/session-providers-slate-dark-panel.png)
+
+Dune shows all four shared session preferences.
+
+![Dune four-field session settings](screenshots/session-providers-dune-light-settings.png)
+
+Enlarged Classic shows the confirmation and an explicit legacy-color Form.
+
+![Classic power confirmation and legacy colors](screenshots/session-providers-classic-large-confirmation.png)
+
+The [capture/configuration manifest](screenshots/session-providers-manifest.json)
+binds these unmodified 1440×1000 images to the passing three-theme fixture.
+Manual Lock tracks one external locker child across Desktop/core restart and WM
+exit; running is not a protection acknowledgment. Coordinated suspend remains
+unavailable without qualified secure readiness. These fixtures use harmless
+native commands and a private provider bus, not real power or authentication.
+The [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-29-SESSION-PROVIDERS.md)
+records checks and broader release gaps. Development continues.
+
 ## Session and services
 
 Open **Session → Session and services…** to inspect the owned core, autostart scan,

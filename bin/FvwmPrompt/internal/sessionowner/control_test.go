@@ -42,11 +42,11 @@ func TestPrivateControlRoundTripCASAndNoForeignCapability(t *testing.T) {
 	}()
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
-	status, err := sessionservice.RequestTo(ctx, control.path, control.capability, sessionservice.RequestMessage{Version: 1, Verb: "status"})
+	status, err := sessionservice.RequestTo(ctx, control.path, control.capability, sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "status"})
 	if err != nil {
 		t.Fatal(err)
 	}
-	configure := sessionservice.RequestMessage{Version: 1, Verb: "configure", Generation: status.Generation, Operation: status.Operation, Config: &sessionservice.Config{Bus: "start", Notifications: "external", DND: true}}
+	configure := sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "configure", Generation: status.Generation, Operation: status.Operation, Config: &sessionservice.Config{Power: "portable", Bus: "start", Notifications: "external", DND: true}}
 	reply, err := sessionservice.RequestTo(ctx, control.path, control.capability, configure)
 	if err != nil || reply.Outcome != "applied" || reply.Status.ActiveBusPolicy != "off" {
 		t.Fatalf("%#v %v", reply, err)
@@ -55,7 +55,7 @@ func TestPrivateControlRoundTripCASAndNoForeignCapability(t *testing.T) {
 		t.Fatal("replayed control admitted")
 	}
 	<-finished
-	if _, err := sessionservice.RequestTo(ctx, control.path, strings.Repeat("0", 64), sessionservice.RequestMessage{Version: 1, Verb: "status"}); err == nil {
+	if _, err := sessionservice.RequestTo(ctx, control.path, strings.Repeat("0", 64), sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "status"}); err == nil {
 		t.Fatal("foreign capability admitted")
 	}
 }
@@ -70,7 +70,7 @@ func TestControlDisconnectCancelsOnlyRequest(t *testing.T) {
 	defer cancel()
 	clientDone := make(chan error, 1)
 	go func() {
-		_, err := sessionservice.RequestTo(ctx, control.path, control.capability, sessionservice.RequestMessage{Version: 1, Verb: "status"})
+		_, err := sessionservice.RequestTo(ctx, control.path, control.capability, sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "status"})
 		clientDone <- err
 	}()
 	request := <-control.requests
@@ -105,7 +105,7 @@ func TestControlBoundsConnectionsAndPreservesReplacementInode(t *testing.T) {
 			t.Fatal(err)
 		}
 		connections = append(connections, connection)
-		data, _ := json.Marshal(sessionservice.Envelope{Capability: control.capability, Request: sessionservice.RequestMessage{Version: 1, Verb: "status"}})
+		data, _ := json.Marshal(sessionservice.Envelope{Capability: control.capability, Request: sessionservice.RequestMessage{Version: sessionservice.Version, Verb: "status"}})
 		var header [4]byte
 		binary.BigEndian.PutUint32(header[:], uint32(len(data)))
 		connection.Write(header[:])

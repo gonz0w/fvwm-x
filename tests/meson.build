@@ -4521,3 +4521,14 @@ startup_group_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('startup-group-policy', startup_group_policy_test)
+
+# The private provider fixture cannot invoke operating-system power operations.
+# It is built only for the optional live-X protocol gate, never installed.
+if get_option('live-x-tests') and session_dbus.found()
+    session_power_provider = executable(
+        'session-power-provider', 'session_power_provider.c',
+        include_directories: includedirs,
+        dependencies: [session_dbus],
+        build_by_default: false,
+    )
+endif

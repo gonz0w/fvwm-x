@@ -218,15 +218,15 @@ func TestAudioAndPowerAreFixedArgv(t *testing.T) {
 	for _, system := range []string{"Linux", "FreeBSD", "OpenBSD"} {
 		for _, action := range []string{"poweroff", "reboot"} {
 			env := NativeEnvironment()
-			env.LookPath = func(name string) (string, error) { return name, nil }
+			env.LookPath = func(name string) (string, error) { return "/owned/" + name, nil }
 			env.Run = func(_ context.Context, argv []string, deadline time.Duration) (string, error) {
-				want := []string{"systemctl", action}
+				want := []string{"/owned/systemctl", action}
 				if system != "Linux" {
 					flag := "-r"
 					if action == "poweroff" {
 						flag = "-p"
 					}
-					want = []string{"shutdown", flag, "now"}
+					want = []string{"/owned/shutdown", flag, "now"}
 				}
 				if !reflect.DeepEqual(argv, want) || deadline != 3*time.Second {
 					t.Fatalf("%q", argv)
@@ -237,8 +237,8 @@ func TestAudioAndPowerAreFixedArgv(t *testing.T) {
 				t.Fatal("power result")
 			}
 			env.Run = func(context.Context, []string, time.Duration) (string, error) { return "", &exec.ExitError{} }
-			if !strings.Contains(power(context.Background(), system, action, env), "denied") {
-				t.Fatal("failure not denied")
+			if !strings.Contains(power(context.Background(), system, action, env), "unconfirmed") {
+				t.Fatal("command exit falsely established denial or completion")
 			}
 		}
 	}
@@ -257,6 +257,27 @@ func TestFailedBackendOwnershipAndInvalidDirectRequest(t *testing.T) {
 	calls = 0
 	if _, err := Run(context.Background(), Request{Version: 1, Operation: "power", System: "Linux", Action: "invalid"}, env); err == nil || calls != 0 {
 		t.Fatal("invalid typed request executed backend")
+	}
+}
+
+func TestPowerFailureNeverReplays(t *testing.T) {
+	for _, failure := range []error{&exec.ExitError{}, context.DeadlineExceeded, errors.New("transport lost")} {
+		env := NativeEnvironment()
+		env.LookPath = func(name string) (string, error) { return "/owned/" + name, nil }
+		calls := 0
+		env.Run = func(_ context.Context, argv []string, _ time.Duration) (string, error) {
+			calls++
+			if !reflect.DeepEqual(argv, []string{"/owned/systemctl", "poweroff"}) {
+				t.Fatalf("unexpected fallback: %q", argv)
+			}
+			return "", failure
+		}
+		if got := power(context.Background(), "Linux", "poweroff", env); !strings.Contains(got, "unconfirmed") || calls != 1 {
+			t.Fatalf("%s: %d calls", got, calls)
+		}
+	}
+	if got := power(context.Background(), "Linux", "suspend", Environment{}); got != "Power service is unavailable." {
+		t.Fatal("unsupported action reached execution")
 	}
 }
 

@@ -84,6 +84,13 @@ func reportScanError(output io.Writer, err error) {
 }
 
 func run(args, environment []string, diagnostics io.Writer) int {
+	if len(args) == 1 && args[0] == sessionowner.ProviderWorkerArgument {
+		if err := sessionowner.ProviderDiscovery(environment, os.Stdout); err != nil {
+			reportScanError(diagnostics, err)
+			return 1
+		}
+		return 0
+	}
 	if len(args) == 1 && args[0] == sessionowner.WorkerArgument {
 		if err := sessionowner.Scan(context.Background(), environment, os.Stdout); err != nil {
 			reportScanError(diagnostics, err)

@@ -139,6 +139,17 @@ static bool settings_request(struct mfl_request *request,
 		request->kind = MFL_REQUEST_PROVIDER;
 		operation = "provider";
 	}
+	else if (strcmp(values[3]->valuestring, "session") == 0 &&
+	    strcmp(values[2]->valuestring, "query") == 0 &&
+	    (seen & ~GENERATION) == (15 | PROVIDER) &&
+	    settings_token(values[9]) &&
+	    (!values[7] || settings_token(values[7])))
+	{
+		request->kind = MFL_REQUEST_SESSION_QUERY;
+		operation = "query";
+		if (!cJSON_AddStringToObject(payload, "resource", "session"))
+			goto out;
+	}
 	else if (strcmp(values[3]->valuestring, "settings") != 0)
 		goto out;
 	else if (strcmp(values[2]->valuestring, "query") == 0 &&
@@ -394,7 +405,12 @@ static bool operation_request(struct mfl_request *request,
 		operation = values[6]->valuestring;
 		if (strcmp(operation, "start") == 0 &&
 		    (strcmp(values[10]->valuestring, "applications") == 0 ||
-		     strcmp(values[10]->valuestring, "status") == 0))
+		     strcmp(values[10]->valuestring, "status") == 0 ||
+		     strcmp(values[10]->valuestring, "session-status") == 0 ||
+		     strcmp(values[10]->valuestring, "session-reprobe") == 0 ||
+		     strcmp(values[10]->valuestring, "notification-test") == 0 ||
+		     strcmp(values[10]->valuestring, "notification-close") == 0 ||
+		     strcmp(values[10]->valuestring, "logout") == 0))
 			request->kind = MFL_REQUEST_OPERATION_START;
 		else if (strcmp(operation, "cancel") == 0 &&
 		    settings_token(values[10]))
@@ -603,6 +619,67 @@ static bool snapshot_request(struct mfl_request *request,
 		request->limit = MODULE_QUERY_PAGE_DEFAULT;
 	}
 	return mfl_request_is_snapshot(request->kind);
+}
+
+static bool session_clients_request(struct mfl_request *request,
+	const cJSON *const *values, unsigned int seen)
+{
+	const unsigned int paging = (1U << 7) | (1U << 11) | (1U << 12);
+	const char *method = values[2]->valuestring;
+
+	if (values[7])
+	{
+		if (!bounded_string(values[7], MODULE_QUERY_GENERATION_LEN) ||
+		    strlen(values[7]->valuestring) !=
+			MODULE_QUERY_GENERATION_LEN ||
+		    strspn(values[7]->valuestring, "0123456789abcdef") !=
+			MODULE_QUERY_GENERATION_LEN)
+			return false;
+		strcpy(request->generation, values[7]->valuestring);
+	}
+	if (strcmp(method, "query") == 0)
+	{
+		if ((seen & ~paging) != 15 ||
+		    (values[11] && !query_index(values[11], 512,
+			&request->offset)) ||
+		    (values[12] && (!query_index(values[12], 128,
+			&request->limit) || !request->limit)) ||
+		    (request->offset && !values[7]))
+			return false;
+		request->limit = values[12] ? request->limit : 128;
+		request->kind = MFL_REQUEST_SESSION_CLIENTS;
+		strcpy(request->snapshot_resource, "session-clients");
+		return true;
+	}
+	if (strcmp(method, "action") != 0 || !cJSON_IsString(values[6]))
+		return false;
+	if (strcmp(values[6]->valuestring, "delete") == 0)
+	{
+		if (seen != (15 | (1U << 6) | (1U << 10)) ||
+		    !bounded_string(values[10], MODULE_QUERY_GENERATION_LEN) ||
+		    strlen(values[10]->valuestring) !=
+			MODULE_QUERY_GENERATION_LEN ||
+		    strspn(values[10]->valuestring, "0123456789abcdef") !=
+			MODULE_QUERY_GENERATION_LEN)
+			return false;
+		strcpy(request->target, values[10]->valuestring);
+		request->kind = MFL_REQUEST_SESSION_DELETE;
+	}
+	else if (strcmp(values[6]->valuestring, "quit-if-empty") == 0)
+	{
+		if (seen != (15 | (1U << 6) | (1U << 7)))
+			return false;
+		request->kind = MFL_REQUEST_SESSION_QUIT;
+	}
+	else if (strcmp(values[6]->valuestring, "delegate-xsmp") == 0)
+	{
+		if (seen != (15 | (1U << 6)))
+			return false;
+		request->kind = MFL_REQUEST_SESSION_XSMP;
+	}
+	else
+		return false;
+	return true;
 }
 
 static bool files_filter_text(const cJSON *value)
@@ -898,6 +975,14 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	if (!cJSON_IsString(values[2]))
 		goto out;
 	if (cJSON_IsString(values[3]) &&
+	    strcmp(values[3]->valuestring, "session-clients") == 0)
+	{
+		valid = session_clients_request(request, values, seen);
+		if (valid)
+			request->error = NULL;
+		goto out;
+	}
+	if (cJSON_IsString(values[3]) &&
 	    strcmp(values[3]->valuestring, "files") == 0)
 	{
 		valid = files_request(request, values, seen);
@@ -948,6 +1033,7 @@ bool mfl_request_parse(const char *json, struct mfl_request *request)
 	}
 	if (cJSON_IsString(values[3]) &&
 	    (strcmp(values[3]->valuestring, "settings") == 0 ||
+	     strcmp(values[3]->valuestring, "session") == 0 ||
 	     strcmp(values[3]->valuestring, "provider") == 0))
 	{
 		valid = settings_request(request, values, seen);
@@ -1305,13 +1391,17 @@ bool mfl_request_is_core_reply(enum mfl_request_kind kind)
 
 bool mfl_request_is_snapshot(enum mfl_request_kind kind)
 {
+	/* Session mutations reuse this directed core framing, while the
+	 * independent is_action predicate still enforces read-only admission. */
 	return kind == MFL_REQUEST_TOPOLOGY ||
 		kind == MFL_REQUEST_WORKSPACES ||
 		kind == MFL_REQUEST_BINDINGS || kind == MFL_REQUEST_COLORSETS ||
 		kind == MFL_REQUEST_APPEARANCE ||
 		kind == MFL_REQUEST_MENU_STYLES ||
 		kind == MFL_REQUEST_DECORATIONS ||
-		kind == MFL_REQUEST_STARTUPS;
+		kind == MFL_REQUEST_STARTUPS ||
+		(kind >= MFL_REQUEST_SESSION_CLIENTS &&
+		 kind <= MFL_REQUEST_SESSION_XSMP);
 }
 
 bool mfl_request_is_settings(enum mfl_request_kind kind)
@@ -1319,6 +1409,7 @@ bool mfl_request_is_settings(enum mfl_request_kind kind)
 	return (kind >= MFL_REQUEST_SETTINGS_QUERY &&
 		kind <= MFL_REQUEST_SETTINGS_VALIDATE) ||
 		kind == MFL_REQUEST_PROVIDER ||
+		kind == MFL_REQUEST_SESSION_QUERY ||
 		(kind >= MFL_REQUEST_OPERATION_QUERY &&
 		 kind <= MFL_REQUEST_OPERATION_CANCEL);
 }
@@ -1327,6 +1418,8 @@ bool mfl_request_is_action(enum mfl_request_kind kind)
 {
 	return kind == MFL_REQUEST_FILES_REGISTER ||
 		kind == MFL_REQUEST_FILES_ACTION ||
+		(kind >= MFL_REQUEST_SESSION_DELETE &&
+		 kind <= MFL_REQUEST_SESSION_XSMP) ||
 		(kind >= MFL_REQUEST_SETTINGS_SET &&
 		kind <= MFL_REQUEST_SETTINGS_RELOAD) ||
 		kind == MFL_REQUEST_OPERATION_START ||
@@ -1426,13 +1519,23 @@ bool mfl_request_snapshot_command(char *output, size_t capacity,
 	    !settings_cookie(cookie) ||
 	    serial == 0)
 		return false;
-	length = snprintf(output, capacity,
-		"Send_Query %s %016" PRIx64 " %s %u %u %s", cookie, serial,
-		request->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
-		request->kind == MFL_REQUEST_WORKSPACES ?
-		"workspaces" : request->snapshot_resource,
-		request->offset, request->limit,
-		request->generation[0] ? request->generation : "-");
+	if (request->kind >= MFL_REQUEST_SESSION_DELETE &&
+	    request->kind <= MFL_REQUEST_SESSION_XSMP)
+		length = snprintf(output, capacity,
+			"Send_Session %s %016" PRIx64 " %s %s %s", cookie,
+			serial, request->kind == MFL_REQUEST_SESSION_DELETE ?
+			"delete" : request->kind == MFL_REQUEST_SESSION_QUIT ?
+			"quit-if-empty" : "delegate-xsmp",
+			request->target[0] ? request->target : "-",
+			request->generation[0] ? request->generation : "-");
+	else
+		length = snprintf(output, capacity,
+			"Send_Query %s %016" PRIx64 " %s %u %u %s", cookie, serial,
+			request->kind == MFL_REQUEST_TOPOLOGY ? "topology" :
+			request->kind == MFL_REQUEST_WORKSPACES ?
+			"workspaces" : request->snapshot_resource,
+			request->offset, request->limit,
+			request->generation[0] ? request->generation : "-");
 	if (length < 0 || (size_t)length >= capacity)
 	{
 		output[0] = '\0';

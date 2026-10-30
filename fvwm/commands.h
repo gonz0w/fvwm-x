@@ -328,6 +328,7 @@ void CMD_Send_Reply(F_CMD_ARGS);
 void CMD_Send_Query(F_CMD_ARGS);
 void CMD_Send_Preview(F_CMD_ARGS);
 void CMD_Send_Palette(F_CMD_ARGS);
+void CMD_Send_Session(F_CMD_ARGS);
 void CMD_Send_WindowList(F_CMD_ARGS);
 void CMD_SendToModule(F_CMD_ARGS);
 void CMD_Status(F_CMD_ARGS);

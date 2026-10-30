@@ -33,6 +33,8 @@ fvwm_sources = [
     'fvwm/functions.c',
     'fvwm/fvwm3.c',
     'fvwm/session_ready.c',
+    'fvwm/session_clients.c',
+    'fvwm/session_clients_policy.c',
     'fvwm/geometry.c',
     'fvwm/icccm2.c',
     'fvwm/icons.c',

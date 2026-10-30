@@ -52,6 +52,7 @@ type Controller struct {
 	runtimeHeld                              map[string]string
 	editor                                   *editor
 	preview                                  preview
+	session                                  sessionControl
 	palette                                  *paletteView
 	inspection                               *inspection
 	inspectionJob                            *inspectionWork
@@ -194,7 +195,7 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
 		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
-		RuntimeHeld: held}
+		RuntimeHeld: held, SessionAvailable: d.sessionObserved()}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {
@@ -243,6 +244,7 @@ func (d *Controller) finishConfiguration() error {
 	d.changed(newID(16))
 	d.ready = true
 	d.preview.constrain()
+	d.applySessionPolicy()
 	d.announceSettings()
 	return d.fatal
 }
@@ -273,6 +275,9 @@ func (d *Controller) changeSettings(changes values) error {
 	if d.persistenceError != "" {
 		return errors.New(d.persistenceError)
 	}
+	if onlySession(changes) {
+		return d.changeSessionSettings(changes)
+	}
 	candidate, effective, err := d.prepare(changes)
 	if err != nil {
 		return err
@@ -282,12 +287,16 @@ func (d *Controller) changeSettings(changes values) error {
 	if err != nil {
 		return err
 	}
+	d.retainActiveSession(effective)
 	d.saved, d.effective, d.revision = candidate, effective, revision
 	for key := range changes {
 		delete(d.runtimeHeld, key)
 	}
 	d.changed(generation)
 	d.preview.constrain()
+	if hasSessionChange(changes) {
+		d.applySessionPolicy()
+	}
 	return d.theme(true)
 }
 func (d *Controller) reloadSettings() error {
@@ -304,6 +313,7 @@ func (d *Controller) reloadSettings() error {
 		return err
 	}
 	generation := newID(16)
+	d.retainActiveSession(effective)
 	d.saved, d.effective, d.revision = saved, effective, revision
 	d.runtimeHeld = nil
 	d.persistenceError = ""
@@ -311,6 +321,7 @@ func (d *Controller) reloadSettings() error {
 	d.resetWorkerMenus()
 	d.changed(generation)
 	d.preview.constrain()
+	d.applySessionPolicy()
 	return d.theme(true)
 }
 func (d *Controller) resetSettings(scope string) error {

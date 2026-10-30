@@ -26,7 +26,7 @@ func TestContrastPreviewEditorCapturesEveryDraftField(t *testing.T) {
 		!strings.Contains(lines, "Command SendToModule FvwmDesktop preview-contrast-editor "+arguments) {
 		t.Fatal("contrast preview failed to capture complete editor draft", lines)
 	}
-	if len(Registry()) != 11 {
+	if len(Registry()) != 14 {
 		t.Fatal("resource preview expanded preference registry")
 	}
 }
@@ -64,7 +64,7 @@ func TestContrastPreviewMenuAndRuntimeOnlySource(t *testing.T) {
 		metadata := raw.(map[string]any)
 		if metadata["preview"] != false ||
 			metadata["native_preview"] != (key == "contrast" || key == "launcher_opacity" || key == "palette" || key == "appearance") ||
-			metadata["source"] != "saved" {
+			metadata["source"] != "saved" && !SessionKey(key) {
 			t.Fatal("native consumer flag claimed generic preview or changed source", key, metadata)
 		}
 	}

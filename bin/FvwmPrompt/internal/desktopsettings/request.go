@@ -16,6 +16,7 @@ type Snapshot struct {
 	PersistenceError            *string
 	Submitted                   bool
 	RuntimeHeld                 map[string]string
+	SessionAvailable            bool
 }
 
 func identity(value any) (string, error) {
@@ -158,6 +159,33 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		}
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"
+		}
+		if SessionKey(key) {
+			v["requested"] = s.Saved[key]
+			v["requested_source"] = "saved"
+			if override, ok := s.Overrides[key]; ok {
+				v["requested"], v["requested_source"] = override, "module-configuration"
+			}
+			if observed {
+				v["source"] = "unavailable"
+				if s.SessionAvailable {
+					v["source"] = "session-owner"
+				}
+			}
+			v["application"] = "not-submitted"
+			if observed {
+				v["application"] = "live-unavailable"
+			}
+			if key == "session_bus" {
+				v["application"] = "next-login"
+			} else if observed && s.SessionAvailable {
+				v["application"] = "live-owner-observed"
+			}
+			if observed && !s.SessionAvailable {
+				v["effective"] = nil
+			}
+			v["available"] = s.SessionAvailable
+			v["capability"] = "optional-session-service-preference"
 		}
 		result[key] = v
 	}

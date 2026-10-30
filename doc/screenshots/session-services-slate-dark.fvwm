@@ -1,0 +1,35 @@
+ModulePath /tmp/fvwm-svc-0kr9y50z/slate-dark/modules
+Read /tmp/fvwm-module-waits-20261015/source/fvwm/ConfigFvwmDefaults
+# FVWM-X baseline: Slate layout, centered launcher, four interchangeable palettes.
+# This is the only shipped default. Keep personal overrides in local.config;
+# the desktop never writes to that file or changes application toolkit themes.
+InfoStoreAdd slate_height 36
+InfoStoreAdd slate_font "xft:Sans:size=10:antialias=True"
+InfoStoreAdd slate_root "/tmp/fvwm-module-waits-20261015/source/default-config"
+ImagePath $[infostore.slate_root]/wallpapers
+
+# Bootstrap colors keep the desktop readable if FvwmDesktop cannot start.
+# The background helper applies the saved palette and appearance after startup.
+# Roles: 0 surface, 1 inactive title, 2 active title, 3 border, 4 focus border,
+# 5 menu, 6 selection, 7 muted, 8 heading, 10 bar, 11 workspace, 12 hover,
+# 13 pager selection, 14 minimized, 20 wallpaper. Keep these IDs stable.
+Colorset 0 fg #e5edf0, bg #202a31, hi #202a31, sh #202a31
+Colorset 1 fg #a8b6be, bg #202a31, hi #202a31, sh #202a31
+Colorset 2 fg #e5edf0, bg #26343d, hi #26343d, sh #26343d
+Colorset 3 fg #536570, bg #536570, hi #536570, sh #536570
+Colorset 4 fg #63b7bb, bg #63b7bb, hi #63b7bb, sh #63b7bb
+Colorset 5 fg #e5edf0, bg #202a31, hi #202a31, sh #202a31
+Colorset 6 fg #122128, bg #63b7bb, hi #63b7bb, sh #63b7bb
+Colorset 7 fg #a8b6be, bg #202a31, hi #202a31, sh #202a31
+Colorset 8 fg #63b7bb, bg #202a31, hi #202a31, sh #202a31
+Colorset 10 fg #e5edf0, bg #202a31, hi #202a31, sh #202a31
+Colorset 11 fg #122128, bg #63b7bb, hi #63b7bb, sh #63b7bb
+Colorset 12 fg #e5edf0, bg #26343d, hi #26343d, sh #26343d
+Colorset 13 fg #122128, bg #63b7bb, hi #63b7bb, sh #63b7bb
+Colorset 14 fg #a8b6be, bg #202a31, hi #202a31, sh #202a31
+Colorset 20 bg #17232b, VGradient 128 #17232b #263943
+Read "$[infostore.slate_root]/desktop.fvwm"
+# Set *FvwmDesktop options and custom bindings here; this hook wins on upgrades.
+Read "$[FVWM_USERDIR]/local.config" Quiet
+
+AddToFunc StartFunction I Module FvwmMFL

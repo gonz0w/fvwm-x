@@ -25,6 +25,7 @@ import (
 // Set by the install/build owner as a fallback for build-tree invocation.
 // Installed images prefer their fixed sibling, never PATH or environment.
 var wmPath string
+var busHelperPath string
 
 const usage = "usage: fvwm-session [--no-autostart] [-- FVWM_ARGS...]\n"
 
@@ -113,7 +114,7 @@ func run(args, environment []string, diagnostics io.Writer) int {
 	signals := make(chan os.Signal, 4)
 	signal.Notify(signals, syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP, syscall.SIGQUIT)
 	defer signal.Stop(signals)
-	return sessionowner.Run(sessionowner.Config{WMPath: core, SelfPath: self, Args: wmArgs, Environment: environment, NoAutostart: disabled, Signals: signals, Diagnostics: diagnostics})
+	return sessionowner.Run(sessionowner.Config{WMPath: core, SelfPath: self, Args: wmArgs, Environment: environment, NoAutostart: disabled, Signals: signals, Diagnostics: diagnostics, BusHelperPath: busHelperPath})
 }
 
 func main() { os.Exit(run(os.Args[1:], os.Environ(), os.Stderr)) }

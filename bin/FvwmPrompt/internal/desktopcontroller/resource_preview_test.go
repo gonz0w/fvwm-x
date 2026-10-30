@@ -372,7 +372,7 @@ func TestResourcePlanRejectsUnknownVersion(t *testing.T) {
 	if _, err := resourcePlan(control.resource.projection, 3); err == nil {
 		t.Fatal("unknown version encoded")
 	}
-	if len(desktopsettings.Registry()) != 11 {
+	if len(desktopsettings.Registry()) != 14 {
 		t.Fatal("preview expanded registry")
 	}
 }
@@ -405,8 +405,12 @@ func TestOpaqueColorTerminalPathsRetainCompleteDraftWithoutSave(t *testing.T) {
 		t.Run(reason, func(t *testing.T) {
 			d, commands := colorFixture(t, "normal")
 			activeColor(t, d, "palette", "ink")
+			plan, err := desktopsettings.Editor(d.snapshot(nil, nil), "all", false, nil, newID(16))
+			if err != nil || len(plan.Keys) != 11 {
+				t.Fatal("appearance editor scope changed", plan.Keys, err)
+			}
 			captured := values{}
-			for key := range desktopsettings.Registry() {
+			for _, key := range plan.Keys {
 				captured[key] = d.saved[key]
 			}
 			captured["palette"], captured["motion"] = "ink", true
@@ -425,6 +429,9 @@ func TestOpaqueColorTerminalPathsRetainCompleteDraftWithoutSave(t *testing.T) {
 			contrastReply(&d.preview, colorResult("terminal", reason, recovery))
 			if d.preview.control != nil || d.editor == nil || d.saved["palette"] != "slate" || d.effective["palette"] != "slate" || len(d.runtimeHeld) != 0 {
 				t.Fatal("terminal resource path saved or lost editor", reason)
+			}
+			if !reflect.DeepEqual(d.editor.keys, plan.Keys) {
+				t.Fatal("terminal path returned a different editor scope", d.editor.keys)
 			}
 			if _, err := os.Stat(d.statePath); !os.IsNotExist(err) {
 				t.Fatal("terminal recovery wrote preferences", err)

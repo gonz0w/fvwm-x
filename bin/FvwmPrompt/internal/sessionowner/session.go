@@ -20,6 +20,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"golang.org/x/sys/unix"
 )
@@ -45,6 +46,9 @@ type Config struct {
 	Exec                      func(string, []string, []string) error
 	Lock                      func([]string) (io.Closer, error)
 	ReadyTimeout, ScanTimeout time.Duration
+	BusHelperPath             string
+	DisableServices           bool
+	serviceSlot               chan struct{}
 }
 
 func environmentMap(environment []string) map[string]string {
@@ -64,7 +68,7 @@ func Environment(input []string) []string {
 	current, session := false, false
 	for _, entry := range input {
 		key, _, _ := strings.Cut(entry, "=")
-		if key == ReadyEnvironment {
+		if key == ReadyEnvironment || key == sessionservice.SocketEnvironment || key == sessionservice.CapabilityEnvironment {
 			continue
 		}
 		current = current || key == "XDG_CURRENT_DESKTOP"
@@ -159,6 +163,9 @@ func exitCode(err error) int {
 }
 
 func defaults(cfg Config) Config {
+	if cfg.serviceSlot == nil {
+		cfg.serviceSlot = make(chan struct{}, 1)
+	}
 	if cfg.Diagnostics == nil {
 		cfg.Diagnostics = io.Discard
 	}
@@ -220,6 +227,43 @@ func Run(input Config) int {
 		return plainExec()
 	}
 	defer lock.Close()
+	var services *serviceState
+	var controls <-chan controlRequest
+	var busDone <-chan error
+	ctx, cancel := context.WithCancel(context.Background())
+	var jobDone <-chan serviceJob
+	var cancelServiceJob context.CancelFunc
+	if !cfg.DisableServices {
+		services, err = newServices(&cfg, &report)
+		if err != nil {
+			report.write("session services unavailable: %v", err)
+		} else {
+			if services.bus != nil {
+				defer services.bus.stop()
+				busDone = services.bus.done
+			}
+			control, controlErr := startControl(cfg.Environment)
+			if controlErr != nil {
+				report.write("session control unavailable: %v", controlErr)
+			} else {
+				defer control.close()
+				controls = control.requests
+				cfg.Environment = append(cfg.Environment, sessionservice.SocketEnvironment+"="+control.path, sessionservice.CapabilityEnvironment+"="+control.capability)
+			}
+		}
+	}
+	defer func() {
+		if cancelServiceJob != nil {
+			cancelServiceJob()
+		}
+		finishServiceWork(cfg, cancel, jobDone, &report)
+	}()
+	setState := func(index int, value, message string) {
+		if services != nil {
+			services.snapshot.Items[index].State = value
+			services.snapshot.Items[index].Detail = detail(message)
+		}
+	}
 
 	wm := cfg.Command(cfg.WMPath, cfg.Args...)
 	wm.Env, wm.Stdin, wm.Stdout, wm.Stderr = cfg.Environment, os.Stdin, os.Stdout, os.Stderr
@@ -227,7 +271,8 @@ func Run(input Config) int {
 	// hitting independent applications. Forward only to the direct owned WM.
 	wm.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var reader, writer *os.File
-	if !cfg.NoAutostart {
+	wantReady := !cfg.NoAutostart || services != nil
+	if wantReady {
 		reader, writer, err = readinessPipe()
 		if err != nil {
 			if reader != nil {
@@ -235,7 +280,13 @@ func Run(input Config) int {
 				writer.Close()
 			}
 			report.write("autostart unavailable: readiness pipe: %v", err)
+			if !cfg.NoAutostart {
+				setState(1, "unavailable", "startup acknowledgment pipe is unavailable")
+				setState(4, "unavailable", "autostart disabled after startup pipe failure")
+			}
 			cfg.NoAutostart = true
+			wantReady = false
+			setState(0, "unavailable", "startup acknowledgment pipe is unavailable")
 		} else {
 			defer reader.Close()
 			wm.ExtraFiles = []*os.File{writer}
@@ -256,13 +307,11 @@ func Run(input Config) int {
 	wmDone := make(chan error, 1)
 	go func() { wmDone <- wm.Wait() }()
 	var ready <-chan error
-	if !cfg.NoAutostart {
+	if wantReady {
 		result := make(chan error, 1)
 		ready = result
 		go func() { result <- waitReady(reader, cfg.ReadyTimeout) }()
 	}
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	var scanning <-chan scanResult
 	apps := make(chan appExit, xdgmenu.MaxAutostartEntries)
 	shuttingDown := false
@@ -279,8 +328,41 @@ func Run(input Config) int {
 	}
 	for {
 		select {
+		case request := <-controls:
+			if services == nil {
+				continue
+			}
+			if shuttingDown {
+				request.reply <- services.reply("unavailable", "session is stopping", 0)
+				continue
+			}
+			start, reply := services.admit(request, cfg, jobDone != nil)
+			if !start {
+				request.reply <- reply
+				continue
+			}
+			result := make(chan serviceJob, 1)
+			jobDone = result
+			jobCtx, jobCancel := context.WithCancel(ctx)
+			stopDisconnect := context.AfterFunc(request.ctx, jobCancel)
+			cancelServiceJob = func() { stopDisconnect(); jobCancel() }
+			request.ctx = jobCtx
+			identity, count := services.identity, len(services.ids)
+			go func() { result <- runServiceJob(request, cfg, identity, count) }()
+		case job := <-jobDone:
+			jobDone = nil
+			cancelServiceJob()
+			cancelServiceJob = nil
+			job.request.reply <- services.complete(job)
+		case err := <-busDone:
+			busDone = nil
+			services.bus.reaped = true
+			setState(2, "failed", fmt.Sprintf("owned session bus exited with status %d; no automatic replacement", exitCode(err)))
+			setState(3, "unavailable", "session bus is unavailable")
+			services.ids = make(map[uint32]bool)
 		case err = <-wmDone:
 			cancel()
+			setState(0, "stopped", "owned core exited")
 			if scanning != nil {
 				<-scanning
 			} // Cancellation requests termination; the worker waiter owns reap.
@@ -294,10 +376,23 @@ func Run(input Config) int {
 		case err = <-ready:
 			ready = nil // At most one scan, including after a same-PID WM exec.
 			if err != nil {
+				setState(0, "unavailable", err.Error())
+				if !cfg.NoAutostart {
+					setState(1, "unavailable", err.Error())
+					setState(4, "unavailable", "autostart disabled without core startup acknowledgment")
+				}
 				report.write("autostart unavailable: %v", err)
 				continue
 			}
+			setState(0, "ready", "core startup acknowledged; modules/apps have separate readiness")
 			report.write("core startup acknowledged")
+			if cfg.NoAutostart {
+				continue
+			}
+			setState(1, "starting", "bounded autostart acquisition")
+			if services != nil {
+				services.snapshot.Items[1].Attempts++
+			}
 			result := make(chan scanResult, 1)
 			scanning = result
 			go func() { scan, err := scanWorker(ctx, cfg); result <- scanResult{scan, err} }()
@@ -307,8 +402,14 @@ func Run(input Config) int {
 				continue
 			}
 			if result.err != nil {
+				setState(1, "failed", result.err.Error())
+				setState(4, "unavailable", "autostart acquisition failed; no applications launched")
 				report.write("autostart unavailable: %v", result.err)
 				continue
+			}
+			setState(1, "stopped", "bounded autostart acquisition completed")
+			if len(result.scan.Launches) == 0 {
+				setState(4, "stopped", "no autostart applications selected")
 			}
 			for _, diagnostic := range result.scan.Diagnostics {
 				report.write("skipped: %s", diagnostic)
@@ -335,15 +436,28 @@ func Run(input Config) int {
 				app.Stdin, app.Stdout, app.Stderr = nil, os.Stdout, os.Stderr
 				app.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 				if err := app.Start(); err != nil {
+					if services != nil {
+						services.snapshot.Items[4].Failed++
+					}
 					report.write("failed: %s: %v", launch.Filename, err)
 					continue
 				}
+				if services != nil {
+					services.snapshot.Items[4].Started++
+				}
+				setState(4, "enabled", "independent application launch observations; no readiness/termination ownership")
 				report.write("started: %s", launch.Filename)
 				// The scan cap bounds both waiter goroutines and result records to
 				// 256 for this process's lifetime; no ongoing producer can add more.
 				go func(name string, command *exec.Cmd) { apps <- appExit{name, command.Wait()} }(launch.Filename, app)
 			}
 		case result := <-apps:
+			if services != nil {
+				services.snapshot.Items[4].Exited++
+				if services.snapshot.Items[4].Exited == services.snapshot.Items[4].Started {
+					setState(4, "stopped", "all observed independent application children exited")
+				}
+			}
 			report.write("exited: %s: status %d", result.name, exitCode(result.err))
 		}
 	}

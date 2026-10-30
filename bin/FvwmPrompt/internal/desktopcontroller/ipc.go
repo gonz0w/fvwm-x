@@ -93,10 +93,10 @@ func (d *Controller) settingsRequest(r values) values {
 		}
 		return success(values{"owner": "FvwmDesktop", "schema_version": 1, "provider": d.instance, "generation": d.generation,
 			"lifecycle": lifecycle, "lifecycle_scope": "desktop-preferences", "availability": available,
-			"failure_reason": nil, "persistence_error": persistence, "resources": []string{"settings", "operations"},
-			"operations": []string{"query", "validate", "set", "reset", "reload"}, "operation_targets": []string{"applications", "status"},
+			"failure_reason": nil, "persistence_error": persistence, "resources": []string{"settings", "operations", "session"},
+			"operations": []string{"query", "validate", "set", "reset", "reload"}, "operation_targets": []string{"applications", "status", "session-status", "session-reprobe", "notification-test", "notification-close", "logout"},
 			"operation_limit": 16, "operation_retention_ms": 300000, "notifications": "invalidation-only", "preview": false,
-			"application_completion": "unknown", "service_lifecycle": false})
+			"application_completion": "unknown", "service_lifecycle": d.sessionObserved()})
 	}
 	if !d.ready {
 		return failure("provider_not_ready")
@@ -189,6 +189,17 @@ func (d *Controller) settingsRequest(r values) values {
 	application := "not-submitted"
 	if d.lastTheme != nil {
 		application = "submitted-to-fvwm"
+	}
+	if onlySession(changes) {
+		application = "live-pending"
+		if d.session.snapshot == nil && d.session.work == nil {
+			application = "live-unavailable"
+		}
+		if len(changes) == 1 {
+			if _, ok := changes["session_bus"]; ok {
+				application = "next-login"
+			}
+		}
 	}
 	if submissionFailed {
 		application = "submission-failed"
@@ -284,6 +295,9 @@ func (d *Controller) operationRequest(r values) values {
 	}
 	var record *operation
 	if op == "start" {
+		if sessionTarget(target) {
+			return d.startSessionOperation(target, r)
+		}
 		if target != "applications" && target != "status" {
 			return failure("unsupported_target")
 		}
@@ -348,6 +362,19 @@ func (d *Controller) operationRequest(r values) values {
 			if !record.finished.IsZero() {
 				return failure("operation_finished")
 			}
+			if sessionTarget(record.target) {
+				if record.target != "logout" {
+					return failure("cancellation_unavailable")
+				}
+				if d.session.logout == nil || d.session.logout.record != record {
+					return failure("operation_unavailable")
+				}
+				if err := d.cancelLogout(); err != nil {
+					return failure("cancellation_unavailable")
+				}
+				record.cancelRequested = true
+				return success(values{"owner": "FvwmDesktop", "provider": d.instance, "operation": d.operationSnapshot(record, false), "disconnect": "continue"})
+			}
 			key := record.target
 			if key == "applications" {
 				key = "apps"
@@ -379,6 +406,8 @@ func (d *Controller) ipc(argument string) {
 		request, ok := decoded.(map[string]any)
 		if err != nil || !ok {
 			response = failure("invalid_request")
+		} else if request["resource"] == "session" {
+			response = d.sessionRequest(request)
 		} else if request["resource"] == "operations" {
 			response = d.operationRequest(request)
 		} else {
@@ -391,12 +420,15 @@ func (d *Controller) ipc(argument string) {
 	data, _ := json.Marshal(response)
 	if len(data) > 8192 {
 		if result, ok := response["result"].(map[string]any); ok {
-			delete(result, "settings")
-			result["settings_unavailable"] = "reply_too_large"
-		} else {
-			response = failure("provider_reply_too_large")
+			if _, settings := result["settings"]; settings {
+				delete(result, "settings")
+				result["settings_unavailable"] = "reply_too_large"
+				data, _ = json.Marshal(response)
+			}
 		}
-		data, _ = json.Marshal(response)
+		if len(data) > 8192 {
+			data, _ = json.Marshal(failure("provider_reply_too_large"))
+		}
 	}
 	prefix := "SendToModule FvwmMFL MFL_SETTINGS_1 " + parts[0] + " " + parts[1]
 	count := 0

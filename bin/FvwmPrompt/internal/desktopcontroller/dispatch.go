@@ -364,13 +364,20 @@ func (d *Controller) handle(command, argument string) error {
 		if argument == "up" || argument == "down" || argument == "mute" {
 			d.workerJob("volume", "volume", values{"system": d.system, "action": argument})
 		}
+	case "session-panel":
+		if argument != "" {
+			return errors.New("session-panel takes no arguments")
+		}
+		return d.startSessionPanel()
+	case "session-control":
+		return d.sessionPanelControl(argument)
 	case "confirm":
 		if argument == "logout" || argument == "poweroff" || argument == "reboot" {
 			d.form("SlateSessionForm", []string{`Title "Session"`, "Line left", "Text " + quote("Confirm "+argument+"? Save your work first."), "Line expand", `Button quit "Cancel" ^[`, "Command Nop", "Button quit " + quote(title(argument)), "Command SendToModule FvwmDesktop session " + argument}, false)
 		}
 	case "session":
 		if argument == "logout" {
-			d.emit("Quit")
+			return d.startLogout(nil)
 		} else if argument == "poweroff" || argument == "reboot" {
 			d.power(argument)
 		}
@@ -378,6 +385,7 @@ func (d *Controller) handle(command, argument string) error {
 	return d.fatal
 }
 func (d *Controller) tick() {
+	d.sessionTick()
 	d.pollBrowserLaunches()
 	d.pollLocker()
 	d.preview.tick()

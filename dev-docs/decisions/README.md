@@ -224,3 +224,5 @@ separate; the former public-helper output decision is still deferred.
 - [Isolated browser action requests](FILE-PROVIDER-WORK-2026-10-23.md): typed navigation, revalidated process handoff, latest correlated outcome and owned cancel/reap recovery.
 
 - [Live target and observation controls](FILE-PROVIDER-TARGETS-2026-10-23.md): atomic reveal/inspect, explicit hidden/watch state, configured action metadata and versioned native focus.
+
+- [Optional session bus client](SESSION-SERVICES-ADAPTER-2026-10-29.md): finite comparison, disabled default and ownership limits.

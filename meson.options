@@ -47,6 +47,12 @@ option(
     description: 'Select python implementation',
 )
 option(
+    'session-dbus',
+    type: 'feature',
+    value: 'disabled',
+    description: 'Enable the isolated optional session bus client',
+)
+option(
     'sm',
     type: 'feature',
     value: 'auto',

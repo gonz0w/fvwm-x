@@ -160,7 +160,7 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 		var gotPath string
 		var gotArgs, gotEnv []string
 		lockCalled := false
-		cfg := Config{WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9"}, Diagnostics: io.Discard,
+		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9"}, Diagnostics: io.Discard,
 			Exec:    func(path string, args, env []string) error { gotPath = path; gotArgs = args; gotEnv = env; return nil },
 			Lock:    func([]string) (io.Closer, error) { lockCalled = true; return nil, os.ErrPermission },
 			Command: func(string, ...string) *exec.Cmd { t.Fatal("unexpected child"); return nil },
@@ -190,7 +190,7 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 func TestUncertainDisplayExecsOriginalWithoutOwning(t *testing.T) {
 	for _, args := range [][]string{{"--future-option", "-d", ":target"}, {"-f"}, {"--help"}} {
 		called := false
-		cfg := Config{WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: args, Environment: []string{"DISPLAY=:inherited"},
+		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: args, Environment: []string{"DISPLAY=:inherited"},
 			Lock:    func([]string) (io.Closer, error) { t.Fatal("uncertain invocation acquired lock"); return nil, nil },
 			Command: func(string, ...string) *exec.Cmd { t.Fatal("uncertain invocation started child"); return nil },
 			Exec: func(path string, argv, env []string) error {
@@ -213,7 +213,7 @@ func TestOwnedWMScansOnceOnlyAfterReady(t *testing.T) {
 			marker := filepath.Join(t.TempDir(), "scans")
 			env := append(isolatedEnvironment(), "FVWM_SESSION_TEST_SCAN_MARKER="+marker)
 			var diagnostics bytes.Buffer
-			cfg := Config{WMPath: "/wm", SelfPath: "/self", Environment: env, Diagnostics: &diagnostics, ReadyTimeout: 500 * time.Millisecond, ScanTimeout: 2 * time.Second,
+			cfg := Config{DisableServices: true, WMPath: "/wm", SelfPath: "/self", Environment: env, Diagnostics: &diagnostics, ReadyTimeout: 500 * time.Millisecond, ScanTimeout: 2 * time.Second,
 				Lock: func([]string) (io.Closer, error) { return io.NopCloser(strings.NewReader("")), nil },
 				Command: func(path string, args ...string) *exec.Cmd {
 					m := "scan"
@@ -246,7 +246,7 @@ func TestWorkerRefusesTimeoutAndOverflow(t *testing.T) {
 				timeout = 2 * time.Second
 				want = "excessive"
 			}
-			cfg := Config{SelfPath: "/self", Environment: isolatedEnvironment(), ScanTimeout: timeout, Command: func(string, ...string) *exec.Cmd { return childCommand(mode) }}
+			cfg := Config{DisableServices: true, SelfPath: "/self", Environment: isolatedEnvironment(), ScanTimeout: timeout, Command: func(string, ...string) *exec.Cmd { return childCommand(mode) }}
 			if _, err := scanWorker(context.Background(), cfg); err == nil || !strings.Contains(err.Error(), want) {
 				t.Fatalf("expected %s refusal, got %v", want, err)
 			}
@@ -256,7 +256,7 @@ func TestWorkerRefusesTimeoutAndOverflow(t *testing.T) {
 
 func TestMissingWMFailsWithoutScan(t *testing.T) {
 	var diagnostics bytes.Buffer
-	cfg := Config{WMPath: filepath.Join(t.TempDir(), "missing"), SelfPath: "/self", Environment: isolatedEnvironment(), Diagnostics: &diagnostics, Lock: func([]string) (io.Closer, error) { return io.NopCloser(strings.NewReader("")), nil }}
+	cfg := Config{DisableServices: true, WMPath: filepath.Join(t.TempDir(), "missing"), SelfPath: "/self", Environment: isolatedEnvironment(), Diagnostics: &diagnostics, Lock: func([]string) (io.Closer, error) { return io.NopCloser(strings.NewReader("")), nil }}
 	if Run(cfg) == 0 || !strings.Contains(diagnostics.String(), "WM start failed") {
 		t.Fatal(diagnostics.String())
 	}
@@ -267,7 +267,7 @@ func TestApplicationStartExitFailureAndLiteralArguments(t *testing.T) {
 		var diagnostics bytes.Buffer
 		var appArgs, coreArgs []string
 		var wmCommand, workerCommand, appCommand *exec.Cmd
-		cfg := Config{WMPath: "/wm", SelfPath: "/self", Args: []string{"-f", "-d", "--display", ":27"}, Environment: append(isolatedEnvironment(), "DISPLAY=:invalid-inherited", "XAUTHORITY=/fixture/auth"), Diagnostics: &diagnostics,
+		cfg := Config{DisableServices: true, WMPath: "/wm", SelfPath: "/self", Args: []string{"-f", "-d", "--display", ":27"}, Environment: append(isolatedEnvironment(), "DISPLAY=:invalid-inherited", "XAUTHORITY=/fixture/auth"), Diagnostics: &diagnostics,
 			Lock: func(env []string) (io.Closer, error) {
 				if environmentMap(env)["DISPLAY"] != ":27" {
 					t.Fatalf("wrong lock display: %q", env)
@@ -326,7 +326,7 @@ func TestSignalsForwardOnlyToDirectWM(t *testing.T) {
 	var diagnostics bytes.Buffer
 	signals := make(chan os.Signal, 1)
 	var wm *exec.Cmd
-	cfg := Config{WMPath: "/wm", SelfPath: "/self", Environment: isolatedEnvironment(), Diagnostics: &diagnostics, Signals: signals, NoAutostart: true,
+	cfg := Config{DisableServices: true, WMPath: "/wm", SelfPath: "/self", Environment: isolatedEnvironment(), Diagnostics: &diagnostics, Signals: signals, NoAutostart: true,
 		Lock: func([]string) (io.Closer, error) { return io.NopCloser(strings.NewReader("")), nil },
 		Command: func(path string, args ...string) *exec.Cmd {
 			if path != "/wm" {

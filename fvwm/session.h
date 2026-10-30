@@ -71,6 +71,9 @@ void SessionInit(void);
 */
 extern int sm_fd;
 
+/* Actual established backend, independent of SESSION_MANAGER environment. */
+Bool session_xsmp_connected(void);
+
 /*
 **  Process messages received from the session manager. Call this
 **  from the main event loop when there is input waiting sm_fd.

@@ -325,7 +325,7 @@ func (d *Controller) systemMenu() {
 		poweroff = "SendToModule FvwmDesktop confirm poweroff"
 		reboot = "SendToModule FvwmDesktop confirm reboot"
 	}
-	menus = append(menus, desktopsettings.Menu{Name: "SlateSession", Title: "Session", Rows: []desktopsettings.Row{{"Lock", lock}, {"Log out...", "SendToModule FvwmDesktop confirm logout"},
+	menus = append(menus, desktopsettings.Menu{Name: "SlateSession", Title: "Session", Rows: []desktopsettings.Row{{"Session and services...", "SendToModule FvwmDesktop session-panel"}, {"Session settings...", "SendToModule FvwmDesktop edit-settings group:session"}, {"Lock", lock}, {"Log out...", "SendToModule FvwmDesktop confirm logout"},
 		{"Restart FVWM", "Restart"}, {"Power off...", poweroff}, {"Reboot...", reboot}}})
 	d.publishMenus(d.systemBinding, menus)
 }

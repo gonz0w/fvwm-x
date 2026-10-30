@@ -51,6 +51,11 @@ static void test_internal_grammar(void)
 	assert(fvwm_query_parse("a-b 0000000000000001 bindings 4096 16 "
 		"ffffffffffffffffffffffffffffffffffffffffffffffff", &spec));
 	assert(spec.offset == 4096 && spec.limit == 16);
+	assert(fvwm_query_parse(
+		"a-b 0000000000000001 session-clients 0 128 -", &spec));
+	assert(spec.limit == 128 && strcmp(spec.resource, "session-clients") == 0);
+	assert(!fvwm_query_parse(
+		"a-b 0000000000000001 session-clients 0 129 -", &spec));
 	for (size_t i = 0; i < sizeof(bad) / sizeof(bad[0]); i++)
 	{
 		assert(!fvwm_query_parse(bad[i], &spec));

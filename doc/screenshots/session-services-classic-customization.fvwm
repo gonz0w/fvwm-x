@@ -1,0 +1,15 @@
+Style * BorderWidth 3, HandleWidth 6
+*FvwmFormDefault: Fore #f8f8f2
+*FvwmFormDefault: Back #303640
+*FvwmFormDefault: ItemFore #161c24
+*FvwmFormDefault: ItemBack #e8dfc9
+*ClassicSessionColors: Title "Legacy colors"
+*ClassicSessionColors: Colorset -1
+*ClassicSessionColors: ItemColorset -1
+*ClassicSessionColors: Position 1110 80
+*ClassicSessionColors: Line left
+*ClassicSessionColors: Text "Legacy colors"
+*ClassicSessionColors: Line left
+*ClassicSessionColors: Button quit "Close" ^[
+*ClassicSessionColors: Command Nop
+Module FvwmForm ClassicSessionColors

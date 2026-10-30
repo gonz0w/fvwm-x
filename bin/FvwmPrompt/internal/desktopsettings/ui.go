@@ -66,6 +66,17 @@ func Editor(s Snapshot,
 	if err != nil {
 		return plan, err
 	}
+	// The all-settings command retains its existing appearance editor. Session
+	// controls have their own compact scope, so larger fonts stay usable.
+	if scope == "all" {
+		appearance := keys[:0]
+		for _, key := range keys {
+			if !SessionKey(key) {
+				appearance = append(appearance, key)
+			}
+		}
+		keys = appearance
+	}
 	presentation, err := ResolvePresentation(s.Effective)
 	if err != nil {
 		return plan, err
@@ -102,6 +113,11 @@ func Editor(s Snapshot,
 		`Text "Edit saved preferences. Apply saves them together."`}
 	if presentation.Contrast == "high" || has(keys, "contrast") {
 		lines = append(lines, "Line left", "Text "+quote(highContrastHint))
+	}
+	if len(keys) > 0 && SessionKey(keys[0]) {
+		lines[0] = `Title "Session settings"`
+		lines = append(lines, "Line left", `Text "Bus policy applies at next login."`,
+			"Line left", `Text "Notifications and DND apply after the live handshake."`)
 	}
 	previous := ""
 	for _, key := range plan.Keys {
@@ -179,6 +195,9 @@ func Editor(s Snapshot,
 		fmt.Sprintf("Timeout %d %s \"\"",
 			EditorSeconds*10,
 			quote(action+"cancel-settings "+token)))
+	if scope == "all" {
+		lines = append(lines, `Button continue "Session settings..." F8`, "Command "+action+"edit-settings group:session")
+	}
 	if has(plan.Keys, "launcher_opacity") {
 		lines = append(lines,
 			"Line left",

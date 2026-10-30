@@ -508,6 +508,9 @@ const func_t func_table[] =
 		FUNC_INTERACTION_SAFE, 0),
 	/* - Internal, used for module communication */
 
+	CMD_ENT("send_session", CMD_Send_Session, F_SEND_QUERY, 0, 0),
+	/* - Internal, guarded cooperative session actions */
+
 	CMD_ENT("send_windowlist", CMD_Send_WindowList, F_SEND_WINDOW_LIST,
 		0, 0),
 	/* - Internal, used for module communication */

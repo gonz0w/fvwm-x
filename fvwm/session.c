@@ -1885,6 +1885,11 @@ Bool save_quit_session(void)
 
 /* ---------------------------- builtin commands --------------------------- */
 
+Bool session_xsmp_connected(void)
+{
+	return SessionSupport && ssm_conn && sm_fd >= 0;
+}
+
 void CMD_QuitSession(F_CMD_ARGS)
 {
 	quit_session();

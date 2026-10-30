@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Portable session recovery](VERIFICATION-2026-10-30-SESSION-RECOVERY.md): shared lease across parent loss/native Restart, positive handoff and bounded direct-WM stop; focused Linux/race/sanitizer, actual FreeBSD descriptor/exec and retained broader acceptance.
+
 - [Session providers and power coordination](VERIFICATION-2026-10-29-SESSION-PROVIDERS.md): eight related stories, one shared power policy, truthful permissions and retained manual locker; focused Linux/race/sanitizer, three themes and explicit remaining acceptance.
 
 - [PR299→PR305 core performance observation](PERFORMANCE-2026-10-29-SESSION-CORE.md): retained paired core samples, separate command/timer/CPU results and explicit size/RSS growth; no whole-desktop claim.

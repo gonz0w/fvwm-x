@@ -1,0 +1,1720 @@
+{
+  "result01.json": {
+    "status": "failed",
+    "source_pre": "a2d65b4420b318f3a6cad4aaab8b39d21ddfe961a1fea6395bb47bc6047183b6",
+    "changed": [
+      "bin/FvwmPrompt/internal/sessionowner/display.go",
+      "bin/FvwmPrompt/internal/sessionowner/lock.go",
+      "bin/FvwmPrompt/internal/sessionowner/providers_test.go",
+      "bin/FvwmPrompt/internal/sessionowner/recovery_test.go",
+      "bin/FvwmPrompt/internal/sessionowner/services_test.go",
+      "bin/FvwmPrompt/internal/sessionowner/session.go",
+      "bin/FvwmPrompt/internal/sessionowner/session_test.go",
+      "bin/FvwmPrompt/internal/sessionowner/worker.go",
+      "dev-docs/PROJECT-TRACKER.md",
+      "dev-docs/verification/README.md",
+      "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-PROVIDERS.json",
+      "dev-docs/verification/VERIFICATION-2026-10-29-SESSION-PROVIDERS.md",
+      "doc/development-preview.md",
+      "doc/fvwm-session.adoc",
+      "doc/screenshots/session-providers-classic-large-confirmation.png",
+      "doc/screenshots/session-providers-classic-large.fvwm",
+      "doc/screenshots/session-providers-dune-light-settings.png",
+      "doc/screenshots/session-providers-dune-light.fvwm",
+      "doc/screenshots/session-providers-manifest.json",
+      "doc/screenshots/session-providers-slate-dark-panel.png",
+      "doc/screenshots/session-providers-slate-dark.fvwm",
+      "fvwm/fvwm3.c",
+      "fvwm/session_ready.c",
+      "fvwm/session_ready.h",
+      "tests/live_x/session_recovery_live.py",
+      "tests/test_session_ready.c"
+    ],
+    "commands": [
+      {
+        "label": "incremental-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "fvwm3",
+          "bin/FvwmPrompt/fvwm-session",
+          "tests/test-session-ready",
+          "doc/fvwm-session.1"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.636847820000014
+      },
+      {
+        "label": "go-normal",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-json",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 9.532064317999982
+      },
+      {
+        "label": "go-race",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-race",
+          "-json",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 14.038064544999997
+      },
+      {
+        "label": "go-vet",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "vet",
+          "-mod=vendor",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 0.117334421999999
+      },
+      {
+        "label": "go-cross-freebsd",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "build",
+          "-mod=vendor",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/cross-freebsd",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 0.24948795399996015
+      },
+      {
+        "label": "go-cross-openbsd",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "build",
+          "-mod=vendor",
+          "-o",
+          "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/cross-openbsd",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 0.25214180000000397
+      },
+      {
+        "label": "fixture-syntax",
+        "command": [
+          "python3",
+          "-m",
+          "py_compile",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_recovery_live.py"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.021864643999947475
+      },
+      {
+        "label": "normal-session-ready",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "session-ready"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.20128876399996898
+      },
+      {
+        "label": "tagged-install",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--destdir",
+          "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/stage",
+          "--tags",
+          "session-startup"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.09386421700003211
+      },
+      {
+        "label": "native-recovery",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_recovery_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--session",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/native-x01",
+          "--execution-profile",
+          "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 1,
+        "seconds": 34.39416472199997
+      },
+      {
+        "label": "sanitizer-configure",
+        "command": [
+          "meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "/tmp/fvwm-module-waits-20261015/source",
+          "-Dsession-dbus=disabled"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 1.5101560260000042
+      },
+      {
+        "label": "sanitizer-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "tests/test-session-ready"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.23035989800001744
+      },
+      {
+        "label": "sanitizer-session-ready",
+        "command": [
+          "meson",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "--no-rebuild",
+          "--print-errorlogs",
+          "session-ready"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.24390258999994785
+      }
+    ],
+    "source_post": "a2d65b4420b318f3a6cad4aaab8b39d21ddfe961a1fea6395bb47bc6047183b6"
+  },
+  "result02.json": {
+    "status": "passed",
+    "source_pre": "d51769d01723163a7032c27c8844cab18148a4add44b913cd22f549cd98a6af9",
+    "changed": [
+      "bin/FvwmPrompt/internal/sessionowner/recovery_test.go",
+      "bin/FvwmPrompt/internal/sessionowner/session.go",
+      "bin/FvwmPrompt/internal/sessionowner/worker.go",
+      "dev-docs/ARCHITECTURE.md",
+      "dev-docs/PROJECT-TRACKER.md",
+      "doc/fvwm-session.adoc",
+      "tests/live_x/session_recovery_live.py"
+    ],
+    "commands": [
+      {
+        "label": "repeat-wrapper-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "bin/FvwmPrompt/fvwm-session",
+          "doc/fvwm-session.1"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 0.2239048379999531
+      },
+      {
+        "label": "repeat-owner-normal",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-json",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 9.49188225599994
+      },
+      {
+        "label": "repeat-owner-race",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-race",
+          "-json",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 14.120101793000003
+      },
+      {
+        "label": "repeat-owner-vet",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "vet",
+          "-mod=vendor",
+          "./internal/sessionowner",
+          "./cmd/fvwmsession"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+        "exit": 0,
+        "seconds": 0.09860546000004433
+      },
+      {
+        "label": "repeat-native-recovery",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_recovery_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--session",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+          "--fvwm",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/native-x02",
+          "--execution-profile",
+          "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate",
+          "--cases",
+          "parent-loss",
+          "stalled-stop"
+        ],
+        "cwd": "/tmp/fvwm-module-waits-20261015/source",
+        "exit": 0,
+        "seconds": 7.1655085140000665
+      }
+    ],
+    "source_post": "d51769d01723163a7032c27c8844cab18148a4add44b913cd22f549cd98a6af9"
+  },
+  "go-normal": {
+    "passes": 121,
+    "failed": [],
+    "skipped": [],
+    "packages": [
+      "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+      "github.com/fvwmorg/FvwmPrompt/internal/sessionowner"
+    ]
+  },
+  "go-race": {
+    "passes": 121,
+    "failed": [],
+    "skipped": [],
+    "packages": [
+      "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+      "github.com/fvwmorg/FvwmPrompt/internal/sessionowner"
+    ]
+  },
+  "repeat-owner-normal": {
+    "passes": 122,
+    "failed": [],
+    "skipped": [],
+    "packages": [
+      "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+      "github.com/fvwmorg/FvwmPrompt/internal/sessionowner"
+    ]
+  },
+  "repeat-owner-race": {
+    "passes": 122,
+    "failed": [],
+    "skipped": [],
+    "packages": [
+      "github.com/fvwmorg/FvwmPrompt/cmd/fvwmsession",
+      "github.com/fvwmorg/FvwmPrompt/internal/sessionowner"
+    ]
+  },
+  "native": {
+    "native-x01": {
+      "status": "failed",
+      "groups": {
+        "parent-loss": {
+          "status": "failed",
+          "display": ":0",
+          "nonleak": {
+            "application": {
+              "event": "started",
+              "pid": 984,
+              "state": "R",
+              "ppid": 961,
+              "birth": "33789",
+              "window": 4194305,
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                },
+                {
+                  "fd": 3,
+                  "device": 9,
+                  "inode": 23878,
+                  "target": "socket:[23878]"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            },
+            "module": {
+              "event": "module-executed",
+              "pid": 986,
+              "state": "R",
+              "ppid": 969,
+              "birth": "33796",
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                },
+                {
+                  "fd": 3,
+                  "device": 15,
+                  "inode": 20877,
+                  "target": "pipe:[20877]"
+                },
+                {
+                  "fd": 10,
+                  "device": 15,
+                  "inode": 20878,
+                  "target": "pipe:[20878]"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            },
+            "lease": {
+              "path": "/tmp/fvwm-recovery-pl4p1k16/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+              "device": 60,
+              "inode": 92592523,
+              "core_descriptor": {
+                "fd": 4,
+                "device": 60,
+                "inode": 92592523,
+                "target": "/tmp/fvwm-recovery-pl4p1k16/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+              },
+              "close_on_exec": true,
+              "independent_flock_refused": true
+            }
+          },
+          "equivalent-display": {
+            "display": ":0.0",
+            "returncode": 1,
+            "argv": [
+              "/tmp/fvwm-recovery-pl4p1k16/home/bin/fvwm-session",
+              "--",
+              "-d",
+              ":0.0",
+              "-f",
+              "/tmp/fvwm-recovery-pl4p1k16/home/configuration.fvwm"
+            ],
+            "log": "02-competitor.log",
+            "autostart_count": 1
+          },
+          "parent-loss": {
+            "core": {
+              "pid": 969,
+              "state": "S",
+              "ppid": 1,
+              "birth": "33786"
+            },
+            "wrapper_status": -9,
+            "orphan_reaping_claim": false,
+            "contender": {
+              "display": ":0.0",
+              "returncode": 1,
+              "argv": [
+                "/tmp/fvwm-recovery-pl4p1k16/home/bin/fvwm-session",
+                "--",
+                "-d",
+                ":0.0",
+                "-f",
+                "/tmp/fvwm-recovery-pl4p1k16/home/configuration.fvwm"
+              ],
+              "log": "03-competitor.log",
+              "autostart_count": 1
+            }
+          },
+          "native-restart": {
+            "before": {
+              "pid": 969,
+              "state": "S",
+              "ppid": 1,
+              "birth": "33786"
+            },
+            "after": {
+              "pid": 969,
+              "state": "S",
+              "ppid": 1,
+              "birth": "33786"
+            },
+            "lease": {
+              "path": "/tmp/fvwm-recovery-pl4p1k16/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+              "device": 60,
+              "inode": 92592523,
+              "core_descriptor": {
+                "fd": 4,
+                "device": 60,
+                "inode": 92592523,
+                "target": "/tmp/fvwm-recovery-pl4p1k16/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+              },
+              "close_on_exec": true,
+              "independent_flock_refused": true
+            },
+            "contender": {
+              "display": ":0",
+              "returncode": 1,
+              "argv": [
+                "/tmp/fvwm-recovery-pl4p1k16/home/bin/fvwm-session",
+                "--",
+                "-d",
+                ":0",
+                "-f",
+                "/tmp/fvwm-recovery-pl4p1k16/home/configuration.fvwm"
+              ],
+              "log": "04-competitor.log",
+              "autostart_count": 1
+            },
+            "ordinary_exec_nonleak": {
+              "event": "ordinary-exec",
+              "pid": 1007,
+              "state": "R",
+              "ppid": 969,
+              "birth": "33910",
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 84196505,
+                  "target": "/tmp/fvwm-recovery-pl4p1k16/01-owner.log"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            }
+          },
+          "failure": {
+            "type": "HarnessError",
+            "message": "deadline expired while waiting for fresh owner MFL"
+          }
+        },
+        "no-ack": {
+          "status": "passed",
+          "display": ":0",
+          "lease": {
+            "path": "/tmp/fvwm-recovery-yest8mfi/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+            "device": 60,
+            "inode": 139076129,
+            "core_descriptor": {
+              "fd": 4,
+              "device": 60,
+              "inode": 139076129,
+              "target": "/tmp/fvwm-recovery-yest8mfi/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+            },
+            "close_on_exec": true,
+            "independent_flock_refused": true
+          },
+          "autostart_scans": 0,
+          "applications": 0,
+          "actual_core_usable": true
+        },
+        "normal-stop": {
+          "status": "passed",
+          "display": ":0",
+          "wrapper_status": 0,
+          "seconds": 0.0032466829999862057,
+          "core_exit_observed": true,
+          "application_alive": {
+            "pid": 1075,
+            "state": "S",
+            "ppid": 1,
+            "birth": "36650"
+          },
+          "lease": {
+            "path": "/tmp/fvwm-recovery-etffo0q2/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+            "device": 60,
+            "inode": 187378163,
+            "core_descriptor": {
+              "fd": 4,
+              "device": 60,
+              "inode": 187378163,
+              "target": "/tmp/fvwm-recovery-etffo0q2/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+            },
+            "close_on_exec": true,
+            "independent_flock_refused": true
+          }
+        },
+        "stalled-stop": {
+          "status": "passed",
+          "display": ":0",
+          "wrapper_status": 137,
+          "seconds": 5.038532067999995,
+          "core_identity": {
+            "pid": 1088,
+            "state": "R",
+            "ppid": 1080,
+            "birth": "36665"
+          },
+          "core_exit_observed": true,
+          "locker_admission": {
+            "admission": "accepted",
+            "id": "3f4f46b873e742e60b984fe2150ae9b4",
+            "target": "lock",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "de7daa6d9dd4f1ceb4d599bc97e785d7",
+              "id": "3f4f46b873e742e60b984fe2150ae9b4",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "f2c578ce0cf5a4cadcbbc6674c3989f2",
+                  "state": "running",
+                  "detail": "observed locker child running; secure readiness ",
+                  "secure_ready": false
+                },
+                "outcome": "started",
+                "power": {
+                  "provider": "portable",
+                  "generation": "6bea635e58e2803ae72b4c9a4592dadb",
+                  "state": "ready",
+                  "detail": "fixed native commands; authorization unknown",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299948,
+              "rollback": false,
+              "state": "completed",
+              "target": "lock",
+              "worker_stop": "unknown"
+            }
+          },
+          "locker_alive": {
+            "pid": 1133,
+            "state": "S",
+            "ppid": 1,
+            "birth": "36699"
+          },
+          "independent_window": {
+            "window": 10485761,
+            "title": "independent X client survives bounded stop",
+            "live": false,
+            "close": false,
+            "messages": 0,
+            "deletable": false
+          },
+          "secure_readiness_claim": false,
+          "borrowed_bus": "not exercised; separate unit coverage"
+        }
+      },
+      "argv": [
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--session",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/native-x01",
+        "--execution-profile",
+        "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate"
+      ],
+      "executor": {
+        "system": "Linux",
+        "release": "6.18.10-200.fc43.aarch64",
+        "machine": "aarch64",
+        "execution_profile": "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate"
+      },
+      "limits": [
+        "Focused Linux nested-X fixture; no full platform/release acceptance.",
+        "No physical secure locking, authentication, real power or orphan reaping claim.",
+        "No UI changes; no theme or screenshot matrix is repeated.",
+        "Parent-crash bus guardians and replacement-exec nonleak need separate coverage."
+      ],
+      "inputs": {
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "dc040edf67616e7304015111b50ee842981f7dc57e32bac1ad77f50ca377507f",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3": "60821ad976d365c81a1e1ce57046919b4694e5e36f8797040eb3af87a7cdde41",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_recovery_live.py": "1739bf69df72b829483693a9216cdc4861d15abb5e4b8a961c9511dc95d5b1b1",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "35ff53c432f7382e6cca78e4f959697ad0c7dbc39aea58cca029507b02c274f5",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "5b769de4a4a80e2c4cfea22017988747dec19901b1003907ade119764ed9d0ea",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+      }
+    },
+    "native-x02": {
+      "status": "passed",
+      "groups": {
+        "parent-loss": {
+          "status": "passed",
+          "display": ":0",
+          "nonleak": {
+            "application": {
+              "event": "started",
+              "pid": 2101,
+              "state": "R",
+              "ppid": 2078,
+              "birth": "77371",
+              "window": 4194305,
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                },
+                {
+                  "fd": 3,
+                  "device": 9,
+                  "inode": 19333,
+                  "target": "socket:[19333]"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            },
+            "module": {
+              "event": "module-executed",
+              "pid": 2103,
+              "state": "R",
+              "ppid": 2086,
+              "birth": "77379",
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                },
+                {
+                  "fd": 3,
+                  "device": 15,
+                  "inode": 24327,
+                  "target": "pipe:[24327]"
+                },
+                {
+                  "fd": 10,
+                  "device": 15,
+                  "inode": 24328,
+                  "target": "pipe:[24328]"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            },
+            "lease": {
+              "path": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+              "device": 60,
+              "inode": 230999270,
+              "core_descriptor": {
+                "fd": 4,
+                "device": 60,
+                "inode": 230999270,
+                "target": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+              },
+              "close_on_exec": true,
+              "independent_flock_refused": true
+            }
+          },
+          "equivalent-display": {
+            "display": ":0.0",
+            "returncode": 1,
+            "argv": [
+              "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+              "--",
+              "-d",
+              ":0.0",
+              "-f",
+              "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+            ],
+            "log": "02-competitor.log",
+            "autostart_count": 1
+          },
+          "parent-loss": {
+            "core": {
+              "pid": 2086,
+              "state": "S",
+              "ppid": 1,
+              "birth": "77368"
+            },
+            "wrapper_status": -9,
+            "orphan_reaping_claim": false,
+            "contender": {
+              "display": ":0.0",
+              "returncode": 1,
+              "argv": [
+                "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+                "--",
+                "-d",
+                ":0.0",
+                "-f",
+                "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+              ],
+              "log": "03-competitor.log",
+              "autostart_count": 1
+            }
+          },
+          "native-restart": {
+            "before": {
+              "pid": 2086,
+              "state": "S",
+              "ppid": 1,
+              "birth": "77368"
+            },
+            "after": {
+              "pid": 2086,
+              "state": "S",
+              "ppid": 1,
+              "birth": "77368"
+            },
+            "lease": {
+              "path": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+              "device": 60,
+              "inode": 230999270,
+              "core_descriptor": {
+                "fd": 4,
+                "device": 60,
+                "inode": 230999270,
+                "target": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+              },
+              "close_on_exec": true,
+              "independent_flock_refused": true
+            },
+            "contender": {
+              "display": ":0",
+              "returncode": 1,
+              "argv": [
+                "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+                "--",
+                "-d",
+                ":0",
+                "-f",
+                "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+              ],
+              "log": "04-competitor.log",
+              "autostart_count": 1
+            },
+            "ordinary_exec_nonleak": {
+              "event": "ordinary-exec",
+              "pid": 2124,
+              "state": "R",
+              "ppid": 2086,
+              "birth": "77494",
+              "descriptors": [
+                {
+                  "fd": 0,
+                  "device": 65,
+                  "inode": 5,
+                  "target": "/dev/null"
+                },
+                {
+                  "fd": 1,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                },
+                {
+                  "fd": 2,
+                  "device": 60,
+                  "inode": 222617842,
+                  "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+                }
+              ],
+              "environment": {
+                "FVWM_SESSION_READY_FD": null,
+                "FVWM_SESSION_LEASE_FD": null
+              }
+            }
+          },
+          "fresh-owner": {
+            "display": ":0.0",
+            "endpoint": "/tmp/fvwm-recovery-5p8n3m8q/home/fvwm_mfl__0_0.sock"
+          },
+          "final-quit-release": {
+            "new_one_shot_applications": 2,
+            "persistent_inode": 230999270,
+            "old_application_alive": {
+              "pid": 2101,
+              "state": "S",
+              "ppid": 1,
+              "birth": "77371"
+            }
+          }
+        },
+        "stalled-stop": {
+          "status": "passed",
+          "display": ":0",
+          "wrapper_status": 137,
+          "seconds": 5.020169325999973,
+          "core_identity": {
+            "pid": 2160,
+            "state": "R",
+            "ppid": 2152,
+            "birth": "77531"
+          },
+          "core_exit_observed": true,
+          "locker_admission": {
+            "admission": "accepted",
+            "id": "6e0478430a48031363e329649f4556fd",
+            "target": "lock",
+            "operation": {
+              "application": "owner-observed",
+              "cancel_requested": false,
+              "error": null,
+              "generation": "df55f163999febebb4f69e9e9d5dbdcc",
+              "id": "6e0478430a48031363e329649f4556fd",
+              "progress": {
+                "completed": null,
+                "total": null,
+                "unit": "unknown"
+              },
+              "result": {
+                "locker": {
+                  "generation": "d9d9cc2dd7182f253159d1e828888636",
+                  "state": "running",
+                  "detail": "observed locker child running; secure readiness ",
+                  "secure_ready": false
+                },
+                "outcome": "started",
+                "power": {
+                  "provider": "portable",
+                  "generation": "47060b61b6a1b54da3fec0dd837a067e",
+                  "state": "ready",
+                  "detail": "fixed native commands; authorization unknown",
+                  "capabilities": [
+                    {
+                      "action": "poweroff",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "reboot",
+                      "permission": "unknown",
+                      "detail": "installed; authorization unknown; request capabl"
+                    },
+                    {
+                      "action": "suspend",
+                      "permission": "na",
+                      "detail": "secure locker readiness is unconfirmed"
+                    }
+                  ]
+                }
+              },
+              "retention_ms": 299939,
+              "rollback": false,
+              "state": "completed",
+              "target": "lock",
+              "worker_stop": "unknown"
+            }
+          },
+          "locker_alive": {
+            "pid": 2206,
+            "state": "S",
+            "ppid": 1,
+            "birth": "77564"
+          },
+          "independent_window": {
+            "window": 10485761,
+            "title": "independent X client survives bounded stop",
+            "live": true,
+            "close": false,
+            "messages": 0,
+            "deletable": false
+          },
+          "secure_readiness_claim": false,
+          "borrowed_bus": "not exercised; separate unit coverage"
+        }
+      },
+      "argv": [
+        "--build",
+        "/tmp/fvwm-module-waits-20261015/build-gcc",
+        "--session",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "--fvwm",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+        "--artifacts-dir",
+        "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current/native-x02",
+        "--execution-profile",
+        "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate",
+        "--cases",
+        "parent-loss",
+        "stalled-stop"
+      ],
+      "executor": {
+        "system": "Linux",
+        "release": "6.18.10-200.fc43.aarch64",
+        "machine": "aarch64",
+        "execution_profile": "Linux ARM64 owned Podman VM; physical/native-CPU qualification separate"
+      },
+      "limits": [
+        "Focused Linux nested-X fixture; no full platform/release acceptance.",
+        "No physical secure locking, authentication, real power or orphan reaping claim.",
+        "No UI changes; no theme or screenshot matrix is repeated.",
+        "Parent-crash bus guardians and replacement-exec nonleak need separate coverage."
+      ],
+      "inputs": {
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session": "7614d5c5c7a0e01e1ab0cbf50fdf8ad8aa0ddd5e5a0431b568826b2ce1bdd107",
+        "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3": "60821ad976d365c81a1e1ce57046919b4694e5e36f8797040eb3af87a7cdde41",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_recovery_live.py": "5e0eca50958a2b1e61b3336749d109a68848d75672f7b2757b72738b52b81982",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop": "44da3884c4b80aee83d4629c799ca1b19930eb95e8db6501c3e0163fb38ac0ce",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm": "40f1c9b760b5520d4a33666f7505d8418705af6e9d5453667e86c57af94ca63c",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_services_live.py": "35ff53c432f7382e6cca78e4f959697ad0c7dbc39aea58cca029507b02c274f5",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/session_providers_live.py": "5b769de4a4a80e2c4cfea22017988747dec19901b1003907ade119764ed9d0ea",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "/tmp/fvwm-module-waits-20261015/source/tests/live_x/geometry_transition_live.py": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+      }
+    }
+  },
+  "composed_native": {
+    "no-ack": {
+      "status": "passed",
+      "display": ":0",
+      "lease": {
+        "path": "/tmp/fvwm-recovery-yest8mfi/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+        "device": 60,
+        "inode": 139076129,
+        "core_descriptor": {
+          "fd": 4,
+          "device": 60,
+          "inode": 139076129,
+          "target": "/tmp/fvwm-recovery-yest8mfi/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+        },
+        "close_on_exec": true,
+        "independent_flock_refused": true
+      },
+      "autostart_scans": 0,
+      "applications": 0,
+      "actual_core_usable": true
+    },
+    "normal-stop": {
+      "status": "passed",
+      "display": ":0",
+      "wrapper_status": 0,
+      "seconds": 0.0032466829999862057,
+      "core_exit_observed": true,
+      "application_alive": {
+        "pid": 1075,
+        "state": "S",
+        "ppid": 1,
+        "birth": "36650"
+      },
+      "lease": {
+        "path": "/tmp/fvwm-recovery-etffo0q2/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+        "device": 60,
+        "inode": 187378163,
+        "core_descriptor": {
+          "fd": 4,
+          "device": 60,
+          "inode": 187378163,
+          "target": "/tmp/fvwm-recovery-etffo0q2/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+        },
+        "close_on_exec": true,
+        "independent_flock_refused": true
+      }
+    },
+    "parent-loss": {
+      "status": "passed",
+      "display": ":0",
+      "nonleak": {
+        "application": {
+          "event": "started",
+          "pid": 2101,
+          "state": "R",
+          "ppid": 2078,
+          "birth": "77371",
+          "window": 4194305,
+          "descriptors": [
+            {
+              "fd": 0,
+              "device": 65,
+              "inode": 5,
+              "target": "/dev/null"
+            },
+            {
+              "fd": 1,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            },
+            {
+              "fd": 2,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            },
+            {
+              "fd": 3,
+              "device": 9,
+              "inode": 19333,
+              "target": "socket:[19333]"
+            }
+          ],
+          "environment": {
+            "FVWM_SESSION_READY_FD": null,
+            "FVWM_SESSION_LEASE_FD": null
+          }
+        },
+        "module": {
+          "event": "module-executed",
+          "pid": 2103,
+          "state": "R",
+          "ppid": 2086,
+          "birth": "77379",
+          "descriptors": [
+            {
+              "fd": 0,
+              "device": 65,
+              "inode": 5,
+              "target": "/dev/null"
+            },
+            {
+              "fd": 1,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            },
+            {
+              "fd": 2,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            },
+            {
+              "fd": 3,
+              "device": 15,
+              "inode": 24327,
+              "target": "pipe:[24327]"
+            },
+            {
+              "fd": 10,
+              "device": 15,
+              "inode": 24328,
+              "target": "pipe:[24328]"
+            }
+          ],
+          "environment": {
+            "FVWM_SESSION_READY_FD": null,
+            "FVWM_SESSION_LEASE_FD": null
+          }
+        },
+        "lease": {
+          "path": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+          "device": 60,
+          "inode": 230999270,
+          "core_descriptor": {
+            "fd": 4,
+            "device": 60,
+            "inode": 230999270,
+            "target": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+          },
+          "close_on_exec": true,
+          "independent_flock_refused": true
+        }
+      },
+      "equivalent-display": {
+        "display": ":0.0",
+        "returncode": 1,
+        "argv": [
+          "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+          "--",
+          "-d",
+          ":0.0",
+          "-f",
+          "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+        ],
+        "log": "02-competitor.log",
+        "autostart_count": 1
+      },
+      "parent-loss": {
+        "core": {
+          "pid": 2086,
+          "state": "S",
+          "ppid": 1,
+          "birth": "77368"
+        },
+        "wrapper_status": -9,
+        "orphan_reaping_claim": false,
+        "contender": {
+          "display": ":0.0",
+          "returncode": 1,
+          "argv": [
+            "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+            "--",
+            "-d",
+            ":0.0",
+            "-f",
+            "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+          ],
+          "log": "03-competitor.log",
+          "autostart_count": 1
+        }
+      },
+      "native-restart": {
+        "before": {
+          "pid": 2086,
+          "state": "S",
+          "ppid": 1,
+          "birth": "77368"
+        },
+        "after": {
+          "pid": 2086,
+          "state": "S",
+          "ppid": 1,
+          "birth": "77368"
+        },
+        "lease": {
+          "path": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock",
+          "device": 60,
+          "inode": 230999270,
+          "core_descriptor": {
+            "fd": 4,
+            "device": 60,
+            "inode": 230999270,
+            "target": "/tmp/fvwm-recovery-5p8n3m8q/home/runtime/fvwm-session-0-19e89348f2a9d5f3d0c5fca8e2a7068d9c5d71687a355f759009a5ed2527eb2c.lock"
+          },
+          "close_on_exec": true,
+          "independent_flock_refused": true
+        },
+        "contender": {
+          "display": ":0",
+          "returncode": 1,
+          "argv": [
+            "/tmp/fvwm-recovery-5p8n3m8q/home/bin/fvwm-session",
+            "--",
+            "-d",
+            ":0",
+            "-f",
+            "/tmp/fvwm-recovery-5p8n3m8q/home/configuration.fvwm"
+          ],
+          "log": "04-competitor.log",
+          "autostart_count": 1
+        },
+        "ordinary_exec_nonleak": {
+          "event": "ordinary-exec",
+          "pid": 2124,
+          "state": "R",
+          "ppid": 2086,
+          "birth": "77494",
+          "descriptors": [
+            {
+              "fd": 0,
+              "device": 65,
+              "inode": 5,
+              "target": "/dev/null"
+            },
+            {
+              "fd": 1,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            },
+            {
+              "fd": 2,
+              "device": 60,
+              "inode": 222617842,
+              "target": "/tmp/fvwm-recovery-5p8n3m8q/01-owner.log"
+            }
+          ],
+          "environment": {
+            "FVWM_SESSION_READY_FD": null,
+            "FVWM_SESSION_LEASE_FD": null
+          }
+        }
+      },
+      "fresh-owner": {
+        "display": ":0.0",
+        "endpoint": "/tmp/fvwm-recovery-5p8n3m8q/home/fvwm_mfl__0_0.sock"
+      },
+      "final-quit-release": {
+        "new_one_shot_applications": 2,
+        "persistent_inode": 230999270,
+        "old_application_alive": {
+          "pid": 2101,
+          "state": "S",
+          "ppid": 1,
+          "birth": "77371"
+        }
+      }
+    },
+    "stalled-stop": {
+      "status": "passed",
+      "display": ":0",
+      "wrapper_status": 137,
+      "seconds": 5.020169325999973,
+      "core_identity": {
+        "pid": 2160,
+        "state": "R",
+        "ppid": 2152,
+        "birth": "77531"
+      },
+      "core_exit_observed": true,
+      "locker_admission": {
+        "admission": "accepted",
+        "id": "6e0478430a48031363e329649f4556fd",
+        "target": "lock",
+        "operation": {
+          "application": "owner-observed",
+          "cancel_requested": false,
+          "error": null,
+          "generation": "df55f163999febebb4f69e9e9d5dbdcc",
+          "id": "6e0478430a48031363e329649f4556fd",
+          "progress": {
+            "completed": null,
+            "total": null,
+            "unit": "unknown"
+          },
+          "result": {
+            "locker": {
+              "generation": "d9d9cc2dd7182f253159d1e828888636",
+              "state": "running",
+              "detail": "observed locker child running; secure readiness ",
+              "secure_ready": false
+            },
+            "outcome": "started",
+            "power": {
+              "provider": "portable",
+              "generation": "47060b61b6a1b54da3fec0dd837a067e",
+              "state": "ready",
+              "detail": "fixed native commands; authorization unknown",
+              "capabilities": [
+                {
+                  "action": "poweroff",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "reboot",
+                  "permission": "unknown",
+                  "detail": "installed; authorization unknown; request capabl"
+                },
+                {
+                  "action": "suspend",
+                  "permission": "na",
+                  "detail": "secure locker readiness is unconfirmed"
+                }
+              ]
+            }
+          },
+          "retention_ms": 299939,
+          "rollback": false,
+          "state": "completed",
+          "target": "lock",
+          "worker_stop": "unknown"
+        }
+      },
+      "locker_alive": {
+        "pid": 2206,
+        "state": "S",
+        "ppid": 1,
+        "birth": "77564"
+      },
+      "independent_window": {
+        "window": 10485761,
+        "title": "independent X client survives bounded stop",
+        "live": true,
+        "close": false,
+        "messages": 0,
+        "deletable": false
+      },
+      "secure_readiness_claim": false,
+      "borrowed_bus": "not exercised; separate unit coverage"
+    }
+  },
+  "binaries": {
+    "core": {
+      "bytes": 5691440,
+      "sha256": "60821ad976d365c81a1e1ce57046919b4694e5e36f8797040eb3af87a7cdde41"
+    },
+    "wrapper": {
+      "bytes": 5244507,
+      "sha256": "7614d5c5c7a0e01e1ab0cbf50fdf8ad8aa0ddd5e5a0431b568826b2ce1bdd107"
+    },
+    "ready-unit": {
+      "bytes": 112320,
+      "sha256": "7b80f17b38db94c53fa12d6754ef8098d3c73e01170825aad9452eb27f9a8a43"
+    },
+    "ready-unit-asan": {
+      "bytes": 1940744,
+      "sha256": "4e3ae099b550f91924549e73de45fda86b6adc2b174a8e52ca6299c374907b9f"
+    }
+  },
+  "schema_version": 1,
+  "base": "c0884267f2fda6d54831115731c92cd663f87bbc",
+  "source_closures": {
+    "source01": "a2d65b4420b318f3a6cad4aaab8b39d21ddfe961a1fea6395bb47bc6047183b6",
+    "source02": "d51769d01723163a7032c27c8844cab18148a4add44b913cd22f549cd98a6af9"
+  },
+  "archive": {
+    "files": 136,
+    "archive_sha256": "58dfdc79354e5d16d9fd13631d6d3bdb6cc8f2cc76f74b3b5f44ee5d0acc1a88",
+    "archive_bytes": 394348,
+    "status": "verified"
+  },
+  "retention": {
+    "status": "verified duplicates retired",
+    "archived_files": 136,
+    "archive_sha256": "58dfdc79354e5d16d9fd13631d6d3bdb6cc8f2cc76f74b3b5f44ee5d0acc1a88",
+    "retired": [
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-recovery-current",
+        "bytes": 17421268
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-recovery-inputs",
+        "bytes": 26612089
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-recovery-evidence.tgz",
+        "bytes": 394348
+      },
+      {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-session-recovery-evidence.json",
+        "bytes": 26746
+      }
+    ],
+    "retired_bytes": 44454451,
+    "source_closure": "d51769d01723163a7032c27c8844cab18148a4add44b913cd22f549cd98a6af9",
+    "fixture_processes_absent": true,
+    "preserved": [
+      "source",
+      "build-gcc",
+      "build-module-waits-asan",
+      "r1-xdg-installed-prefix",
+      "SDK/caches",
+      "current performance references"
+    ]
+  },
+  "bsd_retention": {
+    "jobs": [
+      {
+        "job": "freebsd-lease01",
+        "status": "failed",
+        "qemu_exit": 0,
+        "archive_sha256": "fd6f7649e7742d4a1b48a15588dc7b9adbf957f71f1d37560dff5562cc292e95",
+        "files": {
+          "builddir-bsd/kernel.txt": {
+            "bytes": 103,
+            "sha256": "eaeeda75bd854de284046cf49017145f1d0ceb9656f51d1fb88c65267f7f4302"
+          },
+          "builddir-bsd/pipe-flags": {
+            "bytes": 8968,
+            "sha256": "8197b4b77b3309552775dbdce65486a0c2d6532c3d5d50f9a9c2c47c7b400104"
+          },
+          "builddir-bsd/compiler.txt": {
+            "bytes": 182,
+            "sha256": "41e02021522c4628079f59e5cc9f01b47c931574744f263a480ee10fa483294b"
+          },
+          "builddir-bsd/pipe-flags.c": {
+            "bytes": 276,
+            "sha256": "c7032c346e9a721727a64b60547820bb1f25272be28e46cff0703337b69fe4f3"
+          },
+          "builddir-bsd/pipe-flags.stdout": {
+            "bytes": 46,
+            "sha256": "43e78b979a20eefc74394b8d38528183bd3a47ddd308e09452e3d3e3e00afe0a"
+          },
+          "builddir-bsd/include/config.h": {
+            "bytes": 65,
+            "sha256": "bee4e74209cb500b640922425a4f49967909af8728a1898f0e2efae2a54e5e7b"
+          }
+        },
+        "retired_disk_bytes": 3226861568
+      },
+      {
+        "job": "freebsd-lease02",
+        "status": "passed",
+        "qemu_exit": 0,
+        "archive_sha256": "fb0cefe877593b6c82cc8b60aad11966186dfae7aeaa0477871f36cf3d48ae7b",
+        "files": {
+          "builddir-bsd/kernel.txt": {
+            "bytes": 103,
+            "sha256": "eaeeda75bd854de284046cf49017145f1d0ceb9656f51d1fb88c65267f7f4302"
+          },
+          "builddir-bsd/SHA256SUMS": {
+            "bytes": 591,
+            "sha256": "5d543953ba4648cca0253abe79b89d3c064a73ccabc730fe7bde4fc4461702b4"
+          },
+          "builddir-bsd/session-ready.stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "builddir-bsd/pipe-flags.c": {
+            "bytes": 276,
+            "sha256": "c7032c346e9a721727a64b60547820bb1f25272be28e46cff0703337b69fe4f3"
+          },
+          "builddir-bsd/compiler.txt": {
+            "bytes": 182,
+            "sha256": "41e02021522c4628079f59e5cc9f01b47c931574744f263a480ee10fa483294b"
+          },
+          "builddir-bsd/session-ready.stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "builddir-bsd/pipe-flags.stdout": {
+            "bytes": 46,
+            "sha256": "43e78b979a20eefc74394b8d38528183bd3a47ddd308e09452e3d3e3e00afe0a"
+          },
+          "builddir-bsd/test-session-ready": {
+            "bytes": 29624,
+            "sha256": "51de714f5ae7fa23e39bfc899cbdacc9028483adc488db0a44cc809d06bff4e3"
+          },
+          "builddir-bsd/pipe-flags": {
+            "bytes": 8968,
+            "sha256": "8197b4b77b3309552775dbdce65486a0c2d6532c3d5d50f9a9c2c47c7b400104"
+          },
+          "builddir-bsd/include/config.h": {
+            "bytes": 65,
+            "sha256": "bee4e74209cb500b640922425a4f49967909af8728a1898f0e2efae2a54e5e7b"
+          }
+        },
+        "retired_disk_bytes": 3226861568
+      }
+    ],
+    "retired_disk_bytes": 6453723136,
+    "retired_input_copies": [
+      {
+        "job": "freebsd-lease01",
+        "bytes": 984730679
+      },
+      {
+        "job": "freebsd-lease02",
+        "bytes": 984730679
+      }
+    ],
+    "retired_input_bytes": 1969461358
+  },
+  "lab_cleanup": {
+    "records": [
+      {
+        "command": [
+          "podman",
+          "machine",
+          "start",
+          "podman-machine-default"
+        ],
+        "exit": 0,
+        "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "start",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0,
+        "stdout": "fvwm-x-linux-arm64-svg\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "stop",
+          "--time",
+          "15",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0,
+        "stdout": "fvwm-x-linux-arm64-svg\n",
+        "stderr": ""
+      },
+      {
+        "command": [
+          "podman",
+          "machine",
+          "stop",
+          "podman-machine-default"
+        ],
+        "exit": 0,
+        "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+        "stderr": ""
+      }
+    ],
+    "normal_stop": true
+  },
+  "bsd": {
+    "freebsd-lease01": {
+      "status": "failed",
+      "qemu_exit": 0,
+      "source": {
+        "sha256": "2cfe9799cc1e5ef738db9e9cec3efc6093b88f31771ea0f0fc8bf778f18713f6",
+        "members": 5,
+        "expanded_bytes": 18100
+      },
+      "run_script": {
+        "sha256": "7ad8b18b3d430979ffded8a2eaca815ebc53d7770feb07638fa56ecc22dcfce2",
+        "bytes": 1332
+      },
+      "acceleration": "hvf",
+      "run_log": "fvwm/session_ready.c:62:6: error: call to undeclared function 'flock'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]\n   62 |             flock(4, LOCK_EX | LOCK_NB) != 0)\n      |             ^\nfvwm/session_ready.c:62:15: error: use of undeclared identifier 'LOCK_EX'\n   62 |             flock(4, LOCK_EX | LOCK_NB) != 0)\n      |                      ^\nfvwm/session_ready.c:62:25: error: use of undeclared identifier 'LOCK_NB'\n   62 |             flock(4, LOCK_EX | LOCK_NB) != 0)\n      |                                ^\n3 errors generated.\ntests/test_session_ready.c:151:9: error: call to undeclared function 'flock'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]\n  151 |         assert(flock(4, LOCK_EX | LOCK_NB) == 0);\n      |                ^\ntests/test_session_ready.c:151:18: error: use of undeclared identifier 'LOCK_EX'\n  151 |         assert(flock(4, LOCK_EX | LOCK_NB) == 0);\n      |                         ^\ntests/test_session_ready.c:151:28: error: use of undeclared identifier 'LOCK_NB'\n  151 |         assert(flock(4, LOCK_EX | LOCK_NB) == 0);\n      |                                   ^\ntests/test_session_ready.c:224:9: error: call to undeclared function 'flock'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]\n  224 |         assert(flock(descriptor, LOCK_EX | LOCK_NB) == 0);\n      |                ^\ntests/test_session_ready.c:224:27: error: use of undeclared identifier 'LOCK_EX'\n  224 |         assert(flock(descriptor, LOCK_EX | LOCK_NB) == 0);\n      |                                  ^\ntests/test_session_ready.c:224:37: error: use of undeclared identifier 'LOCK_NB'\n  224 |         assert(flock(descriptor, LOCK_EX | LOCK_NB) == 0);\n      |                                            ^\ntests/test_session_ready.c:263:9: error: call to undeclared function 'flock'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]\n  263 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                ^\ntests/test_session_ready.c:263:26: error: use of undeclared identifier 'LOCK_EX'\n  263 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                                 ^\ntests/test_session_ready.c:263:36: error: use of undeclared identifier 'LOCK_NB'\n  263 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                                           ^\ntests/test_session_ready.c:266:26: error: use of undeclared identifier 'LOCK_EX'\n  266 |         assert(flock(contender, LOCK_EX | LOCK_NB) == 0);\n      |                                 ^\ntests/test_session_ready.c:266:36: error: use of undeclared identifier 'LOCK_NB'\n  266 |         assert(flock(contender, LOCK_EX | LOCK_NB) == 0);\n      |                                           ^\ntests/test_session_ready.c:304:9: error: call to undeclared function 'flock'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]\n  304 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                ^\ntests/test_session_ready.c:304:26: error: use of undeclared identifier 'LOCK_EX'\n  304 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                                 ^\ntests/test_session_ready.c:304:36: error: use of undeclared identifier 'LOCK_NB'\n  304 |         assert(flock(contender, LOCK_EX | LOCK_NB) == -1);\n      |                                           ^\ntests/test_session_ready.c:309:26: error: use of undeclared identifier 'LOCK_EX'\n  309 |         assert(flock(contender, LOCK_EX | LOCK_NB) == 0);\n      |                                 ^\ntests/test_session_ready.c:309:36: error: use of undeclared identifier 'LOCK_NB'\n  309 |         assert(flock(contender, LOCK_EX | LOCK_NB) == 0);\n      |                                           ^\n16 errors generated.\n",
+      "files": {
+        "builddir-bsd/kernel.txt": "FreeBSD freebsd 15.1-RELEASE-p3 FreeBSD 15.1-RELEASE-p3 releng/15.1-n283611-88e7371d9dc2 GENERIC arm64\n",
+        "builddir-bsd/pipe-flags": "\u007fELF\u0002\u0001\u0001\t\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0000\u0001\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u00008\u0000\u000b\u0000@\u0000 \u0000\u001e\u0000\u0006\u0000\u0000\u0000\u0004\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0000 \u0000\u0000\u0000\u0000\u0000@\u0000 \u0000\u0000\u0000\u0000\u0000h\u0002\u0000\u0000\u0000\u0000\u0000\u0000h\u0002\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0004\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u00008\u0001\u0000\u0000\u0000\u0000\u0000\u00008\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0010\t\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0006\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000R\ufffdtd\u0004\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0010\t\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\ufffdtd\u0004\u0000\u0000\u0000@\u0005\u0000\u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000Q\ufffdtd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0004\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000/libexec/ld-elf.so.1\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0001\u0000\u0000\u0000FreeBSD\u0000H\ufffd\u0016\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0004\u0000\u0000\u0000FreeBSD\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0002\u0000\u0000\u0000FreeBSD\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000'\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000-\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u000f\u0000\u0000\u0000\u0011\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001a\u0000\u0000\u0000\u0011\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0003\u0000\u0003\u0000\u0003\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0002\u00004\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd(z\u0007\u0000\u0000\u0003\u0000>\u0000\u0000\u0000\u0010\u0000\u0000\u0000\ufffd(z\u0007\u0000\u0000\u0002\u0000G\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u001a\u0000\u0000\u0000\u0000\u0000\u0000\u0004\ufffd\u0000\u0000\u0010\u0005\u0000\u0000\u0000\ufffdPv\ufffd\ufffd\u0763k\u0007\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000__libc_start1\u0000__progname\u0000environ\u0000pipe\u0000fcntl\u0000printf\u0000libc.so.7\u0000FBSD_1.0\u0000FBSD_1.7\u0000\u0000\u0000\u0000\u00000\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00008\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000H\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000read=%d write=%d O_RDONLY=%d O_WRONLY=%d O_RDWR=%d\n\u0000\u0000\u0000\u0000\u0001\u001b\u0003;\u001c\u0000\u0000\u0000\u0002\u0000\u0000\u0000x\u0000\u0001\u00004\u0000\u0000\u0000\ufffd\u0000\u0001\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001zR\u0000\u0001|\u001e\u0001\u001b\f\u001f\u0000\u0010\u0000\u0000\u0000\u0018\u0000\u0000\u0000<\u0000\u0001\u0000(\u0000\u0000\u0000\u0000\u0007\u001e\u0000(\u0000\u0000\u0000,\u0000\u0000\u0000P\u0000\u0001\u0000\ufffd\u0000\u0000\u0000\u0000D\u000e0H\f\u001d\u0010\ufffd\u0002\ufffd\u0004\u0002p\f\u001f0H\u000e\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0002\ufffd\u0001 \u0000\ufffd\u0000\u0000@\ufffd\"\f\u0000\ufffdB \u0000\ufffdd\u0000\u0000X8\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\u0000\ufffd\ufffd{\u0002\ufffd\ufffd\ufffd\u0000\ufffd\ufffd\ufffd\u001f\ufffd\ufffd3\u0000\ufffd3\u0000\u0000\ufffd\ufffd\u0000\u00004\u0001\u0000\u0000\u0014(\u0000\ufffdR\ufffd\ufffd\u001f\ufffd\u0014\u0000\u0000\u0014\ufffdC_\ufffda\u0000\ufffdR\ufffd\u000f\u0000\ufffd.\u0000\u0000\ufffd\ufffd\u000f@\ufffd\b\u0004\u0000\u0012\ufffd\u0013\u0000\ufffd\ufffd\ufffd_\ufffd)\u0000\u0000\ufffd\ufffd\u0013@\ufffd\u0002\u0004\u0000\u0012\u001f \u0003\ufffd`\ufffd\ufffd0\ufffd\u0003\u001f*$\u0000\ufffdRE\u0000\ufffdR%\u0000\u0000\ufffd\ufffd\ufffd\u001f\ufffd\u0001\u0000\u0000\u0014\ufffd\ufffd_\ufffd\ufffd{B\ufffd\ufffd\ufffd\u0000\ufffd\ufffd\u0003_\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd{\ufffd\ufffd\ufffd\u0003\u0000\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003_\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003\u0000\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003_\ufffd\ufffd{\ufffd\ufffd\u0010\u0001\u0000\ufffd\u0011\u0016D\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u001f \u0003\ufffd\u001f \u0003\ufffd\u001f \u0003\ufffd\u0010\u0001\u0000\ufffd\u0011\u001aD\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011\u001eD\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011\"D\ufffd\u0010\u0002!\ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011&D\ufffd\u0010\"!\ufffd \u0002\u001f\ufffd\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u00004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0017\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0004 \u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\b#\u0000\u0000\u0000\u0000\u0000\u0014\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0003 \u0000\u0000\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000T\u0004 \u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0014\u0004 \u0000\u0000\u0000\u0000\u0000\f\u0000\u0000\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\r\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\b\u0001\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crt1_s.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0002start\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000!\u0000\u0000\u0000\b\u0001\ufffd\u0000\u0000\u0000\u001d\u0000\ufffd\u0000\u0000\u00006\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0002/\u0000\u0000\u0000\u0001)\t\u0003\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0003;\u0000\u0000\u0000\u0004G\u0000\u0000\u0000\u0001\u0000\u0005@\u0000\u0000\u0000\u00064\u0000\u0000\u0000\b\u0001\u0007g\u0000\u0000\u0000\b\u0007\b\\\u0000\u0000\u0000c\u0000\u0000\u0000\u0001)\t\u0003\u0010\b#\u0000\u0000\u0000\u0000\u0000\t;\u0000\u0000\u0000\b{\u0000\u0000\u0000}\u0000\u0000\u0000\u0001(\t\u0003P\b#\u0000\u0000\u0000\u0000\u0000\t\ufffd\u0000\u0000\u0000\t@\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001|\u0001\u0000\u0000\u0000\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crti.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0002init\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0002fini\u0000\u0001\u0000\u0000\u0000\u001b\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u00001\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001\ufffd\u0000\u0000\u0000\u001d\u00009\u0000\u0000\u0000)\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0002'\u0000\u0000\u00003\u0000\u0000\u0000\u0001!\t\u0003X\b#\u0000\u0000\u0000\u0000\u0000\u0003\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001m\u0002\u0000\u0000P\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crtn.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0000\u0001\u0011\u0001\u0010\u0017\u0011\u0001\u0012\u0001\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000\u0001\u0011\u0001%\u000e\u0013\u0005\u0003\u000e\u0010\u0017\u001b\u000e\u0000\u0000\u00024\u0000I\u0013:\u000b;\u000b\u0002\u0018\u0000\u0000\u0003\u0001\u0001I\u0013\u0000\u0000\u0004!\u0000I\u00137\u000b\u0000\u0000\u0005&\u0000I\u0013\u0000\u0000\u0006$\u0000\u0003\u000e>\u000b\u000b\u000b\u0000\u0000\u0007$\u0000\u0003\u000e\u000b\u000b>\u000b\u0000\u0000\b4\u0000\u0003\u000eI\u0013?\u0019:\u000b;\u000b\u0002\u0018\u0000\u0000\t\u000f\u0000I\u0013\u0000\u0000\u0000\u0001\u0011\u0001\u0010\u0017U\u0017\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000\u0001\u0011\u0001%\u000e\u0013\u0005\u0003\u000e\u0010\u0017\u001b\u000e\u0000\u0000\u00024\u0000\u0003\u000eI\u0013?\u0019:\u000b;\u000b\u0002\u0018\u0000\u0000\u0003\u000f\u0000\u0000\u0000\u0000\u0001\u0011\u0001\u0010\u0017U\u0017\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000,\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000<\u0000\u0000\u0000\u0002\u0000r\u0001\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000<\u0000\u0000\u0000\u0002\u0000\ufffd\u0002\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000x\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000Z\u0000\u0000\u0000\u0004\u00009\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crt1_s.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0003(\u0001KKKKO\u0003\fJ\u0002\u0010\u0000\u0001\u0001@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000crtbrand.S\u0000\u0001\u0000\u0000\u0000D\u0000\u0000\u0000\u0004\u0000>\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000feature_note.S\u0000\u0001\u0000\u0000\u0000H\u0000\u0000\u0000\u0004\u0000B\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000ignore_init_note.S\u0000\u0001\u0000\u0000\u0000B\u0000\u0000\u0000\u0004\u0000<\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr\u0000\u0000src/lib/csu/common/csu_common.h\u0000\u0001\u0000\u0000\u0000e\u0000\u0000\u0000\u0004\u00007\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crti.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002p\u0006!\u0000\u0000\u0000\u0000\u0000\u0003&\u0001K\u0002\u0004\u0000\u0001\u0001\u0000\t\u0002\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0003/\u0001K\u0002\u0004\u0000\u0001\u0001@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000crtbrand.S\u0000\u0001\u0000\u0000\u0000@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr\u0000\u0000src/lib/csu/common/crtbegin.c\u0000\u0001\u0000\u0000\u0000e\u0000\u0000\u0000\u0004\u00007\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crtn.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002x\u0006!\u0000\u0000\u0000\u0000\u0000\u0003!\u0001L\u0002\u0004\u0000\u0001\u0001\u0000\t\u0002\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0003'\u0001L\u0002\u0004\u0000\u0001\u0001/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000__dso_handle\u0000char\u0000/usr/src/lib/csu/common/crtbegin.c\u0000__progname\u0000__ARRAY_SIZE_TYPE__\u0000environ\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000/usr/src/lib/csu/aarch64/crt1_c.c\u0000\u0000Linker: LLD 19.1.7 (FreeBSD llvmorg-19.1.7-0-gcd708029e0b2-1500001) (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdp\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdx\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\f\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\r\u0000\u0000\u0000\u0000\u0000\u0017\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0016\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0000\u0000\u0000\u0000\u0019\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0016\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0019\u0000\u0000\u0000\u0000\u0000\u0019\u0000^\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001f\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000%\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00001\u0000\u0000\u0000\u0000\u0000\n\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00004\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00007\u0000\u0000\u0000\u0000\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000:\u0000\u0000\u0000\u0000\u0000\u0017\u0000!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000=\u0000\u0000\u0000\u0000\u0000\u0016\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u001a\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000C\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000F\u0000\u0000\u0000\u0000\u0000\u0019\u00006\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000I\u0000\u0000\u0000\u0000\u0000\u000e\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000L\u0000\u0000\u0000\u0000\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000O\u0000\u0000\u0000\u0000\u0000\u0018\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000R\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000U\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000X\u0000\u0000\u0000\u0000\u0000\u0016\u0000r\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000[\u0000\u0000\u0000\u0000\u0000\u0019\u0000|\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000^\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000a\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000l\u0000\u0000\u0000\u0000\u0000\u0015\u0000X\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000o\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000r\u0000\u0000\u0000\u0000\u0000\u0016\u0000c\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000u\u0000\u0000\u0000\u0000\u0000\u001a\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000x\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000{\u0000\u0000\u0000\u0000\u0000\u0019\u0000)\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0002\u0015\u0000X\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000~\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\n\u0000\t\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\f\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u000e\u0000x\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0018\u0000p\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001c\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0016\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0019\u0000m\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0001\u0000\u0000\u0000\u0002\u0011\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0011\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0011\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u000e\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0001\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\t\u0001\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000.interp\u0000.note.tag\u0000.dynsym\u0000.gnu.version\u0000.gnu.version_r\u0000.gnu.hash\u0000.hash\u0000.dynstr\u0000.rela.plt\u0000.rodata\u0000.eh_frame_hdr\u0000.eh_frame\u0000.text\u0000.init\u0000.fini\u0000.plt\u0000.dynamic\u0000.relro_padding\u0000.data\u0000.got.plt\u0000.bss\u0000.debug_info\u0000.debug_abbrev\u0000.debug_aranges\u0000.debug_line\u0000.debug_str\u0000.comment\u0000.debug_ranges\u0000.symtab\u0000.shstrtab\u0000.strtab\u0000\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000crt1_c.c\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$x\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000crtbegin.c\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000pipe-flags.c\u0000$x\u0000$d\u0000$d\u0000$d\u0000crtend.c\u0000$d\u0000$x\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000_start\u0000__libc_start1\u0000main\u0000__progname\u0000environ\u0000_init\u0000_fini\u0000__dso_handle\u0000pipe\u0000fcntl\u0000printf\u0000_DYNAMIC\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\t\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0002\u0000 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0003 \u0000\u0000\u0000\u0000\u0000\b\u0003\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0001\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u000e\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00007\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000A\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0014\u0004 \u0000\u0000\u0000\u0000\u0000\u0014\u0004\u0000\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000G\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000T\u0004 \u0000\u0000\u0000\u0000\u0000T\u0004\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000O\u0000\u0000\u0000\u0004\u0000\u0000\u0000B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0004 \u0000\u0000\u0000\u0000\u0000\ufffd\u0004\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0014\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000Y\u0000\u0000\u0000\u0001\u0000\u0000\u00002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\b\u0005\u0000\u0000\u0000\u0000\u0000\u00005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000a\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000@\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000o\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000`\u0005\u0000\u0000\u0000\u0000\u0000\u0000X\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000y\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u007f\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000p\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b\"\u0000\u0000\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\b#\u0000\u0000\u0000\u0000\u0000\u0018\b\u0000\u0000\u0000\u0000\u0000\u00008\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\b#\u0000\u0000\u0000\u0000\u0000P\b\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\b\u0000\u0000\u0000\u0000\u0000\u0000]\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u000b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\f\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000D\r\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001a\u0010\u0000\u0000\u0000\u0000\u0000\u0000\f\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000&\u0011\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0001\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0012\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0001\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u001f\u0000\u0000\u00006\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001b\u0001\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0018\u0000\u0000\u0000\u0000\u0000\u0000-\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000%\u0001\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0019\u0000\u0000\u0000\u0000\u0000\u0000\u0019\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "builddir-bsd/compiler.txt": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\nTarget: aarch64-unknown-freebsd15.1\nThread model: posix\nInstalledDir: /usr/bin\n",
+        "builddir-bsd/pipe-flags.c": "#include <stdio.h>\n#include <fcntl.h>\n#include <unistd.h>\nint main(void) { int p[2]; if (pipe(p)) return 1; printf(\"read=%d write=%d O_RDONLY=%d O_WRONLY=%d O_RDWR=%d\\n\", fcntl(p[0], F_GETFL)&O_ACCMODE, fcntl(p[1], F_GETFL)&O_ACCMODE, O_RDONLY, O_WRONLY, O_RDWR); return 0; }\n",
+        "builddir-bsd/pipe-flags.stdout": "read=2 write=2 O_RDONLY=0 O_WRONLY=1 O_RDWR=2\n",
+        "builddir-bsd/include/config.h": "/* Focused production readiness helper, no optional features. */\n"
+      }
+    },
+    "freebsd-lease02": {
+      "status": "passed",
+      "qemu_exit": 0,
+      "source": {
+        "sha256": "2cfe9799cc1e5ef738db9e9cec3efc6093b88f31771ea0f0fc8bf778f18713f6",
+        "members": 5,
+        "expanded_bytes": 18100
+      },
+      "run_script": {
+        "sha256": "03f3c772a98ca64bd7b50e1740db4fc8fafa8f1ce9e1c4df4ee68b7f5730f4c7",
+        "bytes": 1306
+      },
+      "acceleration": "hvf",
+      "run_log": "Production readiness/lease descriptor, flock and exec helper passed; no whole core/login qualification\n",
+      "files": {
+        "builddir-bsd/kernel.txt": "FreeBSD freebsd 15.1-RELEASE-p3 FreeBSD 15.1-RELEASE-p3 releng/15.1-n283611-88e7371d9dc2 GENERIC arm64\n",
+        "builddir-bsd/SHA256SUMS": "SHA256 (fvwm/session_ready.c) = 1d6f3114523ef8ea1417da7fe73c9b8848fbd677bb7edae80925dfc490f0da85\nSHA256 (fvwm/session_ready.h) = 50cf43b49922390a92ac89b855fa866dc736784ad64671db3731c679ffe94e22\nSHA256 (libs/fd_safety.c) = bc0fad34ea1efb01b877d62fc91f453021e0457e77fa95a0b0a485adec077605\nSHA256 (libs/fd_safety.h) = 14c9386022cae89e8c3fc8eedc09f800a0b9e80d0de2a9d3fef69eaaefece265\nSHA256 (tests/test_session_ready.c) = 64672d69c7f732d5bc4cf360735785ff5e041b46017e4d4c606c4ddd5b720882\nSHA256 (builddir-bsd/test-session-ready) = 51de714f5ae7fa23e39bfc899cbdacc9028483adc488db0a44cc809d06bff4e3\n",
+        "builddir-bsd/session-ready.stdout": "",
+        "builddir-bsd/pipe-flags.c": "#include <stdio.h>\n#include <fcntl.h>\n#include <unistd.h>\nint main(void) { int p[2]; if (pipe(p)) return 1; printf(\"read=%d write=%d O_RDONLY=%d O_WRONLY=%d O_RDWR=%d\\n\", fcntl(p[0], F_GETFL)&O_ACCMODE, fcntl(p[1], F_GETFL)&O_ACCMODE, O_RDONLY, O_WRONLY, O_RDWR); return 0; }\n",
+        "builddir-bsd/compiler.txt": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\nTarget: aarch64-unknown-freebsd15.1\nThread model: posix\nInstalledDir: /usr/bin\n",
+        "builddir-bsd/session-ready.stderr": "",
+        "builddir-bsd/pipe-flags.stdout": "read=2 write=2 O_RDONLY=0 O_WRONLY=1 O_RDWR=2\n",
+        "builddir-bsd/pipe-flags": "\u007fELF\u0002\u0001\u0001\t\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0000\u0001\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u00008\u0000\u000b\u0000@\u0000 \u0000\u001e\u0000\u0006\u0000\u0000\u0000\u0004\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0000 \u0000\u0000\u0000\u0000\u0000@\u0000 \u0000\u0000\u0000\u0000\u0000h\u0002\u0000\u0000\u0000\u0000\u0000\u0000h\u0002\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0004\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0000\u0000\u0000\u0000\u0000\u0000\u0000 \u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u00008\u0001\u0000\u0000\u0000\u0000\u0000\u00008\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0010\t\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0006\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000R\ufffdtd\u0004\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0010\t\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\ufffdtd\u0004\u0000\u0000\u0000@\u0005\u0000\u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000Q\ufffdtd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0004\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000/libexec/ld-elf.so.1\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0001\u0000\u0000\u0000FreeBSD\u0000H\ufffd\u0016\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0004\u0000\u0000\u0000FreeBSD\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0002\u0000\u0000\u0000FreeBSD\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000'\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000-\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u000f\u0000\u0000\u0000\u0011\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001a\u0000\u0000\u0000\u0011\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0003\u0000\u0003\u0000\u0003\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0002\u00004\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd(z\u0007\u0000\u0000\u0003\u0000>\u0000\u0000\u0000\u0010\u0000\u0000\u0000\ufffd(z\u0007\u0000\u0000\u0002\u0000G\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u001a\u0000\u0000\u0000\u0000\u0000\u0000\u0004\ufffd\u0000\u0000\u0010\u0005\u0000\u0000\u0000\ufffdPv\ufffd\ufffd\u0763k\u0007\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000__libc_start1\u0000__progname\u0000environ\u0000pipe\u0000fcntl\u0000printf\u0000libc.so.7\u0000FBSD_1.0\u0000FBSD_1.7\u0000\u0000\u0000\u0000\u00000\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00008\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000H\b#\u0000\u0000\u0000\u0000\u0000\u0002\u0004\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000read=%d write=%d O_RDONLY=%d O_WRONLY=%d O_RDWR=%d\n\u0000\u0000\u0000\u0000\u0001\u001b\u0003;\u001c\u0000\u0000\u0000\u0002\u0000\u0000\u0000x\u0000\u0001\u00004\u0000\u0000\u0000\ufffd\u0000\u0001\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001zR\u0000\u0001|\u001e\u0001\u001b\f\u001f\u0000\u0010\u0000\u0000\u0000\u0018\u0000\u0000\u0000<\u0000\u0001\u0000(\u0000\u0000\u0000\u0000\u0007\u001e\u0000(\u0000\u0000\u0000,\u0000\u0000\u0000P\u0000\u0001\u0000\ufffd\u0000\u0000\u0000\u0000D\u000e0H\f\u001d\u0010\ufffd\u0002\ufffd\u0004\u0002p\f\u001f0H\u000e\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0002\ufffd\u0001 \u0000\ufffd\u0000\u0000@\ufffd\"\f\u0000\ufffdB \u0000\ufffdd\u0000\u0000X8\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\u0000\ufffd\ufffd{\u0002\ufffd\ufffd\ufffd\u0000\ufffd\ufffd\ufffd\u001f\ufffd\ufffd3\u0000\ufffd3\u0000\u0000\ufffd\ufffd\u0000\u00004\u0001\u0000\u0000\u0014(\u0000\ufffdR\ufffd\ufffd\u001f\ufffd\u0014\u0000\u0000\u0014\ufffdC_\ufffda\u0000\ufffdR\ufffd\u000f\u0000\ufffd.\u0000\u0000\ufffd\ufffd\u000f@\ufffd\b\u0004\u0000\u0012\ufffd\u0013\u0000\ufffd\ufffd\ufffd_\ufffd)\u0000\u0000\ufffd\ufffd\u0013@\ufffd\u0002\u0004\u0000\u0012\u001f \u0003\ufffd`\ufffd\ufffd0\ufffd\u0003\u001f*$\u0000\ufffdRE\u0000\ufffdR%\u0000\u0000\ufffd\ufffd\ufffd\u001f\ufffd\u0001\u0000\u0000\u0014\ufffd\ufffd_\ufffd\ufffd{B\ufffd\ufffd\ufffd\u0000\ufffd\ufffd\u0003_\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd{\ufffd\ufffd\ufffd\u0003\u0000\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003_\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003\u0000\ufffd\ufffd{\ufffd\ufffd\ufffd\u0003_\ufffd\ufffd{\ufffd\ufffd\u0010\u0001\u0000\ufffd\u0011\u0016D\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u001f \u0003\ufffd\u001f \u0003\ufffd\u001f \u0003\ufffd\u0010\u0001\u0000\ufffd\u0011\u001aD\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011\u001eD\ufffd\u0010\ufffd \ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011\"D\ufffd\u0010\u0002!\ufffd \u0002\u001f\ufffd\u0010\u0001\u0000\ufffd\u0011&D\ufffd\u0010\"!\ufffd \u0002\u001f\ufffd\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u00004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0017\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0004 \u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\b#\u0000\u0000\u0000\u0000\u0000\u0014\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0003 \u0000\u0000\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u0000T\u0004 \u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0014\u0004 \u0000\u0000\u0000\u0000\u0000\f\u0000\u0000\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\r\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\b\u0001\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crt1_s.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0002start\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000!\u0000\u0000\u0000\b\u0001\ufffd\u0000\u0000\u0000\u001d\u0000\ufffd\u0000\u0000\u00006\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0002/\u0000\u0000\u0000\u0001)\t\u0003\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0003;\u0000\u0000\u0000\u0004G\u0000\u0000\u0000\u0001\u0000\u0005@\u0000\u0000\u0000\u00064\u0000\u0000\u0000\b\u0001\u0007g\u0000\u0000\u0000\b\u0007\b\\\u0000\u0000\u0000c\u0000\u0000\u0000\u0001)\t\u0003\u0010\b#\u0000\u0000\u0000\u0000\u0000\t;\u0000\u0000\u0000\b{\u0000\u0000\u0000}\u0000\u0000\u0000\u0001(\t\u0003P\b#\u0000\u0000\u0000\u0000\u0000\t\ufffd\u0000\u0000\u0000\t@\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001|\u0001\u0000\u0000\u0000\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crti.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0002init\u0000\u0001\u0000\u0000\u0000\u0012\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0002fini\u0000\u0001\u0000\u0000\u0000\u001b\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u00001\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001\ufffd\u0000\u0000\u0000\u001d\u00009\u0000\u0000\u0000)\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0002'\u0000\u0000\u00003\u0000\u0000\u0000\u0001!\t\u0003X\b#\u0000\u0000\u0000\u0000\u0000\u0003\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\u0000\u0000\u0000\b\u0001m\u0002\u0000\u0000P\u0000\u0000\u0000/usr/src/lib/csu/aarch64/crtn.S\u0000/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\u0001\ufffd\u0000\u0001\u0011\u0001\u0010\u0017\u0011\u0001\u0012\u0001\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000\u0001\u0011\u0001%\u000e\u0013\u0005\u0003\u000e\u0010\u0017\u001b\u000e\u0000\u0000\u00024\u0000I\u0013:\u000b;\u000b\u0002\u0018\u0000\u0000\u0003\u0001\u0001I\u0013\u0000\u0000\u0004!\u0000I\u00137\u000b\u0000\u0000\u0005&\u0000I\u0013\u0000\u0000\u0006$\u0000\u0003\u000e>\u000b\u000b\u000b\u0000\u0000\u0007$\u0000\u0003\u000e\u000b\u000b>\u000b\u0000\u0000\b4\u0000\u0003\u000eI\u0013?\u0019:\u000b;\u000b\u0002\u0018\u0000\u0000\t\u000f\u0000I\u0013\u0000\u0000\u0000\u0001\u0011\u0001\u0010\u0017U\u0017\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000\u0001\u0011\u0001%\u000e\u0013\u0005\u0003\u000e\u0010\u0017\u001b\u000e\u0000\u0000\u00024\u0000\u0003\u000eI\u0013?\u0019:\u000b;\u000b\u0002\u0018\u0000\u0000\u0003\u000f\u0000\u0000\u0000\u0000\u0001\u0011\u0001\u0010\u0017U\u0017\u0003\b\u001b\b%\b\u0013\u0005\u0000\u0000\u0002\n\u0000\u0003\b:\u0006;\u0006\u0011\u0001\u0000\u0000\u0000,\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000<\u0000\u0000\u0000\u0002\u0000r\u0001\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000<\u0000\u0000\u0000\u0002\u0000\ufffd\u0002\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000x\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000Z\u0000\u0000\u0000\u0004\u00009\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crt1_s.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0003(\u0001KKKKO\u0003\fJ\u0002\u0010\u0000\u0001\u0001@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000crtbrand.S\u0000\u0001\u0000\u0000\u0000D\u0000\u0000\u0000\u0004\u0000>\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000feature_note.S\u0000\u0001\u0000\u0000\u0000H\u0000\u0000\u0000\u0004\u0000B\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000ignore_init_note.S\u0000\u0001\u0000\u0000\u0000B\u0000\u0000\u0000\u0004\u0000<\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr\u0000\u0000src/lib/csu/common/csu_common.h\u0000\u0001\u0000\u0000\u0000e\u0000\u0000\u0000\u0004\u00007\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crti.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002p\u0006!\u0000\u0000\u0000\u0000\u0000\u0003&\u0001K\u0002\u0004\u0000\u0001\u0001\u0000\t\u0002\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0003/\u0001K\u0002\u0004\u0000\u0001\u0001@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/common\u0000\u0000crtbrand.S\u0000\u0001\u0000\u0000\u0000@\u0000\u0000\u0000\u0004\u0000:\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr\u0000\u0000src/lib/csu/common/crtbegin.c\u0000\u0001\u0000\u0000\u0000e\u0000\u0000\u0000\u0004\u00007\u0000\u0000\u0000\u0001\u0001\u0001\ufffd\u000e\r\u0000\u0001\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0001/usr/src/lib/csu/aarch64\u0000\u0000crtn.S\u0000\u0001\u0000\u0000\u0000\u0000\t\u0002x\u0006!\u0000\u0000\u0000\u0000\u0000\u0003!\u0001L\u0002\u0004\u0000\u0001\u0001\u0000\t\u0002\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0003'\u0001L\u0002\u0004\u0000\u0001\u0001/usr/obj/arm64.aarch64/lib/csu/aarch64\u0000__dso_handle\u0000char\u0000/usr/src/lib/csu/common/crtbegin.c\u0000__progname\u0000__ARRAY_SIZE_TYPE__\u0000environ\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000/usr/src/lib/csu/aarch64/crt1_c.c\u0000\u0000Linker: LLD 19.1.7 (FreeBSD llvmorg-19.1.7-0-gcd708029e0b2-1500001) (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdp\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffdx\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0000\u0000\f\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\n\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\r\u0000\u0000\u0000\u0000\u0000\u0017\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0016\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0000\u0000\u0000\u0000\u0019\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0016\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0019\u0000\u0000\u0000\u0000\u0000\u0019\u0000^\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001f\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\u0000\u0000\u0000\u0000\u0000\u0002\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000%\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00001\u0000\u0000\u0000\u0000\u0000\n\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00004\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00007\u0000\u0000\u0000\u0000\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000:\u0000\u0000\u0000\u0000\u0000\u0017\u0000!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000=\u0000\u0000\u0000\u0000\u0000\u0016\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u001a\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000C\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000F\u0000\u0000\u0000\u0000\u0000\u0019\u00006\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000I\u0000\u0000\u0000\u0000\u0000\u000e\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000L\u0000\u0000\u0000\u0000\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000O\u0000\u0000\u0000\u0000\u0000\u0018\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000R\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000U\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000X\u0000\u0000\u0000\u0000\u0000\u0016\u0000r\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000[\u0000\u0000\u0000\u0000\u0000\u0019\u0000|\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000^\u0000\u0000\u0000\u0000\u0000\u0019\u0000\ufffd\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000a\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000l\u0000\u0000\u0000\u0000\u0000\u0015\u0000X\b#\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000o\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000r\u0000\u0000\u0000\u0000\u0000\u0016\u0000c\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000u\u0000\u0000\u0000\u0000\u0000\u001a\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000x\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000{\u0000\u0000\u0000\u0000\u0000\u0019\u0000)\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0002\u0015\u0000X\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000~\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\n\u0000\t\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\f\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0004\u0000\ufffd\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u000e\u0000x\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0018\u0000p\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u001c\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0017\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0016\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0019\u0000m\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0001\u0000\u0000\u0000\u0002\u0011\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\r\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0011\u0000\u0013\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0011\u0000\u0015\u0000P\b#\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u000e\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u000f\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0001\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\t\u0001\u0000\u0000\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000.interp\u0000.note.tag\u0000.dynsym\u0000.gnu.version\u0000.gnu.version_r\u0000.gnu.hash\u0000.hash\u0000.dynstr\u0000.rela.plt\u0000.rodata\u0000.eh_frame_hdr\u0000.eh_frame\u0000.text\u0000.init\u0000.fini\u0000.plt\u0000.dynamic\u0000.relro_padding\u0000.data\u0000.got.plt\u0000.bss\u0000.debug_info\u0000.debug_abbrev\u0000.debug_aranges\u0000.debug_line\u0000.debug_str\u0000.comment\u0000.debug_ranges\u0000.symtab\u0000.shstrtab\u0000.strtab\u0000\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000crt1_c.c\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$x\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000crtbegin.c\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000pipe-flags.c\u0000$x\u0000$d\u0000$d\u0000$d\u0000crtend.c\u0000$d\u0000$x\u0000$x\u0000$d\u0000$d\u0000$d\u0000$d\u0000$d\u0000_start\u0000__libc_start1\u0000main\u0000__progname\u0000environ\u0000_init\u0000_fini\u0000__dso_handle\u0000pipe\u0000fcntl\u0000printf\u0000_DYNAMIC\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0015\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\t\u0000\u0000\u0000\u0007\u0000\u0000\u0000\u0002\u0000 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002 \u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000H\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0000\u0000\u0000\u000b\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0003 \u0000\u0000\u0000\u0000\u0000\b\u0003\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0001\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001b\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u000e\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000(\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00007\u0000\u0000\u0000\ufffd\ufffd\ufffdo\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0003 \u0000\u0000\u0000\u0000\u0000\ufffd\u0003\u0000\u0000\u0000\u0000\u0000\u0000$\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000A\u0000\u0000\u0000\u0005\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0014\u0004 \u0000\u0000\u0000\u0000\u0000\u0014\u0004\u0000\u0000\u0000\u0000\u0000\u0000@\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000G\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000T\u0004 \u0000\u0000\u0000\u0000\u0000T\u0004\u0000\u0000\u0000\u0000\u0000\u0000P\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000O\u0000\u0000\u0000\u0004\u0000\u0000\u0000B\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0004 \u0000\u0000\u0000\u0000\u0000\ufffd\u0004\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0014\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000Y\u0000\u0000\u0000\u0001\u0000\u0000\u00002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0005 \u0000\u0000\u0000\u0000\u0000\b\u0005\u0000\u0000\u0000\u0000\u0000\u00005\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000a\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000@\u0005 \u0000\u0000\u0000\u0000\u0000@\u0005\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0004\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000o\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000`\u0005 \u0000\u0000\u0000\u0000\u0000`\u0005\u0000\u0000\u0000\u0000\u0000\u0000X\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000y\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0005!\u0000\u0000\u0000\u0000\u0000\ufffd\u0005\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u007f\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000p\u0006!\u0000\u0000\u0000\u0000\u0000p\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006!\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000`\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\"\u0000\u0000\u0000\u0000\u0000\ufffd\u0006\u0000\u0000\u0000\u0000\u0000\u0000 \u0001\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b\"\u0000\u0000\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0007\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0010\b#\u0000\u0000\u0000\u0000\u0000\u0010\b\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\b#\u0000\u0000\u0000\u0000\u0000\u0018\b\u0000\u0000\u0000\u0000\u0000\u00008\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\b\u0000\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\b#\u0000\u0000\u0000\u0000\u0000P\b\u0000\u0000\u0000\u0000\u0000\u0000\u0010\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000P\b\u0000\u0000\u0000\u0000\u0000\u0000]\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u000b\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\f\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000D\r\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001a\u0010\u0000\u0000\u0000\u0000\u0000\u0000\f\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0001\u0000\u0000\u00000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000&\u0011\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0005\u0001\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001c\u0012\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0013\u0001\u0000\u0000\u0002\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0012\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0006\u0000\u0000\u0000\u0000\u0000\u0000\u001f\u0000\u0000\u00006\u0000\u0000\u0000\b\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0018\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u001b\u0001\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0018\u0000\u0000\u0000\u0000\u0000\u0000-\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000%\u0001\u0000\u0000\u0003\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\ufffd\u0019\u0000\u0000\u0000\u0000\u0000\u0000\u0019\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "builddir-bsd/include/config.h": "/* Focused production readiness helper, no optional features. */\n"
+      }
+    }
+  }
+}

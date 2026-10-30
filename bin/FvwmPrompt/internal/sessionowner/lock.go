@@ -101,7 +101,7 @@ func acquireLock(environment []string) (io.Closer, error) {
 		}
 	}
 	defer directory.Close()
-	key := sha256.Sum256([]byte(env["DISPLAY"]))
+	key := sha256.Sum256([]byte(localDisplayKey(env["DISPLAY"])))
 	name := fmt.Sprintf("fvwm-session-%d-%x.lock", os.Geteuid(), key)
 	return xdgsource.LockRecordAt(directory, name)
 }

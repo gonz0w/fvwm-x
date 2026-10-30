@@ -372,7 +372,7 @@ func TestResourcePlanRejectsUnknownVersion(t *testing.T) {
 	if _, err := resourcePlan(control.resource.projection, 3); err == nil {
 		t.Fatal("unknown version encoded")
 	}
-	if len(desktopsettings.Registry()) != 15 {
+	if len(desktopsettings.Registry()) != 19 {
 		t.Fatal("preview expanded registry")
 	}
 }

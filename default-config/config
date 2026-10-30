@@ -28,4 +28,7 @@ Colorset 14 fg #a8b6be, bg #202a31, hi #202a31, sh #202a31
 Colorset 20 bg #17232b, VGradient 128 #17232b #263943
 Read "$[infostore.slate_root]/desktop.fvwm"
 # Set *FvwmDesktop options and custom bindings here; this hook wins on upgrades.
+# Tray preferences use `SendToModule FvwmDesktop edit-settings group:tray`.
+# The optional tray starts disabled. SlateTray is reserved for desktop ownership;
+# manual FvwmTray aliases have independent configuration and lifetimes.
 Read "$[FVWM_USERDIR]/local.config" Quiet

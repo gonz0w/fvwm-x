@@ -220,13 +220,16 @@ configuration-center covers these registered preferences:
 * *notification_dnd*, session group: boolean, false.
 * *session_power*, session group: portable; choices portable, login1. Live owner
   handshake, followed by an explicit power-provider probe.
+* *tray_enabled*, tray group: boolean, false.
+* *tray_gap* and *tray_padding*, tray group: logical units, 0 through 64,
+  default 4.
+* *tray_orientation*, tray group: horizontal; choices horizontal, vertical.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
 true/false, on/off, yes/no or 1/0. Toggle changes the saved boolean choice.
 Setting IDs and values map to fixed helper actions; they cannot contain FVWM
-commands or resource paths. No focus, application or bar-layout settings are
-registered in this checkpoint.
+commands or resource paths. No focus or application settings are registered in this checkpoint.
 
 Each setting submenu shows its saved value, helper-effective value and source.
 Saved means the helper's last successfully loaded or written snapshot; use
@@ -285,13 +288,34 @@ not an X-server generation or evidence that arbitrary FVWM commands were observe
 The all-settings editor retains its eleven appearance fields. Its Session settings
 button (F8), or *edit-settings group:session*, opens a compact editor for the
 four session preferences. The Session panel also opens this scoped editor.
+Its Tray settings button (F9), or *edit-settings group:tray*, opens the compact
+four-field tray editor. The settings menu also offers Tray settings.
 
 Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
-group:effects, group:session or all. It changes only those saved preferences to registered defaults. It
+group:effects, group:session, group:tray or all. It changes only those saved preferences to registered defaults. It
 retains explicit module overrides and the current wallpaper when the effective
 keep_wallpaper choice requests it. A reset that would make day and night equal
 is refused; reset group:schedule to restore both times. Reload rereads the saved
 file, validates the combined configuration and reapplies the theme.
+
+The default bar has a Tray button, disabled until tray_enabled is enabled.
+For example:
+
+....
+SendToModule FvwmDesktop set tray_enabled on
+SendToModule FvwmDesktop settings group:tray
+SendToModule FvwmDesktop edit-settings group:tray
+SendToModule FvwmDesktop query-settings tray-query group:tray
+....
+
+The desktop controls only its reserved *FvwmTray SlateTray* instance. Enabling
+requests startup; readiness is unobserved and a competing tray owner is not
+replaced. Startup with the setting off does not kill another tray. Explicit
+enablement makes a non-replacing startup attempt and preserves an existing
+owner. Disabling releases only that reserved instance. Theme and bar refresh
+do not restart it. A bar rebuild hides an open popup; its clients remain with
+the tray. The rebuilt bar requests a desktop refresh at startup so its button
+receives the current preference. Appearance or layout reload can also dismiss it. See *FvwmTray*(1) for popup, paging and client limits.
 
 FvwmMFL also exposes correlated settings queries, typed set/reset/reload and
 non-publishing validation. A validation returns the proposed saved/effective
@@ -299,6 +323,14 @@ values for the observed provider/generation without writing, submitting a theme,
 closing an editor or changing the generation. It checks combined values and
 overrides; it does not promise that a later write can acquire the lock or pass
 the current saved-file revision check. It is available to read-only IPC clients.
+
+Public settings rows inherit the envelope's owner, generation, generic-preview
+flag and common persistence error. A distinct per-setting persistence error
+remains in that row. Standalone query-settings/inspector records remain
+self-contained. This avoids repeated diagnostics inside the bounded IPC reply;
+typed values, choices, limits and requested/unobserved tray status remain per
+row. Each tray row reports its effective value as `requested` and readiness as
+`unobserved`; a submitted request is not proof of tray ownership.
 See *FvwmMFL*(1) for the exact versioned request syntax and lifecycle rules.
 Cancelling an IPC wait does not cancel this helper's submitted action; query
 before replaying a change whose result was lost.
@@ -322,11 +354,12 @@ rules. Complete schema_version 1 files load with launcher_opacity 94;
 complete version 1 and 2 files gain follow defaults for the two wallpaper choices.
 Complete versions 1 through 3 gain contrast normal. Complete versions 1 through
 4 gain session_bus off, session_notifications off and notification_dnd false.
-Complete versions 1 through 5 gain session_power portable. No file is rewritten
-on read. The next successful save writes schema_version 6. Version 6 requires
-all fifteen preferences and retained wallpaper with valid types. Versions 1
-through 5 require their exact historical fields; incomplete or unknown fields
-are refused. Older helpers cannot read version 6. Unknown versions, duplicate
+Complete versions 1 through 5 gain session_power portable. Complete versions 1
+through 6 gain the four default tray preferences. No file is rewritten on read.
+The next successful save writes schema_version 7. Version 7 requires all
+nineteen preferences and retained wallpaper with valid types. Versions 1 through
+6 require their exact historical fields; incomplete or unknown fields are
+refused. Older helpers cannot read version 7. Unknown versions, duplicate
 fields, oversized or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -1000,7 +1033,7 @@ toggle notification_dnd
 set wallpaper_palette follow|slate|dune|grove|ink
 set contrast normal|high
 set wallpaper_appearance follow|light|dark
-settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects|group:session]
+settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects|group:session|group:tray]
 preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config

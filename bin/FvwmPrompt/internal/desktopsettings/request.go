@@ -160,6 +160,14 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"
 		}
+		if TrayKey(key) {
+			v["capability"] = "optional-tray-preference"
+			v["readiness"] = "unobserved"
+			v["requested"] = s.Effective[key]
+			if observed && s.Submitted {
+				v["application"] = "requested-state-submitted"
+			}
+		}
 		if SessionKey(key) {
 			v["requested"] = s.Saved[key]
 			v["requested_source"] = "saved"

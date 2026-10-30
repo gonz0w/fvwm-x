@@ -1214,3 +1214,36 @@ The enlarged Classic header can truncate. The [capture manifest](screenshots/not
 records the configuration hashes, installed module and source identities.
 See the [component evidence](../dev-docs/verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
 for the checks and their separate release limits.
+
+
+## Bar tray popup and saved preferences
+
+The opt-in tray now opens beside its adaptive-bar button. It retains application
+icon pixels, offers bounded pages and a keyboard fallback, and survives a bar
+rebuild or exit. Four saved preferences share the existing settings owner;
+`SendToModule FvwmDesktop edit-settings group:tray` opens the compact editor.
+This remains in-progress R1 development.
+
+These unmodified 3200×1080 native Linux/Xorg captures use synthetic blue clients.
+They show Slate Sans, Dune Serif and enlarged Slate Mono. Host fonts and layout
+change; foreign client dimensions remain 24×20 actual pixels. The editor retains
+its normal shared font in this enlarged bar/tray example.
+
+![Slate bar popup and tray settings](screenshots/tray-bar/theme-0-bar-popup-settings.png)
+
+![Dune bar popup and tray settings](screenshots/tray-bar/theme-1-bar-popup-settings.png)
+
+![Enlarged Mono bar and popup](screenshots/tray-bar/theme-2-bar-popup-settings.png)
+
+![Secondary-monitor 2× popup](screenshots/tray-bar/secondary-2x-anchor.png)
+
+The [capture/config manifest](screenshots/tray-bar/manifest.json) records exact
+fonts, saved preference snapshots, loaded heights and actual client geometry.
+Each adjacent `theme-N.fvwm` is the exact captured overlay on the default desktop;
+apply the matching `palette`, `appearance`, gap, padding and orientation from the
+manifest through FvwmDesktop first, then read that overlay. Enable the optional
+tray explicitly. Do not swallow its root-child host in another process.
+
+[Usage and recovery](FvwmTray.adoc) and the
+[source-bound checkpoint](../dev-docs/verification/VERIFICATION-2026-10-30-TRAY-BAR.md)
+state the remaining true-containment, modern-bus, toolkit and release limits.

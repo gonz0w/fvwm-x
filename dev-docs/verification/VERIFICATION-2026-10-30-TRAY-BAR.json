@@ -1,0 +1,1646 @@
+{
+  "checkpoint": "TRAY-01 #78 bar popup/paging/preferences",
+  "base": "17a1548b6ea866644311d280539794ff45ebb32d",
+  "branch": "codex/r1-tray-bar",
+  "result": "selected focused scope passed; full Buttons leak qualification failed and remains open",
+  "source": {
+    "closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+    "archive_sha256": "e99205bf7736d6dfb5c9e1e409d789f682f8c12fe18c4dd3046abf97f216a054",
+    "archive_bytes": 26079408,
+    "changed_runtime_inputs": {
+      "bin/FvwmPrompt/internal/desktopcontroller/controller.go": {
+        "sha256": "f78c3556a0be1e11d1b258edce043ca0bfdd40f8d44162656d58d92a3b043d69",
+        "bytes": 13214,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": {
+        "sha256": "0d067c006cbbcb71867a3f7c2c1cb5cb0efd1723ed2f4f286d54d2978543bc42",
+        "bytes": 15335,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": {
+        "sha256": "db3f9aeee41f03e5e2b0924d4bb42db022330963b13434f5e75b723bdc2cdec0",
+        "bytes": 18231,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": {
+        "sha256": "952fb06bbb11e4b3982aef6e9596b9a935d59a2e1bce6b15e1b87d29f5c1fe7b",
+        "bytes": 20804,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": {
+        "sha256": "269551ff91de3b44fd004fdedafef855057f81c2f698158042a66384ff47ea50",
+        "bytes": 13089,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/tray.go": {
+        "sha256": "9b6b22c087f508591c126008c6f2e57c2249ad6d15c5114c6af84f40b5a7fb72",
+        "bytes": 2002,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": {
+        "sha256": "46c3e0f37b88fd4467ecde4d31cc1a88be2b7f6ad21f771b1948b1b8246d904f",
+        "bytes": 4958,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/ui.go": {
+        "sha256": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bytes": 14499,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopinspect/collect.go": {
+        "sha256": "98e62b9caa33303c6aa8ad6acb77c804aac64bd0bb73ac9a0ef109f54fdd18e7",
+        "bytes": 17655,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": {
+        "sha256": "775a29b3b01c85d6e8e3bb5aa1b7d5ea38727c8c99fbb5054bc1cc1a328d331a",
+        "bytes": 18925,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": {
+        "sha256": "071836c8a9c02630fa57311ae802781767daefdd3c182ba615064e09f96c1a2f",
+        "bytes": 17892,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": {
+        "sha256": "6df318a9f8bf5f08872f98b53f9cb016ca6cf63854386e886771cbd1e478c57e",
+        "bytes": 3687,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/policy.go": {
+        "sha256": "1b1e1db894eecde3aece79e2b68a1a5d14df62604f1a1ca1cf8b142631965c40",
+        "bytes": 13260,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": {
+        "sha256": "dedd44f65852c3cadd8cfdd10fd8c6fb0e038b3852144ca69c468bc2b443021a",
+        "bytes": 9435,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/request.go": {
+        "sha256": "ccdbb955dd2542e5b64bc1f9be54526eb59d051fb6c3600a9111e9a3310410b9",
+        "bytes": 6268,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/session_test.go": {
+        "sha256": "f5d367b6746872487042ddb43702e4d9d112d8e3869dd3551d54c00c0061642e",
+        "bytes": 3390,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": {
+        "sha256": "9a2fbab0103d706c0066ee6bab1b2441c4f44ad5b006944692f5ead47d24cf4b",
+        "bytes": 3781,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/ui.go": {
+        "sha256": "bc4b71eefc8d333ee81937d97d01ff7ab738dc345d13e89a10994f50fdb3c91b",
+        "bytes": 17029,
+        "mode": 420
+      },
+      "default-config/config": {
+        "sha256": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "bytes": 2079,
+        "mode": 420
+      },
+      "default-config/desktop.fvwm": {
+        "sha256": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "bytes": 9413,
+        "mode": 420
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "sha256": "0f2f967bacd5aca97d06d5140e62ae811d287eedb95a8bf21b44a6523dc85322",
+        "bytes": 77950,
+        "mode": 420
+      },
+      "modules/FvwmButtons/buttons_startup.c": {
+        "sha256": "d1bf2f478d2801c4afdfcd435c1668328e58ff1581e3dff999f60e17724ea9ad",
+        "bytes": 1401,
+        "mode": 420
+      },
+      "modules/FvwmButtons/buttons_startup.h": {
+        "sha256": "80c964db184301f0994c467f428863b29bd8fb0bc88bd8e17bb0a9e970f3639b",
+        "bytes": 769,
+        "mode": 420
+      },
+      "modules/FvwmButtons/meson.build": {
+        "sha256": "98d6eb2412659e504b8bdcb58cf370d679ce85754648a023ada0df58dbad7f4a",
+        "bytes": 593,
+        "mode": 420
+      },
+      "modules/FvwmButtons/parse.c": {
+        "sha256": "460bd8b2621ced785519c65cbd6b07ec9c97058ab7428c16ddb741957ed5bc26",
+        "bytes": 42398,
+        "mode": 420
+      },
+      "modules/FvwmButtons/parse.h": {
+        "sha256": "89738e1f3f84b25c065434e01a19392ab91a2ccbc241d1ff60115d79aba43577",
+        "bytes": 1145,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray.c": {
+        "sha256": "1e58cde5ca4b9f16bea370d229037b71c2da7601c914fed3f7a089af50333254",
+        "bytes": 23084,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray.h": {
+        "sha256": "6e2bffef56808999ddf13d3c6235157b35435ea01d32fa0c75af4b54b9cc6f0f",
+        "bytes": 2009,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_model.c": {
+        "sha256": "117b45676f51a72ea0e71d6331ac560fa1a1d95fe1549584d251830a34bafa12",
+        "bytes": 8144,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_model.h": {
+        "sha256": "84194dbe3140810ed29bae90af196856080629b8f07d695fb2e5e141cf5aabe8",
+        "bytes": 2275,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_x11.c": {
+        "sha256": "548a796eac5d0898fe9425c12c0596458f7cf72dbebcb09c51adcf8f4556e90e",
+        "bytes": 28678,
+        "mode": 420
+      },
+      "tests/live_x/mfl_settings_live.py": {
+        "sha256": "b7fcb5004a5dc2d8045ea6a874c04064a444b48bca99fa68bea0d9a1ed328d7c",
+        "bytes": 24982,
+        "mode": 420
+      },
+      "tests/live_x/session_services_live.py": {
+        "sha256": "6ecb0681020acda58703a96895ac78f49d24cf34ef1fe45a2084c7c6e562311c",
+        "bytes": 47154,
+        "mode": 420
+      },
+      "tests/live_x/tray_bar_live.py": {
+        "sha256": "ced2ab17330d78d711383473a1b4ffbeaf7d52dcacfd0f62780a22c2819975df",
+        "bytes": 48407,
+        "mode": 420
+      },
+      "tests/live_x/tray_live.py": {
+        "sha256": "6e624a189292a875e31998f527c15b74c16ca635064443cf62524e3cbfa0e3eb",
+        "bytes": 55556,
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "52a2ce2d096280836b35b0d6c7c9e2136e1e087f64824c9bbf307b39b784233d",
+        "bytes": 185717,
+        "mode": 420
+      },
+      "tests/test_buttons_startup.c": {
+        "sha256": "604cea37a94d1ab1c5df9807f52af48f591bc3a05176d3229cd9932406463d8f",
+        "bytes": 3369,
+        "mode": 420
+      },
+      "tests/test_tray_model.c": {
+        "sha256": "b63d8747fb5396712e9637506e082c0aa3b4f2c9031f5216553fd81b1dce2622",
+        "bytes": 6155,
+        "mode": 420
+      }
+    },
+    "final_docs_delta": "gallery/evidence/tracker only after runtime freeze; exact signed tree identified by PR"
+  },
+  "profile": {
+    "platform": "Linux ARM64 native CPU AppleHV",
+    "container": "Ubuntu24.04.5 on Fedora43 Linux6.18.10",
+    "server": "fixture-owned Xorg dummy, two active outputs",
+    "limits": [
+      "Not emulated CPU or physical Linux",
+      "Not native AMD64/BSD/six-target/complete installed desktop qualification",
+      "Synthetic XEmbed peers; no real toolkit or physical input acceptance"
+    ]
+  },
+  "ledger": [
+    {
+      "name": "r1-tray-bar-gate01",
+      "status": "failed",
+      "source_closure": "45012c87fb9b4a02ec522c11a269f3fa4ea67750cb6ff38366f9915a151b0a91",
+      "commands": [
+        {
+          "label": "uname",
+          "command": [
+            "uname",
+            "-a"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.00789923499996803,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "before-size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.008583449000013843,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "--prefix",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+            "-Dmandoc=true",
+            "-Dhtmldoc=false"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.4846882410000148,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "modules/FvwmButtons/FvwmButtons",
+            "modules/FvwmForm/FvwmForm",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/FvwmDesktopWorker",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 0.016251100000033603,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "ed7fdcbeb955660203da2c19c65178112b4477c00bc618e76e9e181841b3c26a",
+      "archive_bytes": 171229,
+      "observed": "Collector unknown uppercase worker target; no runtime."
+    },
+    {
+      "name": "r1-tray-bar-gate02",
+      "status": "failed",
+      "source_closure": "45012c87fb9b4a02ec522c11a269f3fa4ea67750cb6ff38366f9915a151b0a91",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "modules/FvwmButtons/FvwmButtons",
+            "modules/FvwmForm/FvwmForm",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 2.376356020000003,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "model",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "tray-model"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.17078569099999186,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-policy-controller",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-count=1",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 2.5853734820000227,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "c97affed26e3ba3876a7f243197749759dedbc751ce19d29e63d3a47b7b88a26",
+      "archive_bytes": 169939,
+      "observed": "Build/model pass; all-settings public reply regression reproduces 9447 > 8192."
+    },
+    {
+      "name": "r1-tray-bar-gate03",
+      "status": "failed",
+      "source_closure": "2eebda614095ff8e35eccf741365fba623b27c19b62ad4070255c69d3ed9dd15",
+      "commands": [
+        {
+          "label": "uname",
+          "command": [
+            "uname",
+            "-a"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.00162497499991332,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "before-size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0014573070000096777,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "modules/FvwmButtons/FvwmButtons",
+            "modules/FvwmForm/FvwmForm",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/FvwmDesktopWorker",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 0.015928620999943632,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "115d0f7d3fc1d268b6691e79e1cd168c0af07fccad3cd485fee3c7e1cc149724",
+      "archive_bytes": 168860,
+      "observed": "Collector repeats wrong worker target; no runtime."
+    },
+    {
+      "name": "r1-tray-bar-gate04",
+      "status": "failed",
+      "source_closure": "b8ef1ba5710680b31d80a66522343b64d26e952d4452920cab1f2acb8296766c",
+      "commands": [
+        {
+          "label": "uname",
+          "command": [
+            "uname",
+            "-a"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0015695829999913258,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "before-size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0014860420000104568,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "modules/FvwmButtons/FvwmButtons",
+            "modules/FvwmForm/FvwmForm",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.6279356700000562,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-policy-controller",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-count=1",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopinspect"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 2.4658907540000428,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "23b79fbb4276c4cd1fca8b551727b628d3d160d2b5fd2fd43de614864be39dea",
+      "archive_bytes": 174165,
+      "observed": "Controller/settings pass; inspector Session null/unavailable handling fails."
+    },
+    {
+      "name": "r1-tray-bar-gate05",
+      "status": "failed",
+      "source_closure": "895a9f9071653789ffec01809df137f12948abc2ae93439b6c890fcf8fa0d1ce",
+      "commands": [
+        {
+          "label": "uname",
+          "command": [
+            "uname",
+            "-a"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0018464789999370623,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "before-size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.001743644000043787,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "modules/FvwmButtons/FvwmButtons",
+            "modules/FvwmForm/FvwmForm",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/fvwm-session",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.5784535170000709,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-policy-controller",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-count=1",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopinspect"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 2.5077553490000355,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "installed",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "tray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.1202388950000568,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "install-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.1248742369999718,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.008586343999922974,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0015908510000599563,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "standalone-regression",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate05/standalone",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 12.673512176000031,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "4885ebda1ffffe098607f6a0b0a9fe8343655b194b9f37316726766df206ffeb",
+      "archive_bytes": 250764,
+      "observed": "All three Go packages pass; old standalone restart fails because fixture left invalid Gap999 stored."
+    },
+    {
+      "name": "r1-tray-bar-gate06",
+      "status": "failed",
+      "source_closure": "2d2cdab47e3cd29ca9b22b7fe5dbcf5af2362cadb02e4760dcca0e017f856b39",
+      "commands": [
+        {
+          "label": "standalone-regression",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate06/standalone",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 4.7607823999999255,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate06/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 2.547714541000005,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "95e0e5e55ca18e65af6776efdb9b34d5950b606371253fe1c491cec02c25d525",
+      "archive_bytes": 230590,
+      "observed": "All16 standalone pass; bar initial visibility fails due compact-normalized colon projection."
+    },
+    {
+      "name": "r1-tray-bar-gate07",
+      "status": "failed",
+      "source_closure": "a625b4475c001b8e19d35f056fedc26e82c69df0347ab39068167b4961f692fc",
+      "commands": [
+        {
+          "label": "desktop-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/FvwmPrompt/FvwmDesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.44664134699996794,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-controller",
+          "command": [
+            "go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-count=1",
+            "./internal/desktopcontroller"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 2.4412223350000204,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate07/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 14.730896427000062,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "f1a21c0a4a479052e3ceef5ce51f25f24bd29e751fa73d5a0eec85aff9f5b78d",
+      "archive_bytes": 189203,
+      "observed": "Controller passes; missing Tray button from invalid static Enabled0 syntax."
+    },
+    {
+      "name": "r1-tray-bar-gate08",
+      "status": "failed",
+      "source_closure": "618fcd2bb3b0222484769c8b0265addc6fa6793203cbf6965bf1086b48d9bcf3",
+      "commands": [
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate08/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 15.23229957600006,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "fbc9b9d5b8ccf20fe74432d7f691a5819832bb6f9a4edb4f6faa0ca2446c4df1",
+      "archive_bytes": 207837,
+      "observed": "Popup controls pass; oldbar survives wrong KillModule alias-only call."
+    },
+    {
+      "name": "r1-tray-bar-gate09",
+      "status": "failed",
+      "source_closure": "9fd8610d501b385b5be5db6ad16095750553915e42aa63c358bfdfdf2e6eda28",
+      "commands": [
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate09/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 15.092290906000017,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "9f58d3662900a643e398d1803514d61f6ad2554d5efebda8bb2fe90efaf83ef1",
+      "archive_bytes": 208048,
+      "observed": "Correct bar destruction passes; fixture Move refused by FixedPosition."
+    },
+    {
+      "name": "r1-tray-bar-gate10",
+      "status": "failed",
+      "source_closure": "4e427a476f8d988fd61df60efe59b203b0c5a5a895b2b5ddc0b0d6438217b68c",
+      "commands": [
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate10/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 16.102988849999974,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "8b280e5f1c247b5ac93cde4f14a10526622019e3f3f284bcf39dce4584779c29",
+      "archive_bytes": 217525,
+      "observed": "Pages/rebuild/movement pass; themed first click precedes asynchronous readiness."
+    },
+    {
+      "name": "r1-tray-bar-gate11",
+      "status": "failed",
+      "source_closure": "d585f044da02a435b58bb9f826f374e876e4c1cbc5ee35b6255750045d50ff2b",
+      "commands": [
+        {
+          "label": "buttons-ready-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "modules/FvwmButtons/FvwmButtons",
+            "tests/test-buttons-startup",
+            "doc/FvwmButtons.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.6525794900003348,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "buttons-startup",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "buttons-startup"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.16897840899991934,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate11/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 16.11748412299994,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "cfea7da882d7b8c922071612737ad5b5da07105c21999a7d7ffb1e55e0e00a39",
+      "archive_bytes": 257410,
+      "observed": "Buttons build/helper pass; themed first click still precedes Desktop projection."
+    },
+    {
+      "name": "r1-tray-bar-gate12",
+      "status": "failed",
+      "source_closure": "b3e645093100bef2168450e763d5925826c2e2ed5d3c8eeb94f5a7072448f038",
+      "commands": [
+        {
+          "label": "manuals-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1",
+            "doc/FvwmButtons.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11569479599984334,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate12/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 9.177062607000153,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "428b08f73496d1169f2b8bf7044208df218309ae7552cb99ae3f8af4c1329eb5",
+      "archive_bytes": 389865,
+      "observed": "Three themes/preferences/rapidOffOn/2x pass; automatic workarea snapshot hides popup at abrupt bar exit."
+    },
+    {
+      "name": "r1-tray-bar-gate13",
+      "status": "passed",
+      "source_closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+      "commands": [
+        {
+          "label": "affected-final-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "modules/FvwmTray/FvwmTray",
+            "doc/FvwmTray.1",
+            "doc/FvwmDesktop.1",
+            "doc/FvwmButtons.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.27498151000008875,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "installed-final",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "tray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11887981000018044,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "bar-popup",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate13/bar",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 9.522800751999966,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "settings-ipc",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate13/settings-ipc"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 15.67847229500012,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "archive_sha256": "864929a4ddfb70aa04314e5fcfe07e058a1181978642c408cfbef991b8b8bbac",
+      "archive_bytes": 400723,
+      "observed": "All14 bar groups and updated settings IPC pass after automatic visibility correction."
+    }
+  ],
+  "passes": {
+    "normal_bar_cases": [
+      "startup_off_preserves_existing_owner",
+      "saved_enablement_and_competing_owner",
+      "repeated_enable_and_controller_restart_retain_owner",
+      "actual_buttons_activation_escape_reopen",
+      "invalid_native_controls_atomic",
+      "edge_flip_negative_anchor_and_standalone_show",
+      "bar_rebuild_move_reopen_preserves_clients",
+      "all_pages_reverse_keys_header_and_removal",
+      "oversized_prefix_does_not_strand_later_icon",
+      "three_theme_font_and_compact_preferences",
+      "saved_preferences_reload_disable_and_reenable",
+      "rapid_off_on_eventual_owner_after_release",
+      "actual_secondary_anchor_scale",
+      "abrupt_bar_exit_preserves_popup_and_plug"
+    ],
+    "normal_standalone_cases": [
+      "owner_discovery_and_competing_start",
+      "bounded_dock_validation",
+      "malformed_property_detach_and_redock",
+      "mapping_resize_and_visibility",
+      "normal_visible_and_hidden_configure_requests",
+      "keyboard_proxy_and_traversal",
+      "host_target_floor_with_one_pixel_client",
+      "three_actual_font_palette_profiles",
+      "orientation_and_invalid_layout_config",
+      "valid_config_recovered_after_rejection",
+      "actual_primary_scale_and_work_area",
+      "external_reparent_and_destruction",
+      "capacity_overflow_and_recovery",
+      "producer_disconnect_preserves_other_client",
+      "orderly_release_and_explicit_restart",
+      "selection_loss_releases_clients",
+      "abrupt_exit_save_set_survival"
+    ],
+    "settings_ipc": "gate13 updated MFL 19-field settings probe passed",
+    "pure": {
+      "tray_model": "gate02 source01; model and test hashes unchanged through source12",
+      "buttons_startup": "gate11 source10 normal; source12 sanitizer02 pure boundary/one-shot checks"
+    },
+    "go": {
+      "desktopsettings": "gate05 source04",
+      "desktopinspect": "gate05 source04",
+      "desktopcontroller": "gate07 source06 after producer spacing correction",
+      "reuse": "Affected package source hashes retained in source manifests; no intervening Go changes"
+    },
+    "sanitizer": {
+      "receipt": {
+        "status": "passed",
+        "source_closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+        "base": "17a1548b6ea866644311d280539794ff45ebb32d",
+        "scope": "leak-enabled native Linux instrumented tray/model and pure Buttons startup helper; normal Buttons/core/Desktop/peer; full Buttons leak failure remains sanitizer01",
+        "commands": [
+          {
+            "label": "sanitizer-profile",
+            "command": [
+              "meson",
+              "introspect",
+              "--buildoptions",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 0.14069248900023013,
+            "timeout": false,
+            "forced_cleanup": false
+          },
+          {
+            "label": "sanitizer-affected-build",
+            "command": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-j2",
+              "modules/FvwmTray/FvwmTray",
+              "tests/test-tray-model",
+              "modules/FvwmButtons/FvwmButtons",
+              "tests/test-buttons-startup"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 0.016015922999940813,
+            "timeout": false,
+            "forced_cleanup": false
+          },
+          {
+            "label": "sanitizer-model",
+            "command": [
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-tray-model"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 0.0038031980002415366,
+            "timeout": false,
+            "forced_cleanup": false
+          },
+          {
+            "label": "sanitizer-buttons-startup",
+            "command": [
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-buttons-startup"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 0.0036069050001970027,
+            "timeout": false,
+            "forced_cleanup": false
+          },
+          {
+            "label": "sanitizer-linkage",
+            "command": [
+              "ldd",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmTray/FvwmTray"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 0.004168158999618754,
+            "timeout": false,
+            "forced_cleanup": false
+          },
+          {
+            "label": "sanitizer-actual-x",
+            "command": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_bar_live.py",
+              "--build",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "--tray",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmTray/FvwmTray",
+              "--xorg-config",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-tray-bar-sanitizer02/native",
+              "--execution-profile",
+              "native-cpu"
+            ],
+            "exit": 0,
+            "process_exit": 0,
+            "seconds": 10.325878268999986,
+            "timeout": false,
+            "forced_cleanup": false
+          }
+        ],
+        "source_pre": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+        "profile": {
+          "build.cmake_prefix_path": [],
+          "build.pkg_config_path": [
+            "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig"
+          ],
+          "auto_features": "auto",
+          "backend": "ninja",
+          "buildtype": "debug",
+          "cmake_prefix_path": [],
+          "debug": true,
+          "default_both_libraries": "shared",
+          "default_library": "shared",
+          "force_fallback_for": [],
+          "genvslite": "vs2022",
+          "install_umask": 18,
+          "layout": "mirror",
+          "optimization": "0",
+          "pkg_config_path": [
+            "/tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig"
+          ],
+          "pkgconfig.relocatable": false,
+          "prefer_static": false,
+          "python.allow_limited_api": true,
+          "python.bytecompile": 0,
+          "python.install_env": "prefix",
+          "python.platlibdir": "",
+          "python.purelibdir": "",
+          "strip": false,
+          "unity": "off",
+          "unity_size": 4,
+          "vsenv": false,
+          "warning_level": "2",
+          "werror": false,
+          "wrap_mode": "default",
+          "backend_max_links": 0,
+          "b_asneeded": true,
+          "b_colorout": "always",
+          "b_coverage": false,
+          "b_lto": false,
+          "b_lto_mode": "default",
+          "b_lto_threads": 0,
+          "b_lundef": true,
+          "b_ndebug": "false",
+          "b_pch": true,
+          "b_pgo": "off",
+          "b_pie": true,
+          "b_sanitize": "address,undefined",
+          "b_staticpic": true,
+          "b_thinlto_cache": false,
+          "b_thinlto_cache_dir": "",
+          "build.c_args": [],
+          "build.c_link_args": [
+            "-rtlib=compiler-rt"
+          ],
+          "build.c_std": "c11",
+          "c_args": [],
+          "c_link_args": [
+            "-rtlib=compiler-rt"
+          ],
+          "c_std": "c11",
+          "bindir": "bin",
+          "datadir": "share",
+          "includedir": "include",
+          "infodir": "share/info",
+          "libdir": "lib/aarch64-linux-gnu",
+          "libexecdir": "libexec",
+          "licensedir": "",
+          "localedir": "share/locale",
+          "localstatedir": "/var/local",
+          "mandir": "share/man",
+          "prefix": "/usr/local",
+          "sbindir": "sbin",
+          "sharedstatedir": "/var/local/lib",
+          "sysconfdir": "etc",
+          "bidi": "auto",
+          "colorset-limit": 4096,
+          "docdir": "",
+          "font-shadow-limit": 4096,
+          "freetype": "auto",
+          "htmldoc": false,
+          "iconv": "auto",
+          "image-decompress-timeout": 5,
+          "image-effect-memory-limit": 1024,
+          "image-effect-timeout": 5,
+          "image-gzip": "",
+          "image-input-limit": 128,
+          "image-svg-memory-limit": 1024,
+          "image-svg-timeout": 5,
+          "image-xpm-expanded-limit": 128,
+          "live-x-tests": true,
+          "mandoc": false,
+          "nls": "auto",
+          "pager-max-desks": 4096,
+          "png": "auto",
+          "png-security-backport": false,
+          "python": "",
+          "session-dbus": "enabled",
+          "sm": "auto",
+          "svg": "auto",
+          "xcursor": "auto",
+          "xfixes": "auto",
+          "xpm": "auto",
+          "xrender": "auto",
+          "errorlogs": true,
+          "stdsplit": true
+        },
+        "module": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmTray/FvwmTray",
+          "sha256": "9bb182c51ee48af8d8d118b7f19f0198c3ec32aafa06ca0deb4d631abca0f960"
+        },
+        "reports": [],
+        "source_post": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51"
+      },
+      "archive_sha256": "cab3e42da212a67133702e9583bac9afa65983782d6bf4f59318652184e4bd17",
+      "scope": "Instrumented tray/model and pure Buttons startup helper, ASan+UBSan with detect_leaks=1; normal Buttons/core/Desktop/peer",
+      "limitation": "No clean full Buttons/session LSan claim; individual graceful module exit codes not all captured, outer fixture/model exits and report scan are recorded; abrupt kills are recovery checks"
+    },
+    "portable": {
+      "command": "make verify",
+      "exit": 0,
+      "tests": 291,
+      "skipped": 20,
+      "skip_reason": "Native Meson/compiler integrations unavailable on macOS host; focused native Linux gates are separate"
+    },
+    "manuals": [
+      {
+        "file": "FvwmButtons.1",
+        "sha256": "b737e16dde096cf250a85715ab4d9c6602ea2a02b57c8ca50bc3c94ce77b613e",
+        "render": {
+          "exit": 0,
+          "bytes": 67388
+        },
+        "lint": {
+          "exit": 3,
+          "bytes": 3942
+        }
+      },
+      {
+        "file": "FvwmDesktop.1",
+        "sha256": "6c74a9bd5fc5bda2dcd9548ec88cd13f6096098ec6fc6b8e17a40cf3b2d29241",
+        "render": {
+          "exit": 0,
+          "bytes": 78876
+        },
+        "lint": {
+          "exit": 3,
+          "bytes": 23702
+        }
+      },
+      {
+        "file": "FvwmTray.1",
+        "sha256": "8dc2228b6bf48707606539d614ccd6db7cac73fc13701299948f78d6109ec68f",
+        "render": {
+          "exit": 0,
+          "bytes": 11105
+        },
+        "lint": {
+          "exit": 3,
+          "bytes": 2708
+        }
+      }
+    ],
+    "installed": {
+      "method": "exactcanonicalMesonELFfixup scratchbyteequality",
+      "meson": "1.7.0",
+      "interpreter": "/workspace/meson-env/bin/python3",
+      "metadata_sha256": "a6a9679cf6cc965f00ff92660166e32abfdc6df426bb6fe51fd27d7aa7137bd5",
+      "depfixer_sha256": "4b48f133b31c6119ad9a26d1c735ae23b279b5d2024d0f23795d4e5d93b37513",
+      "api_parameters": [
+        "fname",
+        "rpath_dirs_to_remove",
+        "new_rpath",
+        "final_path",
+        "install_name_mappings",
+        "verbose"
+      ],
+      "built_sha256": "713a9e1693ddf0ce520c4550bd239f51dc330d7646219da154822b1029c94c45",
+      "installed_sha256": "5febfd6049e7ccaf29a6b8806881a81bbf432efd0a692fc0613228f891dbaf8c",
+      "source_closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+      "manual_sha256": "8dc2228b6bf48707606539d614ccd6db7cac73fc13701299948f78d6109ec68f",
+      "manuals": {
+        "FvwmTray.1": "8dc2228b6bf48707606539d614ccd6db7cac73fc13701299948f78d6109ec68f",
+        "FvwmDesktop.1": "6c74a9bd5fc5bda2dcd9548ec88cd13f6096098ec6fc6b8e17a40cf3b2d29241",
+        "FvwmButtons.1": "b737e16dde096cf250a85715ab4d9c6602ea2a02b57c8ca50bc3c94ce77b613e"
+      },
+      "linkage": "\tlinux-vdso.so.1 (0x0000ffff957bc000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff95650000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffff954f0000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffff954b0000)\n\tlibpng16.so.16 => /lib/aarch64-linux-gnu/libpng16.so.16 (0x0000ffff95450000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffff95420000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffff953f0000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffff953c0000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffff95390000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffff95320000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffff952e0000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffff952a0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff950e0000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff95780000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffff95090000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffff95050000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffff95020000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffff94f30000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffff94ee0000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffff94eb0000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffff94e80000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffff94e50000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffff94e20000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffff94de0000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffff94da0000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffff94d70000)\n",
+      "sections": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 361235\t  11728\t  10840\t 383803\t  5db3b\t/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray\n",
+      "installed_bytes": 1458464
+    },
+    "installed_manual": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmTray.1",
+      "sha256": "8dc2228b6bf48707606539d614ccd6db7cac73fc13701299948f78d6109ec68f",
+      "generated_sha256": "8dc2228b6bf48707606539d614ccd6db7cac73fc13701299948f78d6109ec68f"
+    }
+  },
+  "failures_and_limits": {
+    "buttons_leaks": {
+      "receipt_status": "failed",
+      "archive_sha256": "d6f77a967b242f1f15d7ac738106287d7dcb9ecd013c25aa786db78be2f0131e",
+      "functional": "All14 instrumented actual-X assertions passed, outer report scan fails",
+      "reports": [
+        {
+          "file": "ubsan.2548",
+          "summary": "SUMMARY: AddressSanitizer: 3382 byte(s) leaked in 69 allocation(s)."
+        },
+        {
+          "file": "ubsan.2580",
+          "summary": "SUMMARY: AddressSanitizer: 3382 byte(s) leaked in 69 allocation(s)."
+        },
+        {
+          "file": "ubsan.2609",
+          "summary": "SUMMARY: AddressSanitizer: 3382 byte(s) leaked in 69 allocation(s)."
+        },
+        {
+          "file": "ubsan.2612",
+          "summary": "SUMMARY: AddressSanitizer: 3382 byte(s) leaked in 69 allocation(s)."
+        },
+        {
+          "file": "ubsan.2615",
+          "summary": "SUMMARY: AddressSanitizer: 3350 byte(s) leaked in 68 allocation(s)."
+        },
+        {
+          "file": "ubsan.2620",
+          "summary": "SUMMARY: AddressSanitizer: 3144 byte(s) leaked in 68 allocation(s)."
+        }
+      ],
+      "attribution": "Newly observed font-lifetime leaks in existing Buttons startup/cleanup path. Stacks precede callback; matching prior-revision runtime comparison was not performed. Pre-existing/non-regression status unconfirmed.",
+      "followup": "Finite R2 cleanup: reproduce on matching baseline, retire owned font references before display teardown, finalize process font state only after all users retire; require graceful repeated-theme/bar-exit leak-enabled module checks. No incidental FftFini call or suppressions added."
+    },
+    "manuals": "All three render exit0; mandoc lint3 reports generated mso/LINKSTYLE and spacing/line-style warnings; no warning-free lint claim",
+    "collector_metadata": "gate13 installed.manual_sha256 was inherited stale from gate05. Final provenance and standalone-final compare current generated/installed manual8dc222...; that authoritative correction does not mutate original receipt.",
+    "pending": [
+      "True containment/two-owner lifetime contract",
+      "Modern StatusNotifier/application menus",
+      "Real toolkit/visual profiles and affected combined #78 platform/release gates",
+      "Full Buttons font-lifetime leak qualification"
+    ],
+    "parked": [
+      "#257",
+      "#258"
+    ]
+  },
+  "artifacts": {
+    "collection_sha256": "10c636c0494a70833e6ad34aada0d8095265ec5be0af5d27228e6299194da352",
+    "collection_bytes": 4098578,
+    "standalone_archive_sha256": "093fbb63091a03bb893071ed227cce23f97e58a73b7406424bc73dbde90cd45b",
+    "gallery": "doc/screenshots/tray-bar/manifest.json",
+    "host_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-bar"
+  },
+  "performance": {
+    "counter": "2/5 after merged312",
+    "due": false,
+    "reference": "/tmp/fvwm-module-waits-20261015/m5-performance-notification-20261030",
+    "candidate_does_not_advance_until_merge": true
+  },
+  "review": {
+    "role": "temper_reviewer",
+    "reviewed_tree": "ea28f4695603ae1b3c71c0909966a0479a0bb0b6",
+    "result": "No actionable findings after separate final source/artifact/receipt/visual review",
+    "evidence": "1444 runtime/default/test inputs match source12; gate13/standalone/sanitizer01/sanitizer02 manifests and original gallery bytes verified",
+    "scope": "Read-only agent review, no native execution or independent human assurance",
+    "final_delta": "Only completion metadata in this report, companion report and tracker follows this review; final signed tree recorded by PR"
+  },
+  "retention": {
+    "status": "Verified exported guest duplicates and superseded host source archives retired; owned Linux lab stopped normally",
+    "guest_recovered_bytes": 49943776,
+    "host_recovered_bytes": 286818277,
+    "keep": "source12 archive/manifests, current compact review evidence, reusable lab builds/reference",
+    "handoff": {
+      "source_closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+      "source": "/tmp/fvwm-module-waits-20261015/source",
+      "normal_build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+      "sanitizer_build": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+      "prefix": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+      "performance_reference": "/tmp/fvwm-module-waits-20261015/m5-performance-notification-20261030",
+      "counter": "2/5 after merged312; next candidate advances only on merge",
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate01",
+          "bytes": 773657,
+          "archive_sha256": "ed7fdcbeb955660203da2c19c65178112b4477c00bc618e76e9e181841b3c26a",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate02",
+          "bytes": 769371,
+          "archive_sha256": "c97affed26e3ba3876a7f243197749759dedbc751ce19d29e63d3a47b7b88a26",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate03",
+          "bytes": 762346,
+          "archive_sha256": "115d0f7d3fc1d268b6691e79e1cd168c0af07fccad3cd485fee3c7e1cc149724",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate04",
+          "bytes": 794791,
+          "archive_sha256": "23b79fbb4276c4cd1fca8b551727b628d3d160d2b5fd2fd43de614864be39dea",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate05",
+          "bytes": 1319332,
+          "archive_sha256": "4885ebda1ffffe098607f6a0b0a9fe8343655b194b9f37316726766df206ffeb",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate06",
+          "bytes": 1311687,
+          "archive_sha256": "95e0e5e55ca18e65af6776efdb9b34d5950b606371253fe1c491cec02c25d525",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate07",
+          "bytes": 932972,
+          "archive_sha256": "f1a21c0a4a479052e3ceef5ce51f25f24bd29e751fa73d5a0eec85aff9f5b78d",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate08",
+          "bytes": 1005891,
+          "archive_sha256": "fbc9b9d5b8ccf20fe74432d7f691a5819832bb6f9a4edb4f6faa0ca2446c4df1",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate09",
+          "bytes": 1007405,
+          "archive_sha256": "9f58d3662900a643e398d1803514d61f6ad2554d5efebda8bb2fe90efaf83ef1",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate10",
+          "bytes": 1472978,
+          "archive_sha256": "8b280e5f1c247b5ac93cde4f14a10526622019e3f3f284bcf39dce4584779c29",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate11",
+          "bytes": 1591274,
+          "archive_sha256": "cfea7da882d7b8c922071612737ad5b5da07105c21999a7d7ffb1e55e0e00a39",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate12",
+          "bytes": 1924966,
+          "archive_sha256": "428b08f73496d1169f2b8bf7044208df218309ae7552cb99ae3f8af4c1329eb5",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-gate13",
+          "bytes": 1966574,
+          "archive_sha256": "864929a4ddfb70aa04314e5fcfe07e058a1181978642c408cfbef991b8b8bbac",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-sanitizer01",
+          "bytes": 2214115,
+          "archive_sha256": "d6f77a967b242f1f15d7ac738106287d7dcb9ecd013c25aa786db78be2f0131e",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-sanitizer02",
+          "bytes": 1976000,
+          "archive_sha256": "cab3e42da212a67133702e9583bac9afa65983782d6bf4f59318652184e4bd17",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-click-diagnostic",
+          "bytes": 916801,
+          "archive_sha256": "29d5f0b8e0491c5b1a5f6e84c72d1e32dfecd8b8986274dd8f91bec5cad11f04",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-ready-diagnostic",
+          "bytes": 793322,
+          "archive_sha256": "57010e2ba864ba2888216737bb53be5725b881867032d1c06983fb171fce6ba4",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-final-provenance",
+          "bytes": 200231,
+          "archive_sha256": "5f1e95e3dbbb51154b556103f1ac28efa92ba1c26d29ced1041a1237670a0846",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-standalone-final",
+          "bytes": 1171872,
+          "archive_sha256": "093fbb63091a03bb893071ed227cce23f97e58a73b7406424bc73dbde90cd45b",
+          "reason": "Exact archive verified on host and guest; current source/build/prefix/reference retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-inputs",
+          "bytes": 26667055,
+          "reason": "Consumed transfer/diagnostic duplicate; host current artifacts retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-click-diagnostic-input",
+          "bytes": 47056,
+          "reason": "Consumed transfer/diagnostic duplicate; host current artifacts retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-ready-diagnostic-input",
+          "bytes": 47719,
+          "reason": "Consumed transfer/diagnostic duplicate; host current artifacts retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-tray-bar-collection",
+          "bytes": 276361,
+          "reason": "Consumed transfer/diagnostic duplicate; host current artifacts retained"
+        }
+      ],
+      "recovered_bytes": 49943776
+    }
+  }
+}

@@ -14,7 +14,7 @@ import (
 
 func TestRegistryDomainsAndIndependentDefaults(t *testing.T) {
 	keys, _ := Scope("all")
-	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity", "wallpaper_palette", "wallpaper_appearance", "contrast", "session_bus", "session_notifications", "notification_dnd", "session_power"}) {
+	if !reflect.DeepEqual(keys, []string{"palette", "appearance", "day", "night", "transparency", "motion", "keep_wallpaper", "launcher_opacity", "wallpaper_palette", "wallpaper_appearance", "contrast", "session_bus", "session_notifications", "notification_dnd", "session_power", "tray_enabled", "tray_gap", "tray_padding", "tray_orientation"}) {
 		t.Fatal(keys)
 	}
 	for key, item := range Registry() {
@@ -104,6 +104,9 @@ func TestStoredSchemaStrictnessAndDuplicateRejection(t *testing.T) {
 	delete(d, "session_notifications")
 	delete(d, "notification_dnd")
 	delete(d, "session_power")
+	for _, key := range []string{"tray_enabled", "tray_gap", "tray_padding", "tray_orientation"} {
+		delete(d, key)
+	}
 	d["schema_version"] = 1
 	data, _ := json.Marshal(d)
 	got, err := DecodeState(data)

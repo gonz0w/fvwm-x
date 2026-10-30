@@ -137,7 +137,20 @@ def run(args):
             snapshot = query()
             assert snapshot['owner'] == 'FvwmDesktop' and not snapshot['preview']
             assert query(provider=snapshot['provider'])['provider'] == snapshot['provider']
-            assert len(snapshot['settings']) == 11
+            expected_settings = {'palette', 'appearance', 'day', 'night',
+                'transparency', 'motion', 'keep_wallpaper', 'launcher_opacity',
+                'wallpaper_palette', 'wallpaper_appearance', 'contrast',
+                'session_bus', 'session_notifications', 'notification_dnd',
+                'session_power', 'tray_enabled', 'tray_gap', 'tray_padding',
+                'tray_orientation'}
+            assert set(snapshot['settings']) == expected_settings, snapshot
+            assert snapshot['persistence_error'] is None, snapshot
+            for item in snapshot['settings'].values():
+                # Public IPC rows inherit common metadata from the envelope.
+                # Distinct per-key errors remain overrides when present.
+                assert 'owner' not in item and 'generation' not in item, item
+                assert 'preview' not in item and 'persistence_error' not in item, item
+                assert isinstance(item['native_preview'], bool), item
             assert set(query(scope='group:wallpaper')['settings']) == {
                 'wallpaper_palette', 'wallpaper_appearance'}
             assert snapshot['settings']['wallpaper_palette']['resolved'] == 'slate'
@@ -153,7 +166,18 @@ def run(args):
             opacity = snapshot['settings']['launcher_opacity']
             assert opacity['type'] == 'integer' and opacity['minimum'] == 0
             assert opacity['maximum'] == 100 and opacity['saved'] == 94
-            assert opacity['native_preview'] and not opacity['preview']
+            assert opacity['native_preview'] and not opacity.get(
+                'preview', snapshot['preview'])
+            assert set(query(scope='group:tray')['settings']) == {
+                'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation'}
+            tray = snapshot['settings']['tray_enabled']
+            assert tray['saved'] is False and tray['requested'] is False
+            assert tray['readiness'] == 'unobserved'
+            assert tray['application'] == 'requested-state-submitted'
+            evidence['settings_metadata'] = dict(
+                finite_keys=sorted(expected_settings),
+                inherited_fields=['owner', 'generation', 'preview', 'persistence_error'],
+                native_preview_per_setting=True, optional_tray_readiness='unobserved')
             state = user / 'desktop-state.json'
             assert not state.exists()
             writer.send(frame('provider-query', resource='provider', provider=snapshot['provider']))
@@ -221,7 +245,7 @@ def run(args):
 
             numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
             assert numeric['settings']['launcher_opacity']['saved'] == 73
-            assert json.loads(state.read_text())['schema_version'] == 4
+            assert json.loads(state.read_text())['schema_version'] == 7
             before_numeric = state.read_bytes()
             for invalid in [True, 73.5, -1, 101, '73']:
                 action('set', numeric['generation'], values={'launcher_opacity': invalid},
@@ -229,7 +253,7 @@ def run(args):
                 assert state.read_bytes() == before_numeric
             action('reset', numeric['generation'], scope='launcher_opacity')
             changed = query(provider=snapshot['provider'])
-            evidence['typed_integer_setting'] = dict(saved=73, schema=4,
+            evidence['typed_integer_setting'] = dict(saved=73, schema=7,
                 malformed_refused=True, reset=94)
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'

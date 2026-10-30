@@ -41,9 +41,23 @@ typedef struct
 typedef struct
 {
 	int width, height;
-	unsigned int count;
+	unsigned int count, page, pages, omitted;
 	tray_cell cells[TRAY_CLIENT_MAX];
 } tray_layout;
+
+typedef struct
+{
+	int x, y, width, height;
+} tray_rect;
+
+/* Anchor parsing leaves output untouched on failure. All geometry is actual
+ * root pixels, representable in signed X coordinates, including far edges. */
+bool tray_model_anchor(const char *text, tray_rect *anchor);
+bool tray_model_place(const tray_rect *anchor, const tray_rect *area,
+	int width, int height, tray_rect *placed);
+bool tray_model_page(const tray_model *model, int width, int height,
+	int padding, int gap, int header_width, int header_height,
+	bool vertical, bool visible, unsigned int page, tray_layout *layout);
 
 bool tray_model_info(const uint32_t words[2], bool *mapped);
 bool tray_model_size(unsigned int width, unsigned int height);

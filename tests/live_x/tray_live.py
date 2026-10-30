@@ -237,7 +237,8 @@ class Native(Session):
                 attempt_deadline = min(deadline, time.monotonic() + .25)
                 self.control.socket.settimeout(max(.001,
                     attempt_deadline - time.monotonic()))
-                self.control.send(b'SendToModule FvwmTray Status\n')
+                alias = getattr(self, 'tray_alias', 'FvwmTray')
+                self.control.send(('SendToModule ' + alias + ' Status\n').encode())
                 while time.monotonic() < attempt_deadline and records < 256:
                     if b'\n' not in self.control.pending:
                         self.control.socket.settimeout(max(.001,
@@ -885,6 +886,27 @@ def run(options):
             vertical=vertical, horizontal=horizontal,
             invalid_gap_preserved=rejected_gap,
             actual_client_dimensions=first.state(a))
+        # The rejected snapshot remains stored in the core. Replace that whole
+        # tuple before lifetime cases: a fresh fail-closed module must receive
+        # valid initial configuration rather than inherit this negative input.
+        recovery_config = out / 'valid-after-invalid-layout.fvwm'
+        recovery_config.write_text('DestroyModuleConfig FvwmTray:*\n'
+            '*FvwmTray Colorset 42\n'
+            '*FvwmTray Font "xft:DejaVu Sans Mono:size=18"\n'
+            '*FvwmTray Gap 6\n*FvwmTray Padding 4\n'
+            '*FvwmTray Orientation Horizontal\n'
+            '*FvwmTray Position TopRight\n*FvwmTray Visible On\n'
+            'SendToModule FvwmTray Reload\n')
+        assert not any(char in str(recovery_config) for char in '\n\r\0"')
+        native.command('Read "' + str(recovery_config) + '"')
+        recovered_status = native.wait_status(lambda state: not state['pending'])
+        recovered_layout = wait_for_predicate('actual restored valid socket layout',
+            lambda: placement(False), time.monotonic() + 5,
+            process=native.process)
+        assert recovered_layout == horizontal
+        evidence['cases']['valid_config_recovered_after_rejection'] = dict(
+            file=recovery_config.name, sha256=digest(recovery_config),
+            native=recovered_status, actual_layout=recovered_layout)
         if options.xorg_config:
             original = native.settled('DUMMY0', 4)
             native.reserve_top(96)

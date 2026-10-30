@@ -257,8 +257,8 @@ func TestWallpaperEditorRegistryAndIPCMetadata(t *testing.T) {
 		t.Fatal(err)
 	}
 	state, err := desktopsettings.DecodeJSON(data)
-	if err != nil || state.(map[string]any)["schema_version"] != json.Number("6") {
-		t.Fatal("saved schema was not version 6", string(data), err)
+	if err != nil || state.(map[string]any)["schema_version"] != json.Number("7") {
+		t.Fatal("saved schema was not version 7", string(data), err)
 	}
 }
 

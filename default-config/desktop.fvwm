@@ -72,7 +72,8 @@ AddToFunc SlateDesk
 # Only the primary monitor reserves a top edge; other monitors remain free.
 DestroyFunc SlatePanel
 AddToFunc SlatePanel
-+ I KillModule SlateBar
++ I SendToModule SlateTray Hide
++ I KillModule FvwmButtons SlateBar
 + I EwmhBaseStruts 0 0 0 0
 + I EwmhBaseStruts screen $[monitor.primary] 0 0 $[infostore.slate_height] 0
 + I DestroyModuleConfig SlateBar:*
@@ -85,18 +86,19 @@ AddToFunc SlatePanel
 + I *SlateBar: Frame 0
 + I *SlateBar: Padding 6 0
 + I *SlateBar: Font "$[infostore.slate_font]"
++ I *SlateBar: StartupAction SendToModule FvwmDesktop refresh $[monitor.$[monitor.primary].width]
 + I *SlateBar: (12x1, Title "Applications", Action SlateLauncher)
 + I *SlateBar: (3x1, Id desk0, Title "1", Action GotoDesk 0 0)
 + I *SlateBar: (3x1, Id desk1, Title "2", Action GotoDesk 0 1)
 + I *SlateBar: (3x1, Id desk2, Title "3", Action GotoDesk 0 2)
 + I *SlateBar: (3x1, Id desk3, Title "4", Action GotoDesk 0 3)
 + I *SlateBar: (10x1, Title "Windows", Action WindowList Monitor c c NoGeometry)
-+ I *SlateBar: (32x1, Id clock, Title "FVWM-X", Action SendToModule FvwmDesktop calendar)
++ I *SlateBar: (24x1, Id clock, Title "FVWM-X", Action SendToModule FvwmDesktop calendar)
++ I *SlateBar: (8x1, Id tray, Title "Tray", Disabled, Action SendToModule SlateTray ToggleAt $left $top $width $height)
 + I *SlateBar: (16x1, Id status, Title "System", Action Menu SlateSystem Monitor c c)
 + I *SlateBar: (9x1, Id appearance, Title "Slate", Action Menu SlateAppearance Monitor c c)
 + I *SlateBar: (9x1, Title "Session", Action Menu SlateSession Monitor c c)
 + I Module FvwmButtons SlateBar
-+ I SendToModule FvwmDesktop refresh $[monitor.$[monitor.primary].width]
 Style SlateBar !Title, !Borders, !Handles, Sticky, WindowListSkip, \
     NeverFocus, Layer 6, FixedPosition, FixedSize
 Style Slate*Form PositionPlacement Center, WindowListSkip, Layer 6

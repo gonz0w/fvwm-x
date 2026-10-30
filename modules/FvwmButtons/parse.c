@@ -37,6 +37,7 @@
 #include "button.h"
 #include "parse.h"
 #include "keyboard.h"
+#include "buttons_startup.h"
 
 extern int w, h, x, y, xneg, yneg; /* used in ParseConfigLine */
 extern char *config_file;
@@ -47,6 +48,20 @@ extern int screen;
 
 /* contains the character that terminated the last string from seekright */
 static char terminator = '\0';
+static buttons_startup_state buttons_startup_action;
+
+void buttons_send_startup_action(void)
+{
+	const char *command = buttons_startup_take(&buttons_startup_action);
+
+	if (command)
+	{
+		SendText(fd, command, 0);
+		memset(buttons_startup_action.command, 0,
+		    sizeof(buttons_startup_action.command));
+	}
+}
+
 
 /* ----------------------------------- macros ------------------------------ */
 
@@ -1871,6 +1886,7 @@ static void ParseConfigLine(button_info **ubb, char *s)
 		"focuscolorset",
 		"disabledcolorset",
 		"layout",
+		"startupaction",
 		NULL
 	};
 	int i, j, k, option;
@@ -2072,6 +2088,20 @@ static void ParseConfigLine(button_info **ubb, char *s)
 			ub->c->layout_content = layout == 1;
 		break;
 	}
+	case 20: /* StartupAction: one root command after reader readiness. */
+	{
+		bool separator = s && (*s == ' ' || *s == '\t');
+
+		while (s && (*s == ' ' || *s == '\t'))
+			s++;
+		if (ub->parent || !separator ||
+		    !buttons_startup_set(&buttons_startup_action, s))
+			fvwm_debug(MyName,
+			    "StartupAction needs root command (1..%d bytes)",
+			    MAX_MODULE_INPUT_TEXT_LEN);
+		break;
+	}
+
 
 	case 15: /* WindowName */
 	{

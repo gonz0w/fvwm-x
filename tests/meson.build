@@ -3955,6 +3955,15 @@ buttons_navigation_test = executable(
 )
 test('buttons-navigation', buttons_navigation_test)
 
+buttons_startup_test = executable(
+    'test-buttons-startup',
+    ['test_buttons_startup.c',
+     '../modules/FvwmButtons/buttons_startup.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('buttons-startup', buttons_startup_test)
+
 buttons_updates_test = executable(
     'test-buttons-updates',
     ['test_buttons_updates.c',
@@ -4600,6 +4609,15 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             '--build', meson.project_build_root(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'tray'],
         depends: [fvwm3, fvwm_mfl, fvwm_tray, tray_client, fvwm_desktop_capture],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 180)
+    test('tray-bar-xvfb', py,
+        args: [files('live_x/tray_bar_live.py'),
+            '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'tray-bar'],
+        depends: [fvwm3, fvwm_mfl, fvwm_tray, tray_client,
+            fvwm_desktop_capture, fvwm_desktop, fvwm_desktop_worker,
+            fvwm_session, fvwm_buttons, fvwm_form],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 180)
 endif

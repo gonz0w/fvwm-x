@@ -913,6 +913,7 @@ int main(int argc, char **argv)
 
 	/* tell fvwm we're running */
 	SendFinishedStartupNotification(fd);
+	buttons_send_startup_action();
 
 	Loop();
 

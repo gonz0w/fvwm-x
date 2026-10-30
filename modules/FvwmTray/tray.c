@@ -40,6 +40,30 @@ static void stop_signal(int number)
 	errno = saved_errno;
 }
 
+/* The isolated module may briefly wait for a cooperative old owner. Core
+ * traffic stays queued in order; HUP is observable even with no POLLIN mask.
+ * Never call this helper inside an X server transaction. */
+bool tray_startup_pause(tray_ui *ui, int milliseconds)
+{
+	struct pollfd descriptors[3] = {
+	    {ui->wake[0], POLLIN, 0}, {ui->channel[1], 0, 0},
+	    {ConnectionNumber(ui->display), 0, 0}};
+
+	if (tray_stopping || ui->stopped || ui->failed)
+		return false;
+	int result = poll(descriptors, 3, milliseconds);
+	if (result < 0 && errno != EINTR)
+		ui->failed = true;
+	if (descriptors[0].revents &
+	    (POLLIN | POLLERR | POLLHUP | POLLNVAL))
+		ui->stopped = true;
+	if (descriptors[1].revents & (POLLERR | POLLHUP | POLLNVAL))
+		ui->stopped = true;
+	if (descriptors[2].revents & (POLLERR | POLLHUP | POLLNVAL))
+		ui->failed = true;
+	return !tray_stopping && !ui->stopped && !ui->failed;
+}
+
 static void refused(tray_ui *ui, const char *reason)
 {
 	static unsigned int diagnostics;
@@ -99,10 +123,21 @@ static bool update_area(tray_ui *ui)
 
 	if (snapshot->count)
 	{
-		row = &snapshot->rows[0];
-		for (unsigned int i = 0; i < snapshot->count; i++)
-			if (snapshot->rows[i].primary)
-				row = &snapshot->rows[i];
+		if (ui->anchored)
+		{
+			rectangle anchor = {ui->anchor.x, ui->anchor.y,
+			    ui->anchor.width, ui->anchor.height};
+			row = module_ui_scale_select(snapshot, &anchor, None);
+			if (!row)
+				return false;
+		}
+		else
+		{
+			row = &snapshot->rows[0];
+			for (unsigned int i = 0; i < snapshot->count; i++)
+				if (snapshot->rows[i].primary)
+					row = &snapshot->rows[i];
+		}
 		if (!module_workarea_bounds(&ui->workareas, snapshot, row,
 		    &area))
 			return false;
@@ -139,10 +174,9 @@ static bool update_area(tray_ui *ui)
 	return true;
 }
 
-static void draw_header(tray_ui *ui, char *text, int padding)
+static void draw_header(tray_ui *ui, char *text, int x, int y,
+	int width, int height)
 {
-	int width = ui->layout.width - padding * 2;
-	int height = ui->layout.height - padding * 2;
 	FlocaleWinString string = {0};
 	XRectangle clip;
 
@@ -150,7 +184,7 @@ static void draw_header(tray_ui *ui, char *text, int padding)
 		return;
 	if (height > ui->font->height)
 		height = ui->font->height;
-	clip = (XRectangle){padding, padding, width, height};
+	clip = (XRectangle){x, y, width, height};
 	XSetClipRectangles(ui->display, ui->gc, 0, 0, &clip, 1, Unsorted);
 	XSetForeground(ui->display, ui->gc, GetColorset(ui->colorset)->fg);
 	if (ui->font->font)
@@ -161,8 +195,8 @@ static void draw_header(tray_ui *ui, char *text, int padding)
 	string.win = ui->host;
 	string.colorset = GetColorset(ui->colorset);
 	string.flags.has_colorset = 1;
-	string.x = padding;
-	string.y = padding + ui->font->ascent;
+	string.x = x;
+	string.y = y + ui->font->ascent;
 	string.clip_region = XCreateRegion();
 	string.flags.has_clip_region = 1;
 	XUnionRectWithRegion(&clip, string.clip_region, string.clip_region);
@@ -173,9 +207,13 @@ static void draw_header(tray_ui *ui, char *text, int padding)
 
 void tray_render(tray_ui *ui)
 {
-	char header[] = "Tray";
+	char header[80];
 
 	ui->dirty = false;
+	/* Discovery and docking can precede the configuration replay. Publish
+	 * no default frame before the first complete valid owner snapshot. */
+	if (!ui->config_ready)
+		return;
 	if (!ui->host || ui->stopped || !update_area(ui))
 	{
 		refused(ui, "unavailable host geometry or font");
@@ -184,56 +222,143 @@ void tray_render(tray_ui *ui)
 	}
 	int padding = scaled(ui, ui->padding);
 	int gap = scaled(ui, ui->gap);
-	int header_width = FlocaleTextWidth(ui->font, header, strlen(header));
+	/* Reserve the maximum bounded cue so paging itself does not resize
+	 * the popup or move its navigation targets. */
+	char measure[] = "Tray 32/32 (32) -32";
+	int header_width = FlocaleTextWidth(ui->font, measure, strlen(measure));
 	int header_height = ui->font->height;
 	int target = scaled(ui, 24);
 	/* The host's clickable entry keeps the shared native target floor even
 	 * with zero padding and a one-pixel foreign icon. */
 	if (header_width < target)
 		header_width = target;
+	header_width += target * 2 + gap * 2;
+	if (header_width > 4096)
+		header_width = 4096;
 	if (header_height < target)
 		header_height = target;
-	if (!tray_model_layout(&ui->model, ui->area.width, ui->area.height,
+	if (!tray_model_page(&ui->model, ui->area.width, ui->area.height,
 	    padding, gap, header_width, header_height, ui->vertical,
-	    ui->visible, &ui->layout))
+	    ui->visible, ui->page, &ui->layout))
 	{
 		refused(ui, "unrepresentable host layout");
 		ui->failed = true;
 		return;
 	}
+	ui->page = ui->layout.page;
+	int focused = tray_model_index(&ui->model, ui->model.focused);
+	if ((!ui->visible && ui->active) ||
+	    (focused >= 0 && !ui->layout.cells[focused].visible))
+		tray_x11_unfocus(ui, true);
 	int x = ui->area.x;
 	int y = ui->area.y;
 	if (ui->position & 1)
 		x += ui->area.width - ui->layout.width;
 	if (ui->position & 2)
 		y += ui->area.height - ui->layout.height;
+	if (ui->anchored)
+	{
+		tray_rect area = {ui->area.x, ui->area.y,
+		    ui->area.width, ui->area.height}, placed;
+		if (!tray_model_place(&ui->anchor, &area, ui->layout.width,
+		    ui->layout.height, &placed))
+		{
+			refused(ui, "unrepresentable popup placement");
+			ui->failed = true;
+			return;
+		}
+		x = placed.x;
+		y = placed.y;
+	}
 	XMoveResizeWindow(ui->display, ui->host, x, y,
 	    ui->layout.width, ui->layout.height);
 	SetWindowBackground(ui->display, ui->host, ui->layout.width,
 	    ui->layout.height, GetColorset(ui->colorset),
-	    DefaultDepth(ui->display, DefaultScreen(ui->display)), ui->gc, False);
+	    DefaultDepth(ui->display, DefaultScreen(ui->display)),
+	    ui->gc, False);
 	XClearWindow(ui->display, ui->host);
 	if (ui->visible)
+	{
+		XMapWindow(ui->display, ui->proxy);
 		XMapWindow(ui->display, ui->host);
+	}
 	else
 		XUnmapWindow(ui->display, ui->host);
 	tray_x11_layout(ui);
+	ui->page_prev = ui->page_next = (tray_cell){0};
 	if (!ui->failed && !ui->stopped && ui->visible)
-		draw_header(ui, header, padding);
+	{
+		snprintf(header, sizeof(header), "Tray %u/%u (%u)",
+		    ui->layout.page + 1, ui->layout.pages, ui->model.count);
+		if (ui->layout.omitted)
+		{
+			size_t length = strlen(header);
+			snprintf(header + length, sizeof(header) - length,
+			    " -%u", ui->layout.omitted);
+		}
+		int width = ui->layout.width - padding * 2;
+		if (width >= target * 2 &&
+		    ui->layout.height >= padding + target)
+		{
+			ui->page_prev = (tray_cell){padding, padding,
+			    target, target, true};
+			ui->page_next = (tray_cell){
+			    ui->layout.width - padding - target, padding,
+			    target, target, true};
+			draw_header(ui, "<", ui->page_prev.x, padding,
+			    target, target);
+			draw_header(ui, ">", ui->page_next.x, padding,
+			    target, target);
+			draw_header(ui, header, padding + target + gap, padding,
+			    width - target * 2 - gap * 2, header_height);
+		}
+		else
+			draw_header(ui, header, padding, padding,
+			    width, header_height);
+	}
 	XFlush(ui->display);
 }
 
-void tray_request_config(tray_ui *ui)
+void tray_page(tray_ui *ui, int direction, bool keyboard, Time timestamp)
+{
+	if (ui->dirty)
+		tray_render(ui);
+	if (ui->failed || ui->stopped || !ui->visible || ui->layout.pages < 2)
+		return;
+	bool refocus = keyboard && ui->active;
+	ui->page = direction < 0
+	    ? (ui->page + ui->layout.pages - 1) % ui->layout.pages
+	    : (ui->page + 1) % ui->layout.pages;
+	/* Keyboard paging keeps the proxy, avoiding a queued core restoration
+	 * racing the explicit entry into the new page. Other paging restores
+	 * the application before unmapping the old logical focus. */
+	tray_x11_unfocus(ui, !refocus);
+	ui->dirty = true;
+	tray_render(ui);
+	if (refocus && !ui->failed && !ui->stopped)
+		tray_x11_focus(ui, 0, direction < 0 ? -1 : 0, timestamp);
+}
+
+/* Geometry resnapshots update topology/appearance without undoing runtime
+ * Show/Hide/ToggleAt. Explicit requests dominate automatic refreshes. */
+static void request_config(tray_ui *ui, bool apply_visible)
 {
 	if (ui->config_pending)
 	{
 		ui->config_refresh = true;
+		ui->refresh_apply_visible |= apply_visible;
 		return;
 	}
 	ui->staged = defaults();
 	ui->config_valid = true;
 	ui->config_pending = true;
+	ui->config_apply_visible = apply_visible;
 	InitGetConfigLine(ui->channel, ui->prefix);
+}
+
+void tray_request_config(tray_ui *ui)
+{
+	request_config(ui, true);
 }
 
 static char *skip_space(char *text)
@@ -328,7 +453,7 @@ static void config_message(tray_ui *ui, char *text)
 		module_workarea_sync(&ui->workareas, &ui->monitors.published);
 		ui->dirty = true;
 		if (!ui->config_pending)
-			tray_request_config(ui);
+			request_config(ui, false);
 		return;
 	}
 	if (status != MODULE_UI_SCALE_IGNORED)
@@ -397,7 +522,9 @@ static void config_complete(tray_ui *ui)
 		ui->gap = ui->staged.gap;
 		ui->position = ui->staged.position;
 		ui->vertical = ui->staged.vertical;
-		ui->visible = ui->staged.visible;
+		if (ui->config_apply_visible || !ui->config_ready)
+			ui->visible = ui->staged.visible;
+		ui->config_ready = true;
 		strcpy(ui->font_name, ui->staged.font_name);
 		tray_x11_hints(ui);
 		ui->dirty = true;
@@ -407,10 +534,13 @@ static void config_complete(tray_ui *ui)
 	if (font)
 		FlocaleUnloadFont(ui->display, font);
 	ui->config_pending = false;
+	ui->config_apply_visible = false;
 	if (ui->config_refresh)
 	{
+		bool apply_visible = ui->refresh_apply_visible;
 		ui->config_refresh = false;
-		tray_request_config(ui);
+		ui->refresh_apply_visible = false;
+		request_config(ui, apply_visible);
 	}
 }
 
@@ -418,14 +548,16 @@ static void status_reply(tray_ui *ui)
 {
 	char text[256];
 	unsigned int mapped = 0;
-	for (unsigned int i = 0; i < ui->model.count && i < TRAY_CLIENT_MAX; i++)
+	for (unsigned int i = 0;
+	    i < ui->model.count && i < TRAY_CLIENT_MAX; i++)
 		if (ui->model.clients[i].mapped)
 			mapped++;
 	int length = snprintf(text, sizeof(text),
 	    "Echo FVWM_TRAY_STATUS %u %u %u %u %u %u %" PRIu64
 	    " %lu %lu %lu %d", ui->model.count, mapped,
 	    TRAY_CLIENT_MAX, ui->quarters, ui->claimed ? 1U : 0U,
-	    ui->config_pending || ui->config_refresh ? 1U : 0U,
+	    !ui->config_ready || ui->config_pending || ui->config_refresh
+	    ? 1U : 0U,
 	    ui->monitors.published.epoch, ui->host, ui->owner, ui->proxy,
 	    ui->font ? ui->font->height : 0);
 
@@ -448,8 +580,32 @@ static void native_message(tray_ui *ui, char *text)
 	else if (!strcasecmp(text, "Show") || !strcasecmp(text, "Hide"))
 	{
 		ui->visible = !strcasecmp(text, "Show");
+		if (ui->visible)
+			ui->anchored = false;
 		ui->dirty = true;
 	}
+	else if (!strncasecmp(text, "ToggleAt", 8) &&
+	    (text[8] == ' ' || text[8] == '\t'))
+	{
+		tray_rect anchor;
+		if (!tray_model_anchor(text + 8, &anchor))
+		{
+			refused(ui, "invalid popup anchor");
+			return;
+		}
+		if (ui->visible)
+			ui->visible = false;
+		else
+		{
+			ui->anchor = anchor;
+			ui->anchored = true;
+			ui->visible = true;
+		}
+		ui->dirty = true;
+	}
+	else if (!strcasecmp(text, "PageNext") || !strcasecmp(text, "PagePrev"))
+		tray_page(ui, !strcasecmp(text, "PagePrev") ? -1 : 1,
+		    false, CurrentTime);
 	else if (!strcasecmp(text, "Focus") || !strcasecmp(text, "Next") ||
 	    !strcasecmp(text, "Prev"))
 	{
@@ -555,7 +711,8 @@ int main(int argc, char **argv)
 	for (unsigned int i = 0; i < 2; i++)
 	{
 		int flags = fcntl(ui->wake[i], F_GETFL);
-		if (flags < 0 || fcntl(ui->wake[i], F_SETFL, flags | O_NONBLOCK))
+		if (flags < 0 ||
+		    fcntl(ui->wake[i], F_SETFL, flags | O_NONBLOCK))
 			goto out;
 	}
 	tray_wake_fd = ui->wake[1];
@@ -579,7 +736,7 @@ int main(int argc, char **argv)
 	ui->gc = XCreateGC(ui->display, ui->root, 0, NULL);
 	if (!ui->gc)
 		goto out;
-	/* All host resources exist before selection acquisition and discovery. */
+	/* All host resources exist before selection acquisition. */
 	x11_started = true;
 	if (!tray_x11_start(ui))
 	{
@@ -599,14 +756,15 @@ int main(int argc, char **argv)
 		{
 			XEvent event;
 			XNextEvent(ui->display, &event);
-			if (event.type == Expose && event.xexpose.window == ui->host)
+			if (event.type == Expose &&
+			    event.xexpose.window == ui->host)
 				ui->dirty = true;
 			else if (event.type == PropertyNotify &&
 			    event.xproperty.window == ui->root &&
 			    event.xproperty.atom == ui->workarea_atom)
 			{
 				ui->dirty = true;
-				tray_request_config(ui);
+				request_config(ui, false);
 			}
 			else
 				tray_x11_event(ui, &event);
@@ -626,7 +784,8 @@ int main(int argc, char **argv)
 		    {ConnectionNumber(ui->display), POLLIN, 0},
 		    {ui->channel[1], POLLIN, 0},
 		    {ui->wake[0], POLLIN, 0}};
-		int timeout = more || ui->dirty || XPending(ui->display) ? 0 : -1;
+		int timeout = more || ui->dirty || XPending(ui->display)
+		    ? 0 : -1;
 		if (poll(descriptors, 3, timeout) < 0 && errno != EINTR)
 		{
 			ui->failed = true;
@@ -640,13 +799,14 @@ int main(int argc, char **argv)
 	status = !ui->failed && (tray_stopping || ui->stopped) ? 0 : 1;
 out:
 	/* Foreign clients leave their sockets before fonts, GC or X connection.
-	 * Failed release intentionally keeps the save set through XCloseDisplay. */
+	 * Failed release keeps the save set through XCloseDisplay. */
 	if (ui->display)
 	{
 		if (x11_started)
 			tray_x11_stop(ui);
 		if (ui->x_error_code)
-			fvwm_debug(__func__, "FvwmTray: X error %u resource %lu",
+			fvwm_debug(__func__,
+			    "FvwmTray: X error %u resource %lu",
 			    ui->x_error_code, ui->x_error_resource);
 		if (ui->font)
 			FlocaleUnloadFont(ui->display, ui->font);

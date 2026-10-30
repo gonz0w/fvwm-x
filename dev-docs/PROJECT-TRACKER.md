@@ -7,18 +7,122 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [standalone XEmbed tray](#r1-standalone-xembed-tray--2026-10-30)
-under TRAY-01 #78. PR311 merged as
-`2dcf567312420f9aa524f72d42bfc3c1d67779b9`; canonical signature, reviewed
+Current checkpoint: [bar-launched tray popup](#r1-tray-bar-popup-and-paging--2026-10-30)
+under TRAY-01 #78. PR312 merged as
+`17a1548b6ea866644311d280539794ff45ebb32d`; canonical signature, reviewed
 tree and author DCO verified, source branches retired. NOTIFY-01 #76 is closed.
-The counter is 1/5 since the paired observation through PR310. Keep the verified
+The counter is 2/5 since the paired observation through PR310. Keep the verified
 runnable reference; a new comparison is not due for this checkpoint.
+
+## R1 tray bar popup and paging — 2026-10-30
+
+Owner: Cam; `codex/r1-tray-bar`; base merged PR312 above.
+Status: Review candidate; selected implementation and separate final review complete. User authorized
+merge/cleanup and continued #78 feature work. Broader #78 acceptance stays open.
+
+Batch eight related outcomes: (1) strict `ToggleAt x y width height` native
+control using actual root pixels; (2) pure checked adjacent placement, edge flip
+and work-area clamping, including negative origins; (3) anchor-monitor scale/font
+selection via existing published monitor/work-area helpers; (4) popup visibility
+and focus lifecycle, with anchored Escape hiding and restoring managed focus;
+(5) a labeled launcher in the existing adaptive Slate bar, hiding the popup
+before controlled bar rebuild and reopening with fresh button coordinates;
+(6) bounded overflow pages with next/previous controls, retaining membership and
+actual client sizes, plus no stranded focus when a page hides its client;
+(7) four typed saved preferences (`tray_enabled` default false, `tray_gap` and
+`tray_padding` 0..64/default4, `tray_orientation` horizontal/vertical) through the
+existing settings owner and a compact tray settings editor; and (8) one combined
+focused policy/Go/native-X/scoped-sanitizer gate, source-bound evidence, manuals,
+examples and three inspected theme/font configurations.
+
+Use the already implemented root-child tray as a popup, not foreign reparenting.
+FvwmButtons supplies its existing `$left $top $width $height` root coordinates
+at activation. This is action-time anchoring: it does not continuously follow
+an independently moved bar. Controlled SlatePanel rebuilds hide the popup;
+reopening supplies current geometry. The tray and embedded clients survive a
+bar exit because they remain outside its X tree. Real swallowing/containment
+still needs a two-owner release/save-set/geometry/focus contract; XFixes on the
+tray alone does not protect clients when another process destroys its parent.
+No new dependency or XFixes selection is implied by this batch.
+
+Native controls add `ToggleAt`, `PageNext` and `PagePrev`; reject malformed or
+unrepresentable coordinates atomically. Preserve existing standalone Show/Hide,
+Focus/Next/Prev and configuration behavior. Explicit Show returns to standalone
+placement. Docking/appearance remain passive; keyboard entry is explicit. Each
+page keeps stable client order, bounds all scans by 32 and exposes a visible
+page/count cue with 24-logical-unit navigation targets and keyboard controls.
+An oversized client must not make later fitting clients permanently unreachable.
+
+The desktop owns only its reserved `FvwmTray SlateTray` alias. Saved enablement
+requests this optional module; it does not claim observed readiness or replace a
+competing tray owner. Initial/changed enablement requests non-replacing startup and preserves an
+existing owner; ordinary bar/theme refresh must not restart it. Explicit disable releases
+only that alias. Startup with enablement off must not kill another tray. A
+bar button can remain labeled/disabled while the preference is off; preserve
+existing widget IDs/actions and custom bars. Keep startup asynchronous and
+configuration/data ordering; no ModuleSynchronous/Wait or new supervisor/store.
+Use one coherent config projection (shared colors/font and typed layout fields),
+initially hidden. Appearance/layout reload may dismiss the popup; reopening
+retains its clients. Preserve stored schema1..6 preferences by versioned migration;
+unknown/future/malformed state retains existing rejection/preservation behavior.
+
+Tests must use actual Buttons activation and independently observe popup/root
+ancestry, positions, focus, mapping and retained plug identity. Cover bar
+rebuild/movement/reopen and abrupt bar exit, negative/edge/secondary-monitor
+anchor placement, strict invalid controls, page coverage/reverse/recovery,
+preferences persistence/off and competing-owner behavior. Reuse PR312's unchanged
+contracts; run affected old regressions with the combined new Linux gate, not a
+fresh six-target/install matrix. Add platform-specific checks only for changed
+contracts. True containment, modern-bus protocol/toolkit and combined release
+qualification remain explicit later #78 work; #257/#258 stay parked.
+
+Source review before the combined gate found two ordering defects: stop/start
+could race selection release, and startup could map defaults before receiving
+VisibleOff. Enablement now attempts startup without killing an existing owner;
+the isolated candidate allows a bounded two-second selection-acquisition grace,
+checking shutdown/EOF between short waits and never holding a server grab while
+waiting. It refreshes the claim timestamp on each attempt. Initial UI mapping
+waits for the first valid configuration snapshot. These are source-reviewed
+corrections, not invented executed red/green evidence. Actual-X coverage includes
+repeated enable, controller restart, rapid off/on and an independent initial-map
+observer. A deadline cannot preempt an individual Xlib call.
+
+The combined focused checkpoint now passes all 14 actual-X bar/popup groups,
+all 16 standalone regressions on the final installed tray, updated 19-field
+settings IPC, affected Go packages, pure helpers and tray/pure-helper
+ASan/UBSan/leak checks. All three theme/font captures are inspected. The full
+instrumented Buttons run completes functional assertions but fails LeakSanitizer
+on newly observed font-lifetime allocations from its existing initialization
+path. Prior-revision runtime equivalence is unconfirmed. Full Buttons leak
+qualification remains open; no suppressions or clean-session claim. Finite R2
+follow-up: establish matching baseline, retire font references before display
+teardown, then pass repeated theme/rebuild/graceful-exit leak checks.
+
+Integration fixes retain original failures: the strict public settings reply
+bound, inspector Session metadata, valid spaced tray projection/static Disabled,
+correct binary+alias bar teardown, startup reader readiness and causal cross-module
+fixture fences. The optional bounded root-only Buttons StartupAction is consumed
+once after runtime-reader initialization. Automatic topology/workarea refresh now
+preserves runtime visibility while initial/explicit snapshots apply stored Visible;
+queued explicit requests retain authority. The original post-bar-exit map
+assertion passes with independent before/after observations.
+
+[Source-bound report](verification/VERIFICATION-2026-10-30-TRAY-BAR.md) and
+[theme gallery](../doc/development-preview.md#bar-tray-popup-and-saved-preferences)
+record all failed/passed collectors, exact inputs, retained limits and due cadence.
+Counter remains 2/5 after merged312; no comparison is due. #78 remains open for
+modern bus/menus, true containment and combined toolkit/platform/release acceptance.
+Verified guest duplicates and superseded host source archives were retired; the
+owned Linux lab is stopped. Separate final source/artifact/receipt/visual review
+of tree `ea28f4695603ae1b3c71c0909966a0479a0bb0b6` is clear; only completion
+metadata follows that review. The signed PR identifies the final candidate.
 
 ## R1 standalone XEmbed tray — 2026-10-30
 
 Owner: Cam; `codex/r1-xembed-tray`; base merged PR311 above.
-Status: review candidate; focused Linux and scoped sanitizer gates passed.
-Separate artifact/evidence review clear; signed PR handoff follows. User authorized
+Status: merged in PR312 as `17a1548b6ea866644311d280539794ff45ebb32d`;
+canonical signature, reviewed tree and author DCO verified; source branches
+retired. Focused Linux and scoped sanitizer gates passed. User authorized
 merge/cleanup and continued related feature work. #78 remains open for its
 complete XEmbed/container/bar and modern-bus acceptance.
 
@@ -86,7 +190,7 @@ application-child focus is independently preserved. Duplicate guest evidence
 and consumed inputs retired (112,922,942 bytes); lab stopped. Broader #78
 integration and six-target/default-server acceptance remain open. Next select
 its finite integration checkpoint; do not repeat the standalone slice or
-silently treat it as full tray completion. Counter remains 1/5 until merge.
+silently treat it as full tray completion. Counter advanced to 2/5 at PR312 merge.
 
 ## R1 notification installed acceptance — 2026-10-30
 

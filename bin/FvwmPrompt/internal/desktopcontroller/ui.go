@@ -186,6 +186,7 @@ func (d *Controller) theme(force bool) error {
 	for name, color := range palette {
 		d.lastThemeColors[name] = color
 	}
+	d.projectTray()
 	if err := d.settingsMenu("all"); err != nil {
 		return err
 	}

@@ -20,21 +20,24 @@ existing X11 and FVWM module libraries; it does not need a D-Bus session bus
 or an additional GUI toolkit.
 
 The tray owns the system-tray selection for its X screen. It does not replace
-another owner. If another tray is already running, stop that tray before
-starting FvwmTray. If FvwmTray loses the selection, it releases its clients
-and exits; start it again explicitly after the selection becomes available.
+another owner. At startup it allows up to two seconds for an existing owner
+to release the selection, checking shutdown between short waits. It never
+forces that release. A blocked Xlib call is outside that deadline. If another
+tray remains running, stop that tray before starting FvwmTray. If FvwmTray
+loses the selection, it releases its clients and exits; start it again
+explicitly after the selection becomes available.
 
-This feature is in development. The first host is a standalone window on the
-primary monitor. It supports the XEmbed docking, mapped-state, activation,
+This feature is in development. The host can appear as a standalone window
+or an anchored bar popup. It supports the XEmbed docking, mapped-state, activation,
 focus and traversal subset described below. It does not yet support
 StatusNotifier items, application menus, balloon messages, global accelerators,
 XDND or modality forwarding. It accepts windows using the screen's default
 visual and depth; ARGB and other visual/depth combinations are not supported
 in this host. The module does not claim full XEmbed protocol coverage.
 
-FvwmButtons swallowing, arbitrary external containers and adaptive-bar
-integration are not supported by this standalone host. Do not swallow or
-reparent the FvwmTray window into another container. External reparenting
+FvwmButtons swallowing and arbitrary external containers are not supported.
+The adaptive bar opens the host as a root-window popup, without reparenting.
+Do not swallow or reparent the FvwmTray window into another container. External reparenting
 causes the host to release its clients and exit.
 
 == Start and stop
@@ -116,7 +119,9 @@ SendToModule FvwmTray Reload
 ----
 
 Colorset changes and published monitor, scale and work-area changes also
-refresh the running host. A reload does not start the module or replace a
+refresh the running host. Automatic topology/work-area refresh preserves the
+current runtime visibility; an initial or explicitly reloaded configuration
+applies its stored *Visible* value. A reload does not start the module or replace a
 different tray owner.
 
 == Controls
@@ -133,6 +138,9 @@ SendToModule FvwmTray Hide
 SendToModule FvwmTray Show
 SendToModule FvwmTray Reload
 SendToModule FvwmTray Status
+SendToModule FvwmTray ToggleAt 100 50 80 28
+SendToModule FvwmTray PageNext
+SendToModule FvwmTray PagePrev
 ----
 
 Choose a binding that does not conflict with your configuration. *Focus*
@@ -147,6 +155,31 @@ previous application through normal window-manager focus policy when possible.
 focus. These commands are transient and last until the next configuration
 snapshot. They do not change the application-owned mapped flags.
 When no clients are present, the standalone host remains available.
+
+*ToggleAt x y width height* toggles an anchored popup using actual root-pixel
+coordinates and dimensions. All four values must form a valid representable
+rectangle; a malformed request is rejected without changing the current popup.
+The host chooses the anchor monitor's scale, places the popup adjacent to the
+anchor, flips at an edge and clamps it to the work area. Placement occurs at
+action time; it does not continuously follow a moved bar. An FvwmButtons
+button can supply its current coordinates at activation:
+
+----
+*MyBar: (Title "Tray", Action SendToModule FvwmTray ToggleAt $left $top $width $height)
+----
+
+*Show* returns to
+standalone placement. Escape hides an anchored popup and requests restoration
+of the previous managed focus. The desktop bar hides the popup before its own
+rebuild; reopening uses fresh coordinates. The tray and clients survive the bar.
+Reloading configuration with *Visible Off* can also dismiss the popup while
+retaining clients.
+
+*PageNext* and *PagePrev*, Page Down and Page Up, or the header controls move
+between overflow pages. A page/count and omitted-client cue indicates retained
+clients. The navigation targets are 24 logical units; on work areas too small
+for the 48-unit controls, the host uses a fallback. Clients that cannot fit
+remain members and are not resampled.
 
 *Status* emits one numeric `FVWM_TRAY_STATUS` FVWM Echo record. Its fields,
 in order, are client count, mapped-client count, limit, scale in quarters,
@@ -170,8 +203,8 @@ over-capacity requests are refused. This subset does not imply support for all
 toolkit clients.
 
 An admitted client can remain a member while it does not fit in the available
-area. The host displays a bounded subset in a stable order; space becoming
-available can make another retained client visible. The client-provided mapped
+area. The host displays bounded pages in a stable order; page controls and available
+space can make another retained client visible. The client-provided mapped
 flag remains distinct from whether an icon currently fits or the host is shown.
 Client destruction or reparenting out of its socket retires that membership.
 

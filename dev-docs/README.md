@@ -53,3 +53,5 @@ queue. The public website/manual redesign remains deferred under
 [DOCS-01](decisions/WEBSITE-MANUALS-BRIEF.md).
 
 Recent checkpoints include [notification installed acceptance](verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md), [optional desktop pinboard](verification/VERIFICATION-2026-10-27-PINBOARD.md) and [file-job acceptance completion](verification/VERIFICATION-2026-10-27-FILE-JOBS-COMPLETION.md). Broader release coverage remains tracked separately.
+
+The [tray bar/paging checkpoint](verification/VERIFICATION-2026-10-30-TRAY-BAR.md) records saved tray preferences, real adaptive-bar activation, three theme/font previews and the separate Buttons font-lifetime leak gap.

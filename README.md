@@ -21,7 +21,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   and live updates preserving drafts/selection.
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
-- In-progress standalone XEmbed tray: [usage](doc/FvwmTray.adoc),
+- In-progress XEmbed tray with standalone and bar popup modes: [usage](doc/FvwmTray.adoc),
   [theme captures and qualification limits](doc/development-preview.md#standalone-xembed-tray).
 - Optional desktop pinboard: saved references, shaped cells and management;
   unpin preserves targets.

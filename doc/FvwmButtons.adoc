@@ -158,6 +158,27 @@ button records or change layout.
   cross in the lower right interior also marks disabled buttons when space
   permits, including when no DisabledColorset is configured.
 
+*FvwmButtons: StartupAction command::
+  Runs one FVWM command after initial configuration and runtime packet-reader
+  initialization. This is a root-only startup option, including in a File
+  configuration. It does not promise final painting or stable button geometry.
+  Use a named FVWM function when several actions are needed.
++
+The command is at most 1000 bytes, excluding a single physical LF or CRLF line
+terminator. Embedded line breaks, empty and oversized commands are refused
+without replacing the previous valid startup value. Horizontal edge whitespace
+is trimmed. The last valid initial value wins. The action is consumed once;
+later updates do not execute it again. Existing configurations without this
+option do not run a startup command.
++
+For an asynchronous desktop bar, request dynamic state after Buttons can receive
+it, instead of relying on an immediate command following Module:
++
+....
+*MyBar: StartupAction SendToModule FvwmDesktop refresh 1920
+Module FvwmButtons MyBar
+....
+
 *FvwmButtons: Columns columns::
   Specifies the number of columns of buttons to be created. If
   unspecified, the number of columns is set to the number of buttons

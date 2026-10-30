@@ -290,6 +290,56 @@ func (c *collector) pages(s *Section, resource, scope, property string, expected
 	}
 	s.Truncated = true
 }
+
+// Session Query distinguishes proposed policy, unavailable observations and a
+// live owner. Only the unavailable observation may carry a null effective
+// value; a bus request always describes next-login policy, never a live change.
+func sessionSettingsMetadata(key string, item map[string]json.RawMessage) (bool, bool) {
+	available := strings.TrimSpace(string(item["available"]))
+	if available != "true" && available != "false" {
+		return false, false
+	}
+	requestedSource := stringField(item, "requested_source")
+	if !member(requestedSource, []string{"saved", "module-configuration"}) {
+		return false, false
+	}
+	var requested any
+	decoder := json.NewDecoder(strings.NewReader(string(item["requested"])))
+	decoder.UseNumber()
+	if decoder.Decode(&requested) != nil {
+		return false, false
+	}
+	if _, err := desktopsettings.Value(key, requested, false); err != nil {
+		return false, false
+	}
+	source, application := stringField(item, "source"), stringField(item, "application")
+	nullEffective := strings.TrimSpace(string(item["effective"])) == "null"
+	expected := "not-submitted"
+	unavailable := false
+	switch source {
+	case "saved", "module-configuration":
+		if source != requestedSource || nullEffective {
+			return false, false
+		}
+	case "unavailable":
+		if available != "false" || !nullEffective {
+			return false, false
+		}
+		expected, unavailable = "live-unavailable", true
+	case "session-owner":
+		if available != "true" || nullEffective {
+			return false, false
+		}
+		expected = "live-owner-observed"
+	default:
+		return false, false
+	}
+	if key == "session_bus" {
+		expected = "next-login"
+	}
+	return unavailable, application == expected
+}
+
 func (c *collector) settings(s *Section) {
 	s.Generation = c.req.SettingsGeneration
 	var snapshot map[string]map[string]json.RawMessage
@@ -308,7 +358,20 @@ func (c *collector) settings(s *Section) {
 			c.problem(s, "Settings metadata missing or generation changed")
 			continue
 		}
+		session := desktopsettings.SessionKey(key)
+		sessionUnavailable := false
+		if session {
+			var valid bool
+			sessionUnavailable, valid = sessionSettingsMetadata(key, item)
+			if !valid {
+				c.problem(s, "Invalid session settings metadata")
+				continue
+			}
+		}
 		value := func(field string) string {
+			if field == "effective" && sessionUnavailable {
+				return "unavailable"
+			}
 			var v any
 			decoder := json.NewDecoder(strings.NewReader(string(item[field])))
 			decoder.UseNumber()
@@ -342,11 +405,29 @@ func (c *collector) settings(s *Section) {
 			c.row(s, key+" values", constraint)
 		}
 		source, application := stringField(item, "source"), stringField(item, "application")
-		if !member(source, []string{"saved", "module-configuration"}) || !member(application, []string{"not-submitted", "submitted-to-fvwm"}) {
+		applications := []string{"not-submitted", "submitted-to-fvwm"}
+		if desktopsettings.TrayKey(key) {
+			applications = append(applications, "requested-state-submitted")
+		}
+		if !session && (!member(source, []string{"saved", "module-configuration"}) || !member(application, applications)) {
 			c.problem(s, "Invalid settings source or application metadata")
 			continue
 		}
 		c.row(s, key+" source", source+"; "+application+"; owner=FvwmDesktop")
+		if session {
+			request := "requested=" + value("requested") + "; source=" + stringField(item, "requested_source") + "; available=" + strings.TrimSpace(string(item["available"]))
+			if key == "session_bus" {
+				request += "; next login"
+			}
+			c.row(s, key+" request", request)
+		}
+		if desktopsettings.TrayKey(key) {
+			if stringField(item, "readiness") != "unobserved" {
+				c.problem(s, "Invalid tray readiness metadata")
+				continue
+			}
+			c.row(s, key+" request", "requested="+value("requested")+"; readiness=unobserved")
+		}
 		var runtime any
 		_ = json.Unmarshal(item["runtime_constraint"], &runtime)
 		if runtime != nil {

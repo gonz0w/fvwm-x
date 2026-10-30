@@ -73,6 +73,21 @@ class Session:
             if alias.is_symlink():
                 alias.unlink()
             alias.symlink_to(executable)
+        # A caller may pin additional modules to this same candidate build.
+        # Names stay private basenames; never replace another profile's files.
+        links = getattr(options, 'module_links', {})
+        assert len(links) <= 8
+        for name, executable in links.items():
+            assert name and len(name) <= 64 and all(
+                char.isascii() and (char.isalnum() or char in '_-')
+                for char in name), name
+            executable = Path(executable).resolve()
+            assert executable.is_file(), executable
+            alias = modules / name
+            if alias.is_symlink():
+                alias.unlink()
+            assert not alias.exists(), alias
+            alias.symlink_to(executable)
         # A private sibling stage makes the selected core unambiguous without
         # changing its build-configured fallback or the user's installation.
         binaries = self.home / 'bin'
@@ -206,7 +221,12 @@ class Session:
         snapshot = packet['result']
         if snapshot.get('settings', {}).get('palette', {}).get('application') != 'submitted-to-fvwm':
             return False
-        assert len(snapshot['settings']) == 15, snapshot
+        expected = {'palette', 'appearance', 'day', 'night', 'transparency',
+            'motion', 'keep_wallpaper', 'launcher_opacity', 'wallpaper_palette',
+            'wallpaper_appearance', 'contrast', 'session_bus',
+            'session_notifications', 'notification_dnd', 'session_power',
+            'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation'}
+        assert set(snapshot['settings']) == expected, snapshot
         self.settings = snapshot
         return snapshot
 

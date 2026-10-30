@@ -20,7 +20,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 6
+const StateVersion = 7
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -122,6 +122,24 @@ var registry = []Setting{
 	{Key: "session_power", Type: "enum", Default: "portable",
 		Choices: []string{"portable", "login1"}, Group: "session",
 		Description: "Power provider (live owner handshake)"},
+	{Key: "tray_enabled", Type: "boolean", Default: false,
+		Group: "tray", Description: "Request the desktop tray"},
+	{Key: "tray_gap", Type: "integer", Default: 4,
+		Minimum: 0, Maximum: 64, Group: "tray",
+		Description: "Tray icon gap (logical pixels)"},
+	{Key: "tray_padding", Type: "integer", Default: 4,
+		Minimum: 0, Maximum: 64, Group: "tray",
+		Description: "Tray padding (logical pixels)"},
+	{Key: "tray_orientation", Type: "enum", Default: "horizontal",
+		Choices: []string{"horizontal", "vertical"}, Group: "tray",
+		Description: "Tray icon direction"},
+}
+
+// TrayKey identifies preferences requested from the reserved native tray alias.
+// They do not participate in the optional session-service owner handshake.
+func TrayKey(key string) bool {
+	item, ok := find(key)
+	return ok && item.Group == "tray"
 }
 
 // SessionKey identifies the finite optional-service preference domain.
@@ -223,7 +241,9 @@ func Value(key string, value any, text bool) (any, error) {
 			}
 		}
 		n, ok := integer(value)
-		valid = ok && n >= 0 && n <= 100
+		minimum, minOK := item.Minimum.(int)
+		maximum, maxOK := item.Maximum.(int)
+		valid = ok && minOK && maxOK && n >= minimum && n <= maximum
 		if valid {
 			value = n
 		}
@@ -426,7 +446,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -443,6 +463,10 @@ func DecodeState(data []byte) (Values, error) {
 		{"session_notifications", 5, "off"},
 		{"notification_dnd", 5, false},
 		{"session_power", 6, "portable"},
+		{"tray_enabled", 7, false},
+		{"tray_gap", 7, 4},
+		{"tray_padding", 7, 4},
+		{"tray_orientation", 7, "horizontal"},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <unistd.h>
 
 #define XEMBED_EMBEDDED_NOTIFY 0
@@ -548,6 +549,12 @@ static void configure(tray_ui *ui, unsigned int index,
 		retire(ui, (unsigned int)current);
 }
 
+static bool hit_target(const tray_cell *target, int x, int y)
+{
+	return target->visible && x >= target->x && y >= target->y &&
+	    x - target->x < target->width && y - target->y < target->height;
+}
+
 void tray_x11_event(tray_ui *ui, XEvent *event)
 {
 	if (event->type == SelectionClear &&
@@ -585,7 +592,16 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 	if (event->type == ButtonPress && !event->xany.send_event)
 	{
 		if (event->xbutton.window == ui->host)
-			tray_x11_focus(ui, 0, 0, event->xbutton.time);
+		{
+			if (hit_target(&ui->page_prev, event->xbutton.x,
+			    event->xbutton.y))
+				tray_page(ui, -1, false, event->xbutton.time);
+			else if (hit_target(&ui->page_next, event->xbutton.x,
+			    event->xbutton.y))
+				tray_page(ui, 1, false, event->xbutton.time);
+			else
+				tray_x11_focus(ui, 0, 0, event->xbutton.time);
+		}
 		for (unsigned int i = 0; i < ui->model.count; i++)
 			if (event->xbutton.window == ui->sites[i].socket)
 				tray_x11_focus(ui, ui->model.clients[i].id,
@@ -602,7 +618,21 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 		if (key == XK_Escape)
 		{
 			if (event->type == KeyPress)
+			{
 				tray_x11_unfocus(ui, true);
+				if (ui->anchored)
+				{
+					ui->visible = false;
+					ui->dirty = true;
+				}
+			}
+			return;
+		}
+		if (key == XK_Page_Up || key == XK_Page_Down)
+		{
+			if (event->type == KeyPress)
+				tray_page(ui, key == XK_Page_Up ? -1 : 1,
+				    true, event->xkey.time);
 			return;
 		}
 		if (key == XK_F6)
@@ -740,6 +770,80 @@ void tray_x11_hints(tray_ui *ui)
 	    PropModeReplace, (unsigned char *)&pid, 1);
 }
 
+static bool startup_clock(struct timespec *now)
+{
+	return clock_gettime(CLOCK_MONOTONIC, now) == 0;
+}
+
+static Time server_timestamp(tray_ui *ui)
+{
+	unsigned char byte = 1;
+	XEvent event;
+	Time timestamp = CurrentTime;
+
+	XChangeProperty(ui->display, ui->owner, ui->timestamp, XA_INTEGER, 8,
+	    PropModeReplace, &byte, 1);
+	XSync(ui->display, False);
+	for (unsigned int i = 0; i < 32 &&
+	    XCheckWindowEvent(ui->display, ui->owner, PropertyChangeMask,
+	    &event); i++)
+		if (event.type == PropertyNotify &&
+		    event.xproperty.atom == ui->timestamp)
+			timestamp = event.xproperty.time;
+	return timestamp;
+}
+
+static int startup_remaining(const struct timespec *started)
+{
+	struct timespec now;
+
+	if (!startup_clock(&now) || now.tv_sec < started->tv_sec ||
+	    now.tv_sec - started->tv_sec > 2)
+		return 0;
+	long elapsed = (now.tv_sec - started->tv_sec) * 1000 +
+	    (now.tv_nsec - started->tv_nsec) / 1000000;
+	return elapsed >= 2000 ? 0 : (int)(2000 - elapsed);
+}
+
+static Time acquire_selection(tray_ui *ui)
+{
+	struct timespec started;
+
+	if (!startup_clock(&started))
+		return CurrentTime;
+	/* One total monotonic grace period includes interrupted polls. It
+	 * cannot preempt a single Xlib request to an unresponsive server. */
+	for (;;)
+	{
+		if (!startup_remaining(&started) || !tray_startup_pause(ui, 0))
+			return CurrentTime;
+		Time timestamp = server_timestamp(ui);
+		if (timestamp == CurrentTime || ui->failed)
+			return CurrentTime;
+		/* Only the fixed ownership check/claim/verification is grabbed.
+		 * A fresh timestamp for each attempt handles a previous
+		 * owner's release invalidating an earlier sample. */
+		XGrabServer(ui->display);
+		if (XGetSelectionOwner(ui->display, ui->selection) == None)
+		{
+			XSetSelectionOwner(ui->display, ui->selection,
+			    ui->owner, timestamp);
+			ui->claimed = XGetSelectionOwner(ui->display,
+			    ui->selection) == ui->owner;
+		}
+		XUngrabServer(ui->display);
+		XSync(ui->display, False);
+		if (ui->claimed || ui->failed)
+			return ui->failed ? CurrentTime : timestamp;
+		int remaining = startup_remaining(&started);
+		if (!remaining)
+			return CurrentTime;
+		int wait = remaining < 50 ? remaining : 50;
+		if (!tray_startup_pause(ui, wait))
+			return CurrentTime;
+	}
+}
+
 bool tray_x11_start(tray_ui *ui)
 {
 	tray_error_owner = ui;
@@ -775,7 +879,6 @@ bool tray_x11_start(tray_ui *ui)
 	    1, 1, 0, 0, 0);
 	XSelectInput(ui->display, ui->proxy, KeyPressMask | KeyReleaseMask |
 	    FocusChangeMask);
-	XMapWindow(ui->display, ui->proxy);
 	XStoreName(ui->display, ui->host, "FvwmTray");
 	XClassHint class_hint = {"FvwmTray", "FvwmTray"};
 	XSetClassHint(ui->display, ui->host, &class_hint);
@@ -785,33 +888,10 @@ bool tray_x11_start(tray_ui *ui)
 	Atom refusals = XInternAtom(ui->display, "_FVWM_TRAY_REFUSALS", False);
 	XChangeProperty(ui->display, ui->owner, refusals, XA_CARDINAL, 32,
 	    PropModeReplace, (unsigned char *)&count, 1);
-	unsigned char byte = 1;
-	XChangeProperty(ui->display, ui->owner, ui->timestamp, XA_INTEGER, 8,
-	    PropModeReplace, &byte, 1);
-	XSync(ui->display, False);
+	Time timestamp = acquire_selection(ui);
+	if (!ui->claimed || timestamp == CurrentTime || ui->failed)
+		return false;
 	XEvent event;
-	Time timestamp = CurrentTime;
-	for (unsigned int i = 0; i < 32 &&
-	    XCheckWindowEvent(ui->display, ui->owner, PropertyChangeMask,
-	    &event); i++)
-		if (event.type == PropertyNotify &&
-		    event.xproperty.atom == ui->timestamp)
-			timestamp = event.xproperty.time;
-	if (timestamp == CurrentTime || ui->failed)
-		return false;
-	/* Only three fixed X operations occur under this server grab. */
-	XGrabServer(ui->display);
-	if (XGetSelectionOwner(ui->display, ui->selection) == None)
-	{
-		XSetSelectionOwner(ui->display, ui->selection, ui->owner,
-		    timestamp);
-		ui->claimed = XGetSelectionOwner(ui->display,
-		    ui->selection) == ui->owner;
-	}
-	XUngrabServer(ui->display);
-	XSync(ui->display, False);
-	if (!ui->claimed || ui->failed)
-		return false;
 	memset(&event, 0, sizeof(event));
 	event.xclient.type = ClientMessage;
 	event.xclient.window = ui->root;

@@ -27,6 +27,7 @@
 #include "FvwmButtons.h"
 
 void ParseConfiguration(button_info *ub);
+void buttons_send_startup_action(void);
 void parse_window_geometry(char *geom, int is_button_geometry);
 
 #endif /* FVWMBUTTONS_PARSE_H */

@@ -187,7 +187,9 @@ func TestSessionDNDAndPublicProviderAreFinite(t *testing.T) {
 		t.Fatal("untyped public lifecycle mutation")
 	}
 }
-func TestAllFifteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
+func TestAllNineteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
+	// The initial executed 19-setting projection was 9447 bytes. Shared
+	// envelope metadata must restore this existing cap without dropping rows.
 	d, _ := fixture(t)
 	d.runtimeHeld = map[string]string{"palette": "ink", "appearance": "light", "contrast": "high"}
 	for key, value := range d.runtimeHeld {
@@ -203,11 +205,11 @@ func TestAllFifteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 		t.Fatal(err)
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
-	if len(settings) != 15 {
+	if len(settings) != 19 {
 		t.Fatal("missing typed service preferences")
 	}
 	if len(bytes) > 8192 {
-		t.Fatalf("15-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+		t.Fatalf("19-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
 	}
 }
 
@@ -217,15 +219,15 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 	if err != nil {
 		t.Fatal(err)
 	}
-	projected := publicSettings(native)
+	projected := publicSettings(native, "")
 	for key, raw := range native {
 		item := raw.(map[string]any)
-		if item["owner"] != "FvwmDesktop" || item["generation"] != d.generation {
+		if item["owner"] != "FvwmDesktop" || item["generation"] != d.generation || item["preview"] != false {
 			t.Fatal("standalone native/inspector identity missing", key, item)
 		}
 		want := values{}
 		for field, value := range item {
-			if field != "owner" && field != "generation" {
+			if field != "owner" && field != "generation" && field != "preview" && field != "persistence_error" {
 				want[field] = value
 			}
 		}
@@ -239,11 +241,11 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 	} {
 		reply := d.settingsRequest(request)
 		result, ok := reply["result"].(map[string]any)
-		if !ok || result["owner"] != "FvwmDesktop" || result["generation"] != d.generation {
+		if !ok || result["owner"] != "FvwmDesktop" || result["generation"] != d.generation || result["preview"] != false {
 			t.Fatal("public consumer lost envelope identity", reply)
 		}
 		settings := result["settings"].(map[string]any)
-		if len(settings) != 15 {
+		if len(settings) != 19 {
 			t.Fatal("public projection lost a preference", settings)
 		}
 		for key, raw := range settings {
@@ -254,7 +256,66 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 			if _, exists := item["generation"]; exists {
 				t.Fatal("public item repeated envelope generation", key)
 			}
+			if _, exists := item["preview"]; exists {
+				t.Fatal("public item repeated envelope preview", key)
+			}
+			if _, exists := item["persistence_error"]; exists {
+				t.Fatal("public item repeated empty envelope error", key)
+			}
 		}
+	}
+}
+
+func TestPublicSettingsInheritCommonErrorAndRetainDistinctRuntimeErrors(t *testing.T) {
+	d, _ := fixture(t)
+	d.persistenceError = "Cannot read private settings; repair the file then reload"
+	d.runtimeHeld = map[string]string{"palette": "ink"}
+	d.effective["palette"] = "ink"
+	native, err := d.query("all", nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, request := range []values{
+		{"operation": "query", "scope": "all"},
+		{"operation": "validate", "provider": d.instance, "generation": d.generation, "values": values{"motion": true}},
+	} {
+		reply := d.settingsRequest(request)
+		result := reply["result"].(map[string]any)
+		if result["persistence_error"] != d.persistenceError || result["preview"] != false {
+			t.Fatal("missing common result metadata", reply)
+		}
+		settings := result["settings"].(map[string]any)
+		for key, raw := range settings {
+			item := raw.(map[string]any)
+			if key == "palette" {
+				if item["persistence_error"] != "Runtime kept; preference not saved. Reload or save this setting again." {
+					t.Fatal("distinct per-key failure was lost", item)
+				}
+			} else if _, exists := item["persistence_error"]; exists {
+				t.Fatal("common error repeated in a public row", key, item)
+			}
+		}
+		data, _ := json.Marshal(reply)
+		if strings.Count(string(data), d.persistenceError) != 1 {
+			t.Fatal("common error was not encoded exactly once", string(data))
+		}
+	}
+	if native["motion"].(map[string]any)["persistence_error"] == nil || native["palette"].(map[string]any)["persistence_error"] != "Runtime kept; preference not saved. Reload or save this setting again." {
+		t.Fatal("standalone metadata changed during public projection", native)
+	}
+	unchanged := d.settingsRequest(values{"operation": "query", "scope": "all", "provider": d.instance, "generation": d.generation})["result"].(map[string]any)
+	if unchanged["persistence_error"] != d.persistenceError || unchanged["preview"] != false {
+		t.Fatal("conditional query lost common metadata", unchanged)
+	}
+	// Reload is permitted to recover from a common read failure. Its response
+	// must inherit the post-operation error, rather than the old one.
+	reloaded := d.settingsRequest(values{"operation": "reload", "provider": d.instance, "generation": d.generation})["result"].(map[string]any)
+	if value, exists := reloaded["persistence_error"]; !exists || value != nil || reloaded["preview"] != false {
+		t.Fatal("reload retained a stale common error", reloaded)
+	}
+	committed := d.settingsRequest(values{"operation": "set", "provider": d.instance, "generation": d.generation, "values": values{"motion": true}})["result"].(map[string]any)
+	if value, exists := committed["persistence_error"]; !exists || value != nil || committed["preview"] != false {
+		t.Fatal("mutation response lost common metadata", committed)
 	}
 }
 

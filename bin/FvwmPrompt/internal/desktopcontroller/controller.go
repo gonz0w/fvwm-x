@@ -49,6 +49,7 @@ type Controller struct {
 	revision                                 *string
 	generation, instance, persistenceError   string
 	ready                                    bool
+	trayInitialized, trayRequested           bool
 	runtimeHeld                              map[string]string
 	editor                                   *editor
 	preview                                  preview
@@ -247,6 +248,8 @@ func (d *Controller) finishConfiguration() error {
 	d.preview.constrain()
 	d.applySessionPolicy()
 	d.announceSettings()
+	d.projectTray()
+	d.applyTrayLifecycle(false)
 	return d.fatal
 }
 func (d *Controller) prepare(changes values) (values, values, error) {
@@ -298,7 +301,12 @@ func (d *Controller) changeSettings(changes values) error {
 	if hasSessionChange(changes) {
 		d.applySessionPolicy()
 	}
-	return d.theme(true)
+	if err := d.theme(true); err != nil {
+		return err
+	}
+	_, explicitTray := changes["tray_enabled"]
+	d.applyTrayLifecycle(explicitTray)
+	return d.fatal
 }
 func (d *Controller) reloadSettings() error {
 	saved, revision, err := loadSettings(d.statePath)
@@ -323,7 +331,11 @@ func (d *Controller) reloadSettings() error {
 	d.changed(generation)
 	d.preview.constrain()
 	d.applySessionPolicy()
-	return d.theme(true)
+	if err := d.theme(true); err != nil {
+		return err
+	}
+	d.applyTrayLifecycle(false)
+	return d.fatal
 }
 func (d *Controller) resetSettings(scope string) error {
 	keys, err := desktopsettings.Scope(scope)

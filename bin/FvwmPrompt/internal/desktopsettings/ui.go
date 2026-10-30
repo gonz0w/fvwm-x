@@ -67,11 +67,11 @@ func Editor(s Snapshot,
 		return plan, err
 	}
 	// The all-settings command retains its existing appearance editor. Session
-	// controls have their own compact scope, so larger fonts stay usable.
+	// and tray controls use compact scopes, so larger fonts stay usable.
 	if scope == "all" {
 		appearance := keys[:0]
 		for _, key := range keys {
-			if !SessionKey(key) {
+			if !SessionKey(key) && !TrayKey(key) {
 				appearance = append(appearance, key)
 			}
 		}
@@ -118,6 +118,11 @@ func Editor(s Snapshot,
 		lines[0] = `Title "Session settings"`
 		lines = append(lines, "Line left", `Text "Bus policy applies at next login."`,
 			"Line left", `Text "Power, notifications and DND need a live handshake."`)
+	}
+	if len(keys) > 0 && TrayKey(keys[0]) {
+		lines[0] = `Title "Tray settings"`
+		lines = append(lines, "Line left",
+			`Text "Enablement requests the optional tray; another owner may refuse it."`)
 	}
 	previous := ""
 	for _, key := range plan.Keys {
@@ -197,6 +202,7 @@ func Editor(s Snapshot,
 			quote(action+"cancel-settings "+token)))
 	if scope == "all" {
 		lines = append(lines, `Button continue "Session settings..." F8`, "Command "+action+"edit-settings group:session")
+		lines = append(lines, `Button continue "Tray settings..." F9`, "Command "+action+"edit-settings group:tray")
 	}
 	if has(plan.Keys, "launcher_opacity") {
 		lines = append(lines,
@@ -377,6 +383,7 @@ func AppearanceMenu(settings Values) Menu {
 			"SendToModule FvwmDesktop settings"},
 		Row{"Edit saved preferences...",
 			"SendToModule FvwmDesktop edit-settings"})
+	rows = append(rows, Row{"Tray settings...", "SendToModule FvwmDesktop edit-settings group:tray"})
 	rows = append(rows, Row{"", "Nop"})
 	for _, contrast := range []string{"normal", "high"} {
 		caption := "  " + title(contrast) + " contrast"

@@ -42,18 +42,37 @@ func exact(r values, keys ...string) bool {
 func failure(code string) values   { return values{"error": values{"code": code}} }
 func success(result values) values { return values{"result": result} }
 
-// Public settings already belong to the envelope's owner and generation.
+// Public settings inherit owner, generation, preview and the common persistence
+// error from their result envelope. A distinct per-setting persistence error
+// still belongs to that row, including a runtime-kept unsaved preference.
 // Keep each standalone native/inspector record self-contained, but avoid
-// repeating those identical identities fifteen times inside one bounded reply.
+// repeating shared metadata nineteen times inside one bounded reply.
 // Copies preserve the standalone metadata if a caller retains that query.
-func publicSettings(settings values) values {
+func publicSettings(settings values, commonError string) values {
 	result := values{}
 	for key, raw := range settings {
 		item := values{}
 		for field, value := range raw.(map[string]any) {
-			if field != "owner" && field != "generation" {
-				item[field] = value
+			if field == "owner" || field == "generation" || field == "preview" && value == false {
+				continue
 			}
+			if field == "persistence_error" {
+				switch message := value.(type) {
+				case *string:
+					if message == nil && commonError == "" || message != nil && *message == commonError {
+						continue
+					}
+				case string:
+					if message == commonError {
+						continue
+					}
+				case nil:
+					if commonError == "" {
+						continue
+					}
+				}
+			}
+			item[field] = value
 		}
 		result[key] = item
 	}
@@ -168,7 +187,7 @@ func (d *Controller) settingsRequest(r values) values {
 	}
 	if op == "query" && r["generation"] == d.generation {
 		return success(values{"owner": "FvwmDesktop", "schema_version": 1, "provider": d.instance, "generation": d.generation,
-			"state": "unchanged", "scope": scope, "snapshot_required": false})
+			"state": "unchanged", "scope": scope, "snapshot_required": false, "preview": false, "persistence_error": persistence})
 	}
 	if op == "validate" {
 		settings, err := d.query("all", candidate, effective)
@@ -176,7 +195,7 @@ func (d *Controller) settingsRequest(r values) values {
 			return failure("invalid_value")
 		}
 		return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "state": "validated",
-			"generation": d.generation, "saved_revision": d.revision, "settings": publicSettings(settings), "persistence": "not-attempted",
+			"generation": d.generation, "saved_revision": d.revision, "settings": publicSettings(settings, d.persistenceError), "persistence": "not-attempted", "persistence_error": persistence,
 			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false})
 	}
 	before := d.generation
@@ -223,8 +242,14 @@ func (d *Controller) settingsRequest(r values) values {
 	if submissionFailed {
 		application = "submission-failed"
 	}
+	// Reload may clear an earlier common error. Project the current owner
+	// state after the operation, rather than its admission-time snapshot.
+	persistence = nil
+	if d.persistenceError != "" {
+		persistence = d.persistenceError
+	}
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "generation": d.generation,
-		"state": state, "settings": publicSettings(settings), "saved_revision": d.revision, "application": application,
+		"state": state, "settings": publicSettings(settings, d.persistenceError), "saved_revision": d.revision, "application": application, "persistence_error": persistence,
 		"asynchronous_completion": "unknown", "preview": false})
 }
 

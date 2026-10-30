@@ -37,11 +37,16 @@ typedef struct
 	FlocaleFont *font;
 	unsigned int quarters, padding, gap, position;
 	bool vertical, visible, claimed, active, stopped, failed, dirty;
-	bool config_pending, config_refresh, config_valid, release_pending;
+	bool config_pending, config_refresh, config_valid, config_ready;
+	bool config_apply_visible, refresh_apply_visible;
+	bool release_pending;
 	tray_options staged;
 	unsigned int x_error_code;
 	unsigned long x_error_resource;
-	unsigned int refusals, focus_budget;
+	unsigned int refusals, focus_budget, page;
+	bool anchored;
+	tray_rect anchor;
+	tray_cell page_prev, page_next;
 	module_packet_reader reader;
 	module_ui_scale_receiver monitors;
 	module_workarea_state workareas;
@@ -51,6 +56,7 @@ typedef struct
 	tray_site sites[TRAY_CLIENT_MAX];
 } tray_ui;
 
+bool tray_startup_pause(tray_ui *ui, int milliseconds);
 bool tray_x11_start(tray_ui *ui);
 void tray_x11_stop(tray_ui *ui);
 void tray_x11_event(tray_ui *ui, XEvent *event);
@@ -59,6 +65,7 @@ void tray_x11_focus(tray_ui *ui, uint32_t id, int direction, Time timestamp);
 void tray_x11_unfocus(tray_ui *ui, bool restore);
 void tray_x11_hints(tray_ui *ui);
 void tray_render(tray_ui *ui);
+void tray_page(tray_ui *ui, int direction, bool keyboard, Time timestamp);
 void tray_request_config(tray_ui *ui);
 
 #endif

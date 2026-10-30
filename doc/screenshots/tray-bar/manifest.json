@@ -1,0 +1,509 @@
+{
+  "checkpoint": "TRAY-01 bar popup/paging development preview; synthetic clients, no real-toolkit acceptance",
+  "base": "17a1548b6ea866644311d280539794ff45ebb32d",
+  "source_closure": "30403c34cc7dec8fd8d75f64213d46a14af37a6287f09621ae7455a507974a51",
+  "capture_profile": "Linux ARM64 native CPU AppleHV; Xorg dummy 3200x1080; unmodified framebuffer PNGs",
+  "profiles": [
+    {
+      "palette": "slate",
+      "appearance": "dark",
+      "overlay": "theme-0.fvwm",
+      "sha256": "590d8446c73895c301de47111e4a0472f1c81ab6f22e07e2dff28eb715c7df82",
+      "font": "xft:Sans:size=11",
+      "loaded_font_height": 17,
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 16777540,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [
+          {
+            "window": 14680102,
+            "type": 19,
+            "synthetic": false,
+            "kind": "structure"
+          },
+          {
+            "window": 14680102,
+            "type": 12,
+            "synthetic": false,
+            "kind": "structure"
+          }
+        ],
+        "unexpected_x_errors": 0
+      },
+      "actual_host": {
+        "x": 1151,
+        "y": 36,
+        "width": 220,
+        "height": 60,
+        "border": 0
+      },
+      "settings": {
+        "application": "submitted-to-fvwm",
+        "asynchronous_completion": "unknown",
+        "generation": "6d3c41dbab40d4e8e135d115e779a9c1",
+        "operation": "query",
+        "owner": "FvwmDesktop",
+        "persistence_error": null,
+        "preview": false,
+        "provider": "b5b78aa2c17ec35c0065d23f5c7ba2b5",
+        "saved_revision": "d69e40405682222a92bf241d5c4b66b579d5804731f227f762920712dd3306aa",
+        "schema_version": 1,
+        "settings": {
+          "tray_enabled": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": false,
+            "description": "Request the desktop tray",
+            "effective": true,
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": true,
+            "runtime_constraint": null,
+            "saved": true,
+            "source": "saved",
+            "type": "boolean"
+          },
+          "tray_gap": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray icon gap (logical pixels)",
+            "effective": 6,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 6,
+            "runtime_constraint": null,
+            "saved": 6,
+            "source": "saved",
+            "type": "integer"
+          },
+          "tray_orientation": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "choices": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Tray icon direction",
+            "effective": "horizontal",
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": "horizontal",
+            "runtime_constraint": null,
+            "saved": "horizontal",
+            "source": "saved",
+            "type": "enum"
+          },
+          "tray_padding": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray padding (logical pixels)",
+            "effective": 5,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 5,
+            "runtime_constraint": null,
+            "saved": 5,
+            "source": "saved",
+            "type": "integer"
+          }
+        },
+        "state": "observed"
+      }
+    },
+    {
+      "palette": "dune",
+      "appearance": "light",
+      "overlay": "theme-1.fvwm",
+      "sha256": "8bfb4ed76bc1bc100284c7d490ec4581d81c956da170d03a0e1b370ac2db3374",
+      "font": "xft:Serif:size=12",
+      "loaded_font_height": 19,
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 16777540,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [
+          {
+            "window": 14680102,
+            "type": 18,
+            "synthetic": false,
+            "kind": "structure"
+          },
+          {
+            "window": 14680102,
+            "type": 19,
+            "synthetic": false,
+            "kind": "structure"
+          },
+          {
+            "window": 14680102,
+            "type": 12,
+            "synthetic": false,
+            "kind": "structure"
+          }
+        ],
+        "unexpected_x_errors": 0
+      },
+      "actual_host": {
+        "x": 1152,
+        "y": 36,
+        "width": 229,
+        "height": 63,
+        "border": 0
+      },
+      "settings": {
+        "application": "submitted-to-fvwm",
+        "asynchronous_completion": "unknown",
+        "generation": "18339e6e9aed157817198c40b58c6fea",
+        "operation": "query",
+        "owner": "FvwmDesktop",
+        "persistence_error": null,
+        "preview": false,
+        "provider": "b5b78aa2c17ec35c0065d23f5c7ba2b5",
+        "saved_revision": "93e485e15636e72b09f2995a7f760b685866e2d72b87ea53954b67df3945d2ad",
+        "schema_version": 1,
+        "settings": {
+          "tray_enabled": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": false,
+            "description": "Request the desktop tray",
+            "effective": true,
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": true,
+            "runtime_constraint": null,
+            "saved": true,
+            "source": "saved",
+            "type": "boolean"
+          },
+          "tray_gap": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray icon gap (logical pixels)",
+            "effective": 7,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 7,
+            "runtime_constraint": null,
+            "saved": 7,
+            "source": "saved",
+            "type": "integer"
+          },
+          "tray_orientation": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "choices": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Tray icon direction",
+            "effective": "vertical",
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": "vertical",
+            "runtime_constraint": null,
+            "saved": "vertical",
+            "source": "saved",
+            "type": "enum"
+          },
+          "tray_padding": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray padding (logical pixels)",
+            "effective": 6,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 6,
+            "runtime_constraint": null,
+            "saved": 6,
+            "source": "saved",
+            "type": "integer"
+          }
+        },
+        "state": "observed"
+      }
+    },
+    {
+      "palette": "slate",
+      "appearance": "dark",
+      "overlay": "theme-2.fvwm",
+      "sha256": "739378b892c332dafa470672ec06ac7d13a0ee97325d8e77e201dc2df89e93d4",
+      "font": "xft:DejaVu Sans Mono:size=18",
+      "loaded_font_height": 28,
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 16777540,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [
+          {
+            "window": 14680102,
+            "type": 18,
+            "synthetic": false,
+            "kind": "structure"
+          },
+          {
+            "window": 14680102,
+            "type": 19,
+            "synthetic": false,
+            "kind": "structure"
+          },
+          {
+            "window": 14680102,
+            "type": 12,
+            "synthetic": false,
+            "kind": "structure"
+          }
+        ],
+        "unexpected_x_errors": 0
+      },
+      "actual_host": {
+        "x": 1177,
+        "y": 36,
+        "width": 344,
+        "height": 70,
+        "border": 0
+      },
+      "settings": {
+        "application": "submitted-to-fvwm",
+        "asynchronous_completion": "unknown",
+        "generation": "76098551ea2516b7655e696ea865bc10",
+        "operation": "query",
+        "owner": "FvwmDesktop",
+        "persistence_error": null,
+        "preview": false,
+        "provider": "b5b78aa2c17ec35c0065d23f5c7ba2b5",
+        "saved_revision": "2bc26518b29a50c9f2f3b9282cebe2850b14675dfd5233732573d8815287951a",
+        "schema_version": 1,
+        "settings": {
+          "tray_enabled": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": false,
+            "description": "Request the desktop tray",
+            "effective": true,
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": true,
+            "runtime_constraint": null,
+            "saved": true,
+            "source": "saved",
+            "type": "boolean"
+          },
+          "tray_gap": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray icon gap (logical pixels)",
+            "effective": 8,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 8,
+            "runtime_constraint": null,
+            "saved": 8,
+            "source": "saved",
+            "type": "integer"
+          },
+          "tray_orientation": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "choices": [
+              "horizontal",
+              "vertical"
+            ],
+            "default": "horizontal",
+            "description": "Tray icon direction",
+            "effective": "horizontal",
+            "group": "tray",
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": "horizontal",
+            "runtime_constraint": null,
+            "saved": "horizontal",
+            "source": "saved",
+            "type": "enum"
+          },
+          "tray_padding": {
+            "application": "requested-state-submitted",
+            "available": true,
+            "capability": "optional-tray-preference",
+            "default": 4,
+            "description": "Tray padding (logical pixels)",
+            "effective": 7,
+            "group": "tray",
+            "maximum": 64,
+            "minimum": 0,
+            "native_preview": false,
+            "readiness": "unobserved",
+            "requested": 7,
+            "runtime_constraint": null,
+            "saved": 7,
+            "source": "saved",
+            "type": "integer"
+          }
+        },
+        "state": "observed"
+      }
+    }
+  ],
+  "captures": [
+    {
+      "file": "slate-popup.png",
+      "bytes": 28422,
+      "sha256": "3c87efd6c9db45ef715317ff3795fc49eb08dc433b5ee016776ac86eb59ecdd6"
+    },
+    {
+      "file": "theme-0-bar-popup-settings.png",
+      "bytes": 57174,
+      "sha256": "c9a6234444da727df28aced7a234c1d0aa4f1a615834850081e2686b1845ef59"
+    },
+    {
+      "file": "theme-1-bar-popup-settings.png",
+      "bytes": 58690,
+      "sha256": "731ccb0443c5d925cbb7c4fb177fa459043c45913047e91b344db83b7d7cc625"
+    },
+    {
+      "file": "theme-2-bar-popup-settings.png",
+      "bytes": 62391,
+      "sha256": "bc545587359ba37fcf168933e0409bfaa12553f2370523897c976e69f3de9a53"
+    },
+    {
+      "file": "secondary-2x-anchor.png",
+      "bytes": 41164,
+      "sha256": "819510ad817d2358a373fc7f20f50518bc2033ac57179b50f7b544c1180b5d3b"
+    }
+  ],
+  "secondary": {
+    "anchor": {
+      "x": 2000,
+      "y": 40,
+      "width": 48,
+      "height": 32
+    },
+    "actual": {
+      "x": 2000,
+      "y": 72,
+      "width": 707,
+      "height": 120,
+      "border": 0
+    },
+    "native": {
+      "count": 1,
+      "mapped": 1,
+      "limit": 32,
+      "quarters": 8,
+      "claimed": 1,
+      "pending": 0,
+      "epoch": 1,
+      "host": 16777221,
+      "owner": 16777220,
+      "proxy": 16777222,
+      "font_height": 56
+    },
+    "ready_before_toggle": {
+      "count": 1,
+      "mapped": 1,
+      "limit": 32,
+      "quarters": 4,
+      "claimed": 1,
+      "pending": 0,
+      "epoch": 1,
+      "host": 16777221,
+      "owner": 16777220,
+      "proxy": 16777222,
+      "font_height": 28
+    }
+  },
+  "files": {
+    "theme-2.fvwm": {
+      "sha256": "739378b892c332dafa470672ec06ac7d13a0ee97325d8e77e201dc2df89e93d4",
+      "bytes": 143
+    },
+    "slate-popup.png": {
+      "sha256": "3c87efd6c9db45ef715317ff3795fc49eb08dc433b5ee016776ac86eb59ecdd6",
+      "bytes": 28422
+    },
+    "theme-1-bar-popup-settings.png": {
+      "sha256": "731ccb0443c5d925cbb7c4fb177fa459043c45913047e91b344db83b7d7cc625",
+      "bytes": 58690
+    },
+    "theme-2-bar-popup-settings.png": {
+      "sha256": "bc545587359ba37fcf168933e0409bfaa12553f2370523897c976e69f3de9a53",
+      "bytes": 62391
+    },
+    "secondary-2x-anchor.png": {
+      "sha256": "819510ad817d2358a373fc7f20f50518bc2033ac57179b50f7b544c1180b5d3b",
+      "bytes": 41164
+    },
+    "theme-0.fvwm": {
+      "sha256": "590d8446c73895c301de47111e4a0472f1c81ab6f22e07e2dff28eb715c7df82",
+      "bytes": 119
+    },
+    "theme-0-bar-popup-settings.png": {
+      "sha256": "c9a6234444da727df28aced7a234c1d0aa4f1a615834850081e2686b1845ef59",
+      "bytes": 57174
+    },
+    "theme-1.fvwm": {
+      "sha256": "8bfb4ed76bc1bc100284c7d490ec4581d81c956da170d03a0e1b370ac2db3374",
+      "bytes": 121
+    }
+  }
+}

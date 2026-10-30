@@ -288,3 +288,27 @@ module lifetime before the deliberate abrupt-exit case; unsupported platforms
 record that case unavailable. The probe does not establish real toolkit,
 container/bar, full XEmbed, six-target or release qualification. See the
 [source-bound checkpoint](verification/VERIFICATION-2026-10-30-XEMBED-TRAY.md).
+
+
+## Focused tray bar and paging probe
+
+Build the same tray inputs plus FvwmButtons, FvwmForm, FvwmDesktop and its existing
+worker/session companions. From the matching source root:
+
+```sh
+python3 tests/live_x/tray_bar_live.py \
+    --build /path/to/build \
+    --tray /path/to/private-prefix/libexec/fvwm3/VERSION/FvwmTray \
+    --xorg-config tests/live_x/xorg-dummy.conf \
+    --execution-profile native-cpu \
+    --artifacts-dir /path/to/new-tray-bar-evidence
+```
+
+The fixture exercises the shipped adaptive bar through real XTest mouse input,
+with ordered Buttons/Desktop/tray readiness fences. It checks popup placement,
+pages, client/focus continuity, saved preferences, three theme/font profiles and
+Linux process-authenticated abrupt bar exit. `--buttons` and `--tray` can select
+scoped instrumented modules while the core, Desktop and peer remain normal.
+Failures retain their original mapping assertion even when a diagnostic intervention
+subsequently succeeds. This is action-time anchoring of a root-child popup; true
+containment, real toolkit clients and full #78 release qualification remain open.

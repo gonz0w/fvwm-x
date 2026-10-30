@@ -1,0 +1,4 @@
+InfoStoreAdd slate_font "xft:Sans:size=11"
+SlatePanel
+*SlateTray Font "xft:Sans:size=11"
+SendToModule SlateTray Reload

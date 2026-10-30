@@ -330,3 +330,154 @@ func TestMalformedBindingTextNeverLabelsAnObservedCompleteList(t *testing.T) {
 		})
 	}
 }
+
+func TestTrayRequestedPolicyUsesNativeNineteenSettingSnapshot(t *testing.T) {
+	request := fixtureRequest(t, "settings")
+	var snapshot map[string]map[string]json.RawMessage
+	if err := json.Unmarshal(request.Settings, &snapshot); err != nil || len(snapshot) != 19 {
+		t.Fatal("native settings registry snapshot incomplete", len(snapshot), err)
+	}
+	result, err := Collect(context.Background(), request, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := map[string]string{}
+	for _, row := range result.Sections[0].Rows {
+		rows[row.Label] = row.Value
+	}
+	for key, requested := range map[string]string{
+		"tray_enabled": "false", "tray_gap": "4", "tray_padding": "4", "tray_orientation": "horizontal",
+	} {
+		if rows[key+" source"] != "saved; requested-state-submitted; owner=FvwmDesktop" || rows[key+" request"] != "requested="+requested+"; readiness=unobserved" {
+			t.Fatal("tray request was rejected or claimed readiness", key, rows)
+		}
+	}
+	// This application state belongs only to the finite tray domain. Keep
+	// unrelated settings on their existing submission-state grammar.
+	snapshot["palette"]["application"] = json.RawMessage(`"requested-state-submitted"`)
+	request.Settings, _ = json.Marshal(snapshot)
+	result, err = Collect(context.Background(), request, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range result.Sections[0].Rows {
+		if row.Label == "palette source" {
+			t.Fatal("tray state accepted for a nontray setting", row)
+		}
+	}
+	if !strings.Contains(result.Sections[0].Reason, "Invalid settings source or application metadata") {
+		t.Fatal("invalid nontray metadata was not reported", result)
+	}
+	// A requested tray is still unobserved even if a fabricated row claims
+	// readiness; the inspector must refuse that fabricated observation.
+	snapshot["tray_enabled"]["readiness"] = json.RawMessage(`"ready"`)
+	request.Settings, _ = json.Marshal(snapshot)
+	result, err = Collect(context.Background(), request, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range result.Sections[0].Rows {
+		if row.Label == "tray_enabled request" {
+			t.Fatal("tray preference claimed observed readiness", row)
+		}
+	}
+	if !strings.Contains(result.Sections[0].Reason, "Invalid tray readiness metadata") {
+		t.Fatal("fabricated tray readiness was not reported", result)
+	}
+}
+
+func TestSessionSettingsUnavailableAndLiveOwnerTuples(t *testing.T) {
+	for _, observed := range []bool{false, true} {
+		for _, available := range []bool{false, true} {
+			t.Run(fmt.Sprintf("observed=%t/available=%t", observed, available), func(t *testing.T) {
+				request := fixtureRequest(t, "settings")
+				saved, effective := desktopsettings.Defaults(), desktopsettings.Defaults()
+				saved["session_bus"], saved["session_notifications"] = "start", "external"
+				saved["notification_dnd"], saved["session_power"] = true, "login1"
+				snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{
+					Saved: saved, Effective: effective, Overrides: desktopsettings.Values{"session_bus": "reuse"},
+					Generation: request.SettingsGeneration, Submitted: true, SessionAvailable: available,
+				}, "all", observed)
+				if err != nil {
+					t.Fatal(err)
+				}
+				request.Settings, _ = json.Marshal(snapshot)
+				result, err := Collect(context.Background(), request, nil)
+				if err != nil || result.Sections[0].State != "provider-policy" {
+					t.Fatal("valid native Query tuple was rejected", result, err)
+				}
+				rows := map[string]string{}
+				for _, row := range result.Sections[0].Rows {
+					rows[row.Label] = row.Value
+				}
+				for key, requested := range map[string]string{"session_bus": "reuse", "session_notifications": "external", "notification_dnd": "true", "session_power": "login1"} {
+					requestedSource := "saved"
+					if key == "session_bus" {
+						requestedSource = "module-configuration"
+					}
+					want := fmt.Sprintf("requested=%s; source=%s; available=%t", requested, requestedSource, available)
+					if key == "session_bus" {
+						want += "; next login"
+					}
+					if rows[key+" request"] != want {
+						t.Fatal("typed requested policy or provenance lost", key, rows)
+					}
+					if observed && !available && !strings.Contains(rows[key], "effective=unavailable") {
+						t.Fatal("unavailable observation was not rendered honestly", key, rows)
+					}
+					if strings.Contains(rows[key+" request"], "ready") {
+						t.Fatal("requested service policy claimed readiness", key, rows)
+					}
+				}
+			})
+		}
+	}
+}
+
+func TestSessionSettingsRejectMalformedAvailabilityAndForeignNulls(t *testing.T) {
+	cases := []struct {
+		name, key, field, value string
+	}{
+		{"null-available", "session_power", "available", `null`},
+		{"string-available", "session_power", "available", `"false"`},
+		{"integer-available", "notification_dnd", "available", `0`},
+		{"unavailable-claims-owner", "session_power", "source", `"session-owner"`},
+		{"unavailable-has-effective", "session_notifications", "effective", `"off"`},
+		{"unavailable-bus-live-state", "session_bus", "application", `"live-unavailable"`},
+		{"invalid-requested-type", "notification_dnd", "requested", `"true"`},
+		{"invalid-requested-source", "session_power", "requested_source", `"session-owner"`},
+		{"non-session-null", "motion", "effective", `null`},
+		{"non-session-source", "palette", "source", `"unavailable"`},
+		{"tray-null", "tray_enabled", "effective", `null`},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			request := fixtureRequest(t, "settings")
+			var snapshot map[string]map[string]json.RawMessage
+			if err := json.Unmarshal(request.Settings, &snapshot); err != nil {
+				t.Fatal(err)
+			}
+			snapshot[test.key][test.field] = json.RawMessage(test.value)
+			request.Settings, _ = json.Marshal(snapshot)
+			result, err := Collect(context.Background(), request, nil)
+			if err != nil || result.Sections[0].State != "partial" {
+				t.Fatal("invalid tuple did not mark inspection incomplete", result, err)
+			}
+		})
+	}
+	// A live owner requires a typed effective value and true availability.
+	for _, field := range []string{"effective", "available"} {
+		request := fixtureRequest(t, "settings")
+		var snapshot map[string]map[string]json.RawMessage
+		_ = json.Unmarshal(request.Settings, &snapshot)
+		row := snapshot["session_power"]
+		row["source"], row["application"] = json.RawMessage(`"session-owner"`), json.RawMessage(`"live-owner-observed"`)
+		row["available"], row["effective"] = json.RawMessage(`true`), json.RawMessage(`"portable"`)
+		row[field] = json.RawMessage(`null`)
+		request.Settings, _ = json.Marshal(snapshot)
+		result, err := Collect(context.Background(), request, nil)
+		if err != nil || result.Sections[0].State != "partial" {
+			t.Fatal("owner observation accepted null metadata", field, result, err)
+		}
+	}
+}

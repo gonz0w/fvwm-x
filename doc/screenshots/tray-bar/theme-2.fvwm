@@ -1,0 +1,4 @@
+InfoStoreAdd slate_font "xft:DejaVu Sans Mono:size=18"
+SlatePanel
+*SlateTray Font "xft:DejaVu Sans Mono:size=18"
+SendToModule SlateTray Reload

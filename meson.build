@@ -743,6 +743,7 @@ modules = {
     'FvwmPinboard': {'subdir': 'modules/FvwmPinboard'},
     'FvwmRearrange': {'subdir': 'modules/FvwmRearrange'},
     'FvwmScript': {'subdir': 'modules/FvwmScript'},
+    'FvwmTray': {'subdir': 'modules/FvwmTray'},
 }
 
 foreach m, _ : modules

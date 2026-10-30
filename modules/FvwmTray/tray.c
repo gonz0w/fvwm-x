@@ -1,0 +1,669 @@
+/* This program is free software; you can redistribute it and/or modify it
+ * under the GNU General Public License, version 2 or any later version. */
+#include "config.h"
+#include "tray.h"
+#include "libs/Colorset.h"
+#include "libs/Parse.h"
+#include "libs/PictureUtils.h"
+#include "libs/FftInterface.h"
+#include "libs/fd_safety.h"
+#include "libs/log.h"
+#include "libs/safemalloc.h"
+#include <errno.h>
+#include <fcntl.h>
+#include <inttypes.h>
+#include <poll.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <strings.h>
+#include <unistd.h>
+
+#define TRAY_TURN_LIMIT 32U
+
+static volatile sig_atomic_t tray_stopping;
+static volatile sig_atomic_t tray_wake_fd = -1;
+
+static void stop_signal(int number)
+{
+	int saved_errno = errno;
+	char byte = 1;
+
+	(void)number;
+	tray_stopping = 1;
+	if (tray_wake_fd >= 0)
+	{
+		ssize_t ignored = write(tray_wake_fd, &byte, 1);
+		(void)ignored;
+	}
+	errno = saved_errno;
+}
+
+static void refused(tray_ui *ui, const char *reason)
+{
+	static unsigned int diagnostics;
+
+	(void)ui;
+	if (diagnostics < 8)
+	{
+		diagnostics++;
+		fvwm_debug(__func__, "FvwmTray: %s", reason);
+	}
+}
+
+static tray_options defaults(void)
+{
+	tray_options options = {0};
+
+	options.padding = options.gap = 4;
+	options.position = 3;
+	options.visible = true;
+	strcpy(options.font_name, "fixed");
+	return options;
+}
+
+static int scaled(const tray_ui *ui, unsigned int logical)
+{
+	int value = 0;
+
+	if (monitor_scale_apply((int)logical,
+	    (monitor_scale_factor){ui->quarters}, &value) !=
+	    MONITOR_SCALE_CONVERSION_OK)
+		return (int)logical;
+	return value;
+}
+
+static bool font_valid(FlocaleFont *font, const char *name)
+{
+	char header[] = "Tray";
+
+	/* Flocale's explicit fallback has a different name. Keep a failed font
+	 * request from committing the rest of a configuration transaction. */
+	if (!font || !font->name || strcmp(font->name, name) ||
+	    font->height < 1 || font->height > 4096)
+		return false;
+	int width = FlocaleTextWidth(font, header, strlen(header));
+	return width >= 0 && width <= 4096;
+}
+
+/* Monitor and reservation samples stay associated with the core's published
+ * topology epoch. Foreign dimensions never pass through this scale path. */
+static bool update_area(tray_ui *ui)
+{
+	const module_ui_scale_snapshot *snapshot = &ui->monitors.published;
+	const module_ui_scale_row *row = NULL;
+	module_monitor_area area;
+	unsigned int quarters = 4;
+	XWindowAttributes root;
+
+	if (snapshot->count)
+	{
+		row = &snapshot->rows[0];
+		for (unsigned int i = 0; i < snapshot->count; i++)
+			if (snapshot->rows[i].primary)
+				row = &snapshot->rows[i];
+		if (!module_workarea_bounds(&ui->workareas, snapshot, row,
+		    &area))
+			return false;
+		quarters = row->quarters;
+	}
+	else
+	{
+		if (!XGetWindowAttributes(ui->display, ui->root, &root))
+			return false;
+		area = (module_monitor_area){0, 0, root.width, root.height};
+	}
+	if (area.width < 1 || area.height < 1 || area.width > 32767 ||
+	    area.height > 32767 || area.x < -32768 || area.x > 32767 ||
+	    area.y < -32768 || area.y > 32767 ||
+	    area.x + area.width > 32767 || area.y + area.height > 32767)
+		return false;
+	if (!ui->font || ui->quarters != quarters)
+	{
+		FlocaleFont *font = FlocaleLoadFontAtScale(ui->display,
+		    ui->font_name, ui->module->name,
+		    (monitor_scale_factor){quarters}, 0);
+		if (!font_valid(font, ui->font_name))
+		{
+			if (font)
+				FlocaleUnloadFont(ui->display, font);
+			return false;
+		}
+		if (ui->font)
+			FlocaleUnloadFont(ui->display, ui->font);
+		ui->font = font;
+		ui->quarters = quarters;
+	}
+	ui->area = area;
+	return true;
+}
+
+static void draw_header(tray_ui *ui, char *text, int padding)
+{
+	int width = ui->layout.width - padding * 2;
+	int height = ui->layout.height - padding * 2;
+	FlocaleWinString string = {0};
+	XRectangle clip;
+
+	if (width < 1 || height < 1)
+		return;
+	if (height > ui->font->height)
+		height = ui->font->height;
+	clip = (XRectangle){padding, padding, width, height};
+	XSetClipRectangles(ui->display, ui->gc, 0, 0, &clip, 1, Unsorted);
+	XSetForeground(ui->display, ui->gc, GetColorset(ui->colorset)->fg);
+	if (ui->font->font)
+		XSetFont(ui->display, ui->gc, ui->font->font->fid);
+	string.str = text;
+	string.len = strlen(text);
+	string.gc = ui->gc;
+	string.win = ui->host;
+	string.colorset = GetColorset(ui->colorset);
+	string.flags.has_colorset = 1;
+	string.x = padding;
+	string.y = padding + ui->font->ascent;
+	string.clip_region = XCreateRegion();
+	string.flags.has_clip_region = 1;
+	XUnionRectWithRegion(&clip, string.clip_region, string.clip_region);
+	FlocaleDrawString(ui->display, ui->font, &string, FWS_HAVE_LENGTH);
+	XDestroyRegion(string.clip_region);
+	XSetClipMask(ui->display, ui->gc, None);
+}
+
+void tray_render(tray_ui *ui)
+{
+	char header[] = "Tray";
+
+	ui->dirty = false;
+	if (!ui->host || ui->stopped || !update_area(ui))
+	{
+		refused(ui, "unavailable host geometry or font");
+		ui->failed = true;
+		return;
+	}
+	int padding = scaled(ui, ui->padding);
+	int gap = scaled(ui, ui->gap);
+	int header_width = FlocaleTextWidth(ui->font, header, strlen(header));
+	int header_height = ui->font->height;
+	int target = scaled(ui, 24);
+	/* The host's clickable entry keeps the shared native target floor even
+	 * with zero padding and a one-pixel foreign icon. */
+	if (header_width < target)
+		header_width = target;
+	if (header_height < target)
+		header_height = target;
+	if (!tray_model_layout(&ui->model, ui->area.width, ui->area.height,
+	    padding, gap, header_width, header_height, ui->vertical,
+	    ui->visible, &ui->layout))
+	{
+		refused(ui, "unrepresentable host layout");
+		ui->failed = true;
+		return;
+	}
+	int x = ui->area.x;
+	int y = ui->area.y;
+	if (ui->position & 1)
+		x += ui->area.width - ui->layout.width;
+	if (ui->position & 2)
+		y += ui->area.height - ui->layout.height;
+	XMoveResizeWindow(ui->display, ui->host, x, y,
+	    ui->layout.width, ui->layout.height);
+	SetWindowBackground(ui->display, ui->host, ui->layout.width,
+	    ui->layout.height, GetColorset(ui->colorset),
+	    DefaultDepth(ui->display, DefaultScreen(ui->display)), ui->gc, False);
+	XClearWindow(ui->display, ui->host);
+	if (ui->visible)
+		XMapWindow(ui->display, ui->host);
+	else
+		XUnmapWindow(ui->display, ui->host);
+	tray_x11_layout(ui);
+	if (!ui->failed && !ui->stopped && ui->visible)
+		draw_header(ui, header, padding);
+	XFlush(ui->display);
+}
+
+void tray_request_config(tray_ui *ui)
+{
+	if (ui->config_pending)
+	{
+		ui->config_refresh = true;
+		return;
+	}
+	ui->staged = defaults();
+	ui->config_valid = true;
+	ui->config_pending = true;
+	InitGetConfigLine(ui->channel, ui->prefix);
+}
+
+static char *skip_space(char *text)
+{
+	while (*text == ' ' || *text == '\t')
+		text++;
+	return text;
+}
+
+static void stage_option(tray_ui *ui, char *text)
+{
+	char *option = skip_space(text);
+	char *value = option;
+	char *end;
+	int number;
+	bool valid = false;
+
+	while (*value && *value != ' ' && *value != '\t')
+		value++;
+	if (!*value)
+		goto invalid;
+	*value++ = 0;
+	value = skip_space(value);
+	/* Whitespace following an otherwise complete option is harmless. */
+	end = value + strlen(value);
+	while (end > value && (end[-1] == ' ' || end[-1] == '\t'))
+		*--end = 0;
+	if (!strcasecmp(option, "Font"))
+	{
+		char *font = NULL;
+		end = GetNextToken(value, &font);
+		valid = font && *font && strlen(font) <= 256 &&
+		    (!end || !*skip_space(end));
+		if (valid)
+			strcpy(ui->staged.font_name, font);
+		free(font);
+	}
+	else if (!strcasecmp(option, "Colorset"))
+	{
+		valid = ParseColorsetId(value, &end, &number) && !*end &&
+		    number >= 0;
+		if (valid)
+			ui->staged.colorset = number;
+	}
+	else if (!strcasecmp(option, "Gap") || !strcasecmp(option, "Padding"))
+	{
+		valid = module_parse_decimal_integers(value, &number, 1) &&
+		    number >= 0 && number <= 64;
+		if (valid && !strcasecmp(option, "Gap"))
+			ui->staged.gap = number;
+		else if (valid)
+			ui->staged.padding = number;
+	}
+	else if (!strcasecmp(option, "Orientation"))
+	{
+		valid = !strcasecmp(value, "Horizontal") ||
+		    !strcasecmp(value, "Vertical");
+		if (valid)
+			ui->staged.vertical = !strcasecmp(value, "Vertical");
+	}
+	else if (!strcasecmp(option, "Position"))
+	{
+		const char *positions[] = {
+		    "TopLeft", "TopRight", "BottomLeft", "BottomRight"};
+		for (unsigned int i = 0; i < 4; i++)
+			if (!strcasecmp(value, positions[i]))
+			{
+				ui->staged.position = i;
+				valid = true;
+				break;
+			}
+	}
+	else if (!strcasecmp(option, "Visible"))
+	{
+		valid = !strcasecmp(value, "On") || !strcasecmp(value, "Off");
+		if (valid)
+			ui->staged.visible = !strcasecmp(value, "On");
+	}
+	if (valid)
+		return;
+invalid:
+	ui->config_valid = false;
+}
+
+static void config_message(tray_ui *ui, char *text)
+{
+	module_ui_scale_status status =
+	    module_ui_scale_receive(&ui->monitors, text);
+
+	if (status == MODULE_UI_SCALE_PUBLISHED)
+	{
+		module_workarea_sync(&ui->workareas, &ui->monitors.published);
+		ui->dirty = true;
+		if (!ui->config_pending)
+			tray_request_config(ui);
+		return;
+	}
+	if (status != MODULE_UI_SCALE_IGNORED)
+		return;
+	if (module_workarea_receive(&ui->workareas,
+	    &ui->monitors.published, text) == MODULE_WORKAREA_ADMITTED)
+	{
+		ui->dirty = true;
+		return;
+	}
+	if (!strncasecmp(text, "LoggingFD", 9) &&
+	    (text[9] == ' ' || text[9] == '\t'))
+	{
+		int descriptor = -1;
+		if (!module_parse_decimal_integers(text + 9, &descriptor, 1) ||
+		    !log_adopt_inherited_fd(descriptor))
+			refused(ui, "invalid logging descriptor");
+		return;
+	}
+	if (!strncasecmp(text, "Colorset ", 9))
+	{
+		if (LoadColorset(text + 8) == ui->colorset)
+			ui->dirty = true;
+		return;
+	}
+	size_t length = strlen(ui->prefix);
+	if (strncasecmp(text, ui->prefix, length) ||
+	    (text[length] && text[length] != ':' && text[length] != ' ' &&
+	    text[length] != '\t'))
+		return;
+	/* Unsolicited module changes request a complete authoritative snapshot;
+	 * never partially apply a lone line outside a transaction. */
+	if (!ui->config_pending)
+	{
+		tray_request_config(ui);
+		return;
+	}
+	text += length;
+	if (*text == ':')
+		text++;
+	stage_option(ui, text);
+}
+
+static void config_complete(tray_ui *ui)
+{
+	FlocaleFont *font = NULL;
+
+	module_ui_scale_abort(&ui->monitors);
+	if (!ui->config_pending)
+		return;
+	if (ui->config_valid)
+	{
+		font = FlocaleLoadFontAtScale(ui->display, ui->staged.font_name,
+		    ui->module->name, (monitor_scale_factor){ui->quarters}, 0);
+		if (!font_valid(font, ui->staged.font_name) ||
+		    !AllocColorset(ui->staged.colorset))
+			ui->config_valid = false;
+	}
+	if (ui->config_valid)
+	{
+		FlocaleUnloadFont(ui->display, ui->font);
+		ui->font = font;
+		font = NULL;
+		ui->colorset = ui->staged.colorset;
+		ui->padding = ui->staged.padding;
+		ui->gap = ui->staged.gap;
+		ui->position = ui->staged.position;
+		ui->vertical = ui->staged.vertical;
+		ui->visible = ui->staged.visible;
+		strcpy(ui->font_name, ui->staged.font_name);
+		tray_x11_hints(ui);
+		ui->dirty = true;
+	}
+	else
+		refused(ui, "invalid configuration snapshot");
+	if (font)
+		FlocaleUnloadFont(ui->display, font);
+	ui->config_pending = false;
+	if (ui->config_refresh)
+	{
+		ui->config_refresh = false;
+		tray_request_config(ui);
+	}
+}
+
+static void status_reply(tray_ui *ui)
+{
+	char text[256];
+	unsigned int mapped = 0;
+	for (unsigned int i = 0; i < ui->model.count && i < TRAY_CLIENT_MAX; i++)
+		if (ui->model.clients[i].mapped)
+			mapped++;
+	int length = snprintf(text, sizeof(text),
+	    "Echo FVWM_TRAY_STATUS %u %u %u %u %u %u %" PRIu64
+	    " %lu %lu %lu %d", ui->model.count, mapped,
+	    TRAY_CLIENT_MAX, ui->quarters, ui->claimed ? 1U : 0U,
+	    ui->config_pending || ui->config_refresh ? 1U : 0U,
+	    ui->monitors.published.epoch, ui->host, ui->owner, ui->proxy,
+	    ui->font ? ui->font->height : 0);
+
+	if (length < 0 || (size_t)length >= sizeof(text))
+	{
+		ui->failed = true;
+		return;
+	}
+	SendText(ui->channel, text, 0);
+}
+
+static void native_message(tray_ui *ui, char *text)
+{
+	text = skip_space(text);
+	char *end = text + strlen(text);
+	while (end > text && (end[-1] == ' ' || end[-1] == '\t'))
+		*--end = 0;
+	if (!strcasecmp(text, "Reload"))
+		tray_request_config(ui);
+	else if (!strcasecmp(text, "Show") || !strcasecmp(text, "Hide"))
+	{
+		ui->visible = !strcasecmp(text, "Show");
+		ui->dirty = true;
+	}
+	else if (!strcasecmp(text, "Focus") || !strcasecmp(text, "Next") ||
+	    !strcasecmp(text, "Prev"))
+	{
+		if (ui->dirty)
+			tray_render(ui);
+		if (!ui->failed && !ui->stopped)
+			tray_x11_focus(ui, 0, !strcasecmp(text, "Next") ? 1 :
+			    (!strcasecmp(text, "Prev") ? -1 : 0), CurrentTime);
+	}
+	else if (!strcasecmp(text, "Status"))
+	{
+		if (ui->dirty)
+			tray_render(ui);
+		status_reply(ui);
+	}
+	else
+		refused(ui, "invalid native command");
+}
+
+static bool service_packets(tray_ui *ui)
+{
+	for (unsigned int i = 0; i < TRAY_TURN_LIMIT; i++)
+	{
+		FvwmPacket *packet;
+		module_packet_read_status read =
+		    module_packet_reader_read(&ui->reader, &packet);
+		if (read == MODULE_PACKET_READ_MORE)
+			return false;
+		if (read != MODULE_PACKET_READ_READY)
+		{
+			ui->stopped = true;
+			if (read == MODULE_PACKET_READ_ERROR)
+			{
+				refused(ui, "invalid module packet stream");
+				ui->failed = true;
+			}
+			return false;
+		}
+		if (packet->type == M_STRING || packet->type == M_CONFIG_INFO)
+		{
+			if (!module_packet_body_has_text(packet->body,
+			    FvwmPacketBodySize(*packet), 3))
+			{
+				refused(ui, "malformed module record");
+				ui->failed = true;
+				return false;
+			}
+			char *text = (char *)&packet->body[3];
+			if (packet->type == M_STRING)
+				native_message(ui, text);
+			else
+				config_message(ui, text);
+		}
+		else if (packet->type == M_END_CONFIG_INFO)
+			config_complete(ui);
+		else if (packet->type == M_SENDCONFIG)
+			tray_request_config(ui);
+		if (ui->failed || ui->stopped || tray_stopping)
+			return false;
+	}
+	return true;
+}
+
+static bool module_name_valid(const ModuleArgs *module)
+{
+	if (module->namelen < 1 || module->namelen > 128)
+		return false;
+	for (int i = 0; i < module->namelen; i++)
+	{
+		unsigned char c = (unsigned char)module->name[i];
+		if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+		    (c >= '0' && c <= '9') || c == '_' || c == '-'))
+			return false;
+	}
+	return true;
+}
+
+int main(int argc, char **argv)
+{
+	ModuleArgs *module = ParseModuleArgs(argc, argv, 1);
+	tray_ui *ui;
+	int status = 1;
+	bool x11_started = false;
+
+	if (!module || module->user_argc || module->from_fvwm < 0 ||
+	    !module_name_valid(module))
+		return 1;
+	ui = fxcalloc(1, sizeof(*ui));
+	ui->module = module;
+	ui->channel[0] = module->to_fvwm;
+	ui->channel[1] = module->from_fvwm;
+	ui->wake[0] = ui->wake[1] = -1;
+	ui->staged = defaults();
+	ui->padding = ui->staged.padding;
+	ui->gap = ui->staged.gap;
+	ui->position = ui->staged.position;
+	ui->visible = true;
+	ui->quarters = 4;
+	strcpy(ui->font_name, ui->staged.font_name);
+	snprintf(ui->prefix, sizeof(ui->prefix), "*%s", module->name);
+	if (!fvwm_pipe_cloexec(ui->wake))
+		goto out;
+	for (unsigned int i = 0; i < 2; i++)
+	{
+		int flags = fcntl(ui->wake[i], F_GETFL);
+		if (flags < 0 || fcntl(ui->wake[i], F_SETFL, flags | O_NONBLOCK))
+			goto out;
+	}
+	tray_wake_fd = ui->wake[1];
+	signal(SIGTERM, stop_signal);
+	signal(SIGINT, stop_signal);
+	signal(SIGHUP, stop_signal);
+	signal(SIGPIPE, stop_signal);
+	SendFinishedStartupNotification(ui->channel);
+	FlocaleInit(LC_CTYPE, "", "", module->name);
+	ui->display = XOpenDisplay(NULL);
+	if (!ui->display)
+		goto out;
+	ui->root = DefaultRootWindow(ui->display);
+	flib_init_graphics(ui->display);
+	if (!AllocColorset(0))
+		goto out;
+	ui->font = FlocaleLoadFontAtScale(ui->display, ui->font_name,
+	    module->name, (monitor_scale_factor){ui->quarters}, 0);
+	if (!font_valid(ui->font, ui->font_name))
+		goto out;
+	ui->gc = XCreateGC(ui->display, ui->root, 0, NULL);
+	if (!ui->gc)
+		goto out;
+	/* All host resources exist before selection acquisition and discovery. */
+	x11_started = true;
+	if (!tray_x11_start(ui))
+	{
+		refused(ui, "tray selection unavailable or startup failed");
+		goto out;
+	}
+	SetMessageMask(ui->channel,
+	    M_STRING | M_CONFIG_INFO | M_END_CONFIG_INFO | M_SENDCONFIG);
+	if (!module_packet_reader_init(&ui->reader, ui->channel[1]))
+		goto out;
+	tray_request_config(ui);
+	ui->dirty = true;
+	while (!tray_stopping && !ui->stopped && !ui->failed)
+	{
+		for (unsigned int i = 0; i < TRAY_TURN_LIMIT &&
+		    XPending(ui->display); i++)
+		{
+			XEvent event;
+			XNextEvent(ui->display, &event);
+			if (event.type == Expose && event.xexpose.window == ui->host)
+				ui->dirty = true;
+			else if (event.type == PropertyNotify &&
+			    event.xproperty.window == ui->root &&
+			    event.xproperty.atom == ui->workarea_atom)
+			{
+				ui->dirty = true;
+				tray_request_config(ui);
+			}
+			else
+				tray_x11_event(ui, &event);
+			if (ui->failed || ui->stopped || tray_stopping)
+				break;
+		}
+		if (ui->failed || ui->stopped || tray_stopping)
+			break;
+		bool more = service_packets(ui);
+		if (ui->failed || ui->stopped || tray_stopping)
+			break;
+		if (ui->dirty)
+			tray_render(ui);
+		if (ui->failed || ui->stopped || tray_stopping)
+			break;
+		struct pollfd descriptors[3] = {
+		    {ConnectionNumber(ui->display), POLLIN, 0},
+		    {ui->channel[1], POLLIN, 0},
+		    {ui->wake[0], POLLIN, 0}};
+		int timeout = more || ui->dirty || XPending(ui->display) ? 0 : -1;
+		if (poll(descriptors, 3, timeout) < 0 && errno != EINTR)
+		{
+			ui->failed = true;
+			break;
+		}
+		if (descriptors[0].revents & (POLLERR | POLLHUP | POLLNVAL))
+			ui->failed = true;
+		if (descriptors[1].revents & POLLNVAL)
+			ui->failed = true;
+	}
+	status = !ui->failed && (tray_stopping || ui->stopped) ? 0 : 1;
+out:
+	/* Foreign clients leave their sockets before fonts, GC or X connection.
+	 * Failed release intentionally keeps the save set through XCloseDisplay. */
+	if (ui->display)
+	{
+		if (x11_started)
+			tray_x11_stop(ui);
+		if (ui->x_error_code)
+			fvwm_debug(__func__, "FvwmTray: X error %u resource %lu",
+			    ui->x_error_code, ui->x_error_resource);
+		if (ui->font)
+			FlocaleUnloadFont(ui->display, ui->font);
+		if (ui->gc)
+			XFreeGC(ui->display, ui->gc);
+		XCloseDisplay(ui->display);
+	}
+	if (ui->failed)
+		status = 1;
+	FftFini();
+	tray_wake_fd = -1;
+	if (ui->wake[1] >= 0)
+		close(ui->wake[1]);
+	if (ui->wake[0] >= 0)
+		close(ui->wake[0]);
+	close(ui->channel[0]);
+	close(ui->channel[1]);
+	free(ui);
+	return status;
+}

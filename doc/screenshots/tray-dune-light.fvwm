@@ -1,0 +1,6 @@
+Colorset 42 fg #322a20, bg #eee4cb
+Style * BorderWidth 1
+*FvwmTray Font "xft:Serif:size=12"
+*FvwmTray Gap 6
+*FvwmTray Position TopRight
+SendToModule FvwmTray Reload

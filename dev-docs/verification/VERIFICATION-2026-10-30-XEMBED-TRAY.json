@@ -1,0 +1,1054 @@
+{
+  "checkpoint": "TRAY-01 #78 standalone XEmbed first slice",
+  "branch": "codex/r1-xembed-tray",
+  "base": "2dcf567312420f9aa524f72d42bfc3c1d67779b9",
+  "prior_merge": {
+    "pr": 311,
+    "commit": "2dcf567312420f9aa524f72d42bfc3c1d67779b9",
+    "closed_issue": 76,
+    "signature_tree_dco_verified": true
+  },
+  "status": "focused Linux development gates passed; separate integrated review clear",
+  "full_issue_closed": false,
+  "source_closure": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+  "source_manifest_sha256": "8a94f9db6a69f322aacecf45b3997fca9b00628e065cb4878afb83280f92056c",
+  "affected_source": {
+    "fvwm/focus.c": "b27d95ef43f83be34d2472f9bfcdd692e94d210f80a465760fe557f3023fa7e5",
+    "modules/FvwmTray/tray.c": "87a14a3384da13f0d63a4411f8be4c23052f2d3b7687e19e32199af80ed39591",
+    "modules/FvwmTray/tray.h": "a95d9b613d23fcae548074e57bf1148975008bdfce91dda287cad41605ba64bd",
+    "modules/FvwmTray/tray_x11.c": "a336114d435a1f089e8f77973bf7dea493f753cf4c770297538f51b0506224ce",
+    "modules/FvwmTray/tray_model.c": "44380531804a9f3ed0b342ea047452069f4b298dc3ee27cbd1dd0708beeb7903",
+    "modules/FvwmTray/tray_model.h": "83c28eea938ff5022838908fd07cff6bdbbe78bd06cdf958b3c3318a8288314d",
+    "modules/FvwmTray/meson.build": "5e24736275af5285a9c8b7eb27d269d455c61070deb547a7f0a2dab9528f452c",
+    "tests/test_tray_model.c": "938fb421d09c43146afb3f9e77d338b1244922146df57e06836463a8929be3c8",
+    "tests/tray_client.c": "da7f3734b0b1a85f66565868bfd4e0f1d389f3cec8d1bde01b5e9449e53a15a4",
+    "tests/live_x/tray_live.py": "653c7f8aab9ef3044eddedda6561621f72a14885829dc9dc34fe06550b38747b",
+    "meson.build": "d04162070ea78e21d87b104133566aff8c110eb6ad5627eb782f6a901f89e634",
+    "tests/meson.build": "bc44ab5ac082c157997eeff6f8117432048a096c032853b85492f6d19099f7a5",
+    "doc/FvwmTray.adoc": "c4bf232bf821143d2560927d0805ca46c248cb80ad7193445219fe03aeca1a78",
+    "doc/meson.build": "44997604e1b13f50e45864842c54cb5280bc53504defa69451fb89fb902aac9a",
+    "tools/maintenance/manuals.json": "e097ce82600353e52a18d683244e2471d4286dc112febffad678b903d045da30"
+  },
+  "execution": {
+    "os": "Ubuntu 24.04.5 container / Fedora43 Linux6.18 ARM64",
+    "cpu": "native ARM64 via AppleHV; not emulated CPU, not physical Linux",
+    "normal_build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+    "sanitizer_build": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+    "x": "fixture-owned Xorg dummy, two active outputs, real X server",
+    "sanitizer_scope": "ASan/UBSan/LSan instrumented tray module and model; normal built core/MFL/independent peer; deliberate SIGKILL does not establish leak-free abrupt exit"
+  },
+  "results": [
+    {
+      "name": "gate01",
+      "reason": "collector failure after build/model/install passes",
+      "status": "failed",
+      "receipt_sha256": "3bfc87d0e36aea925598f81a6d2ab9fb463c4476773a113b8119e3b145db82a7",
+      "source_pre": "a98ef742ae9e5ef24fa7b61eb1d9b05de4c5e76f38ba758a80b65cf11fbf3252",
+      "source_post": "a98ef742ae9e5ef24fa7b61eb1d9b05de4c5e76f38ba758a80b65cf11fbf3252",
+      "commands": [
+        {
+          "label": "uname",
+          "command": [
+            "uname",
+            "-a"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.00807193500008907,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "compiler",
+          "command": [
+            "cc",
+            "--version"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.005337748000101783,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "configure",
+          "command": [
+            "meson",
+            "setup",
+            "--reconfigure",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "--prefix",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+            "-Dmandoc=true",
+            "-Dhtmldoc=false"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.5040879539999423,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3",
+            "modules/FvwmMFL/FvwmMFL",
+            "modules/FvwmTray/FvwmTray",
+            "tests/test-tray-model",
+            "tests/tray-client",
+            "bin/fvwm-desktop-capture",
+            "doc/FvwmTray.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.6017704910000248,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "model",
+          "command": [
+            "meson",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--print-errorlogs",
+            "tray-model"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.16650393999998414,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "installed",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "tray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11517535099983434,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "install-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11640869400002885,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": "ModuleNotFoundError(\"No module named 'mesonbuild'\")"
+    },
+    {
+      "name": "gate02",
+      "reason": "Escape regression failed",
+      "status": "failed",
+      "receipt_sha256": "ee8e5aa54b46a3ead696a0869d033bcd4fd653e589a84d3bdf97ba76467f261d",
+      "source_pre": "a98ef742ae9e5ef24fa7b61eb1d9b05de4c5e76f38ba758a80b65cf11fbf3252",
+      "source_post": "a98ef742ae9e5ef24fa7b61eb1d9b05de4c5e76f38ba758a80b65cf11fbf3252",
+      "commands": [
+        {
+          "label": "provenance",
+          "command": [
+            "/workspace/meson-env/bin/python3",
+            "-c",
+            "from pathlib import Path\nimport hashlib,inspect,json,pickle,platform,shutil,sys\nimport mesonbuild.coredata as core\nfrom mesonbuild.scripts import depfixer\nb,s,module,scratch=map(Path,sys.argv[1:]);built=b/'modules/FvwmTray/FvwmTray';datafile=b/'meson-private/install.dat'\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nwith datafile.open('rb') as f:d=pickle.load(f)\nassert Path(d.source_dir).resolve()==s.resolve() and Path(d.build_dir).resolve()==b.resolve() and d.version==core.version\nt=[t for t in d.targets if Path(t.fname)==built.relative_to(b)];assert len(t)==1;t=t[0];assert not t.strip and Path(t.outdir).resolve()==module.parent.resolve();assert not scratch.exists();shutil.copy2(built,scratch)\nparams=tuple(inspect.signature(depfixer.fix_rpath).parameters);args=[str(scratch),t.rpath_dirs_to_remove,t.install_rpath,str(module),t.install_name_mappings]\nif params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','system','verbose'):args.append(t.system)\nelse:assert params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','verbose')\ndepfixer.fix_rpath(*args,verbose=False);assert sha(scratch)==sha(module);scratch.unlink();print(json.dumps(dict(method='exactcanonicalMesonELFfixup scratchbyteequality',meson=core.version,interpreter=sys.executable,metadata_sha256=sha(datafile),depfixer_sha256=sha(Path(depfixer.__file__)),api_parameters=params,built_sha256=sha(built),installed_sha256=sha(module))))\n",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate02/normalized-FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.13075732700008302,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.013304101000130686,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.001789680000001681,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate02/native",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 5.6745323539998935,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": "RuntimeError('native:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1054, in <module>\\n    main()\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1050, in main\\n    run(options)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 755, in run\\n    wait_for_predicate(\\'core-routed application focus return\\',\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\\nlive_x_harness.HarnessError: deadline expired while waiting for core-routed application focus return\\n')"
+    },
+    {
+      "name": "gate03",
+      "reason": "incomplete cache correction still failed Escape",
+      "status": "failed",
+      "receipt_sha256": "52696a1c0d404305bc129032344bd5228ee5181142589197792a1d6868be1673",
+      "source_pre": "1dff99cd872f1db958366c2c49982610ea24a74ddeb9d19244432779461df224",
+      "source_post": "1dff99cd872f1db958366c2c49982610ea24a74ddeb9d19244432779461df224",
+      "commands": [
+        {
+          "label": "affected-core-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.28037331599989557,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "provenance",
+          "command": [
+            "/workspace/meson-env/bin/python3",
+            "-c",
+            "from pathlib import Path\nimport hashlib,inspect,json,pickle,platform,shutil,sys\nimport mesonbuild.coredata as core\nfrom mesonbuild.scripts import depfixer\nb,s,module,scratch=map(Path,sys.argv[1:]);built=b/'modules/FvwmTray/FvwmTray';datafile=b/'meson-private/install.dat'\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nwith datafile.open('rb') as f:d=pickle.load(f)\nassert Path(d.source_dir).resolve()==s.resolve() and Path(d.build_dir).resolve()==b.resolve() and d.version==core.version\nt=[t for t in d.targets if Path(t.fname)==built.relative_to(b)];assert len(t)==1;t=t[0];assert not t.strip and Path(t.outdir).resolve()==module.parent.resolve();assert not scratch.exists();shutil.copy2(built,scratch)\nparams=tuple(inspect.signature(depfixer.fix_rpath).parameters);args=[str(scratch),t.rpath_dirs_to_remove,t.install_rpath,str(module),t.install_name_mappings]\nif params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','system','verbose'):args.append(t.system)\nelse:assert params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','verbose')\ndepfixer.fix_rpath(*args,verbose=False);assert sha(scratch)==sha(module);scratch.unlink();print(json.dumps(dict(method='exactcanonicalMesonELFfixup scratchbyteequality',meson=core.version,interpreter=sys.executable,metadata_sha256=sha(datafile),depfixer_sha256=sha(Path(depfixer.__file__)),api_parameters=params,built_sha256=sha(built),installed_sha256=sha(module))))\n",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate03/normalized-FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.12437488800014762,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.003806488000009267,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.001390219999848341,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate03/native",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 5.6961955769997985,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": "RuntimeError('native:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1070, in <module>\\n    main()\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1066, in main\\n    run(options)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 771, in run\\n    wait_for_predicate(\\'core-routed application focus return\\',\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\\nlive_x_harness.HarnessError: deadline expired while waiting for core-routed application focus return\\n')"
+    },
+    {
+      "name": "gate04",
+      "reason": "collector reuse assertion failed before rebuild/runtime",
+      "status": "failed",
+      "receipt_sha256": "b89595c292c0b6165b83e43745fff7ec858de9ba7a594711740275dc2c8c374a",
+      "source_pre": "4283996174aa6b3ae17fcedc499b763b989938cdf0f1190b90f8c36cfc3f71af",
+      "source_post": "4283996174aa6b3ae17fcedc499b763b989938cdf0f1190b90f8c36cfc3f71af",
+      "commands": [],
+      "error": "AssertionError()"
+    },
+    {
+      "name": "gate05",
+      "reason": "Escape/child focus and themes pass; unsupported partial-only strut fixture failed",
+      "status": "failed",
+      "receipt_sha256": "25957c87188564f594ae7b8c583134aae79a422ad985b2fb8e16b8f945c85006",
+      "source_pre": "4283996174aa6b3ae17fcedc499b763b989938cdf0f1190b90f8c36cfc3f71af",
+      "source_post": "4283996174aa6b3ae17fcedc499b763b989938cdf0f1190b90f8c36cfc3f71af",
+      "commands": [
+        {
+          "label": "affected-core-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "fvwm3"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.23505654499967932,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "provenance",
+          "command": [
+            "/workspace/meson-env/bin/python3",
+            "-c",
+            "from pathlib import Path\nimport hashlib,inspect,json,pickle,platform,shutil,sys\nimport mesonbuild.coredata as core\nfrom mesonbuild.scripts import depfixer\nb,s,module,scratch=map(Path,sys.argv[1:]);built=b/'modules/FvwmTray/FvwmTray';datafile=b/'meson-private/install.dat'\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nwith datafile.open('rb') as f:d=pickle.load(f)\nassert Path(d.source_dir).resolve()==s.resolve() and Path(d.build_dir).resolve()==b.resolve() and d.version==core.version\nt=[t for t in d.targets if Path(t.fname)==built.relative_to(b)];assert len(t)==1;t=t[0];assert not t.strip and Path(t.outdir).resolve()==module.parent.resolve();assert not scratch.exists();shutil.copy2(built,scratch)\nparams=tuple(inspect.signature(depfixer.fix_rpath).parameters);args=[str(scratch),t.rpath_dirs_to_remove,t.install_rpath,str(module),t.install_name_mappings]\nif params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','system','verbose'):args.append(t.system)\nelse:assert params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','verbose')\ndepfixer.fix_rpath(*args,verbose=False);assert sha(scratch)==sha(module);scratch.unlink();print(json.dumps(dict(method='exactcanonicalMesonELFfixup scratchbyteequality',meson=core.version,interpreter=sys.executable,metadata_sha256=sha(datafile),depfixer_sha256=sha(Path(depfixer.__file__)),api_parameters=params,built_sha256=sha(built),installed_sha256=sha(module))))\n",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate05/normalized-FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.12426863700011381,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.008051105000049574,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0016292629998133634,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate05/native",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 9.73085630100013,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": "RuntimeError('native:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1070, in <module>\\n    main()\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 1066, in main\\n    run(options)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 890, in run\\n    reserved = native.settled(\\'DUMMY0\\', 4, minimum_top=96)\\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py\", line 403, in settled\\n    return wait_for_predicate(\\'committed tray topology \\' + primary,\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\\nlive_x_harness.HarnessError: deadline expired while waiting for committed tray topology DUMMY0\\n')"
+    },
+    {
+      "name": "gate06",
+      "reason": "combined normal actual-X passed",
+      "status": "passed",
+      "receipt_sha256": "1a4376d92595f2b68edced0ae3844e137dada1180b51c75362cee047159beb37",
+      "source_pre": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+      "source_post": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+      "commands": [
+        {
+          "label": "provenance",
+          "command": [
+            "/workspace/meson-env/bin/python3",
+            "-c",
+            "from pathlib import Path\nimport hashlib,inspect,json,pickle,platform,shutil,sys\nimport mesonbuild.coredata as core\nfrom mesonbuild.scripts import depfixer\nb,s,module,scratch=map(Path,sys.argv[1:]);built=b/'modules/FvwmTray/FvwmTray';datafile=b/'meson-private/install.dat'\ndef sha(p):return hashlib.sha256(p.read_bytes()).hexdigest()\nwith datafile.open('rb') as f:d=pickle.load(f)\nassert Path(d.source_dir).resolve()==s.resolve() and Path(d.build_dir).resolve()==b.resolve() and d.version==core.version\nt=[t for t in d.targets if Path(t.fname)==built.relative_to(b)];assert len(t)==1;t=t[0];assert not t.strip and Path(t.outdir).resolve()==module.parent.resolve();assert not scratch.exists();shutil.copy2(built,scratch)\nparams=tuple(inspect.signature(depfixer.fix_rpath).parameters);args=[str(scratch),t.rpath_dirs_to_remove,t.install_rpath,str(module),t.install_name_mappings]\nif params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','system','verbose'):args.append(t.system)\nelse:assert params==('fname','rpath_dirs_to_remove','new_rpath','final_path','install_name_mappings','verbose')\ndepfixer.fix_rpath(*args,verbose=False);assert sha(scratch)==sha(module);scratch.unlink();print(json.dumps(dict(method='exactcanonicalMesonELFfixup scratchbyteequality',meson=core.version,interpreter=sys.executable,metadata_sha256=sha(datafile),depfixer_sha256=sha(Path(depfixer.__file__)),api_parameters=params,built_sha256=sha(built),installed_sha256=sha(module))))\n",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "/tmp/fvwm-module-waits-20261015/source",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate06/normalized-FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.07771035699988715,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.003807570999924792,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0017229310001312115,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate06/native",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 2.7865378490000694,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": null
+    },
+    {
+      "name": "sanitizer01",
+      "reason": "scoped native sanitizer model/actual-X passed",
+      "status": "passed",
+      "receipt_sha256": "91bb41565ce86a5ca104ad028cb956d46b888e89c4610e0057706f70c5d6dbbe",
+      "source_pre": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+      "source_post": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+      "commands": [
+        {
+          "label": "sanitizer-profile",
+          "command": [
+            "meson",
+            "introspect",
+            "--buildoptions",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11784525600023699,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "sanitizer-affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "modules/FvwmTray/FvwmTray",
+            "tests/test-tray-model"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.5782357709999815,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "sanitizer-model",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-tray-model"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.004098531999716215,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "sanitizer-linkage",
+          "command": [
+            "ldd",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmTray/FvwmTray"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.003905114000190224,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "sanitizer-actual-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/tray_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--tray",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmTray/FvwmTray",
+            "--xorg-config",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-sanitizer01/native",
+            "--execution-profile",
+            "native-cpu"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 3.9336613760001455,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "error": null
+    }
+  ],
+  "sanitizer_reports": [],
+  "installed": {
+    "module": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+    "module_sha256": "881c23a8e338f00f949f66d2c7614310d10a8342a8a69ef003512abb1af23a54",
+    "bytes": 1445824,
+    "manual": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmTray.1",
+    "manual_sha256": "23b6edb517d6e12db2c93f3161bca7bf0076d61aadf148eb91f39c7495dfa090"
+  },
+  "install_provenance": {
+    "method": "exactcanonicalMesonELFfixup scratchbyteequality",
+    "meson": "1.7.0",
+    "interpreter": "/workspace/meson-env/bin/python3",
+    "metadata_sha256": "a6a9679cf6cc965f00ff92660166e32abfdc6df426bb6fe51fd27d7aa7137bd5",
+    "depfixer_sha256": "4b48f133b31c6119ad9a26d1c735ae23b279b5d2024d0f23795d4e5d93b37513",
+    "api_parameters": [
+      "fname",
+      "rpath_dirs_to_remove",
+      "new_rpath",
+      "final_path",
+      "install_name_mappings",
+      "verbose"
+    ],
+    "built_sha256": "a6eb0b454cf77735dacd0c3643d376f749e4604eb7837659eb4a72e203776976",
+    "installed_sha256": "881c23a8e338f00f949f66d2c7614310d10a8342a8a69ef003512abb1af23a54"
+  },
+  "inputs": {
+    "fvwm": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+      "sha256": "d6a75197b7c1ef3ed9f69a104855f9939d011e8a4bd3ce56db8a5096cc7d8af0"
+    },
+    "tray": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+      "sha256": "881c23a8e338f00f949f66d2c7614310d10a8342a8a69ef003512abb1af23a54"
+    },
+    "mfl": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+      "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+    },
+    "client": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-client",
+      "sha256": "5cc5a927e8fe7eeea6b1237abc7361687f8df20b1791644d50ed260f84b5d739"
+    },
+    "capture": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+    },
+    "xorg_config": {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+      "sha256": "af9d9ff9259ae0fd043489fe9f469077709a2034abbf53174440f6d705d849b9"
+    }
+  },
+  "binary_size": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 352643\t  11728\t  10840\t 375211\t  5b9ab\t/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray\n",
+  "linkage": "\tlinux-vdso.so.1 (0x0000ffff9cbfc000)\n\tlibm.so.6 => /lib/aarch64-linux-gnu/libm.so.6 (0x0000ffff9ca90000)\n\tlibX11.so.6 => /lib/aarch64-linux-gnu/libX11.so.6 (0x0000ffff9c930000)\n\tlibXext.so.6 => /lib/aarch64-linux-gnu/libXext.so.6 (0x0000ffff9c8f0000)\n\tlibpng16.so.16 => /tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so.16 (0x0000ffff9c890000)\n\tlibXcursor.so.1 => /lib/aarch64-linux-gnu/libXcursor.so.1 (0x0000ffff9c860000)\n\tlibXpm.so.4 => /lib/aarch64-linux-gnu/libXpm.so.4 (0x0000ffff9c830000)\n\tlibXrender.so.1 => /lib/aarch64-linux-gnu/libXrender.so.1 (0x0000ffff9c800000)\n\tlibXrandr.so.2 => /lib/aarch64-linux-gnu/libXrandr.so.2 (0x0000ffff9c7d0000)\n\tlibfontconfig.so.1 => /lib/aarch64-linux-gnu/libfontconfig.so.1 (0x0000ffff9c760000)\n\tlibXft.so.2 => /lib/aarch64-linux-gnu/libXft.so.2 (0x0000ffff9c720000)\n\tlibfribidi.so.0 => /lib/aarch64-linux-gnu/libfribidi.so.0 (0x0000ffff9c6e0000)\n\tlibc.so.6 => /lib/aarch64-linux-gnu/libc.so.6 (0x0000ffff9c520000)\n\t/lib/ld-linux-aarch64.so.1 (0x0000ffff9cbc0000)\n\tlibxcb.so.1 => /lib/aarch64-linux-gnu/libxcb.so.1 (0x0000ffff9c4d0000)\n\tlibz.so.1 => /lib/aarch64-linux-gnu/libz.so.1 (0x0000ffff9c490000)\n\tlibXfixes.so.3 => /lib/aarch64-linux-gnu/libXfixes.so.3 (0x0000ffff9c460000)\n\tlibfreetype.so.6 => /lib/aarch64-linux-gnu/libfreetype.so.6 (0x0000ffff9c370000)\n\tlibexpat.so.1 => /lib/aarch64-linux-gnu/libexpat.so.1 (0x0000ffff9c320000)\n\tlibXau.so.6 => /lib/aarch64-linux-gnu/libXau.so.6 (0x0000ffff9c2f0000)\n\tlibXdmcp.so.6 => /lib/aarch64-linux-gnu/libXdmcp.so.6 (0x0000ffff9c2c0000)\n\tlibbz2.so.1.0 => /lib/aarch64-linux-gnu/libbz2.so.1.0 (0x0000ffff9c290000)\n\tlibbrotlidec.so.1 => /lib/aarch64-linux-gnu/libbrotlidec.so.1 (0x0000ffff9c260000)\n\tlibbsd.so.0 => /lib/aarch64-linux-gnu/libbsd.so.0 (0x0000ffff9c220000)\n\tlibbrotlicommon.so.1 => /lib/aarch64-linux-gnu/libbrotlicommon.so.1 (0x0000ffff9c1e0000)\n\tlibmd.so.0 => /lib/aarch64-linux-gnu/libmd.so.0 (0x0000ffff9c1b0000)\n",
+  "theme_profiles": [
+    {
+      "profile": "slate-dark",
+      "file": "slate-dark.fvwm",
+      "sha256": "a93134f879b280ba257b911b6a34978174dc16833e4bfbb411eaef14869d41a1",
+      "font": "xft:Sans:size=11",
+      "font_height": 17,
+      "foreground": "#e5edf5",
+      "background": "#253140",
+      "border": 2,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 17
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    },
+    {
+      "profile": "dune-light",
+      "file": "dune-light.fvwm",
+      "sha256": "550d2e6efb2aef40f38527e5848e22711e9e90ceaa17b1d3ca4175fcab656c99",
+      "font": "xft:Serif:size=12",
+      "font_height": 19,
+      "foreground": "#322a20",
+      "background": "#eee4cb",
+      "border": 1,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 19
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    },
+    {
+      "profile": "classic-large",
+      "file": "classic-large.fvwm",
+      "sha256": "e904c2ae5d2c062f40dd8bb0541ae3669e61ee56303af2dcf253198dab2dbde3",
+      "font": "xft:DejaVu Sans Mono:size=18",
+      "font_height": 28,
+      "foreground": "#ffffe0",
+      "background": "#252550",
+      "border": 5,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 28
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    }
+  ],
+  "captures": [
+    {
+      "file": "slate-dark.png",
+      "bytes": 12092,
+      "sha256": "09f10ad0c6fd7e947fc4d89f85b425981dbb12be9eb7823bbc9281d1be7fc224"
+    },
+    {
+      "file": "dune-light.png",
+      "bytes": 12245,
+      "sha256": "673e79e3476c378f261cda385e92e4e8bda6c7a608c7e84ffecd119fea21e09d"
+    },
+    {
+      "file": "classic-large.png",
+      "bytes": 12684,
+      "sha256": "a4bb1c62f79fe9623c8aacf1e8c46078e2410577fa3b8102ad3519a4be243830"
+    },
+    {
+      "file": "primary-2x.png",
+      "bytes": 14214,
+      "sha256": "8c78849edb43583224336ec5625d838509a4f1801e8b61bdbd62c6ba14dbb46d"
+    }
+  ],
+  "reuse": {
+    "build_model_install": "Exact original source02 configure/build/model/tagged install passes retained from gate01. New core rebuilt for source03/source04; module/model source unchanged through source05. Final fixture-only supported-strut correction needed no C rebuild.",
+    "normal_runtime": "Only source05 gate06 is a full normal actual-X pass. Historical failed gates are not relabeled passed.",
+    "docs": "README/gallery/report/tracker/support and published captures added after runtime freeze; no native input delta."
+  },
+  "limits": [
+    "Root-child override-redirect standalone host only; no arbitrary containment or bar integration",
+    "Default visual/depth only; no ARGB/toolkit qualification",
+    "XEmbed subset: no global accelerators/XDND/modality/balloons",
+    "No StatusNotifier/application menus or persistent settings UI yet",
+    "Six-target/compiler/minimal/full installed desktop and default BSD server gates deferred to combined #78 acceptance",
+    "Native CPU sanitizer is not physical Linux/hardware/compositor or assistive technology qualification",
+    "No periodic core performance comparison due: counter 1/5 after merged311, becomes2/5 only after this candidate merges; ELF sections describe scoped feature cost, not resident memory or desktop performance",
+    "Xlib calls/short fixed server transactions can block; event budgets do not preempt an individual call"
+  ],
+  "retention": {
+    "host_evidence": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/evidence",
+    "host_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/source05.tgz",
+    "guest": {
+      "source_closure": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+      "source": "/tmp/fvwm-module-waits-20261015/source",
+      "normal_build": "/tmp/fvwm-module-waits-20261015/build-gcc",
+      "sanitizer_build": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+      "prefix": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix",
+      "next_performance_reference": "/tmp/fvwm-module-waits-20261015/m5-performance-notification-20261030",
+      "counter": "1/5 after merged311; new candidate does not advance counter until merge",
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate01",
+          "bytes": 625286,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate01.tgz",
+          "bytes": 173388,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate02",
+          "bytes": 725275,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate02.tgz",
+          "bytes": 183710,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate03",
+          "bytes": 728073,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate03.tgz",
+          "bytes": 184176,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate04",
+          "bytes": 833,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate04.tgz",
+          "bytes": 654,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate05",
+          "bytes": 788809,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate05.tgz",
+          "bytes": 194985,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate06",
+          "bytes": 954763,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-gate06.tgz",
+          "bytes": 204119,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-sanitizer01",
+          "bytes": 975140,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-sanitizer01.tgz",
+          "bytes": 208193,
+          "reason": "host hash-verified current evidence retained"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xembed-tray-inputs",
+          "bytes": 106975538,
+          "reason": "consumed input archives; reusable source plus marker and host manifests retained"
+        }
+      ],
+      "recovered_bytes": 112922942
+    },
+    "lab_stopped": true,
+    "host_retired": {
+      "retired": [
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/source01.tgz",
+          "bytes": 26019372,
+          "reason": "superseded owned source archive; source manifests/failure receipts/current source05 retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/source02.tgz",
+          "bytes": 26020171,
+          "reason": "superseded owned source archive; source manifests/failure receipts/current source05 retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/source03.tgz",
+          "bytes": 26205424,
+          "reason": "superseded owned source archive; source manifests/failure receipts/current source05 retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/source04.tgz",
+          "bytes": 26205830,
+          "reason": "superseded owned source archive; source manifests/failure receipts/current source05 retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate01.tgz",
+          "bytes": 173388,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate02.tgz",
+          "bytes": 183710,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate03.tgz",
+          "bytes": 184176,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate04.tgz",
+          "bytes": 654,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate05.tgz",
+          "bytes": 194985,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-gate06.tgz",
+          "bytes": 204119,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/r1-xembed-tray-sanitizer01.tgz",
+          "bytes": 208193,
+          "reason": "verified host duplicate; extracted review evidence retained"
+        }
+      ],
+      "recovered_bytes": 105600022
+    }
+  },
+  "review": {
+    "agent": "/root/tray_checkpoint_review",
+    "kind": "separate source/artifact/evidence review, not human approval",
+    "status": "clear after report wording correction; final metadata delta confirmed in signed PR handoff",
+    "model_metadata": "unverified",
+    "initial_integrated_tree": "e399f637bedea0784df3fee6a98877f92ea6af55",
+    "resolved_report_finding": "Narrowed sanitizer outcome wording to model/outer-fixture results, aggregate logs and no reports; individual graceful tray exit codes not recorded."
+  },
+  "repository_checks": {
+    "command": "make verify",
+    "exit": 0,
+    "tests": 291,
+    "log_sha256": "64e0e1191859ce52c8cb6e510baadc5080b17d21dd633be6e4ca22099b2992d6",
+    "prior_failure": "README word limit caught added preview; shortened to235words and reran full verify successfully"
+  },
+  "manual_review": {
+    "source_sha256": "c4bf232bf821143d2560927d0805ca46c248cb80ad7193445219fe03aeca1a78",
+    "generated_sha256": "23b6edb517d6e12db2c93f3161bca7bf0076d61aadf148eb91f39c7495dfa090",
+    "format": "macOS mandoc ASCII width78",
+    "render_exit": 0,
+    "lint_exit": 3,
+    "lint_classification": "Generated Asciidoctor template: mso www.tmac request skipped, LINKSTYLE unsupported macro; paragraph sp after SH warnings. Readable render inspected, no missing tray sections/config/control fields. Not claimed lint-clean; generator portability remains documentation follow-up.",
+    "receipt_sha256": "14e5858b037acb5536c21db303b53799f826a74d2b2da712ce93d2ef8038a611"
+  },
+  "case_results": {
+    "normal": {
+      "owner_discovery_and_competing_start": "passed",
+      "bounded_dock_validation": "passed",
+      "malformed_property_detach_and_redock": "passed",
+      "mapping_resize_and_visibility": "passed",
+      "normal_visible_and_hidden_configure_requests": "passed",
+      "keyboard_proxy_and_traversal": "passed",
+      "host_target_floor_with_one_pixel_client": "passed",
+      "three_actual_font_palette_profiles": "passed",
+      "orientation_and_invalid_layout_config": "passed",
+      "actual_primary_scale_and_work_area": "passed",
+      "external_reparent_and_destruction": "passed",
+      "capacity_overflow_and_recovery": "passed",
+      "producer_disconnect_preserves_other_client": "passed",
+      "orderly_release_and_explicit_restart": "passed",
+      "selection_loss_releases_clients": "passed",
+      "abrupt_exit_save_set_survival": "passed"
+    },
+    "sanitizer": {
+      "owner_discovery_and_competing_start": "passed",
+      "bounded_dock_validation": "passed",
+      "malformed_property_detach_and_redock": "passed",
+      "mapping_resize_and_visibility": "passed",
+      "normal_visible_and_hidden_configure_requests": "passed",
+      "keyboard_proxy_and_traversal": "passed",
+      "host_target_floor_with_one_pixel_client": "passed",
+      "three_actual_font_palette_profiles": "passed",
+      "orientation_and_invalid_layout_config": "passed",
+      "actual_primary_scale_and_work_area": "passed",
+      "external_reparent_and_destruction": "passed",
+      "capacity_overflow_and_recovery": "passed",
+      "producer_disconnect_preserves_other_client": "passed",
+      "orderly_release_and_explicit_restart": "passed",
+      "selection_loss_releases_clients": "passed",
+      "abrupt_exit_save_set_survival": "passed"
+    }
+  },
+  "native_receipts": {
+    "gate06": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/evidence/gate06/native/result.json",
+      "sha256": "8ce6509c9b7367b2139a22f6f54a74a3885d33e33d301f0b21ac6149b2cdb2e3",
+      "status": "passed"
+    },
+    "sanitizer01": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-xembed-tray/evidence/sanitizer01/native/result.json",
+      "sha256": "a7a5ef9465f2b09efc6f28a9fd61b3c91b462043ceb692294ecac1258d92bf1c",
+      "status": "passed"
+    }
+  },
+  "focus_observation": {
+    "proxy": 10485766,
+    "forwarded_key": {
+      "window": 6291458,
+      "type": 2,
+      "synthetic": true,
+      "kind": "key",
+      "keysym": 97,
+      "code": 38
+    },
+    "focus_return": 4194305,
+    "actual_tab_before_next": {
+      "window": 6291458,
+      "type": 2,
+      "synthetic": true,
+      "kind": "key",
+      "keysym": 65289,
+      "code": 23
+    },
+    "actual_shift_before_prev": {
+      "window": 8388610,
+      "type": 2,
+      "synthetic": true,
+      "kind": "key",
+      "keysym": 65505,
+      "code": 50
+    },
+    "actual_tab_before_prev": {
+      "window": 8388610,
+      "type": 2,
+      "synthetic": true,
+      "kind": "key",
+      "keysym": 65289,
+      "code": 23
+    },
+    "application_policy": "ClickToFocus",
+    "preserved_application_child": 6291469
+  }
+}

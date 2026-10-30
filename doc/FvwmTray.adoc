@@ -1,0 +1,191 @@
+= FvwmTray(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+:manversion: @VERSION@
+
+== Name
+
+FvwmTray - optional standalone XEmbed system tray
+
+== Synopsis
+
+Module FvwmTray [_Alias_]
+
+== Description
+
+FvwmTray is an optional native module that displays application-provided
+XEmbed tray windows. Start it explicitly in an FVWM session. It uses the
+existing X11 and FVWM module libraries; it does not need a D-Bus session bus
+or an additional GUI toolkit.
+
+The tray owns the system-tray selection for its X screen. It does not replace
+another owner. If another tray is already running, stop that tray before
+starting FvwmTray. If FvwmTray loses the selection, it releases its clients
+and exits; start it again explicitly after the selection becomes available.
+
+This feature is in development. The first host is a standalone window on the
+primary monitor. It supports the XEmbed docking, mapped-state, activation,
+focus and traversal subset described below. It does not yet support
+StatusNotifier items, application menus, balloon messages, global accelerators,
+XDND or modality forwarding. It accepts windows using the screen's default
+visual and depth; ARGB and other visual/depth combinations are not supported
+in this host. The module does not claim full XEmbed protocol coverage.
+
+FvwmButtons swallowing, arbitrary external containers and adaptive-bar
+integration are not supported by this standalone host. Do not swallow or
+reparent the FvwmTray window into another container. External reparenting
+causes the host to release its clients and exit.
+
+== Start and stop
+
+After installing the module, start it from the FVWM command interface:
+
+----
+Module FvwmTray
+----
+
+To start it when the session starts, add this line to the normal FVWM
+configuration instead:
+
+----
+AddToFunc StartFunction I Module FvwmTray
+----
+
+Only one tray owner can serve an X screen, regardless of module alias.
+FvwmTray remains opt-in and does not start or replace other tray services.
+An optional alias contains 1 to 128 ASCII letters, digits, underscores or
+hyphens. With an alias, use that name in directives and module commands:
+
+----
+Module FvwmTray MyTray
+*MyTray Gap 4
+SendToModule MyTray Reload
+----
+
+To stop the default instance:
+
+----
+KillModule FvwmTray
+----
+
+On an orderly stop or selection loss, the host unmaps surviving client windows
+and returns them to the root window before destroying its own windows. It does
+not close or kill those applications. A save set also allows the X server to
+return surviving clients to the root if this standalone host exits abruptly.
+Applications must dock again with a new tray owner; the module does not replay
+old membership after restart.
+
+== Configuration
+
+Set module directives in the normal FVWM configuration. For example, choose
+an unused colorset number before applying these settings:
+
+----
+Colorset 42 fg #e5edf5, bg #253140
+*FvwmTray Colorset 42
+*FvwmTray Font "xft:Sans:size=11"
+*FvwmTray Gap 4
+*FvwmTray Padding 4
+*FvwmTray Orientation Horizontal
+*FvwmTray Position BottomRight
+*FvwmTray Visible On
+----
+
+*Colorset* selects an existing FVWM colorset; the default is 0. *Font* uses
+the native font syntax; the default is `fixed`. *Gap* and *Padding* are
+logical UI units from 0 through 64, each defaulting to 4. *Orientation* is
+`Horizontal` or `Vertical`, with `Horizontal` as the default. *Position* is
+`TopLeft`, `TopRight`, `BottomLeft` or `BottomRight`; the default is
+`BottomRight`. *Visible* is `On` or `Off`, defaulting to `On`. Invalid values
+reject the entire configuration snapshot instead of partially applying it.
+Xft font substitution follows native Fontconfig behavior.
+
+The host follows the primary monitor's published scale and work area. Its
+own text, padding and geometry follow that scale. Embedded application
+windows retain their actual pixel dimensions; their pixels are not resampled
+by the tray. Colorset, font, orientation, spacing, visibility and placement
+can change while the module runs.
+
+After changing stored module directives, request a fresh configuration. Each
+reload builds the complete option set from defaults and the stored directives;
+removing a directive resets that option to its default:
+
+----
+SendToModule FvwmTray Reload
+----
+
+Colorset changes and published monitor, scale and work-area changes also
+refresh the running host. A reload does not start the module or replace a
+different tray owner.
+
+== Controls
+
+Docking an application or changing appearance does not take keyboard focus.
+To enter the tray explicitly, use a binding or issue a command:
+
+----
+Key T A M SendToModule FvwmTray Focus
+SendToModule FvwmTray Focus
+SendToModule FvwmTray Next
+SendToModule FvwmTray Prev
+SendToModule FvwmTray Hide
+SendToModule FvwmTray Show
+SendToModule FvwmTray Reload
+SendToModule FvwmTray Status
+----
+
+Choose a binding that does not conflict with your configuration. *Focus*
+selects the current visible client, or the first visible client. *Next* and
+*Prev* move through visible clients and wrap at the ends. Clients can also
+request focus and participate in XEmbed forward or reverse traversal. Key
+presses and releases are forwarded to the selected client. Hiding or removing
+the selected client ends its logical focus. Escape requests a return to the
+previous application through normal window-manager focus policy when possible.
+
+*Hide* hides the host; *Show* displays it. Showing it does not itself take
+focus. These commands are transient and last until the next configuration
+snapshot. They do not change the application-owned mapped flags.
+When no clients are present, the standalone host remains available.
+
+*Status* emits one numeric `FVWM_TRAY_STATUS` FVWM Echo record. Its fields,
+in order, are client count, mapped-client count, limit, scale in quarters,
+selection-claimed flag, pending-configuration flag, monitor epoch, host window,
+selection-owner window, focus-proxy window and loaded font height. Window
+values are X window IDs; font height is in actual pixels. A quarter-scale value
+of 4 means 1x. The mapped-client count can exceed the number currently visible
+when the host is hidden or the available area overflows.
+
+== Client limits and recovery
+
+The host admits at most 32 clients. A client window must be an InputOutput
+window on the same X screen, use that screen's default visual and depth, and
+provide a valid `_XEMBED_INFO` property with two 32-bit words. At admission it
+must be a direct child of the root window; windows already framed or embedded
+elsewhere are refused. Ordinary unmapped root plugs and mapped override-redirect
+root icons can be admitted. Dimensions must be between 1 and 256 actual pixels
+on each axis. The host handles valid client resize requests within these limits
+without resampling the client pixels. Duplicate, invalid, unsupported and
+over-capacity requests are refused. This subset does not imply support for all
+toolkit clients.
+
+An admitted client can remain a member while it does not fit in the available
+area. The host displays a bounded subset in a stable order; space becoming
+available can make another retained client visible. The client-provided mapped
+flag remains distinct from whether an icon currently fits or the host is shown.
+Client destruction or reparenting out of its socket retires that membership.
+
+If an expected icon does not appear, check whether another tray owns the
+selection, whether the module is running and visible, and whether the client
+fits the supported parent, visual, property and size limits. Check FVWM's
+module diagnostics for refused requests. The selection-owner window exposes
+`_FVWM_TRAY_REFUSALS`, a CARDINAL/32 diagnostic counter that saturates and
+increments once for each recognized refused dock, format, capacity or
+duplicate request. It is a diagnostic, not a protocol capability. Restart
+the application or have it
+dock again after a new tray owner starts. Application labels and properties
+are display data; they are not interpreted as FVWM or shell commands.
+
+== See also
+
+*FvwmButtons*(1), *fvwm3*(1)

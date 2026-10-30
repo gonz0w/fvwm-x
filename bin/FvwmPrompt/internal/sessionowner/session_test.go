@@ -25,7 +25,7 @@ import (
 )
 
 func TestEnvironmentPreservesPresentValues(t *testing.T) {
-	input := []string{"DISPLAY=:9", "XDG_CURRENT_DESKTOP=Mine", "XDG_SESSION_TYPE=", "SESSION_MANAGER=external", ReadyEnvironment + "=99"}
+	input := []string{"DISPLAY=:9", "XDG_CURRENT_DESKTOP=Mine", "XDG_SESSION_TYPE=", "SESSION_MANAGER=external", ReadyEnvironment + "=99", LeaseEnvironment + "=98"}
 	got := Environment(input)
 	if strings.Join(got, "\n") != strings.Join(input[:4], "\n") {
 		t.Fatalf("changed existing environment: %q", got)
@@ -60,7 +60,7 @@ func TestReadyPipeOutcomes(t *testing.T) {
 			if tc.close {
 				w.Close()
 			}
-			if err = waitReady(r, 20*time.Millisecond); (err == nil) != tc.want {
+			if err = waitReady(r, 20*time.Millisecond, false); (err == nil) != tc.want {
 				t.Fatalf("ready: %v", err)
 			}
 		})
@@ -94,7 +94,7 @@ func TestSessionChild(t *testing.T) {
 			f := os.NewFile(3, "ready")
 			os.Unsetenv(ReadyEnvironment)
 			if mode == "wm-ready" || mode == "wm-restart" {
-				f.Write([]byte("R"))
+				writeTestCoreReady(f)
 			}
 			if mode == "wm-wrong" {
 				f.Write([]byte("X"))
@@ -143,6 +143,17 @@ func TestSessionChild(t *testing.T) {
 	os.Exit(0)
 }
 
+// Existing real-child fixtures acknowledge the same private startup contract
+// as the core, while injected non-file locks retain their legacy R behavior.
+func writeTestCoreReady(file *os.File) {
+	ack := "R"
+	if os.Getenv(LeaseEnvironment) == "4" {
+		ack = "RL"
+	}
+	os.Unsetenv(LeaseEnvironment)
+	io.WriteString(file, ack)
+}
+
 func childCommand(mode string, args ...string) *exec.Cmd {
 	cmd := exec.Command(os.Args[0], append([]string{"-test.run=^TestSessionChild$", "--", mode}, args...)...)
 	return cmd
@@ -160,7 +171,7 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 		var gotPath string
 		var gotArgs, gotEnv []string
 		lockCalled := false
-		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9"}, Diagnostics: io.Discard,
+		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9", ReadyEnvironment + "=99", LeaseEnvironment + "=98"}, Diagnostics: io.Discard,
 			Exec:    func(path string, args, env []string) error { gotPath = path; gotArgs = args; gotEnv = env; return nil },
 			Lock:    func([]string) (io.Closer, error) { lockCalled = true; return nil, os.ErrPermission },
 			Command: func(string, ...string) *exec.Cmd { t.Fatal("unexpected child"); return nil },
@@ -173,6 +184,9 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 		}
 		if environmentMap(gotEnv)["XDG_CURRENT_DESKTOP"] != "FVWM3:FVWM" {
 			t.Fatal(gotEnv)
+		}
+		if env := environmentMap(gotEnv); env[ReadyEnvironment] != "" || env[LeaseEnvironment] != "" {
+			t.Fatal("private startup state leaked to exec", gotEnv)
 		}
 		if lockCalled == external {
 			t.Fatalf("external=%v lock called=%v", external, lockCalled)
@@ -267,7 +281,7 @@ func TestApplicationStartExitFailureAndLiteralArguments(t *testing.T) {
 		var diagnostics bytes.Buffer
 		var appArgs, coreArgs []string
 		var wmCommand, workerCommand, appCommand *exec.Cmd
-		cfg := Config{DisableServices: true, WMPath: "/wm", SelfPath: "/self", Args: []string{"-f", "-d", "--display", ":27"}, Environment: append(isolatedEnvironment(), "DISPLAY=:invalid-inherited", "XAUTHORITY=/fixture/auth"), Diagnostics: &diagnostics,
+		cfg := Config{DisableServices: true, WMPath: "/wm", SelfPath: "/self", Args: []string{"-f", "-d", "--display", ":27"}, Environment: append(isolatedEnvironment(), "DISPLAY=:invalid-inherited", "XAUTHORITY=/fixture/auth", LeaseEnvironment+"=99"), Diagnostics: &diagnostics,
 			Lock: func(env []string) (io.Closer, error) {
 				if environmentMap(env)["DISPLAY"] != ":27" {
 					t.Fatalf("wrong lock display: %q", env)
@@ -310,6 +324,9 @@ func TestApplicationStartExitFailureAndLiteralArguments(t *testing.T) {
 			env := environmentMap(command.Env)
 			if env["DISPLAY"] != ":27" || env["XAUTHORITY"] != "/fixture/auth" {
 				t.Fatalf("wrong child environment: %q", command.Env)
+			}
+			if env[LeaseEnvironment] != "" {
+				t.Fatal("private lease state leaked without a file lease", command.Env)
 			}
 		}
 		if missing {
@@ -354,7 +371,7 @@ func TestDiagnosticsAreFiniteAndSingleLine(t *testing.T) {
 		r.write("entry\n%s", strings.Repeat("x", 1024))
 	}
 	lines := strings.Split(strings.TrimSuffix(output.String(), "\n"), "\n")
-	if len(lines) != 64 {
+	if len(lines) != maxDiagnostics-1 {
 		t.Fatal(len(lines))
 	}
 	for _, line := range lines {

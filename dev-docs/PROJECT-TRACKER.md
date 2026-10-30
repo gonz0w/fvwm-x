@@ -1,25 +1,96 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-29. This is the active tracker. Retired milestone planning and
+Updated: 2026-10-30. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [session providers and power coordination](#r1-session-providers-and-power-coordination--2026-10-29)
-under #72/#77, with a bounded #225 manual-lock consumer. PR305 merged as
-`8402e098c0fe3fcab8b14f2ff9c52346f7ff7d9b`; canonical signature, reviewed tree
-and Cam author DCO verified, matching source branches retired. The [due core comparison](verification/PERFORMANCE-2026-10-29-SESSION-CORE.md)
-compares retained PR299/PR305 artifacts; the counter resets to 0/5 at PR305.
-Command ranges overlap; idle timer median rises 0.324 ms and median per-run peak core RSS 56 KiB.
-This does not measure the new session parent or whole default desktop.
+Current checkpoint: [portable session recovery](#r1-portable-session-recovery--2026-10-30)
+under SESSION-01 #72. PR306 merged as
+`c0884267f2fda6d54831115731c92cd663f87bbc`; canonical signature, reviewed tree
+and Cam author DCO verified, matching source branches retired. Performance is
+1/5 from merged PR305; no comparison is due.
+
+## R1 portable session recovery — 2026-10-30
+
+Owner: Cam; `codex/r1-session-recovery`; base merged PR306 above.
+Status: source-reviewed implementation and focused qualification complete; PR
+handoff pending. The finite six-story contract was frozen before implementation.
+User authorized merge/cleanup and the next larger related milestone batch.
+
+Deliver six related outcomes under existing #72 recovery/ownership acceptance:
+(1) stable local implicit-screen-zero identity (:D equals :D.0), (2) shared
+flock descriptor ownership retained by the direct core if its parent dies,
+(3) native same-PID Restart retains that lease without leaking it to ordinary
+applications/modules or an explicit replacement program, (4) positive startup
+acknowledgment of the lease before one-shot autostart, (5) bounded shutdown of
+only the direct owned WM after an explicit stop signal and (6) coalesced stop
+signals and truthful, ownership-aware exit/cleanup outcomes. Reuse accepted
+startup, optional services, cooperative application logout and power consumers.
+Do not extend this into a generic supervisor, automatic WM restart/adoption,
+arbitrary command registry, new mandatory dependency or new UI/settings store.
+
+Keep the persistent record inode and existing safe-directory rules. Share the
+same open-file description through private FD4; ready FD3 stays nonblocking.
+The core validates ownership/type/access/flags before retaining a lease, keeps
+it close-on-exec during ordinary work and preserves it only immediately around
+its native Restart exec. Never explicitly unlock a description still held by
+the other owner. Native startup reports RL when it retained the lease, legacy R
+without a lease; a parent expecting RL must not launch autostart on an old R.
+Private environment is removed promptly and does not leak to applications.
+Local :D and :D.0 normalization preserves actual screen differences and literal
+launch arguments. Arbitrary host/transport aliases are not claimed equivalent;
+actual competing X ownership must still prevent an unacknowledged second scan.
+
+On a first explicit stop signal, cancel further acquisition/helper work, forward
+only to the direct owned WM and begin one fixed five-second cooperative grace.
+Repeated signals do not restart deadlines or broadcast to a process group.
+At grace expiry, request termination only of that same direct process, then
+observe actual Wait for at most one second. Return its actual observed status,
+or a nonzero termination-unconfirmed result if no Wait arrives. This is not a
+forced application/logout operation: independent applications, admitted lockers
+and borrowed buses receive no signal. Stop/reap the owned optional bus after a
+confirmed WM exit; preserve it if WM termination remains unconfirmed rather than
+breaking the possibly live session. Parent-crash bus guardians, full alias
+canonicalization, physical secure locking and broader #77/#225 adapters remain
+with their owners; no automatic adoption or orphan-free parent-crash bus claim.
+
+Implement the whole set before one affected incremental Linux Go/C/core and
+native-X checkpoint; use actual held descriptors, exact owned child handles,
+restart, parent loss, competing local forms, nonleak, orderly/stalled/repeated
+stop and surviving independent clients/locker fixtures. No real OS power or
+authentication. Add the relevant BSD descriptor/exec gate for changed platform
+contracts where available; no automatic full OS matrix or new screenshot set
+for unchanged UI. Preserve failed/raw observations, reuse unaffected PR304–306
+checks and document narrower coverage honestly. Whole #72/#77/#225 and release
+acceptance stay open unless their frozen complete criteria are actually met.
+Source review found the new WM-return path could outrun acquisition cancellation.
+An all-return two-second drain and one-second actual worker Wait observation
+restore the bounded barrier; a real active-scan/WM-exit regression covers it.
+Kernel-delayed operations remain explicitly unconfirmed.
+#257/#258 stay parked.
+
+The [focused report](verification/VERIFICATION-2026-10-30-SESSION-RECOVERY.md)
+records two-package ordinary/race passes (122 each), vet, incremental core/wrapper
+and manual, normal/scoped ASan/UBSan descriptor/lease units, actual FreeBSD 15.1
+ARM64 descriptor/flock/exec and four composed native lifecycle groups. Corrected
+parent-loss/fresh-owner and stalled-stop observers pass; stopped-core shutdown is
+5.020 seconds with observed status 137 and independent client/locker survival.
+The affected acquisition correction repeats only owner/command/wrapper/manual
+and two native groups; unchanged C/BSD/other native evidence is reused.
+No UI primitive changed, so prior three-theme captures remain applicable.
+All 136 raw Linux files verify in a 394,348-byte archive; owned labs stopped,
+Linux scratch plus both BSD disks/duplicate inputs retired while current
+source/builds/prefix/cache/performance references remain. Full acceptance and
+parent-crash optional-bus cleanup stay open; final artifact review is in the PR.
 
 ## R1 session providers and power coordination — 2026-10-29
 
 Owner: Cam; `codex/r1-session-providers`; base merged PR305 above.
-Status: reviewed implementation and focused qualification complete; PR handoff
-pending. The finite eight-story contract was frozen before implementation.
+Status: merged in PR306 as `c0884267f2fda6d54831115731c92cd663f87bbc`;
+canonical signature, reviewed tree and author DCO verified; source branches retired. The finite eight-story contract was frozen before implementation.
 User authorized merge/cleanup and the next larger related milestone batch.
 
 Deliver one coherent #72/#77 checkpoint: (1) fixed native/login1-compatible power
@@ -4901,8 +4972,8 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
-| SESSION-01 | P2 / In progress; startup merged, control/services candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| SESSION-02 | P2 / In progress; optional client/lifecycle candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-01 | P2 / In progress; startup/control/services/providers merged; recovery selected, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-02 | P2 / In progress; optional client/lifecycle/power merged, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
@@ -4957,7 +5028,7 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | WORKSPACE-03 | P2 / Backlog; F3 Workspace tools | [#222](https://github.com/gonz0w/fvwm-x/issues/222). Build user-owned monitor/workspace/panel placement profiles on existing MONITOR/CFG contracts, without resizing arbitrary client pixels. |
 | WORKSPACE-04 | P2 / Backlog; F3 Workspace tools | [#223](https://github.com/gonz0w/fvwm-x/issues/223). Create a bounded searchable overview using native labels/icons first, with optional thumbnails separately qualified. |
 | EFFECTS-01 | P2 / Backlog; F4 Services and effects | [#224](https://github.com/gonz0w/fvwm-x/issues/224). Evaluate a cooperative external X11 compositor path for coherent workspace transitions, shadows/translucency and optional effects. |
-| LOCK-01 | P2 / Backlog; F4 Services and effects | [#225](https://github.com/gonz0w/fvwm-x/issues/225). Improve locking through qualified per-OS external providers and the portable session lifecycle; authentication stays outside the WM core. |
+| LOCK-01 | P2 / In progress; manual-lock consumer merged, secure readiness/idle acceptance open | [#225](https://github.com/gonz0w/fvwm-x/issues/225). Improve locking through qualified per-OS external providers and the portable session lifecycle; authentication stays outside the WM core. |
 | BUILD-PROFILES-01 | P2 / Backlog; M7 Owned tooling | [#226](https://github.com/gonz0w/fvwm-x/issues/226). Make minimal, desktop, graphics and development builds reproducible and understandable using the authoritative backend and target-owned dependencies. |
 | FUZZ-01 | P2 / Backlog; Qualification | [#227](https://github.com/gonz0w/fvwm-x/issues/227). Extend existing local verification with focused optional fuzz targets for project-owned external-data boundaries. |
 

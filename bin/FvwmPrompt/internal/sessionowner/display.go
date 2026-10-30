@@ -10,6 +10,25 @@ import (
 	"strings"
 )
 
+// Only an exact local numeric display with explicit screen zero shares the
+// implicit-screen key. This is a lock identity, never a launch argument or an
+// environment rewrite; host/transport aliases and other screens stay literal.
+func localDisplayKey(display string) string {
+	if !strings.HasPrefix(display, ":") || !strings.HasSuffix(display, ".0") {
+		return display
+	}
+	number := display[1 : len(display)-2]
+	if number == "" {
+		return display
+	}
+	for _, digit := range number {
+		if digit < '0' || digit > '9' {
+			return display
+		}
+	}
+	return display[:len(display)-2]
+}
+
 // effectiveDisplay mirrors only the argument arity of fvwm3.c's main option
 // loop. Values stay literal; in particular a command/configuration value that
 // looks like -d must not become an option here. Unknown future core options

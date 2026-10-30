@@ -66,7 +66,7 @@ func TestServiceChild(t *testing.T) {
 		time.Sleep(5 * time.Second)
 	case "hang-ready":
 		file := os.NewFile(3, "ready")
-		file.Write([]byte("R"))
+		writeTestCoreReady(file)
 		file.Close()
 		time.Sleep(5 * time.Second)
 	case "overflow":

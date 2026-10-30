@@ -15,10 +15,13 @@ import (
 	"os"
 	"strings"
 	"syscall"
+	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
 )
+
+var errScanReapUnconfirmed = errors.New("autostart worker termination/reaping unconfirmed")
 
 type workerDiagnostic struct {
 	data [maxDiagnosticBytes]byte
@@ -83,10 +86,35 @@ func decodeScan(data []byte) (xdgmenu.AutostartScan, error) {
 	return scan, nil
 }
 
+// Cancellation alone does not serialize CLI exit with a scan goroutine that
+// has not yet submitted its direct child's Kill. Give acquisition a separate
+// two-second teardown barrier, after any WM grace/reap phase. scanWorker spends
+// at most one second observing actual Wait after its termination request. A
+// blocked Start/Kill or kernel-delayed exit remains explicitly unconfirmed.
+func finishScanWork(cancel context.CancelFunc, scanning <-chan scanResult, report *reporter) {
+	cancel()
+	if scanning == nil {
+		return
+	}
+	timer := time.NewTimer(2 * time.Second)
+	defer timer.Stop()
+	select {
+	case result := <-scanning:
+		if errors.Is(result.err, errScanReapUnconfirmed) {
+			report.terminal("%v", result.err)
+		}
+	case <-timer.C:
+		report.terminal("autostart acquisition shutdown/reaping is unconfirmed")
+	}
+}
+
 func scanWorker(parent context.Context, input Config) (xdgmenu.AutostartScan, error) {
 	cfg := defaults(input)
 	ctx, cancel := context.WithTimeout(parent, cfg.ScanTimeout)
 	defer cancel()
+	if err := ctx.Err(); err != nil {
+		return xdgmenu.AutostartScan{}, fmt.Errorf("autostart worker deadline/cancellation: %w", err)
+	}
 	reader, writer, err := os.Pipe()
 	if err != nil {
 		return xdgmenu.AutostartScan{}, err
@@ -96,6 +124,10 @@ func scanWorker(parent context.Context, input Config) (xdgmenu.AutostartScan, er
 	var diagnostic workerDiagnostic
 	command.Env, command.Stdout, command.Stderr = cfg.Environment, writer, &diagnostic
 	command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
+	if err := ctx.Err(); err != nil {
+		writer.Close()
+		return xdgmenu.AutostartScan{}, fmt.Errorf("autostart worker deadline/cancellation: %w", err)
+	}
 	if err = command.Start(); err != nil {
 		writer.Close()
 		return xdgmenu.AutostartScan{}, err
@@ -115,8 +147,28 @@ func scanWorker(parent context.Context, input Config) (xdgmenu.AutostartScan, er
 	// Acquisition never forks: only this direct worker needs termination.
 	// Process.Kill synchronizes with Wait's process state, unlike a numeric
 	// process-group signal that could race reaping and identifier reuse. The
-	// waiter still reaps a worker if the kernel delays delivery of SIGKILL.
-	stop := func() { _ = command.Process.Kill(); reader.Close() }
+	// waiter still owns reap if the kernel delays delivery beyond this bounded
+	// observation; a deadline never manufactures a completed Wait.
+	stop := func(cause error) error {
+		_ = command.Process.Kill()
+		reader.Close()
+		if waited == nil {
+			return cause
+		}
+		timer := time.NewTimer(time.Second)
+		defer timer.Stop()
+		select {
+		case <-waited:
+			return cause
+		case <-timer.C:
+			select {
+			case <-waited:
+				return cause
+			default:
+				return errors.Join(cause, errScanReapUnconfirmed)
+			}
+		}
+	}
 	var data []byte
 	for waited != nil || output != nil {
 		select {
@@ -130,13 +182,11 @@ func scanWorker(parent context.Context, input Config) (xdgmenu.AutostartScan, er
 		case result := <-output:
 			output = nil
 			if result.err != nil || len(result.data) > xdgmenu.MaxAutostartOutputBytes {
-				stop()
-				return xdgmenu.AutostartScan{}, errors.New("autostart worker output unavailable or excessive")
+				return xdgmenu.AutostartScan{}, stop(errors.New("autostart worker output unavailable or excessive"))
 			}
 			data = result.data
 		case <-ctx.Done():
-			stop()
-			return xdgmenu.AutostartScan{}, fmt.Errorf("autostart worker deadline/cancellation: %w", ctx.Err())
+			return xdgmenu.AutostartScan{}, stop(fmt.Errorf("autostart worker deadline/cancellation: %w", ctx.Err()))
 		}
 	}
 	return decodeScan(data)

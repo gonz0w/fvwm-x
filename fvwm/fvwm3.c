@@ -131,6 +131,8 @@ static volatile sig_atomic_t fvwmRunState = FVWM_RUNNING;
 
 /* Private, one-shot session-owner pipe; never inherited by modules or Restart. */
 static int session_ready_fd = -1;
+/* Shared with the portable parent; survives only the native Restart exec. */
+static int session_lease_fd = -1;
 
 static const char *init_function_names[4] =
 {
@@ -670,7 +672,13 @@ void Done(int restart, char *command)
 			}
 		}
 
-		execvp(g_argv[0], g_argv);    /* that _should_ work */
+		/* Custom replacements above never receive the lease. Only the native
+		 * fallback inherits it, immediately around this same-PID exec. */
+		if (session_lease_prepare_restart(session_lease_fd))
+		{
+			execvp(g_argv[0], g_argv);    /* that _should_ work */
+			session_lease_finish_restart(session_lease_fd);
+		}
 		fvwm_debug(__func__, "Call of '%s' failed!", g_argv[0]);
 		perror("  system error description");
 	}
@@ -1511,7 +1519,7 @@ void StartupStuff(void)
 	 * flag back to False!
 	 */
 	Restarting = False;
-	session_ready_publish(&session_ready_fd);
+	session_ready_publish(&session_ready_fd, session_lease_fd);
 
 	return;
 }
@@ -1695,9 +1703,10 @@ int main(int argc, char **argv)
 
 	/* close open fds */
 	session_ready_fd = session_ready_take();
+	session_lease_fd = session_lease_take();
 	for (i = 3; i < fvwmlib_max_fd; i++)
 	{
-		if (i != session_ready_fd)
+		if (i != session_ready_fd && i != session_lease_fd)
 		{
 			close(i);
 		}

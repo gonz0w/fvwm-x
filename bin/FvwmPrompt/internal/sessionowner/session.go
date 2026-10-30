@@ -28,9 +28,12 @@ import (
 
 const (
 	ReadyEnvironment   = "FVWM_SESSION_READY_FD"
+	LeaseEnvironment   = "FVWM_SESSION_LEASE_FD"
 	WorkerArgument     = "--_session-scan"
 	readyTimeout       = 15 * time.Second
 	scanTimeout        = 5 * time.Second
+	stopGrace          = 5 * time.Second
+	stopWait           = time.Second
 	maxDiagnostics     = 64
 	maxDiagnosticBytes = 512
 )
@@ -47,9 +50,11 @@ type Config struct {
 	Exec                      func(string, []string, []string) error
 	Lock                      func([]string) (io.Closer, error)
 	ReadyTimeout, ScanTimeout time.Duration
+	StopGrace, StopWait       time.Duration
 	BusHelperPath             string
 	DisableServices           bool
 	serviceSlot               chan struct{}
+	readyPipe                 func() (*os.File, *os.File, error)
 }
 
 func environmentMap(environment []string) map[string]string {
@@ -62,14 +67,14 @@ func environmentMap(environment []string) map[string]string {
 	return result
 }
 
-// Environment preserves even explicitly empty values. Private readiness state
-// supplied to the wrapper must never leak into an external session or Restart.
+// Environment preserves even explicitly empty values. Private startup state
+// supplied to the wrapper must never leak into an external session or apps.
 func Environment(input []string) []string {
 	result := make([]string, 0, len(input)+2)
 	current, session := false, false
 	for _, entry := range input {
 		key, _, _ := strings.Cut(entry, "=")
-		if key == ReadyEnvironment || key == sessionservice.SocketEnvironment || key == sessionservice.CapabilityEnvironment {
+		if key == ReadyEnvironment || key == LeaseEnvironment || key == sessionservice.SocketEnvironment || key == sessionservice.CapabilityEnvironment {
 			continue
 		}
 		current = current || key == "XDG_CURRENT_DESKTOP"
@@ -88,13 +93,28 @@ func Environment(input []string) []string {
 type reporter struct {
 	output io.Writer
 	count  int
+	final  bool
 }
 
 func (r *reporter) write(format string, args ...any) {
-	if r.count >= maxDiagnostics {
+	if r.count >= maxDiagnostics-1 {
 		return
 	}
 	r.count++
+	r.line(format, args...)
+}
+
+// Reserve one of the 64 lines for a terminal result even if application or
+// optional-service observations exhausted the ordinary diagnostic budget.
+func (r *reporter) terminal(format string, args ...any) {
+	if r.final {
+		return
+	}
+	r.final = true
+	r.line(format, args...)
+}
+
+func (r *reporter) line(format string, args ...any) {
 	message := strings.Map(func(c rune) rune {
 		if unicode.IsControl(c) {
 			return ' '
@@ -110,15 +130,19 @@ func (r *reporter) write(format string, args ...any) {
 	fmt.Fprintln(r.output, prefix+message)
 }
 
-func waitReady(reader *os.File, timeout time.Duration) error {
+func waitReady(reader *os.File, timeout time.Duration, lease bool) error {
 	if err := reader.SetReadDeadline(time.Now().Add(timeout)); err != nil {
 		return err
 	}
-	data, err := io.ReadAll(io.LimitReader(reader, 2))
+	expected := "R"
+	if lease {
+		expected = "RL"
+	}
+	data, err := io.ReadAll(io.LimitReader(reader, int64(len(expected)+1)))
 	if err != nil {
 		return fmt.Errorf("core startup acknowledgment: %w", err)
 	}
-	if string(data) != "R" {
+	if string(data) != expected {
 		return errors.New("missing or malformed core startup acknowledgment")
 	}
 	return nil
@@ -179,11 +203,20 @@ func defaults(cfg Config) Config {
 	if cfg.Lock == nil {
 		cfg.Lock = acquireLock
 	}
+	if cfg.readyPipe == nil {
+		cfg.readyPipe = readinessPipe
+	}
 	if cfg.ReadyTimeout <= 0 {
 		cfg.ReadyTimeout = readyTimeout
 	}
 	if cfg.ScanTimeout <= 0 {
 		cfg.ScanTimeout = scanTimeout
+	}
+	if cfg.StopGrace <= 0 {
+		cfg.StopGrace = stopGrace
+	}
+	if cfg.StopWait <= 0 {
+		cfg.StopWait = stopWait
 	}
 	cfg.Environment = Environment(cfg.Environment)
 	return cfg
@@ -196,6 +229,25 @@ type scanResult struct {
 type appExit struct {
 	name string
 	err  error
+}
+
+// Only receipt of the owner's actual Wait result confirms termination. A
+// closed empty channel is not a successful Wait, nor is expiration a reap.
+func awaitWMExit(done <-chan error, timeout time.Duration) (error, bool) {
+	timer := time.NewTimer(timeout)
+	defer timer.Stop()
+	select {
+	case err, received := <-done:
+		return err, received
+	case <-timer.C:
+		// Prefer an already observed result at the deadline boundary.
+		select {
+		case err, received := <-done:
+			return err, received
+		default:
+			return nil, false
+		}
+	}
 }
 
 // Run returns the direct WM's exit status. There is no WM retry or replacement
@@ -227,11 +279,17 @@ func Run(input Config) int {
 		report.write("autostart unavailable: session owner lock: %v", err)
 		return plainExec()
 	}
+	// Close only this copy. An explicit LOCK_UN would release the description
+	// shared with a live core, defeating parent-loss recovery.
 	defer lock.Close()
+	lease, hasLease := lock.(*os.File)
+	wmTerminationUnconfirmed := false
 	var services *serviceState
 	var controls <-chan controlRequest
 	var busDone <-chan error
 	ctx, cancel := context.WithCancel(context.Background())
+	var scanning <-chan scanResult
+	scanReapUnconfirmed := false
 	var jobDone <-chan serviceJob
 	var cancelServiceJob context.CancelFunc
 	if !cfg.DisableServices {
@@ -240,7 +298,11 @@ func Run(input Config) int {
 			report.write("session services unavailable: %v", err)
 		} else {
 			if services.bus != nil {
-				defer services.bus.stop()
+				defer func() {
+					if !wmTerminationUnconfirmed {
+						services.bus.stop()
+					}
+				}()
 				busDone = services.bus.done
 			}
 			control, controlErr := startControl(cfg.Environment)
@@ -257,6 +319,10 @@ func Run(input Config) int {
 		if cancelServiceJob != nil {
 			cancelServiceJob()
 		}
+		finishScanWork(cancel, scanning, &report)
+		if scanReapUnconfirmed {
+			report.terminal("%v", errScanReapUnconfirmed)
+		}
 		finishServiceWork(cfg, cancel, jobDone, &report)
 	}()
 	setState := func(index int, value, message string) {
@@ -272,15 +338,24 @@ func Run(input Config) int {
 	// hitting independent applications. Forward only to the direct owned WM.
 	wm.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var reader, writer *os.File
-	wantReady := !cfg.NoAutostart || services != nil
+	wantReady := hasLease || !cfg.NoAutostart || services != nil
 	if wantReady {
-		reader, writer, err = readinessPipe()
+		reader, writer, err = cfg.readyPipe()
 		if err != nil {
 			if reader != nil {
 				reader.Close()
+			}
+			if writer != nil {
 				writer.Close()
 			}
 			report.write("autostart unavailable: readiness pipe: %v", err)
+			if hasLease {
+				// Preserve login under pipe/resource failure. Reserve FD3 as
+				// closed so the still-shared lease remains FD4, without claiming
+				// an acknowledged handoff or starting one-shot applications.
+				wm.ExtraFiles = []*os.File{nil, lease}
+				wm.Env = append(append([]string(nil), cfg.Environment...), LeaseEnvironment+"=4")
+			}
 			if !cfg.NoAutostart {
 				setState(1, "unavailable", "startup acknowledgment pipe is unavailable")
 				setState(4, "unavailable", "autostart disabled after startup pipe failure")
@@ -292,6 +367,10 @@ func Run(input Config) int {
 			defer reader.Close()
 			wm.ExtraFiles = []*os.File{writer}
 			wm.Env = append(append([]string(nil), cfg.Environment...), ReadyEnvironment+"=3")
+			if hasLease {
+				wm.ExtraFiles = append(wm.ExtraFiles, lease)
+				wm.Env = append(wm.Env, LeaseEnvironment+"=4")
+			}
 		}
 	}
 	if err = wm.Start(); err != nil {
@@ -311,18 +390,30 @@ func Run(input Config) int {
 	if wantReady {
 		result := make(chan error, 1)
 		ready = result
-		go func() { result <- waitReady(reader, cfg.ReadyTimeout) }()
+		go func() { result <- waitReady(reader, cfg.ReadyTimeout, hasLease) }()
 	}
-	var scanning <-chan scanResult
 	apps := make(chan appExit, xdgmenu.MaxAutostartEntries)
 	shuttingDown := false
+	var graceTimer *time.Timer
+	var graceDone <-chan time.Time
+	defer func() {
+		if graceTimer != nil {
+			graceTimer.Stop()
+		}
+	}()
 	forward := func(sig os.Signal) {
-		if sig == nil {
+		if sig == nil || shuttingDown {
 			return
 		}
 		shuttingDown = true
 		ready = nil
 		cancel()
+		if reader != nil {
+			reader.Close()
+		}
+		graceTimer = time.NewTimer(cfg.StopGrace)
+		graceDone = graceTimer.C
+		report.write("WM stop requested; cooperative grace started")
 		if err := wm.Process.Signal(sig); err != nil && !errors.Is(err, os.ErrProcessDone) {
 			report.write("WM signal failed: %v", err)
 		}
@@ -362,7 +453,11 @@ func Run(input Config) int {
 			services.locker = nil
 			services.snapshot.Locker.State = "exited"
 			services.snapshot.Locker.Detail = detail(fmt.Sprintf("observed locker exited with status %d; secure readiness remains unconfirmed", exitCode(lockerErr)))
-		case request := <-controls:
+		case request, open := <-controls:
+			if !open {
+				controls = nil
+				continue
+			}
 			if services == nil {
 				continue
 			}
@@ -390,10 +485,23 @@ func Run(input Config) int {
 		case err = <-wmDone:
 			cancel()
 			setState(0, "stopped", "owned core exited")
-			if scanning != nil {
-				<-scanning
-			} // Cancellation requests termination; the worker waiter owns reap.
+			// The bounded final acquisition barrier observes worker cleanup.
 			return exitCode(err)
+		case <-graceDone:
+			graceDone = nil
+			report.write("WM stop grace expired; termination requested")
+			// Process.Kill addresses the same directly owned handle as Signal;
+			// no PID lookup or process-group broadcast can reach applications.
+			if killErr := wm.Process.Kill(); killErr != nil && !errors.Is(killErr, os.ErrProcessDone) {
+				report.write("WM termination request failed: %v", killErr)
+			}
+			if waitErr, confirmed := awaitWMExit(wmDone, cfg.StopWait); confirmed {
+				setState(0, "stopped", "owned core exit observed after termination request")
+				return exitCode(waitErr)
+			}
+			wmTerminationUnconfirmed = true
+			report.terminal("WM termination unconfirmed after stop deadline; owned session bus preserved if present")
+			return 1
 		case sig, open := <-cfg.Signals:
 			if !open {
 				cfg.Signals = nil
@@ -425,9 +533,11 @@ func Run(input Config) int {
 			}
 			result := make(chan scanResult, 1)
 			scanning = result
+			report.write("autostart scan started")
 			go func() { scan, err := scanWorker(ctx, cfg); result <- scanResult{scan, err} }()
 		case result := <-scanning:
 			scanning = nil
+			scanReapUnconfirmed = errors.Is(result.err, errScanReapUnconfirmed)
 			if shuttingDown {
 				continue
 			}

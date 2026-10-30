@@ -35,7 +35,7 @@ func TestProviderProcess(t *testing.T) {
 			signal.Notify(signals, syscall.SIGTERM)
 			if os.Getenv("FVWM_PROVIDER_READY") == "1" {
 				file := os.NewFile(3, "ready")
-				file.Write([]byte("R"))
+				writeTestCoreReady(file)
 				file.Close()
 			}
 			<-signals
@@ -53,7 +53,7 @@ func TestProviderProcess(t *testing.T) {
 					os.Exit(96)
 				}
 				file := os.NewFile(3, "ready")
-				file.Write([]byte("R"))
+				writeTestCoreReady(file)
 				file.Close()
 				os.Unsetenv(ReadyEnvironment)
 				syscall.Exec(os.Args[0], os.Args, append(os.Environ(), "FVWM_PROVIDER_RESTARTED=1"))

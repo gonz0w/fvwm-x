@@ -1,0 +1,6 @@
+Colorset 42 fg #ffffe0, bg #252550
+Style * BorderWidth 5
+*FvwmTray Font "xft:DejaVu Sans Mono:size=18"
+*FvwmTray Gap 6
+*FvwmTray Position TopRight
+SendToModule FvwmTray Reload

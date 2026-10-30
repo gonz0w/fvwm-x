@@ -264,3 +264,27 @@ The [process/session startup checkpoint](verification/VERIFICATION-2026-10-20-PR
 The [swallowed-client session checkpoint](verification/VERIFICATION-2026-10-20-SESSION-CALLBACKS.md) records composed six-target qualification, unchanged inherited OpenBSD gaps and scoped guest sanitizers. Native-CPU and physical/release acceptance remain separate.
 
 The [core-record checkpoint](verification/VERIFICATION-2026-10-20-CORE-RECORD-BOUNDARIES.md) records affected six-target/ten-profile checks, exact allocated code/data and scoped install parity. Broader PR134 runtime/default-X/sanitizer evidence and inherited gaps retain their original scope.
+
+## Focused standalone tray probe
+
+Build the core, FvwmMFL, FvwmTray, `tray-client` and capture helper, then install
+with the `tray` tag into a private prefix. No session bus is required. From the
+matching source root, with Python 3, Xvfb and the existing X11/XTest dependencies:
+
+```sh
+python3 tests/live_x/tray_live.py \
+    --build /path/to/build \
+    --tray /path/to/private-prefix/libexec/fvwm3/VERSION/FvwmTray \
+    --execution-profile native-cpu \
+    --artifacts-dir /path/to/new-tray-evidence
+```
+
+Use `emulated-cpu` for emulated CPUs. Add `--xorg-config
+tests/live_x/xorg-dummy.conf` where the private Xorg dummy profile is available
+to check two-output scale/primary and work-area changes. The fixture owns its
+private display and synthetic plug clients; `--display` instead requires a
+caller-owned disposable display. Linux pidfd checks authenticate the exact
+module lifetime before the deliberate abrupt-exit case; unsupported platforms
+record that case unavailable. The probe does not establish real toolkit,
+container/bar, full XEmbed, six-target or release qualification. See the
+[source-bound checkpoint](verification/VERIFICATION-2026-10-30-XEMBED-TRAY.md).

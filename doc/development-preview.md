@@ -38,6 +38,38 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## Standalone XEmbed tray
+
+`FvwmTray` is an opt-in standalone host for a bounded subset of XEmbed tray
+clients. The initial host admits root-child windows using the screen's default
+visual and depth. Bar/container embedding, StatusNotifier items and menus are
+not yet supported. See the [manual](FvwmTray.adoc) and
+[standalone configuration example](examples/FvwmTray-Standalone.fvwm).
+
+These unmodified 3200×1080 Xorg captures show the host with synthetic blue
+square clients, not real application icons. Slate, Dune and Classic use distinct
+palette and font settings:
+
+![Slate dark standalone tray with two synthetic blue clients](screenshots/tray-slate-dark.png)
+
+![Dune light standalone tray with two synthetic blue clients](screenshots/tray-dune-light.png)
+
+![Classic larger-font standalone tray with two synthetic blue clients](screenshots/tray-classic-large.png)
+
+At 2× the host font scales while the synthetic clients retain their 24×20
+actual-pixel dimensions:
+
+![Standalone tray at 2× with unchanged synthetic client pixels](screenshots/tray-primary-2x.png)
+
+The [Slate](screenshots/tray-slate-dark.fvwm),
+[Dune](screenshots/tray-dune-light.fvwm), and
+[Classic](screenshots/tray-classic-large.fvwm) configurations and
+[capture manifest](screenshots/tray-manifest.json) record the inputs. Scoped
+native Linux model and independent X11 cases passed in normal and sanitizer
+builds; the [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-30-XEMBED-TRAY.md)
+records their evidence and limits. Broader operating-system, toolkit and full
+tray acceptance remain in progress.
+
 ## Session power providers and manual Lock
 
 Session now projects the shared portable or optional login1 power policy,
@@ -112,8 +144,8 @@ private fixture paths; the Classic overlay records the actual legacy color
 commands. The [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-29-SESSION-SERVICES.md)
 records real-client, bus-loss/replacement, reconnect and timeout outcomes.
 Whole-guest panel counters are not a WM benchmark. Full cross-platform service
-qualification, native notification popups/history, tray and locker/power adapters
-remain in development. See the [session](fvwm-session.adoc) and
+qualification, native notification popups/history, broader tray support and
+locker/power adapters remain in development. See the [session](fvwm-session.adoc) and
 [desktop](FvwmDesktop.adoc) manuals for scope and limits.
 
 ## Preview palette or light/dark appearance

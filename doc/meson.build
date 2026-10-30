@@ -167,6 +167,8 @@ if get_option('mandoc')
             page_install = {'install_tag': 'session-startup'}
         elif doc_name_attribute == 'FvwmNotify'
             page_install = {'install_tag': 'notifications'}
+        elif doc_name_attribute == 'FvwmTray'
+            page_install = {'install_tag': 'tray'}
         endif
         man_pages += custom_target(
             dest,

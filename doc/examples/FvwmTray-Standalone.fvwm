@@ -1,0 +1,21 @@
+# This example is free software; you can redistribute it and/or modify it
+# under the GNU General Public License, version 2 or any later version.
+#
+# Choose a colorset number that is unused in your own FVWM configuration.
+# Read this example once in an FVWM session to start the standalone tray.
+Colorset 42 fg #e5edf5, bg #253140
+*FvwmTray Colorset 42
+*FvwmTray Font "xft:Sans:size=11"
+*FvwmTray Gap 4
+*FvwmTray Padding 4
+*FvwmTray Orientation Horizontal
+*FvwmTray Position BottomRight
+*FvwmTray Visible On
+
+# This binding is an example; choose one that does not conflict with yours.
+Key T A M SendToModule FvwmTray Focus
+
+Module FvwmTray
+
+# After changing stored directives for a running instance, use:
+# SendToModule FvwmTray Reload

@@ -1,0 +1,190 @@
+{
+  "checkpoint": "TRAY-01 standalone host preview; not full XEmbed/toolkit qualification",
+  "base": "2dcf567312420f9aa524f72d42bfc3c1d67779b9",
+  "source_closure": "208a183f54a0cf010f25502c4a7cf9b44774fc65f74bea5592d7129c3c0383c3",
+  "captured": "Linux ARM64 native CPU, Xorg dummy, root framebuffer 3200x1080; unmodified PNGs",
+  "profiles": [
+    {
+      "profile": "slate-dark",
+      "file": "slate-dark.fvwm",
+      "sha256": "a93134f879b280ba257b911b6a34978174dc16833e4bfbb411eaef14869d41a1",
+      "font": "xft:Sans:size=11",
+      "font_height": 17,
+      "foreground": "#e5edf5",
+      "background": "#253140",
+      "border": 2,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 17
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    },
+    {
+      "profile": "dune-light",
+      "file": "dune-light.fvwm",
+      "sha256": "550d2e6efb2aef40f38527e5848e22711e9e90ceaa17b1d3ca4175fcab656c99",
+      "font": "xft:Serif:size=12",
+      "font_height": 19,
+      "foreground": "#322a20",
+      "background": "#eee4cb",
+      "border": 1,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 19
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    },
+    {
+      "profile": "classic-large",
+      "file": "classic-large.fvwm",
+      "sha256": "e904c2ae5d2c062f40dd8bb0541ae3669e61ee56303af2dcf253198dab2dbde3",
+      "font": "xft:DejaVu Sans Mono:size=18",
+      "font_height": 28,
+      "foreground": "#ffffe0",
+      "background": "#252550",
+      "border": 5,
+      "native": {
+        "count": 2,
+        "mapped": 2,
+        "limit": 32,
+        "quarters": 4,
+        "claimed": 1,
+        "pending": 0,
+        "epoch": 1,
+        "host": 10485765,
+        "owner": 10485764,
+        "proxy": 10485766,
+        "font_height": 28
+      },
+      "actual_client": {
+        "exists": true,
+        "root": 623,
+        "parent": 10485767,
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 20,
+        "map": 2,
+        "depth": 24,
+        "override": true,
+        "events": [],
+        "unexpected_x_errors": 0
+      }
+    }
+  ],
+  "captures": [
+    {
+      "file": "tray-slate-dark.png",
+      "sha256": "09f10ad0c6fd7e947fc4d89f85b425981dbb12be9eb7823bbc9281d1be7fc224",
+      "bytes": 12092,
+      "source": "gate06/native/slate-dark.png"
+    },
+    {
+      "file": "tray-slate-dark.fvwm",
+      "sha256": "a93134f879b280ba257b911b6a34978174dc16833e4bfbb411eaef14869d41a1",
+      "bytes": 164,
+      "source": "gate06/native/slate-dark.fvwm"
+    },
+    {
+      "file": "tray-dune-light.png",
+      "sha256": "673e79e3476c378f261cda385e92e4e8bda6c7a608c7e84ffecd119fea21e09d",
+      "bytes": 12245,
+      "source": "gate06/native/dune-light.png"
+    },
+    {
+      "file": "tray-dune-light.fvwm",
+      "sha256": "550d2e6efb2aef40f38527e5848e22711e9e90ceaa17b1d3ca4175fcab656c99",
+      "bytes": 165,
+      "source": "gate06/native/dune-light.fvwm"
+    },
+    {
+      "file": "tray-classic-large.png",
+      "sha256": "a4bb1c62f79fe9623c8aacf1e8c46078e2410577fa3b8102ad3519a4be243830",
+      "bytes": 12684,
+      "source": "gate06/native/classic-large.png"
+    },
+    {
+      "file": "tray-classic-large.fvwm",
+      "sha256": "e904c2ae5d2c062f40dd8bb0541ae3669e61ee56303af2dcf253198dab2dbde3",
+      "bytes": 176,
+      "source": "gate06/native/classic-large.fvwm"
+    },
+    {
+      "file": "tray-primary-2x.png",
+      "sha256": "8c78849edb43583224336ec5625d838509a4f1801e8b61bdbd62c6ba14dbb46d",
+      "bytes": 14214,
+      "source": "gate06/native/primary-2x.png"
+    }
+  ],
+  "inputs": {
+    "fvwm": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+      "sha256": "d6a75197b7c1ef3ed9f69a104855f9939d011e8a4bd3ce56db8a5096cc7d8af0"
+    },
+    "tray": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+      "sha256": "881c23a8e338f00f949f66d2c7614310d10a8342a8a69ef003512abb1af23a54"
+    },
+    "mfl": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+      "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+    },
+    "client": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-client",
+      "sha256": "5cc5a927e8fe7eeea6b1237abc7361687f8df20b1791644d50ed260f84b5d739"
+    },
+    "capture": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+    },
+    "xorg_config": {
+      "path": "/tmp/fvwm-module-waits-20261015/source/tests/live_x/xorg-dummy.conf",
+      "sha256": "af9d9ff9259ae0fd043489fe9f469077709a2034abbf53174440f6d705d849b9"
+    }
+  },
+  "note": "Synthetic persistent clients draw simple blue squares; they demonstrate hosting, not actual mail/network app integration. Host font/padding scale; application sizes remain actual pixels."
+}

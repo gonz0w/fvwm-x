@@ -27,6 +27,7 @@
 #include "libs/Grab.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
+#include "libs/WinMagic.h"
 #include "libs/FEvent.h"
 #include "fvwm.h"
 #include "externs.h"
@@ -716,6 +717,24 @@ static void _activate_window_by_command(
 		sf = get_focus_window();
 		sf_args.do_forbid_warp = !!do_not_warp;
 		sf_args.do_force = 0;
+		if (sf == fw)
+		{
+			Window focused = None;
+			int revert;
+
+			/* The managed cache survives an unmanaged focus proxy.
+			 * Reassert an explicit command in that case, but preserve
+			 * focus in the application's own child widgets. */
+			XGetInputFocus(dpy, &focused, &revert);
+			sf_args.do_force = focused != FW_W(fw) &&
+				(focused == None || focused == PointerRoot ||
+				 GetTopAncestorWindow(dpy, focused) != FW_W_FRAME(fw));
+			/* Proxy keys need not reach the core. Sample server time
+			 * through FEvent before reasserting this explicit request;
+			 * the last core input time can predate the proxy's focus. */
+			if (sf_args.do_force)
+				get_server_time();
+		}
                 sf_args.client_entered = 0;
 		set_focus_to_fwin(FW_W(fw), fw, &sf_args);
 		if (sf != get_focus_window())

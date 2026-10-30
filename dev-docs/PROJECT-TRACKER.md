@@ -7,20 +7,94 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [notification installed acceptance](#r1-notification-installed-acceptance--2026-10-30)
-under NOTIFY-01 #76. PR310 merged as
-`bcf6d52d6c5e7e550d0c7a53477c6492b569fba3`; canonical signature, reviewed
-tree and author DCO verified, matching source branches retired. The due paired PR305→PR310 observation passes as a bounded observation: executable
-sections fall 0.70%, peak RSS is effectively unchanged and timings are mixed.
-The counter resets through PR310 to 0/5; this runtime candidate becomes 1/5 on
-merge. The verified current runnable reference is retained.
+Current checkpoint: [standalone XEmbed tray](#r1-standalone-xembed-tray--2026-10-30)
+under TRAY-01 #78. PR311 merged as
+`2dcf567312420f9aa524f72d42bfc3c1d67779b9`; canonical signature, reviewed
+tree and author DCO verified, source branches retired. NOTIFY-01 #76 is closed.
+The counter is 1/5 since the paired observation through PR310. Keep the verified
+runnable reference; a new comparison is not due for this checkpoint.
+
+## R1 standalone XEmbed tray — 2026-10-30
+
+Owner: Cam; `codex/r1-xembed-tray`; base merged PR311 above.
+Status: review candidate; focused Linux and scoped sanitizer gates passed.
+Separate artifact/evidence review clear; signed PR handoff follows. User authorized
+merge/cleanup and continued related feature work. #78 remains open for its
+complete XEmbed/container/bar and modern-bus acceptance.
+
+Deliver one opt-in native `FvwmTray` module with eight related outcomes:
+(1) timestamped, non-replacing tray selection ownership and MANAGER discovery;
+(2) bounded transactional docking with duplicate/capacity/window/property
+validation; (3) version-zero embedding/mapped-state tracking and configure
+handling; (4) bounded actual-pixel client layout with live host colors/font,
+orientation, spacing, visibility and primary-monitor/work-area updates;
+(5) explicit keyboard focus, traversal, key forwarding and passive no-focus
+behavior; (6) foreign destruction/reparenting, owner loss, orderly release and
+abrupt-exit save-set recovery; (7) native build/install/manual and independent
+policy/client/real-X probes; and (8) three inspected theme/font configurations,
+source-bound evidence, separate review and finite issue reconciliation.
+
+Use a root-child override-redirect standalone host and per-client sockets. Base
+X save-set recovery then reaches the persistent root rather than a WM frame or
+another module's transient container. Restrict this first visual profile to the
+advertised default visual/depth and direct-root-child candidate profile;
+decline already framed/embedded or otherwise unsupported candidates honestly. Keep
+client dimensions in actual pixels (1..256 each), at most 32 clients, bounded
+properties and event/module work; host-owned padding/font/geometry use existing
+scale generations. Overflow preserves membership with a bounded visible subset.
+Never close/kill foreign clients. Root/owned windows, malformed/oversized info,
+duplicates and capacity are explicit outcomes; errors from disappearing foreign
+windows are expected only for their scoped operations. Surviving clients return
+to root before host destruction; loss of selection stops the host.
+
+Reuse native module transport, bounded property, expected-X-error, colorset,
+monitor and work-area helpers. Keep authoritative managed-window actions in the
+core command engine. Unmanaged host focus uses its own proxy and explicit user
+or protocol requests; docking and appearance changes do not take focus. Text and
+foreign properties remain data. Do not build the host on legacy KDE membership
+or FvwmButtons swallowing; neither implements XEmbed.
+
+This first supported subset covers embedding, mapped flags, activation,
+focus/current/first/last and next/previous traversal plus key forwarding. Global
+accelerators, XDND, balloon messages, other visuals, arbitrary containment,
+FvwmButtons/adaptive-bar integration, persistent settings UI and StatusNotifier/
+application menus remain later #78 checkpoints. External host reparenting causes
+graceful shutdown; do not claim crash survival after unsupported containment.
+No new mandatory library, D-Bus path, toolkit or compositor is selected. The
+existing no-bus/minimal build retains the standalone host.
+
+Implement the coherent set before one combined incremental Linux gate. Pure
+policy/model cases cover limits, duplicates, mapping/focus/removal and checked
+layout. Independent X clients observe selection/discovery, real parents/maps,
+embedded/focus/key replies, resize, lifetime/owner conflict, restart, capacity,
+scale/palette/config and graceful/abrupt release. Run relevant scoped sanitizers
+for new ownership code and actual tagged install/manual. Reuse current native
+builds and valid shared evidence; add early BSD build/policy coverage if changed
+APIs require it. Six-target/full default-X acceptance belongs at the combined
+#78 checkpoint, not each first slice. Capture new UI across Slate, Dune and
+enlarged Classic; keep original failures, retire verified duplicate data, stop
+owned labs and preserve only useful current build/cache/reference inputs.
+
+Delivered all eight selected outcomes. The installed module/manual provenance,
+pure model and 16 independent actual-X groups pass on native-CPU Linux ARM64;
+the instrumented tray/model ASan/UBSan/LSan run passes the same live suite.
+Source-bound [evidence and original failures](verification/VERIFICATION-2026-10-30-XEMBED-TRAY.md)
+and [three theme previews](../doc/development-preview.md#standalone-xembed-tray)
+retain the limited standalone/default-visual claim. A real Escape regression
+also fixed the core's explicit cached-focus mismatch and stale timestamp;
+application-child focus is independently preserved. Duplicate guest evidence
+and consumed inputs retired (112,922,942 bytes); lab stopped. Broader #78
+integration and six-target/default-server acceptance remain open. Next select
+its finite integration checkpoint; do not repeat the standalone slice or
+silently treat it as full tray completion. Counter remains 1/5 until merge.
 
 ## R1 notification installed acceptance — 2026-10-30
 
 Owner: Cam; `codex/r1-notification-acceptance`; base merged PR310 above.
-Status: review candidate; affected six-target acceptance passes by explicit
-source-bound composition. Merging this candidate completes #76; keep the issue
-In progress until merge. Final artifact review precedes publication. User authorized merge,
+Status: merged in PR311 as `2dcf567312420f9aa524f72d42bfc3c1d67779b9`;
+canonical signature, reviewed tree and author DCO verified; source branches
+retired and #76 closed. Affected six-target acceptance passes by explicit
+source-bound composition. User authorized merge,
 cleanup and continued related milestone work. #76 owns notification delivery;
 #72/#77/#225 retain their broader session/provider/release qualification.
 
@@ -5264,8 +5338,8 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / In progress; optional client/power merged; owned-bus lifetime candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| NOTIFY-01 | P2 / Review candidate; frozen component acceptance passes, closes #76 on merge | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
-| TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
+| NOTIFY-01 | Done / #76 closed by merged PR311; frozen component acceptance complete | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
+| TRAY-01 | P2 / In progress; standalone XEmbed host selected, container/modern checkpoints pending | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
 | FILE-ACTION-01 | Done / #65 closed by merged PR271; all five finite criteria qualified | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |

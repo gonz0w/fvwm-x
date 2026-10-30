@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Standalone XEmbed tray](VERIFICATION-2026-10-30-XEMBED-TRAY.md): opt-in native host, actual-X docking/focus/configure/lifetime, three themes, mixed-scale/work-area and scoped sanitizer evidence; #78 integration and broader qualification remain open.
+
 - [Notification installed acceptance](VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md): installed module and manual, keyboard and control size, three native configurations, affected platform evidence and scoped feature cost; see the report for source variants, execution modes and remaining checks.
 
 - [PR305→PR310 core performance observation](PERFORMANCE-2026-10-30-NOTIFICATION-CORE.md): paired retained/current core samples, section sizes and scoped memory; notification feature cost is separate.

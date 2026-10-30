@@ -4576,3 +4576,30 @@ notify_startup_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('notify-startup', notify_startup_test, timeout: 20)
+
+# The standalone XEmbed host uses the base X11 profile, without a session bus.
+tray_model_test = executable(
+    'test-tray-model',
+    ['test_tray_model.c', '../modules/FvwmTray/tray_model.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('tray-model', tray_model_test)
+
+tray_client = executable(
+    'tray-client',
+    ['tray_client.c', '../libs/cJSON.c'],
+    dependencies: summary_depvals['x11'],
+    include_directories: includedirs,
+    build_by_default: false,
+)
+
+if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('tray-xvfb', py,
+        args: [files('live_x/tray_live.py'),
+            '--build', meson.project_build_root(),
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'tray'],
+        depends: [fvwm3, fvwm_mfl, fvwm_tray, tray_client, fvwm_desktop_capture],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 180)
+endif

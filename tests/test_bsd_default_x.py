@@ -96,7 +96,9 @@ class StartupEvidenceTests(unittest.TestCase):
                       server_only=True, repeat=1, disposable_vm=True,
                       display_number=197, xlock_only=False, directory_only=False,
                       script_com_only=False, desktop_menu_only=False,
-                      desktop_controller_only=False)
+                      desktop_controller_only=False, notify_only=False,
+                      fvwm=None, notify=None, mfl=None, notify_client=None,
+                      capture=None, execution_profile='unspecified')
         values.update(overrides)
         return argparse.Namespace(**values)
 
@@ -116,6 +118,58 @@ class StartupEvidenceTests(unittest.TestCase):
                     driver.run(self.args(Path('/unused'), repeat=count,
                                          server_only=server))
                 launch.assert_not_called()
+
+    def test_notification_paths_require_the_notification_mode(self):
+        args = self.args(Path('/unused'), fvwm=Path('/explicit/fvwm3'))
+        with patch.object(driver, 'run_once') as launch:
+            with self.assertRaisesRegex(ValueError, 'require --notify-only'):
+                driver.run(args)
+            launch.assert_not_called()
+
+    def test_notification_reuses_authenticated_display_with_explicit_paths(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            build = root / 'build'
+            args = self.args(root, build_directory=build, server_only=False,
+                notify_only=True, fvwm=root / 'prefix/bin/fvwm3',
+                notify=root / 'prefix/libexec/FvwmNotify',
+                mfl=root / 'prefix/libexec/FvwmMFL',
+                capture=root / 'prefix/bin/fvwm-desktop-capture',
+                execution_profile='emulated-cpu')
+            launches = []
+            class Child:
+                def poll(self):
+                    return None
+                def close(self, deadline):
+                    pass
+                def wait_until_exit(self, deadline):
+                    return 0
+            def launch(runtime, name, argv, log_name, env):
+                self.assertEqual(env['DISPLAY'], ':197')
+                self.assertTrue(Path(env['XAUTHORITY']).is_file())
+                launches.append((name, argv))
+                child = Child()
+                runtime.processes.append(child)
+                return child
+            with patch.object(driver, 'preflight'), patch.object(
+                    driver.os, 'uname', return_value=os.uname_result(
+                        ('FreeBSD', 'fixture', '15.1', 'test', 'amd64'))), patch.object(
+                    driver, 'dependency_identity', return_value={}), patch.object(
+                    driver.HarnessRuntime, 'start', new=launch), patch.object(
+                    driver, 'wait_for_predicate', return_value='ready'), patch.object(
+                    driver.subprocess, 'run', return_value=subprocess.CompletedProcess([], 1)):
+                result = driver.run_once(args)
+            self.assertEqual([name for name, argv in launches], ['default-xorg', 'notify'])
+            argv = launches[1][1]
+            self.assertEqual(Path(argv[1]).name, 'notify_live.py')
+            self.assertEqual(argv[2:], ['--display', ':197', '--artifacts-dir',
+                str(args.artifacts_dir / 'notify'), '--build', str(build),
+                '--execution-profile', 'emulated-cpu', '--fvwm', str(args.fvwm),
+                '--notify', str(args.notify), '--mfl', str(args.mfl),
+                '--client', str(build / 'tests/notify-client'),
+                '--capture', str(args.capture)])
+            self.assertEqual(result['status'], 'passed')
+            self.assertEqual(result['fixtures']['notify']['status'], 0)
 
     def stage_desktop(self, build, version='fixture-version'):
         prefix = build / 'install-stage/usr/local'

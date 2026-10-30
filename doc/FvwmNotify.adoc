@@ -100,7 +100,9 @@ Key H A M SendToModule FvwmNotify History
 ----
 
 In the center, Up and Down select a notification. Tab or Shift-Tab selects an
-action or dismissal; Enter or Space performs it. Escape closes the center.
+action or dismissal; Enter or Space performs it. Escape closes the center and
+returns focus through normal window-manager policy. Control hit rows follow the
+loaded font with a minimum height of 24 logical UI units at the 1x baseline.
 The center uses ordinary resizable window hints so the core can move and resize
 it when monitor scale or dock reservations change. Its bounded content layout
 is prepared by the module; manual window resizing does not yet reflow that

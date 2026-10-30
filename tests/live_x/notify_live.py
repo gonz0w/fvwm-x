@@ -3,7 +3,8 @@
 # it under the GNU General Public License, version 2 or any later version.
 """Independent actual-X/private-bus exercise of the optional native server.
 
-Only caller-owned nested servers, children and synthetic data are controlled.
+Only isolated caller-owned displays, children and synthetic data are used.
+The fixture never stops a supplied display server.
 This fixture does not establish physical, six-target or complete protocol
 qualification. Its persistent native peer owns the actual sender connection.
 """
@@ -104,7 +105,12 @@ class Native(Session):
     def __init__(self, runtime, options, out):
         self.runtime, self.options, self.out = runtime, options, out
         self.evidence = {'status': 'running', 'cases': {}, 'captures': [],
-            'limits': ['Nested Linux Xvfb/private D-Bus only; not physical or full support acceptance.',
+            'executor': {'uname': list(os.uname()),
+                'execution_profile': getattr(options, 'execution_profile', 'unspecified'),
+                'cpu_execution': 'caller declaration; not inferred from uname'},
+            'display': {'name': options.display,
+                'ownership': getattr(options, 'display_origin', 'caller-managed')},
+            'limits': ['Isolated X/private D-Bus only; not physical or full support acceptance.',
                 'Three materially different native configs exercise colors/fonts/borders, not every FVWM theme.',
                 'Mixed-DPI/hotplug and slow nonreading wire consumers remain separate qualification.',
                 'Shared desktop DND projection runs only when --desktop is supplied; direct DND commands exercise the standalone path.']}
@@ -138,9 +144,13 @@ class Native(Session):
             (modules / 'FvwmDesktop').symlink_to(options.desktop)
         source = Path(__file__).resolve().parents[2]
         self.config = self.home / 'base.fvwm'
+        # Default MouseFocus may clear focus outside the app after center exit.
+        # This keyboard return case explicitly exercises ClickToFocus policy.
         self.config.write_text('Read ' + str(source / 'fvwm/ConfigFvwmDefaults') +
             '\nModulePath ' + str(modules) +
-            '\nStyle * TileCascadePlacement\nStyle FvwmNotifyCenter ClickToFocus\n'
+            '\nStyle * TileCascadePlacement\n'
+            'Style "FVWM transition probe" ClickToFocus\n'
+            'Style FvwmNotifyCenter ClickToFocus\n'
             '*FvwmNotify Colorset 42\n*FvwmNotify History 16\n'
             'Colorset 42 fg #e5edf5, bg #253140\n'
             'AddToFunc StartFunction I Module FvwmMFL\n')
@@ -176,7 +186,7 @@ class Native(Session):
             self.owner = wait_for_predicate('native notification name owner',
                 lambda: self.first.request('owner').get('owner'),
                 time.monotonic() + 8, process=self.process)
-            self.command('SendToModule FvwmNotify DND 0')
+            self.ready('initial')
         except BaseException:
             self.close()
             raise
@@ -192,18 +202,67 @@ class Native(Session):
         self.serial += 1
         self.control.echo('notify-barrier-' + str(self.serial))
 
+    @staticmethod
+    def status_fields(record):
+        message = record.get('echo', {}).get('message', '')
+        if not message.startswith('FVWM_NOTIFY_STATUS '):
+            return None
+        words = message.split()
+        assert len(words) == 9, message
+        names = ['dnd', 'active', 'history', 'history_limit',
+            'font_height', 'quarters', 'pending', 'epoch']
+        return dict(zip(names, map(int, words[1:])))
+
+    def ready(self, phase):
+        # Name ownership precedes mask/config setup. Only the module's own
+        # status acknowledges DND and its completed monitor/config snapshot.
+        deadline = time.monotonic() + 5
+        previous_timeout = self.control.socket.gettimeout()
+        result = {'phase': phase, 'attempts': 0, 'records': 0, 'statuses': []}
+        self.evidence.setdefault('module_readiness', []).append(result)
+        try:
+            for _ in range(20):
+                if time.monotonic() >= deadline or result['records'] >= 64:
+                    break
+                self.control.socket.settimeout(max(0.001, min(0.25,
+                    deadline - time.monotonic())))
+                self.control.send(b'SendToModule FvwmNotify DND 0\n'
+                    b'SendToModule FvwmNotify Status\n')
+                result['attempts'] += 1
+                attempt_deadline = min(deadline, time.monotonic() + 0.25)
+                while time.monotonic() < attempt_deadline and result['records'] < 64:
+                    if b'\n' not in self.control.pending:
+                        self.control.socket.settimeout(max(0.001,
+                            attempt_deadline - time.monotonic()))
+                        try:
+                            data = self.control.socket.recv(65536)
+                        except TimeoutError:
+                            break
+                        assert data, 'native readiness MFL disconnect'
+                        self.control.pending += data
+                        assert len(self.control.pending) <= 65536
+                        continue
+                    line, self.control.pending = self.control.pending.split(b'\n', 1)
+                    result['records'] += 1
+                    state = self.status_fields(json.loads(line))
+                    if state is None:
+                        continue
+                    result['statuses'].append(state)
+                    if state['dnd'] == 0 and state['pending'] == 0 and state['epoch'] > 0:
+                        result['accepted'] = state
+                        return state
+            raise AssertionError('native module readiness deadline/record limit: ' + str(result))
+        finally:
+            self.control.socket.settimeout(previous_timeout)
+
     def status(self):
         self.control.send(b'SendToModule FvwmNotify Status\n')
         deadline = time.monotonic() + 3
         for _ in range(64):
             assert time.monotonic() < deadline, 'native status deadline'
-            message = self.control.record().get('echo', {}).get('message', '')
-            if message.startswith('FVWM_NOTIFY_STATUS '):
-                words = message.split()
-                assert len(words) == 9, message
-                names = ['dnd', 'active', 'history', 'history_limit',
-                    'font_height', 'quarters', 'pending', 'epoch']
-                return dict(zip(names, map(int, words[1:])))
+            state = self.status_fields(self.control.record())
+            if state is not None:
+                return state
         raise AssertionError('native status record limit')
 
     def property(self, window, atom=None):
@@ -227,9 +286,36 @@ class Native(Session):
             self.named_windows('FvwmNotify popup') if self.property(w)}
 
     def popup(self, identifier):
-        return wait_for_predicate('mapped notification ' + str(identifier),
-            lambda: self.popups().get(identifier), time.monotonic() + 5,
-            process=self.process)
+        try:
+            return wait_for_predicate('mapped notification ' + str(identifier),
+                lambda: self.popups().get(identifier), time.monotonic() + 5,
+                process=self.process)
+        except BaseException:
+            diagnostic = {'id': identifier, 'peers': []}
+            self.evidence.setdefault('missing_popups', []).append(diagnostic)
+            for peer in self.peers:
+                state = {'stderr': Path(peer.log.name).name,
+                    'queued_signals': list(peer.signals)}
+                diagnostic['peers'].append(state)
+                try:
+                    peer.signals.extend(peer.request('signals')['signals'])
+                    state['queued_signals'] = list(peer.signals)
+                except BaseException as error:
+                    state['diagnostic_error'] = str(error)
+            try:
+                previous_timeout = self.control.socket.gettimeout()
+                try:
+                    self.control.socket.settimeout(0.25)
+                    diagnostic['status'] = self.status()
+                finally:
+                    self.control.socket.settimeout(previous_timeout)
+            except BaseException as error:
+                diagnostic['status'] = {'diagnostic_error': str(error)}
+            try:
+                diagnostic['popups'] = self.popups()
+            except BaseException as error:
+                diagnostic['popups'] = {'diagnostic_error': str(error)}
+            raise
 
     def absent(self, identifier):
         wait_for_predicate('notification retired ' + str(identifier),
@@ -241,11 +327,17 @@ class Native(Session):
         self.x.XGetInputFocus(self.d, C.byref(actual), C.byref(revert))
         return actual.value
 
-    def press(self, symbol):
+    def press(self, symbol, shift=False):
         code = self.x.XKeysymToKeycode(self.d, self.x.XStringToKeysym(symbol.encode()))
         assert code
+        modifier = self.x.XKeysymToKeycode(self.d,
+            self.x.XStringToKeysym(b'Shift_L')) if shift else 0
+        if shift:
+            assert modifier and self.pointer.x.XTestFakeKeyEvent(self.d, modifier, 1, 0)
         for value in (1, 0):
             assert self.pointer.x.XTestFakeKeyEvent(self.d, code, value, 0)
+        if shift:
+            assert self.pointer.x.XTestFakeKeyEvent(self.d, modifier, 0, 0)
         self.x.XSync(self.d, 0)
 
     def press_sequence(self, symbols):
@@ -259,6 +351,31 @@ class Native(Session):
                 assert self.pointer.x.XTestFakeKeyEvent(self.d, code, value, 0)
         self.x.XSync(self.d, 0)
 
+    def button_rows(self, window, count):
+        """Measure actual painted keylines, independent of font/layout math."""
+        attributes = self.attrs(window)
+        width, height = attributes.width, attributes.height
+        assert 24 <= width <= 4096 and 24 <= height <= 4096
+        self.x.XGetImage.argtypes = [C.c_void_p, C.c_ulong, C.c_int, C.c_int,
+            C.c_uint, C.c_uint, C.c_ulong, C.c_int]
+        self.x.XGetImage.restype = C.c_void_p
+        self.x.XGetPixel.argtypes = [C.c_void_p, C.c_int, C.c_int]
+        self.x.XGetPixel.restype = C.c_ulong
+        self.x.XDestroyImage.argtypes = [C.c_void_p]
+        self.x.XDestroyImage.restype = C.c_int
+        image = self.x.XGetImage(self.d, window, 0, 0, width, height,
+            C.c_ulong(-1), 2)
+        assert image
+        try:
+            foreground = self.x.XGetPixel(image, 0, 0)
+            rows = [y for y in range(1, height - 1) if all(
+                self.x.XGetPixel(image, x, y) == foreground
+                for x in range(width // 4, width * 3 // 4))]
+        finally:
+            self.x.XDestroyImage(image)
+        assert len(rows) == count * 2, rows
+        return [(rows[i], rows[i + 1]) for i in range(0, len(rows), 2)]
+
     def close(self):
         for peer in getattr(self, 'peers', []):
             peer.close()
@@ -270,12 +387,137 @@ class Native(Session):
             self.client.close()
 
 
+def target_and_keyboard_cases(native, peer, app):
+    actions = ['first', 'First action', 'second', 'Second action',
+        'third', 'Third action', 'fourth', 'Fourth action']
+    identifier = peer.notice(summary='Four reachable actions', actions=actions)
+    window = native.popup(identifier)
+    rows = native.button_rows(window, 5)
+    floor = 24 * native.status()['quarters'] // 4
+    assert all(bottom - top + 1 >= floor for top, bottom in rows), rows
+    attributes = native.attrs(window)
+    assert attributes.width >= floor
+    native.capture('four-action-targets.png')
+    # Hit the last pixel of the measured fourth action, not a guessed label.
+    native.pointer.motion(attributes.x + attributes.width // 2,
+        attributes.y + rows[3][1])
+    native.pointer.button(True)
+    native.pointer.button(False)
+    peer.signal('action', identifier, key='fourth')
+    peer.signal('closed', identifier, reason=2)
+    native.absent(identifier)
+
+    def open_center(identifier):
+        native.command('WindowId ' + str(app) + ' Focus NoWarp')
+        native.command('SendToModule FvwmNotify Focus')
+        return wait_for_predicate('four-action center focused', lambda:
+            (center if (center := native.named('FVWM-X notifications')) and
+                native.focus() == center and native.property(center) == [identifier]
+                else None), time.monotonic() + 5, process=native.process)
+
+    def focus_returned():
+        try:
+            wait_for_predicate('center returns focus to application', lambda:
+                native.named('FVWM-X notifications') is None and native.focus() == app,
+                time.monotonic() + 5, process=native.process)
+        except BaseException:
+            diagnostic = {'expected_app': app}
+            native.evidence['focus_return_failure'] = diagnostic
+
+            def focus_state():
+                actual, revert = C.c_ulong(), C.c_int()
+                native.x.XGetInputFocus(native.d, C.byref(actual), C.byref(revert))
+                return {'window': actual.value, 'revert': revert.value}
+
+            def window_state(window):
+                attributes = native.attrs(window) if window else None
+                return {'window': window, 'attributes': None if attributes is None
+                    else {name: getattr(attributes, name) for name in
+                        ('x', 'y', 'width', 'height', 'border_width', 'map_state',
+                         'override_redirect')}}
+
+            def pointer_state():
+                root, child = C.c_ulong(), C.c_ulong()
+                x, y, wx, wy = (C.c_int() for _ in range(4))
+                mask = C.c_uint()
+                same_screen = native.x.XQueryPointer(native.d, native.client.root,
+                    C.byref(root), C.byref(child), C.byref(x), C.byref(y),
+                    C.byref(wx), C.byref(wy), C.byref(mask))
+                return {'same_screen': bool(same_screen), 'root': root.value,
+                    'root_child': child.value, 'root_x': x.value, 'root_y': y.value,
+                    'window_x': wx.value, 'window_y': wy.value, 'mask': mask.value}
+
+            for name, operation in (
+                    ('focus', focus_state),
+                    ('mapped_center', lambda: native.named('FVWM-X notifications')),
+                    ('app', lambda: window_state(app)),
+                    ('frame', lambda: window_state(native.client.frame())),
+                    ('pointer', pointer_state),
+                    ('active_window', lambda: native.property(native.client.root,
+                        native.x.XInternAtom(native.d, b'_NET_ACTIVE_WINDOW', 0)))):
+                try:
+                    diagnostic[name] = operation()
+                except BaseException as error:
+                    diagnostic[name] = {'diagnostic_error': str(error)}
+            try:
+                native.capture('focus-return-failure.png')
+                diagnostic['capture'] = 'focus-return-failure.png'
+            except BaseException as error:
+                diagnostic['capture_error'] = str(error)
+            raise
+
+    traversed = []
+    for index, key in enumerate(actions[::2]):
+        identifier = peer.notice(summary='Keyboard action ' + key, actions=actions)
+        open_center(identifier)
+        if index == 3:
+            native.press('Tab', shift=True)
+            native.press('Tab', shift=True)
+            native.capture('four-action-focus.png')
+            native.press('Return')
+            sequence = ['Shift+Tab', 'Shift+Tab', 'Return']
+        else:
+            sequence = ['Tab'] * index + ['Return']
+            native.press_sequence(sequence)
+        peer.signal('action', identifier, key=key)
+        peer.signal('closed', identifier, reason=2)
+        native.absent(identifier)
+        focus_returned()
+        traversed.append({'key': key, 'sequence': sequence})
+
+    dismissed = peer.notice(summary='Keyboard dismiss', actions=actions)
+    open_center(dismissed)
+    native.press('Tab', shift=True)
+    native.press('Return')
+    peer.signal('closed', dismissed, reason=2)
+    peer.signals.extend(peer.request('signals')['signals'])
+    assert not any(record['signal'] == 'action' and record['id'] == dismissed
+        for record in peer.signals)
+    native.absent(dismissed)
+    focus_returned()
+    escaped = peer.notice(summary='Escape keeps the live notice', actions=actions)
+    open_center(escaped)
+    native.press('Escape')
+    focus_returned()
+    native.popup(escaped)
+    assert 'error' not in peer.request('close', id=escaped)
+    peer.signal('closed', escaped, reason=3)
+    native.evidence['cases']['four_action_targets_and_keyboard'] = {
+        'painted_button_rows': rows, 'minimum_target_pixels': floor,
+        'measured_width': attributes.width, 'pointer_edge_action': 'fourth',
+        'keyboard_actions': traversed, 'shift_tab_dismiss': dismissed,
+        'escape_retained': escaped, 'focus_return': app,
+        'focus_policy': {'application': 'ClickToFocus', 'center': 'ClickToFocus'}}
+
+
 def run(options):
     out = options.artifacts_dir.resolve()
     out.mkdir(parents=True, exist_ok=True)
     runtime, native = HarnessRuntime(prefix='fvwm-notify-'), None
     evidence = {'status': 'running'}
     try:
+        options.display_origin = ('caller-owned' if options.display is not None
+            else 'fixture-owned-Xvfb')
         if options.display is None:
             _, options.display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x1000x24', '-noreset'],
@@ -304,8 +546,9 @@ def run(options):
         attributes = native.attrs(window)
         assert attributes.override_redirect and attributes.map_state == 2
         assert 0 <= attributes.x and 0 <= attributes.y
-        assert attributes.x + attributes.width <= 1440
-        assert attributes.y + attributes.height <= 1000
+        root = native.attrs(native.client.root)
+        assert attributes.x + attributes.width <= root.width
+        assert attributes.y + attributes.height <= root.height
         same = peer.notice(replaces=identifier, summary='Atomic replacement',
             body='The record and window were replaced without recreating the popup.',
             actions=['show', 'Show result'])
@@ -377,6 +620,7 @@ def run(options):
             'sequence': ['Down', 'Return'], 'untouched_id': first_choice,
             'invoked_id': next_choice, 'key': 'selected-record',
             'one_final_xsync': True, 'modifier_key_prelude': 31}
+        target_and_keyboard_cases(native, peer, app)
         expiring = peer.notice(summary='Expires independently', timeout=150)
         peer.signal('closed', expiring, reason=1)
         native.absent(expiring)
@@ -494,7 +738,7 @@ def run(options):
             lambda: peer.request('owner').get('owner'), time.monotonic() + 5,
             process=native.process)
         assert new_owner != native.owner
-        native.command('SendToModule FvwmNotify DND 0')
+        native.ready('restart')
         native.popup(peer.notice(summary='Explicit restart remains usable'))
         native.bus.close(time.monotonic() + 2)
         wait_for_predicate('bus loss retires native popups',
@@ -531,6 +775,9 @@ def main():
     for name in ('fvwm', 'notify', 'client', 'mfl', 'capture', 'desktop'):
         parser.add_argument('--' + name, type=Path)
     parser.add_argument('--display')
+    parser.add_argument('--execution-profile', default='unspecified',
+        choices=('unspecified', 'native-cpu', 'emulated-cpu'),
+        help='Declare CPU execution separately from observed guest OS/architecture.')
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     options = parser.parse_args()
     defaults = {'fvwm': options.build / 'fvwm3',

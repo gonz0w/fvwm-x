@@ -314,6 +314,9 @@ static void draw_view(notify_ui *ui, notify_view *view,
 	Pixmap pixmap;
 	unsigned long id = history ? 0 : record->id;
 
+	/* Action hit rows retain the native 24-unit target floor at each scale. */
+	if (line < scaled(ui, 24))
+		line = scaled(ui, 24);
 	if (line < 1)
 		line = 1;
 	available_lines = (maximum_height - pad * 2) / line;

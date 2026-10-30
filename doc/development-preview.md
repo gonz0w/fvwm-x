@@ -1118,9 +1118,9 @@ The standalone fixture uses explicit DND commands; its final check also starts
 the actual desktop controller and observes committed shared DND updates.
 
 Body/actions are the only advertised capabilities. Image/markup/sound support,
-persistent history and automatic service activation are not implemented. Full
-NOTIFY-01 acceptance remains open for its named combined platform/lifecycle and
-accessibility checks; these screenshots do not close the issue.
+persistent history and automatic service activation are not implemented. The [installed acceptance checkpoint](../dev-docs/verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
+records the component checks and their limits; these screenshots alone do not
+establish full support, physical hardware or accessibility qualification.
 
 ## Notification lifecycle and mixed scale
 
@@ -1130,7 +1130,7 @@ Xorg-dummy checkpoint switches the primary output from 1× to 2×, changes actua
 DPI to 1.5×, disables/re-enables the output and verifies an application action
 after reflow. A 96-pixel dock reservation also moves both views automatically.
 These are actual RandR transitions in a synthetic X server; physical hotplug,
-accessibility and full support-profile acceptance remain open.
+assistive-provider and wider release qualification remain open.
 
 These captures use the same live notification/center at 2× with the existing
 [Slate](screenshots/notifications-slate-dark.fvwm),
@@ -1149,3 +1149,36 @@ large center header can truncate. Development is still in progress.
 
 [Source-bound lifecycle, topology and sanitizer evidence](../dev-docs/verification/VERIFICATION-2026-10-30-NOTIFICATION-LIFECYCLE.md)
 records the startup/producer tests, corrected defects and remaining release gates.
+
+## Installed notification controls on OpenBSD
+
+These captures use the installed optional notification module on OpenBSD 8.0
+ARM64 with the guest's authenticated default X server. The synthetic fixture
+uses the same three configuration overlays above. It measured five 24-pixel
+button rows at 1× and exercised the fourth action at its bottom pixel. Its
+keyboard cases cover all four actions, reverse traversal, dismissal, Escape and
+focus return to a probe using explicit ClickToFocus policy. These observations
+are specific to the fixture and do not qualify physical devices, assistive
+providers or all themes.
+
+Slate, Sans 11, dark palette:
+
+![Slate dark notification with three controls](screenshots/notifications-acceptance-slate-dark.png)
+
+Dune, Serif 12, light palette and center:
+
+![Dune light notification and keyboard center](screenshots/notifications-acceptance-dune-light-center.png)
+
+Classic, Mono 18 and enlarged text:
+
+![Classic enlarged notification and center](screenshots/notifications-acceptance-classic-large-center.png)
+
+Four actions, with the fourth selected in the keyboard center:
+
+![Four-action keyboard selection in the notification center](screenshots/notifications-acceptance-four-action-focus.png)
+
+The passive popup overlaps the center in these captures; it does not take focus.
+The enlarged Classic header can truncate. The [capture manifest](screenshots/notifications-acceptance-manifest.json)
+records the configuration hashes, installed module and source identities.
+See the [component evidence](../dev-docs/verification/VERIFICATION-2026-10-30-NOTIFICATION-ACCEPTANCE.md)
+for the checks and their separate release limits.

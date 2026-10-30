@@ -15,7 +15,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -230,103 +229,11 @@ func daemonPath(environment []string) (string, error) {
 		}
 		candidate := filepath.Join(root, "dbus-daemon")
 		info, err := os.Stat(candidate)
-		if err == nil && info.Mode().IsRegular() && info.Mode().Perm()&0111 != 0 && unix.Access(candidate, unix.X_OK) == nil {
+		if len(candidate) <= 4096 && err == nil && info.Mode().IsRegular() && info.Mode().Perm()&0111 != 0 && unix.Access(candidate, unix.X_OK) == nil {
 			return candidate, nil
 		}
 	}
 	return "", errors.New("dbus-daemon is not installed in an absolute PATH directory")
-}
-
-type ownedBus struct {
-	command *exec.Cmd
-	done    chan error
-	reaped  bool
-}
-
-func (bus *ownedBus) stop() {
-	if bus == nil || bus.reaped {
-		return
-	}
-	_ = bus.command.Process.Signal(syscall.SIGTERM)
-	select {
-	case <-bus.done:
-		bus.reaped = true
-	case <-time.After(2 * time.Second):
-		_ = bus.command.Process.Kill()
-		select {
-		case <-bus.done:
-			bus.reaped = true
-		case <-time.After(time.Second):
-		}
-	}
-}
-
-func startBus(ctx context.Context, cfg Config) (*ownedBus, string, error) {
-	path, err := daemonPath(cfg.Environment)
-	if err != nil {
-		return nil, "", err
-	}
-	reader, writer, err := os.Pipe()
-	if err != nil {
-		return nil, "", err
-	}
-	defer reader.Close()
-	command := cfg.Command(path, "--session", "--nofork", "--print-address=3")
-	command.Env = cfg.Environment
-	command.ExtraFiles = []*os.File{writer}
-	command.Stdout = io.Discard
-	command.Stderr = io.Discard
-	command.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
-	if err = command.Start(); err != nil {
-		writer.Close()
-		return nil, "", err
-	}
-	writer.Close()
-	bus := &ownedBus{command: command, done: make(chan error, 1)}
-	go func() { bus.done <- command.Wait() }()
-	if deadline, ok := ctx.Deadline(); ok {
-		reader.SetReadDeadline(deadline)
-	}
-	type addressResult struct {
-		address string
-		err     error
-	}
-	address := make(chan addressResult, 1)
-	go func() {
-		var data [4097]byte
-		var one [1]byte
-		count := 0
-		for count <= 4096 {
-			n, err := reader.Read(one[:])
-			if n != 0 {
-				if one[0] == '\n' {
-					address <- addressResult{string(data[:count]), nil}
-					return
-				}
-				data[count] = one[0]
-				count++
-			}
-			if err != nil {
-				address <- addressResult{"", err}
-				return
-			}
-		}
-		address <- addressResult{"", errors.New("session bus address exceeds limit")}
-	}()
-	select {
-	case result := <-address:
-		if result.err != nil || result.address == "" || !sessionservice.Plain(result.address, 4096) {
-			bus.stop()
-			return nil, "", errors.New("session bus address is unavailable or malformed")
-		}
-		return bus, result.address, nil
-	case <-bus.done:
-		bus.reaped = true
-		return nil, "", errors.New("owned session bus exited before its address")
-	case <-ctx.Done():
-		bus.stop()
-		return nil, "", ctx.Err()
-	}
 }
 
 func busEnvironment(environment []string, address string) []string {
@@ -342,6 +249,7 @@ func busEnvironment(environment []string, address string) []string {
 type serviceState struct {
 	snapshot sessionservice.Snapshot
 	bus      *ownedBus
+	busLost  bool
 	identity busReply
 	ids      map[uint32]bool
 	plans    providerPlans
@@ -408,6 +316,10 @@ func newServices(cfg *Config, report *reporter) (*serviceState, error) {
 		return state, nil
 	}
 	bus, address, err := startBus(ctx, *cfg)
+	state.bus = bus // Retain actual ownership even when startup cannot be confirmed.
+	if bus != nil {
+		state.snapshot.Items[2].Ownership = "owned"
+	}
 	if err != nil {
 		state.snapshot.Items[2].State = "failed"
 		state.snapshot.Items[2].Detail = detail(err.Error())
@@ -415,19 +327,25 @@ func newServices(cfg *Config, report *reporter) (*serviceState, error) {
 	}
 	environment := busEnvironment(cfg.Environment, address)
 	probe, err = serviceHelper(ctx, *cfg, environment, "probe")
+	if err == nil && bus.ended() {
+		err = errors.New("owned session bus ended during authentication")
+	}
 	if err != nil {
 		bus.stop()
 		state.snapshot.Items[2].State = "failed"
 		state.snapshot.Items[2].Detail = detail(err.Error())
 		return state, nil
 	}
-	state.bus = bus
 	cfg.Environment = environment
 	state.adoptProbe(probe, "owned")
 	return state, nil
 }
 
 func (state *serviceState) adoptProbe(probe busReply, ownership string) {
+	if state.bus != nil && state.bus.ended() {
+		state.fenceBusLoss()
+		return
+	}
 	if state.identity.BusID != probe.BusID || state.identity.ServerOwner != probe.ServerOwner {
 		state.ids = make(map[uint32]bool)
 	}

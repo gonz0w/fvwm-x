@@ -77,7 +77,7 @@ func TestLeaseReadinessRequiresPositiveAcknowledgment(t *testing.T) {
 			defer reader.Close()
 			io.WriteString(writer, data)
 			writer.Close()
-			if err := waitReady(reader, time.Second, true); (err == nil) != (data == "RL") {
+			if err := waitReady(reader, time.Second, true, false); (err == nil) != (data == "RL") {
 				t.Fatalf("ack %q: %v", data, err)
 			}
 		})
@@ -278,7 +278,7 @@ func TestInheritedLeaseSurvivesParentDescriptorClose(t *testing.T) {
 		}
 	}()
 	writer.Close()
-	if err := waitReady(reader, time.Second, true); err != nil {
+	if err := waitReady(reader, time.Second, true, false); err != nil {
 		t.Fatal(err)
 	}
 	waitRecoveryMarker(t, marker+"-ready")

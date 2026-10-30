@@ -140,7 +140,7 @@ func TestPowerStaleNoReplayAndSecureSuspendRefusal(t *testing.T) {
 func TestProviderFailureAndOwnedSessionBusDeathAreIndependent(t *testing.T) {
 	state := providerState(t)
 	state.ids[7] = true
-	state.bus = &ownedBus{reaped: true}
+	state.bus = endedTestBus()
 	state.snapshot.Items[2].State = "failed"
 	request := providerRequest(state, "poweroff")
 	if start, reply := state.admit(request, Config{}, false); !start {
@@ -148,7 +148,7 @@ func TestProviderFailureAndOwnedSessionBusDeathAreIndependent(t *testing.T) {
 	}
 	cfg := defaults(Config{Command: func(string, ...string) *exec.Cmd { return providerCommand("ok") }})
 	reply := state.complete(runProviderJob(request, cfg, state.snapshot.Power, state.plans))
-	if reply.Outcome != "requested" || !state.ids[7] || state.snapshot.Items[2].State != "failed" {
+	if reply.Outcome != "requested" || len(state.ids) != 0 || state.snapshot.Items[2].State != "failed" {
 		t.Fatal(reply)
 	}
 	power := state.snapshot.Power

@@ -88,11 +88,11 @@ static void test_one_shot_flags_and_bytes(void)
 	assert(getenv("FVWM_SESSION_READY_FD") == NULL);
 	assert(fcntl(descriptor, F_GETFL) & O_NONBLOCK);
 	assert(fcntl(descriptor, F_GETFD) & FD_CLOEXEC);
-	session_ready_publish(&descriptor, -1);
+	session_ready_publish(&descriptor, -1, -1);
 	assert(descriptor == -1);
 	assert(fcntl(3, F_GETFD) == -1 && errno == EBADF);
 	assert(read(reader, bytes, sizeof(bytes)) == 1 && bytes[0] == 'R');
-	session_ready_publish(&descriptor, -1);
+	session_ready_publish(&descriptor, -1, -1);
 	assert(read(reader, bytes, sizeof(bytes)) == 0);
 	close(reader);
 }
@@ -110,7 +110,7 @@ static void test_full_pipe_and_missing_reader(int lease_descriptor)
 	{
 	}
 	assert(errno == EAGAIN || errno == EWOULDBLOCK);
-	session_ready_publish(&descriptor, lease_descriptor);
+	session_ready_publish(&descriptor, lease_descriptor, -1);
 	assert(descriptor == -1);
 	close(reader);
 	reader = make_ready_pipe();
@@ -120,7 +120,7 @@ static void test_full_pipe_and_missing_reader(int lease_descriptor)
 	sigemptyset(&action.sa_mask);
 	action.sa_handler = SIG_DFL;
 	assert(sigaction(SIGPIPE, &action, NULL) == 0);
-	session_ready_publish(&descriptor, lease_descriptor);
+	session_ready_publish(&descriptor, lease_descriptor, -1);
 	assert(descriptor == -1);
 	assert(sigaction(SIGPIPE, NULL, &after) == 0);
 	assert(after.sa_handler == SIG_DFL);
@@ -251,7 +251,7 @@ static void test_lease_readiness(void)
 	assert(fcntl(lease, F_GETFD) & FD_CLOEXEC);
 	reader = make_ready_pipe();
 	ready = session_ready_take();
-	session_ready_publish(&ready, lease);
+	session_ready_publish(&ready, lease, -1);
 	assert(ready == -1);
 	assert(read(reader, bytes, sizeof(bytes)) == 2);
 	assert(memcmp(bytes, "RL", 2) == 0);
@@ -320,11 +320,11 @@ static void test_restart(const char *binary)
 
 	make_lease(path);
 	assert(session_lease_take() == 4);
-	assert(session_lease_prepare_restart(4));
+	assert(session_leases_prepare_restart(4, -1));
 	assert(strcmp(getenv("FVWM_SESSION_LEASE_FD"), "4") == 0);
 	assert(!(fcntl(4, F_GETFD) & FD_CLOEXEC));
 	assert(execv(missing[0], missing) == -1);
-	session_lease_finish_restart(4);
+	session_leases_finish_restart(4, -1);
 	assert(errno == ENOENT);
 	assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
 	assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
@@ -336,7 +336,7 @@ static void test_restart(const char *binary)
 		{
 			if (native)
 			{
-				assert(session_lease_prepare_restart(4));
+				assert(session_leases_prepare_restart(4, -1));
 			}
 			execl(binary, binary, native ? "--lease" : "--no-lease",
 			    (char *)NULL);
@@ -347,17 +347,159 @@ static void test_restart(const char *binary)
 		assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
 	}
 	close(4);
-	assert(!session_lease_prepare_restart(4));
+	assert(!session_leases_prepare_restart(4, -1));
 	assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
-	assert(session_lease_prepare_restart(-1));
-	session_lease_finish_restart(-1);
+	assert(session_leases_prepare_restart(-1, -1));
+	session_leases_finish_restart(-1, -1);
 	assert(unlink(path) == 0);
+}
+
+static int make_bus_lifetime(void)
+{
+	int descriptors[2];
+	int reader;
+
+	assert(pipe(descriptors) == 0);
+	reader = fcntl(descriptors[0], F_DUPFD, 10);
+	assert(reader >= 10);
+	assert(dup2(descriptors[1], 5) == 5);
+	close(descriptors[0]);
+	if (descriptors[1] != 5)
+		close(descriptors[1]);
+	assert(fcntl(5, F_SETFL, O_NONBLOCK) == 0);
+	assert(setenv("FVWM_SESSION_BUS_LIFETIME_FD", "5", 1) == 0);
+	return reader;
+}
+
+static void test_bus_lifetime(const char *binary)
+{
+	const char *invalid[] = {"", "0", "4", "05", "5junk", "-1"};
+	char path[] = "/tmp/fvwm-session-lease-XXXXXX";
+	char bytes[4];
+	int reader, ready_reader, ready, native;
+	size_t i;
+	pid_t child;
+
+	unsetenv("FVWM_SESSION_BUS_LIFETIME_FD");
+	assert(session_bus_lifetime_take() == -1);
+	for (i = 0; i < sizeof(invalid) / sizeof(invalid[0]); i++)
+	{
+		assert(setenv("FVWM_SESSION_BUS_LIFETIME_FD", invalid[i], 1) == 0);
+		assert(session_bus_lifetime_take() == -1);
+		assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	}
+	reader = make_bus_lifetime();
+	assert(fcntl(5, F_SETFL, 0) == 0);
+	assert(session_bus_lifetime_take() == -1);
+	assert(setenv("FVWM_SESSION_BUS_LIFETIME_FD", "5", 1) == 0);
+	assert(fcntl(5, F_SETFL, O_NONBLOCK) == 0);
+	assert(session_bus_lifetime_take() == 5);
+	assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	assert(fcntl(5, F_GETFD) & FD_CLOEXEC);
+	ready_reader = make_ready_pipe();
+	ready = session_ready_take();
+	session_ready_publish(&ready, -1, 5);
+	assert(read(ready_reader, bytes, sizeof(bytes)) == 2);
+	assert(memcmp(bytes, "RB", 2) == 0);
+	close(ready_reader);
+	make_lease(path);
+	assert(session_lease_take() == 4);
+	ready_reader = make_ready_pipe();
+	ready = session_ready_take();
+	session_ready_publish(&ready, 4, 5);
+	assert(read(ready_reader, bytes, sizeof(bytes)) == 3);
+	assert(memcmp(bytes, "RLB", 3) == 0);
+	close(ready_reader);
+	/* A failed second preparation restores FD4 and both private markers. */
+	assert(!session_leases_prepare_restart(4, 99));
+	assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
+	assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
+	assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	for (native = 0; native <= 1; native++)
+	{
+		child = fork();
+		assert(child >= 0);
+		if (child == 0)
+		{
+			close(reader);
+			if (native)
+				assert(session_leases_prepare_restart(4, 5));
+			execl(binary, binary, native ? "--both" : "--neither",
+				(char *)NULL);
+			_exit(127);
+		}
+		expect_child(child);
+		assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
+		assert(fcntl(5, F_GETFD) & FD_CLOEXEC);
+	}
+	assert(session_leases_prepare_restart(4, 5));
+	session_leases_finish_restart(4, 5);
+	assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
+	assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
+	assert(fcntl(5, F_GETFD) & FD_CLOEXEC);
+	close(5);
+	assert(!session_leases_prepare_restart(4, 5));
+	assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
+	assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
+	assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	close(4);
+	assert(read(reader, bytes, 1) == 0);
+	close(reader);
+	assert(unlink(path) == 0);
+	/* Regular descriptors can never serve as bus lifetime holders. */
+	reader = open("/dev/null", O_WRONLY | O_NONBLOCK);
+	assert(reader == 3);
+	assert(dup2(reader, 5) == 5);
+	close(reader);
+	assert(setenv("FVWM_SESSION_BUS_LIFETIME_FD", "5", 1) == 0);
+	assert(session_bus_lifetime_take() == -1);
+	assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+	close(5);
+	{
+		int endpoints[2];
+		int flags;
+
+		assert(pipe(endpoints) == 0);
+		assert(dup2(endpoints[0], 5) == 5);
+		close(endpoints[0]);
+		assert(fcntl(5, F_SETFL, O_NONBLOCK) == 0);
+		assert(setenv("FVWM_SESSION_BUS_LIFETIME_FD", "5", 1) == 0);
+		flags = fcntl(5, F_GETFL);
+		if ((flags & O_ACCMODE) == O_RDONLY)
+			assert(session_bus_lifetime_take() == -1);
+		else
+		{
+			assert((flags & O_ACCMODE) == O_RDWR);
+			assert(session_bus_lifetime_take() == 5);
+		}
+		close(5);
+		close(endpoints[1]);
+	}
 }
 
 int main(int argc, char **argv)
 {
 	if (argc == 2)
 	{
+		if (strcmp(argv[1], "--both") == 0)
+		{
+			assert(session_lease_take() == 4);
+			assert(session_bus_lifetime_take() == 5);
+			assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
+			assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+			assert(fcntl(4, F_GETFD) & FD_CLOEXEC);
+			assert(fcntl(5, F_GETFD) & FD_CLOEXEC);
+			return 0;
+		}
+		if (strcmp(argv[1], "--neither") == 0)
+		{
+			assert(getenv("FVWM_SESSION_LEASE_FD") == NULL);
+			assert(getenv("FVWM_SESSION_BUS_LIFETIME_FD") == NULL);
+			assert(fcntl(4, F_GETFD) == -1 && errno == EBADF);
+			assert(fcntl(5, F_GETFD) == -1 && errno == EBADF);
+			return 0;
+		}
 		if (strcmp(argv[1], "--lease") == 0)
 		{
 			assert(session_lease_take() == 4);
@@ -379,5 +521,6 @@ int main(int argc, char **argv)
 	test_lease_readiness();
 	test_inherited_lease();
 	test_restart(argv[0]);
+	test_bus_lifetime(argv[0]);
 	return 0;
 }

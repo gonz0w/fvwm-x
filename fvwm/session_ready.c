@@ -68,41 +68,72 @@ int session_lease_take(void)
 	return 4;
 }
 
-bool session_lease_prepare_restart(int descriptor)
+int session_bus_lifetime_take(void)
 {
-	unsetenv("FVWM_SESSION_LEASE_FD");
-	if (descriptor < 0)
+	const char *value = getenv("FVWM_SESSION_BUS_LIFETIME_FD");
+	int requested = value != NULL && strcmp(value, "5") == 0;
+	struct stat info;
+	int flags;
+
+	unsetenv("FVWM_SESSION_BUS_LIFETIME_FD");
+	if (!requested)
+		return -1;
+	flags = fcntl(5, F_GETFL);
+	/* BSD pipe endpoints may be O_RDWR; either writable mode is valid. */
+	if (flags < 0 || ((flags & O_ACCMODE) != O_WRONLY &&
+	    (flags & O_ACCMODE) != O_RDWR) || !(flags & O_NONBLOCK) ||
+	    fstat(5, &info) != 0 || !S_ISFIFO(info.st_mode) ||
+	    !fvwm_fd_set_cloexec(5, true))
+		return -1;
+	return 5;
+}
+
+bool session_leases_prepare_restart(int lease_descriptor, int bus_descriptor)
+{
+	session_leases_finish_restart(lease_descriptor, bus_descriptor);
+	if ((lease_descriptor >= 0 &&
+	     (lease_descriptor != 4 ||
+	      setenv("FVWM_SESSION_LEASE_FD", "4", 1) != 0 ||
+	      !fvwm_fd_set_cloexec(lease_descriptor, false))) ||
+	    (bus_descriptor >= 0 &&
+	     (bus_descriptor != 5 ||
+	      setenv("FVWM_SESSION_BUS_LIFETIME_FD", "5", 1) != 0 ||
+	      !fvwm_fd_set_cloexec(bus_descriptor, false))))
 	{
-		return true;
-	}
-	if (setenv("FVWM_SESSION_LEASE_FD", "4", 1) != 0 ||
-	    !fvwm_fd_set_cloexec(descriptor, false))
-	{
-		session_lease_finish_restart(descriptor);
+		session_leases_finish_restart(lease_descriptor, bus_descriptor);
 		return false;
 	}
 	return true;
 }
 
-void session_lease_finish_restart(int descriptor)
+void session_leases_finish_restart(int lease_descriptor, int bus_descriptor)
 {
 	int saved_errno = errno;
 
 	unsetenv("FVWM_SESSION_LEASE_FD");
-	if (descriptor >= 0)
-	{
-		(void)fvwm_fd_set_cloexec(descriptor, true);
-	}
+	unsetenv("FVWM_SESSION_BUS_LIFETIME_FD");
+	if (lease_descriptor >= 0)
+		(void)fvwm_fd_set_cloexec(lease_descriptor, true);
+	if (bus_descriptor >= 0)
+		(void)fvwm_fd_set_cloexec(bus_descriptor, true);
 	errno = saved_errno;
 }
 
-void session_ready_publish(int *descriptor, int lease_descriptor)
+void session_ready_publish(int *descriptor, int lease_descriptor,
+	int bus_descriptor)
 {
 	if (*descriptor >= 0)
 	{
+		char acknowledgment[3] = {'R', 0, 0};
+		size_t length = 1;
+
+		if (lease_descriptor >= 0)
+			acknowledgment[length++] = 'L';
+		if (bus_descriptor >= 0)
+			acknowledgment[length++] = 'B';
 		/* A full pipe or missing reader cannot stall/terminate the X owner. */
 		(void)fvwm_write_without_sigpipe(
-			*descriptor, "RL", lease_descriptor >= 0 ? 2 : 1);
+			*descriptor, acknowledgment, length);
 		close(*descriptor);
 		*descriptor = -1;
 	}

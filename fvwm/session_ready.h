@@ -11,13 +11,18 @@ int session_ready_take(void);
  * Refusal never unlocks it; the inherited-fd close loop closes refused fds. */
 int session_lease_take(void);
 
-/* Only bracket the native Restart exec. Ordinary children retain CLOEXEC and
- * no private environment. A failed preparation restores that normal state. */
-bool session_lease_prepare_restart(int descriptor);
-void session_lease_finish_restart(int descriptor);
+/* Retain FD5's private writable lifetime FIFO, accepting BSD O_RDWR ends.
+ * Remove its private marker immediately and protect ordinary exec children. */
+int session_bus_lifetime_take(void);
 
-/* One nonblocking write: RL with a retained lease, otherwise R. SIGPIPE-safe,
+/* Only bracket the native Restart exec. Prepare both leases together,
+ * rolling both back on failure; ordinary children retain CLOEXEC and no marker. */
+bool session_leases_prepare_restart(int lease_descriptor, int bus_descriptor);
+void session_leases_finish_restart(int lease_descriptor, int bus_descriptor);
+
+/* One nonblocking write: R, then L for FD4 and B for FD5. SIGPIPE-safe,
  * then close and reset the readiness descriptor to -1. */
-void session_ready_publish(int *descriptor, int lease_descriptor);
+void session_ready_publish(int *descriptor, int lease_descriptor,
+	int bus_descriptor);
 
 #endif

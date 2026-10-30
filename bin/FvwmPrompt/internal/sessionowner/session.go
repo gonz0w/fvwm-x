@@ -27,15 +27,16 @@ import (
 )
 
 const (
-	ReadyEnvironment   = "FVWM_SESSION_READY_FD"
-	LeaseEnvironment   = "FVWM_SESSION_LEASE_FD"
-	WorkerArgument     = "--_session-scan"
-	readyTimeout       = 15 * time.Second
-	scanTimeout        = 5 * time.Second
-	stopGrace          = 5 * time.Second
-	stopWait           = time.Second
-	maxDiagnostics     = 64
-	maxDiagnosticBytes = 512
+	ReadyEnvironment       = "FVWM_SESSION_READY_FD"
+	LeaseEnvironment       = "FVWM_SESSION_LEASE_FD"
+	BusLifetimeEnvironment = "FVWM_SESSION_BUS_LIFETIME_FD"
+	WorkerArgument         = "--_session-scan"
+	readyTimeout           = 15 * time.Second
+	scanTimeout            = 5 * time.Second
+	stopGrace              = 5 * time.Second
+	stopWait               = time.Second
+	maxDiagnostics         = 64
+	maxDiagnosticBytes     = 512
 )
 
 // Command, Exec, Lock and deadlines allow real child/pipe regression tests;
@@ -74,7 +75,7 @@ func Environment(input []string) []string {
 	current, session := false, false
 	for _, entry := range input {
 		key, _, _ := strings.Cut(entry, "=")
-		if key == ReadyEnvironment || key == LeaseEnvironment || key == sessionservice.SocketEnvironment || key == sessionservice.CapabilityEnvironment {
+		if key == ReadyEnvironment || key == LeaseEnvironment || key == BusLifetimeEnvironment || key == sessionservice.SocketEnvironment || key == sessionservice.CapabilityEnvironment {
 			continue
 		}
 		current = current || key == "XDG_CURRENT_DESKTOP"
@@ -91,13 +92,19 @@ func Environment(input []string) []string {
 }
 
 type reporter struct {
-	output io.Writer
-	count  int
-	final  bool
+	output              io.Writer
+	count               int
+	final               bool
+	busTerminalReserved bool
+	busFinal            bool
 }
 
 func (r *reporter) write(format string, args ...any) {
-	if r.count >= maxDiagnostics-1 {
+	reserved := 1
+	if r.busTerminalReserved {
+		reserved++
+	}
+	if r.count >= maxDiagnostics-reserved {
 		return
 	}
 	r.count++
@@ -111,6 +118,16 @@ func (r *reporter) terminal(format string, args ...any) {
 		return
 	}
 	r.final = true
+	r.line(format, args...)
+}
+
+// Owned-bus cleanup has its own final slot: an unconfirmed WM result must not
+// hide independent daemon receipt and guardian Wait facts (or vice versa).
+func (r *reporter) busTerminal(format string, args ...any) {
+	if r.busFinal {
+		return
+	}
+	r.busFinal = true
 	r.line(format, args...)
 }
 
@@ -130,13 +147,16 @@ func (r *reporter) line(format string, args ...any) {
 	fmt.Fprintln(r.output, prefix+message)
 }
 
-func waitReady(reader *os.File, timeout time.Duration, lease bool) error {
+func waitReady(reader *os.File, timeout time.Duration, lease, lifetime bool) error {
 	if err := reader.SetReadDeadline(time.Now().Add(timeout)); err != nil {
 		return err
 	}
 	expected := "R"
 	if lease {
-		expected = "RL"
+		expected += "L"
+	}
+	if lifetime {
+		expected += "B"
 	}
 	data, err := io.ReadAll(io.LimitReader(reader, int64(len(expected)+1)))
 	if err != nil {
@@ -283,10 +303,9 @@ func Run(input Config) int {
 	// shared with a live core, defeating parent-loss recovery.
 	defer lock.Close()
 	lease, hasLease := lock.(*os.File)
-	wmTerminationUnconfirmed := false
 	var services *serviceState
 	var controls <-chan controlRequest
-	var busDone <-chan error
+	var busDone <-chan struct{}
 	ctx, cancel := context.WithCancel(context.Background())
 	var scanning <-chan scanResult
 	scanReapUnconfirmed := false
@@ -298,12 +317,12 @@ func Run(input Config) int {
 			report.write("session services unavailable: %v", err)
 		} else {
 			if services.bus != nil {
+				report.busTerminalReserved = true
 				defer func() {
-					if !wmTerminationUnconfirmed {
-						services.bus.stop()
-					}
+					facts := services.bus.stop()
+					report.busTerminal("owned session bus cleanup: %s", facts.description())
 				}()
-				busDone = services.bus.done
+				busDone = services.bus.terminal
 			}
 			control, controlErr := startControl(cfg.Environment)
 			if controlErr != nil {
@@ -332,13 +351,18 @@ func Run(input Config) int {
 		}
 	}
 
+	var lifetime *os.File
+	if services != nil {
+		lifetime = services.bus.lifetimeForHandoff()
+	}
+	hasLifetime := lifetime != nil
 	wm := cfg.Command(cfg.WMPath, cfg.Args...)
 	wm.Env, wm.Stdin, wm.Stdout, wm.Stderr = cfg.Environment, os.Stdin, os.Stdout, os.Stderr
 	// A separate process group prevents a terminal's broadcast signal from
 	// hitting independent applications. Forward only to the direct owned WM.
 	wm.SysProcAttr = &syscall.SysProcAttr{Setpgid: true}
 	var reader, writer *os.File
-	wantReady := hasLease || !cfg.NoAutostart || services != nil
+	wantReady := hasLease || hasLifetime || !cfg.NoAutostart || services != nil
 	if wantReady {
 		reader, writer, err = cfg.readyPipe()
 		if err != nil {
@@ -348,13 +372,10 @@ func Run(input Config) int {
 			if writer != nil {
 				writer.Close()
 			}
+			reader, writer = nil, nil
 			report.write("autostart unavailable: readiness pipe: %v", err)
-			if hasLease {
-				// Preserve login under pipe/resource failure. Reserve FD3 as
-				// closed so the still-shared lease remains FD4, without claiming
-				// an acknowledged handoff or starting one-shot applications.
-				wm.ExtraFiles = []*os.File{nil, lease}
-				wm.Env = append(append([]string(nil), cfg.Environment...), LeaseEnvironment+"=4")
+			if hasLifetime {
+				report.write("core bus lifetime handoff unconfirmed; parent-loss bus protection is unconfirmed")
 			}
 			if !cfg.NoAutostart {
 				setState(1, "unavailable", "startup acknowledgment pipe is unavailable")
@@ -365,12 +386,25 @@ func Run(input Config) int {
 			setState(0, "unavailable", "startup acknowledgment pipe is unavailable")
 		} else {
 			defer reader.Close()
-			wm.ExtraFiles = []*os.File{writer}
-			wm.Env = append(append([]string(nil), cfg.Environment...), ReadyEnvironment+"=3")
+		}
+	}
+	// Preserve fixed FD3/4/5 slots, including absent readiness/lease slots.
+	if writer != nil || hasLease || hasLifetime {
+		wm.ExtraFiles = []*os.File{writer}
+		wm.Env = append([]string(nil), cfg.Environment...)
+		if writer != nil {
+			wm.Env = append(wm.Env, ReadyEnvironment+"=3")
+		}
+		if hasLease || hasLifetime {
+			wm.ExtraFiles = append(wm.ExtraFiles, nil)
 			if hasLease {
-				wm.ExtraFiles = append(wm.ExtraFiles, lease)
+				wm.ExtraFiles[1] = lease
 				wm.Env = append(wm.Env, LeaseEnvironment+"=4")
 			}
+		}
+		if hasLifetime {
+			wm.ExtraFiles = append(wm.ExtraFiles, lifetime)
+			wm.Env = append(wm.Env, BusLifetimeEnvironment+"=5")
 		}
 	}
 	if err = wm.Start(); err != nil {
@@ -390,7 +424,7 @@ func Run(input Config) int {
 	if wantReady {
 		result := make(chan error, 1)
 		ready = result
-		go func() { result <- waitReady(reader, cfg.ReadyTimeout, hasLease) }()
+		go func() { result <- waitReady(reader, cfg.ReadyTimeout, hasLease, hasLifetime) }()
 	}
 	apps := make(chan appExit, xdgmenu.MaxAutostartEntries)
 	shuttingDown := false
@@ -476,12 +510,9 @@ func Run(input Config) int {
 			cancelServiceJob()
 			cancelServiceJob = nil
 			job.request.reply <- services.complete(job)
-		case err := <-busDone:
+		case <-busDone:
 			busDone = nil
-			services.bus.reaped = true
-			setState(2, "failed", fmt.Sprintf("owned session bus exited with status %d; no automatic replacement", exitCode(err)))
-			setState(3, "unavailable", "session bus is unavailable")
-			services.ids = make(map[uint32]bool)
+			services.fenceBusLoss()
 		case err = <-wmDone:
 			cancel()
 			setState(0, "stopped", "owned core exited")
@@ -499,8 +530,7 @@ func Run(input Config) int {
 				setState(0, "stopped", "owned core exit observed after termination request")
 				return exitCode(waitErr)
 			}
-			wmTerminationUnconfirmed = true
-			report.terminal("WM termination unconfirmed after stop deadline; owned session bus preserved if present")
+			report.terminal("WM termination unconfirmed after stop deadline; parent bus lease released, retained core lease remains authoritative")
 			return 1
 		case sig, open := <-cfg.Signals:
 			if !open {
@@ -517,6 +547,9 @@ func Run(input Config) int {
 					setState(4, "unavailable", "autostart disabled without core startup acknowledgment")
 				}
 				report.write("autostart unavailable: %v", err)
+				if hasLifetime {
+					report.write("core bus lifetime handoff unconfirmed; parent-loss bus protection is unconfirmed")
+				}
 				continue
 			}
 			setState(0, "ready", "core startup acknowledged; modules/apps have separate readiness")

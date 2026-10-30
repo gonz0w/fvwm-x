@@ -757,6 +757,15 @@ session_ready_test = executable(
 )
 test('session-ready', session_ready_test)
 
+session_bus_guardian_test = executable(
+    'test-session-bus-guardian',
+    ['test_session_bus_guardian.c', '../bin/session_bus_guardian.c',
+     '../libs/fd_safety.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('session-bus-guardian', session_bus_guardian_test, timeout: 60)
+
 session_clients_policy_test = executable(
     'test-session-clients-policy',
     ['test_session_clients_policy.c', '../fvwm/session_clients_policy.c',

@@ -50,7 +50,7 @@ option(
     'session-dbus',
     type: 'feature',
     value: 'disabled',
-    description: 'Enable the isolated optional session bus client',
+    description: 'Enable optional session bus clients and the owned-bus guardian',
 )
 option(
     'sm',

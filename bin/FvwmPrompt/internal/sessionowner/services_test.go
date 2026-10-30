@@ -12,10 +12,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
-	"os/signal"
 	"path/filepath"
 	"strings"
-	"syscall"
 	"testing"
 	"time"
 
@@ -71,21 +69,11 @@ func TestServiceChild(t *testing.T) {
 		time.Sleep(5 * time.Second)
 	case "overflow":
 		io.WriteString(os.Stdout, strings.Repeat("x", sessionservice.MaxFrame+1))
-	case "daemon":
-		sig := make(chan os.Signal, 1)
-		signal.Notify(sig, syscall.SIGTERM)
-		file := os.NewFile(3, "address")
-		io.WriteString(file, "unix:path=/fixture/owned-bus\n")
-		file.Close()
-		<-sig
-		if path := os.Getenv("FVWM_SESSION_TEST_DAEMON_STOP"); path != "" {
-			os.WriteFile(path, []byte("stopped"), 0600)
-		}
-	case "helper", "disabled":
-		reply := busReply{Version: 1, Available: mode == "helper", State: "unavailable", Detail: "missing_inherited_session_address"}
+	case "helper", "disabled", "auth-failure":
+		reply := busReply{Version: 1, Available: mode != "disabled", State: "unavailable", Detail: "missing_inherited_session_address"}
 		if mode == "disabled" {
 			reply.Detail = "optional_feature_disabled"
-		} else if os.Getenv("DBUS_SESSION_BUS_ADDRESS") != "" {
+		} else if mode != "auth-failure" && os.Getenv("DBUS_SESSION_BUS_ADDRESS") != "" {
 			reply.State = "ready"
 			reply.BusID = "fixture-bus"
 			reply.ServerOwner = ":1.27"
@@ -178,8 +166,8 @@ func TestOwnedBusAddressPrecedesApplicationsAndStopsOnlyOwnedChild(t *testing.T)
 	marker := filepath.Join(directory, "stopped")
 	env = append(env, "PATH="+directory, "DBUS_SESSION_BUS_ADDRESS=", "FVWM_SESSION_TEST_DAEMON_STOP="+marker)
 	cfg := defaults(Config{Environment: env, BusHelperPath: "/fixture/helper", Command: func(path string, args ...string) *exec.Cmd {
-		if path == daemon {
-			return serviceCommand("daemon", args...)
+		if path == "/fixture/helper" && len(args) == 2 && args[0] == "bus-guardian" && args[1] == daemon {
+			return guardianCommand("lifetime", args...)
 		}
 		if path != "/fixture/helper" {
 			t.Fatal(path)
@@ -198,8 +186,8 @@ func TestOwnedBusAddressPrecedesApplicationsAndStopsOnlyOwnedChild(t *testing.T)
 		t.Fatal(state.snapshot)
 	}
 	state.bus.stop()
-	if !state.bus.reaped {
-		t.Fatal("owned child was not reaped")
+	if facts := state.bus.observations(); facts.receipt.kind != daemonReceiptWaited || !facts.guardianWaitObserved {
+		t.Fatalf("daemon receipt and actual guardian Wait were not observed: %#v", facts)
 	}
 	if data, err := os.ReadFile(marker); err != nil || string(data) != "stopped" {
 		t.Fatalf("%q %v", data, err)
@@ -373,7 +361,8 @@ func TestLateProbeCannotReviveKnownOwnedBusExit(t *testing.T) {
 	}
 	probe := busReply{BusID: "original", ServerOwner: ":1.3"}
 	state.adoptProbe(probe, "owned")
-	state.bus = &ownedBus{reaped: true}
+	state.bus = endedTestBus()
+	state.busLost = true
 	state.snapshot.Items[2].State = "failed"
 	state.snapshot.Items[2].Detail = "known owned bus exit"
 	state.snapshot.Items[3].State = "unavailable"
@@ -391,7 +380,8 @@ func TestKnownOwnedBusExitRefusesNewAdapterAdmission(t *testing.T) {
 	}
 	probe := busReply{BusID: "original", ServerOwner: ":1.3"}
 	state.adoptProbe(probe, "owned")
-	state.bus = &ownedBus{reaped: true}
+	state.bus = endedTestBus()
+	state.busLost = true
 	state.ids[7] = true
 	state.snapshot.Items[2].State = "failed"
 	state.snapshot.Items[2].Detail = "known owned bus exit"

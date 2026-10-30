@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Owned session-bus lifetime](VERIFICATION-2026-10-30-OWNED-BUS-LIFETIME.md): shared parent/core retention, exact daemon receipts, passive reaping and terminal fences; focused Linux/race/sanitizer, early BSD, ten native groups and scoped resident cost.
+
 - [Portable session recovery](VERIFICATION-2026-10-30-SESSION-RECOVERY.md): shared lease across parent loss/native Restart, positive handoff and bounded direct-WM stop; focused Linux/race/sanitizer, actual FreeBSD descriptor/exec and retained broader acceptance.
 
 - [Session providers and power coordination](VERIFICATION-2026-10-29-SESSION-PROVIDERS.md): eight related stories, one shared power policy, truthful permissions and retained manual locker; focused Linux/race/sanitizer, three themes and explicit remaining acceptance.

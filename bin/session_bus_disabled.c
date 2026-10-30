@@ -8,6 +8,9 @@
 
 int main(int argc, char **argv)
 {
+	/* Refuse before any launch, including malformed guardian requests. */
+	if (argc > 1 && strcmp(argv[1], "bus-guardian") == 0)
+		return 2;
 	if (argc > 1 && strncmp(argv[1], "power-", 6) == 0)
 		return puts("{\"version\":1,\"kind\":\"power\",\"available\":false,"
 			"\"state\":\"unavailable\",\"bus_id\":\"\",\"server_owner\":\"\","

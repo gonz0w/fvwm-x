@@ -133,6 +133,7 @@ static volatile sig_atomic_t fvwmRunState = FVWM_RUNNING;
 static int session_ready_fd = -1;
 /* Shared with the portable parent; survives only the native Restart exec. */
 static int session_lease_fd = -1;
+static int session_bus_lifetime_fd = -1;
 
 static const char *init_function_names[4] =
 {
@@ -672,12 +673,14 @@ void Done(int restart, char *command)
 			}
 		}
 
-		/* Custom replacements above never receive the lease. Only the native
-		 * fallback inherits it, immediately around this same-PID exec. */
-		if (session_lease_prepare_restart(session_lease_fd))
+		/* Custom replacements above never receive the leases. Only the native
+		 * fallback inherits them, immediately around this same-PID exec. */
+		if (session_leases_prepare_restart(
+			session_lease_fd, session_bus_lifetime_fd))
 		{
 			execvp(g_argv[0], g_argv);    /* that _should_ work */
-			session_lease_finish_restart(session_lease_fd);
+			session_leases_finish_restart(
+				session_lease_fd, session_bus_lifetime_fd);
 		}
 		fvwm_debug(__func__, "Call of '%s' failed!", g_argv[0]);
 		perror("  system error description");
@@ -1519,7 +1522,8 @@ void StartupStuff(void)
 	 * flag back to False!
 	 */
 	Restarting = False;
-	session_ready_publish(&session_ready_fd, session_lease_fd);
+	session_ready_publish(&session_ready_fd, session_lease_fd,
+		session_bus_lifetime_fd);
 
 	return;
 }
@@ -1704,9 +1708,11 @@ int main(int argc, char **argv)
 	/* close open fds */
 	session_ready_fd = session_ready_take();
 	session_lease_fd = session_lease_take();
+	session_bus_lifetime_fd = session_bus_lifetime_take();
 	for (i = 3; i < fvwmlib_max_fd; i++)
 	{
-		if (i != session_ready_fd && i != session_lease_fd)
+		if (i != session_ready_fd && i != session_lease_fd &&
+		    i != session_bus_lifetime_fd)
 		{
 			close(i);
 		}

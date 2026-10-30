@@ -25,7 +25,7 @@ import (
 )
 
 func TestEnvironmentPreservesPresentValues(t *testing.T) {
-	input := []string{"DISPLAY=:9", "XDG_CURRENT_DESKTOP=Mine", "XDG_SESSION_TYPE=", "SESSION_MANAGER=external", ReadyEnvironment + "=99", LeaseEnvironment + "=98"}
+	input := []string{"DISPLAY=:9", "XDG_CURRENT_DESKTOP=Mine", "XDG_SESSION_TYPE=", "SESSION_MANAGER=external", ReadyEnvironment + "=99", LeaseEnvironment + "=98", BusLifetimeEnvironment + "=97"}
 	got := Environment(input)
 	if strings.Join(got, "\n") != strings.Join(input[:4], "\n") {
 		t.Fatalf("changed existing environment: %q", got)
@@ -60,7 +60,7 @@ func TestReadyPipeOutcomes(t *testing.T) {
 			if tc.close {
 				w.Close()
 			}
-			if err = waitReady(r, 20*time.Millisecond, false); (err == nil) != tc.want {
+			if err = waitReady(r, 20*time.Millisecond, false, false); (err == nil) != tc.want {
 				t.Fatalf("ready: %v", err)
 			}
 		})
@@ -150,7 +150,11 @@ func writeTestCoreReady(file *os.File) {
 	if os.Getenv(LeaseEnvironment) == "4" {
 		ack = "RL"
 	}
+	if os.Getenv(BusLifetimeEnvironment) == "5" {
+		ack += "B"
+	}
 	os.Unsetenv(LeaseEnvironment)
+	os.Unsetenv(BusLifetimeEnvironment)
 	io.WriteString(file, ack)
 }
 
@@ -171,7 +175,7 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 		var gotPath string
 		var gotArgs, gotEnv []string
 		lockCalled := false
-		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9", ReadyEnvironment + "=99", LeaseEnvironment + "=98"}, Diagnostics: io.Discard,
+		cfg := Config{DisableServices: true, WMPath: "/fixed/fvwm3", SelfPath: "/fixed/fvwm-session", Args: []string{"-d", ":77", "-f", "a ; b"}, Environment: []string{"DISPLAY=:9", ReadyEnvironment + "=99", LeaseEnvironment + "=98", BusLifetimeEnvironment + "=97"}, Diagnostics: io.Discard,
 			Exec:    func(path string, args, env []string) error { gotPath = path; gotArgs = args; gotEnv = env; return nil },
 			Lock:    func([]string) (io.Closer, error) { lockCalled = true; return nil, os.ErrPermission },
 			Command: func(string, ...string) *exec.Cmd { t.Fatal("unexpected child"); return nil },
@@ -185,7 +189,7 @@ func TestExternalSessionAndUnavailableLockExecOriginal(t *testing.T) {
 		if environmentMap(gotEnv)["XDG_CURRENT_DESKTOP"] != "FVWM3:FVWM" {
 			t.Fatal(gotEnv)
 		}
-		if env := environmentMap(gotEnv); env[ReadyEnvironment] != "" || env[LeaseEnvironment] != "" {
+		if env := environmentMap(gotEnv); env[ReadyEnvironment] != "" || env[LeaseEnvironment] != "" || env[BusLifetimeEnvironment] != "" {
 			t.Fatal("private startup state leaked to exec", gotEnv)
 		}
 		if lockCalled == external {
@@ -325,7 +329,7 @@ func TestApplicationStartExitFailureAndLiteralArguments(t *testing.T) {
 			if env["DISPLAY"] != ":27" || env["XAUTHORITY"] != "/fixture/auth" {
 				t.Fatalf("wrong child environment: %q", command.Env)
 			}
-			if env[LeaseEnvironment] != "" {
+			if env[LeaseEnvironment] != "" || env[BusLifetimeEnvironment] != "" {
 				t.Fatal("private lease state leaked without a file lease", command.Env)
 			}
 		}

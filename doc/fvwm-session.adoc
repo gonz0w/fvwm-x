@@ -72,8 +72,9 @@ Closing one holder does not unlock the survivor. Ordinary executed applications,
 modules and an explicit replacement program do not inherit this lease.
 Do not set the private readiness/lease descriptor environment yourself.
 
-The parent owns the directly started WM, temporary acquisition/adapter workers
-and a session bus only when the explicit startup policy creates one. A normal
+The parent owns the directly started WM and temporary acquisition/adapter
+workers. An explicit owned-bus startup uses one fixed native guardian; that
+guardian alone starts and waits for the actual session daemon. A normal
 FVWM Restart replaces the same WM process and does not repeat autostart or bus
 bootstrap. No automatic WM restart or application retry is performed.
 Autostart applications are independent launches, not adopted session services.
@@ -103,12 +104,19 @@ inherited address. Portable power discovery does not require a bus. *reuse* auth
 an explicitly inherited usable session address; an absent or failed service leaves the portable desktop available. *start*
 first reuses a working inherited bus. Otherwise, if the optional adapter is
 available, it starts an installed *dbus-daemon* in the foreground and confirms
-its address and handshake before launching FVWM or autostart applications.
+its address and actual handshake before launching FVWM or autostart applications.
+The owned mode also retains a lifetime pipe in the parent and native core.
+A surviving core keeps the bus alive after parent loss and through native Restart.
+After both holders exit, the guardian retires the daemon. Independent applications
+alone do not retain the bus after that session lifetime, and are never signalled.
+Borrowed buses have no guardian and are never retired by this session.
 Only absolute *PATH* components are searched for the fixed daemon name.
 There is no package installation, system-bus startup or implicit bus autolaunch.
 
-The optional native adapter has independent session-notification and existing
-system-bus power branches. The notification branch accepts one explicit Unix
+The optional native adapter has independent notification, existing-system-bus
+power and fixed owned-daemon lifetime branches. Notification/power calls are
+transient; the guardian stays resident only while an explicitly owned bus needs
+it. No extra actor or lifetime pipe is created for off/reuse/external paths. The notification branch accepts one explicit Unix
 session-bus address. Build with *-Dsession-dbus=enabled* and libdbus-1 >=1.14;
 default builds install an unavailable stub without linking that library. The startup budget is five
 seconds; each isolated notification adapter call has a two-second deadline,
@@ -201,7 +209,8 @@ and operation interfaces; they should not construct this private protocol.
 
 An inherited private pipe carries one acknowledgment after the core completes
 initial capture, startup functions and state loading. A current parent also
-requires positive acknowledgment that the core retained its shared owner lease.
+requires positive acknowledgment that the core retained its shared owner lease
+and, for an owned bus, its bus-lifetime writer.
 A mismatched older core cannot acknowledge that handoff, so autostart is disabled
 while the WM remains usable. Lease acknowledgment still runs with
 *--no-autostart*. A failed pipe setup disables acquisition without preventing the
@@ -212,7 +221,8 @@ close-on-exec during ordinary work. Only native Restart temporarily preserves it
 across the core's own exec. The readiness pipe uses one nonblocking, SIGPIPE-safe
 write and closes once. This acknowledges core startup and lease retention only,
 not completed asynchronous modules, painted windows, application readiness or
-locker protection. After fifteen seconds, EOF or malformed acknowledgment,
+locker protection. Bus protection after parent loss depends on actual lifetime
+writer retention; an incompatible/refusing core receives no such guarantee. After fifteen seconds, EOF or malformed acknowledgment,
 autostart is unavailable for that login and a diagnostic explains why. The WM
 remains usable; no fixed sleep substitutes for readiness, and later Restart does
 not replay autostart.
@@ -292,20 +302,29 @@ restored. A guarded final request rechecks that no eligible application remains.
 See *FvwmDesktop*(1) for the scope and external XSMP handoff. Ordinary direct FVWM
 Quit remains available and does not prove application work has been saved.
 
-Confirmed WM exit completes this parent's session and stops/reaps an owned bus.
-Owned-daemon cleanup requests TERM, waits up to two seconds, then requests KILL
-for that same owned child and waits up to one further second. A delayed kernel
-exit remains a reaping limitation. If WM termination remains unconfirmed, the
-parent leaves the owned bus running for the possibly live session. Borrowed
-daemons, independent applications and admitted lockers are never signalled by
-this cleanup.
+After existing acquisition/adapter cancellation, the parent releases its bus-
+lifetime writer and observes cleanup for at most four seconds. A validated live
+core retains the other writer even if WM exit remains unconfirmed. When no
+holder remains, the guardian requests TERM only of its still-unreaped direct
+daemon, waits two seconds, then requests KILL and observes actual waitpid for
+one second. It emits a waited-child receipt only after that actual observation.
+The parent's guardian Wait and the daemon receipt are separate facts: guardian
+failure alone never proves daemon cleanup.
 
-A failed ownership/startup path has an explicit diagnostic. Parent-crash cleanup
-of an owned optional bus and complete service-provider coverage remain separate
-work: no guardian, automatic adoption or orphan-free bus recovery is promised.
-The inherited native-core lease prevents another matching wrapper from claiming
-that still-running core's session; the unavailable parent control endpoint is
-not silently replaced.
+At a reporting deadline, unconfirmed termination is explicit. The guardian
+remains a passive reaper for the delayed child; the parent does not signal/kill
+the guardian merely because its observation budget expires. Borrowed daemons,
+independent applications and admitted lockers are never signalled. Kernel-
+blocked operations can still delay lifetime/reaping beyond these reporting
+budgets. Unexpected guardian failure can leave daemon disposition unknown.
+
+A failed startup or ownership path has a diagnostic. Terminal owned-bus loss
+invalidates pending observations and notification ownership; a late probe cannot
+revive that ended bus or create a replacement. The inherited native-core lease
+prevents another matching wrapper from claiming a still-running core's session;
+the unavailable parent control endpoint is not silently replaced. No automatic
+adoption, universal orphan prevention or full optional-service coverage is
+promised.
 
 The WM's exit determines normal session completion. Invalid command options,
 missing required executable and owner failures are reported on standard error.

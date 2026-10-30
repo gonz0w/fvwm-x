@@ -7,17 +7,117 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [portable session recovery](#r1-portable-session-recovery--2026-10-30)
-under SESSION-01 #72. PR306 merged as
-`c0884267f2fda6d54831115731c92cd663f87bbc`; canonical signature, reviewed tree
+Current checkpoint: [owned session-bus lifetime](#r1-owned-session-bus-lifetime--2026-10-30)
+under #72/#77. PR307 merged as
+`7649a50b6f24286989e34da16dd8e288e1cd4e07`; canonical signature, reviewed tree
 and Cam author DCO verified, matching source branches retired. Performance is
-1/5 from merged PR305; no comparison is due.
+2/5 from merged PR305; no comparison is due.
+
+## R1 owned session-bus lifetime — 2026-10-30
+
+Owner: Cam; `codex/r1-owned-bus-lifetime`; base merged PR307 above.
+Status: source-reviewed implementation and focused qualification complete; PR
+handoff pending. The finite six-outcome contract was frozen before implementation.
+User authorized merge/cleanup and the next related open-milestone issue batch.
+
+Close the identified #72/#77 parent-crash bus disposition gap for coherent
+parent/core installations through six related outcomes: (1) one fixed native
+guardian owns/waits for the actual optional daemon, (2) parent/core lifetime
+holders retain it across parent loss and native Restart, (3) bounded address plus
+actual authenticated startup and complete failure unwind, (4) distinct daemon
+Wait receipt and guardian process facts, (5) bounded cleanup/reporting with a
+passive owner for kernel-delayed reap, and (6) terminal loss fences late probes
+without changing borrowed/off/external paths or independent power/locker owners.
+Reuse accepted service settings, bus/client protocol and UI. No notification
+server/tray, new mandatory dependency, arbitrary supervisor/command registry,
+automatic bus replacement/adoption, PID-file lookup, authentication or new
+preference store. NOTIFY-01 #76's actual server remains the next separate consumer.
+
+Use a fixed private bus-guardian branch in the existing optional native helper,
+with separate C source and the existing fd helpers. Accept only a bounded absolute
+resolved executable whose basename is dbus-daemon and fixed foreground/session
+arguments. Guardian code makes no D-Bus calls; it still loads the enabled helper's
+existing libdbus closure. The disabled stub refuses before any launch and retains
+no libdbus linkage. No new actor or lifetime FD in off/reuse/external modes.
+
+Only parent and core hold lifetime pipe writers. Guardian receives its read end
+on private FD3; core retains writer FD5 through a promptly removed
+FVWM_SESSION_BUS_LIFETIME_FD=5 marker. Validate FIFO/write access, including BSD
+O_RDWR, set CLOEXEC during ordinary work and preserve only around native Restart.
+FD4's existing flock lease remains independent. Exact startup RLB acknowledges
+both retained leases; RL/R remain for absent leases. Parent requires precisely
+what it passed before one-shot autostart. Old/refusing/missing acknowledgment
+keeps login usable but suppresses autostart and reports handoff unconfirmed;
+parent-crash bus protection is not promised for a core that did not retain FD5.
+Independent applications/modules, the daemon and explicit custom replacement
+must not inherit a writer. Independent apps alone do not retain the bus after
+parent and core exit, and are never signalled.
+
+Guardian owns one actual non-forking child. Install a bounded nonblocking SIGCHLD
+wake pipe before fork; only its event loop performs exact waitpid and invalidates
+the handle before another signal. Observe address, lifetime EOF and child exit
+with monotonic deadlines and blocking idle poll, not a periodic wake loop.
+Address acquisition has five seconds. EOF/startup failure requests TERM only of
+the still-unreaped direct child, waits two seconds, then requests KILL and observes
+actual waitpid for one second. No process-group signals or PID adoption.
+
+Output has at most two bounded records: one validated address line (<=4096 bytes)
+and W <normalized-child-exit> only after actual waitpid, or U at the unconfirmed
+reporting deadline. Terminal-before-address is allowed for failed startup.
+Reject malformed/extra/trailing records; cap total bytes. Writes are nonblocking,
+partial-write aware and SIGPIPE-safe. After U, retain the guardian as a passive
+SIGCHLD reaper until the actual child exits, with no later W or retry. Bound active
+work/reporting rather than claiming to preempt one kernel-blocked call.
+
+The parent uses an explicit os.Pipe for stdout, keeps the reader after address
+and separates receipt from actual guardian Wait. Never turn guardian death into
+a daemon-reaped claim. Never signal/kill the guardian on cleanup timeout: close
+the parent lifetime writer once after acquisition/adapter cancellation, observe
+bounded facts, and leave an outstanding actual owner intact. A validated live
+core keeps its writer even if WM Wait is unconfirmed. Terminal daemon loss or
+unknown guardian loss invalidates stale completions and notification ownership;
+no late probe may revive an exited owned bus or start a replacement. Borrowed
+buses and independent power/locker records retain their existing ownership.
+
+Implement the complete set before one affected incremental Linux Go/C/core,
+normal/scoped sanitizer, installed-path/manual and actual-X checkpoint. Exercise
+both writer-close orders, parent loss plus native Restart then core exit, EOF
+before startup, early exit, stalled address, TERM refusal, malformed/absent/W/U
+receipts, guardian failure, old acknowledgment, nonleak, borrowed/off/default
+paths, terminal probe races and independent clients/lockers. Use only owned fake
+commands/private session buses; no real OS power or authentication. Check the
+changed pipe/signal/exec contract early in a scoped actual BSD gate. Measure one
+scoped resident RSS/PSS/idle-wakeup observation; this is not the periodic whole-WM
+benchmark or full OS matrix. Preserve failures and reuse unaffected PR304–307
+qualification, including unchanged three-theme UI captures. Whole #72/#77/#225
+acceptance remains open unless its full frozen criteria actually pass. Guardian
+SIGKILL/failure and kernel-delayed exit remain explicit uncertainty, not universal
+orphan prevention. #257/#258 stay parked.
+
+The [focused report](verification/VERIFICATION-2026-10-30-OWNED-BUS-LIFETIME.md)
+records final two-package normal/race passes (162 each), vet, normal/scoped
+ASan/UBSan lease/guardian units, installed-helper enabled/disabled consumers and
+nine enabled native groups. Parent loss, native Restart, final writer exit,
+nonleak, borrowed/off, missing ACK and independent client/locker lifetimes pass.
+Terminal loss cannot revive owned readiness or replay acquisition. Separate
+source review closes fatal poll spin and closed-writer handoff; native evidence
+also led to removing a daemon-inherited stderr copier from guardian Wait.
+Corrected provider-worker and process/cache observers preserve assertions;
+only affected checks repeat, with original failures retained. Early actual BSD
+units predate the source-reviewed fatal-poll correction; broader support remains
+open. UI is unchanged and prior three-theme captures remain applicable.
+Three scoped snapshots show guardian RSS 2,000/PSS 570 KiB, not a peak or desktop
+total. All 563 raw files verify in a 701,462-byte archive; labs stopped and
+verified duplicate scratch/disks/inputs retired. Current source/builds/prefix/
+SDK/caches/references remain. Full owners stay open; NOTIFY-01 #76's server is
+next, reusing accepted client/settings and this lifecycle. Final artifact review
+is recorded in the PR handoff.
 
 ## R1 portable session recovery — 2026-10-30
 
 Owner: Cam; `codex/r1-session-recovery`; base merged PR306 above.
-Status: source-reviewed implementation and focused qualification complete; PR
-handoff pending. The finite six-story contract was frozen before implementation.
+Status: merged in PR307 as `7649a50b6f24286989e34da16dd8e288e1cd4e07`;
+canonical signature, reviewed tree and author DCO verified; source branches retired. The finite six-story contract was frozen before implementation.
 User authorized merge/cleanup and the next larger related milestone batch.
 
 Deliver six related outcomes under existing #72 recovery/ownership acceptance:
@@ -4972,8 +5072,8 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
-| SESSION-01 | P2 / In progress; startup/control/services/providers merged; recovery selected, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
-| SESSION-02 | P2 / In progress; optional client/lifecycle/power merged, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
+| SESSION-02 | P2 / In progress; optional client/power merged; owned-bus lifetime candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | P2 / queued, roadmap scope approved | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / queued, roadmap scope approved | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |

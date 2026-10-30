@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Owned session-bus lifetime](OWNED-BUS-LIFETIME-2026-10-30.md): fixed native guardian, shared parent/core lifetime and separate daemon/guardian facts.
+
 - [Current artifact retention](ARTIFACT-RETENTION-2026-10-28.md): retain current builds and next-run dependencies; retire superseded generated data while keeping compact results and ownership boundaries.
 
 - [Bounded file-operation jobs](FILE-JOBS-2026-10-27.md): literal typed targets, isolated mutation ownership, no-overwrite decisions, partial outcomes and finite trash/metadata guarantees.

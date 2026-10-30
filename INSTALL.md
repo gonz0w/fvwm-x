@@ -104,7 +104,11 @@ configure explicitly:
 
 Use distributor-supported patched packages; the API minimum is not a security
 baseline. Configure/build never installs a daemon or fetches dependencies. Only
-the transient client helper links libdbus and the project's existing JSON code.
+the optional native helper links libdbus and the project's existing JSON code.
+Client calls are transient; a fixed native guardian stays resident only when
+`session_bus=start` actually creates an owned daemon. It shares that daemon
+lifetime with the parent/core and makes no D-Bus calls of its own. Borrowed/off
+paths add no guardian.
 The default `-Dsession-dbus=disabled` profile remains independent of libdbus.
 
 Compiled capability and service readiness differ. The enabled helper reports

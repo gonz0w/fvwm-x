@@ -81,13 +81,16 @@ fvwm_startup_launch = executable(
 )
 
 # Default profiles install a dependency-free refusal stub. Only the optional
-# transient worker links libdbus; the core and Go owner do not acquire it.
+# client/owned-bus guardian links libdbus; core and Go owner do not acquire it.
 session_dbus = dependency('dbus-1', version: '>=1.14',
     required: get_option('session-dbus'))
 session_bus_sources = ['session_bus_disabled.c']
 session_bus_deps = []
 if session_dbus.found()
-    session_bus_sources = ['session_bus.c', '../libs/cJSON.c']
+    session_bus_sources = [
+        'session_bus.c', 'session_bus_guardian.c',
+        '../libs/cJSON.c', '../libs/fd_safety.c',
+    ]
     session_bus_deps = [session_dbus]
 endif
 fvwm_session_bus = executable(

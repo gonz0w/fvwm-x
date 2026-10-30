@@ -5,11 +5,13 @@
  * Optional isolated libdbus client. The invoking parent MUST enforce a
  * finite process deadline: connect/authentication and kernel I/O can block.
  * Fixed session notification and existing system power bus branches only;
- * no bus creation, activation, exported method or resident dispatch loop.
+ * no activation or exported methods. The private native guardian branch
+ * separately owns the optional foreground daemon without making D-Bus calls.
  */
 #include "config.h"
 #include <dbus/dbus.h>
 #include "libs/cJSON.h"
+#include "session_bus_guardian.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -776,6 +778,8 @@ out:
 
 int main(int argc, char **argv)
 {
+	if (argc > 1 && strcmp(argv[1], "bus-guardian") == 0)
+		return session_bus_guardian_main(argc, argv);
 	if (argc > 1 && strncmp(argv[1], "power-", 6) == 0)
 		return power_main(argc, argv);
 	return notification_main(argc, argv);

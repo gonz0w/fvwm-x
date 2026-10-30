@@ -8,6 +8,7 @@ package sessionowner
 import "github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
 
 func (state *serviceState) reply(outcome, message string, id uint32) sessionservice.Reply {
+	state.fenceBusLoss()
 	snapshot := state.snapshot
 	snapshot.Power.Capabilities = append([]sessionservice.PowerCapability(nil), snapshot.Power.Capabilities...)
 	snapshot.Items = append([]sessionservice.Item(nil), snapshot.Items...)
@@ -17,6 +18,7 @@ func (state *serviceState) reply(outcome, message string, id uint32) sessionserv
 // admit runs only in the parent's event loop. Exactly one service mutation can
 // remain active; each admitted mutation consumes the current opaque CAS token.
 func (state *serviceState) admit(request controlRequest, cfg Config, busy bool) (bool, sessionservice.Reply) {
+	state.fenceBusLoss()
 	message := request.message
 	if err := message.Validate(); err != nil {
 		return false, state.reply("rejected", err.Error(), 0)
@@ -65,11 +67,11 @@ func (state *serviceState) admit(request controlRequest, cfg Config, busy bool) 
 	if busy {
 		return false, state.reply("busy", "a session service operation is already active", 0)
 	}
-	// A known owned-daemon exit is terminal for this login. Reject before
+	// Owned-bus termination or unknown guardian loss is terminal for this login. Reject before
 	// consuming a control token or replacing failed/unavailable with starting.
 	// Configuration and quiet DND suppression do not invoke an adapter.
-	if state.bus != nil && state.bus.reaped && (message.Verb == "reprobe" || message.Verb == "notify" || message.Verb == "close") && !(message.Verb == "notify" && state.snapshot.Config.DND) {
-		return false, state.reply("unavailable", "owned session bus exited; adapter work requires a new login", 0)
+	if state.bus != nil && state.bus.ended() && (message.Verb == "reprobe" || message.Verb == "notify" || message.Verb == "close") && !(message.Verb == "notify" && state.snapshot.Config.DND) {
+		return false, state.reply("unavailable", "owned session bus ended or guardian ownership was lost; adapter work requires a new login", 0)
 	}
 	if message.Verb == "close" && !state.ids[message.NotificationID] {
 		return false, state.reply("rejected", "notification ID is not owned by this session/server", 0)
@@ -119,14 +121,15 @@ func (state *serviceState) admit(request controlRequest, cfg Config, busy bool) 
 }
 
 func (state *serviceState) complete(job serviceJob) sessionservice.Reply {
+	state.fenceBusLoss()
 	if job.request.message.Verb == "power-probe" || sessionservice.IsPowerVerb(job.request.message.Verb) || job.request.message.Verb == "lock" {
 		return state.completeProvider(job)
 	}
 
 	// An owned daemon is never replaced in this parent lifetime. A probe that
 	// completed before its Wait result cannot revive that terminal lifecycle.
-	if state.bus != nil && state.bus.reaped {
-		return state.reply("failed", "owned session bus exited; late adapter result discarded", 0)
+	if state.bus != nil && state.bus.ended() {
+		return state.reply("failed", "owned session bus ended or guardian ownership was lost; late adapter result discarded", 0)
 	}
 	index := 2
 	if job.request.message.Verb != "reprobe" {

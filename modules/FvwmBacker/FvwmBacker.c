@@ -110,6 +110,7 @@ int MyDisplayWidth;
 char* displayName = NULL;
 
 Bool RetainPixmap = False;
+static Bool CoreOwnedPixmap = False;
 Atom XA_XSETROOT_ID = None;
 Atom XA_ESETROOT_PMAP_ID = None;
 Atom XA_XROOTPMAP_ID = None;
@@ -315,6 +316,12 @@ void SetDeskPageBackground(const Command *c)
 	Pixmap pix = None;
 
 	current_colorset = -1;
+	if (CoreOwnedPixmap && c->type == 2 && c->colorset == 20)
+	{
+		current_colorset = 20;
+		SendInfo(fvwm_fd, "Send_Root 1 20", 0);
+		return;
+	}
 
 	/* FvwmBacker bg preperation */
 	switch (c->type)
@@ -529,7 +536,11 @@ int ParseConfigLine(char *line)
 	{
 		if (strncasecmp(line, configPrefix, cpl) == 0)
 		{
-			if (strncasecmp(
+			if (strncasecmp(line + cpl, "CoreOwnedPixmap", 15) == 0)
+			{
+				CoreOwnedPixmap = True;
+			}
+			else if (strncasecmp(
 				    line+cpl, "RetainPixmap", 12) == 0)
 			{
 				RetainPixmap = True;

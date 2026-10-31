@@ -212,7 +212,7 @@ Mouse 1 W 4 SlateMove
 Mouse 3 W 4 SlateResize
 
 # Export a retained wallpaper pixmap for compositor-free tinted transparency.
-*FvwmBacker: RetainPixmap
+*FvwmBacker: CoreOwnedPixmap
 *FvwmBacker: Command (Desk *, Page * *) Colorset 20
 *FvwmPager: Geometry 640x150
 *FvwmPager: Colorset * 0

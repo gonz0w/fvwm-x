@@ -161,6 +161,8 @@ if get_option('mandoc')
         page_install = {}
         if doc_name_attribute == 'fvwm-native-settings'
             page_install = {'install_tag': 'desktop-controller'}
+        elif doc_name_attribute == 'fvwm-settings-portal'
+            page_install = {'install_tag': 'settings-portal'}
         elif doc_name_attribute == 'fvwm-file-browser'
             page_install = {'install_tag': 'file-browser'}
         elif doc_name_attribute == 'fvwm-pinboard'

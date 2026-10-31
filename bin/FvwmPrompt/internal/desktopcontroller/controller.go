@@ -51,7 +51,7 @@ type Controller struct {
 	generation, instance, persistenceError   string
 	ready                                    bool
 	trayInitialized, trayRequested           bool
-	runtimeHeld                              map[string]string
+	runtimeHeld                              desktopsettings.PreviewValues
 	editor                                   *editor
 	native                                   nativeControl
 	preview                                  preview
@@ -191,15 +191,18 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 	// Validation describes a proposed saved/effective pair, not the currently
 	// kept runtime. Attribute only inherited holds; an explicitly replaced
 	// candidate must not inherit the previous key's persistence-failure source.
-	var held map[string]string
+	var held desktopsettings.PreviewValues
 	for key, value := range d.runtimeHeld {
-		currentSaved, currentOK := d.saved[key].(string)
-		candidateSaved, candidateOK := saved[key].(string)
-		if !observed && (!currentOK || !candidateOK || candidateSaved != currentSaved || effective[key] != value) {
+		if !value.ValidFor(key) {
+			continue
+		}
+		currentSaved := d.saved[key]
+		candidateSaved := saved[key]
+		if !observed && (candidateSaved != currentSaved || effective[key] != value.Value()) {
 			continue
 		}
 		if held == nil {
-			held = map[string]string{}
+			held = desktopsettings.PreviewValues{}
 		}
 		held[key] = value
 	}
@@ -270,11 +273,6 @@ func (d *Controller) prepare(changes values) (values, values, error) {
 	}
 	candidate := result["candidate"].(map[string]any)
 	effective := result["effective"].(map[string]any)
-	for key, value := range d.runtimeHeld {
-		if _, explicit := changes[key]; !explicit {
-			effective[key] = value
-		}
-	}
 	wallpaper, err := desktopsettings.ResolveWallpaper(effective, now.Hour()*60+now.Minute())
 	if err != nil {
 		return nil, nil, err

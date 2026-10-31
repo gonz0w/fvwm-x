@@ -108,7 +108,7 @@ func compactPublicSettings(settings values, commonError string) (values, values,
 			delete(application, field)
 		}
 	}
-	for _, raw := range rows {
+	for key, raw := range rows {
 		row := raw.(map[string]any)
 		inherited := merged(defaults, nil)
 		if row["group"] == "application" {
@@ -120,6 +120,20 @@ func compactPublicSettings(settings values, commonError string) (values, values,
 			}
 			if actual, present := row[field]; present && reflect.DeepEqual(actual, value) {
 				delete(row, field)
+			}
+		}
+		// The fixed runtime-held source implies this exact error after metadata
+		// inheritance. Keep standalone records self-contained and preserve any
+		// distinct explicit error; eight held rows must fit the public cap even
+		// with maximum JSON-escaped application preference strings.
+		full := settings[key].(map[string]any)
+		if full["source"] == "runtime-kept-preference-unsaved" {
+			if full["persistence_error"] == "Runtime unsaved." {
+				delete(row, "persistence_error")
+			} else {
+				// A different error must override the source implication even
+				// when publicSettings removed an envelope-equal value.
+				row["persistence_error"] = full["persistence_error"]
 			}
 		}
 	}

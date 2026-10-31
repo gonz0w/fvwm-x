@@ -46,4 +46,7 @@ void events_handle_configure_request(
 	XEvent *e, FvwmWindow *fw, Bool force_use_grav, int force_gravity);
 Bool test_typed_window_event(Display *display, XEvent *event, char *arg);
 
+/* Root publication must wait for an already observed topology change. */
+bool events_topology_pending(void);
+
 #endif /* FVWM_EVENTS_H */

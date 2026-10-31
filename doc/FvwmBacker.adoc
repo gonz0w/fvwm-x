@@ -97,6 +97,19 @@ for details about colorsets.
 
 Otherwise the command is sent to fvwm to execute.
 
+*FvwmBacker: CoreOwnedPixmap::
+  For Colorset 20, ask the core to prepare and own the root background. This
+  mode supplies exact retained background recovery for the native settings
+  preview. Preparation runs through the existing isolated image worker; the
+  request does not render an image in the command dispatcher. The core publishes
+  its pixmap through _XROOTPMAP_ID. Stopping Backer leaves this ownership intact;
+  the published pixmap ownership ends with the core's X connection.
+  Other colorsets, solid commands and ordinary commands retain their existing
+  behavior. This mode is off unless configured; the shipped desktop selects it.
+  Existing RetainPixmap/DoNotRetainPixmap configurations continue to use their
+  original path. External background changes invalidate preview ownership and
+  are preserved; raw external pixmaps are not adopted for rollback.
+
 *FvwmBacker: RetainPixmap::
   Causes FvwmBacker to retain and publish the Pixmap with which the
   background has been set. This works only for the _-solid_ or

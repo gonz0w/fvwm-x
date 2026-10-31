@@ -7,6 +7,7 @@
 #include "libs/image_svg.h"
 #include "libs/image_svg_protocol.h"
 #include "libs/image_effect_x.h"
+#include "libs/image_background.h"
 
 #include <errno.h>
 #include <limits.h>
@@ -15,7 +16,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#ifdef HAVE_RSVG
 static bool
 worker_unsigned(const char *text, unsigned *number)
 {
@@ -36,6 +36,7 @@ worker_unsigned(const char *text, unsigned *number)
 	return true;
 }
 
+#ifdef HAVE_RSVG
 static bool
 worker_source(image_input *source)
 {
@@ -146,6 +147,27 @@ worker_effects(const char *display)
 int
 main(int argc, char **argv)
 {
+	if (argc == 5 && strcmp(argv[1], "--background") == 0)
+	{
+		struct background_plan plan;
+		unsigned width, height;
+		uint32_t *pixels = NULL;
+		unsigned char header[IMAGE_SVG_HEADER_SIZE];
+		bool success = background_plan_parse(argv[2], &plan) &&
+			worker_unsigned(argv[3], &width) &&
+			worker_unsigned(argv[4], &height) &&
+			image_background_render(&plan, width, height, &pixels);
+
+		if (success)
+		{
+			image_svg_header(header, width, height);
+			success = worker_write(header, sizeof(header)) &&
+				worker_write(pixels, (size_t)width * height *
+					sizeof(*pixels));
+		}
+		free(pixels);
+		return success ? 0 : 1;
+	}
 	if (argc == 3 && strcmp(argv[1], "--effects") == 0)
 	{
 		return worker_effects(argv[2]) ? 0 : 1;

@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 )
@@ -38,18 +39,11 @@ func colorControl(t *testing.T, d *Controller, key, value string) *previewContro
 	}
 	return &previewControl{view: newID(8), saved: snapshot, resource: candidate}
 }
-func colorAppearance(available bool) values {
-	return success(values{"generation": strings.Repeat("a", 48), "opaque_colors_preview": values{
-		"version": 1, "scope": "opaque-colors", "plan_version": 2,
-		"role_count": 14, "style_count": 2, "metadata_max": 65536,
-		"preparation_timeout_ms": 5000, "lease_limit": 1, "slot_available": available}})
-}
+func colorAppearance(available bool) values { return contrastAppearance(available) }
 func colorResult(state, reason, recovery string) values {
-	result := contrastResult(state, reason, recovery)
-	body := result["result"].(map[string]any)
-	body["scope"], body["plan_version"] = "opaque-colors", 2
-	return result
+	return contrastResult(state, reason, recovery)
 }
+
 func activeColor(t *testing.T, d *Controller, key, value string) {
 	t.Helper()
 	if err := d.preview.startResource(key, value, nil); err != nil {
@@ -82,7 +76,7 @@ func TestOpaqueColorCandidatePreservesOtherPresentationAndPlanBounds(t *testing.
 				if err != nil || len(plan) != 338 || !strings.HasPrefix(plan, "2:") || !identity(plan[2:], 336) {
 					t.Fatal("invalid finite plan", plan, err)
 				}
-				if control.resource.scope != "opaque-colors" || control.resource.planVersion != 2 ||
+				if control.resource.scope != "complete-bundle" || control.resource.planVersion != 3 ||
 					control.resource.theme[7] != contrast || control.resource.theme[5] != "grove" || control.resource.theme[6] != "light" ||
 					control.resource.theme[4] != 73 || !reflect.DeepEqual(d.effective, before) || len(*commands) != 0 {
 					t.Fatal("candidate expanded selected setting scope")
@@ -99,7 +93,7 @@ func TestOpaqueColorCandidatePreservesOtherPresentationAndPlanBounds(t *testing.
 	}
 }
 func TestOpaqueColorAdmissionRefusals(t *testing.T) {
-	for _, reason := range []string{"transparent", "follow-wallpaper", "auto", "unchanged", "override", "file", "unsubmitted", "unknown"} {
+	for _, reason := range []string{"unchanged", "override", "file", "unsubmitted", "unknown"} {
 		t.Run(reason, func(t *testing.T) {
 			d, commands := colorFixture(t, "normal")
 			key, value := "palette", "ink"
@@ -121,7 +115,7 @@ func TestOpaqueColorAdmissionRefusals(t *testing.T) {
 			case "unsubmitted":
 				d.lastTheme = nil
 			case "unknown":
-				key, value = "wallpaper_palette", "ink"
+				key, value = "motion", "true"
 			}
 			if reason == "transparent" || reason == "follow-wallpaper" {
 				if err := d.theme(true); err != nil {
@@ -217,8 +211,8 @@ func TestOpaqueColorDirectedSaveOnlySelectedPreference(t *testing.T) {
 				}
 				before := merged(d.saved, nil)
 				activeColor(t, d, key, value)
-				if !strings.Contains(strings.Join(*commands, "\n"), " - 0 15000 2:") {
-					t.Fatal("version2 plan was not submitted")
+				if !strings.Contains(strings.Join(*commands, "\n"), " - 0 15000 3:") {
+					t.Fatal("version3 plan was not submitted")
 				}
 				if err := d.preview.action(d.preview.control.view, "save"); err != nil {
 					t.Fatal(err)
@@ -357,9 +351,11 @@ func TestOpaqueColorRejectsOldKindAndRechecksBeforeApply(t *testing.T) {
 					if err := d.preview.request("query"); err != nil {
 						t.Fatal(err)
 					}
-					contrastReply(&d.preview, contrastResult("active", "", "pending"))
-					if d.preview.control != nil || d.saved["palette"] != "slate" {
-						t.Fatal("old kind was accepted as version2")
+					oldResult := contrastResult("active", "", "pending")
+					oldResult["result"].(map[string]any)["plan_version"] = 1
+					contrastReply(&d.preview, oldResult)
+					if !d.preview.recovering || d.saved["palette"] != "slate" {
+						t.Fatal("old kind was accepted as version3")
 					}
 				}
 			}
@@ -387,10 +383,10 @@ func TestOpaqueColorUnavailableCapabilityDoesNotPrepare(t *testing.T) {
 			response := colorAppearance(cause != "occupied")
 			body := response["result"].(map[string]any)
 			if cause == "missing" {
-				delete(body, "opaque_colors_preview")
+				delete(body, "complete_bundle_preview")
 			}
 			if cause == "wrong-version" {
-				body["opaque_colors_preview"].(map[string]any)["plan_version"] = 1
+				body["complete_bundle_preview"].(map[string]any)["plan_version"] = 1
 			}
 			*commands = nil
 			contrastReply(&d.preview, response)
@@ -491,5 +487,378 @@ func TestValidateAttributesOnlyInheritedRuntimeHolds(t *testing.T) {
 	delete(snapshot.RuntimeHeld, "palette")
 	if !d.runtimeUnsaved("palette") {
 		t.Fatal("snapshot annotation borrowed mutable controller map")
+	}
+}
+
+// Completion contract: each selected value is typed, bounded and owns only its
+// one preference, even when the complete resource projection changes wallpaper.
+func TestCompleteBundlePlanAndTypedCandidates(t *testing.T) {
+	for _, item := range []struct {
+		key   string
+		value any
+	}{
+		{"palette", "ink"}, {"appearance", "light"}, {"contrast", "high"},
+		{"transparency", true}, {"wallpaper_palette", "dune"},
+		{"wallpaper_appearance", "dark"},
+	} {
+		t.Run(item.key, func(t *testing.T) {
+			d, commands := colorFixture(t, "normal")
+			before := merged(d.effective, nil)
+			*commands = nil
+			_, candidate, err := d.prepareResource(item.key, item.value)
+			if err != nil {
+				t.Fatal(err)
+			}
+			plan, err := candidate.nativePlan()
+			if err != nil || candidate.planVersion != 3 || candidate.scope != "complete-bundle" || len(plan) > 701 || !strings.HasPrefix(plan, "3:") {
+				t.Fatal("invalid complete bundle", plan, err)
+			}
+			fields := strings.Split(plan, ":")
+			if len(fields) != 7 || len(fields[1]) != 336 || len(fields[2]) != 2 || len(fields[3]) != 3 || len(fields[4]) != 3 || len(fields[5]) != 6 {
+				t.Fatal("wrong finite wire shape", fields)
+			}
+			if !reflect.DeepEqual(before, d.effective) || len(*commands) != 0 {
+				t.Fatal("preparation published state")
+			}
+		})
+	}
+}
+
+func TestCompleteBundlePathAndFlagBounds(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	d.effective["wallpaper_palette"] = "follow"
+	_ = d.theme(true)
+	_, candidate, err := d.prepareResource("palette", "ink")
+	if err != nil {
+		t.Fatal(err)
+	}
+	candidate.path = strings.Repeat("p", 256)
+	plan, err := candidate.nativePlan()
+	if err != nil || len(plan) != 701 {
+		t.Fatal("maximum path bound", len(plan), err)
+	}
+	*commands = nil
+	if err := d.preview.submit("prepare", "Send_Preview {cookie} {serial} "+newID(8)+" prepare "+strings.Repeat("a", 48)+" - 0 15000 "+plan); err != nil {
+		t.Fatal(err)
+	}
+	if len(*commands) != 1 || len((*commands)[0]) > 880 {
+		t.Fatal("complete native command exceeded frozen bound")
+	}
+	candidate.path += "x"
+	if _, err := candidate.nativePlan(); err == nil {
+		t.Fatal("oversized pathname encoded")
+	}
+	candidate.path = "a\x00b"
+	if _, err := candidate.nativePlan(); err == nil {
+		t.Fatal("NUL pathname encoded")
+	}
+	candidate.path = ""
+	candidate.rootMode = 3
+	if _, err := candidate.nativePlan(); err == nil {
+		t.Fatal("invalid root mode encoded")
+	}
+}
+
+func TestCompleteBundleNoVisibleChangeRefusesBeforeMutation(t *testing.T) {
+	d, commands := colorFixture(t, "high")
+	*commands = nil
+	for _, item := range []struct {
+		key   string
+		value any
+	}{{"transparency", false}, {"launcher_opacity", 52}, {"keep_wallpaper", true}} {
+		if err := d.preview.startResource(item.key, item.value, nil); err == nil || d.preview.control != nil || len(*commands) != 0 {
+			t.Fatal("invisible candidate acquired preview", item)
+		}
+	}
+}
+
+func TestCompleteBundleRecoveryFencesThemeUntilAcknowledgement(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	activeColor(t, d, "palette", "ink")
+	*commands = nil
+	if err := d.changeSettings(values{"motion": true}); err != nil {
+		t.Fatal(err)
+	}
+	noThemeReplay(t, *commands)
+	if d.preview.control == nil || !d.preview.recovering {
+		t.Fatal("recovery reply was discarded")
+	}
+	*commands = nil
+	contrastReply(&d.preview, colorResult("terminal", "abandoned", "restored"))
+	if d.preview.control != nil || d.preview.blocked {
+		t.Fatal("acknowledged recovery stayed fenced")
+	}
+	if !strings.Contains(strings.Join(*commands, "\n"), "Colorset ") {
+		t.Fatal("deferred theme was not replayed")
+	}
+}
+
+func TestCompleteBundleUnknownRecoveryNeverReplays(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	activeColor(t, d, "palette", "ink")
+	_ = d.changeSettings(values{"motion": true})
+	d.preview.pending.deadline = time.Now().Add(-time.Second)
+	*commands = nil
+	d.preview.tick()
+	_ = d.theme(true)
+	noThemeReplay(t, *commands)
+	if !d.preview.blocked {
+		t.Fatal("unknown recovery released theme fence")
+	}
+}
+
+func heldTestValue(t *testing.T, key string, value any) desktopsettings.PreviewValue {
+	t.Helper()
+	v, err := desktopsettings.PreviewValueFor(key, value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return v
+}
+
+func TestCompleteBundleAutoCapturesCandidatePhase(t *testing.T) {
+	d, _ := colorFixture(t, "normal")
+	snapshot, candidate, err := d.prepareResourceAt("appearance", "auto", 720)
+	if err != nil || candidate.theme[1] != "light" {
+		t.Fatal("current Auto phase not captured", err)
+	}
+	control := &previewControl{saved: snapshot, resource: candidate}
+	if err := d.checkResourceAt(control, 720); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.checkResourceAt(control, 0); err == nil {
+		t.Fatal("candidate phase race admitted")
+	}
+	if candidate.theme[1] != "light" || d.effective["appearance"] != "dark" {
+		t.Fatal("phase recheck mutated captured state")
+	}
+}
+
+func TestCompleteBundleBothContrastAndTransparencyDirections(t *testing.T) {
+	for _, contrast := range []string{"normal", "high"} {
+		d, _ := colorFixture(t, contrast)
+		value := "high"
+		if contrast == "high" {
+			value = "normal"
+		}
+		_, candidate, err := d.prepareResource("contrast", value)
+		if err != nil || candidate.preserveMenu {
+			t.Fatal("contrast did not own both resolved scalars", err)
+		}
+		if contrast == "high" && (!candidate.transparent || candidate.menuOpacity != 94 || candidate.launcherOpacity != 73) {
+			t.Fatal("normal contrast failed to restore requested transparency")
+		}
+		if contrast == "normal" && (candidate.transparent || candidate.menuOpacity != 100 || candidate.launcherOpacity != 100) {
+			t.Fatal("high contrast did not resolve opaque scalars")
+		}
+	}
+	for _, before := range []bool{false, true} {
+		d, _ := colorFixture(t, "normal")
+		d.effective["transparency"] = before
+		_ = d.theme(true)
+		_, candidate, err := d.prepareResource("transparency", !before)
+		if err != nil || candidate.transparent == before || candidate.preserveMenu {
+			t.Fatal("transparency direction failed", err)
+		}
+	}
+}
+
+func TestCompleteBundleFollowRetainIndependentAndPlainBackground(t *testing.T) {
+	for _, png := range []bool{false, true} {
+		d, _ := colorFixture(t, "normal")
+		d.png = png
+		d.effective["wallpaper_palette"] = "follow"
+		_ = d.theme(true)
+		_, candidate, err := d.prepareResource("palette", "ink")
+		mode := 1
+		if png {
+			mode = 2
+		}
+		if err != nil || candidate.rootMode != mode || !candidate.preserveMenu {
+			t.Fatal("followed wallpaper missing", err)
+		}
+		d.effective["keep_wallpaper"] = true
+		_ = d.theme(true)
+		_, candidate, err = d.prepareResource("palette", "ink")
+		if err != nil || candidate.rootMode != 0 || candidate.path != "" {
+			t.Fatal("retained wallpaper was replaced", err)
+		}
+		_, candidate, err = d.prepareResource("keep_wallpaper", false)
+		// Retained source remains slate while the desired followed palette is
+		// made different without publishing over the retained root.
+		if err == nil {
+			t.Fatal("unchanged unretain should refuse")
+		}
+		d.effective["palette"] = "ink"
+		_ = d.theme(true)
+		_, candidate, err = d.prepareResource("keep_wallpaper", false)
+		if err != nil || candidate.rootMode != mode || candidate.value != false {
+			t.Fatal("unretain did not prepare desired wallpaper", err)
+		}
+	}
+}
+
+func TestScalarSavedOpacityFailureRetainsTypedOverlay(t *testing.T) {
+	d, commands := fixture(t)
+	activePreview(t, d, true)
+	if err := d.preview.action(d.preview.control.view, "save"); err != nil {
+		t.Fatal(err)
+	}
+	lock := filepath.Join(filepath.Dir(d.statePath), ".desktop-state.lock")
+	if err := os.Mkdir(lock, 0700); err != nil {
+		t.Fatal(err)
+	}
+	*commands = nil
+	replyTo(&d.preview, success(values{"scope": "menu-opacity", "state": "confirmed"}))
+	if !d.runtimeUnsaved("launcher_opacity") || d.runtimeHeld["launcher_opacity"].Value() != 63 || d.effective["launcher_opacity"] != 63 || d.saved["launcher_opacity"] != 94 {
+		t.Fatal("confirmed scalar choice lost on save failure")
+	}
+	noThemeReplay(t, *commands)
+}
+
+func TestCompleteBundleFurtherSettingsChangeRetainsRecoveryChannel(t *testing.T) {
+	d, _ := colorFixture(t, "normal")
+	activeColor(t, d, "palette", "ink")
+	if err := d.changeSettings(values{"motion": true}); err != nil {
+		t.Fatal(err)
+	}
+	pending := d.preview.pending
+	if err := d.changeSettings(values{"motion": false}); err != nil {
+		t.Fatal(err)
+	}
+	if d.preview.blocked || d.preview.pending != pending || !d.preview.recovering {
+		t.Fatal("later settings edit discarded recovery acknowledgement")
+	}
+	contrastReply(&d.preview, colorResult("terminal", "abandoned", "restored"))
+	if d.preview.control != nil || d.lastTheme[3] != false {
+		t.Fatal("recovery replay did not use latest settings")
+	}
+}
+
+func TestCompleteBundleChoiceMenuCapturesOneFullDraft(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	argument, captured := contrastEditorDraft(t, d)
+	*commands = nil
+	if err := d.handle("preview-choose-editor", argument); err != nil {
+		t.Fatal(err)
+	}
+	body := strings.Join(*commands, "\n")
+	for _, key := range []string{"palette", "appearance", "contrast", "transparency", "keep_wallpaper", "wallpaper_palette", "wallpaper_appearance", "launcher_opacity"} {
+		if !strings.Contains(body, "preview-resource-editor "+key+" "+argument) {
+			t.Fatal("missing scoped choice", key, body)
+		}
+	}
+	if strings.Count(body, "preview-resource-editor ") != 8 || d.editor == nil || d.preview.control != nil {
+		t.Fatal("choice opened a lease or retired draft")
+	}
+	// Copy the current palette/font first, make only the chooser opaque,
+	// then bind it before mapping. No global or launcher style may change.
+	styleCommands := []string{
+		"CopyMenuStyle * SlateSettingsPreviewChoiceStyle",
+		"MenuStyle SlateSettingsPreviewChoiceStyle !Translucent",
+		"ChangeMenuStyle SlateSettingsPreviewChoiceStyle SlateSettingsPreviewChoice",
+	}
+	previous, count := -1, 0
+	popup := -1
+	for index, command := range *commands {
+		if command == "Popup SlateSettingsPreviewChoice" {
+			popup = index
+		}
+		if !strings.HasPrefix(command, "CopyMenuStyle ") &&
+			!strings.HasPrefix(command, "MenuStyle ") &&
+			!strings.HasPrefix(command, "ChangeMenuStyle ") {
+			continue
+		}
+		if count >= len(styleCommands) || command != styleCommands[count] || index <= previous {
+			t.Fatal("chooser altered unrelated style or applied its style out of order", command)
+		}
+		previous, count = index, count+1
+	}
+	if count != len(styleCommands) || popup <= previous {
+		t.Fatal("chooser mapped before its opaque private style", *commands)
+	}
+	if err := d.handle("preview-resource-editor", "contrast "+argument); err != nil {
+		t.Fatal(err)
+	}
+	if d.preview.control.resource.value != "high" || !reflect.DeepEqual(d.preview.control.editor.values, captured) {
+		t.Fatal("selected candidate consumed unrelated draft")
+	}
+}
+
+func TestCompleteBundleTypedSavesAndFailuresKeepOnlyOnePreference(t *testing.T) {
+	for _, fail := range []bool{false, true} {
+		for _, item := range []struct {
+			key   string
+			value any
+		}{
+			{"palette", "ink"}, {"appearance", "light"}, {"contrast", "high"}, {"transparency", true},
+			{"keep_wallpaper", false}, {"wallpaper_palette", "dune"}, {"wallpaper_appearance", "dark"},
+		} {
+			t.Run(fmt.Sprint(fail)+"/"+item.key, func(t *testing.T) {
+				d, commands := colorFixture(t, "normal")
+				if item.key == "keep_wallpaper" {
+					d.saved["keep_wallpaper"], d.effective["keep_wallpaper"] = true, true
+					d.saved["wallpaper_palette"], d.effective["wallpaper_palette"] = "follow", "follow"
+					if err := d.theme(true); err != nil {
+						t.Fatal(err)
+					}
+				}
+				before := merged(d.saved, nil)
+				snapshot, candidate, err := d.prepareResource(item.key, item.value)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if fail {
+					if err := os.Mkdir(filepath.Join(filepath.Dir(d.statePath), ".desktop-state.lock"), 0700); err != nil {
+						t.Fatal(err)
+					}
+				}
+				*commands = nil
+				err = d.confirmResource(&previewControl{saved: snapshot, resource: candidate})
+				if (err != nil) != fail || d.runtimeUnsaved(item.key) != fail || d.effective[item.key] != item.value {
+					t.Fatal("typed confirmation outcome", err)
+				}
+				if !fail {
+					before[item.key] = item.value
+				}
+				if !reflect.DeepEqual(d.saved, before) {
+					t.Fatal("confirmation saved unrelated preferences")
+				}
+				if d.lastWallpaper != [2]string{candidate.theme[5].(string), candidate.theme[6].(string)} {
+					t.Fatal("confirmed wallpaper cache is stale")
+				}
+				noThemeReplay(t, *commands)
+				*commands = nil
+				if err := d.theme(false); err != nil || len(*commands) != 0 {
+					t.Fatal("confirmed typed projection replayed", err)
+				}
+			})
+		}
+	}
+}
+
+// Match resource_capability() in fvwm/appearance_preview.c: style_count is
+// shared by all resource plans; the complete bundle adds no menu_count field.
+func TestCompleteBundleNativeCapabilityUsesStyleCount(t *testing.T) {
+	decoded, err := desktopsettings.DecodeJSON([]byte(`{
+		"version":1,"scope":"complete-bundle","plan_version":3,
+		"root_background":true,"root_owned":true,"buffered_transparency":true,
+		"path_max":256,"token_max":701,"role_count":14,"style_count":2,
+		"metadata_max":65536,"preparation_timeout_ms":5000,
+		"lease_limit":1,"slot_available":true}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+	capability := decoded.(map[string]any)
+	candidate := &resourceCandidate{scope: "complete-bundle", planVersion: 3}
+	if _, exists := capability["menu_count"]; exists {
+		t.Fatal("fixture introduced duplicate native count")
+	}
+	if err := resourceCapability(capability, candidate); err != nil {
+		t.Fatal("native capability refused", err)
+	}
+	capability["style_count"] = nil
+	if err := resourceCapability(capability, candidate); err == nil {
+		t.Fatal("missing native style count admitted")
 	}
 }

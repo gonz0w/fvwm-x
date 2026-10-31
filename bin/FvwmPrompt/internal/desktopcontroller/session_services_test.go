@@ -191,9 +191,9 @@ func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	// The initial executed 19-setting projection was 9447 bytes. Shared
 	// envelope metadata must restore this existing cap without dropping rows.
 	d, _ := fixture(t)
-	d.runtimeHeld = map[string]string{"palette": "ink", "appearance": "light", "contrast": "high"}
+	d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink"), "appearance": heldTestValue(t, "appearance", "light"), "contrast": heldTestValue(t, "contrast", "high")}
 	for key, value := range d.runtimeHeld {
-		d.effective[key] = value
+		d.effective[key] = value.Value()
 	}
 	for key, item := range desktopsettings.Registry() {
 		d.overrides[key] = item.Default
@@ -315,7 +315,7 @@ func TestPublicSettingsRetainDistinctAvailabilityAndCapability(t *testing.T) {
 func TestPublicSettingsInheritCommonErrorAndRetainDistinctRuntimeErrors(t *testing.T) {
 	d, _ := fixture(t)
 	d.persistenceError = "Cannot read private settings; repair the file then reload"
-	d.runtimeHeld = map[string]string{"palette": "ink"}
+	d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink")}
 	d.effective["palette"] = "ink"
 	native, err := d.query("all", nil, nil)
 	if err != nil {
@@ -334,8 +334,12 @@ func TestPublicSettingsInheritCommonErrorAndRetainDistinctRuntimeErrors(t *testi
 		for key, raw := range settings {
 			item := raw.(map[string]any)
 			if key == "palette" {
-				if item["persistence_error"] != "Runtime kept; preference not saved. Reload or save this setting again." {
-					t.Fatal("distinct per-key failure was lost", item)
+				expanded := reconstructedPublicSetting(result, item)
+				if expanded["source"] != "runtime-kept-preference-unsaved" || expanded["persistence_error"] != "Runtime unsaved." {
+					t.Fatal("distinct per-key failure was lost", expanded)
+				}
+				if _, repeated := item["persistence_error"]; repeated {
+					t.Fatal("source-implied error repeated in a public row", item)
 				}
 			} else if _, exists := item["persistence_error"]; exists {
 				t.Fatal("common error repeated in a public row", key, item)
@@ -346,7 +350,7 @@ func TestPublicSettingsInheritCommonErrorAndRetainDistinctRuntimeErrors(t *testi
 			t.Fatal("common error was not encoded exactly once", string(data))
 		}
 	}
-	if native["motion"].(map[string]any)["persistence_error"] == nil || native["palette"].(map[string]any)["persistence_error"] != "Runtime kept; preference not saved. Reload or save this setting again." {
+	if native["motion"].(map[string]any)["persistence_error"] == nil || native["palette"].(map[string]any)["persistence_error"] != "Runtime unsaved." {
 		t.Fatal("standalone metadata changed during public projection", native)
 	}
 	unchanged := d.settingsRequest(values{"operation": "query", "scope": "all", "provider": d.instance, "generation": d.generation})["result"].(map[string]any)
@@ -534,7 +538,13 @@ func reconstructedPublicSetting(result, row values) values {
 	if row["group"] == "application" {
 		reconstructed = merged(reconstructed, result["application_defaults"].(map[string]any))
 	}
-	return merged(reconstructed, row)
+	reconstructed = merged(reconstructed, row)
+	if reconstructed["source"] == "runtime-kept-preference-unsaved" {
+		if _, explicit := row["persistence_error"]; !explicit {
+			reconstructed["persistence_error"] = "Runtime unsaved."
+		}
+	}
+	return reconstructed
 }
 
 func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
@@ -553,9 +563,12 @@ func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
 			d.revision = &revision
 			d.lastTheme = []any{"published"}
 			d.persistenceError = "Cannot read private settings; repair the file then reload"
-			d.runtimeHeld = map[string]string{"palette": "ink", "appearance": "light", "contrast": "high"}
+			d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink"), "appearance": heldTestValue(t, "appearance", "light"), "contrast": heldTestValue(t, "contrast", "high")}
+			for key, value := range (values{"transparency": false, "keep_wallpaper": true, "wallpaper_palette": "dune", "wallpaper_appearance": "light", "launcher_opacity": 61}) {
+				d.runtimeHeld[key] = heldTestValue(t, key, value)
+			}
 			for key, value := range d.runtimeHeld {
-				d.effective[key] = value
+				d.effective[key] = value.Value()
 			}
 			d.native.observation = desktopsettings.NativeObservation{Readiness: "stop-unknown", ResourceState: "unavailable", Reason: "cleanup-unconfirmed", Run: strings.Repeat("f", 32), Sequence: ^uint64(0), XSerial: ^uint32(0)}
 			standalone, err := d.query("all", nil, nil)
@@ -597,5 +610,40 @@ func TestProviderReplyEncodingPreservesJSONValuesWithinWireBudget(t *testing.T) 
 	var decoded values
 	if err := json.Unmarshal(encoded, &decoded); err != nil || !reflect.DeepEqual(value, decoded) {
 		t.Fatal("JSON value changed", decoded, err)
+	}
+}
+
+func TestCompactSettingsSourceImpliedErrorPreservesDistinctExplicitErrors(t *testing.T) {
+	d, _ := fixture(t)
+	d.persistenceError = "Common persistence failure"
+	standalone, err := d.query("all", nil, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for key, message := range map[string]any{"palette": "Runtime unsaved.", "appearance": "Distinct explicit failure",
+		"contrast": d.persistenceError, "transparency": nil} {
+		row := standalone[key].(map[string]any)
+		row["source"], row["persistence_error"] = "runtime-kept-preference-unsaved", message
+	}
+	rows, defaults, applications := compactPublicSettings(standalone, d.persistenceError)
+	result := values{"owner": "FvwmDesktop", "generation": d.generation, "preview": false,
+		"available": true, "capability": "owned-desktop-preference", "persistence_error": d.persistenceError,
+		"setting_defaults": defaults, "application_defaults": applications}
+	if _, present := rows["palette"].(map[string]any)["persistence_error"]; present {
+		t.Fatal("fixed error repeated")
+	}
+	for key, expected := range (values{"appearance": "Distinct explicit failure", "contrast": d.persistenceError, "transparency": nil}) {
+		actual, present := rows[key].(map[string]any)["persistence_error"]
+		if !present || actual != expected {
+			t.Fatal("distinct explicit failure compacted away", key, actual)
+		}
+	}
+	for key, raw := range rows {
+		got := reconstructedPublicSetting(result, raw.(map[string]any))
+		wantJSON, _ := json.Marshal(standalone[key])
+		gotJSON, _ := json.Marshal(got)
+		if string(wantJSON) != string(gotJSON) {
+			t.Fatal("source-implied error changed metadata", key, got, standalone[key])
+		}
 	}
 }

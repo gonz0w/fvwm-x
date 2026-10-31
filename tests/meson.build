@@ -107,6 +107,15 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 180)
+    test('settings-complete-preview-xvfb', py,
+        args: [files('live_x/theme_composition_live.py'),
+            '--build', meson.project_build_root(), '--complete-bundle-preview',
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'settings-complete-preview'],
+        depends: [fvwm3, fvwm_mfl, fvwm_desktop, fvwm_desktop_worker,
+            fvwm_form, fvwm_desktop_capture, fvwm_svg_worker,
+            fvwm_backer, fvwm_buttons, fvwm_event, fvwm_pager, fvwm_iconman],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 480)
     test('theme-contrast-xvfb', py,
         args: [files('live_x/theme_composition_live.py'),
             '--contrast', '--build', meson.project_build_root(),
@@ -962,11 +971,22 @@ test('monitor-scale-config', monitor_scale_config_test)
 
 preview_policy_test = executable(
     'test-preview-policy',
-    ['test_preview_policy.c', '../fvwm/preview_policy.c'],
+    ['test_preview_policy.c', '../fvwm/preview_policy.c',
+     '../libs/background_plan.c'],
     include_directories: includedirs,
     c_args: ['-UNDEBUG'],
 )
 test('preview-policy', preview_policy_test)
+
+image_background_test = executable(
+    'test-image-background', ['test_image_background.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('image-background', image_background_test)
+
 
 flocale_font_ref_test = executable(
     'test-flocale-font-ref',
@@ -3550,13 +3570,13 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    image_owner_probe = executable(
+        'image-owner-probe', 'image_owner_probe.c',
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+    )
     if libpng.found()
-        image_owner_probe = executable(
-            'image-owner-probe', 'image_owner_probe.c',
-            include_directories: includedirs,
-            dependencies: all_found_deps,
-            link_with: libfvwm3,
-        )
         test(
             'image-owners-xvfb', py,
             args: [files('live_x/image_owners_live.py'),
@@ -4623,6 +4643,14 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
         is_parallel: false, timeout: 180)
 endif
 
+
+settings_portal_policy_test = executable(
+    'test-settings-portal-policy',
+    ['test_settings_portal_policy.c', '../bin/settings_portal_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('settings-portal-policy', settings_portal_policy_test)
 
 native_settings_policy_test = executable(
     'test-native-settings-policy',

@@ -135,11 +135,23 @@ func (d *Controller) theme(force bool) error {
 	if err != nil {
 		return err
 	}
-	if !force && reflect.DeepEqual(key, d.lastTheme) {
+	if d.preview.blocked {
 		return nil
 	}
 	if d.preview.control != nil && d.preview.control.resource != nil {
-		d.preview.finish("Theme changed; resource preview recovery requested.", true, false)
+		resource := d.preview.control.resource
+		// Compare the candidate too: Auto may cross a phase even while the
+		// effective baseline remains fixed to Light or Dark.
+		if force || !reflect.DeepEqual(key, resource.baseline) || d.preview.recovering || d.checkResource(d.preview.control) != nil {
+			d.preview.replay = true
+			if !d.preview.recovering {
+				d.preview.finish("Theme changed; resource preview recovery requested.", true, false)
+			}
+		}
+		return nil
+	}
+	if !force && reflect.DeepEqual(key, d.lastTheme) {
+		return nil
 	}
 	presentation, err := desktopsettings.ResolvePresentation(d.effective)
 	if err != nil {

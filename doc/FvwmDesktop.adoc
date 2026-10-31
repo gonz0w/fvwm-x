@@ -149,8 +149,21 @@ Use *Retry native publication* after resolving an unavailable helper, competing
 XSETTINGS manager or resource conflict. A submitted start request is not observed
 readiness. Applications can ignore settings or cache resources; this does not
 change application pixels through the window manager, create GTK/Qt themes, infer
-DPI from monitor scale, or provide a settings portal. See
-fvwm-native-settings(1) for ownership, bounds and recovery.
+DPI from monitor scale. The optional, default-disabled settings portal bridge
+publishes only reduced-motion from effective XSETTINGS; applications may ignore
+it. See fvwm-native-settings(1) and fvwm-settings-portal(1) for setup,
+ownership, bounds and recovery.
+
+GTK 3.24.41 consumed the five native preferences in running and fresh clients,
+including enlarged text. Qt 5.15.13's XCB Fusion profile without a platform-theme
+plugin kept its existing font, icon and animation choices. Firefox 159 followed
+native reduced motion in running, fresh and restarted clients with or without
+the portal; page fonts and device pixel ratio stayed unchanged. These results
+apply to those profiles. Portal forwarding was checked separately and cannot
+be inferred from browser behavior. Already cached application cursor images
+are not forcibly replaced. See
+`dev-docs/verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md` for exact
+inputs, observations and qualification limits.
 
 New preferences load from older state schemas with off/inherit defaults. Loading
 does not rewrite the file; the next successful save uses schema 9. Existing personal
@@ -278,8 +291,8 @@ means the helper submitted its known commands to FVWM; it does not prove that
 other modules have repainted. Later personal Style or Colorset commands cannot
 be observed through this registry and are explicitly reported as unobserved.
 The helper never rewrites personal FVWM configuration. Generic saved-setting
-preview remains unavailable; native launcher-opacity and high-contrast previews
-have their own timed confirmation paths described below.
+IPC preview remains unavailable; the native editor offers conditional preview
+of eight owned settings, as described below.
 
 Wallpaper query metadata includes resolved, resolution and composition_version.
 Resolution is explicit, follow or retained. The resolved appearance can be auto:
@@ -329,7 +342,8 @@ button (F8), or *edit-settings group:session*, opens a compact editor for the
 four session preferences. The Session panel also opens this scoped editor.
 Its Tray settings button (F9), or *edit-settings group:tray*, opens the compact
 six-field tray editor. The settings menu also offers Tray settings. Existing
-saved schemas 1 through 7 migrate to schema 8 when loaded.
+saved schemas 1 through 8 load without rewriting the file; the next
+successful save writes schema 9.
 
 Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
 group:effects, group:session, group:tray or all. It changes only those saved preferences to registered defaults. It
@@ -373,8 +387,13 @@ the current saved-file revision check. It is available to read-only IPC clients.
 
 Public settings rows inherit the envelope's owner, generation, generic-preview
 flag, common persistence error, availability and capability. A distinct
-per-setting value overrides the envelope's value and remains in that row. Standalone query-settings/inspector records remain
-self-contained. This avoids repeated diagnostics inside the bounded IPC reply;
+per-setting value overrides the envelope's value and remains in that row.
+Merge the envelope, setting_defaults, application_defaults for application rows,
+and the explicit row in that order. After merging, a source of
+`runtime-kept-preference-unsaved` implies persistence_error `Runtime unsaved.`
+when the explicit row omits that field. An explicit row error takes precedence.
+Standalone query-settings/inspector records remain self-contained. This avoids
+repeated diagnostics inside the bounded IPC reply;
 typed values, choices, limits and requested/unobserved tray status remain per
 row. Each tray row reports its effective value as `requested` and readiness as
 `unobserved`; a submitted request is not proof of tray ownership.
@@ -403,10 +422,12 @@ Complete versions 1 through 3 gain contrast normal. Complete versions 1 through
 4 gain session_bus off, session_notifications off and notification_dnd false.
 Complete versions 1 through 5 gain session_power portable. Complete versions 1
 through 6 gain the four default tray preferences. No file is rewritten on read.
-The next successful save writes schema_version 7. Version 7 requires all
-nineteen preferences and retained wallpaper with valid types. Versions 1 through
-6 require their exact historical fields; incomplete or unknown fields are
-refused. Older helpers cannot read version 7. Unknown versions, duplicate
+Complete versions 1 through 7 gain tray_modern off and tray_icon_size 24.
+Complete versions 1 through 8 gain native_settings_enabled off, inherited
+application font/icon/cursor choices and cursor_size 0. The next successful
+save writes schema_version 9 with all twenty-six preferences and the retained
+wallpaper. Versions 1 through 8 require their exact historical fields;
+incomplete or unknown fields are refused. Older helpers cannot read version 9. Unknown versions, duplicate
 fields, oversized or invalid files are preserved. Startup uses defaults and reports a persistence
 error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
@@ -438,159 +459,45 @@ remains unavailable; the separate native consumers below use core-owned leases.
 The `ipc-request` module message is reserved for that bounded literal-data
 transport; existing `query-settings` Echo consumers remain supported.
 
-== LAUNCHER OPACITY PREVIEW
+== PREVIEW ONE SETTING
 
-Desktop settings offers *Preview launcher opacity...*, with 70%, 85%, 94% and
-100% choices. The saved-value editor also accepts any integer 0 through 100.
-Module configuration accepts *FvwmDesktop: launcher_opacity 94. A module override
-or disabled transparency refuses saved-setting preview; change that source
-first. High contrast refuses both saved-setting and runtime-only opacity preview,
-including an editor draft selecting high contrast. A successfully saved/reloaded
-high-contrast choice retires active or pending preview work before submitting
-opaque presentation; failed validation or persistence preserves existing preview
-state. Other menus retain their existing opacity policy.
+In a grouped editor containing a previewable setting, choose *Preview one
+setting* (F5), then select one setting from the chooser. The candidate comes
+from the validated editor draft. The supported keys are `palette`, `appearance`,
+`contrast`, `transparency`, `keep_wallpaper`, `wallpaper_palette`,
+`wallpaper_appearance` and `launcher_opacity`. Both contrast directions and
+transparent palette and appearance are supported. `appearance=auto` captures
+the current schedule phase; a phase change can require recovery. Other draft
+values remain unsaved and return to the editor after the preview.
 
-The preview opens a native confirmation dialog. Open Applications to view the
-candidate; close and reopen an already visible menu to sample its new opacity.
-Within the core's 15-second lease, choose *Revert* (Escape), *Keep current value*
-(F1, runtime only), or *Keep and save* (F2). Saving changes only launcher_opacity.
-Revert, closing the dialog and expiry do not save. A later theme/configuration
-update or restart can replace a runtime-only Keep; the saved preference is
-reapplied by the normal theme path after reload/restart.
+A preview changes only the selected preference using a complete owned resource
+bundle: fourteen roles, the relevant root and buffered background resources,
+and two menu opacity values. Modules repaint independently. A candidate with no
+changed visible projection is refused before mutation; ordinary Apply remains
+available. Overrides, stale preferences, unsupported or unowned resources,
+conflicting changes and an occupied preview slot can also cause refusal. Day
+and night scheduling, motion, application preferences and tray settings retain
+their normal save/apply behavior without this preview.
 
-In a grouped editor containing opacity, *Preview opacity* (F4) captures the
-complete validated draft and closes its old Form. Only opacity is previewed.
-When the preview finishes, a new editor returns to that captured draft; other
-fields stay unsaved. Keep and save commits only opacity before returning.
-Queued old Apply/preview controls cannot publish, and changed settings discard
-an outdated captured draft rather than rebasing it over newer preferences.
+The confirmation dialog offers *Save* and *Cancel*. Save confirms the runtime
+lease first, then saves only the selected key against the captured file revision.
+If the file write fails after confirmation, the notice reports that runtime was
+kept and the preference was not saved. The bounded runtime overlay preserves
+other previously kept unsaved preview values; reload or explicit replacement
+clears the relevant overlay. Restart inherits neither the lease nor the overlay.
 
-Keep and save checks helper/file freshness before applying the candidate and
-again before confirmation. The core must confirm the lease before the private
-file commit is attempted. The writer repeats its file-revision check under the
-existing nonblocking lock. If writing then fails, the notice explicitly reports
-*runtime opacity kept; preference was not saved*. Runtime confirmation and file
-persistence are separate outcomes. Reload before retrying after file conflicts.
-Saving does not replay the complete theme or overwrite a newer external core
-command. Rendering after confirmation remains unobserved.
+Cancel, expiry or controller loss requests recovery of retained original
+resources without reopening their source files. Recovery can remain pending while
+an interaction unwinds. External resource changes cause a conflict rather than
+being overwritten. If recovery is unknown, normal theme replay waits until the
+state is resolved; do not treat a missing reply as confirmation or restoration.
+A new preview needs fresh identities and a resolved state. The active lease is
+normally 15 seconds; publication and repaint are separate outcomes.
 
-The core owns the exact previous scalar, conditional apply and monotonic
-deadline. Intervening tracked appearance activity conservatively refuses
-restoration; inspect current appearance before retrying. Helper death recovers
-without waiting for the dialog. An independent 16-second native Form timeout
-closes an orphaned preview consumer without confirming or saving.
-
-The helper retains one bounded reply wait, one captured draft and at most one
-queued control, with Revert taking precedence. Instance/view tokens isolate stale
-callbacks. One stale-start retry obtains a fresh generation and still applies
-conditionally. Active status polls once per second. Missing/invalid replies
-abandon and report uncertainty. Recovery runs at eligible core service points,
-including interactions; it cannot preempt one blocking call or a stalled server.
-Existing displayed menu pixels can require reopening.
-
-The existing preview-opacity module command and FvwmMFL's core `preview`
-resource remain runtime-only. Registry `preview: false` still declines generic
-IPC saved-preference preview; `native_preview: true` identifies the named
-conditional native consumers below. General appearance preview remains open.
-
-== HIGH CONTRAST PREVIEW
-
-Choose *Preview high contrast...* in Desktop settings, or *High contrast*
-(F5) on the editor Preview row when its scope contains contrast. This previews `contrast=high` from the
-current normal presentation. It uses the current palette and appearance, not
-unapplied palette or appearance fields in the editor. Other draft fields return
-to the editor unchanged after the preview. The requested transparency and
-launcher opacity values remain intact; high contrast resolves them to opaque
-presentation and 100 percent opacity.
-
-The *Preview high contrast* dialog offers *Save* (Enter) and *Cancel* (Escape)
-within the core's 15-second active lease. Save first confirms the runtime
-resources, then saves only `contrast`. Cancel, timeout or loss of the settings
-owner requests recovery without saving. Closing the dialog leaves recovery
-to the core deadline. A menu or other interaction can defer resource recovery
-until the command stack unwinds;
-the pending state does not claim that old pixels are already restored.
-
-The core retains actual color, image and shape owners for fourteen shared roles
-and the two affected menu opacity values. Recovery restores those resources
-instead of reloading their filenames. Wallpaper, motion, fonts, icon choices
-and unrelated menu-style properties are outside this preview. Modules repaint
-independently; runtime confirmation is not a simultaneous repaint guarantee.
-
-An overridden contrast, current high contrast, stale settings/file revision or
-another preview refuses admission. Pending or unsupported image owners, raw root
-pixmaps, ParentRelative backgrounds, ownerless masks, foreground/background tint
-and nonopaque foreground alpha also refuse this resource scope. Existing
-configuration remains usable. Resolve the refusal before opening a new preview;
-there is no fallback that replays theme commands.
-
-An intervening tracked Colorset, MenuStyle, style or root-image change refuses
-restoration rather than overwriting the newer state. If the core has already
-confirmed but saving fails or an external preference edit wins, the notice says
-that runtime high contrast was kept and the preference was not saved. Settings
-report `source: runtime-kept-preference-unsaved`; schedule ticks and unrelated
-preference edits retain that runtime choice. An explicit contrast edit or reload
-replaces it. Reload before intentionally retrying a conflicting file write.
-
-The contrast registry entry reports `native_preview: true` for this conditional
-consumer. Generic settings `preview: false` remains unchanged. Reverse contrast
-and general transparency preview remain unavailable.
-
-== PALETTE AND APPEARANCE PREVIEW
-
-The editor Preview row offers *Palette* (F6) and *Appearance* (F7) when those
-settings belong to its scope. Choose the candidate in the editor first. Palette
-uses one of the four existing palette choices; Appearance accepts explicit
-*Light* or *Dark*. The ordinary *Auto* setting remains usable through Apply;
-this native preview refuses it. Only the selected setting is previewed and saved.
-Unapplied contrast, transparency, wallpaper and other fields remain draft values.
-
-The *Preview palette* and *Preview appearance* forms use *Save* (Enter) and
-*Cancel* (Escape). Save waits for core runtime confirmation, then writes only the
-selected key against the captured preference-file revision. Cancel, expiry and
-owner loss recover the previous owned resources, subject to the same external
-change checks as high-contrast preview. Closing the form leaves recovery to its
-core deadline. The existing high-contrast and opacity controls share one slot
-with these previews; a second preparation or preview is refused.
-
-These previews require the current desktop to resolve with transparency disabled
-and the candidate to retain the same resolved wallpaper palette/appearance pair.
-High contrast can supply the opaque presentation while retaining the requested
-transparency preference. *Retain the current palette wallpaper*, or suitable
-independent wallpaper choices, can preserve the wallpaper pair. Follow choices
-that would change it refuse preview. Resolve the reported prerequisite before
-trying again; preview never changes the wallpaper policy on your behalf.
-An unchanged candidate, selected-key override, stale settings/file revision or
-unsupported native resource owner also refuses admission. Schedule phase and
-both the baseline and candidate projections are rechecked before application
-and confirmation.
-
-The core replaces the fourteen owned role colors and preserves the actual opacity
-values of both the default menu style and SlateLauncherStyle. It does not force
-menu opacity to 100 for this scope. Current normal or high-contrast presentation
-is preserved; high contrast can mask palette colors. Wallpaper, motion, fonts,
-icons and unrelated style fields stay outside this operation. Recovery retains
-actual backing resources rather than depending on their source filenames.
-Modules repaint independently; successful confirmation does not prove every
-window has repainted.
-
-After core confirmation, a failed save or conflicting external preference edit
-reports runtime kept / preference not saved. The owner can retain at most three
-such runtime values: contrast, palette and appearance. Their settings metadata
-uses `source: runtime-kept-preference-unsaved`, with saved and effective values
-kept distinct. A later preview, timer tick or unrelated preference edit preserves
-the other held values. Explicitly replacing/saving a held key clears that key;
-reload or configuration reset clears the overlay. A replacement controller
-starts from fresh saved preferences and inherits neither the old lease nor the
-unsaved runtime overlay. No complete theme replay is used to confirm a preview.
-
-Native configuration callbacks use `preview-palette INSTANCE PALETTE` and
-`preview-appearance INSTANCE light|dark`, where INSTANCE is the current settings
-provider identity. The corresponding `preview-palette-editor` and
-`preview-appearance-editor` callbacks carry the complete captured editor values.
-Use the generated controls rather than retaining stale callback identities.
-The palette and appearance registry entries report `native_preview: true` for
-these conditional consumers; generic saved-preference IPC preview remains false.
+The separate `preview-opacity` command and FvwmMFL scalar `preview` operation
+remain runtime-only. Generic settings IPC reports `preview: false`; per-setting
+`native_preview` describes conditional native capability, not a generic IPC
+saved-preview action. See FvwmMFL(1) for the shared core lease.
 
 == CONFIGURATION INSPECTOR
 

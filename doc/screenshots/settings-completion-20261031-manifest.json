@@ -1,0 +1,41 @@
+{
+  "description": "Unmodified gate 31 settings preview captures",
+  "source22_closure_sha256": "509c0317cab676cbdf318c86ada18c6ea2ba9202ab7f343b597ce198c4ff67cd",
+  "archive": {
+    "name": "gate_linux31.tgz",
+    "sha256": "67149ffdb1033cdd30b8c2deacead20274454ca39268f3ede247638a15a8755b",
+    "local_copy": "builddir/codex-2026-10-31/r1-settings-completion/evidence/gate_linux31.tgz"
+  },
+  "execution_profile": "Linux ARM64 guest, native CPU via Apple Hypervisor; label supplied from the existing lab receipt",
+  "captures": [
+    {
+      "repository_file": "doc/screenshots/settings-20261031-classic-editor.png",
+      "sha256": "53852c5924c67e9f8f0425fcf2df4b2dd789844634a458b2c665cd1b7bb07e28",
+      "bytes": 145990,
+      "theme": "classic-large",
+      "archive_member": "themes/classic-large/complete-bundle-editor.png",
+      "configuration_member": "themes/classic-large/configuration.fvwm",
+      "configuration_sha256": "aff3f39cb6b7b58df1a86bf7af381789dc814bae984165d2fda6f9950fd505f7"
+    },
+    {
+      "repository_file": "doc/screenshots/settings-20261031-dune-chooser.png",
+      "sha256": "e89f49690fb71ddf7f7063f568add4af0db56be294b593b9c1455bc2e42c6ef9",
+      "bytes": 92660,
+      "theme": "dune-light",
+      "archive_member": "themes/dune-light/complete-bundle-chooser.png",
+      "configuration_member": "themes/dune-light/configuration.fvwm",
+      "configuration_sha256": "7e2108468d9f22c7594b18e09e4b3c2e33eff6303aeb0e97a609b08c24315ee5"
+    },
+    {
+      "repository_file": "doc/screenshots/settings-20261031-slate-wallpaper.png",
+      "sha256": "f305d5151eb29d2b5a99e0a04e713476f9fae3e220b7640f92bbc1555c1bb256",
+      "bytes": 42348,
+      "theme": "slate-dark",
+      "archive_member": "themes/slate-dark/complete-wallpaper-preview.png",
+      "configuration_member": "themes/slate-dark/configuration.fvwm",
+      "configuration_sha256": "70c04a72499aed52b710768adff1b7962bc99f1d6ac525de95a4d4f5a7d5b254"
+    }
+  ],
+  "inspection": "All nine gate 31 editor, chooser and wallpaper captures across the three profiles were inspected. Chooser rows have opaque backgrounds with no underlying-text bleed observed. The small fixture probe title remains truncated in Slate and Dune. Inspection does not establish accessibility or functional correctness. Original per-profile manifests record inspection as pending; this field records subsequent agent inspection.",
+  "prior_visual_failure": "Gate 25 chooser captures showed underlying editor text through all three menus. Its preserved archive SHA-256 is d21f4f58354e3e9ea38ab94835f4d37d29c834315b989838fc02d8b20b76bcf8."
+}

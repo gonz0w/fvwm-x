@@ -3,6 +3,7 @@
 
 #include "libs/cJSON.h"
 #include "libs/module_query.h"
+#include "libs/background_plan.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -66,7 +67,7 @@ struct mfl_request {
 	unsigned int opacity;
 	unsigned int timeout_ms;
 	unsigned int preview_plan_version;
-	char preview_plan[337];
+	char preview_plan[PREVIEW_PLAN_TOKEN_MAX + 1];
 	unsigned int offset;
 	unsigned int limit;
 	char generation[MODULE_QUERY_GENERATION_LEN + 1];

@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "image_async.h"
+#include "root_background.h"
 #include "libs/FProperty.h"
 #include "session_ready.h"
 
@@ -558,6 +559,7 @@ void Done(int restart, char *command)
 	}
 	status_close();
 	monitor_scale_config_shutdown();
+	root_background_shutdown();
 	if (!image_async_shutdown())
 	{
 		fvwm_debug(__func__, "image worker shutdown handoff failed");

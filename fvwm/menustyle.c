@@ -227,6 +227,23 @@ bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair)
 	return true;
 }
 
+bool menustyle_preview_pair_set_values(const struct menustyle_preview_pair *pair,
+	int menu_opacity, int launcher_opacity)
+{
+	MenuStyle *styles[2] = {menustyle_preview_named("*"),
+		menustyle_preview_named("SlateLauncherStyle")};
+	int opacity[2] = {menu_opacity, launcher_opacity};
+
+	for (unsigned i = 0; i < 2; i++)
+		if (!styles[i] || (uintptr_t)styles[i] != pair->identities[i] ||
+		    opacity[i] < 0 || opacity[i] > 100)
+			return false;
+	for (unsigned i = 0; i < 2; i++)
+		ST_TRANSLUCENT_PERCENT(styles[i]) = opacity[i];
+	fvwm_query_appearance_changed();
+	return true;
+}
+
 bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
 	enum preview_resource_kind kind, bool restore)
 {

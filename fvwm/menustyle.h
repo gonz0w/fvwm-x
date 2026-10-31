@@ -305,6 +305,8 @@ struct menustyle_preview_pair
 	int opacity[2];
 };
 bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair);
+bool menustyle_preview_pair_set_values(const struct menustyle_preview_pair *pair,
+	int menu_opacity, int launcher_opacity);
 bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
 	enum preview_resource_kind kind, bool restore);
 void menustyle_free(MenuStyle *ms);

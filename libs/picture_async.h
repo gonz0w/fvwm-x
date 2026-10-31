@@ -3,6 +3,7 @@
 
 #include "picture_view.h"
 #include "picture_color.h"
+#include "background_plan.h"
 #include <poll.h>
 
 typedef struct picture_async picture_async;
@@ -47,6 +48,8 @@ FvwmPicture *picture_async_effect(picture_async *manager, FvwmPicture *source,
 	unsigned tint_percent, unsigned alpha_percent);
 /* Cancel the active effect reader and step its reap without releasing source
  * leases. False means shutdown must keep servicing before closing X. */
+FvwmPicture *picture_async_background(picture_async *manager,
+	const struct background_plan *plan, unsigned width, unsigned height);
 Bool picture_async_shutdown_ready(picture_async *manager);
 /* Transfer the prepared cursor from one ready, uncached cursor lease. */
 Cursor picture_async_take_cursor(FvwmPicture *view);

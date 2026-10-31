@@ -1,5 +1,9 @@
 # Proposals and decisions
 
+- [Settings preview completion](SETTINGS-PREVIEW-COMPLETION-2026-10-31.md): finite 26-setting registry, eight reversible choices, core-owned roots and exact resource recovery.
+
+- [Optional Settings portal](SETTINGS-PORTAL-2026-10-31.md): bounded XSETTINGS reduced-motion bridge, explicit build/activation and application observation limits.
+
 - [Owned session-bus lifetime](OWNED-BUS-LIFETIME-2026-10-30.md): fixed native guardian, shared parent/core lifetime and separate daemon/guardian facts.
 
 - [Current artifact retention](ARTIFACT-RETENTION-2026-10-28.md): retain current builds and next-run dependencies; retire superseded generated data while keeping compact results and ownership boundaries.

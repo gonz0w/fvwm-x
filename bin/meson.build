@@ -33,16 +33,22 @@ configure_file(
 # A fresh executable avoids decoding in fork-inherited GLib/Rust state.
 # ASan's shadow mapping cannot fit an enforced finite RLIMIT_AS; the parent
 # and protocol stay instrumented, while this process keeps its real limit.
+background_worker_deps = []
+if libpng.found()
+    background_worker_deps = [libpng]
+endif
 fvwm_svg_worker = executable(
     'fvwm-image-svg-worker',
     ['fvwm-image-svg-worker.c', '../libs/image_svg.c',
      '../libs/image_svg_protocol.c', '../libs/image_effect.c',
      '../libs/image_effect_protocol.c', '../libs/image_effect_x.c',
-     '../libs/ImageSafety.c',
+     '../libs/ImageSafety.c', '../libs/background_plan.c',
+     '../libs/image_png.c', '../libs/image_background.c',
+     '../libs/image_input.c', '../libs/fd_safety.c',
      '../libs/monitor_scale.c'],
     include_directories: includedirs,
     # The software effect path owns real X11 calls as well as renderer headers.
-    dependencies: image_renderer_deps + [summary_depvals['x11']],
+    dependencies: image_renderer_deps + background_worker_deps + [summary_depvals['x11']],
     override_options: ['b_sanitize=none'],
     install: true,
     install_dir: fvwm_moduledir,
@@ -92,6 +98,52 @@ fvwm_native_settings = executable(
     install_dir: fvwm_moduledir,
     install_tag: 'desktop-controller',
 )
+
+# Explicit opt-in: an installed descriptor can be selected by a portal
+# frontend's wildcard/legacy rules, so default builds install no descriptor.
+settings_portal_sources = ['settings_portal_disabled.c']
+settings_portal_deps = []
+settings_portal_libs = []
+if get_option('settings-portal')
+    if not session_dbus.found()
+        error('settings-portal requires -Dsession-dbus=enabled')
+    endif
+    settings_portal_sources = [
+        'settings_portal.c', 'settings_portal_policy.c',
+        '../libs/module_startup.c',
+    ]
+    settings_portal_deps = all_compile_deps + [
+        summary_depvals['x11'], session_dbus,
+    ]
+    settings_portal_libs = [libfvwm3]
+endif
+fvwm_settings_portal = executable(
+    'fvwm-settings-portal', settings_portal_sources,
+    include_directories: includedirs,
+    dependencies: settings_portal_deps,
+    link_with: settings_portal_libs,
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'settings-portal',
+)
+if get_option('settings-portal')
+    portal_config = configuration_data()
+    portal_executable = fvwm_moduledir / 'fvwm-settings-portal'
+    portal_config.set('SETTINGS_PORTAL_EXECUTABLE',
+        '"' + portal_executable.replace('\\', '\\\\').replace('"', '\\"') + '"')
+    configure_file(
+        input: 'fvwm-settings-portal.service.in',
+        output: 'org.freedesktop.impl.portal.desktop.fvwm.service',
+        configuration: portal_config,
+        install: true,
+        install_dir: datadir / 'dbus-1/services',
+        install_tag: 'settings-portal',
+    )
+    install_data('fvwm.portal',
+        install_dir: datadir / 'xdg-desktop-portal/portals',
+        install_tag: 'settings-portal',
+    )
+endif
 
 # Default profiles install a dependency-free refusal stub. Only the optional
 # client/owned-bus guardian links libdbus; core and Go owner do not acquire it.

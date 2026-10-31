@@ -8,6 +8,8 @@
 #include "picture_argb.h"
 #include "image_svg_client.h"
 #include "image_effect_client.h"
+#include "image_background.h"
+#include "ImageSafety.h"
 #include "Fsvg.h"
 #include "FRenderInit.h"
 #include "FRenderInterface.h"
@@ -126,6 +128,8 @@ struct picture_async_job
 	Bool cache;
 	Bool cursor;
 	Bool effect;
+	Bool background;
+	struct background_plan background_plan;
 	unsigned long effect_pixmap_request;
 	FvwmPicture *effect_source;
 	picture_color *effect_background;
@@ -600,11 +604,48 @@ FvwmPicture *picture_async_effect(picture_async *manager, FvwmPicture *source,
 	return picture_async_subscribe(job, fxstrdup(job->path));
 }
 
+FvwmPicture *picture_async_background(picture_async *manager,
+	const struct background_plan *plan, unsigned width, unsigned height)
+{
+	char checked[BACKGROUND_SUFFIX_MAX + 1];
+	size_t pixels;
+
+	if (!manager || !background_plan_format(checked, sizeof(checked), plan) ||
+	    !FImageSizeIsSafe(width, height, IMAGE_SVG_MAX_DIMENSION,
+		IMAGE_SVG_MAX_PIXELS, &pixels) || manager->view_count >= 1024)
+		return NULL;
+	picture_async_job *job = fxcalloc(1, sizeof(*job));
+
+	job->manager = manager;
+	job->path = fxstrdup("private background");
+	job->background = True;
+	job->background_plan = *plan;
+	job->target_width = width;
+	job->target_height = height;
+	job->visual = Pvisual;
+	job->cmap = Pcmap;
+	job->depth = Pdepth;
+	job->factor.quarters = 4;
+	job->default_visual = Pvisual == DefaultVisual(manager->dpy,
+		DefaultScreen(manager->dpy)) && Pcmap == DefaultColormap(manager->dpy,
+		DefaultScreen(manager->dpy));
+	job->previous = &manager->jobs;
+	job->next = manager->jobs;
+	if (job->next)
+		job->next->previous = &job->next;
+	manager->jobs = job;
+	job->queue_previous = manager->queue_tail;
+	*manager->queue_tail = job;
+	manager->queue_tail = &job->queue_next;
+	return picture_async_subscribe(job, fxstrdup(job->path));
+}
+
 Bool picture_async_shutdown_ready(picture_async *manager)
 {
 	picture_async_job *job = manager != NULL ? manager->active : NULL;
 
-	if (job == NULL || !job->effect || job->process == NULL)
+	if (job == NULL || (!job->effect && !job->background) ||
+	    job->process == NULL)
 	{
 		return True;
 	}
@@ -1019,6 +1060,17 @@ void picture_async_service(picture_async *manager, Bool outer_boundary)
 			picture_async_prepare_effect(job);
 			return;
 		}
+		if (job->background)
+		{
+			job->process = image_background_start(&job->background_plan,
+				job->target_width, job->target_height,
+				&job->source, &job->result);
+			if (!job->process)
+				picture_async_failed(job, errno);
+			else
+				job->phase = PICTURE_JOB_DECODING;
+			return;
+		}
 		if (!image_input_load(picture_async_real_path(job->path),
 		    FVWM_IMAGE_INPUT_LIMIT, &job->source, &job->opened))
 		{
@@ -1075,6 +1127,11 @@ void picture_async_service(picture_async *manager, Bool outer_boundary)
 		if (status != IMAGE_PROCESS_SUCCEEDED ||
 		    !image_svg_result_complete(&job->result))
 		{
+			if (job->background)
+			{
+				picture_async_failed(job, error ? error : EPROTO);
+				return;
+			}
 			job->decode_error = error ? error : EPROTO;
 			image_svg_result_destroy(&job->result);
 			job->phase = job->xpm_tried ?
@@ -1254,7 +1311,8 @@ void picture_async_service(picture_async *manager, Bool outer_boundary)
 	{
 		if (job->x_error || job->picture == NULL ||
 		    job->subscribers == 0 ||
-		    (!job->effect && !picture_async_current(job, &job->opened)))
+		    (!job->effect && !job->background &&
+		     !picture_async_current(job, &job->opened)))
 		{
 			if (job->picture != NULL)
 			{

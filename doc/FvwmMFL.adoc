@@ -379,8 +379,8 @@ Preparation refuses missing, pending, refused or unowned resources and excess
 metadata. Raw root/ParentRelative backgrounds, ownerless masks, nonzero
 foreground/background tint and nonopaque foreground alpha are unsupported.
 Proven private buffered backgrounds retain their actual owners. Explicit
-foreground-shadow and unrelated icon/shape policy remain intact. There is no
-candidate wallpaper/image job or general colorset transaction.
+foreground-shadow and unrelated icon/shape policy remain intact. This version does not include a candidate wallpaper/image job or general
+colorset transaction.
 
 Tracked Colorset, MenuStyle, style and root-image changes invalidate recovery;
 the core preserves the newer state. Owner loss detaches the producer immediately
@@ -403,12 +403,41 @@ menu-opacity scalars. Unknown versions are refused. Resource replies identify
 sequence, fresh identities, generation checks, deadlines, retained owners,
 conflict policy and outer-boundary recovery are otherwise the same.
 
-This core operation does not infer Desktop preferences or write files. Its
-native palette/explicit-light-or-dark consumer additionally requires an opaque
-effective presentation and an unchanged resolved wallpaper pair, captures the
-whole editor draft and confirms runtime before saving only the selected key.
-See FvwmDesktop(1). Actual menu scalars remain unchanged, including distinct
-custom values; confirmation is not a simultaneous repaint guarantee.
+This core operation does not infer Desktop preferences or write files. Actual
+menu scalars remain unchanged, including distinct custom values; confirmation
+is not a simultaneous repaint guarantee.
+
+=== Complete bundle resource preview
+
+`appearance.complete_bundle_preview` advertises `scope: "complete-bundle"`
+and `plan_version: 3`, subject to current ownership and slot availability. It
+shares the lifecycle, deadlines and single lease described above. Prepare uses
+the same ordered roles plus `root_transparency` and `preserve_menu` booleans,
+`root_mode` (`retain`, `solid` or `png`), integer `menu_opacity` and
+`launcher_opacity` from 0 through 100, and a `root` object with `rgb`
+(`#RRGGBB`) and `path`. A PNG path is a bounded literal pathname; retain and
+solid use an empty path. Invalid combinations and unsupported owners are refused.
+Preserve-menu retains both captured menu scalars. The bundle includes owned root
+and buffered transparency resources; recovery retains the original resources
+rather than reopening files. External changes conflict instead of being overwritten.
+
+The native `Send_Preview` version 3 plan token is
+`3:<336 role hex>:<2 flag hex>:<3 menu opacity>:<3 launcher opacity>:<6 RGB>:<base64 path>`.
+Bit 0 selects buffered root transparency, bits 1–2 select retain (0), solid (1)
+or PNG (2), and bit 3 preserves captured menu scalars. Other bits and root mode 3
+are invalid. Opacities are decimal 000–100; RGB is lowercase hexadecimal. PNG
+uses canonical padded base64 for 1–256 pathname bytes without NUL; other modes
+use `-`. The token is at most 701 bytes and the complete native command at most
+880 bytes. Versions 1 and 2 remain available. Public JSON request and reply
+limits remain 4096 and 8192 bytes. This plan contains no command text or public
+Pixmap ID.
+
+The native Desktop consumer previews one of eight settings and confirms runtime
+before a separate selected-key file commit. It refuses a no-op projection and
+reports unknown recovery without replaying over it. See FvwmDesktop(1). The
+core-owned `Send_Root 1 20` selector is used by FvwmBacker's optional
+`CoreOwnedPixmap` mode; it is additive to legacy root handling. See
+FvwmBacker(1).
 
 === Appearance configuration, menu styles and decorations
 
@@ -891,6 +920,9 @@ The result-level `owner`, `generation`, `preview`, `persistence_error`,
 `available` and `capability` apply when the corresponding field is absent from
 a setting row. Apply `setting_defaults` next; for rows in the application group,
 apply `application_defaults` after that. Finally apply the row's explicit fields.
+After merging, source `runtime-kept-preference-unsaved` implies
+`persistence_error: "Runtime unsaved."` when the explicit row omits that field.
+An explicit row error takes precedence, including a null value.
 Both defaults maps contain only shared scalar metadata. This precedence preserves
 each complete record while avoiding repeated values in the fixed 8 KiB reply.
 Saved/effective values, choices/bounds, descriptions and per-setting metadata
@@ -962,10 +994,9 @@ with `application: "submission-failed"`. It does not report an unchanged state
 or invite blind replay. Generic `applied_command_results` remains false; this
 provider observes its own saved preferences, not final core rendering.
 Saved-preference preview remains unavailable (`preview: false`). The separate
-core `preview` resource supports runtime menu opacity and the fixed role-color
-bundles. The opacity, contrast, palette and appearance registry entries report
-`native_preview: true` for their conditional native consumers; these are not
-generic settings actions.
+core `preview` resource supports runtime menu opacity and fixed resource bundles.
+The eight owned preview settings report `native_preview: true` for their
+conditional native consumers; these are not generic settings actions.
 For opacity,
 `runtime_constraint: "transparency-disabled"` explains opaque-mode masking.
 The `contrast` enum accepts `normal` (default) and `high` in the appearance group.
@@ -976,8 +1007,8 @@ expose `resolved`, `resolution: "high-contrast"`,
 In normal contrast, resolution is `requested`, except that disabled transparency
 masks launcher opacity with resolution `transparency-disabled`. Wallpaper policy
 remains independent. These generation-stable fields describe submitted
-presentation, not a repaint acknowledgement. High contrast blocks the owner's
-native opacity-preview consumer; `native_preview` remains a capability flag.
+presentation, not a repaint acknowledgement. `native_preview` remains a
+capability flag; a particular candidate can still be refused.
 
 This adds no generic IPC saved-preview operation. See FvwmDesktop for file
 schema migration and separate runtime-confirmation/persistence outcomes.

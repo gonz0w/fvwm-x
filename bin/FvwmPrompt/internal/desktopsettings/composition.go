@@ -168,3 +168,73 @@ func ResolveWallpaper(settings Values, minute int) (Values, error) {
 	}
 	return Values{"palette": palette, "appearance": mode}, nil
 }
+
+// PreviewValue is an operation-owned value from the finite reversible domain.
+// Private fields prevent callers from constructing arbitrary runtime overlays.
+type PreviewValue struct {
+	key    string
+	kind   uint8
+	text   string
+	flag   bool
+	number int
+}
+type PreviewValues map[string]PreviewValue
+
+func PreviewKey(key string) bool {
+	switch key {
+	case "palette", "appearance", "contrast", "transparency", "keep_wallpaper",
+		"wallpaper_palette", "wallpaper_appearance", "launcher_opacity":
+		return true
+	}
+	return false
+}
+func PreviewValueFor(key string, value any) (PreviewValue, error) {
+	if !PreviewKey(key) {
+		return PreviewValue{}, fmt.Errorf("This setting supports save/apply only")
+	}
+	checked, err := Value(key, value, false)
+	if err != nil {
+		return PreviewValue{}, err
+	}
+	switch v := checked.(type) {
+	case string:
+		return PreviewValue{key: key, kind: 1, text: v}, nil
+	case bool:
+		return PreviewValue{key: key, kind: 2, flag: v}, nil
+	case int:
+		return PreviewValue{key: key, kind: 3, number: v}, nil
+	}
+	return PreviewValue{}, fmt.Errorf("Invalid preview value")
+}
+func (v PreviewValue) ValidFor(key string) bool {
+	return PreviewKey(key) && v.key == key && v.kind >= 1 && v.kind <= 3
+}
+func (v PreviewValue) Value() any {
+	switch v.kind {
+	case 1:
+		return v.text
+	case 2:
+		return v.flag
+	case 3:
+		return v.number
+	}
+	return nil
+}
+
+// Reasons are rendered on demand in native controls, not repeated in every
+// public registry row: the existing public reply ceiling remains unchanged.
+func PreviewReason(key string) string {
+	if PreviewKey(key) {
+		return "Native resource preview; current ownership and visible changes are checked before apply."
+	}
+	if SessionKey(key) {
+		return "Save/apply only: service lifecycle has no reversible resource lease."
+	}
+	if ApplicationKey(key) {
+		return "Save/apply only: application preferences have a separate owner."
+	}
+	if TrayKey(key) {
+		return "Save/apply only: tray layout has a separate owner."
+	}
+	return "Save/apply only: schedule and motion changes have no reversible resource lease."
+}

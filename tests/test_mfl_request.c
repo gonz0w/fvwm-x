@@ -907,6 +907,35 @@ static void test_resource_preview_requests(void)
 		cJSON_free(text);
 		cJSON_Delete(copy);
 	}
+	assert(cJSON_ReplaceItemInObjectCaseSensitive(values, "plan_version",
+		cJSON_CreateNumber(3)));
+	assert(cJSON_AddBoolToObject(values, "root_transparency", true));
+	assert(cJSON_AddBoolToObject(values, "preserve_menu", true));
+	assert(cJSON_AddStringToObject(values, "root_mode", "png"));
+	assert(cJSON_AddNumberToObject(values, "menu_opacity", 31));
+	assert(cJSON_AddNumberToObject(values, "launcher_opacity", 42));
+	cJSON *background = cJSON_AddObjectToObject(values, "root");
+	char path[257], cookie[65];
+
+	memset(path, 'a', 256);
+	path[256] = '\0';
+	memset(cookie, 'a', 64);
+	cookie[64] = '\0';
+	assert(background && cJSON_AddStringToObject(background, "rgb", "#123abc"));
+	assert(cJSON_AddStringToObject(background, "path", path));
+	text = cJSON_PrintUnformatted(root);
+	assert(text && mfl_request_parse(text, &request));
+	cJSON_free(text);
+	request.timeout_ms = 30000;
+	assert(request.preview_plan_version == 3);
+	assert(strlen(request.preview_plan) == PREVIEW_PLAN_TOKEN_MAX - 2);
+	assert(mfl_request_preview_command(command, sizeof(command), &request,
+		1, cookie, "0000000000000001"));
+	assert(strlen(command) == 880);
+	assert(!mfl_request_preview_command(command, 880, &request,
+		1, cookie, "0000000000000001"));
+	assert(mfl_request_preview_command(command, 881, &request,
+		1, cookie, "0000000000000001"));
 	cJSON_Delete(root);
 	snprintf(command, sizeof(command),
 		"{\"version\":1,\"id\":\"apply\",\"method\":\"action\","

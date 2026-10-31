@@ -4,10 +4,29 @@
  */
 #include "config.h"
 #include <stdio.h>
+#include <fcntl.h>
+#include <signal.h>
+#include <unistd.h>
 #include <string.h>
 
 int main(int argc, char **argv)
 {
+	if (argc > 1 && strcmp(argv[1], "filemanager") == 0)
+	{
+		static const char unavailable[] =
+			"{\"version\":1,\"kind\":\"unavailable\",\"detail\":"
+			"\"optional_bus_support_disabled\"}\n";
+		int flags = fcntl(STDOUT_FILENO, F_GETFL);
+		struct sigaction action = {0};
+
+		action.sa_handler = SIG_IGN;
+		if (flags >= 0 && !sigemptyset(&action.sa_mask) &&
+		    !sigaction(SIGPIPE, &action, NULL) &&
+		    !fcntl(STDOUT_FILENO, F_SETFL, flags | O_NONBLOCK))
+			(void)write(STDOUT_FILENO, unavailable,
+				sizeof(unavailable) - 1);
+		return 1;
+	}
 	/* Refuse before any launch, including malformed guardian requests. */
 	if (argc > 1 && strcmp(argv[1], "bus-guardian") == 0)
 		return 2;

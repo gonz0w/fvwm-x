@@ -1,0 +1,1322 @@
+{
+  "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+  "branch": "codex/r1-filemanager-bus",
+  "scope": "Focused optional FileManager1 adapter checkpoint, not whole #67/#77/release acceptance",
+  "source_freezes": {
+    "01": {
+      "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+      "closure": "36a0b9b9167906dc694a0226a036f284b0111dde35f02abdda90c62b88c5340a",
+      "archive_sha256": "f56542994f9343d81ae897e935d63465d4e1572712bc506d2d273ce0a6047386",
+      "archive_bytes": 26739597
+    },
+    "02": {
+      "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+      "closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5",
+      "archive_sha256": "820e4770fbbbee5adaa24c5942c5d4dc3eaddd706642435c0eda529fa8decabf",
+      "archive_bytes": 26740678
+    },
+    "03": {
+      "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+      "closure": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8",
+      "archive_sha256": "47d031e585a3e91110a29e641b79551a22a0ea5494ec264ea7e846a2cd68008d",
+      "archive_bytes": 26747314
+    },
+    "04": {
+      "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+      "closure": "8d4e8a53a0c3e015ae5ea3f558bfa4b186c7ca370bdbe60ccdb028ae9b893ba6",
+      "archive_sha256": "04879bbbf06b3b2554c9e3a0357894142c8314f724d1c4ee4bc931dae9052640",
+      "archive_bytes": 26747282
+    },
+    "05": {
+      "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+      "closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+      "archive_sha256": "91e42b80940d697a3e43088afd690c8485cf166ca149f9cc95dcd119007dfe72",
+      "archive_bytes": 26748504
+    }
+  },
+  "archives": [
+    {
+      "label": "gate01",
+      "archive_sha256": "4d68b3c1bdd5743f7d4e1aaa97240548fc7f3ed9ad10f55e99d54031439f215c",
+      "bytes": 209632,
+      "files": 11,
+      "source_closure": "36a0b9b9167906dc694a0226a036f284b0111dde35f02abdda90c62b88c5340a"
+    },
+    {
+      "label": "gate02",
+      "archive_sha256": "74f97a3b09ca12b91bd598585f71062e1f230abb8e5ca07bb7fe3b0eb55c25f5",
+      "bytes": 221173,
+      "files": 92,
+      "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5"
+    },
+    {
+      "label": "gate03",
+      "archive_sha256": "3bdbb0860f6cb5679f7564ae527e9bc690d97c361023854a1e491c1602245603",
+      "bytes": 522686,
+      "files": 246,
+      "source_closure": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8"
+    },
+    {
+      "label": "gate04",
+      "archive_sha256": "faf570c8deb4aa43548e028581ec50457c2f82ebce9f007713afb1a3a448243f",
+      "bytes": 321797,
+      "files": 112,
+      "source_closure": "8d4e8a53a0c3e015ae5ea3f558bfa4b186c7ca370bdbe60ccdb028ae9b893ba6"
+    },
+    {
+      "label": "gate05",
+      "archive_sha256": "c04d51d871e514af4cbe61396644d5cfa60ce683af1d9d36231abfb6d64e0929",
+      "bytes": 1591852,
+      "files": 472,
+      "source_closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60"
+    },
+    {
+      "label": "fault01",
+      "archive_sha256": "0f5a4fd2a00e41c722ff08b6625c70c1763fc90aa0f874571558e55420f65963",
+      "bytes": 171883,
+      "files": 5,
+      "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5"
+    },
+    {
+      "label": "fault02",
+      "archive_sha256": "e63c9ed7f0005977a3dc81d0e568cc9f4776d970e0fe2b5e60ac20193866d68c",
+      "bytes": 172207,
+      "files": 5,
+      "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5"
+    },
+    {
+      "label": "freebsd01",
+      "archive_sha256": "27c28ace2981a3657cd0466e0f4dbb13c38d83fcf4a004ab2770b569b9f9a28e",
+      "bytes": 187804,
+      "files": 11,
+      "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5"
+    }
+  ],
+  "linux_final": {
+    "status": "passed",
+    "source_closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+    "source_pre": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+    "source_post": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+    "commands": [
+      {
+        "label": "serialized-browser-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "bin/FvwmPrompt/fvwm-file-browser",
+          "doc/fvwm-file-browser.1"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.38395357000013064,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "browser-unit",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-mod=vendor",
+          "-json",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 8.301468190999913,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "browser-race",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-race",
+          "-mod=vendor",
+          "-json",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 9.227389771999924,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "browser-vet",
+        "command": [
+          "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "vet",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-mod=vendor",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.16888684499986084,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "serialized-install",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--tags",
+          "file-browser,session-startup"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.1248737189998792,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "install-map",
+        "command": [
+          "meson",
+          "introspect",
+          "--installed",
+          "/tmp/fvwm-module-waits-20261015/build-gcc"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.11764747699999134,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "serialized-disabled-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build",
+          "-j2",
+          "bin/FvwmPrompt/fvwm-file-browser"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.44633190600006856,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "filemanager-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--browser",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+          "--helper",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate05/live",
+          "--execution-profile",
+          "native-linux",
+          "--disabled-helper",
+          "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 17.139752240000007,
+        "timeout": false,
+        "forced_cleanup": false
+      }
+    ],
+    "installed": {
+      "bin/fvwm-session-bus": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+        "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d",
+        "bytes": 257656,
+        "provenance": "exact build/installed byte equality"
+      },
+      "bin/FvwmPrompt/fvwm-file-browser": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+        "sha256": "51865ed33fb609d591250850838162c8cfcbef668774bebb8473f3a61b80bc82",
+        "bytes": 6540615,
+        "provenance": "exact build/installed byte equality"
+      },
+      "doc/fvwm-file-browser.1": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/fvwm-file-browser.1",
+        "sha256": "04bfa462ea9b837d91bdc61ee7cb0b4d47fd6730fc040e4622002ded1a09eeda",
+        "bytes": 59088,
+        "provenance": "exact build/installed byte equality"
+      }
+    },
+    "binaries": {
+      "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus": {
+        "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d",
+        "bytes": 257656
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "51865ed33fb609d591250850838162c8cfcbef668774bebb8473f3a61b80bc82",
+        "bytes": 6540615
+      },
+      "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-file-manager-policy": {
+        "sha256": "a2c17e48af07800cad7ea466da3f93ea78a2247a856b5871bbc9c79a3b0afe54",
+        "bytes": 166112
+      },
+      "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus": {
+        "sha256": "8c22b4012e0e972d8ae55d6ff3813e38dcac068e39fd418061c8f02f99678272",
+        "bytes": 74800
+      }
+    },
+    "profile": "LinuxARM64 nativeCPU AppleHV; scopeddevelopmentnotrelease"
+  },
+  "linux_native_bridge_and_install": {
+    "status": "failed",
+    "source_closure": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8",
+    "source_pre": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8",
+    "source_post": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8",
+    "commands": [
+      {
+        "label": "affected-manual",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "-j2",
+          "doc/fvwm-file-browser.1"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.07377959300004022,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "affected-install",
+        "command": [
+          "meson",
+          "install",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--no-rebuild",
+          "--tags",
+          "file-browser,session-startup"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.12020527700008188,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "install-map",
+        "command": [
+          "meson",
+          "introspect",
+          "--installed",
+          "/tmp/fvwm-module-waits-20261015/build-gcc"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.12502588799998193,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "bridge-faults",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bridge_live.py",
+          "--helper",
+          "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate03/faults",
+          "--execution-profile",
+          "native-linux"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 2.901584656000068,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "sanitizer-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+          "-j2",
+          "bin/fvwm-session-bus",
+          "tests/test-file-manager-policy"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 1.6442979849999801,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "policy-asan",
+        "command": [
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-file-manager-policy"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.0038501050000832038,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "bridge-faults-asan",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bridge_live.py",
+          "--helper",
+          "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate03/faults-asan",
+          "--execution-profile",
+          "native-linux"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 2.959753699000089,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "filemanager-x",
+        "command": [
+          "python3",
+          "/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py",
+          "--build",
+          "/tmp/fvwm-module-waits-20261015/build-gcc",
+          "--browser",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+          "--helper",
+          "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+          "--artifacts-dir",
+          "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate03/live",
+          "--execution-profile",
+          "native-linux",
+          "--disabled-helper",
+          "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus"
+        ],
+        "exit": 1,
+        "process_exit": 1,
+        "seconds": 6.151219442999945,
+        "timeout": false,
+        "forced_cleanup": false
+      }
+    ],
+    "installed": {
+      "bin/fvwm-session-bus": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+        "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d",
+        "bytes": 257656,
+        "provenance": "exact build/installed byte equality"
+      },
+      "bin/FvwmPrompt/fvwm-file-browser": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+        "sha256": "38b231fcfadeced26e59f56fe155ab7396d2186a9a5bb38843a0e1505e0116c2",
+        "bytes": 6540057,
+        "provenance": "exact build/installed byte equality"
+      },
+      "doc/fvwm-file-browser.1": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/fvwm-file-browser.1",
+        "sha256": "23549238152d87a82fb7164c91d37e6189843a38de53c7a0576441ff2d3ac9ba",
+        "bytes": 58992,
+        "provenance": "exact build/installed byte equality"
+      }
+    },
+    "sanitizer_reports": [],
+    "error": "RuntimeError('filemanager-x:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py\", line 793, in <module>\\n    raise SystemExit(main())\\n                     ^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py\", line 788, in main\\n    run(args, profile)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py\", line 645, in run\\n    grouped = restart_phase(\\'mfl_restart\\', False)\\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/filemanager_bus_live.py\", line 544, in restart_phase\\n    old_mfl = wait_for_predicate(name + \\' actual old MFL\\',\\n              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\\nlive_x_harness.HarnessError: deadline expired while waiting for mfl_restart actual old MFL\\n')",
+    "profile": "LinuxARM64 nativeCPU AppleHV; scopeddevelopmentnotrelease"
+  },
+  "linux_linkage": [
+    {
+      "label": "enabled-linkage",
+      "command": [
+        "ldd",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus"
+      ],
+      "exit": 0,
+      "process_exit": 0,
+      "seconds": 0.006976277000035225,
+      "timeout": false,
+      "forced_cleanup": false
+    },
+    {
+      "label": "disabled-linkage",
+      "command": [
+        "ldd",
+        "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus"
+      ],
+      "exit": 0,
+      "process_exit": 0,
+      "seconds": 0.003853830000025482,
+      "timeout": false,
+      "forced_cleanup": false
+    },
+    {
+      "label": "helper-sizes",
+      "command": [
+        "size",
+        "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+        "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus"
+      ],
+      "exit": 0,
+      "process_exit": 0,
+      "seconds": 0.0020694790000561625,
+      "timeout": false,
+      "forced_cleanup": false
+    }
+  ],
+  "freebsd_source02": {
+    "status": "passed",
+    "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5",
+    "source_pre": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5",
+    "source_post": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5",
+    "commands": [
+      {
+        "label": "affected-bsd-build",
+        "command": [
+          "ninja",
+          "-C",
+          "/root/fvwm-module-waits-20261015/build-default",
+          "-j2",
+          "bin/fvwm-session-bus",
+          "bin/FvwmPrompt/fvwm-file-browser",
+          "tests/test-file-manager-policy"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 2.840858208,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "policy",
+        "command": [
+          "/root/fvwm-module-waits-20261015/build-default/tests/test-file-manager-policy"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.0027382920000036393,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "go-native-process-unit",
+        "command": [
+          "/root/fvwm-go-baseline-20261014/sdk/go/bin/go",
+          "test",
+          "-C",
+          "/root/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+          "-mod=vendor",
+          "-json",
+          "./cmd/fvwmfilebrowser"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 12.095578125000003,
+        "timeout": false,
+        "forced_cleanup": false
+      },
+      {
+        "label": "bsd-native-no-bus",
+        "command": [
+          "sh",
+          "-c",
+          "unset DBUS_SESSION_BUS_ADDRESS; \"/root/fvwm-module-waits-20261015/build-default/bin/fvwm-session-bus\" filemanager; test \"$?\" -eq 1"
+        ],
+        "exit": 0,
+        "process_exit": 0,
+        "seconds": 0.010457792000011068,
+        "timeout": false,
+        "forced_cleanup": false
+      }
+    ],
+    "binaries": {
+      "/root/fvwm-module-waits-20261015/build-default/bin/fvwm-session-bus": {
+        "sha256": "b580a2ed5409680069ccf81a8676d2dee1381749a0e6f89f47376ce7595df15b",
+        "bytes": 250168
+      },
+      "/root/fvwm-module-waits-20261015/build-default/bin/FvwmPrompt/fvwm-file-browser": {
+        "sha256": "6e495b702b7aca663531be4f2800e16d4e1d5d850a7665936c1774e4bc1ba7a6",
+        "bytes": 6370366
+      },
+      "/root/fvwm-module-waits-20261015/build-default/tests/test-file-manager-policy": {
+        "sha256": "530ce189c87d3dda4e5bbc9a390715e4243be77795b0605e055d6210bbec9ead",
+        "bytes": 141168
+      }
+    },
+    "profile": "FreeBSD15.1 ARM64 nativeCPU AppleHV; affected compile/process units only, no BSD X acceptance"
+  },
+  "raw_bridge": {
+    "faults": {
+      "status": "passed",
+      "executor": {
+        "system": "Linux",
+        "node": "288f898505a4",
+        "release": "6.18.10-200.fc43.aarch64",
+        "version": "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "machine": "aarch64",
+        "processor": "aarch64"
+      },
+      "cases": {
+        "three_methods_empty_returns_and_status_mapping": "passed",
+        "stale_future_ids_ignored_and_partial_reply_completed": "passed",
+        "second_request_busy_first_preserved": "passed",
+        "malformed-json_retires_without_success": "passed",
+        "duplicate-field_retires_without_success": "passed",
+        "oversize-parent-frame_retires_without_success": "passed",
+        "partial_native_output_backpressure": "passed",
+        "no_reply_deadline_and_late_reply": {
+          "status": "passed",
+          "native_deadline_seconds": 2,
+          "scheduling_allowance": 0.75,
+          "observed_seconds_from_complete_frame": 2.0086089620000394
+        },
+        "parent-eof_retires": "passed",
+        "producer-reader-closed_retires": "passed",
+        "actual_private_bus_loss_retires": "passed"
+      },
+      "cleanup_failures": [],
+      "source_sha256": {
+        "tests/live_x/filemanager_bridge_live.py": "3375d20bd962f07d21a5bdb0f7e52c182f08f0c84a446674a06dfd5dc939689f",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "bin/file_manager_bus.c": "355c0abc2a93753f95f5c7ed5a7e3c3fd910d72cca94fb0f4a01915f9dc6feb4",
+        "bin/file_manager_policy.c": "4cf1d30307aeb0a7584e7f3c42ff89d2632ab4448e27f3ffb8b4ecee5704459f",
+        "bin/file_manager_policy.h": "138c59b2a70f069dc3d4d41edda6bf3c63c7d1bbedb605d7e961a1f261e55bef"
+      },
+      "binaries": {
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-session-bus",
+          "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d"
+        },
+        "dbus_send": {
+          "path": "/usr/bin/dbus-send",
+          "sha256": "01465ee4b342baf957bc32c7f3999834604ea438952701f61dda13b63c0b010d"
+        },
+        "dbus_daemon": {
+          "path": "/usr/bin/dbus-daemon",
+          "sha256": "42f32cef025bf558013890bd28062932c253710c083e8428fc79ae34d7ccf7c2"
+        }
+      },
+      "limits": {
+        "unix_fd_injection": {
+          "status": "unavailable",
+          "reason": "dbus-send cannot attach UNIX file descriptors"
+        },
+        "browser_admission_ui_and_filesystem_work": "not run; raw native bridge only",
+        "hard_real_time_or_rss_bound": "not established",
+        "native_cpu_hardware_acceptance": false
+      }
+    },
+    "faults-asan": {
+      "status": "passed",
+      "executor": {
+        "system": "Linux",
+        "node": "288f898505a4",
+        "release": "6.18.10-200.fc43.aarch64",
+        "version": "#1 SMP PREEMPT_DYNAMIC Wed Feb 11 17:23:35 UTC 2026",
+        "machine": "aarch64",
+        "processor": "aarch64"
+      },
+      "cases": {
+        "three_methods_empty_returns_and_status_mapping": "passed",
+        "stale_future_ids_ignored_and_partial_reply_completed": "passed",
+        "second_request_busy_first_preserved": "passed",
+        "malformed-json_retires_without_success": "passed",
+        "duplicate-field_retires_without_success": "passed",
+        "oversize-parent-frame_retires_without_success": "passed",
+        "partial_native_output_backpressure": "passed",
+        "no_reply_deadline_and_late_reply": {
+          "status": "passed",
+          "native_deadline_seconds": 2,
+          "scheduling_allowance": 0.75,
+          "observed_seconds_from_complete_frame": 2.012232733000019
+        },
+        "parent-eof_retires": "passed",
+        "producer-reader-closed_retires": "passed",
+        "actual_private_bus_loss_retires": "passed"
+      },
+      "cleanup_failures": [],
+      "source_sha256": {
+        "tests/live_x/filemanager_bridge_live.py": "3375d20bd962f07d21a5bdb0f7e52c182f08f0c84a446674a06dfd5dc939689f",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "bin/file_manager_bus.c": "355c0abc2a93753f95f5c7ed5a7e3c3fd910d72cca94fb0f4a01915f9dc6feb4",
+        "bin/file_manager_policy.c": "4cf1d30307aeb0a7584e7f3c42ff89d2632ab4448e27f3ffb8b4ecee5704459f",
+        "bin/file_manager_policy.h": "138c59b2a70f069dc3d4d41edda6bf3c63c7d1bbedb605d7e961a1f261e55bef"
+      },
+      "binaries": {
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-session-bus",
+          "sha256": "49091ba2124571d061eb1a871d78c94c961e6d9cec155ffc3239a743407e45e9"
+        },
+        "dbus_send": {
+          "path": "/usr/bin/dbus-send",
+          "sha256": "01465ee4b342baf957bc32c7f3999834604ea438952701f61dda13b63c0b010d"
+        },
+        "dbus_daemon": {
+          "path": "/usr/bin/dbus-daemon",
+          "sha256": "42f32cef025bf558013890bd28062932c253710c083e8428fc79ae34d7ccf7c2"
+        }
+      },
+      "limits": {
+        "unix_fd_injection": {
+          "status": "unavailable",
+          "reason": "dbus-send cannot attach UNIX file descriptors"
+        },
+        "browser_admission_ui_and_filesystem_work": "not run; raw native bridge only",
+        "hard_real_time_or_rss_bound": "not established",
+        "native_cpu_hardware_acceptance": false
+      }
+    }
+  },
+  "themes": {
+    "slate-dark": {
+      "status": "passed",
+      "cases": {
+        "no-bus": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: explicit_local_session_address_required\n"
+        },
+        "disabled-helper": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: optional_bus_support_disabled\n"
+        },
+        "actual_owner_ready": {
+          "version": 1,
+          "kind": "ready",
+          "owner": ":1.3"
+        },
+        "competing-owner": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: filemanager_name_unavailable\n"
+        },
+        "invalid_requests_no_ui": {
+          "cases": [
+            "remote",
+            "plain-path",
+            "dot",
+            "bad-percent",
+            "root-reveal",
+            "mixed",
+            "nine-uris",
+            "uri-byte-limit",
+            "empty"
+          ],
+          "signatures": 3,
+          "startup_id_limit": true,
+          "introspection_peer": true
+        },
+        "folder_new_and_reuse": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/folder_new_and_reuse"
+        },
+        "grouped_reveal": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/grouped_reveal"
+        },
+        "properties_inspector": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/properties_inspector"
+        },
+        "literal_bytes_no_execution": true,
+        "mfl_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/mfl_restart"
+        },
+        "core_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/core_restart"
+        },
+        "service_exit_preserves_browser_and_borrowed_bus": {
+          "status": "passed",
+          "raw_record": "gate05/live/slate-dark/result.json#cases/service_exit_preserves_browser_and_borrowed_bus"
+        }
+      },
+      "screenshots": {
+        "filemanager-folder.png": "d63434ffbdd9d436ba6363dac7250fb77e084ab7a235dd0bddbdb788d0c8e8df",
+        "filemanager-grouped-reveal.png": "5245eb3d4eb2320cc210ad0249527bf377ab29c93792f951e0ff24846798a4f8",
+        "filemanager-properties.png": "7ebd52f891704de946ab5d6d59e3d419eb02f030bae5b603caa4685c508376ac"
+      },
+      "font": "Sans 10",
+      "configuration_sha256": {
+        "config": "32a112ef42626c6cffc00b0b76a3d5ce380772890425ddcf6ea51f7d7174170c",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "browser": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+          "sha256": "51865ed33fb609d591250850838162c8cfcbef668774bebb8473f3a61b80bc82"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+          "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        },
+        "disabled_helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus",
+          "sha256": "8c22b4012e0e972d8ae55d6ff3813e38dcac068e39fd418061c8f02f99678272"
+        }
+      },
+      "limits": {
+        "native_cpu_hardware_acceptance": false,
+        "lost_late_admission_and_backpressure": "not run; separate policy/fault gate",
+        "wm_mfl_restart": "passed actual transport/provider retirement and explicit fresh requests; same borrowed-bus service owner; no automatic browser recovery claim",
+        "captures": "captured; separate visual inspection required",
+        "disabled_build": "passed actual stub startup refusal"
+      },
+      "cleanup_failures": []
+    },
+    "dune-light": {
+      "status": "passed",
+      "cases": {
+        "no-bus": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: explicit_local_session_address_required\n"
+        },
+        "disabled-helper": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: optional_bus_support_disabled\n"
+        },
+        "actual_owner_ready": {
+          "version": 1,
+          "kind": "ready",
+          "owner": ":1.3"
+        },
+        "competing-owner": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: filemanager_name_unavailable\n"
+        },
+        "invalid_requests_no_ui": {
+          "cases": [
+            "remote",
+            "plain-path",
+            "dot",
+            "bad-percent",
+            "root-reveal",
+            "mixed",
+            "nine-uris",
+            "uri-byte-limit",
+            "empty"
+          ],
+          "signatures": 3,
+          "startup_id_limit": true,
+          "introspection_peer": true
+        },
+        "folder_new_and_reuse": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/folder_new_and_reuse"
+        },
+        "grouped_reveal": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/grouped_reveal"
+        },
+        "properties_inspector": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/properties_inspector"
+        },
+        "literal_bytes_no_execution": true,
+        "mfl_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/mfl_restart"
+        },
+        "core_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/core_restart"
+        },
+        "service_exit_preserves_browser_and_borrowed_bus": {
+          "status": "passed",
+          "raw_record": "gate05/live/dune-light/result.json#cases/service_exit_preserves_browser_and_borrowed_bus"
+        }
+      },
+      "screenshots": {
+        "filemanager-folder.png": "ca16852b450750111bee2240e2a83b96074652b0ec441412bf0f982454783e52",
+        "filemanager-grouped-reveal.png": "40a0b1c483e50d4af1216d64b6733924cc380f670bfc416795f2cac93efca111",
+        "filemanager-properties.png": "1c209298927fb83de467c980e66e0cd40354e645d0f1ac83531900bc8fb6c3fc"
+      },
+      "font": "Sans 10",
+      "configuration_sha256": {
+        "config": "ea87a06dfdd52de49930236549d4ad9e700c62c31644a366e20132a5ef2421e2",
+        "local.config": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "browser": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+          "sha256": "51865ed33fb609d591250850838162c8cfcbef668774bebb8473f3a61b80bc82"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+          "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        },
+        "disabled_helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus",
+          "sha256": "8c22b4012e0e972d8ae55d6ff3813e38dcac068e39fd418061c8f02f99678272"
+        }
+      },
+      "limits": {
+        "native_cpu_hardware_acceptance": false,
+        "lost_late_admission_and_backpressure": "not run; separate policy/fault gate",
+        "wm_mfl_restart": "passed actual transport/provider retirement and explicit fresh requests; same borrowed-bus service owner; no automatic browser recovery claim",
+        "captures": "captured; separate visual inspection required",
+        "disabled_build": "passed actual stub startup refusal"
+      },
+      "cleanup_failures": []
+    },
+    "classic-large": {
+      "status": "passed",
+      "cases": {
+        "no-bus": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: explicit_local_session_address_required\n"
+        },
+        "disabled-helper": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: optional_bus_support_disabled\n"
+        },
+        "actual_owner_ready": {
+          "version": 1,
+          "kind": "ready",
+          "owner": ":1.3"
+        },
+        "competing-owner": {
+          "returncode": 1,
+          "diagnostic": "fvwm-file-browser: native FileManager1 service unavailable: filemanager_name_unavailable\n"
+        },
+        "invalid_requests_no_ui": {
+          "cases": [
+            "remote",
+            "plain-path",
+            "dot",
+            "bad-percent",
+            "root-reveal",
+            "mixed",
+            "nine-uris",
+            "uri-byte-limit",
+            "empty"
+          ],
+          "signatures": 3,
+          "startup_id_limit": true,
+          "introspection_peer": true
+        },
+        "folder_new_and_reuse": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/folder_new_and_reuse"
+        },
+        "grouped_reveal": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/grouped_reveal"
+        },
+        "properties_inspector": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/properties_inspector"
+        },
+        "literal_bytes_no_execution": true,
+        "mfl_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/mfl_restart"
+        },
+        "core_restart": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/core_restart"
+        },
+        "service_exit_preserves_browser_and_borrowed_bus": {
+          "status": "passed",
+          "raw_record": "gate05/live/classic-large/result.json#cases/service_exit_preserves_browser_and_borrowed_bus"
+        }
+      },
+      "screenshots": {
+        "filemanager-folder.png": "03051b53580e543a736b106fc25d1accfdde16c66b382e9cd300c176bbf780cc",
+        "filemanager-grouped-reveal.png": "30c84feae7ada446bc14f47f7092a7c81a80411ff3461010682d4c76263755d9",
+        "filemanager-properties.png": "62ddabd50f98811fcbf983c22ddbca7f991bd08d16a2a26292820a7e94588e8d"
+      },
+      "font": "DejaVu Sans Mono 18",
+      "configuration_sha256": {
+        "config": "023df2b91b9ce834bba51fdf078e85580fd43f41c24d115760adba951dd66f87",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "browser": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-file-browser",
+          "sha256": "51865ed33fb609d591250850838162c8cfcbef668774bebb8473f3a61b80bc82"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-session-bus",
+          "sha256": "abbe9bbc57c21021aeb5911eb37311d51ec8ef66ad1e5a7e6624091290b3c95d"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        },
+        "disabled_helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-notify-disabled-build/bin/fvwm-session-bus",
+          "sha256": "8c22b4012e0e972d8ae55d6ff3813e38dcac068e39fd418061c8f02f99678272"
+        }
+      },
+      "limits": {
+        "native_cpu_hardware_acceptance": false,
+        "lost_late_admission_and_backpressure": "not run; separate policy/fault gate",
+        "wm_mfl_restart": "passed actual transport/provider retirement and explicit fresh requests; same borrowed-bus service owner; no automatic browser recovery claim",
+        "captures": "captured; separate visual inspection required",
+        "disabled_build": "passed actual stub startup refusal"
+      },
+      "cleanup_failures": []
+    }
+  },
+  "manual": {
+    "manual_sha256": "04bfa462ea9b837d91bdc61ee7cb0b4d47fd6730fc040e4622002ded1a09eeda",
+    "platform": "macOS native mandoc; generated Linux manual",
+    "commands": [
+      {
+        "label": "manual-final-render",
+        "command": [
+          "mandoc",
+          "-Tutf8",
+          "fvwm-file-browser.1"
+        ],
+        "exit": 0,
+        "stdout_sha256": "e89fb00ecab4853352054bd11cd1d68bf5d20ff06adf148685c95a47ef663e32",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "label": "manual-final-lint",
+        "command": [
+          "mandoc",
+          "-Tlint",
+          "fvwm-file-browser.1"
+        ],
+        "exit": 4,
+        "stdout_sha256": "73759c2daf45c66dd6d296a343a8971bad1a59214d01a31b2009fff5eb253995",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    ]
+  },
+  "cleanup": {
+    "linux": {
+      "records": [
+        {
+          "command": [
+            "podman",
+            "machine",
+            "start",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "start",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "--time",
+            "15",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "normal_stop": true
+    },
+    "freebsd": {
+      "owned_pid": 35175,
+      "qemu_status": 0,
+      "normal_poweroff_requested": true
+    },
+    "retirement": {
+      "status": "passed",
+      "source_closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+      "retired": [
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate01",
+          "bytes": 1088985,
+          "preserved_host_archive": "4d68b3c1bdd5743f7d4e1aaa97240548fc7f3ed9ad10f55e99d54031439f215c"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate01.tgz",
+          "bytes": 209632
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate02",
+          "bytes": 1074237,
+          "preserved_host_archive": "74f97a3b09ca12b91bd598585f71062e1f230abb8e5ca07bb7fe3b0eb55c25f5"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate02.tgz",
+          "bytes": 221173
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate03",
+          "bytes": 1556991,
+          "preserved_host_archive": "3bdbb0860f6cb5679f7564ae527e9bc690d97c361023854a1e491c1602245603"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate03.tgz",
+          "bytes": 522686
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate04",
+          "bytes": 1183898,
+          "preserved_host_archive": "faf570c8deb4aa43548e028581ec50457c2f82ebce9f007713afb1a3a448243f"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-gate04.tgz",
+          "bytes": 321797
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-fault01",
+          "bytes": 604812,
+          "preserved_host_archive": "0f5a4fd2a00e41c722ff08b6625c70c1763fc90aa0f874571558e55420f65963"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-fault01.tgz",
+          "bytes": 171883
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-fault02",
+          "bytes": 607242,
+          "preserved_host_archive": "e63c9ed7f0005977a3dc81d0e568cc9f4776d970e0fe2b5e60ac20193866d68c"
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-fault02.tgz",
+          "bytes": 172207
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-inputs/source.tgz",
+          "bytes": 26748504
+        },
+        {
+          "path": "/tmp/fvwm-module-waits-20261015/r1-filemanager-inputs/filemanager_bridge_live.py",
+          "bytes": 19771
+        }
+      ],
+      "retired_bytes": 34503818,
+      "preserved": [
+        "current source",
+        "incremental compiler/feature builds",
+        "SDKs/caches",
+        "installed prefixes",
+        "latest final gate05",
+        "PR310 runnable performance reference",
+        "other owners data"
+      ]
+    },
+    "host_source_compaction": {
+      "original_full_archive_bytes": 106974871,
+      "transient_full_overlay_bytes_retired": 107645593,
+      "replacement_bytes": 2237828,
+      "records": [
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source01-overlay.tgz",
+          "bytes": 26907847,
+          "replacement": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source01-delta.tgz",
+          "replacement_bytes": 555482,
+          "replacement_sha256": "6ed47e8cf704fc1dc87ae5cc5c53e32139ab9657287bd95055c24b7ca44aeedb",
+          "changed_files": 23,
+          "source_closure": "36a0b9b9167906dc694a0226a036f284b0111dde35f02abdda90c62b88c5340a",
+          "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+          "reconstruction_verified": true,
+          "all_modes": "apply every frozen source.json mode after base extraction"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source02-overlay.tgz",
+          "bytes": 26908052,
+          "replacement": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source02-delta.tgz",
+          "replacement_bytes": 555969,
+          "replacement_sha256": "8b7ab8e5436c820fa572075c1c63ea87c9503f38dd8b924d1400cf9f96eee8e1",
+          "changed_files": 23,
+          "source_closure": "f07ca2ae13752cf993c338a8916f0a54e6ebe1844cca929b7c86fba26e0cb7d5",
+          "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+          "reconstruction_verified": true,
+          "all_modes": "apply every frozen source.json mode after base extraction"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source03-overlay.tgz",
+          "bytes": 26914698,
+          "replacement": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source03-delta.tgz",
+          "replacement_bytes": 563045,
+          "replacement_sha256": "84a84c80501d2a6beb5ee39a78ca5e66d527e3abb1dcb8cc718eadf379a1cef6",
+          "changed_files": 25,
+          "source_closure": "171bc8446b7c9c73d1b3fa5367e9154e88d6615d1d3bd03b4add33dac82dacf8",
+          "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+          "reconstruction_verified": true,
+          "all_modes": "apply every frozen source.json mode after base extraction"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source04-overlay.tgz",
+          "bytes": 26914996,
+          "replacement": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-service-bundle/source04-delta.tgz",
+          "replacement_bytes": 563332,
+          "replacement_sha256": "3e6064fe6e3a9c9c17ad5a49998c5c70698a845ea827ed135fd3e0bc989e588c",
+          "changed_files": 25,
+          "source_closure": "8d4e8a53a0c3e015ae5ea3f558bfa4b186c7ca370bdbe60ccdb028ae9b893ba6",
+          "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+          "reconstruction_verified": true,
+          "all_modes": "apply every frozen source.json mode after base extraction"
+        }
+      ],
+      "preserved": "Current source05 full archive and exact earlier base/content-delta/mode reconstruction; all raw evidence archives"
+    }
+  },
+  "performance": {
+    "merged_checkpoint_count": 4,
+    "frequency": 5,
+    "reference": "PR310 runnable core reference",
+    "next": "Candidate merge reaches5/5; run paired comparison then"
+  },
+  "review": {
+    "status": "clear; no unresolved findings",
+    "role": "temper_reviewer",
+    "reviewer": "/root/filemanager_final_review",
+    "candidate_tree": "3412e8e1e708a3ff1509c664c52c5b5c5e296498",
+    "runtime_source_closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+    "scope": "38-file integrated source/artifact/receipt/visual inspection,954files/eightarchives andthreepromotedthemeviews",
+    "backend_model_effort": "unverified",
+    "independent_human_approval": false,
+    "final_delta": "review-status metadata only, separately inspected before signed candidate"
+  },
+  "limits": [
+    "FreeBSD actual C/Go build and process units use source02; later platform-neutral Go serialization has final Linux evidence only",
+    "No fresh six-target install/default-X/compiler matrix; full #67/#77 and release coverage pending",
+    "UNIX-FD injection unavailable with dbus-send; bounds/rejection source-reviewed, not dynamically qualified here",
+    "No hard RSS, real-time, physical hardware or assistive-technology guarantee",
+    "Startup ID advisory only; no startup-notification token implementation",
+    "Manual mandoc rendering passed; lint exit4, not clean lint"
+  ],
+  "failures": [
+    {
+      "record": "gate01",
+      "reason": "Default race-runtime exit sleep exceeded existing500ms worker tests; rerun GORACE=atexit_sleep_ms=0 passes without changing production or those deadlines"
+    },
+    {
+      "record": "gate02",
+      "reason": "Fixture used nonstandard Introspectable/Peer interface names; corrected"
+    },
+    {
+      "record": "gate03",
+      "reason": "Core automatically started unproxied MFL; fixture duplicate lost lock. Explicit proxy replacement and exact socket peer check added"
+    },
+    {
+      "record": "gate04",
+      "reason": "Observed3 browsers instead2 for grouped request. Source-supported sibling provider-slot contention; serial admission plus held-receipt regression and actual-X rerun pass"
+    },
+    {
+      "record": "fault01/fault02",
+      "reason": "Lead attempted fixture outside source tree, missing shared import/source-root path. Canonical source03 location passes; setup errors retained"
+    }
+  ]
+}

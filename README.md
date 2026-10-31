@@ -18,7 +18,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
   palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff, application choosers
-  and live updates preserving drafts/selection.
+  and live updates; [opt-in FileManager1](doc/fvwm-file-browser.adoc#filemanager1-service).
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
 - In-progress native tray: XEmbed, opt-in StatusNotifier, bar popup and optional

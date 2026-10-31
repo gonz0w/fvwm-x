@@ -1,0 +1,63 @@
+{
+  "source_closure": "1373110b1dd709e9b7636c4268ff817627ada6acb30a6475c7e2866ca9598b60",
+  "base": "92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0",
+  "profile": "Linux ARM64 native CPU, AppleHV, Xvfb 1440x1200; not hardware/accessibility qualification",
+  "scope": "Independent dbus-send -> installed optional service/browser -> real MFL/Form; all three methods and two restart phases",
+  "configuration_note": "Exact captured fixture configurations contain temporary source/module/user paths; adapt paths before use. They are not installed default configuration.",
+  "entries": [
+    {
+      "profile": "slate-dark",
+      "font": "Sans 10",
+      "screenshot": "screenshots/filemanager-bus-slate-dark.png",
+      "sha256": "5245eb3d4eb2320cc210ad0249527bf377ab29c93792f951e0ff24846798a4f8",
+      "original_capture": "filemanager-grouped-reveal.png",
+      "configuration_sha256": {
+        "config": "32a112ef42626c6cffc00b0b76a3d5ce380772890425ddcf6ea51f7d7174170c",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "configuration": "screenshots/filemanager-bus-slate-dark.fvwm",
+      "local_configuration": "screenshots/filemanager-bus-slate-dark-local.config",
+      "fixture_sha256": "046116986f16c83c57ed2ede4d325f011366b47c9f5636cd332d3f0bf28db0b1",
+      "status": "actual-X groups passed; selected capture inspected"
+    },
+    {
+      "profile": "dune-light",
+      "font": "Sans 10",
+      "screenshot": "screenshots/filemanager-bus-dune-light.png",
+      "sha256": "ca16852b450750111bee2240e2a83b96074652b0ec441412bf0f982454783e52",
+      "original_capture": "filemanager-folder.png",
+      "configuration_sha256": {
+        "config": "ea87a06dfdd52de49930236549d4ad9e700c62c31644a366e20132a5ef2421e2",
+        "local.config": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "configuration": "screenshots/filemanager-bus-dune-light.fvwm",
+      "local_configuration": "screenshots/filemanager-bus-dune-light-local.config",
+      "fixture_sha256": "046116986f16c83c57ed2ede4d325f011366b47c9f5636cd332d3f0bf28db0b1",
+      "status": "actual-X groups passed; selected capture inspected"
+    },
+    {
+      "profile": "classic-large",
+      "font": "DejaVu Sans Mono 18",
+      "screenshot": "screenshots/filemanager-bus-classic-large.png",
+      "sha256": "62ddabd50f98811fcbf983c22ddbca7f991bd08d16a2a26292820a7e94588e8d",
+      "original_capture": "filemanager-properties.png",
+      "configuration_sha256": {
+        "config": "023df2b91b9ce834bba51fdf078e85580fd43f41c24d115760adba951dd66f87",
+        "local.config": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "configuration": "screenshots/filemanager-bus-classic-large.fvwm",
+      "local_configuration": "screenshots/filemanager-bus-classic-large-local.config",
+      "fixture_sha256": "046116986f16c83c57ed2ede4d325f011366b47c9f5636cd332d3f0bf28db0b1",
+      "status": "actual-X groups passed; selected capture inspected"
+    }
+  ]
+}

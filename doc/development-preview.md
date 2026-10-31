@@ -38,6 +38,39 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## FileManager1 browser requests — work in progress
+
+The explicit `fvwm-file-browser --filemanager-service` mode accepts
+`ShowFolders`, `ShowItems` and `ShowItemProperties` on an existing local session
+bus. It reuses the native browser, preserves literal URI/filename bytes and
+admits folder groups in order. Success acknowledges admitted work; folder loading
+and presentation finish separately. It does not change folder or MIME defaults.
+See the [setup and limits](fvwm-file-browser.adoc#filemanager1-service) and
+[opt-in configuration example](examples/FvwmFileManager1.fvwm).
+
+Slate shows a grouped reveal request selecting two entries without opening them.
+
+![Slate browser opened through FileManager1 with two revealed entries](screenshots/filemanager-bus-slate-dark.png)
+
+Dune shows a folder opened through the same service.
+
+![Dune browser folder opened through FileManager1](screenshots/filemanager-bus-dune-light.png)
+
+Enlarged Classic uses an explicit navy/ivory/wheat Form configuration and shows
+observed properties for two requested entries.
+
+![Classic enlarged browser showing two requested entries and observed properties](screenshots/filemanager-bus-classic-large.png)
+
+The [capture manifest](screenshots/filemanager-bus-manifest.json) links exact
+[Slate](screenshots/filemanager-bus-slate-dark.fvwm),
+[Dune](screenshots/filemanager-bus-dune-light.fvwm) and
+[Classic](screenshots/filemanager-bus-classic-large.fvwm) fixture configurations.
+These contain temporary lab paths; adapt them before use. Nine unmodified
+captures accompany the three passing native-X workflows. Screenshots do not
+establish assistive-technology or physical-hardware acceptance. Broader supported
+install/selection qualification remains open under #67/#77; see the
+[source-bound report](../dev-docs/verification/VERIFICATION-2026-10-31-FILEMANAGER-BUS.md).
+
 ## Standalone XEmbed tray
 
 `FvwmTray` is an opt-in standalone host for a bounded subset of XEmbed tray

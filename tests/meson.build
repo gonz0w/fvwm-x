@@ -4624,6 +4624,15 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
 endif
 
 
+file_manager_policy_test = executable(
+    'test-file-manager-policy',
+    ['test_file_manager_policy.c', '../bin/file_manager_policy.c',
+        '../libs/cJSON.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('file-manager-policy', file_manager_policy_test)
+
 # Modern tray policy and optional protocol remain isolated from the WM core.
 tray_sni_model_test = executable(
     'test-tray-sni-model',

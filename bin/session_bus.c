@@ -4,14 +4,15 @@
  *
  * Optional isolated libdbus client. The invoking parent MUST enforce a
  * finite process deadline: connect/authentication and kernel I/O can block.
- * Fixed session notification and existing system power bus branches only;
- * no activation or exported methods. The private native guardian branch
+ * Notification/power clients never activate services. The explicit filemanager
+ * branch exports its bounded opt-in FileManager1 service. The guardian
  * separately owns the optional foreground daemon without making D-Bus calls.
  */
 #include "config.h"
 #include <dbus/dbus.h>
 #include "libs/cJSON.h"
 #include "session_bus_guardian.h"
+#include "file_manager_bus.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -778,6 +779,17 @@ out:
 
 int main(int argc, char **argv)
 {
+	if (argc > 1 && strcmp(argv[1], "filemanager") == 0)
+	{
+		const char *address = getenv("DBUS_SESSION_BUS_ADDRESS");
+
+		if (argc != 2)
+			return file_manager_bus_unavailable("invalid_arguments");
+		if (!local_address(address))
+			return file_manager_bus_unavailable(
+				"explicit_local_session_address_required");
+		return file_manager_bus_main(address);
+	}
 	if (argc > 1 && strcmp(argv[1], "bus-guardian") == 0)
 		return session_bus_guardian_main(argc, argv);
 	if (argc > 1 && strncmp(argv[1], "power-", 6) == 0)

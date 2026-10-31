@@ -25,6 +25,8 @@ fvwm-file-browser - bounded native folder browser and file jobs
 
 *fvwm-file-browser* [*--reuse*] [_local-folder_]
 
+*fvwm-file-browser* *--filemanager-service* [*--socket* _path_]
+
 *fvwm-file-browser* *--reuse* [*--dir* _local-folder_]
 [*--reveal* _local-target_ ... | *--properties* _local-target_ ...]
 [*--socket* _path_]
@@ -563,8 +565,8 @@ their activation remains unavailable.
 shows the observed single-entry properties or selection summary. Target resolution, including parent enumeration, runs in the
 same isolated cancellable worker. The whole parent's admission limit still
 applies. These are portable launch requests for separate browser instances,
-not a single-instance daemon, FileManager1 service, new default folder handler
-or general structured MFL files provider.
+not a single-instance daemon, new default folder handler or general structured
+MFL files provider. The separately enabled FileManager1 service is described below.
 
 == OPTIONS
 
@@ -590,6 +592,10 @@ or general structured MFL files provider.
 *--properties* _local-target_::
   Reveal one to 256 entries in a common parent; repeat the option to show their
   observed selection summary immediately.
+
+*--filemanager-service*::
+  Run the optional FileManager1 service. Only --socket may accompany this option.
+  See FILEMANAGER1 SERVICE for setup, limits and failure behavior.
 
 *--socket* _path_::
   Explicit FvwmMFL Unix socket. Otherwise use FVWMMFL_SOCKET, then the normal
@@ -778,7 +784,7 @@ active/state/sequence, pending decision, item count and known/unknown progress.
 A finished record does not clear active until the child has actually reaped.
 The native dialog owns mutation submission; ordinary file-provider action
 requests do not implicitly become destructive jobs. Clipboard payload
-ownership/protection and FileManager1 remain separate work. No SQLite dependency
+ownership/protection remains separate work. No SQLite dependency
 is introduced.
 
 == PORTABLE FOLDER HANDOFF
@@ -832,6 +838,60 @@ fvwm-file-browser --reuse 'file:///home/user/Work%20files'
 fvwm-file-browser --reuse --reveal '/home/user/Work files/report.txt'
 fvwm-file-browser --reuse --properties '/home/user/Work files/report.txt'
 ....
+
+== FILEMANAGER1 SERVICE
+
+Run `fvwm-file-browser --filemanager-service` explicitly in an FVWM session
+with FvwmMFL running and `DBUS_SESSION_BUS_ADDRESS` set to an existing local
+Unix session bus. An optional `--socket` selects the FvwmMFL socket. The service
+uses the installed `fvwm-session-bus filemanager` bridge. Controlled builds may
+set `FVWM_FILEMANAGER_BUS_HELPER` to an absolute helper path. Builds without the
+optional bus support report the service unavailable; the ordinary browser CLI
+continues to work.
+
+The service requests `org.freedesktop.FileManager1` without replacing an owner
+or joining a queue. Only one owner can serve a bus. It does not start a bus,
+activate a service, change MIME defaults or create a settings store. An example
+opt-in FVWM configuration is supplied in `doc/examples/FvwmFileManager1.fvwm`;
+it is not enabled by default. A WM restart may cause a new start attempt, which
+will refuse an existing owner rather than replace it.
+
+At `/org/freedesktop/FileManager1`, `ShowFolders`, `ShowItems` and
+`ShowItemProperties` take an array of URI strings and a startup ID string, and
+return an empty reply on acceptance. Folder requests open folders; item and
+properties requests group targets by lexical parent. Requests accept local file
+URIs only, including byte-encoded filenames. URI escapes are decoded once;
+duplicates are normalized in first-occurrence order. Invalid syntax, remote
+URIs, dot path components, and root items or properties are refused before
+launch. The service does not execute targets or traverse the filesystem when
+planning requests. The startup ID is an advisory child environment hint, not a
+promise that an FvwmForm launched by an existing core receives or consumes it.
+
+One operation can be pending, without a request queue. A request is limited to
+eight URIs, eight folder groups, 16 KiB of URI bytes and a 512-byte startup ID.
+The native message and parent frame limits are 64 KiB each; native receive and
+outgoing limits are 128 KiB and 64 KiB. Normal admission has a two-second
+deadline. At expiry, the bridge retires its connection; a timeout error is
+best effort, so the caller may instead observe connection loss or an unknown
+outcome. At most eight independent browser children may be live. These
+limits do not guarantee a hard memory or blocking-call deadline.
+
+An empty success reply means work was accepted, not that a window was presented
+or a folder loaded. A missing later receipt can leave the outcome unknown; the
+service does not automatically retry uncertain submitted work. Groups are
+admitted in order under one shared deadline; uncertainty stops the remaining
+groups. A multi-folder request can be partly admitted and cannot be rolled back.
+Inspect existing
+browsers before an explicit retry. On service exit, the service closes and stops
+its bridge and observes its reap; an unconfirmed reap is reported. Independent
+browser windows are left running.
+
+If the service reports unavailable, check that FvwmMFL is running and its
+socket is accessible, that the session has an explicit local Unix bus address and
+permission to use it, and that this build includes bus support. Check whether
+another FileManager1 owner is already present on the same bus. Resolve the
+conflict or choose the intended session before starting the service again. After
+an unknown request outcome, inspect the existing browsers before retrying.
 
 == DESKTOP FILES-MENU HANDOFF
 

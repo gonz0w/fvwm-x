@@ -18,6 +18,10 @@ def expanded_settings(snapshot):
         inherited = dict(shared, **defaults)
         if row.get('group') == 'application':
             inherited.update(application)
-        rows[key] = dict(inherited, **row)
+        expanded = dict(inherited, **row)
+        if (expanded.get('source') == 'runtime-kept-preference-unsaved'
+                and 'persistence_error' not in row):
+            expanded['persistence_error'] = 'Runtime unsaved.'
+        rows[key] = expanded
     result['settings'] = rows
     return result

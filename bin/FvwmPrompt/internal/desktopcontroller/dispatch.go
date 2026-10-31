@@ -62,6 +62,63 @@ func (d *Controller) handle(command, argument string) error {
 		return d.paletteControl(argument)
 	case "palette-state":
 		return d.paletteState(argument)
+	case "preview-choose-editor":
+		e, changes, err := d.editorValues(argument)
+		if err != nil {
+			return err
+		}
+		arguments := e.token
+		for _, key := range e.keys {
+			arguments += " " + fmt.Sprint(changes[key])
+		}
+		rows := []desktopsettings.Row{}
+		for _, key := range e.keys {
+			if desktopsettings.PreviewKey(key) {
+				rows = append(rows, desktopsettings.Row{title(key) + ": " + fmt.Sprint(changes[key]),
+					"SendToModule FvwmDesktop preview-resource-editor " + key + " " + arguments})
+			}
+		}
+		if len(rows) == 0 {
+			return errors.New("This editor supports save/apply only")
+		}
+		d.menu(desktopsettings.Menu{Name: "SlateSettingsPreviewChoice", Title: "Preview one setting", Rows: rows})
+		// Keep the current menu palette/font without showing the editor text
+		// through this chooser. Other menus retain their requested opacity.
+		d.emit("CopyMenuStyle * SlateSettingsPreviewChoiceStyle")
+		d.emit("MenuStyle SlateSettingsPreviewChoiceStyle !Translucent")
+		d.emit("ChangeMenuStyle SlateSettingsPreviewChoiceStyle SlateSettingsPreviewChoice")
+		d.emit("Popup SlateSettingsPreviewChoice")
+		return d.fatal
+	case "preview-resource-editor":
+		key, arguments, found := strings.Cut(argument, " ")
+		if !found || !desktopsettings.PreviewKey(key) {
+			return errors.New("Invalid preview setting")
+		}
+		e, changes, err := d.editorValues(arguments)
+		if err != nil {
+			return err
+		}
+		value, ok := changes[key]
+		if !ok {
+			return errors.New("This editor has no " + key + " draft")
+		}
+		if err := d.preview.startResource(key, value, &draft{e.scope, e.generation, changes}); err != nil {
+			return err
+		}
+		d.retireEditor()
+	case "preview-resource":
+		words, err := wordCount(argument, 3)
+		if err != nil {
+			return err
+		}
+		if words[0] != d.instance {
+			return nil
+		}
+		value, err := desktopsettings.Value(words[1], words[2], true)
+		if err != nil {
+			return err
+		}
+		return d.preview.startResource(words[1], value, nil)
 	case "preview-editor":
 		e, changes, err := d.editorValues(argument)
 		if err != nil {
@@ -113,7 +170,7 @@ func (d *Controller) handle(command, argument string) error {
 		if _, ok := changes["contrast"]; !ok {
 			return errors.New("This editor has no contrast draft")
 		}
-		if err := d.preview.startContrast(&draft{e.scope, e.generation, changes}); err != nil {
+		if err := d.preview.startResource("contrast", changes["contrast"], &draft{e.scope, e.generation, changes}); err != nil {
 			return err
 		}
 		d.retireEditor()

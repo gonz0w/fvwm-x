@@ -8,6 +8,7 @@
 #include "execcontext.h"
 #include "menustyle.h"
 #include "query_json.h"
+#include "root_background.h"
 #include <string.h>
 #include <time.h>
 
@@ -41,6 +42,7 @@ static struct {
 	struct fmodule *owner;
 	char cookie[65], view[17], id[49], generation[49];
 	uint32_t colors[14][4];
+	struct background_plan plan;
 	struct colorset_preview *bundle;
 	struct menustyle_preview_pair menus;
 	uint64_t deadline;
@@ -86,7 +88,9 @@ static bool resource_generation_current(void)
 	char current[49];
 
 	return fvwm_query_appearance_token(current) &&
-		strcmp(current, resource_preview.generation) == 0;
+		strcmp(current, resource_preview.generation) == 0 &&
+		(!resource_preview.bundle ||
+		 colorset_preview_current(resource_preview.bundle));
 }
 
 static void resource_service(void)
@@ -110,9 +114,25 @@ static void resource_service(void)
 
 bool appearance_preview_outer_pending(void)
 {
-	return resource_preview.state == RESOURCE_PREPARING ||
+	return (resource_preview.state == RESOURCE_PREPARING &&
+		colorset_preview_work_pending(resource_preview.bundle)) ||
 		resource_preview.state == RESOURCE_APPLYING ||
 		resource_preview.state == RESOURCE_RECOVERY_PENDING;
+}
+
+static bool resource_menu_set(bool restore)
+{
+	if (resource_preview.kind != PREVIEW_RESOURCE_COMPLETE)
+		return menustyle_preview_pair_set(&resource_preview.menus,
+			resource_preview.kind, restore);
+	bool preserve = restore ||
+		(resource_preview.plan.flags & BACKGROUND_PRESERVE_MENU);
+
+	return menustyle_preview_pair_set_values(&resource_preview.menus,
+		preserve ? resource_preview.menus.opacity[0] :
+			(int)resource_preview.plan.menu_opacity,
+		preserve ? resource_preview.menus.opacity[1] :
+			(int)resource_preview.plan.launcher_opacity);
 }
 
 void appearance_preview_outer_boundary(void)
@@ -122,38 +142,59 @@ void appearance_preview_outer_boundary(void)
 	resource_service();
 	if (resource_preview.state == RESOURCE_PREPARING)
 	{
-		if (!menustyle_preview_pair_capture(&resource_preview.menus))
-			error = "preview_menu_unavailable";
-		else
-			resource_preview.bundle = colorset_preview_prepare(
-				resource_preview.colors, &error);
+		if (!resource_preview.bundle)
+		{
+			if (!menustyle_preview_pair_capture(&resource_preview.menus))
+				error = "preview_menu_unavailable";
+			else if (resource_preview.kind == PREVIEW_RESOURCE_COMPLETE)
+				resource_preview.bundle = colorset_preview_prepare_complete(
+					resource_preview.colors, &resource_preview.plan, &error);
+			else
+				resource_preview.bundle = colorset_preview_prepare(
+					resource_preview.colors, &error);
+		}
+		bool ready = !error &&
+			colorset_preview_ready(resource_preview.bundle, &error);
 		if (error)
 		{
 			resource_preview.preparation_error = error;
 			resource_pending("refused");
 		}
-		else
+		else if (ready)
 			resource_preview.state = RESOURCE_PREPARED;
 	}
 	resource_service();
 	if (resource_preview.state == RESOURCE_APPLYING)
 	{
-		if (!resource_preview.bundle ||
-		    !preview_generation_room(resource_preview.generation) ||
-		    !menustyle_preview_pair_set(&resource_preview.menus,
-			resource_preview.kind, false))
+		enum preview_publication_result result = PREVIEW_PUBLICATION_CONFLICT;
+
+		if (resource_preview.bundle &&
+		    preview_generation_room(resource_preview.generation))
+			result = colorset_preview_begin_move(resource_preview.bundle);
+		if (result == PREVIEW_PUBLICATION_RETRY)
+		{
+			/* Ordinary dispatch drains queue pressure; keep the exact
+			 * applying lease, private resources and existing deadline. */
+			colorset_preview_end_move(resource_preview.bundle);
+			return;
+		}
+		if (result != PREVIEW_PUBLICATION_READY || !resource_menu_set(false))
+		{
+			colorset_preview_end_move(resource_preview.bundle);
 			resource_pending("conflicted");
+		}
 		else
 		{
 			/* Both menu identities and every source generation validated.
 			 * These setters and record moves cannot dispatch callbacks. */
 			colorset_preview_move(resource_preview.bundle);
+			colorset_preview_end_move(resource_preview.bundle);
 			resource_preview.applied = true;
 			resource_preview.state = RESOURCE_ACTIVE;
 			resource_preview.deadline = preview_deadline(preview_now(),
 				resource_preview.timeout_ms);
 			fvwm_query_appearance_token(resource_preview.generation);
-			colorset_preview_broadcast();
+			colorset_preview_broadcast(resource_preview.bundle);
 		}
 	}
 	if (resource_preview.state == RESOURCE_RECOVERY_PENDING)
@@ -161,17 +202,36 @@ void appearance_preview_outer_boundary(void)
 		bool conflict = strcmp(resource_preview.reason, "conflicted") == 0;
 		bool keep = strcmp(resource_preview.reason, "confirmed") == 0;
 
-		if (resource_preview.applied && !conflict && !keep)
+		if (resource_preview.applied && !conflict)
 		{
-			if (!resource_generation_current() ||
-			    !menustyle_preview_pair_set(&resource_preview.menus,
-				resource_preview.kind, true))
-				conflict = true;
-			else
+			enum preview_publication_result result =
+				PREVIEW_PUBLICATION_CONFLICT;
+
+			if (resource_generation_current())
+				result = keep ?
+					colorset_preview_validate(resource_preview.bundle) :
+					colorset_preview_begin_move(resource_preview.bundle);
+			if (result == PREVIEW_PUBLICATION_RETRY)
 			{
-				colorset_preview_move(resource_preview.bundle);
-				fvwm_query_appearance_token(resource_preview.generation);
-				colorset_preview_broadcast();
+				/* Confirmation and restoration retain their pending reason,
+				 * exact snapshots and deadline until this attempt can settle. */
+				colorset_preview_end_move(resource_preview.bundle);
+				return;
+			}
+			if (result != PREVIEW_PUBLICATION_READY)
+				conflict = true;
+			else if (!keep)
+			{
+				if (!resource_menu_set(true))
+					conflict = true;
+				else
+					colorset_preview_move(resource_preview.bundle);
+				colorset_preview_end_move(resource_preview.bundle);
+				if (!conflict)
+				{
+					fvwm_query_appearance_token(resource_preview.generation);
+					colorset_preview_broadcast(resource_preview.bundle);
+				}
 			}
 		}
 		if (conflict)
@@ -269,10 +329,17 @@ static cJSON *resource_capability(enum preview_resource_kind kind)
 	if (result &&
 	    cJSON_AddNumberToObject(result, "version", 1) &&
 	    cJSON_AddStringToObject(result, "scope",
+		kind == PREVIEW_RESOURCE_COMPLETE ? "complete-bundle" :
 		kind == PREVIEW_RESOURCE_OPAQUE_COLORS ?
 		"opaque-colors" : "high-contrast") &&
-	    (kind != PREVIEW_RESOURCE_OPAQUE_COLORS ||
-	     cJSON_AddNumberToObject(result, "plan_version", 2)) &&
+	    (kind == PREVIEW_RESOURCE_HIGH_CONTRAST ||
+	     cJSON_AddNumberToObject(result, "plan_version", kind)) &&
+	    (kind != PREVIEW_RESOURCE_COMPLETE ||
+	     (cJSON_AddBoolToObject(result, "root_background", true) &&
+	      cJSON_AddBoolToObject(result, "root_owned", root_background_owned()) &&
+	      cJSON_AddBoolToObject(result, "buffered_transparency", true) &&
+	      cJSON_AddNumberToObject(result, "path_max", BACKGROUND_PATH_MAX) &&
+	      cJSON_AddNumberToObject(result, "token_max", PREVIEW_PLAN_TOKEN_MAX))) &&
 	    cJSON_AddNumberToObject(result, "role_count", 14) &&
 	    cJSON_AddNumberToObject(result, "style_count", 2) &&
 	    cJSON_AddNumberToObject(result, "metadata_max", PREVIEW_METADATA_MAX) &&
@@ -296,6 +363,11 @@ cJSON *appearance_opaque_colors_capability(void)
 	return resource_capability(PREVIEW_RESOURCE_OPAQUE_COLORS);
 }
 
+cJSON *appearance_complete_bundle_capability(void)
+{
+	return resource_capability(PREVIEW_RESOURCE_COMPLETE);
+}
+
 static cJSON *resource_result(const char **error)
 {
 	static const char *states[] = {"inactive", "preparing", "prepared",
@@ -304,6 +376,7 @@ static cJSON *resource_result(const char **error)
 
 	if (result &&
 	    cJSON_AddStringToObject(result, "scope",
+		resource_preview.kind == PREVIEW_RESOURCE_COMPLETE ? "complete-bundle" :
 		resource_preview.kind == PREVIEW_RESOURCE_OPAQUE_COLORS ?
 		"opaque-colors" : "high-contrast") &&
 	    cJSON_AddNumberToObject(result, "plan_version",
@@ -364,6 +437,7 @@ static cJSON *resource_request(struct fmodule *owner,
 		strcpy(resource_preview.view, request->view);
 		strcpy(resource_preview.id, id);
 		strcpy(resource_preview.generation, generation);
+		resource_preview.plan = request->plan;
 		memcpy(resource_preview.colors, request->colors,
 			sizeof(resource_preview.colors));
 		resource_preview.deadline = preview_deadline(now,

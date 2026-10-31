@@ -145,6 +145,7 @@ $TIME = 0;
     {name => 'Send_Preview', cursor => '', window => 0, descr => 'Internal, bounded scalar and scoped resource preview leases'},
     {name => 'Send_Query', cursor => '', window => 0, descr => 'Internal, bounded directed state queries'},
     {name => 'Send_Reply', cursor => '', window => 0, descr => 'Internal, used for module communication'},
+    {name => 'Send_Root', cursor => '', window => 0, descr => 'Internal, fixed core-owned colorset20 background selector'},
     {name => 'Send_Session', cursor => '', window => 0, descr => 'Internal, guarded cooperative session actions'},
     {name => 'Send_WindowList', cursor => '', window => 0, descr => 'Internal, used for module communication'},
     {name => 'SendToModule', cursor => '', window => 0, descr => 'Send a string (action) to a module'},

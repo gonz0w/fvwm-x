@@ -55,6 +55,7 @@
 #include "module_queue.h"
 #include "query_json.h"
 #include "appearance_preview.h"
+#include "root_background.h"
 #include "startup_notification.h"
 #include "session_clients.h"
 #include "action_palette.h"
@@ -1153,6 +1154,19 @@ void CMD_Send_Query(F_CMD_ARGS)
 					error = "allocation_failed";
 				}
 			}
+			if (result)
+			{
+				cJSON *capability = appearance_complete_bundle_capability();
+
+				if (!capability || !cJSON_AddItemToObject(result,
+					"complete_bundle_preview", capability))
+				{
+					cJSON_Delete(capability);
+					cJSON_Delete(result);
+					result = NULL;
+					error = "allocation_failed";
+				}
+			}
 		}
 		else if (strcmp(spec.resource, "menu-styles") == 0)
 			result = fvwm_query_menu_styles(
@@ -1213,6 +1227,13 @@ void CMD_Send_Query(F_CMD_ARGS)
 	else
 		error = "unsupported_resource";
 	send_query_result(module, spec.cookie, spec.serial, result, error);
+}
+
+void CMD_Send_Root(F_CMD_ARGS)
+{
+	/* Fixed internal selector: no pathname, command or public pixmap. */
+	if (exc->m.module && action && strcmp(action, "1 20") == 0)
+		root_background_select();
 }
 
 void CMD_Send_Preview(F_CMD_ARGS)

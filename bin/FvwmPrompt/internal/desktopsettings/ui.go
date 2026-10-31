@@ -219,30 +219,18 @@ func Editor(s Snapshot,
 			EditorSeconds*10,
 			quote(action+"cancel-settings "+token)))
 	if scope == "all" {
+		lines = append(lines, "Line left")
 		lines = append(lines, `Button continue "Session settings..." F8`, "Command "+action+"edit-settings group:session")
 		lines = append(lines, `Button continue "Tray settings..." F9`, "Command "+action+"edit-settings group:tray")
 		lines = append(lines, `Button continue "Application preferences..." F10`, "Command "+action+"edit-settings group:application")
 	}
-	if has(plan.Keys, "launcher_opacity") {
-		lines = append(lines,
-			"Line left",
-			`Text "Preview opacity only; other edits stay here."`,
-			`Button continue "Preview opacity (F4)" F4`,
-			"Command "+action+"preview-editor "+arguments,
-			"Line left",
-			`Text "Opacity preview is unavailable while high contrast is selected."`)
-	}
-	if has(plan.Keys, "contrast") || has(plan.Keys, "palette") || has(plan.Keys, "appearance") {
-		lines = append(lines, "Line left", `Text "Preview:"`)
-		for _, button := range []struct{ key, caption, shortcut string }{
-			{"contrast", "High contrast (F5)", "F5"},
-			{"palette", "Palette (F6)", "F6"},
-			{"appearance", "Appearance (F7)", "F7"},
-		} {
-			if has(plan.Keys, button.key) {
-				lines = append(lines, "Button continue "+quote(button.caption)+" "+button.shortcut,
-					"Command "+action+"preview-"+button.key+"-editor "+arguments)
-			}
+	for _, key := range plan.Keys {
+		if PreviewKey(key) {
+			lines = append(lines, "Line left",
+				`Text "Preview one setting; other edits stay in the draft."`,
+				`Button continue "Preview one setting (F5)" F5`,
+				"Command "+action+"preview-choose-editor "+arguments)
+			break
 		}
 	}
 	plan.Lines = lines
@@ -296,15 +284,18 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 		} else {
 			options = append(options, Row{"Edit schedule...", "SendToModule FvwmDesktop schedule"})
 		}
-		if key == "palette" || key == "appearance" {
-			options = append(options, Row{"Preview needs opaque colors and unchanged wallpaper", "Greyed"})
-			for _, choice := range setting.Choices {
-				if key == "appearance" && choice == "auto" {
-					continue
-				}
-				options = append(options, Row{"Preview " + title(choice) + "...",
-					"SendToModule FvwmDesktop preview-" + key + " " + s.Instance + " " + choice})
+		if PreviewKey(key) {
+			options = append(options, Row{PreviewReason(key), "Greyed"})
+			previewChoices := choices
+			if key == "launcher_opacity" {
+				previewChoices = []any{70, 85, 94, 100}
 			}
+			for _, choice := range previewChoices {
+				options = append(options, Row{"Preview " + title(text(choice)) + "...",
+					"SendToModule FvwmDesktop preview-resource " + s.Instance + " " + key + " " + text(choice)})
+			}
+		} else {
+			options = append(options, Row{PreviewReason(key), "Greyed"})
 		}
 		options = append(options, Row{"Reset this setting", "SendToModule FvwmDesktop reset " + key})
 		menus = append(menus, Menu{name, key, options})
@@ -498,20 +489,14 @@ func ContrastPreview(instance, view string) ([]string, error) {
 		`Timeout 160 Nop ""`}, nil
 }
 
-// ResourcePreview keeps the old contrast consumer and adds only two named
-// opaque-color candidates. The callback carries actor/view identities only.
-func ResourcePreview(instance, view, key, value string) ([]string, error) {
-	if key == "contrast" && value == "high" {
-		return ContrastPreview(instance, view)
-	}
-	if key != "palette" && key != "appearance" {
+// ResourcePreview describes one typed resource candidate. The callback carries
+// actor/view identities only; native preparation may refuse missing ownership.
+func ResourcePreview(instance, view, key string, value any) ([]string, error) {
+	if !PreviewKey(key) {
 		return nil, errors.New("Invalid resource preview setting")
 	}
-	if _, err := Value(key, value, false); err != nil {
+	if _, err := PreviewValueFor(key, value); err != nil {
 		return nil, err
-	}
-	if key == "appearance" && value != "light" && value != "dark" {
-		return nil, errors.New("Only Light and Dark support appearance preview")
 	}
 	if _, err := Preview(instance, view, 100, true); err != nil {
 		return nil, err
@@ -520,7 +505,7 @@ func ResourcePreview(instance, view, key, value string) ([]string, error) {
 	return []string{"Title " + quote("Preview "+key),
 		"Colorset 2", "ItemColorset 12", "Line left",
 		"Text " + quote(title(key)+" preview is active for 15 seconds."),
-		"Line left", "Text " + quote("Candidate: "+title(value)+". Other edits and wallpaper are retained."),
+		"Line left", "Text " + quote("Candidate: "+title(text(value))+". Other edits stay in the draft."),
 		"Line left", "Text " + quote("Save keeps this runtime choice and saves only "+key+"."),
 		"Line left", `Text "Cancel or expiry restores the previous resources."`,
 		"Line expand", `Button continue "Cancel" ^[`, callback + " revert",

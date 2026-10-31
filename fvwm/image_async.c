@@ -81,6 +81,13 @@ FvwmPicture *image_async_effect(FvwmPicture *source,
 	    source, background, tint, tint_percent, alpha_percent);
 }
 
+FvwmPicture *image_async_background(const struct background_plan *plan,
+	unsigned width, unsigned height)
+{
+	return picture_async_background(image_async_is_parent() ? manager : NULL,
+		plan, width, height);
+}
+
 Bool image_async_enabled(void)
 {
 	return image_async_is_parent() && manager != NULL;

@@ -7,6 +7,36 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Settings preview (in progress)
+
+The [FvwmDesktop manual](FvwmDesktop.adoc#_preview_one_setting) describes the
+editor and its one-setting preview. These unmodified native-X captures are from
+the gate 31 three-theme workflow, which passed for Slate dark, Dune light and
+Classic with enlarged font. The source22 closure was
+`509c0317cab676cbdf318c86ada18c6ea2ba9202ab7f343b597ce198c4ff67cd`.
+The captures show individual moments, not an accessibility or release result.
+
+Classic enlarged editor:
+
+![Classic enlarged settings editor with the Preview one setting control](screenshots/settings-20261031-classic-editor.png)
+
+Dune light F5 chooser:
+
+![Dune settings preview chooser over the editor](screenshots/settings-20261031-dune-chooser.png)
+
+Slate dark wallpaper preview confirmation:
+
+![Slate wallpaper preview confirmation with Save and Cancel](screenshots/settings-20261031-slate-wallpaper.png)
+
+The raw PNG SHA-256 values in the order above are
+`53852c5924c67e9f8f0425fcf2df4b2dd789844634a458b2c665cd1b7bb07e28`,
+`e89f49690fb71ddf7f7063f568add4af0db56be294b593b9c1455bc2e42c6ef9`, and
+`f305d5151eb29d2b5a99e0a04e713476f9fae3e220b7640f92bbc1555c1bb256`.
+The [capture manifest](screenshots/settings-completion-20261031-manifest.json)
+binds them to the source archive and configurations.
+See the [in-progress evidence](../dev-docs/verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md)
+for workflow scope and remaining checks.
+
 ## Native application preferences (in progress)
 
 The optional [application preferences editor](FvwmDesktop.adoc#_application_preferences)

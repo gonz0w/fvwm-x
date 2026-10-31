@@ -46,6 +46,7 @@
 
 #include "config.h"
 #include "appearance_preview.h"
+#include "root_background.h"
 #include "startup_notification.h"
 #include "fvwm/event_filter.h"
 #include "fvwm/module_records.h"
@@ -207,7 +208,12 @@ static int			   Button		      = 0;
 static const FvwmWindow		  *xcrossing_last_grab_window = NULL;
 static event_group_t		  *base_event_group	      = NULL;
 static fvwm_topology_refresh_state topology_refresh_state =
-    FVWM_TOPOLOGY_REFRESH_STATE_INIT;
+	FVWM_TOPOLOGY_REFRESH_STATE_INIT;
+
+bool events_topology_pending(void)
+{
+	return topology_refresh_state.dirty;
+}
 
 /* ---------------------------- exported variables (globals) --------------- */
 
@@ -3052,6 +3058,8 @@ HandlePropertyNotify(const evh_args_t *ea)
 	char		 *urgency_action = NULL;
 	FvwmWindow *const fw		 = ea->exc->w.fw;
 
+	bool owned_root = root_background_notification(&te->xproperty);
+
 	startup_notification_raw_property(&te->xproperty);
 	if (te->xproperty.window == Scr.Root
 	    && te->xproperty.state == PropertyNewValue
@@ -3110,7 +3118,7 @@ HandlePropertyNotify(const evh_args_t *ea)
 				    False, draw_picture, NULL);
 			}
 		}
-		if (te->xproperty.atom == _XA_XROOTPMAP_ID) {
+		if (te->xproperty.atom == _XA_XROOTPMAP_ID && !owned_root) {
 			update_root_transparent_colorset(te->xproperty.atom);
 		}
 		BroadcastPropertyChange(
@@ -4031,6 +4039,7 @@ HandleEvents(void)
 			destroy_scheduled_windows();
 		}
 		image_async_outer_boundary();
+		root_background_outer_boundary();
 		appearance_preview_outer_boundary();
 		if (Scr.flags.do_need_window_update) {
 			flush_window_updates();
@@ -4273,7 +4282,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		}
 		force_poll = force_poll ||
 			(outer_boundary && (startup_notification_outer_pending() ||
-			 appearance_preview_outer_pending()));
+			 appearance_preview_outer_pending() ||
+			 root_background_outer_pending()));
 		num_fd = image_async_wait(readiness.descriptors,
 			readiness.module_count * 2 + EVENTS_MODULE_WATCH,
 			force_poll ? &poll_timeout : timeoutP,

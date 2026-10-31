@@ -188,7 +188,7 @@ func TestEditorAndMenuPlansKeepScopedCallbacks(t *testing.T) {
 		t.Fatal(plan.Keys)
 	}
 	lines := strings.Join(plan.Lines, "\n")
-	for _, required := range []string{"Input launcher_opacity 3 \"94\"", "Command SendToModule FvwmDesktop apply-settings " + token + " $(transparency) $(motion) $(launcher_opacity)", "Timeout 3000", "Preview opacity (F4)", "Effective request: true (module configuration override)"} {
+	for _, required := range []string{"Input launcher_opacity 3 \"94\"", "Command SendToModule FvwmDesktop apply-settings " + token + " $(transparency) $(motion) $(launcher_opacity)", "Timeout 3000", "Preview one setting (F5)", "Effective request: true (module configuration override)"} {
 		if !strings.Contains(lines, required) {
 			t.Fatalf("missing %q", required)
 		}

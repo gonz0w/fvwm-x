@@ -15,7 +15,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 - Atomic buttons, responsive layout and settings/editor;
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
 - Source-aware errors and configuration reports.
-- Structured IPC and settings preview/recovery.
+- Structured IPC and conditional eight-setting preview/recovery; optional
+  [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
   palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff, application choosers

@@ -1058,6 +1058,8 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			MODULE_QUERY_RESULT_MAX) ||
 		    !cJSON_AddStringToObject(result, "preview_scope", "menu-opacity") ||
 		    !cJSON_AddNumberToObject(result, "resource_preview_version", 1) ||
+		    !cJSON_AddNumberToObject(result, "resource_transaction_version", 3) ||
+		    !cJSON_AddBoolToObject(result, "complete_bundle_preview", true) ||
 		    !cJSON_AddStringToObject(result, "resource_preview_scope",
 			"high-contrast") ||
 		    !cJSON_AddNumberToObject(result, "resource_preview_role_count", 14) ||

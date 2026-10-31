@@ -41,6 +41,7 @@
 #include "libs/PictureGraphics.h"
 #include "libs/picture_async.h"
 #include "image_async.h"
+#include "root_background.h"
 #include "libs/picture_color.h"
 #include "libs/FRenderInit.h"
 #include "libs/Strings.h"
@@ -98,6 +99,7 @@ struct root_pic
 /* Conservative owner revision: admission, allocation and async settlement all
  * invalidate observations. Exhaustion disables queries instead of wrapping. */
 static uint64_t colorset_generation = 1;
+static uint64_t root_source_revision = 1;
 
 static void colorset_query_changed(void)
 {
@@ -834,20 +836,84 @@ static void free_colorset_background(colorset_t *cs, Bool do_free_args)
 	}
 }
 
+uint64_t colorset_root_revision(void)
+{
+	return root_source_revision;
+}
+
+bool colorset_root_plan(struct background_plan *plan)
+{
+	colorset_t *cs = FindColorset(20);
+	XColor color = {0};
+
+	memset(plan, 0, sizeof(*plan));
+	if (!root_source_revision || !cs || cs->preparation ||
+	    cs->preparing || cs->pending_picture ||
+	    cs->is_maybe_root_transparent || cs->gradient_args || cs->shape_mask ||
+	    cs->tint_percent || cs->image_alpha_percent != 100)
+		return false;
+	color.pixel = cs->bg;
+	XQueryColor(dpy, Pcmap, &color);
+	plan->rgb = ((uint32_t)(color.red / 257) << 16) |
+		((uint32_t)(color.green / 257) << 8) | (color.blue / 257);
+	plan->flags = BACKGROUND_SOLID << 1;
+	if (cs->pixmap_args)
+	{
+		size_t length = strlen(cs->pixmap_args);
+
+		if (cs->pixmap_type != PIXMAP_STRETCH_ASPECT ||
+		    length == 0 || length > BACKGROUND_PATH_MAX)
+			return false;
+		memcpy(plan->path, cs->pixmap_args, length + 1);
+		plan->flags = BACKGROUND_PNG << 1;
+	}
+	return true;
+}
+
+void colorset_root_owned_publish(FvwmPicture *picture, bool dependents)
+{
+	root_pic.old_pixmap = root_pic.pixmap;
+	root_pic.pixmap = picture->picture;
+	root_pic.width = picture->width;
+	root_pic.height = picture->height;
+	colorset_query_changed();
+	if (dependents)
+		colorset_root_owned_refresh();
+}
+
+void colorset_root_owned_refresh(void)
+{
+	for (size_t i = 0; i < ColorsetCount(); i++)
+	{
+		int id = ColorsetIdAt(i);
+		colorset_t *cs = FindColorset(id);
+
+		if (cs->is_maybe_root_transparent)
+			parse_colorset(id, cs->allows_buffered_transparency ?
+				"RootTransparent buffer" : "RootTransparent");
+	}
+}
+
 /* A preview keeps exactly the projected roles. The alternate records own
  * private candidates before publication and the displaced originals after it.
  * Swapping records does not call X or expose a partially replaced bundle. */
 struct colorset_preview
 {
-	colorset_t original[14];
-	colorset_t alternate[14];
+	colorset_t original[15];
+	colorset_t alternate[15];
+	unsigned count;
+	struct root_background *root_original, *root_candidate;
+	struct background_plan plan;
+	FvwmPicture *panel_pending;
+	bool complete, root_changed, applied, panel_started, panel_failed;
+
 };
 
 _Static_assert(sizeof(struct colorset_preview) + 16384 <=
 	PREVIEW_METADATA_MAX, "preview fixed metadata exceeds its bound");
 
-static const int colorset_preview_ids[14] = {
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14
+static const int colorset_preview_ids[15] = {
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 20
 };
 
 static Bool colorset_preview_pixmap_owned(const colorset_t *cs, Pixmap pixmap)
@@ -856,8 +922,7 @@ static Bool colorset_preview_pixmap_owned(const colorset_t *cs, Pixmap pixmap)
 
 	if (pixmap == None)
 		return True;
-	if (pixmap == ParentRelative || pixmap == root_pic.pixmap ||
-	    pixmap == root_pic.old_pixmap)
+	if (pixmap == ParentRelative)
 		return False;
 	for (unsigned int i = 0; i < 2; i++)
 	{
@@ -900,10 +965,13 @@ void colorset_preview_release(struct colorset_preview *bundle)
 {
 	if (!bundle)
 		return;
-	for (unsigned int i = 0; i < 28; i++)
+	PDestroyFvwmPicture(dpy, bundle->panel_pending);
+	root_background_release(bundle->root_original);
+	root_background_release(bundle->root_candidate);
+	for (unsigned int i = 0; i < 2 * bundle->count; i++)
 	{
-		colorset_t *cs = i < 14 ? &bundle->original[i] :
-			&bundle->alternate[i - 14];
+		colorset_t *cs = i < bundle->count ? &bundle->original[i] :
+			&bundle->alternate[i - bundle->count];
 
 		free_colorset_background(cs, True);
 		free_colorset_shape(cs);
@@ -929,23 +997,48 @@ static Bool colorset_preview_color(colorset_t *cs, unsigned int slot,
 	return True;
 }
 
-struct colorset_preview *colorset_preview_prepare(
-	const uint32_t colors[14][4], const char **error)
+static struct colorset_preview *colorset_preview_prepare_plan(
+	const uint32_t colors[14][4], const struct background_plan *plan,
+	const char **error)
 {
 	/* Reserve fixed request/lease/menu bookkeeping as well as this owner. */
 	size_t copied = sizeof(struct colorset_preview) + 16384;
 	struct colorset_preview *bundle;
+	unsigned count = plan && (plan->flags & BACKGROUND_MODE_MASK) ? 15 : 14;
+	struct root_background *root = NULL;
 
+	*error = "preview_root_unowned";
+	if (plan && !(root = root_background_capture()))
+		return NULL;
+	*error = "preview_root_dependents";
+	if (count == 15)
+	{
+		for (size_t i = 0; i < ColorsetCount(); i++)
+		{
+			int id = ColorsetIdAt(i);
+			colorset_t *cs = FindColorset(id);
+			bool included = false;
+
+			for (unsigned j = 0; j < count; j++)
+				included |= colorset_preview_ids[j] == id;
+			if (!included && (cs->is_maybe_root_transparent ||
+			    (cs->preparation &&
+			     cs->preparation->requested.is_maybe_root_transparent)))
+			{
+				goto unavailable;
+			}
+		}
+	}
 	*error = "preview_resources_unavailable";
 	/* Validate the entire input before capturing a single owner. */
-	for (unsigned int i = 0; i < 14; i++)
+	for (unsigned int i = 0; i < count; i++)
 	{
 		const colorset_t *cs = FindColorset(colorset_preview_ids[i]);
 		const char *args[2];
 
 		if (!cs || cs->preparation || cs->preparing ||
 		    cs->pending_picture || cs->pending_shape)
-			return NULL;
+			goto unavailable;
 		args[0] = cs->pixmap_args;
 		args[1] = cs->gradient_args;
 		for (unsigned int j = 0; j < 2; j++)
@@ -957,7 +1050,7 @@ struct colorset_preview *colorset_preview_prepare(
 				if (!preview_metadata_add(&copied, bytes))
 				{
 					*error = "preview_metadata_limit";
-					return NULL;
+					goto unavailable;
 				}
 			}
 		}
@@ -965,16 +1058,31 @@ struct colorset_preview *colorset_preview_prepare(
 	/* The existing owner adapter knows the provenance of core-created
 	 * gradient/bitmap/buffer pixmaps. It never adopts raw root pixmaps or
 	 * ParentRelative, and leaves unknown alpha/shape resources unowned. */
-	for (unsigned int i = 0; i < 14; i++)
+	for (unsigned int i = 0; i < count; i++)
 	{
 		colorset_t *cs = FindColorset(colorset_preview_ids[i]);
 
 		colorset_background_capture(cs);
+		if (root && cs->pixmap == root_background_picture(root)->picture &&
+		    !cs->rendered_picture)
+			cs->rendered_picture = picture_snapshot(
+				root_background_picture(root));
 		if (!colorset_preview_available(cs))
-			return NULL;
+			goto unavailable;
 	}
 	bundle = fxcalloc(1, sizeof(*bundle));
-	for (unsigned int i = 0; i < 14; i++)
+	bundle->count = count;
+	bundle->root_original = root;
+	bundle->complete = plan != NULL;
+	if (plan)
+	{
+		bundle->plan = *plan;
+		bundle->root_changed = count == 15;
+		bundle->root_candidate = root_background_prepare(plan);
+		if (!bundle->root_candidate)
+			goto root_fail;
+	}
+	for (unsigned int i = 0; i < count; i++)
 	{
 		colorset_t *published = FindColorset(colorset_preview_ids[i]);
 		colorset_t *original = &bundle->original[i];
@@ -1011,8 +1119,11 @@ struct colorset_preview *colorset_preview_prepare(
 		free_colorset_background(cs, True);
 		for (unsigned int slot = 0; slot < 4; slot++)
 		{
-			uint32_t rgb = colors[i][slot];
+			uint32_t rgb = i < 14 ? colors[i][slot] : plan->rgb;
 			XColor color = {0};
+
+			if (i == 14 && slot != COLORSET_BG)
+				continue;
 
 			color.red = ((rgb >> 16) & 255) * 257;
 			color.green = ((rgb >> 8) & 255) * 257;
@@ -1036,11 +1147,175 @@ fail:
 	*error = "color_allocation_failed";
 	colorset_preview_release(bundle);
 	return NULL;
+root_fail:
+	*error = "preview_image_failed";
+	colorset_preview_release(bundle);
+	return NULL;
+unavailable:
+	root_background_release(root);
+	return NULL;
+}
+
+struct colorset_preview *colorset_preview_prepare(
+	const uint32_t colors[14][4], const char **error)
+{
+	return colorset_preview_prepare_plan(colors, NULL, error);
+}
+
+struct colorset_preview *colorset_preview_prepare_complete(
+	const uint32_t colors[14][4], const struct background_plan *plan,
+	const char **error)
+{
+	return colorset_preview_prepare_plan(colors, plan, error);
+}
+
+static picture_async_commit colorset_preview_panel_policy(FvwmPicture *view,
+	void *context)
+{
+	struct colorset_preview *bundle = context;
+
+	return bundle->panel_pending == view ? PICTURE_ASYNC_APPLY :
+		PICTURE_ASYNC_DISCARD;
+}
+
+static void colorset_preview_panel_settled(FvwmPicture *view, Bool applied,
+	void *context)
+{
+	struct colorset_preview *bundle = context;
+	colorset_t *panel = &bundle->alternate[9];
+
+	if (!applied)
+	{
+		bundle->panel_failed = true;
+		return;
+	}
+	panel->rendered_picture = picture_snapshot(view);
+	panel->pixmap = panel->rendered_picture->picture;
+	panel->width = view->width;
+	panel->height = view->height;
+	panel->pixmap_type = PIXMAP_ROOT_PIXMAP_TRAN;
+	panel->is_maybe_root_transparent = True;
+	panel->allows_buffered_transparency = True;
+	panel->tint_percent = 88;
+	colorset_color_save(panel, COLORSET_BG, COLORSET_TINT);
+}
+
+bool colorset_preview_ready(struct colorset_preview *bundle, const char **error)
+{
+	*error = NULL;
+	if (!bundle)
+	{
+		*error = "preview_resources_unavailable";
+		return false;
+	}
+	if (!bundle->complete)
+		return true;
+	if (root_background_failed(bundle->root_candidate) || bundle->panel_failed)
+	{
+		*error = "preview_image_failed";
+		return false;
+	}
+	if (!root_background_ready(bundle->root_candidate))
+		return false;
+	FvwmPicture *root = root_background_picture(bundle->root_candidate);
+
+	if (bundle->root_changed && !bundle->alternate[14].picture)
+	{
+		colorset_t *background = &bundle->alternate[14];
+
+		background->picture = picture_snapshot(root);
+		background->pixmap = root->picture;
+		background->width = root->width;
+		background->height = root->height;
+		background->pixmap_type = PIXMAP_STRETCH_ASPECT;
+		if (bundle->plan.path[0])
+			background->pixmap_args = fxstrdup(bundle->plan.path);
+	}
+	if (!(bundle->plan.flags & BACKGROUND_TRANSPARENT))
+		return true;
+	if (!bundle->panel_started)
+	{
+		colorset_t *panel = &bundle->alternate[9];
+
+		bundle->panel_started = true;
+		/* Tint the immutable root with the resolved panel surface. Retain
+		 * its snapshot through Render acknowledgement or worker reap. */
+		bundle->panel_pending = image_async_effect(root,
+			panel->color_owners[COLORSET_BG],
+			panel->color_owners[COLORSET_BG], 88, 100);
+		if (!bundle->panel_pending || !picture_async_bind(bundle->panel_pending,
+			colorset_preview_panel_policy, colorset_preview_panel_settled,
+			bundle, NULL))
+		{
+			bundle->panel_failed = true;
+			*error = "preview_image_failed";
+			return false;
+		}
+	}
+	return bundle->panel_pending && !bundle->panel_pending->pending &&
+		!bundle->panel_failed;
+}
+
+bool colorset_preview_work_pending(struct colorset_preview *bundle)
+{
+	return !bundle || !bundle->complete ||
+		root_background_failed(bundle->root_candidate) ||
+		(root_background_ready(bundle->root_candidate) &&
+		 (!(bundle->plan.flags & BACKGROUND_TRANSPARENT) ||
+		  !bundle->panel_started || !bundle->panel_pending ||
+		  !bundle->panel_pending->pending));
+}
+
+bool colorset_preview_current(struct colorset_preview *bundle)
+{
+	return bundle && (!bundle->complete || root_background_current(
+		bundle->applied && bundle->root_changed ? bundle->root_candidate :
+		bundle->root_original));
+}
+
+enum preview_publication_result colorset_preview_validate(
+	struct colorset_preview *bundle)
+{
+	if (!colorset_preview_current(bundle))
+		return PREVIEW_PUBLICATION_CONFLICT;
+	if (!bundle->complete)
+		return PREVIEW_PUBLICATION_READY;
+	enum preview_publication_result result = root_background_begin_move(NULL);
+
+	/* Validation never leaves a successful grab retained by its caller. */
+	if (result == PREVIEW_PUBLICATION_READY)
+		root_background_end_move();
+	return result;
+}
+
+bool colorset_preview_can_move(struct colorset_preview *bundle)
+{
+	return colorset_preview_current(bundle) &&
+		(!bundle->root_changed || root_background_publishable(
+			bundle->applied ? bundle->root_original :
+			bundle->root_candidate));
+}
+
+enum preview_publication_result colorset_preview_begin_move(
+	struct colorset_preview *bundle)
+{
+	if (!colorset_preview_can_move(bundle))
+		return PREVIEW_PUBLICATION_CONFLICT;
+	if (!bundle->complete)
+		return PREVIEW_PUBLICATION_READY;
+	return root_background_begin_move(bundle->root_changed ?
+		(bundle->applied ? bundle->root_original : bundle->root_candidate) : NULL);
+}
+
+void colorset_preview_end_move(struct colorset_preview *bundle)
+{
+	if (bundle && bundle->complete)
+		root_background_end_move();
 }
 
 void colorset_preview_move(struct colorset_preview *bundle)
 {
-	for (unsigned int i = 0; i < 14; i++)
+	for (unsigned int i = 0; i < bundle->count; i++)
 	{
 		colorset_t *published = FindColorset(colorset_preview_ids[i]);
 		colorset_t previous = *published;
@@ -1048,13 +1323,17 @@ void colorset_preview_move(struct colorset_preview *bundle)
 		*published = bundle->alternate[i];
 		bundle->alternate[i] = previous;
 	}
+	if (bundle->root_changed)
+		root_background_publish(bundle->applied ? bundle->root_original :
+			bundle->root_candidate, false);
+	bundle->applied = !bundle->applied;
 	colorset_query_changed();
 }
 
-void colorset_preview_broadcast(void)
+void colorset_preview_broadcast(const struct colorset_preview *bundle)
 {
-	/* Every native record and both menu scalars have moved before this. */
-	for (unsigned int i = 0; i < 14; i++)
+	/* Every native record, root and both scalars moved before this. */
+	for (unsigned int i = 0; i < bundle->count; i++)
 	{
 		BroadcastColorset(colorset_preview_ids[i]);
 		update_fvwm_colorset(colorset_preview_ids[i]);
@@ -2430,6 +2709,8 @@ static void parse_colorset_update(int n, char *line,
 
 void parse_colorset(int n, char *line)
 {
+	if (n == 20 && root_source_revision)
+		root_source_revision++;
 	parse_colorset_update(n, line, NULL, 0);
 }
 

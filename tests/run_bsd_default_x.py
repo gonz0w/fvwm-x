@@ -113,6 +113,18 @@ def dependency_identity(system, server_log):
 def fixture_commands(args, build, source):
     if args.server_only:
         return []
+    if getattr(args, 'complete_preview_only', False):
+        paths = {'fvwm': args.fvwm or build / 'fvwm3',
+            'mfl': args.mfl or build / 'modules/FvwmMFL/FvwmMFL',
+            'backer': args.backer or build / 'modules/FvwmBacker/FvwmBacker',
+            'probe': args.preview_probe or build / 'tests/image-owner-probe',
+            'worker': args.image_worker or build / 'bin/fvwm-image-svg-worker',
+            'config-header': args.preview_config_header or build / 'config.h'}
+        options = ['--complete-bundle-only', '--execution-profile',
+                   args.execution_profile]
+        for name, path in paths.items():
+            options.extend(['--' + name, str(path.resolve())])
+        return [('complete-preview', options)]
     if getattr(args, 'tray_only', False):
         paths = {'fvwm': args.fvwm or build / 'fvwm3',
             'tray': args.tray or build / 'modules/FvwmTray/FvwmTray',
@@ -250,9 +262,11 @@ def run_once(args):
                           'desktop-menu': 'xdg_menu_live.py',
                           'notify': 'notify_live.py',
                           'tray': 'tray_modern_live.py',
+                          'complete-preview': 'contrast_resource_live.py',
                           'desktop-controller': 'desktop_live.py'}[name]
                 native_options = [] if name in (
-                    'desktop-controller', 'notify', 'tray') else [
+                    'desktop-controller', 'notify', 'tray',
+                    'complete-preview') else [
                     '--fvwm', str(build / 'fvwm3'),
                     '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL')]
                 argv = [sys.executable, str(source / 'tests/live_x' / script),
@@ -260,9 +274,9 @@ def run_once(args):
                     '--display', display, '--artifacts-dir',
                     str(artifacts / name), *extra]
                 child = runtime.start(name, argv, name + '.log', env)
-                if name == 'tray':
+                if name in ('tray', 'complete-preview'):
                     tray_fixture = child
-                timeout = (240 if name == 'tray' else
+                timeout = (240 if name in ('tray', 'complete-preview') else
                     300 if name in ('desktop-controller', 'notify') else 90)
                 status = child.wait_until_exit(time.monotonic() + timeout)
                 evidence['fixtures'][name] = {'command': argv, 'status': status}
@@ -324,9 +338,17 @@ def run(args):
     if not args.server_only and args.build_directory is None:
         raise ValueError('--build-directory is required for client fixtures.')
     tray_only = getattr(args, 'tray_only', False)
-    if not (args.notify_only or tray_only) and any((args.fvwm, args.notify,
+    preview_only = getattr(args, 'complete_preview_only', False)
+    if not (args.notify_only or tray_only or preview_only) and any((args.fvwm, args.notify,
                             args.mfl, args.notify_client, args.capture)):
         raise ValueError('Notification path overrides require --notify-only.')
+    if preview_only and any((args.notify, args.notify_client, args.capture)):
+        raise ValueError('Notification inputs require --notify-only.')
+    preview_inputs = ('backer', 'image_worker', 'preview_probe',
+                      'preview_config_header')
+    if not preview_only and any(getattr(args, name, None)
+                                for name in preview_inputs):
+        raise ValueError('Preview path overrides require --complete-preview-only.')
     if tray_only and any((args.notify, args.notify_client)):
         raise ValueError('Notification path overrides require --notify-only.')
     tray_inputs = ('tray', 'buttons', 'form', 'desktop', 'session', 'worker',
@@ -394,6 +416,13 @@ if __name__ == '__main__':
                         help='Run only the installed xlock menu fixture.')
     modes.add_argument('--notify-only', action='store_true',
                         help='Run the native notification fixture on this authenticated display.')
+    modes.add_argument('--complete-preview-only', action='store_true',
+                        help='Run owned root/resource preview recovery on this '
+                             'authenticated display.')
+    for name in ('backer', 'image-worker', 'preview-probe',
+                 'preview-config-header'):
+        parser.add_argument('--' + name, type=Path,
+                            help='Explicit path for --complete-preview-only.')
     modes.add_argument('--tray-only', action='store_true',
                         help='Run modern tray checks on this authenticated '
                              'display without Linux-only container cases.')

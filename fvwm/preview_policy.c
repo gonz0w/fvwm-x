@@ -33,11 +33,11 @@ static bool number(const char *text, unsigned int maximum, unsigned int *value)
 bool preview_request_parse(const char *text, struct preview_request *request)
 {
 	struct preview_request parsed = {0};
-	char operation[9], opacity[11], timeout[11], target[339], extra;
+	char operation[9], opacity[11], timeout[11], target[PREVIEW_PLAN_TOKEN_MAX + 1], extra;
 
 	memset(request, 0, sizeof(*request));
 	if (!text || strnlen(text, 1001) > 1000 || sscanf(text,
-	    "%64s %16s %16s %8s %48s %48s %10s %10s %338s %c",
+	    "%64s %16s %16s %8s %48s %48s %10s %10s %701s %c",
 	    parsed.cookie, parsed.serial, parsed.view, operation,
 	    parsed.generation, parsed.lease, opacity, timeout,
 	    target, &extra) != 9 ||
@@ -53,13 +53,26 @@ bool preview_request_parse(const char *text, struct preview_request *request)
 		if (!token(parsed.generation, MODULE_QUERY_GENERATION_LEN) ||
 		    strcmp(parsed.lease, "-") != 0 || parsed.opacity ||
 		    parsed.timeout_ms < PREVIEW_TIMEOUT_MIN ||
-		    (target[0] != '1' && target[0] != '2') ||
-		    target[1] != ':' ||
-		    !preview_plan_parse(target + 2, parsed.colors))
+		    (target[0] != '1' && target[0] != '2' && target[0] != '3') ||
+		    target[1] != ':')
 			return false;
-		parsed.resource_kind = target[0] == '1' ?
-			PREVIEW_RESOURCE_HIGH_CONTRAST :
-			PREVIEW_RESOURCE_OPAQUE_COLORS;
+		parsed.resource_kind = (enum preview_resource_kind)(target[0] - '0');
+		if (parsed.resource_kind == PREVIEW_RESOURCE_COMPLETE)
+		{
+			char roles[PREVIEW_PLAN_HEX_LENGTH + 1];
+
+			if (strlen(target) < PREVIEW_PLAN_HEX_LENGTH + 3 ||
+			    target[PREVIEW_PLAN_HEX_LENGTH + 2] != ':' ||
+			    !background_plan_parse(target + PREVIEW_PLAN_HEX_LENGTH + 3,
+				&parsed.plan))
+				return false;
+			memcpy(roles, target + 2, PREVIEW_PLAN_HEX_LENGTH);
+			roles[PREVIEW_PLAN_HEX_LENGTH] = '\0';
+			if (!preview_plan_parse(roles, parsed.colors))
+				return false;
+		}
+		else if (!preview_plan_parse(target + 2, parsed.colors))
+			return false;
 	}
 	else if (strcmp(operation, "start") == 0)
 	{
@@ -140,6 +153,20 @@ bool preview_plan_parse(const char *text, uint32_t colors[14][4])
 	return true;
 }
 
+enum preview_publication_result preview_publication_queue_check(size_t queued)
+{
+	return queued > PREVIEW_PUBLICATION_QUEUE_MAX ?
+		PREVIEW_PUBLICATION_RETRY : PREVIEW_PUBLICATION_READY;
+}
+
+bool preview_root_notice_matches(uint64_t serial, uint64_t ordinal,
+	uint64_t expected_serial, uint64_t expected_ordinal,
+	bool synthetic, bool new_value)
+{
+	return !synthetic && new_value && ordinal &&
+		serial == expected_serial && ordinal == expected_ordinal;
+}
+
 bool preview_metadata_add(size_t *used, size_t bytes)
 {
 	if (*used > PREVIEW_METADATA_MAX ||
@@ -151,11 +178,11 @@ bool preview_metadata_add(size_t *used, size_t bytes)
 
 bool preview_generation_room(const char *generation)
 {
-	/* Publication advances one colorset and one menu revision. Keep a
-	 * further recovery pair available; never publish an unqueryable lease. */
+	/* Complete publication advances root, colorset and menu revisions.
+	 * Reserve the same three for recovery; legacy plans use fewer. */
 	return generation && token(generation, MODULE_QUERY_GENERATION_LEN) &&
 		strcmp(generation + MODULE_QUERY_GENERATION_LEN - 16,
-			"fffffffffffffffb") <= 0;
+			"fffffffffffffff9") <= 0;
 }
 
 enum preview_resource_guard preview_resource_guard_check(uint64_t now_ms,

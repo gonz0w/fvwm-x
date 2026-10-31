@@ -3,7 +3,20 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-"""Independent wallpaper and high contrast through the desktop owner and real X."""
+"""Independent wallpaper and contrast through the desktop owner and real X.
+
+--complete-bundle-preview selects the current compact F5 editor separately
+from the historical v1/v2 UI branches. It observes all eight keys through real
+menu callbacks and Save/Cancel consumers, captured eleven-field drafts, root
+properties/full pixels, native roles/buffer10, and independent menu scalars.
+The actual --probe and --worker default to the selected build. Three profiles
+produce one new editor capture each, with actual managed-frame/focus readiness
+and no forced repaint/resize. Capture inspection remains the lead's gate.
+
+Core decode/allocation/topology/expiry/nested-menu/Wait faults use the companion
+contrast_resource_live.py v3 group. Persistence-failure overlays and phase races
+retain their separate Go checks. Labels do not imply native-CPU qualification.
+"""
 import argparse
 from settings_snapshot import expanded_settings
 from collections import Counter
@@ -12,8 +25,10 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shlex
 import shutil
 import subprocess
+import sys
 import time
 
 from colorset_live import WindowAttributes
@@ -24,6 +39,11 @@ from live_x_harness import HarnessRuntime, start_display_server, wait_for_predic
 from mfl_request_live import frame, reply
 from mfl_stream_live import Connection
 from session_x_errors import SessionXErrors
+from browser_continuity_live import cleanup_receipts
+from browser_handoff_live import child_identity
+from native_module_proxy import module_proxy
+from settings_preview_live import PreviewWitness, binary_hash, hashes
+from image_colorsets_live import records
 
 
 class DestroyNotify(C.Structure):
@@ -35,10 +55,15 @@ class DestroyNotify(C.Structure):
 def run(args, profile):
     out = args.artifacts_dir / profile
     out.mkdir(parents=True, exist_ok=False)
-    evidence = {'profile': profile, 'settings': [], 'paint_observations': {}}
+    evidence = {'profile': profile, 'status': 'running', 'settings': [],
+        'execution_profile': args.execution_profile, 'paint_observations': {},
+        'platform': dict(system=os.uname().sysname,
+            release=os.uname().release, machine=os.uname().machine),
+        'limits': ['No native CPU, physical hardware or release inference.',
+            'Topology and allocation/decode faults use the separate core fixture.']}
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     with HarnessRuntime(prefix='fvwm-composition-') as runtime:
-        control = rpc = client = errors = None
+        control = rpc = client = errors = core = native = None
         try:
             _, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x1000x24', '-noreset'],
@@ -51,7 +76,26 @@ def run(args, profile):
                 if executable.is_file():
                     (modules / directory.name).symlink_to(executable)
             (modules / 'FvwmDesktop').symlink_to(build / 'bin/FvwmPrompt/FvwmDesktop')
+            if args.complete_bundle_preview:
+                native = runtime.root / 'native-records'
+                native.mkdir()
+                for name, executable in (
+                        ('FvwmDesktop', build / 'bin/FvwmPrompt/FvwmDesktop'),
+                        ('FvwmForm', build / 'modules/FvwmForm/FvwmForm'),
+                        ('FvwmBacker', build / 'modules/FvwmBacker/FvwmBacker'),
+                        ('FvwmMFL', build / 'modules/FvwmMFL/FvwmMFL'),
+                        ('PreviewObserver', args.probe)):
+                    wrapper = modules / name
+                    wrapper.unlink(missing_ok=True)
+                    wrapper.write_text('#!/bin/sh\nexec ' + shlex.join([
+                        sys.executable, str(Path(__file__).resolve()),
+                        '--module-proxy', str(executable), str(native)]) +
+                        ' "$@"\n')
+                    wrapper.chmod(0o700)
             root = source / 'default-config'
+            if args.complete_bundle_preview:
+                assert '*FvwmBacker: CoreOwnedPixmap' in (
+                    root / 'desktop.fvwm').read_text()
             body = (root / 'config').read_text().replace(
                 '$[FVWM_DATADIR]/default-config', str(root))
             if profile == 'classic-large':
@@ -80,8 +124,54 @@ def run(args, profile):
                 'FVWMMFL_SOCKET_PATH': str(runtime.root),
                 'XDG_DATA_HOME': str(runtime.root / 'data'),
                 'XDG_DATA_DIRS': str(runtime.root / 'absent')})
+            if args.complete_bundle_preview:
+                env['FVWM_IMAGE_SVG_WORKER'] = str(args.worker)
             core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
                 '-f', str(config)], 'core.log', env)
+            evidence['core_identity'] = child_identity(core.process.pid, os.getpid())
+            evidence['binary_inputs'] = {name: binary_hash(build / path)
+                for name, path in [('core', 'fvwm3'),
+                    ('desktop', 'bin/FvwmPrompt/FvwmDesktop'),
+                    ('mfl', 'modules/FvwmMFL/FvwmMFL'),
+                    ('form', 'modules/FvwmForm/FvwmForm'),
+                    ('backer', 'modules/FvwmBacker/FvwmBacker'),
+                    ('capture', 'bin/fvwm-desktop-capture')]}
+            inputs = ['tests/live_x/theme_composition_live.py',
+                'tests/live_x/settings_preview_live.py',
+                'tests/live_x/native_module_proxy.py',
+                'tests/live_x/live_x_harness.py', 'tests/live_x/settings_snapshot.py',
+                'tests/live_x/session_x_errors.py', 'tests/live_x/colorset_live.py',
+                'tests/live_x/mfl_request_live.py', 'tests/live_x/mfl_stream_live.py',
+                'tests/live_x/image_colorsets_live.py',
+                'tests/live_x/geometry_transition_live.py',
+                'tests/live_x/browser_continuity_live.py',
+                'tests/live_x/browser_handoff_live.py',
+                'fvwm/appearance_preview.c', 'fvwm/preview_policy.c',
+                'fvwm/colorset.c', 'fvwm/image_async.c', 'fvwm/image_async.h',
+                'fvwm/image_async_wait.c', 'fvwm/module_interface.c',
+                'fvwm/query_json.c', 'libs/PictureImageLoader.c',
+                'modules/FvwmMFL/request.c', 'modules/FvwmMFL/FvwmMFL.c',
+                'modules/FvwmBacker/FvwmBacker.c',
+                'default-config/config', 'default-config/desktop.fvwm']
+            for directory in ('bin/FvwmPrompt/internal/desktopcontroller',
+                    'bin/FvwmPrompt/internal/desktopsettings'):
+                inputs.extend(str(path.relative_to(source))
+                    for path in sorted((source / directory).glob('*.go')))
+            inputs.extend(str(path.relative_to(source))
+                for path in sorted((source / 'fvwm').glob('root_background.*')))
+            for pattern in ('picture_async*.[ch]',
+                    'image_background*.[ch]', 'image_effect*.[ch]',
+                    'image_png*.[ch]', 'image_process*.[ch]'):
+                inputs.extend(str(path.relative_to(source))
+                    for path in sorted((source / 'libs').glob(pattern)))
+            inputs.append('bin/fvwm-image-svg-worker.c')
+            inputs.extend(str(path.relative_to(source))
+                for path in sorted((root / 'wallpapers').glob('*.png')))
+            evidence['source_sha256'] = hashes(source, inputs)
+            evidence['generated_config'] = binary_hash(build / 'config.h')
+            if args.complete_bundle_preview:
+                evidence['binary_inputs']['probe'] = binary_hash(args.probe)
+                evidence['binary_inputs']['worker'] = binary_hash(args.worker)
             endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
             wait_for_predicate('composition MFL', endpoint.exists,
                 time.monotonic() + 10, process=core)
@@ -141,6 +231,14 @@ def run(args, profile):
             x.XFetchName.argtypes = [C.c_void_p, C.c_ulong, C.POINTER(C.c_void_p)]
             x.XGetWindowAttributes.argtypes = [C.c_void_p, C.c_ulong,
                 C.POINTER(WindowAttributes)]
+            preview_updates = runtime.root / 'preview-roles.txt'
+            if args.complete_bundle_preview:
+                control.send(('Module PreviewObserver colorsets ' +
+                    str(preview_updates) + '\n').encode())
+                wait_for_predicate('actual native preview subscriber snapshot',
+                    lambda: set((0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12,
+                        13, 14, 20)) <= {row[0] for row in records(preview_updates)},
+                    time.monotonic() + 10, process=core)
 
             def pixel(px, py):
                 image = x.XGetImage(d, client.root, px, py, 1, 1, C.c_ulong(-1).value, 2)
@@ -230,7 +328,7 @@ def run(args, profile):
                 x.XCheckTypedWindowEvent.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
                     C.POINTER(Event)]
 
-                def key(symbol):
+                def press_key(symbol):
                     code = x.XKeysymToKeycode(d, x.XStringToKeysym(symbol))
                     assert code
                     for pressed in (1, 0):
@@ -316,7 +414,7 @@ def run(args, profile):
                         capture('high-' + appearance + '-menu.png')
                         return observed
                     finally:
-                        key(b'Escape')
+                        press_key(b'Escape')
                         wait_for_predicate('launcher dismissed before changing theme',
                             lambda: not pointer.grabbed(), time.monotonic() + 5, process=core)
 
@@ -495,7 +593,8 @@ def run(args, profile):
                         # Its top-level window selects KeyPress; verify that
                         # actual recipient before injecting the real key.
                         raise_command = ('WindowId ' + str(window) + ' Raise\n'
-                            if profile == 'classic-large' and args.palette_preview else '')
+                            if args.complete_bundle_preview or
+                            profile == 'classic-large' and args.palette_preview else '')
                         control.send((raise_command + 'WindowId ' + str(window) + ' Focus NoWarp\n').encode())
                         barrier()
                         def focused():
@@ -512,7 +611,7 @@ def run(args, profile):
                                 lambda: above_probe(window), time.monotonic() + 5, process=core)
                         witness['status'] = 'focus-observed'
                         if symbol:
-                            key(symbol)
+                            press_key(symbol)
                             witness['status'] = 'focused-key-submitted'
 
                     def defaults_editor():
@@ -560,6 +659,570 @@ def run(args, profile):
                         replacement.update(status='mapped-replacement-observed',
                             replacement_window=editor, xid_reused=editor == previous)
                         return editor
+
+                    def complete_editor_cases():
+                        nonlocal snapshot
+                        capabilities = request(resource='capabilities')
+                        assert capabilities['resource_transaction_version'] == 3
+                        assert capabilities['complete_bundle_preview'] is True
+                        evidence['v3_capabilities'] = capabilities
+                        ids = (0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12,
+                            13, 14, 20)
+                        menu_keys = ('palette', 'appearance', 'keep_wallpaper',
+                            'contrast', 'transparency', 'launcher_opacity',
+                            'wallpaper_palette', 'wallpaper_appearance')
+                        draft_keys = ('palette', 'appearance', 'keep_wallpaper',
+                            'contrast', 'day', 'night', 'transparency',
+                            'motion',
+                            'launcher_opacity', 'wallpaper_palette',
+                            'wallpaper_appearance')
+                        witness = PreviewWitness(client)
+                        cases = {}
+
+                        def scalar_pair():
+                            page = request(resource='menu-styles', limit=8)
+                            values = {row['name']: row['opacity_percent']
+                                for row in page['menu_styles'] if row['name'] in
+                                ('*', 'SlateLauncherStyle')}
+                            assert len(values) == 2
+                            return values
+
+                        def observed():
+                            rows = {row[0]: row for row in records(
+                                preview_updates)
+                                if row[0] in ids}
+                            assert set(rows) == set(ids), rows
+                            root_state = witness.root_state()
+                            return dict(roles=rows, root=root_state,
+                                buffered10=(witness.drawable(rows[10][8])
+                                    if rows[10][8] > 1 else None),
+                                scalars=scalar_pair())
+
+                        def local_phase():
+                            current = time.localtime()
+                            minute = current.tm_hour * 60 + current.tm_min
+                            return dict(hour=current.tm_hour,
+                                minute=current.tm_min,
+                                phase='light' if 7 * 60 <= minute < 19 * 60
+                                    else 'dark')
+
+                        def close_forms():
+                            for title, window in named_windows().items():
+                                if title == 'Desktop settings':
+                                    control.send(('WindowId %d Close\n' %
+                                        window).encode())
+                            control.send(
+                                b'KillModule FvwmForm SlateNoticeForm\n')
+                            barrier()
+                            wait_for_predicate('v3 prior forms retired',
+                                lambda: 'Desktop settings' not in (
+                                    named_windows())
+                                    and 'FVWM-X' not in named_windows(),
+                                time.monotonic() + 8, process=core)
+
+                        def resolved_wallpaper():
+                            settings = expanded_settings(request(scope='all'))[
+                                'settings']
+                            name = settings['wallpaper_palette']['resolved']
+                            appearance = settings[
+                                'wallpaper_appearance']['resolved']
+                            if appearance == 'auto':
+                                appearance = local_phase()['phase']
+                            assert name in palettes, name
+                            assert appearance in ('light', 'dark'), appearance
+                            return dict(palette=name, appearance=appearance)
+
+                        def settle(previous=None, previous_pair=None):
+                            # One overwritten receipt bounds diagnostics while
+                            # retaining the actual last failed readiness gate.
+                            def ready():
+                                appearance = request(resource='appearance')
+                                capability = appearance[
+                                    'complete_bundle_preview']
+                                colorsets = {identifier: request(
+                                    resource='colorsets', target=str(
+                                        identifier))['colorsets'][0]
+                                    for identifier in ids}
+                                pair = resolved_wallpaper()
+                                pending = [identifier for identifier, row in
+                                    colorsets.items() if row['update_state'] !=
+                                    'idle']
+                                diagnostic = dict(
+                                    context=evidence.get('v3_case_context'),
+                                    appearance=appearance,
+                                    colorset20=colorsets[20],
+                                    root_owned=capability['root_owned'],
+                                    pending_colorsets=pending,
+                                    resolved_pair=pair,
+                                    previous_resolved_pair=previous_pair,
+                                    persisted_wallpaper=json.loads(
+                                        state.read_text()).get('wallpaper'),
+                                    root_change_required=(previous is not None
+                                        and pair != previous_pair))
+                                diagnostic['observed_root'] = (
+                                    witness.root_state(owned=False) if
+                                    witness.property('_XROOTPMAP_ID') else None)
+                                evidence['v3_last_settle_poll'] = diagnostic
+                                if not capability['root_owned']:
+                                    diagnostic['waiting_for'] = 'root_owned'
+                                    return None
+                                if pending:
+                                    diagnostic['waiting_for'] = 'colorset_idle'
+                                    return None
+                                result = observed()
+                                diagnostic['observed_root'] = result['root']
+                                diagnostic['previous_root'] = (previous[
+                                    'root'] if previous is not None else None)
+                                if (diagnostic['root_change_required'] and
+                                        result['root'] == previous['root']):
+                                    diagnostic['waiting_for'] = 'root_change'
+                                    return None
+                                diagnostic['waiting_for'] = None
+                                return result
+                            return wait_for_predicate('v3 submitted resources',
+                                ready, time.monotonic() + 12, process=core)
+
+                        def setup(setting):
+                            nonlocal snapshot
+                            close_forms()
+                            phase = local_phase()
+                            selected_mode = mode
+                            if setting == 'appearance':
+                                selected_mode = ('dark' if phase['phase'] ==
+                                    'light' else 'light')
+                            snapshot = request(scope='all')
+                            previous = observed()
+                            old_pair = resolved_wallpaper()
+                            change(dict(palette=palette,
+                                appearance=selected_mode,
+                                contrast=('high' if setting == 'contrast'
+                                    else 'normal'),
+                                transparency=setting != 'transparency',
+                                keep_wallpaper=False, launcher_opacity=82,
+                                wallpaper_palette='grove',
+                                wallpaper_appearance=('light'
+                                    if selected_mode == 'dark'
+                                    else 'dark')))
+                            change(dict(day='07:00', night='19:00'))
+                            settle(previous, old_pair)
+                            if setting == 'keep_wallpaper':
+                                previous = observed()
+                                old_pair = resolved_wallpaper()
+                                change(dict(keep_wallpaper=True,
+                                    wallpaper_palette='dune',
+                                    wallpaper_appearance=selected_mode))
+                                settle(previous, old_pair)
+                            elif setting == 'appearance':
+                                previous = observed()
+                                old_pair = resolved_wallpaper()
+                                change(dict(wallpaper_palette='follow',
+                                    wallpaper_appearance='follow'))
+                                settle(previous, old_pair)
+                            if setting not in ('contrast', 'launcher_opacity'):
+                                control.send(b'MenuStyle * Translucent 69\n'
+                                    b'MenuStyle SlateLauncherStyle '
+                                    b'Translucent 87\n')
+                                barrier()
+                            snapshot = request(scope='all')
+                            effective = snapshot['settings']
+                            assert effective['palette']['effective'] == palette
+                            assert effective['appearance']['effective'] == (
+                                selected_mode)
+                            return phase, observed()
+
+                        def native_callback(setting, since, draft_values):
+                            for path in native.glob('module-*.jsonl'):
+                                for line in path.read_text().splitlines(
+                                        keepends=True):
+                                    if not line.endswith('\n'):
+                                        continue
+                                    row = json.loads(line)
+                                    text = row.get('text', '')
+                                    prefix = ('preview-resource-editor ' +
+                                        setting + ' ')
+                                    if (row.get('direction') == 'in' and
+                                            row['time'] >= since and
+                                            text.startswith(prefix)):
+                                        words = text.split()
+                                        assert len(words) == (
+                                            3 + len(draft_keys)), row
+                                        expected = [str(
+                                            draft_values[key]).lower()
+                                            for key in draft_keys]
+                                        assert words[3:] == expected, row
+                                        return row
+                            return None
+
+                        def recovery_notice(since, reason='cancelled'):
+                            assert reason in ('cancelled', 'abandoned')
+                            message = ('Resource preview ' + reason +
+                                '; previous resources restored.')
+                            expected = ('*SlateNoticeForm: TextHex x' +
+                                message.encode().hex())
+                            for identity in native.glob('module-*.json'):
+                                metadata = json.loads(identity.read_text())
+                                if Path(metadata['real']).name != 'FvwmDesktop':
+                                    continue
+                                path = identity.with_suffix('.jsonl')
+                                if not path.exists():
+                                    continue
+                                for line in path.read_text().splitlines(
+                                        keepends=True):
+                                    if not line.endswith('\n'):
+                                        continue
+                                    row = json.loads(line)
+                                    if (row.get('direction') == 'out' and
+                                            row['time'] >= since and
+                                            row.get('text') == expected):
+                                        return dict(row, decoded_notice=message,
+                                            actual_desktop=metadata)
+                            return None
+
+                        def from_editor(setting, draft_values):
+                            editor = defaults_editor()
+                            form_key(editor)
+                            if draft_values['palette'] != defaults['palette']:
+                                choices = []
+                                for child in children(editor):
+                                    attrs = attributes(child)
+                                    if (attrs and attrs.map_state == 2 and
+                                            attrs.width == attrs.height):
+                                        choices.append((attrs.y, attrs.x,
+                                            child, attrs))
+                                choices.sort(key=lambda item: item[:2])
+                                palette_row = [item for item in choices
+                                    if item[0] == choices[0][0]]
+                                assert len(palette_row) == 4
+                                selected = ('slate', 'dune', 'grove',
+                                    'ink').index(
+                                    draft_values['palette'])
+                                _, _, child, attrs = palette_row[selected]
+                                px, py = C.c_int(), C.c_int()
+                                under = C.c_ulong()
+                                assert x.XTranslateCoordinates(d, child,
+                                    client.root, attrs.width // 2,
+                                    attrs.height // 2, C.byref(px),
+                                    C.byref(py), C.byref(under))
+                                pointer.motion(px.value, py.value)
+                                pointer.button(True)
+                                pointer.button(False)
+                                x.XSync(d, 0)
+                                clicks = evidence.setdefault(
+                                    'v3_palette_choice', [])
+                                clicks.append(
+                                    dict(window=editor, choice=child,
+                                        value=draft_values['palette'],
+                                        x=px.value, y=py.value))
+                            if not evidence.get('complete_editor_capture'):
+                                capture('complete-bundle-editor.png')
+                                evidence['complete_editor_capture'] = True
+                            started = time.monotonic()
+                            form_key(editor, b'F5')
+                            wait_for_predicate('actual F5 choice menu grab',
+                                pointer.grabbed, time.monotonic() + 8,
+                                process=core)
+                            # Home selects the first actionable native menu row.
+                            # The real callback receipt proves which row ran.
+                            press_key(b'Home')
+                            for _ in range(menu_keys.index(setting)):
+                                press_key(b'Down')
+                            if not evidence.get('complete_chooser_capture'):
+                                mapped = []
+                                for target in children(client.root):
+                                    attrs = attributes(target)
+                                    if (attrs and attrs.map_state == 2 and
+                                            attrs.save_under and
+                                            attrs.width > 20 and
+                                            attrs.height > 20):
+                                        mapped.append(target)
+                                assert mapped and pointer.grabbed(), mapped
+                                capture('complete-bundle-chooser.png')
+                                evidence['complete_chooser_capture'] = dict(
+                                    selected_key=setting, mapped_menus=mapped)
+                            press_key(b'Return')
+                            receipt = wait_for_predicate('selected callback',
+                                lambda: native_callback(setting, started,
+                                    draft_values),
+                                time.monotonic() + 8, process=core)
+                            title = ('Preview menu opacity' if setting ==
+                                'launcher_opacity' else 'Preview ' + setting)
+                            window = wait_for_predicate('actual ' + title,
+                                lambda: named_windows().get(title),
+                                time.monotonic() + 12, process=core)
+                            form_key(window)
+                            if (setting == 'wallpaper_palette' and not
+                                    evidence.get('wallpaper_preview_capture')):
+                                capture('complete-wallpaper-preview.png')
+                                evidence['wallpaper_preview_capture'] = dict(
+                                    selected_key=setting, title=title,
+                                    window=window)
+                            return window, title, receipt
+
+                        metadata = expanded_settings(request(scope='all'))
+                        assert {key for key, row in metadata['settings'].items()
+                            if row['native_preview']} == set(menu_keys)
+                        for setting in menu_keys:
+                            for ending in ('cancel', 'save'):
+                                evidence['v3_case_context'] = dict(
+                                    setting=setting, ending=ending,
+                                    stage='setup')
+                                phase, original = setup(setting)
+                                draft_values = dict(defaults)
+                                if setting == 'palette' and palette == 'slate':
+                                    draft_values['palette'] = 'dune'
+                                before = state.read_bytes()
+                                baseline = json.loads(before)
+                                window, title, callback = from_editor(
+                                    setting, draft_values)
+                                candidate = observed()
+                                assert candidate != original, (
+                                    setting, candidate)
+                                assert state.read_bytes() == before
+                                if setting in ('palette', 'appearance',
+                                        'keep_wallpaper', 'wallpaper_palette',
+                                        'wallpaper_appearance'):
+                                    assert candidate['scalars'] == (
+                                        original['scalars'])
+                                symbol = (b'Escape' if ending == 'cancel' else
+                                    b'F2' if setting == 'launcher_opacity'
+                                    else b'Return')
+                                form_key(window, symbol)
+                                wait_for_predicate('v3 preview Form retired',
+                                    lambda: title not in named_windows(),
+                                    time.monotonic() + 8, process=core)
+                                if ending == 'cancel':
+                                    wait_for_predicate('exact v3 rollback',
+                                        lambda: observed() == original,
+                                        time.monotonic() + 10, process=core)
+                                    assert state.read_bytes() == before
+                                else:
+                                    def saved_one():
+                                        actual = json.loads(state.read_text())
+                                        expected = dict(baseline,
+                                            **{setting: draft_values[setting]})
+                                        actual.pop('wallpaper', None)
+                                        expected.pop('wallpaper', None)
+                                        return actual == expected
+                                    wait_for_predicate('preference saved',
+                                        saved_one, time.monotonic() + 8,
+                                        process=core)
+                                    assert observed() == candidate
+                                returned = wait_for_predicate('draft returned',
+                                    lambda: named_windows().get(
+                                        'Desktop settings'),
+                                    time.monotonic() + 8, process=core)
+                                before_apply = observed()
+                                before_apply_pair = resolved_wallpaper()
+                                evidence['v3_case_context']['stage'] = (
+                                    'apply-returned-draft')
+                                form_key(returned, b'F3')
+                                def applied_draft():
+                                    value = request(scope='all')
+                                    return (value if all(value['settings'][key][
+                                        'saved'] == wanted for key, wanted in
+                                        draft_values.items()) else None)
+                                snapshot = wait_for_predicate('draft values',
+                                    applied_draft, time.monotonic() + 10,
+                                    process=core)
+                                settle(before_apply, before_apply_pair)
+                                end_phase = local_phase()
+                                assert phase['phase'] == end_phase['phase'], (
+                                    'schedule crossed during preview',
+                                    phase, end_phase)
+                                cases[setting + '-' + ending] = dict(
+                                    callback=callback, original=original,
+                                    candidate=candidate,
+                                    selected_value=draft_values[setting],
+                                    saved_baseline=baseline,
+                                    phase_before=phase, phase_after=end_phase,
+                                    draft_preserved=True,
+                                    ordinary_save_available=True)
+
+                        # Defaults exercises high->normal and false->true.
+                        # Observe the opposite directions through the same
+                        # native controller command and confirmation consumer.
+                        for setting, value in (('contrast', 'high'),
+                                ('transparency', False)):
+                            close_forms()
+                            snapshot = request(scope='all')
+                            before = state.read_bytes()
+                            original = settle()
+                            text = str(value).lower()
+                            control.send(('SendToModule FvwmDesktop '
+                                'preview-resource ' + snapshot['provider'] +
+                                ' ' + setting + ' ' + text + '\n').encode())
+                            title = 'Preview ' + setting
+                            window = wait_for_predicate('opposite preview',
+                                lambda: named_windows().get(title),
+                                time.monotonic() + 12, process=core)
+                            form_key(window)
+                            candidate = observed()
+                            assert candidate != original
+                            if setting == 'contrast':
+                                assert candidate['scalars'] == {
+                                    '*': 100, 'SlateLauncherStyle': 100}
+                            else:
+                                assert candidate['buffered10'] is None
+                            cancel_started = time.monotonic()
+                            form_key(window, b'Escape')
+                            wait_for_predicate('opposite exact rollback',
+                                lambda: observed() == original,
+                                time.monotonic() + 10, process=core)
+                            # The controller clears its pending transaction
+                            # only after consuming terminal recovery. Pixels
+                            # alone can precede that actual consumer callback.
+                            completed = wait_for_predicate(
+                                'Desktop consumed terminal recovery',
+                                lambda: recovery_notice(cancel_started),
+                                time.monotonic() + 10, process=core)
+                            assert state.read_bytes() == before
+                            cases['opposite-' + setting] = dict(
+                                original=original, candidate=candidate,
+                                terminal_consumer=completed)
+
+                        close_forms()
+                        snapshot = request(scope='all')
+                        before, original = state.read_bytes(), settle()
+                        control.send(('SendToModule FvwmDesktop '
+                            'preview-resource ' + snapshot['provider'] +
+                            ' keep_wallpaper true\n').encode())
+                        wait_for_predicate('unchanged projection refusal',
+                            lambda: named_windows().get('FVWM-X'),
+                            time.monotonic() + 8, process=core)
+                        barrier()
+                        assert not any(title.startswith('Preview ')
+                            for title in named_windows())
+                        assert observed() == original
+                        assert state.read_bytes() == before
+                        change({'keep_wallpaper': True})
+                        assert json.loads(
+                            state.read_text())['keep_wallpaper'] is True
+                        saved_visible = settle()
+                        assert saved_visible['root'] == original['root']
+                        assert saved_visible['scalars'] == original['scalars']
+                        assert all(saved_visible['roles'][identifier][1:5] ==
+                            original['roles'][identifier][1:5]
+                            for identifier in ids)
+                        assert saved_visible['buffered10']['pixels_sha256'] == (
+                            original['buffered10']['pixels_sha256'])
+                        cases['retain-current-refusal-ordinary-save'] = dict(
+                            original=original, ordinary_save=True,
+                            reason='no changed visible projection')
+
+                        close_forms()
+                        snapshot = request(scope='all')
+                        change({'keep_wallpaper': False})
+                        original = settle()
+                        snapshot = request(scope='all')
+                        before = state.read_bytes()
+                        control.send(('SendToModule FvwmDesktop '
+                            'preview-resource ' + snapshot['provider'] +
+                            ' palette dune\n').encode())
+                        window = wait_for_predicate('file-race preview active',
+                            lambda: named_windows().get('Preview palette'),
+                            time.monotonic() + 12, process=core)
+                        form_key(window)
+                        external = dict(json.loads(before), motion=True)
+                        external_bytes = (json.dumps(
+                            external, indent=3) + '\n').encode()
+                        state.write_bytes(external_bytes)
+                        abandon_started = time.monotonic()
+                        form_key(window, b'Return')
+                        wait_for_predicate('external-file runtime recovery',
+                            lambda: observed() == original,
+                            time.monotonic() + 10, process=core)
+                        abandoned = wait_for_predicate(
+                            'Desktop consumed file-race abandonment',
+                            lambda: recovery_notice(abandon_started,
+                                'abandoned'),
+                            time.monotonic() + 10, process=core)
+                        assert state.read_bytes() == external_bytes
+                        snapshot = request(scope='all')
+                        snapshot = request('action', operation='reload',
+                            provider=snapshot['provider'],
+                            generation=snapshot['generation'])
+                        barrier()
+                        cases['external-file-change-preserved'] = dict(
+                            original=original, terminal_consumer=abandoned,
+                            external_sha256=hashlib.sha256(
+                                external_bytes).hexdigest())
+
+                        # The controller is an actual proxied native module.
+                        # Its death must retire its lease, preserving the core
+                        # root even when Backer and its source are unrelated.
+                        close_forms()
+                        snapshot = request(scope='all')
+                        change({'keep_wallpaper': False})
+                        original = settle()
+                        snapshot = request(scope='all')
+                        control.send(('SendToModule FvwmDesktop '
+                            'preview-resource ' + snapshot['provider'] +
+                            ' palette dune\n').encode())
+                        window = wait_for_predicate('controller-loss preview',
+                            lambda: named_windows().get('Preview palette'),
+                            time.monotonic() + 12, process=core)
+                        form_key(window)
+                        module = max((json.loads(path.read_text()) for path in
+                            native.glob('module-*.json') if json.loads(
+                                path.read_text())['real'] == str(
+                                    build / 'bin/FvwmPrompt/FvwmDesktop')),
+                            key=lambda row: row['started'])
+                        identity = child_identity(
+                            module['child'], module['proxy'])
+                        assert identity
+                        control.send(b'KillModule FvwmDesktop\n')
+                        waited_path = native / (
+                            'stopped-%d.json' % module['proxy'])
+                        waited = wait_for_predicate('exact Desktop native Wait',
+                            lambda: json.loads(waited_path.read_text())
+                                if waited_path.exists() else None,
+                            time.monotonic() + 8, process=core)
+                        assert waited['child'] == module['child']
+                        assert waited['returncode'] is not None
+                        wait_for_predicate('controller-loss exact rollback',
+                            lambda: observed() == original,
+                            time.monotonic() + 10, process=core)
+                        old_provider = snapshot['provider']
+                        control.send(
+                            b'ModuleSynchronous Timeout 15 FvwmDesktop\n')
+                        def restarted():
+                            nonlocal serial
+                            serial += 1
+                            token = 'v3-controller-restart-%d' % serial
+                            rpc.send(frame(token,
+                                resource='settings', scope='all'))
+                            message = rpc.record()['reply']
+                            assert message['id'] == token
+                            if message['status'] != 'ok':
+                                assert message['error']['code'] == (
+                                    'not_ready'), message
+                                return None
+                            value = message['result']
+                            return (value if value['provider'] != old_provider
+                                else None)
+                        snapshot = wait_for_predicate('replacement Desktop',
+                            restarted, time.monotonic() + 15, process=core)
+                        barrier()
+                        cases['actual-Desktop-loss'] = dict(
+                            identity=identity, wait=waited,
+                            replacement_provider=snapshot['provider'],
+                            exact_original_restored=True,
+                            old_confirmation_still_mapped=(
+                                named_windows().get(
+                                    'Preview palette') == window))
+                        if named_windows().get('Preview palette') == window:
+                            control.send((
+                                'WindowId %d Close\n' % window).encode())
+
+                        close_forms()
+                        snapshot = request(scope='all')
+                        restore_baseline()
+                        settle()
+                        evidence['complete_bundle_editor'] = cases
+
+                    if args.complete_bundle_preview:
+                        complete_editor_cases()
+                        return
 
                     def preview_from_editor():
                         editor = defaults_editor()
@@ -1038,8 +1701,11 @@ def run(args, profile):
                     time.monotonic() + 10, process=core)
                 x.XSelectInput(d, probe, 1 << 17)
                 x.XSync(d, 0)
-                if args.contrast_preview or args.palette_preview:
+                if (args.contrast_preview or args.palette_preview or
+                        args.complete_bundle_preview):
                     resource_preview_cases(probe, normal_bar, independent)
+                    if args.complete_bundle_preview:
+                        return
                 observations = {}
                 for appearance in ('dark', 'light'):
                     change({'contrast': 'high', 'appearance': appearance})
@@ -1254,16 +1920,43 @@ def run(args, profile):
             evidence['state'] = json.loads(state.read_text())
             evidence['configuration_sha256'] = hashlib.sha256(config.read_bytes()).hexdigest()
             evidence['palettes_sha256'] = hashlib.sha256((root/'palettes.json').read_bytes()).hexdigest()
+            assert evidence['source_sha256'] == hashes(source, inputs), (
+                'source changed during run')
+            assert all(binary_hash(item['path']) == item for item in
+                evidence['binary_inputs'].values()), 'binary changed during run'
+            assert not errors.unexpected, errors.unexpected
+            evidence['status'] = 'passed'
+        except BaseException as failure:
+            evidence.update(status='failed', failure=repr(failure))
+            raise
         finally:
+            def clean(label, operation):
+                try:
+                    return operation()
+                except BaseException as failure:
+                    evidence['status'] = 'failed'
+                    evidence.setdefault('cleanup_failures', []).append(dict(
+                        step=label, error=repr(failure)))
             for connection in (control, rpc):
                 if connection:
-                    connection.close()
+                    clean('connection', connection.close)
+            if core:
+                clean('core', lambda: core.close(time.monotonic() + 6))
+                evidence['core_wait'] = dict(returncode=core.process.returncode)
+            if native:
+                evidence['module_waits'] = clean('actual module Wait receipts',
+                    lambda: cleanup_receipts(native))
+                clean('module records', lambda:
+                    shutil.copytree(native, out / 'native-records'))
             if errors:
-                errors.close_display()
+                clean('X observer', errors.close_display)
             elif client:
-                client.close()
+                clean('X client', client.close)
             for log in runtime.root.glob('*.log'):
-                shutil.copy2(log, out / log.name)
+                clean('copy ' + log.name,
+                    lambda p=log: shutil.copy2(p, out / p.name))
+            if evidence.get('observer_unexpected_x_errors'):
+                evidence['status'] = 'failed'
             (out / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')
             (out / 'capture-manifest.json').write_text(json.dumps({
                 'profile': profile,
@@ -1271,13 +1964,25 @@ def run(args, profile):
                 'palettes_sha256': evidence.get('palettes_sha256'),
                 'captures': evidence.get('captures', []),
                 'inspection': 'pending human/lead image inspection'}, indent=2) + '\n')
+            if evidence['status'] != 'passed' and sys.exc_info()[0] is None:
+                raise AssertionError(evidence.get('cleanup_failures', evidence))
     assert not evidence['observer_unexpected_x_errors'], evidence
 
 
 if __name__ == '__main__':
+    if len(sys.argv) > 1 and sys.argv[1] == '--module-proxy':
+        raise SystemExit(module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:]))
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
+    parser.add_argument('--execution-profile', default='unspecified',
+        help='Record native/emulated execution separately from passing checks')
+    parser.add_argument('--complete-bundle-preview', action='store_true',
+        help='Exercise the actual F5 eight-key editor and v3 root bundles')
+    parser.add_argument('--probe', type=Path,
+        help='Actual image-owner-probe native subscriber for v3 root witnesses')
+    parser.add_argument('--worker', type=Path,
+        help='Actual private background/image worker; default build-tree helper')
     parser.add_argument('--contrast', action='store_true',
         help='Run high contrast, native Form/menu pixels and opacity recovery cases')
     parser.add_argument('--contrast-preview', action='store_true',
@@ -1287,7 +1992,19 @@ if __name__ == '__main__':
     parser.add_argument('--profiles', nargs='+', default=['slate-dark', 'dune-light', 'classic-large'],
         choices=['slate-dark', 'dune-light', 'classic-large'])
     options = parser.parse_args()
-    if options.contrast_preview or options.palette_preview:
+    if options.complete_bundle_preview:
+        if options.execution_profile == 'unspecified':
+            parser.error('v3 requires an explicit --execution-profile label')
+        options.probe = (options.probe or
+            options.build / 'tests/image-owner-probe').resolve()
+        if not options.probe.is_file() or not os.access(options.probe, os.X_OK):
+            parser.error('v3 requires the actual --probe native subscriber')
+        options.worker = (options.worker or
+            options.build / 'bin/fvwm-image-svg-worker').resolve()
+        if not options.worker.is_file() or not os.access(options.worker, os.X_OK):
+            parser.error('v3 requires the actual --worker image helper')
+    if (options.contrast_preview or options.palette_preview or
+            options.complete_bundle_preview):
         options.contrast = True
     for selected in options.profiles:
         run(options, selected)

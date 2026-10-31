@@ -79,6 +79,10 @@ static void test_resource_policy(void)
 	assert(!preview_metadata_add(&copied, SIZE_MAX));
 	assert(preview_generation_room(generation));
 	assert(!preview_generation_room(NULL));
+	assert(preview_generation_room(
+		"00000000000000000000000000000000fffffffffffffff9"));
+	assert(!preview_generation_room(
+		"00000000000000000000000000000000fffffffffffffffa"));
 	assert(!preview_generation_room(
 		"00000000000000000000000000000000fffffffffffffffc"));
 	assert(preview_resource_colors_supported(0, 0, 100));
@@ -93,6 +97,35 @@ static void test_resource_policy(void)
 		PREVIEW_RESOURCE_OWNER_GONE);
 	assert(preview_resource_guard_check(100, 100, false, false) ==
 		PREVIEW_RESOURCE_CONFLICT);
+}
+
+static void test_complete_plan(void)
+{
+	struct preview_request request;
+	char roles[337], path[345], text[1001];
+
+	memset(roles, 'a', 336);
+	roles[336] = '\0';
+	/* 256 pathname bytes have 344 canonical padded base64 bytes. */
+	memset(path, 'Y', 340);
+	memcpy(path + 340, "YQ==", 5);
+	snprintf(text, sizeof(text),
+		"a 0000000000000001 0000000000000001 prepare %s "
+		"- 0 15000 3:%s:0d:031:042:123abc:%s",
+		generation, roles, path);
+	assert(preview_request_parse(text, &request));
+	assert(request.resource_kind == PREVIEW_RESOURCE_COMPLETE);
+	assert(request.plan.flags == 13 && request.plan.menu_opacity == 31 &&
+		request.plan.launcher_opacity == 42);
+	assert(strlen(request.plan.path) == 256);
+	assert(PREVIEW_PLAN_TOKEN_MAX == 701);
+	assert(!background_plan_parse("10:100:100:000000:-", &request.plan));
+	assert(!background_plan_parse("06:100:100:000000:-", &request.plan));
+	assert(!background_plan_parse("04:100:100:000000:YQ=", &request.plan));
+	assert(!background_plan_parse("04:100:100:000000:YR==", &request.plan));
+	assert(!background_plan_parse("04:100:100:000000:AA==", &request.plan));
+	assert(!background_plan_parse("00:100:100:000000:YQ==", &request.plan));
+	assert(background_plan_parse("01:000:100:000000:-", &request.plan));
 }
 
 static void test_resource_menu_opacity(void)
@@ -136,6 +169,18 @@ int main(void)
 		"a;Exec 0000000000000001 0000000000000001 query - - 0 0 -"};
 
 	test_resource_policy();
+	test_complete_plan();
+	assert(preview_publication_queue_check(0) == PREVIEW_PUBLICATION_READY);
+	assert(preview_publication_queue_check(64) == PREVIEW_PUBLICATION_READY);
+	assert(preview_publication_queue_check(65) == PREVIEW_PUBLICATION_RETRY);
+	assert(preview_publication_queue_check(SIZE_MAX) ==
+		PREVIEW_PUBLICATION_RETRY);
+	assert(preview_root_notice_matches(42, 9, 42, 9, false, true));
+	assert(!preview_root_notice_matches(42, 9, 42, 9, true, true));
+	assert(!preview_root_notice_matches(42, 9, 42, 9, false, false));
+	assert(!preview_root_notice_matches(42, 10, 42, 9, false, true));
+	assert(!preview_root_notice_matches(43, 9, 42, 9, false, true));
+	assert(!preview_root_notice_matches(42, 0, 42, 0, false, true));
 	test_resource_menu_opacity();
 
 	assert(preview_request_parse(

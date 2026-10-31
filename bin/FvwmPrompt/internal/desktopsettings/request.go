@@ -15,7 +15,7 @@ type Snapshot struct {
 	Generation, Instance        string
 	PersistenceError            *string
 	Submitted                   bool
-	RuntimeHeld                 map[string]string
+	RuntimeHeld                 PreviewValues
 	Native                      NativeObservation
 	SessionAvailable            bool
 }
@@ -68,6 +68,14 @@ func Prepare(s Snapshot, changes Values, minute int) (Values, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Carry only valid, unmodified keys from confirmed unsaved runtime state.
+	// Apply these before retention resolution, so a boolean keep_wallpaper hold
+	// cannot substitute the saved wallpaper during an unrelated edit.
+	for key, held := range s.RuntimeHeld {
+		if _, explicit := changes[key]; !explicit && held.ValidFor(key) {
+			effective[key] = held.Value()
+		}
+	}
 	// Retention belongs to the current effective wallpaper, including one
 	// selected by an override, rather than the older saved wallpaper pair.
 	if effective["keep_wallpaper"] == true {
@@ -106,7 +114,7 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 			"available":          true,
 			"capability":         "owned-desktop-preference",
 			"preview":            false,
-			"native_preview":     key == "launcher_opacity" || key == "contrast" || key == "palette" || key == "appearance",
+			"native_preview":     PreviewKey(key),
 			"runtime_constraint": nil,
 			"saved":              s.Saved[key],
 			"effective":          s.Effective[key],
@@ -161,9 +169,9 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		if _, found := s.Overrides[key]; found {
 			v["source"] = "module-configuration"
 		}
-		if _, held := s.RuntimeHeld[key]; held {
+		if held, exists := s.RuntimeHeld[key]; exists && held.ValidFor(key) {
 			v["source"] = "runtime-kept-preference-unsaved"
-			v["persistence_error"] = "Runtime kept; preference not saved. Reload or save this setting again."
+			v["persistence_error"] = "Runtime unsaved."
 		}
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"

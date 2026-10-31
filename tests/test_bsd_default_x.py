@@ -31,6 +31,20 @@ class DefaultXTests(unittest.TestCase):
                        subprocess.CompletedProcess([], status, stdout='ready')):
                 self.assertEqual(query_ready(':197', {}), expected)
 
+    def test_complete_preview_uses_installed_paths_and_real_native_fixture(self):
+        args = argparse.Namespace(server_only=False, complete_preview_only=True,
+            fvwm=Path('/owned/core'), mfl=Path('/owned/mfl'),
+            backer=Path('/owned/backer'), image_worker=Path('/owned/image-worker'),
+            preview_probe=Path('/owned/probe'), preview_config_header=None,
+            execution_profile='emulated-cpu')
+        self.assertEqual(driver.fixture_commands(args, Path('/build'),
+            Path('/source')), [('complete-preview', [
+                '--complete-bundle-only', '--execution-profile', 'emulated-cpu',
+                '--fvwm', '/owned/core', '--mfl', '/owned/mfl',
+                '--backer', '/owned/backer', '--probe', '/owned/probe',
+                '--worker', '/owned/image-worker',
+                '--config-header', '/build/config.h'])])
+
     def test_authority_wire_record(self):
         cookie = bytes(range(16))
         record = authority_record(197, cookie)

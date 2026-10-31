@@ -4,7 +4,7 @@
 # Foundation; either version 2 of the License, or any later version.
 """Opt-in owned actual-X/native-helper/GTK3 application preference fixture.
 
-Run in the lead's Linux guest against one coherent build. No compiler, package
+Run in the lead's executor against one coherent build. No compiler, package
 installer, provider emulator or synthetic XSETTINGS publisher is used. Direct
 pipe tests invoke the actual C helper with no arguments; the controller group
 uses its direct real child. Transparent module proxies only record actual
@@ -14,6 +14,8 @@ Default --groups wire controller runs raw pipe checks once on the first profile
 and controller/GTK/editor checks on every selected profile. --groups wire runs
 only the first profile, without Desktop, GTK, Xcursor consumers or captures.
 --groups controller omits the raw helper cases explicitly.
+FreeBSD/OpenBSD permit only --groups wire, using actual owned child Wait and
+declared executable input hashes; Linux /proc identity is not inferred there.
 --installed-helper-lookup removes the helper override from the owned Desktop
 process environment; supply explicit absolute --desktop and --helper installed
 paths. The latter remains the expected real child identity and hash input.
@@ -23,6 +25,11 @@ an 'environment'/'env' object. The caller supplies an existing private GTK bundl
 this fixture never installs one. GTK is required for a successful full run.
 Cached Xcursor clients, non-GTK toolkits, browsers, physical/native-CPU hardware,
 sanitisers and the wider platform/release gates remain separate qualifications.
+--portal-helper additionally observes the actual installed Settings frontend
+through the existing Desktop motion changes and native-owner retirement. Supply
+--frontend, --portal-descriptor, --activation-service and optional --portal-env
+for an already installed private runtime; this probe does not infer application
+effects from a public protocol value.
 """
 import argparse
 import ctypes as C
@@ -71,6 +78,24 @@ GTK_KEYS = {
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def owned_spawn_identity(process, argv, env):
+    """Keep Linux kernel evidence; BSD records only the owned Popen contract."""
+    if sys.platform == 'linux':
+        return child_identity(process.pid, os.getpid())
+    assert sys.platform.startswith(('freebsd', 'openbsd'))
+    arguments = [str(v) for v in argv]
+    executable = (arguments[0] if '/' in arguments[0] else
+        shutil.which(arguments[0], path=env.get('PATH', os.defpath)))
+    assert executable is not None, arguments
+    path = Path(executable).resolve()
+    assert path.is_file() and os.access(path, os.X_OK), path
+    return dict(kind='owned-spawn', child=process.pid, parent=os.getpid(),
+        platform=sys.platform, declared_argv=arguments,
+        executable_input=dict(path=str(path), sha256=digest(path)),
+        kernel_image='not observed; declared executable input only',
+        wait_method='owned Popen.wait; actual returncode recorded on teardown')
 
 
 def decode_xsettings(data):
@@ -257,7 +282,7 @@ class PipeChild:
             start_new_session=True)
         self.pending = bytearray()
         self.receipt = dict(argv=[str(p) for p in argv], pid=self.process.pid,
-            identity=child_identity(self.process.pid, os.getpid()), wire=[])
+            identity=owned_spawn_identity(self.process, argv, env), wire=[])
         evidence.setdefault('pipe_children', {})[name] = self.receipt
         self.closed = False
 
@@ -642,6 +667,7 @@ def toolkit_environment(args, env, evidence):
 
 
 def xcursor_probe():
+    assert sys.platform == 'linux', 'controller Xcursor probe requires Linux'
     """Fresh real libXcursor consumer, before any display resource cache exists."""
     client = connect_client(os.environ['DISPLAY'])
     try:
@@ -700,6 +726,7 @@ def wait_gtk(peer, values):
 
 
 def controller_cases(args, profile, runtime, env, out, evidence, observer, native):
+    assert sys.platform == 'linux', 'controller/toolkit observations require Linux'
     source, build = Path(__file__).resolve().parents[2], args.build
     modules, user = runtime.root / 'modules', runtime.root / 'user'
     for path in (modules, user, native):
@@ -764,9 +791,13 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
     core = runtime.start('core', [str(args.fvwm), '-d', env['DISPLAY'],
         '-f', str(config)], 'core.log', env)
     control = peer = None
+    portal = None
     toolkits = []
     owned_helpers = {}
     try:
+        if args.portal_helper:
+            from settings_portal_live import start_cfg_probe
+            portal = start_cfg_probe(args, runtime, env, out, evidence)
         endpoint = runtime.root / ('fvwm_mfl_' + env['DISPLAY'].replace(':', '_') + '.sock')
         def connected():
             module = module_records(native, args.mfl)
@@ -911,6 +942,10 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
             evidence['limits']['installed_helper_lookup'] = (
                 'passed installed default lookup; exact direct native child observed')
         published = wait_snapshot(observer, SETTINGS, core)
+        if portal:
+            portal.wait_value(1, public=True, source=dict(
+                kind='actual-Desktop-CFG-motion-false', native_helper=helper,
+                x_owner=published['owner'], x_serial=published['serial']))
         assert observation(ready)['xserial'] == published['serial']
         assert observer.lookup() == {'Fixture.keep': 'controller-preserved',
             'Xcursor.theme': 'Adwaita', 'Xcursor.size': '24'}
@@ -1048,6 +1083,10 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
         change(dict(application_font='Sans 22', icon_theme='hicolor',
             cursor_theme='default', cursor_size=32, motion=True))
         publication = wait_snapshot(observer, changed, core)
+        if portal:
+            portal.wait_value(0, public=True, source=dict(
+                kind='actual-Desktop-CFG-motion-true', native_helper=helper,
+                x_owner=publication['owner'], x_serial=publication['serial']))
         gtk_after = wait_gtk(existing, changed)
         old_notifications = len(gtk_before['notifications'])
         notified = {row['property'] for row in gtk_after['notifications'][old_notifications:]}
@@ -1112,11 +1151,25 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
             actual_rows=published_rows, saved_bytes_unchanged=True)
 
         # Disable must remove publication and reap the exact direct native child.
+        if portal:
+            change({'motion': False})
+            portal_publication = wait_snapshot(observer,
+                {**changed, 'Gtk/EnableAnimations': 0}, core)
+            portal.wait_value(1, public=True, source=dict(
+                kind='actual-Desktop-CFG-before-owner-retirement',
+                native_helper=helper, x_owner=portal_publication['owner'],
+                x_serial=portal_publication['serial']))
         change({'native_settings_enabled': False})
         off = wait_readiness({'off'})
         retired = wait_retired(helper, core)
         assert helper_children(desktop_record(), args.helper) == []
         assert observer.owner() == 0 and observer.resources() == baseline
+        if portal:
+            portal.wait_value(0, public=True, source=dict(
+                kind='actual-native-owner-retired',
+                retirement=retired, x_owner=0,
+                meaning='no preference; not an application animation claim'))
+            change({'motion': True})
         evidence['cases']['direct_child_disable_eof_cleanup_reap'] = dict(off=off,
             retirement=retired, actual_wait_owner='Go supervisor; kernel disappearance observed')
 
@@ -1198,14 +1251,20 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
                     os.kill(identity['child'], signal.SIGTERM)
                 wait_retired(identity)
         evidence['owned_helpers'] = list(owned_helpers.values())
+        if portal:
+            portal.close()
 
 
 def run(args, profile):
+    assert sys.platform == 'linux' or (
+        sys.platform.startswith(('freebsd', 'openbsd')) and args.groups == ['wire'])
     source = Path(__file__).resolve().parents[2]
     out = args.artifacts_dir / profile
     out.mkdir(parents=True, exist_ok=False)
     evidence = dict(status='running', profile=profile,
         execution_profile=args.execution_profile, groups=args.groups,
+        platform=sys.platform, observed_os=dict(zip(
+            ('sysname', 'nodename', 'release', 'version', 'machine'), os.uname())),
         cases={}, screenshots={}, cleanup_failures=[],
         toolkit_capability=('pending actual runtime' if 'controller' in args.groups
             else 'not run; controller group omitted'),
@@ -1235,6 +1294,10 @@ def run(args, profile):
         'bin/native_settings_policy.h', 'bin/meson.build',
         'bin/FvwmPrompt/meson.build', 'bin/FvwmPrompt/cmd/fvwmdesktop/main.go',
         'modules/FvwmMFL/request.c']
+    if args.portal_helper:
+        inputs.extend(['tests/live_x/settings_portal_live.py',
+            'bin/settings_portal.c', 'bin/settings_portal_policy.c',
+            'bin/settings_portal_policy.h'])
     for directory in ('bin/FvwmPrompt/internal/desktopcontroller',
             'bin/FvwmPrompt/internal/desktopsettings'):
         inputs.extend(str(p.relative_to(source)) for p in sorted((source / directory).glob('*.go')))
@@ -1320,6 +1383,9 @@ def run(args, profile):
 
 
 def main():
+    if sys.platform != 'linux' and len(sys.argv) > 1 and sys.argv[1] in (
+            '--xcursor-probe', '--module-proxy', '--capture'):
+        raise SystemExit('controller helper modes require Linux')
     if len(sys.argv) == 2 and sys.argv[1] == '--xcursor-probe':
         print(json.dumps(xcursor_probe()))
         return 0
@@ -1333,7 +1399,7 @@ def main():
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--execution-profile', required=True,
-        choices=('native-linux', 'emulated-linux'))
+        choices=('native-linux', 'emulated-linux', 'native-cpu', 'emulated-cpu'))
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     parser.add_argument('--groups', nargs='+', choices=('wire', 'controller'),
         default=['wire', 'controller'],
@@ -1342,6 +1408,8 @@ def main():
         help='unset helper override; requires absolute installed --desktop and --helper')
     parser.add_argument('--toolkit-env', type=Path,
         help='existing private GTK runtime environment JSON receipt')
+    from settings_portal_live import portal_arguments, validate_portal_args
+    portal_arguments(parser, prefix='portal-')
     defaults = dict(fvwm='fvwm3', mfl='modules/FvwmMFL/FvwmMFL',
         form='modules/FvwmForm/FvwmForm', desktop='bin/FvwmPrompt/FvwmDesktop',
         worker='bin/FvwmPrompt/fvwm-desktop-worker', helper='bin/fvwm-native-settings',
@@ -1349,14 +1417,32 @@ def main():
     for name in defaults:
         parser.add_argument('--' + name, type=Path)
     args = parser.parse_args()
+    if args.portal_helper:
+        if 'controller' not in args.groups:
+            parser.error('--portal-helper requires the real controller group')
+        portal_options = argparse.Namespace(**{
+            **vars(args), 'helper': args.portal_helper})
+        validate_portal_args(parser, portal_options, frontend=True)
+        args.portal_helper = portal_options.helper
+        for name in ('frontend', 'portal_env', 'portal_descriptor',
+                'activation_service'):
+            setattr(args, name, getattr(portal_options, name))
+    elif any((args.frontend, args.portal_env, args.portal_descriptor,
+            args.activation_service)):
+        parser.error('portal options require explicit --portal-helper')
     if args.installed_helper_lookup:
         if 'controller' not in args.groups:
             parser.error('--installed-helper-lookup requires the controller group')
         if any(getattr(args, name) is None or not getattr(args, name).is_absolute()
                 for name in ('desktop', 'helper')):
             parser.error('--installed-helper-lookup requires absolute --desktop and --helper')
-    if sys.platform != 'linux':
-        parser.error('explicit opt-in fixture runs only in the owning Linux guest')
+    if sys.platform.startswith(('freebsd', 'openbsd')):
+        if args.groups != ['wire']:
+            parser.error('BSD supports only --groups wire; controller requires Linux')
+        if args.execution_profile not in ('native-cpu', 'emulated-cpu'):
+            parser.error('BSD requires --execution-profile native-cpu or emulated-cpu')
+    elif sys.platform != 'linux':
+        parser.error('requires an owning Linux, FreeBSD or OpenBSD executor')
     if not shutil.which('Xvfb'):
         parser.error('unavailable required actual Xvfb server')
     args.build, args.artifacts_dir = args.build.resolve(), args.artifacts_dir.resolve()

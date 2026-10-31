@@ -16,6 +16,8 @@ FvwmPicture *image_async_effect(FvwmPicture *source,
 	unsigned tint_percent, unsigned alpha_percent);
 /* Terminal event-loop service retains effect reader leases until actual reap. */
 Bool image_async_shutdown_ready(void);
+FvwmPicture *image_async_background(const struct background_plan *plan,
+	unsigned width, unsigned height);
 Bool image_async_enabled(void);
 void image_async_outer_boundary(void);
 void image_async_transport(void);

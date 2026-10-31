@@ -816,6 +816,12 @@
     "descr": "Internal, used for module communication"
   },
   {
+    "name": "Send_Root",
+    "cursor": "",
+    "window": 0,
+    "descr": "Internal, fixed core-owned colorset20 background selector"
+  },
+  {
     "name": "Send_Session",
     "cursor": "",
     "window": 0,

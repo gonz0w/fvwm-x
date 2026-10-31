@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "libs/module_query.h"
+#include "libs/background_plan.h"
 
 #define PREVIEW_NAME_MAX 64
 #define PREVIEW_TIMEOUT_MIN 1000
@@ -14,6 +15,7 @@
 #define PREVIEW_ROLE_COUNT 14
 #define PREVIEW_PLAN_HEX_LENGTH 336
 #define PREVIEW_METADATA_MAX 65536
+#define PREVIEW_PUBLICATION_QUEUE_MAX 64
 
 enum preview_operation {
 	PREVIEW_QUERY, PREVIEW_START, PREVIEW_CONFIRM, PREVIEW_REVERT,
@@ -22,7 +24,8 @@ enum preview_operation {
 
 enum preview_resource_kind {
 	PREVIEW_RESOURCE_HIGH_CONTRAST = 1,
-	PREVIEW_RESOURCE_OPAQUE_COLORS = 2
+	PREVIEW_RESOURCE_OPAQUE_COLORS = 2,
+	PREVIEW_RESOURCE_COMPLETE = 3
 };
 
 struct preview_request {
@@ -37,7 +40,16 @@ struct preview_request {
 	unsigned int timeout_ms;
 	enum preview_resource_kind resource_kind;
 	uint32_t colors[PREVIEW_ROLE_COUNT][4];
+	struct background_plan plan;
 };
+
+/* RETRY leaves the lease, resources and original deadline untouched. Only
+ * READY permits mutation; CONFLICT retires work through ordinary recovery. */
+enum preview_publication_result {
+	PREVIEW_PUBLICATION_READY, PREVIEW_PUBLICATION_RETRY,
+	PREVIEW_PUBLICATION_CONFLICT
+};
+enum preview_publication_result preview_publication_queue_check(size_t queued);
 
 enum preview_recovery { PREVIEW_WAIT, PREVIEW_RESTORE, PREVIEW_CONFLICT };
 enum preview_resource_guard {
@@ -48,6 +60,9 @@ enum preview_resource_guard {
 bool preview_request_parse(const char *text, struct preview_request *request);
 bool preview_plan_parse(const char *text, uint32_t colors[14][4]);
 bool preview_metadata_add(size_t *used, size_t bytes);
+bool preview_root_notice_matches(uint64_t serial, uint64_t ordinal,
+	uint64_t expected_serial, uint64_t expected_ordinal,
+	bool synthetic, bool new_value);
 bool preview_generation_room(const char *generation);
 enum preview_resource_guard preview_resource_guard_check(uint64_t now_ms,
 	uint64_t deadline_ms, bool generation_matches, bool owner_alive);

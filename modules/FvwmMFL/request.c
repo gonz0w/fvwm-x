@@ -251,7 +251,67 @@ static bool preview_token(const cJSON *value)
 			MODULE_QUERY_GENERATION_LEN;
 }
 
-static bool preview_role_plan(const cJSON *values, char output[337],
+static bool preview_complete_plan(const cJSON *values,
+	struct background_plan *plan)
+{
+	static const char *keys[] = {"plan_version", "roles", "root_transparency",
+		"root_mode", "preserve_menu", "menu_opacity", "launcher_opacity", "root"};
+	const cJSON *field, *root, *mode, *rgb, *path, *transparent, *preserve;
+	unsigned seen = 0;
+
+	memset(plan, 0, sizeof(*plan));
+	for (field = values->child; field; field = field->next)
+	{
+		unsigned i;
+
+		for (i = 0; i < 8; i++)
+			if (strcmp(field->string, keys[i]) == 0)
+				break;
+		if (i == 8 || (seen & (1U << i)))
+			return false;
+		seen |= 1U << i;
+	}
+	if (seen != 255)
+		return false;
+	mode = cJSON_GetObjectItemCaseSensitive(values, "root_mode");
+	transparent = cJSON_GetObjectItemCaseSensitive(values, "root_transparency");
+	preserve = cJSON_GetObjectItemCaseSensitive(values, "preserve_menu");
+	root = cJSON_GetObjectItemCaseSensitive(values, "root");
+	if (!bounded_string(mode, 6) || !cJSON_IsBool(transparent) ||
+	    !cJSON_IsBool(preserve) || !cJSON_IsObject(root) ||
+	    cJSON_GetArraySize(root) != 2 ||
+	    !query_index(cJSON_GetObjectItemCaseSensitive(values, "menu_opacity"),
+		100, &plan->menu_opacity) ||
+	    !query_index(cJSON_GetObjectItemCaseSensitive(values, "launcher_opacity"),
+		100, &plan->launcher_opacity))
+		return false;
+	rgb = cJSON_GetObjectItemCaseSensitive(root, "rgb");
+	path = cJSON_GetObjectItemCaseSensitive(root, "path");
+	if (!bounded_string(rgb, 7) || strlen(rgb->valuestring) != 7 ||
+	    *rgb->valuestring != '#' ||
+	    strspn(rgb->valuestring + 1, "0123456789abcdefABCDEF") != 6 ||
+	    (!cJSON_IsString(path) ||
+	     strlen(path->valuestring) > BACKGROUND_PATH_MAX))
+		return false;
+	/* Both distinct required root keys plus size2 exclude duplicates/extras. */
+	if (strcmp(mode->valuestring, "retain") == 0)
+		plan->flags = BACKGROUND_RETAIN << 1;
+	else if (strcmp(mode->valuestring, "solid") == 0)
+		plan->flags = BACKGROUND_SOLID << 1;
+	else if (strcmp(mode->valuestring, "png") == 0)
+		plan->flags = BACKGROUND_PNG << 1;
+	else
+		return false;
+	plan->flags |= cJSON_IsTrue(transparent) ? BACKGROUND_TRANSPARENT : 0;
+	plan->flags |= cJSON_IsTrue(preserve) ? BACKGROUND_PRESERVE_MENU : 0;
+	if (sscanf(rgb->valuestring + 1, "%6x", &plan->rgb) != 1)
+		return false;
+	strcpy(plan->path, path->valuestring);
+	return true;
+}
+
+static bool preview_role_plan(const cJSON *values,
+	char output[PREVIEW_PLAN_TOKEN_MAX + 1],
 	unsigned int *plan_version)
 {
 	static const int ids[] = {0, 1, 2, 3, 4, 5, 6, 7, 8,
@@ -263,12 +323,14 @@ static bool preview_role_plan(const cJSON *values, char output[337],
 
 	output[0] = '\0';
 	*plan_version = 0;
-	if (!cJSON_IsObject(values) || cJSON_GetArraySize(values) != 2)
+	if (!cJSON_IsObject(values))
 		return false;
 	version = cJSON_GetObjectItemCaseSensitive(values, "plan_version");
 	roles = cJSON_GetObjectItemCaseSensitive(values, "roles");
 	if (!cJSON_IsNumber(version) ||
-	    (version->valuedouble != 1 && version->valuedouble != 2) ||
+	    (version->valuedouble != 1 && version->valuedouble != 2 &&
+	     version->valuedouble != 3) ||
+	    cJSON_GetArraySize(values) != (version->valueint == 3 ? 8 : 2) ||
 	    !cJSON_IsArray(roles) || cJSON_GetArraySize(roles) != 14)
 		return false;
 	for (unsigned int i = 0; i < 14; i++)
@@ -311,6 +373,16 @@ static bool preview_role_plan(const cJSON *values, char output[337],
 		}
 	}
 	output[offset] = '\0';
+	if (version->valueint == 3)
+	{
+		struct background_plan plan;
+
+		output[offset++] = ':';
+		if (!preview_complete_plan(values, &plan) ||
+		    !background_plan_format(output + offset,
+			PREVIEW_PLAN_TOKEN_MAX + 1 - offset, &plan))
+			return false;
+	}
 	*plan_version = (unsigned int)version->valueint;
 	return true;
 }
@@ -1461,7 +1533,7 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 	const char *cookie, const char *view)
 {
 	static const char hex[] = "0123456789abcdef";
-	char name[339] = "-";
+	char name[PREVIEW_PLAN_TOKEN_MAX + 1] = "-";
 	const char *operation;
 	int length;
 
@@ -1479,13 +1551,24 @@ bool mfl_request_preview_command(char *output, size_t capacity,
 		request->kind == MFL_REQUEST_PREVIEW_APPLY ? "apply" : "query";
 	if (request->kind == MFL_REQUEST_PREVIEW_PREPARE)
 	{
-		if ((request->preview_plan_version != 1 &&
+		size_t bytes = strnlen(request->preview_plan,
+			sizeof(request->preview_plan));
+		bool complete = request->preview_plan_version == 3;
+		struct background_plan plan;
+
+		if ((!complete && request->preview_plan_version != 1 &&
 		     request->preview_plan_version != 2) ||
-		    strlen(request->preview_plan) != 336 ||
-		    strspn(request->preview_plan, hex) != 336)
+		    bytes >= sizeof(request->preview_plan) || bytes > sizeof(name) - 3 ||
+		    (!complete && (bytes != 336 ||
+		     strspn(request->preview_plan, hex) != 336)) ||
+		    (complete && (bytes < 338 || bytes > PREVIEW_PLAN_TOKEN_MAX - 2 ||
+		     request->preview_plan[336] != ':' ||
+		     strspn(request->preview_plan, hex) != 336 ||
+		     !background_plan_parse(request->preview_plan + 337, &plan))))
 			return false;
-		snprintf(name, sizeof(name), "%u:%s",
-			request->preview_plan_version, request->preview_plan);
+		name[0] = (char)('0' + request->preview_plan_version);
+		name[1] = ':';
+		memcpy(name + 2, request->preview_plan, bytes + 1);
 	}
 	if (request->kind == MFL_REQUEST_PREVIEW_START)
 	{

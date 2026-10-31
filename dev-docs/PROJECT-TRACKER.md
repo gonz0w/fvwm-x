@@ -7,37 +7,25 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: native preference bridge under #60/#73 on
-`codex/r1-native-preferences`. User authorized merging PR315 and continuing
-related feature bundles. PR315 merged as
-`b19c3b04d5d423bdd3ba05ec266c820389304de0`; canonical signature, reviewed tree
-and Cam author DCO verified; matching source branches retired (GitHub removed
-its remote branch automatically). Broader #67/#77 acceptance remains open.
-The due [PR310-to-PR315 paired core observation](verification/PERFORMANCE-2026-10-31-NATIVE-CORE.md)
-is complete using retained binaries. Command-median ranges overlap, title p95
-is higher in this observation, peak core RSS +8KiB; no speedup/cause claim.
-Counter resets to0/5 at merged315; preserve its verified runnable reference
-after final evidence upkeep.
-Native preference work is selected under the
-[frozen seven-outcome contract](decisions/NATIVE-PREFERENCES-2026-10-31.md),
-before implementation. Reuse the existing CFG store and native module
-transport. Optional settings portal and broad toolkit/platform qualification
-retain their separate acceptance; #257/#258 remain parked.
+Current checkpoint: #60/#73 completion on `codex/r1-settings-completion`.
+User authorized merging PR316 and continuing both owners toward closure. PR316
+merged as `6630bb9edc54dd305e6914ca907bcc78ae4b5f03`; exact reviewed tree,
+canonical signature and Cam author DCO verified; matching branches retired.
+Performance is 1/5 after merged316 from the verified PR315 runnable reference;
+no new comparison is due. The previous native preference checkpoint is merged,
+with its [exact results and limits](verification/VERIFICATION-2026-10-31-NATIVE-PREFERENCES.md).
 
-All seven native preference outcomes are implemented and focused Linux checks
-pass: schema9/off-inherit settings and compact editor; observed private helper
-lifecycle; complete bounded XSETTINGS; generation/serial/no-op recovery; exact
-Xcursor overlay ownership; independent raw-X/GTK3 effects and three inspected
-palette/font captures. [Results and retained failures](verification/VERIFICATION-2026-10-31-NATIVE-PREFERENCES.md)
-record 429 composed ordinary Go records, 370 race records, native normal/scoped
-sanitizer policy/wire groups, legacy settings IPC and installed helper lookup.
-The public registry retains all26 records under8192 bytes (worst case8060);
-MFL empty/128-byte strings retain the separate384-byte total payload cap.
-The optional portal, Qt/browser/cached-cursor, remaining registry/preview and
-full support/release acceptance stay open under #60/#73. Separate final source/artifact/visual review is clear. Verified duplicate evidence
-and old full input copies retired; current builds/source/prefix/caches and the
-PR315 runnable reference remain. Owned lab stopped normally. Candidate is ready
-for maintainer review; this is not whole-issue closure.
+The [optional Settings bridge contract](decisions/SETTINGS-PORTAL-2026-10-31.md)
+is frozen before implementation: reuse existing effective XSETTINGS and optional
+libdbus, provide only the standard reduced-motion key through an installed portal
+frontend, keep ordinary builds disabled, and verify actual ownership/recovery,
+frontend forwarding and application effects/non-effects. No extra registry/store,
+mandatory toolkit or broad portal frontend is implied. #73 retains its required
+support/profile acceptance; #60's named owned preview/registry closure is being
+reconciled independently. Do not invent additional settings from broad examples.
+#257/#258 remain parked.
+
+The [combined completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md) records passing native normal/software/minimal, scoped sanitizer, actual fault/topology, three-theme and application checks. Linux support is composed with host manual formatting; FreeBSD ARM64 combined acceptance passes. FreeBSD AMD64 and OpenBSD ARM64 complete their combined checkpoints. OpenBSD AMD64's build/install/Go/portal checks pass; its v3 preparation observation exhausted the fixed deadline. A persistent fresh-snapshot test helper passes focused Linux verification, and the affected AMD64 fresh-guest checkpoint is running. Issue closure and final review remain pending.
 
 ## R1 FileManager1 adapter selection — 2026-10-31
 

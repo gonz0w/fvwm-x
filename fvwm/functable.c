@@ -508,6 +508,9 @@ const func_t func_table[] =
 		FUNC_INTERACTION_SAFE, 0),
 	/* - Internal, used for module communication */
 
+	CMD_ENT("send_root", CMD_Send_Root, F_SEND_QUERY, 0, 0),
+	/* - Internal, fixed core-owned colorset20 background selector */
+
 	CMD_ENT("send_session", CMD_Send_Session, F_SEND_QUERY, 0, 0),
 	/* - Internal, guarded cooperative session actions */
 

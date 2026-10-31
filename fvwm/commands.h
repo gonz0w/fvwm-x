@@ -325,6 +325,7 @@ void CMD_Schedule(F_CMD_ARGS);
 void CMD_Scroll(F_CMD_ARGS);
 void CMD_Send_ConfigInfo(F_CMD_ARGS);
 void CMD_Send_Reply(F_CMD_ARGS);
+void CMD_Send_Root(F_CMD_ARGS);
 void CMD_Send_Query(F_CMD_ARGS);
 void CMD_Send_Preview(F_CMD_ARGS);
 void CMD_Send_Palette(F_CMD_ARGS);

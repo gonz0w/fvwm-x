@@ -53,6 +53,12 @@ option(
     description: 'Enable optional session bus clients and the owned-bus guardian',
 )
 option(
+    'settings-portal',
+    type: 'boolean',
+    value: false,
+    description: 'Install the optional XSETTINGS-to-Settings portal backend',
+)
+option(
     'sm',
     type: 'feature',
     value: 'auto',

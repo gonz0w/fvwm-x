@@ -232,7 +232,7 @@ func TestContrastPreparedOverridesAndUIExplanations(t *testing.T) {
 		t.Fatal(err)
 	}
 	lines := strings.Join(plan.Lines, "\n")
-	for _, want := range []string{highContrastHint, "Selection contrast single", "Choice contrast_normal normal on", "Choice contrast_high high off", "Opacity preview is unavailable while high contrast is selected."} {
+	for _, want := range []string{highContrastHint, "Selection contrast single", "Choice contrast_normal normal on", "Choice contrast_high high off", "Preview one setting (F5)"} {
 		if !strings.Contains(lines, want) {
 			t.Fatal(want, lines)
 		}

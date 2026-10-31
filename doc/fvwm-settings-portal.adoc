@@ -1,0 +1,136 @@
+= fvwm-settings-portal(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-settings-portal - optional read-only XSETTINGS-to-portal bridge
+
+== SYNOPSIS
+
+*fvwm-settings-portal*
+
+== DESCRIPTION
+
+This optional backend lets an already installed xdg-desktop-portal frontend read
+one native preference. It accepts no arguments, owns only its dedicated backend
+bus name and never replaces the public portal frontend. It reads the current X
+screen's XSETTINGS manager; it does not read or write saved settings or user files.
+
+Build support is disabled by default. Ordinary builds install a refusal stub and
+no portal or D-Bus activation descriptor. Enable it explicitly with
+*-Dsession-dbus=enabled -Dsettings-portal=true*. This requires the existing optional
+libdbus dependency. Enabling the build option installs a descriptor which an
+existing wildcard or legacy desktop selection can choose; it is not inert metadata.
+No toolkit, portal frontend or bus daemon is installed or started by FVWM-X.
+
+== SUPPORTED PREFERENCE
+
+The exported key is *org.freedesktop.appearance* / *reduced-motion*, unsigned32:
+
+* Native *Gtk/EnableAnimations* integer zero publishes one (reduced motion).
+* Native integer one publishes zero (no preference).
+* An absent, malformed or unavailable value publishes zero (no preference).
+
+Zero does not attest that an application enabled animations. Source loss clears a
+previous reduced-motion request. Unchanged values do not emit change signals.
+Other portal keys return NotFound. Font, icon and cursor choices continue through
+fvwm-native-settings(1); this backend does not infer application dark themes, DPI,
+accent colors or a GTK theme from FVWM's desktop palette.
+
+FVWM's optional native publisher obtains effective *motion* from the existing CFG
+store and module overrides. Another XSETTINGS manager is also a valid source.
+Portal clients cannot change preferences. An observed portal value alone does not
+identify the manager or establish that any toolkit/browser honors the value.
+
+== APPLICATION PROFILES
+
+GTK 3.24.41 consumed the five supported native preferences. Qt 5.15.13's XCB
+Fusion profile, without a platform-theme plugin, kept its existing font, icon
+and animation choices. This does not promise uniform behavior across toolkits.
+
+Firefox 159 followed native reduced motion in running, fresh and restarted
+clients, with and without this portal. Its page fonts and device pixel ratio
+stayed unchanged. The portal's frontend forwarding was checked separately;
+the browser observation does not identify which route it used. Already cached
+application cursor images are not forcibly replaced.
+
+See `dev-docs/verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md` for
+exact source, application profiles and qualification limits.
+
+== SETUP AND SELECTION
+
+An administrator/package must install the enabled backend and its generated
+D-Bus service and portal descriptors, plus an independently installed supported
+xdg-desktop-portal frontend. Keep the backend's absolute installed executable path
+and the service file together. Do not relocate only one of them.
+
+In the existing *[preferred]* group of the appropriate portals.conf(5), select:
+
+....
+org.freedesktop.impl.portal.Settings=fvwm
+....
+
+Preserve existing default and unrelated interface entries. The portal reads a
+selected configuration file; replacing it with a one-line sample may discard
+other backend choices. FVWM-X does not edit this file, select a default frontend,
+replace other backend owners or add an autostart entry. Follow the installed
+frontend's documented restart procedure after changing its configuration.
+
+Use one explicitly selected X display/screen per session bus. A borrowed user bus
+can span multiple displays; its activation environment may be stale or incomplete.
+Establish the intended *DISPLAY* and *XAUTHORITY* in that bus's activation environment
+before starting its frontend. When already installed, the standard command is:
+
+....
+dbus-update-activation-environment DISPLAY XAUTHORITY
+....
+
+Run it only for the bus/display you intend to configure. The backend does not
+rewrite this environment or infer a display from a caller. Missing or inaccessible
+X or an absent explicit local session-bus address fails without taking ownership.
+
+== LIFETIME AND RECOVERY
+
+The backend does not replace or queue behind another owner of
+*org.freedesktop.impl.portal.desktop.fvwm*. Its only portal object is
+*/org/freedesktop/portal/desktop*. It exports backend version one: ReadAll, Read,
+SettingChanged and read-only version properties. ReadOne and the legacy public
+Read wrapper belong to the actual frontend.
+
+X owner changes, source destruction and malformed source properties discard old
+observations. Recovery follows fresh ownership and complete validated properties.
+Bus or X connection loss retires the process without an internal reconnect loop;
+a later frontend request may activate it again. A blocked Xlib/libdbus call cannot
+be preempted by the cooperative work budget. Process isolation does not provide a
+hard real-time guarantee.
+
+Stop or reconfigure only this backend/frontend when troubleshooting. Never stop a
+borrowed user bus, another desktop's backend or unrelated applications. Backend
+availability, frontend replies and actual application effects are separate results.
+
+== LIMITS
+
+Source properties are limited to 64 KiB and 256 complete records. Both byte orders
+are supported. Invalid types, truncated values and duplicate target keys clear the
+value to no preference. At most 16 namespace patterns of 128 bytes are accepted;
+empty filters match all, exact namespaces and trailing section wildcards are
+supported. Queues and dispatch work are bounded; bursts coalesce to the latest
+value. No general-purpose settings API or remote mutation method is supplied.
+
+== ENVIRONMENT
+
+*DISPLAY* and *XAUTHORITY* select the configured X screen. An explicit local
+*DBUS_SESSION_BUS_ADDRESS* selects the existing session bus. No bus or system
+service is launched. D-Bus activation uses its pre-established environment.
+
+== EXIT STATUS
+
+Zero indicates ordinary retirement. Nonzero indicates disabled support, invalid
+arguments, missing prerequisites, competing ownership or connection failure.
+Diagnostics report availability; they do not claim frontend or toolkit readiness.
+
+== SEE ALSO
+
+FvwmDesktop(1), fvwm-native-settings(1), portals.conf(5)

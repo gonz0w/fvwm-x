@@ -39,6 +39,7 @@ fvwm_sources = [
     'fvwm/icccm2.c',
     'fvwm/icons.c',
     'fvwm/image_async.c',
+    'fvwm/root_background.c',
     'fvwm/image_async_wait.c',
     'fvwm/interaction.c',
     'fvwm/interaction_policy.c',

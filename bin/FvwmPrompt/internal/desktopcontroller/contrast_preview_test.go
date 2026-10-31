@@ -31,9 +31,10 @@ func contrastReply(p *preview, result values) {
 }
 
 func contrastAppearance(available bool) values {
-	return success(values{"generation": strings.Repeat("a", 48), "resource_preview": values{
-		"version": 1, "scope": "high-contrast", "role_count": 14, "style_count": 2,
-		"metadata_max": 65536, "preparation_timeout_ms": 5000, "lease_limit": 1, "slot_available": available}})
+	return success(values{"generation": strings.Repeat("a", 48), "complete_bundle_preview": values{
+		"version": 1, "scope": "complete-bundle", "plan_version": 3, "role_count": 14, "style_count": 2,
+		"metadata_max": 65536, "preparation_timeout_ms": 5000, "lease_limit": 1, "slot_available": available,
+		"root_background": true, "root_owned": true, "buffered_transparency": true, "path_max": 256, "token_max": 701}})
 }
 
 func contrastResult(state, reason, recovery string) values {
@@ -41,7 +42,7 @@ func contrastResult(state, reason, recovery string) values {
 	if state == "preparing" || state == "prepared" || state == "applying" {
 		generation = strings.Repeat("a", 48)
 	}
-	return success(values{"scope": "high-contrast", "plan_version": 1,
+	return success(values{"scope": "complete-bundle", "plan_version": 3,
 		"state": state, "terminal_reason": reason, "recovery": recovery,
 		"generation": generation, "lease": strings.Repeat("c", 48),
 		"remaining_ms": 15000, "lease_limit": 1, "preparation_limit_ms": 5000})
@@ -76,7 +77,7 @@ func contrastEditorDraft(t *testing.T, d *Controller) (string, values) {
 	}
 	argument := d.editor.token
 	expected := values{}
-	changes := values{"palette": "dune", "motion": true, "launcher_opacity": 61}
+	changes := values{"palette": "dune", "motion": true, "launcher_opacity": 61, "contrast": "high"}
 	// Saved state also contains the internal retained-wallpaper pair. A Form
 	// captures only its registry keys, never that non-editable state field.
 	for _, key := range d.editor.keys {
@@ -247,14 +248,14 @@ func TestContrastDirectedPrepareApplyConfirmAndSingleLease(t *testing.T) {
 	*commands = nil
 	activeContrast(t, d)
 	text := strings.Join(*commands, "\n")
-	if !strings.Contains(text, " prepare "+strings.Repeat("a", 48)+" - 0 15000 1:") ||
+	if !strings.Contains(text, " prepare "+strings.Repeat("a", 48)+" - 0 15000 3:") ||
 		!strings.Contains(text, " apply "+strings.Repeat("a", 48)+" "+strings.Repeat("c", 48)+" 0 0 -") {
 		t.Fatal("directed resource preparation or application missing", text)
 	}
 	for _, command := range *commands {
 		if strings.Contains(command, " prepare ") {
 			fields := strings.Fields(command)
-			if len(fields) != 10 || len(fields[9]) != 338 || !identity(fields[9][2:], 336) {
+			if len(fields) != 10 || len(fields[9]) > 701 || !strings.HasPrefix(fields[9], "3:") || !identity(strings.Split(fields[9], ":")[1], 336) {
 				t.Fatal("resource plan exceeded fixed typed wire shape", command)
 			}
 		}
@@ -298,7 +299,7 @@ func TestContrastRefusesUnavailableCapabilityAndOccupiedSlot(t *testing.T) {
 			*commands = nil
 			response := contrastAppearance(available)
 			if available {
-				delete(response["result"].(map[string]any), "resource_preview")
+				delete(response["result"].(map[string]any), "complete_bundle_preview")
 			}
 			contrastReply(&d.preview, response)
 			if d.preview.control != nil || strings.Contains(strings.Join(*commands, "\n"), " prepare ") {
@@ -371,6 +372,9 @@ func TestContrastPostConfirmationRaceAndCoreLossPreserveDrafts(t *testing.T) {
 				}
 				d.preview.pending.deadline = time.Now().Add(-time.Second)
 				d.preview.tick()
+				// Recovery itself timed out: return the draft and retain the fence.
+				d.preview.pending.deadline = time.Now().Add(-time.Second)
+				d.preview.tick()
 			case "cancel", "refused":
 				if err := d.preview.action(view, "revert"); err != nil {
 					t.Fatal(err)
@@ -410,7 +414,7 @@ func TestContrastRejectsMalformedNativeStateWithoutSaving(t *testing.T) {
 			}
 			*commands = nil
 			contrastReply(&d.preview, response)
-			if d.preview.control != nil || d.saved["contrast"] != "normal" ||
+			if !d.preview.recovering || d.saved["contrast"] != "normal" ||
 				!strings.Contains(strings.Join(*commands, "\n"), " abandon ") {
 				t.Fatal("malformed resource state escaped bounded recovery")
 			}

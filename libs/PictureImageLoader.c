@@ -50,6 +50,7 @@
 #include "ColorUtils.h"
 #include "Fxpm.h"
 #include "Fpng.h"
+#include "image_png.h"
 #include "Fsvg.h"
 #include "FRenderInit.h"
 #include "Fcursor.h"
@@ -441,194 +442,28 @@ PImageLoadSvg(FIMAGE_CMD_ARGS)
  * png loader
  *
  */
-#if PngSupport
-typedef struct
+static Bool PImageLoadPng(FIMAGE_CMD_ARGS)
 {
-	jmp_buf jump;
-	CARD32 *data;
-	unsigned char **lines;
-	const image_input *input;
-	size_t position;
-} pimage_png_read;
-
-static void pimage_png_error(png_structp png, png_const_charp message)
-{
-	pimage_png_read *read = png_get_error_ptr(png);
-
-	/* Image contents are not diagnostic text. The heap-owned buffers remain
-	 * defined after longjmp, including failures during read_end. */
-	(void)message;
-	fvwm_debug(__func__, "PNG decode failed");
-	longjmp(read->jump, 1);
-}
-
-static void
-pimage_png_read_data(png_structp png, png_bytep bytes, png_size_t count)
-{
-	pimage_png_read *read = png_get_io_ptr(png);
-
-	if (count > read->input->length - read->position)
-	{
-		png_error(png, "short image input");
-	}
-	memcpy(bytes, read->input->bytes + read->position, count);
-	read->position += count;
-}
-
-static
-Bool PImageLoadPng(FIMAGE_CMD_ARGS)
-{
-	Fpng_uint_32 w32, h32;
-	Fpng_structp Fpng_ptr = NULL;
-	Fpng_infop Finfo_ptr = NULL;
-	CARD32 *data;
-	int w, h;
-	char hasa, hasg;
-	int bit_depth;
-	int color_type;
-	int interlace_type;
-	unsigned char **lines;
-	pimage_png_read *read;
-	int i;
-	size_t pixel_count;
-	int dst_w;
-	int dst_h;
-	CARD32 *scaled;
+	uint32_t *data = NULL, *scaled = NULL;
+	int w, h, dst_w, dst_h;
 
 	if (source->svg_options || source->xpm_only ||
-	    source->raw.length < FPNG_BYTES_TO_CHECK ||
-	    !Fpng_check_sig(source->raw.bytes, FPNG_BYTES_TO_CHECK))
-	{
+	    !image_png_decode(&source->raw, &data, &w, &h))
 		return False;
-	}
-	read = fxcalloc(1, sizeof(*read));
-	read->input = &source->raw;
-	Fpng_ptr = Fpng_create_read_struct(FPNG_LIBPNG_VER_STRING,
-					   NULL, NULL, NULL);
-
-	if (!Fpng_ptr)
-	{
-		free(read);
-		return False;
-	}
-	Finfo_ptr = Fpng_create_info_struct(Fpng_ptr);
-	if (!Finfo_ptr)
-	{
-		Fpng_destroy_read_struct(&Fpng_ptr, NULL, NULL);
-		free(read);
-		return False;
-	}
-	if (setjmp(read->jump))
-	{
-		free(read->lines);
-		free(read->data);
-		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
-		free(read);
-		return False;
-	}
-	/* Construction uses libpng's own recovery. Install our callback only
-	 * after its destination has been armed. */
-	png_set_error_fn(Fpng_ptr, read, pimage_png_error, NULL);
-	png_set_read_fn(Fpng_ptr, read, pimage_png_read_data);
-	Fpng_read_info(Fpng_ptr, Finfo_ptr);
-	Fpng_get_IHDR(
-		Fpng_ptr, Finfo_ptr, (Fpng_uint_32 *) (&w32),
-		(Fpng_uint_32 *) (&h32), &bit_depth, &color_type,
-		&interlace_type, NULL, NULL);
-	if (w32 > (Fpng_uint_32)INT_MAX || h32 > (Fpng_uint_32)INT_MAX ||
-	    !FImageSizeIsSafe(
-		    w32, h32, PIMAGE_MAX_DIMENSION, PIMAGE_MAX_PIXELS,
-		    &pixel_count))
-	{
-		Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, NULL);
-		free(read);
-		return False;
-	}
-	interlace_type = 0; /* not used */
-	w = (int) w32;
-	h = (int) h32;
-	if (color_type == FPNG_COLOR_TYPE_PALETTE)
-	{
-		Fpng_set_expand(Fpng_ptr);
-	}
-
-	hasa = color_type == FPNG_COLOR_TYPE_RGB_ALPHA ||
-		color_type == FPNG_COLOR_TYPE_GRAY_ALPHA;
-	hasg = color_type == FPNG_COLOR_TYPE_GRAY ||
-		color_type == FPNG_COLOR_TYPE_GRAY_ALPHA;
-
-	if (hasa)
-		Fpng_set_expand(Fpng_ptr);
-	/* we want ARGB */
-	/* note form raster:
-	* thanks to mustapha for helping debug this on PPC Linux remotely by
-	* sending across screenshots all the time and me figuring out form them
-	* what the hell was up with the colors
-	* now png loading should work on big endian machines nicely   */
-#ifdef WORDS_BIGENDIAN
-	Fpng_set_swap_alpha(Fpng_ptr);
-	Fpng_set_filler(Fpng_ptr, 0xff, FPNG_FILLER_BEFORE);
-#else
-	Fpng_set_bgr(Fpng_ptr);
-	Fpng_set_filler(Fpng_ptr, 0xff, FPNG_FILLER_AFTER);
-#endif
-	/* 16bit color -> 8bit color */
-	Fpng_set_strip_16(Fpng_ptr);
-	/* pack all pixels to byte boundaires */
-	Fpng_set_packing(Fpng_ptr);
-	if (Fpng_get_valid(Fpng_ptr, Finfo_ptr, FPNG_INFO_tRNS))
-	{
-		Fpng_set_expand(Fpng_ptr);
-	}
-
-	data = fxcalloc(pixel_count, sizeof(CARD32));
-	lines = fxcalloc((size_t)h, sizeof(unsigned char *));
-	read->data = data;
-	read->lines = lines;
-
-	if (hasg)
-	{
-		Fpng_set_gray_to_rgb(Fpng_ptr);
-		if (Fpng_get_bit_depth(Fpng_ptr, Finfo_ptr) < 8)
-		{
-			Fpng_set_gray_1_2_4_to_8(Fpng_ptr);
-		}
-	}
-	for (i = 0; i < h; i++)
-	{
-		lines[i] = (unsigned char *)data + (i * w * sizeof(CARD32));
-	}
-	Fpng_read_image(Fpng_ptr, lines);
-	Fpng_read_end(Fpng_ptr, Finfo_ptr);
-	Fpng_destroy_read_struct(&Fpng_ptr, &Finfo_ptr, (png_infopp) NULL);
-	free(read);
-	free(lines);
-	if (!pimage_resolve_destination(
-		    w, h, target_width, target_height, factor, &dst_w,
-		    &dst_h) ||
+	if (!pimage_resolve_destination(w, h, target_width, target_height,
+		factor, &dst_w, &dst_h) ||
 	    !pimage_blit_argb_once(data, w, h, dst_w, dst_h, &scaled))
 	{
 		free(data);
 		return False;
 	}
 	if (scaled != data)
-	{
 		free(data);
-	}
 	*width = dst_w;
 	*height = dst_h;
 	*argb_data = scaled;
-
 	return True;
 }
-
-#else
-static Bool PImageLoadPng(FIMAGE_CMD_ARGS)
-{
-	fvwm_debug(__func__, "PNG support is disabled");
-	return False;
-}
-#endif
 
 /*
  *

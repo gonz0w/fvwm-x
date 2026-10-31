@@ -1,0 +1,4 @@
+[portal]
+DBusName=org.freedesktop.impl.portal.desktop.fvwm
+Interfaces=org.freedesktop.impl.portal.Settings;
+UseIn=FVWM;FVWM-X;

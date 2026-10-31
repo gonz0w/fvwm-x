@@ -35,12 +35,13 @@ type previewPending struct {
 	deadline      time.Time
 }
 type preview struct {
-	desktop  *Controller
-	serial   uint64
-	control  *previewControl
-	pending  *previewPending
-	queued   string
-	nextPoll time.Time
+	desktop                     *Controller
+	serial                      uint64
+	control                     *previewControl
+	pending                     *previewPending
+	queued                      string
+	nextPoll                    time.Time
+	recovering, blocked, replay bool
 }
 
 func previewPresentation(settings values) error {
@@ -74,6 +75,9 @@ func (p *preview) allowed(e *draft) error {
 // the existing core recovery path and must precede opaque theme publication.
 func (p *preview) constrain() {
 	if p.control != nil && p.control.resource != nil {
+		if p.recovering {
+			return
+		}
 		p.finish("Settings changed; resource preview recovery requested.", true, false)
 		return
 	}
@@ -95,6 +99,9 @@ func (d *Controller) preparePreview(opacity int) (*previewSnapshot, error) {
 	}
 	if d.effective["transparency"] != true {
 		return nil, errors.New("Enable transparency before previewing launcher opacity")
+	}
+	if d.effective["launcher_opacity"] == opacity {
+		return nil, errors.New("This opacity is already requested; ordinary save remains available")
 	}
 	if _, err := desktopsettings.Value("launcher_opacity", opacity, false); err != nil {
 		return nil, err
@@ -125,6 +132,7 @@ func (d *Controller) checkPreview(control *previewControl) error {
 }
 func (d *Controller) savePreview(control *previewControl) error {
 	if err := d.checkPreview(control); err != nil {
+		d.holdOpacity(control.opacity)
 		return err
 	}
 	changes := values{"launcher_opacity": control.opacity}
@@ -138,8 +146,10 @@ func (d *Controller) savePreview(control *previewControl) error {
 	}
 	revision, err := saveSettings(d.statePath, candidate, control.saved.revision)
 	if err != nil {
+		d.holdOpacity(control.opacity)
 		return err
 	}
+	delete(d.runtimeHeld, "launcher_opacity")
 	d.saved, d.effective, d.revision = candidate, effective, revision
 	// Only opacity was core-confirmed: do not replay a full theme after commit.
 	if d.lastTheme != nil {
@@ -154,7 +164,12 @@ func (p *preview) submit(phase, command string) error {
 	p.serial++
 	serial := fmt.Sprintf("%016x", p.serial)
 	p.pending = &previewPending{phase: phase, serial: serial, deadline: time.Now().Add(5 * time.Second)}
-	p.desktop.emit(strings.NewReplacer("{cookie}", p.desktop.instance, "{serial}", serial).Replace(command))
+	expanded := strings.NewReplacer("{cookie}", p.desktop.instance, "{serial}", serial).Replace(command)
+	if len(expanded) > 1000 {
+		p.pending = nil
+		return errors.New("Preview command exceeded its native bound")
+	}
+	p.desktop.emit(expanded)
 	return p.desktop.fatal
 }
 func (p *preview) request(op string) error {
@@ -187,6 +202,9 @@ func (p *preview) request(op string) error {
 	return err
 }
 func (p *preview) start(opacity int, saved bool, e *draft) error {
+	if p.blocked {
+		return errors.New("Preview recovery is unconfirmed or conflicted; restart the controller before previewing again")
+	}
 	if p.control != nil || !p.desktop.ready {
 		return errors.New("A preview is already pending or desktop is not ready")
 	}
@@ -208,7 +226,7 @@ func (p *preview) start(opacity int, saved bool, e *draft) error {
 	return p.submit("inspect", "Send_Query {cookie} {serial} appearance 0 8 -")
 }
 func (p *preview) action(view, op string) error {
-	if p.control == nil || p.control.view != view || p.control.lease == "" || (op != "confirm" && op != "revert" && op != "save") {
+	if p.recovering || p.blocked || p.control == nil || p.control.view != view || p.control.lease == "" || (op != "confirm" && op != "revert" && op != "save") {
 		return errors.New("Preview controls are stale")
 	}
 	if p.control.resource != nil && (op == "confirm" || op == "save" && p.control.resource.state != "active") {
@@ -233,17 +251,36 @@ func (p *preview) action(view, op string) error {
 	return p.request(op)
 }
 func (p *preview) finish(message string, abandon, committed bool) {
+	// A resource abandon is asynchronous. Keep its actor/view and reply channel
+	// until terminal recovery is acknowledged; a timeout cannot authorize replay.
+	if abandon && p.control != nil && p.control.resource != nil && p.control.generation != "" {
+		if p.recovering {
+			p.blocked = true
+			p.finish("Preview recovery is unconfirmed; theme updates are paused until controller restart.", false, false)
+			return
+		}
+		p.recovering = true
+		p.pending, p.queued = nil, ""
+		p.desktop.emit("KillModule FvwmForm SlatePreview-" + p.desktop.instance)
+		p.desktop.notice("Recovering preview resources; theme publication is deferred.")
+		if err := p.request("abandon"); err != nil {
+			p.blocked = true
+			p.finish(err.Error(), false, false)
+		}
+		return
+	}
 	var e *draft
 	if p.control != nil {
 		e = p.control.editor
 	}
 	resume := e != nil && (committed || e.generation == p.desktop.generation || p.control.resource != nil)
-	if abandon && p.control != nil {
+	if abandon && p.control != nil && p.control.resource == nil {
 		p.pending = nil
 		_ = p.request("abandon")
 	}
 	p.desktop.emit("KillModule FvwmForm SlatePreview-" + p.desktop.instance)
 	p.pending, p.control, p.queued = nil, nil, ""
+	p.recovering = false
 	p.desktop.notice(message)
 	if resume {
 		if err := p.desktop.editSettings(e.scope, false, e.values); err != nil {
@@ -367,6 +404,8 @@ func (p *preview) acceptReply(fields []string) error {
 	if phase == "save" && state == "confirmed" {
 		generation := newID(16)
 		if err := p.desktop.savePreview(p.control); err != nil {
+			p.desktop.changed(newID(16))
+			_ = p.desktop.settingsMenu("all")
 			p.finish("Runtime opacity kept; preference was not saved. Reload settings before retrying.", false, false)
 		} else {
 			p.desktop.changed(generation)
@@ -388,8 +427,30 @@ func (p *preview) tick() {
 	if p.pending != nil && !now.Before(p.pending.deadline) {
 		p.finish("Preview reply timed out; core recovery remains responsible.", true, false)
 	} else if p.control != nil && p.control.lease != "" && p.pending == nil && !now.Before(p.nextPoll) {
+		if p.control.resource != nil && !p.recovering {
+			if err := p.desktop.checkResource(p.control); err != nil {
+				p.finish(err.Error(), true, false)
+				return
+			}
+		}
 		if err := p.request("query"); err != nil {
 			p.finish(err.Error(), true, false)
 		}
+	}
+}
+
+// Old saved-opacity entry points share the same typed unsaved-runtime overlay.
+func (d *Controller) holdOpacity(opacity int) {
+	value, err := desktopsettings.PreviewValueFor("launcher_opacity", opacity)
+	if err != nil {
+		return
+	}
+	if d.runtimeHeld == nil {
+		d.runtimeHeld = desktopsettings.PreviewValues{}
+	}
+	d.runtimeHeld["launcher_opacity"] = value
+	d.effective["launcher_opacity"] = opacity
+	if len(d.lastTheme) == 8 {
+		d.lastTheme[4] = opacity
 	}
 }

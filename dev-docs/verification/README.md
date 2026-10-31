@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Settings default-X acceptance tail](VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md): focused OpenBSD AMD64 continuation for the three remaining #60 scenarios; original failures and reused evidence remain explicit.
+
 - [Settings and preview completion](VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md): frozen 26-setting registry, eight owned previews, optional Settings portal, actual application observations and combined support qualification; exact current results and limits are in the report.
 
 - [Standalone XEmbed tray](VERIFICATION-2026-10-30-XEMBED-TRAY.md): opt-in native host, actual-X docking/focus/configure/lifetime, three themes, mixed-scale/work-area and scoped sanitizer evidence; #78 integration and broader qualification remain open.

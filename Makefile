@@ -23,6 +23,7 @@ test:
 	python3 tests/test_desktop_session_observation.py
 	python3 tests/test_session_workload.py
 	python3 tests/test_bsd_default_x.py
+	python3 tests/test_contrast_fixture_cli.py
 	python3 tests/test_native_gate.py
 	python3 tests/test_ci_assets.py
 	python3 tests/test_qemu_bsd.py

@@ -45,6 +45,22 @@ class DefaultXTests(unittest.TestCase):
                 '--worker', '/owned/image-worker',
                 '--config-header', '/build/config.h'])])
 
+    def test_complete_preview_tail_forwards_only_tail_selector(self):
+        args = argparse.Namespace(server_only=False,
+            complete_preview_only=False, complete_preview_tail_only=True,
+            fvwm=None, mfl=None, backer=None, image_worker=None,
+            preview_probe=None, preview_config_header=None,
+            execution_profile='emulated-cpu')
+        self.assertEqual(driver.fixture_commands(args, Path('/build'),
+            Path('/source')), [('complete-preview', [
+                '--complete-bundle-only', '--execution-profile', 'emulated-cpu',
+                '--complete-bundle-tail-only', '--fvwm', '/build/fvwm3',
+                '--mfl', '/build/modules/FvwmMFL/FvwmMFL',
+                '--backer', '/build/modules/FvwmBacker/FvwmBacker',
+                '--probe', '/build/tests/image-owner-probe',
+                '--worker', '/build/bin/fvwm-image-svg-worker',
+                '--config-header', '/build/config.h'])])
+
     def test_authority_wire_record(self):
         cookie = bytes(range(16))
         record = authority_record(197, cookie)
@@ -124,6 +140,16 @@ class StartupEvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'build-directory'):
                 driver.run(args)
             launch.assert_not_called()
+
+    def test_preview_tail_accepts_preview_paths_without_full_mode(self):
+        args = self.args(Path('/unused'), server_only=False,
+            build_directory=Path('/build'), complete_preview_tail_only=True,
+            backer=Path('/owned/backer'), fvwm=Path('/owned/core'),
+            image_worker=Path('/owned/worker'), preview_probe=Path('/owned/probe'),
+            preview_config_header=Path('/owned/config.h'))
+        with patch.object(driver, 'run_once') as launch:
+            driver.run(args)
+            launch.assert_called_once_with(args)
 
     def test_repeat_bounds_and_client_mode_are_checked_before_launch(self):
         for count, server in [(0, True), (33, True), (2, False)]:

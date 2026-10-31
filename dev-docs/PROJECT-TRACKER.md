@@ -7,50 +7,70 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [PR319](https://github.com/gonz0w/fvwm-x/pull/319),
-`codex/r1-settings-completion`. User authorized merging PR316 and continuing
-#60/#73. PR316 merged as `6630bb9edc54dd305e6914ca907bcc78ae4b5f03`;
-canonical signature/tree and Cam author DCO verified; matching branches retired.
-The policy-only PR318 update is integrated without changing product code.
+Current checkpoint: #60 default-X acceptance tail,
+`codex/settings-default-x-tail`, owner Cam. User authorized merging PR319 and
+continuing issue work. PR319 merged as
+`6000adc249cfdddfbb50393208fe3765ccd6d8b6`; canonical signature, reviewed tree
+`8073ce0baf390c16584ad7e0599e2a431ff60172` and Cam author DCO verified.
+#73 closed on merge. PR316 and the policy-only PR318 remain integrated.
 
-Delivery boundary: the existing 26-setting registry, eight owned appearance
-previews, exact wallpaper/resource recovery and optional reduced-motion Settings
-portal are implemented together. This candidate closes #73's frozen native
-bridge/portal/application criteria when merged. #60 remains open for the named
-OpenBSD AMD64 default-X qualification below. No criterion is waived, no extra
-feature joins the batch, and no release/hardware qualification is inferred.
+Selected outcome: close #60's remaining support criterion by observing three
+existing scenarios on OpenBSD8.0 AMD64 default Xorg: named launcher-menu
+conflict, nonmodal controller loss and external-root conflict/preservation
+including core shutdown. Keep all existing independent pixel/property/role,
+scalar, terminal-result and process-Wait assertions. No production behavior,
+deadline, configuration contract, new feature or test expectation changes.
+
+Delivery boundary: add an explicit tail-only fixture/default-server entry point,
+reuse source-bound qualified product artifacts, execute one focused default-X
+attempt and reconcile #60 if all remaining observations pass. Preserve the
+nineteen completed default-server groups and both full same-OS Xvfb passes.
+The previous full default invocation and aggregate remain failed; a new focused
+pass does not relabel them. Reuse prior build/install/manual/theme/policy and
+sanitizer evidence because this continuation changes only test selection/docs.
+No new UI requires captures; retain the inspected three-theme set.
+
+Attempt budget: source/static review and affected host fixture tests, then one
+fresh disposable OpenBSD AMD64 tail-only invocation with the existing240-second
+inner driver limit. One bounded preparation may restore verified compiled
+artifacts; no full matrix, automatic timeout increase or repeated native attempt.
+If preparation or the focused gate fails, preserve evidence, triage and stop
+at a reviewable checkpoint. Native execution stays with the lead; delegated
+implementation/review is source-only. Required acceptance remains binding.
+
+Attempt outcome: the fresh OpenBSD AMD64 recipe reconstructs all four exact
+installed binaries and passes five loader checks/source precheck without a build.
+The focused adapter fails after18.756451seconds at the unchanged five-second
+initial-observer setup deadline, before any of the three scenarios. Core/Xorg/
+QEMU exit0; no observer X errors, but no proxy-start/Wait receipts are retained.
+The full35-member433,282-byte capture is audited; this is failed evidence.
+[Focused results and disposition](verification/VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md).
+
+Final source additionally moves the existing proxy CLI dispatch before unrelated
+fixture imports, retaining exact relay arguments/defaults and ordinary behavior.
+Host checks pass26/26; this simplification's effect on OpenBSD startup is unproven
+and unexecuted. #60 stays open for all three scenarios. The single native attempt
+has ended; there is no automatic retry. Next native work needs a separately
+bounded startup/relay diagnostic plan before the tail. Current delivery is the
+reviewed focused fixture/dispatch change and honest evidence, with source
+integration separate from owner acceptance. No production/deadline change or
+new feature joins this checkpoint. The stopped disposable disk is retired after
+full archive verification/no-holder check, recovering3,086,811,136 allocated bytes;
+failure evidence and reusable inputs remain.
 
 The [completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md)
-records source-bound normal/software/minimal, policy/race/vet, scoped native
-sanitizer, actual allocation/topology/recovery, installed helper/manual and
-three-theme results. All six target builds/installs and both enabled/disabled
-native-X profiles pass. Complete default-X runs pass on Linux, both FreeBSD
-architectures and OpenBSD ARM64. OpenBSD AMD64's final default-X invocation
-completed nineteen case groups, then hit its inner240-second driver limit;
-its program and aggregate remain failed. The native core exited0 and no observer
-X errors were recorded. This is an incomplete check, not a new product finding.
-
-Remaining #60 acceptance: observe named launcher-menu conflict, nonmodal
-controller loss and external-root preservation including core shutdown on the
-OpenBSD AMD64 default server. Both same-OS Xvfb profiles already pass these
-cases; preserve and reuse the nineteen completed default-server outcomes.
-Next action is a separately recorded, bounded tail-only qualification plan,
-not another automatic full matrix. The final recorded attempt has ended;
-no further native attempt is started in this checkpoint.
-
-Final review keeps code integration separate from owner acceptance, as permitted
-by [the workflow](WORKFLOW.md#implementation-batches-and-test-cadence). The
-source/integration gate and separate source/artifact/visual review are complete;
-PR319 is ready for review with #73 closing only on merge. #60's broader remaining condition is retained in R1. The
-[preview contract](decisions/SETTINGS-PREVIEW-COMPLETION-2026-10-31.md) and
-[portal contract](decisions/SETTINGS-PORTAL-2026-10-31.md) remain unchanged.
-#257/#258 remain parked. Performance remains1/5 after PR316 from the verified
-PR315 runnable reference; this feature merge advances it to2/5. No comparison
-is due. Current builds, required caches/reference and compact qualification
-records remain; superseded task-owned duplicates are retired. Three stopped,
-task-owned disposable OpenBSD disks and their copied stages were retired after
-archive verification, recovering 14,145,748,992 allocated bytes. Reusable Linux/
-FreeBSD builds, SDKs, fixed base images and the performance reference remain.
+retains the implemented26-setting registry, eight reversible appearance previews,
+exact wallpaper/resource recovery and complete optional reduced-motion portal.
+All six target builds/installs and both enabled/disabled native-X profiles pass;
+complete default-X passes on Linux, both FreeBSD architectures and OpenBSD ARM64.
+The source/integration and separate source/artifact/visual reviews were clear.
+No release, physical hardware or blanket toolkit qualification is inferred.
+#257/#258 remain parked. Performance is2/5 after PR319 from the verified PR315
+runnable reference; no comparison is due. All prior owned labs are stopped.
+Verified disposable OpenBSD disks/stages were retired, recovering14,145,748,992
+allocated bytes; compiled evidence, reusable Linux/FreeBSD builds, SDKs, fixed
+base images and performance reference remain. This continuation uses a fresh
+owned disposable job and does not recover deleted authentication material.
 
 ## TEMPER-06 — Bounded delivery instructions
 
@@ -5612,7 +5632,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
 | XDG-01 | Done / #56 closed by merged PR301; all four frozen criteria qualified | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
-| SETTINGS-01 | P2 / all finite criteria supported; PR319 closes on merge | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
+| SETTINGS-01 | P2 / complete; closed on merged PR319 | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |
 | THEME-01 | P2 / SVG artwork adopted; focused native Linux review passed | Apply [THEME-STANDARDS.md](THEME-STANDARDS.md) to all shipped palettes/modes/states, bootstrap/assets, density/targets, opacity, enlarged text and keyboard paths. Keep Slate layout/local overrides; record numeric contrast separately from native visual/interaction evidence. Earlier focused text/disabled-role review is preserved in the [standards report](verification/VERIFICATION-2026-10-06-STANDARDS-THEME.md). The user-approved richer SVG artwork replaces 377 geometric PNG assets, with PNG retained for screenshots and existing raster inputs. Native Linux ARM64 passes 51 policy checks, the full desktop/two-monitor gate, 377 worker render/install comparisons, 12 scale renders and 48 meaningful-glyph contrast pairs; SVG/PNG-disabled Session fallback also passes. See the [SVG theme report](verification/VERIFICATION-2026-10-06-SLATE-SVG.md) and [decision](decisions/THEME-SVG-ARTWORK-2026-10-06.md). Six-target/enlarged-text/physical-display/assistive/native-CI qualification remains pending; asynchronous core image activation stays IMAGE-01-owned. Full theme acceptance before RELEASE-01. |
 | RELEASE-01 | P1 / final release gate, queued until coding is complete and user requests release preparation | Final public-launch review of the accepted release candidate: independent identity/attribution, real README/demo, public contributor/community/security files, owned reporting/support channels, tested install/trial/upgrade, source artifacts/checksums/provenance/licenses, excellent installed manuals with optional lightweight HTML, onboarding and quality gates. Reuse CI-01/REPRO-01/DOCS-01/MAINT-02/VERIFY-01/COMPAT-01 and related evidence. Record disposition of X11 walkthroughs, measured results, opt-in diagnostics, customization recipes and public roadmap. Any new code/defect returns to its owner before repeating release checks. No publication authorized. See [full gate](RELEASE-GATE.md). |

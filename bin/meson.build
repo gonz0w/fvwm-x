@@ -87,7 +87,9 @@ session_bus_deps = []
 if session_dbus.found()
     session_bus_sources = [
         'session_bus.c', 'session_bus_guardian.c',
+        'file_manager_bus.c', 'file_manager_policy.c',
         '../libs/cJSON.c', '../libs/fd_safety.c',
+        '../libs/module_startup.c',
     ]
     session_bus_deps = [session_dbus]
 endif

@@ -27,11 +27,16 @@ func parseOptions(args []string, home string, output io.Writer) (options, error)
 	flags.BoolVar(&o.hidden, "hidden", false, "include hidden entries")
 	flags.BoolVar(&o.inspect, "inspect", false, "emit bounded schema-1 directory JSON without X")
 	flags.BoolVar(&o.reuse, "reuse", false, "hand off to an idle matching browser; otherwise start an independent view")
+	flags.BoolVar(&o.fileManagerService, "filemanager-service", false, "own the optional FileManager1 session-bus service")
 	if err := flags.Parse(args); err != nil {
 		return o, err
 	}
 	dirSet, custom := false, false
+	serviceConflict := false
 	flags.Visit(func(f *flag.Flag) {
+		if f.Name != "filemanager-service" && f.Name != "socket" {
+			serviceConflict = true
+		}
 		if f.Name == "dir" {
 			dirSet = true
 		}
@@ -40,6 +45,12 @@ func parseOptions(args []string, home string, output io.Writer) (options, error)
 			custom = true
 		}
 	})
+	if o.fileManagerService {
+		if serviceConflict || flags.NArg() != 0 {
+			return o, errors.New("--filemanager-service accepts only --socket")
+		}
+		return o, nil
+	}
 	if flags.NArg() > 1 {
 		return o, errors.New("expected at most one local folder argument")
 	}

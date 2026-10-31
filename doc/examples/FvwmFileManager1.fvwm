@@ -1,0 +1,7 @@
+# Optional FileManager1 service; add these lines to your FVWM configuration.
+# The core starts FvwmMFL automatically. If your configuration stops it,
+# restore it before starting this service.
+# The session must have an explicit local Unix D-Bus address and bus support.
+# Only one FileManager1 owner can run on a bus. WMRestart may make a new
+# attempt; it refuses an existing owner without replacing it.
+AddToFunc StartFunction I Exec exec fvwm-file-browser --filemanager-service

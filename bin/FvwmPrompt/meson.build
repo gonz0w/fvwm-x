@@ -5,6 +5,19 @@
 # Extract all of the go sources from the current directory
 r = run_command('find-go-sources.sh', meson.current_source_dir(), check: true)
 fvwmprompt_files = r.stdout().strip().split()
+# Explicit service inputs keep incremental rebuilds correct for an existing
+# configured browser target as the bounded adapter lands.
+foreach filemanager_source : [
+    'cmd/fvwmfilebrowser/filemanager_child.go',
+    'cmd/fvwmfilebrowser/filemanager_plan.go',
+    'cmd/fvwmfilebrowser/filemanager_service.go',
+    'cmd/fvwmfilebrowser/filemanager_plan_test.go',
+    'cmd/fvwmfilebrowser/filemanager_service_test.go',
+]
+    if not fvwmprompt_files.contains(filemanager_source)
+        fvwmprompt_files += filemanager_source
+    endif
+endforeach
 fvwmprompt_files += 'go.mod'
 fvwmprompt_files += 'go.sum'
 fvwmprompt_files += 'internal/commandmeta/commands.json'
@@ -221,6 +234,12 @@ test('desktop-menu', py,
 
 # Optional native-Form collection consumer and isolated directory/action worker.
 # Standard library only; adoption remains an explicit configuration choice.
+filemanager_bus_linker = 'main.fileManagerBusHelperPath=' + (fvwm_moduledir / 'fvwm-session-bus')
+if not filemanager_bus_linker.contains('\'')
+    filemanager_bus_linker = '\'' + filemanager_bus_linker + '\''
+elif not filemanager_bus_linker.contains('"')
+    filemanager_bus_linker = '"' + filemanager_bus_linker + '"'
+endif
 fvwm_file_browser = custom_target(
     'fvwm-file-browser',
     output: 'fvwm-file-browser',
@@ -229,7 +248,7 @@ fvwm_file_browser = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X ' + startup_module_linker,
+        '-ldflags', '-X ' + startup_module_linker + ' -X ' + filemanager_bus_linker,
         '-o', meson.current_build_dir() / 'fvwm-file-browser',
         './cmd/fvwmfilebrowser',
     ],

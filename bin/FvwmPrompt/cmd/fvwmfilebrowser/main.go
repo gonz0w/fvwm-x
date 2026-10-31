@@ -40,6 +40,8 @@ type options struct {
 	watch                         string
 	hidden, inspect               bool
 	reuse                         bool
+	fileManagerService            bool
+	fileManagerReceipt            *os.File
 	targets                       [][]byte
 	properties                    bool
 	actions                       actionFlags
@@ -722,6 +724,9 @@ func run(o options) error {
 	if err := b.queue(o.initialRequest(), navigation); err != nil {
 		return err
 	}
+	// This private receipt confirms provider/work admission, before filesystem
+	// resolution or visible presentation. A lost reader must not close the UI.
+	writeFileManagerReceipt(o.fileManagerReceipt, "accepted")
 	if err := b.show(); err != nil {
 		return err
 	}
@@ -908,23 +913,56 @@ func main() {
 		}
 		return
 	}
+	args := os.Args[1:]
+	var admission *os.File
+	if len(args) != 0 && args[0] == "--_filemanager-child" {
+		var err error
+		admission, err = openFileManagerReceipt()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser: invalid private admission pipe")
+			os.Exit(2)
+		}
+		defer admission.Close()
+		args = args[1:]
+	}
 	home, _ := os.UserHomeDir()
-	o, err := parseOptions(os.Args[1:], home, os.Stderr)
+	o, err := parseOptions(args, home, os.Stderr)
 	if errors.Is(err, flag.ErrHelp) {
 		return
 	}
 	if err != nil {
+		writeFileManagerReceipt(admission, "refused")
 		fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
 		os.Exit(2)
 	}
+	o.fileManagerReceipt = admission
+	if o.fileManagerService {
+		if admission != nil {
+			writeFileManagerReceipt(admission, "refused")
+			os.Exit(2)
+		}
+		if err := runFileManagerService(o); err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
+			os.Exit(1)
+		}
+		return
+	}
 	if o.reuse {
 		endpoint := transport.SocketPath(o.socket, os.Getenv, os.Getuid())
-		receipt, reused, err := reuseBrowser(context.Background(), endpoint, o)
+		ctx := context.Background()
+		if admission != nil {
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithTimeout(ctx, fileManagerAdmissionWait)
+			defer cancel()
+		}
+		receipt, reused, err := reuseBrowser(ctx, endpoint, o)
 		if err != nil {
+			writeFileManagerReceipt(admission, "unknown")
 			fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
 			os.Exit(1)
 		}
 		if reused {
+			writeFileManagerReceipt(admission, "accepted")
 			fmt.Println(string(receipt))
 			return
 		}
@@ -939,6 +977,7 @@ func main() {
 		}
 	}
 	if err := run(o); err != nil {
+		writeFileManagerReceipt(admission, "unknown")
 		fmt.Fprintln(os.Stderr, "fvwm-file-browser:", err)
 		os.Exit(1)
 	}

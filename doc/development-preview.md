@@ -1220,7 +1220,7 @@ for the checks and their separate release limits.
 
 The opt-in tray now opens beside its adaptive-bar button. It retains application
 icon pixels, offers bounded pages and a keyboard fallback, and survives a bar
-rebuild or exit. Four saved preferences share the existing settings owner;
+rebuild or exit. At this earlier checkpoint four saved preferences shared the settings owner;
 `SendToModule FvwmDesktop edit-settings group:tray` opens the compact editor.
 This remains in-progress R1 development.
 
@@ -1246,4 +1246,49 @@ tray explicitly. Do not swallow its root-child host in another process.
 
 [Usage and recovery](FvwmTray.adoc) and the
 [source-bound checkpoint](../dev-docs/verification/VERIFICATION-2026-10-30-TRAY-BAR.md)
-state the remaining true-containment, modern-bus, toolkit and release limits.
+describe the earlier checkpoint and its then-pending work. Current tray work is shown below.
+
+
+## Native tray completion work in progress
+
+The optional tray supports XEmbed and, when the optional session bus feature is
+enabled, StatusNotifier items. StatusNotifier is off by default. Six tray
+preferences share the schema 8 settings store. The default bar uses a root
+popup; a native FvwmButtons tray container is opt-in. Foreign XEmbed client
+pixels retain their actual size. See [FvwmTray](FvwmTray.adoc) for usage.
+
+These unmodified native Linux/Xorg captures use eight affected installed
+executables, build-tree fixture peers and a private bus and display.
+The theme, contained-menu and tooltip captures use synthetic protocol fixtures.
+They show Slate dark with Sans 11, Dune light with Serif 12, and Slate dark with
+DejaVu Sans Mono 18. The configuration overlays and exact image hashes are in
+the [capture manifest](images/tray-completion-20261030/manifest.json).
+
+![Slate dark popup and settings](images/tray-completion-20261030/modern-theme-0.png)
+
+![Dune light popup and settings](images/tray-completion-20261030/modern-theme-1.png)
+
+![Slate popup with enlarged monospaced tray text](images/tray-completion-20261030/modern-theme-2.png)
+
+![Slate dark contained tray between Before and After buttons](images/tray-completion-20261030/container-theme-0.png)
+
+![Dune light contained tray between Before and After buttons](images/tray-completion-20261030/container-theme-1.png)
+
+![Slate contained tray with enlarged monospaced button labels](images/tray-completion-20261030/container-theme-2.png)
+
+![Synthetic application menu in a contained tray](images/tray-completion-20261030/container-application-menu.png)
+
+![Plain-text tooltip below a tray popup](images/tray-completion-20261030/modern-tooltip.png)
+
+The following capture includes real GTK 3.24.41 and Ayatana 0.5.93 clients.
+The GTK fixture loads a 2×2 source image and selects its own actual client
+size: 16×16 at the first observation and 2×2 after hide/show.
+The earlier black capture came from isolated MIME data preventing PNG loading;
+the fixture producer now uses the base MIME paths. Foreign client pixels are
+not resampled by the tray.
+
+![GTK and Ayatana tray clients with an application menu](images/tray-completion-20261030/real-gtk-ayatana-clients.png)
+
+These images show presentation at the captured sizes; they do not prove input
+behavior or accessibility. Affected native Linux and combined six-profile acceptance passed; final review
+and whole-release qualification remain separate.

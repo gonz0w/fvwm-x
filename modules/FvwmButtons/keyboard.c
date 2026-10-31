@@ -3,12 +3,15 @@
  * the Free Software Foundation; either version 2, or any later version.
  */
 #include "config.h"
+#include <stdio.h>
 #include <X11/keysym.h>
 #include <X11/XKBlib.h>
 #include "FvwmButtons.h"
 #include "buttons_navigation.h"
 #include "draw.h"
 #include "keyboard.h"
+#include "libs/Module.h"
+#include "tray_container.h"
 
 static Bool navigation_enabled;
 static Bool window_focused;
@@ -16,13 +19,14 @@ static button_info *focus_button;
 static button_info *pressed_button;
 static KeyCode pressed_key;
 static Bool activated_on_press;
+static Window focus_proxy;
 
 /* Button records live for the module lifetime. Dynamic changes update their
  * state in place; no saved action string or pending pointer is freed here. */
 static Bool eligible(const button_info *b)
 {
 	return b && !b->flags.b_Container && !b->flags.b_Disabled &&
-		!b->flags.b_Swallow && (b->flags.b_Panel ||
+		!b->flags.b_Swallow && (b->flags.b_Tray || b->flags.b_Panel ||
 		 (b->flags.b_Action && b->action &&
 		  (b->action[0] || b->action[1])));
 }
@@ -38,6 +42,36 @@ void buttons_set_keyboard_navigation(Bool enabled)
 		 * settings or another application. Keep the traditional fallback. */
 		XkbSetDetectableAutoRepeat(Dpy, True, &supported);
 	}
+}
+
+Window buttons_keyboard_focus_window(void)
+{
+	return focus_proxy ? focus_proxy : MyWindow;
+}
+
+void buttons_keyboard_init(void)
+{
+	if (!navigation_enabled || !buttons_tray_requested() || focus_proxy ||
+	    !MyWindow)
+		return;
+	/* A leaf sibling of the Tray slot keeps pointer routing from sending
+	 * surrounding-control keys into a foreign child below the pointer. */
+	XSetWindowAttributes attributes = {0};
+	attributes.event_mask = KeyPressMask | KeyReleaseMask | FocusChangeMask;
+	focus_proxy = XCreateWindow(Dpy, MyWindow, -1, -1, 1, 1, 0, 0,
+	    InputOnly, CopyFromParent, CWEventMask, &attributes);
+	XMapWindow(Dpy, focus_proxy);
+}
+
+void buttons_keyboard_cleanup(void)
+{
+	if (focus_proxy)
+		XDestroyWindow(Dpy, focus_proxy);
+	focus_proxy = None;
+	window_focused = False;
+	focus_button = pressed_button = NULL;
+	pressed_key = 0;
+	activated_on_press = False;
 }
 
 Bool buttons_is_focused(const button_info *b)
@@ -121,6 +155,13 @@ static void set_focus_button(button_info *b)
 	{
 		RedrawButton(b, DRAW_FORCE, NULL);
 	}
+}
+
+void buttons_keyboard_return_tray(button_info *b, int direction)
+{
+	if (!navigation_enabled || !eligible(b))
+		return;
+	set_focus_button(direction ? tab_target(b, direction < 0) : b);
 }
 
 static buttons_rect button_rect(button_info *b)
@@ -228,6 +269,23 @@ static void activate(button_info *b)
 	CurrentButton = saved;
 }
 
+void buttons_keyboard_status(void)
+{
+	char command[256];
+
+	/* Numeric observation only: never interpolate a configuration ID/action
+	 * into the core command stream. Indices are local to their parent. */
+	snprintf(command, sizeof(command),
+	    "Echo FVWM_BUTTONS_KEYBOARD_STATUS %lu %u %u %d %d %u %lu %u %lu",
+	    MyWindow, navigation_enabled ? 1U : 0U,
+	    window_focused ? 1U : 0U,
+	    focus_button ? focus_button->n + 1 : 0,
+	    pressed_button ? pressed_button->n + 1 : 0,
+	    (unsigned int)pressed_key, buttons_tray_external_focus(),
+	    buttons_tray_leave_requests(), buttons_keyboard_focus_window());
+	SendText(fd, command, 0);
+}
+
 Bool buttons_keyboard_event(XEvent *event)
 {
 	KeySym key;
@@ -239,13 +297,22 @@ Bool buttons_keyboard_event(XEvent *event)
 	}
 	if (event->type == FocusIn || event->type == FocusOut)
 	{
-		if (event->xfocus.window != MyWindow)
+		Window target = buttons_keyboard_focus_window();
+		if (event->xfocus.window != target ||
+		    (focus_proxy && event->xany.send_event))
 		{
 			return True;
 		}
 		window_focused = event->type == FocusIn &&
 			event->xfocus.detail != NotifyVirtual &&
 			event->xfocus.detail != NotifyNonlinearVirtual;
+		if (focus_proxy && window_focused)
+		{
+			Window focused = None;
+			int revert;
+			XGetInputFocus(Dpy, &focused, &revert);
+			window_focused = focused == target;
+		}
 		cancel_press();
 		if (!eligible(focus_button))
 		{
@@ -276,9 +343,10 @@ Bool buttons_keyboard_event(XEvent *event)
 	{
 		return False;
 	}
-	/* Navigation is confined to the module's own window. No grabs, focus
-	 * requests or typing interception are made for any other client. */
-	if (!window_focused || event->xkey.window != MyWindow)
+	/* Native Tray instances use the leaf; ordinary Buttons uses its window.
+	 * Foreign input is never grabbed. */
+	if (!window_focused ||
+	    event->xkey.window != buttons_keyboard_focus_window())
 	{
 		return True;
 	}
@@ -315,7 +383,12 @@ Bool buttons_keyboard_event(XEvent *event)
 	{
 		return True;
 	}
-	if (key == XK_Tab || key == XK_ISO_Left_Tab)
+	if (key == XK_Escape)
+	{
+		buttons_tray_leave();
+		cancel_press();
+	}
+	else if (key == XK_Tab || key == XK_ISO_Left_Tab)
 	{
 		set_focus_button(tab_target(focus_button,
 			(event->xkey.state & ShiftMask) != 0));

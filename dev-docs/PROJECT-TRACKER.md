@@ -7,17 +7,81 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: [bar-launched tray popup](#r1-tray-bar-popup-and-paging--2026-10-30)
-under TRAY-01 #78. PR312 merged as
-`17a1548b6ea866644311d280539794ff45ebb32d`; canonical signature, reviewed
-tree and author DCO verified, source branches retired. NOTIFY-01 #76 is closed.
-The counter is 2/5 since the paired observation through PR310. Keep the verified
-runnable reference; a new comparison is not due for this checkpoint.
+Current checkpoint: #78 completion on `codex/r1-tray-completion`. The user
+explicitly authorized merging PR313 and completing #78 plus related work.
+PR313 merged as `db6b51ad29c515e06e0d2e0918eead2fc562d240`; canonical signature,
+reviewed tree and author DCO verified; matching source branches retired. The
+counter is now 3/5 since the paired observation through PR310. Keep the verified
+runnable reference; no performance comparison is due yet.
+
+## R1 tray completion selection — 2026-10-30
+
+Owner: Cam; base merged PR313 above. Implementation and affected qualification
+are complete; separate source/artifact/receipt/visual review is clear after a
+provenance-wording correction. The
+[modern protocol/container contract](decisions/TRAY-COMPLETION-2026-10-30.md) was frozen
+before implementation.
+User direction is to finish #78 and related issue work, not to waive frozen
+acceptance. Reuse the completed standalone and bar/preferences checkpoints.
+
+Selected finite contracts: opt-in StatusNotifier watcher/host, item lifecycle,
+icons/state/activation/tooltips and supported application menus on #77's accepted
+shared optional libdbus bus; optional Buttons containment with both owners'
+release/save-set/geometry/focus contract; dynamic native icon sizing and shared
+icon/theme consumer adoption; independent real-client and failure/recovery checks;
+combined affected enabled/disabled six-target/install/manual qualification,
+inspected theme/configuration captures and measured dependency/runtime cost.
+The linked contract fixes the supported protocol, bounds, additive Tray slot,
+two-owner handshake, shared icon worker and central schema8 preferences.
+No mandatory toolkit/bus, new settings store, second icon resolver or broad
+session/portal/locker feature is inferred. #257/#258 remain parked.
+
+Development status: final Linux ARM64 source37 passes seventeen actual-X
+protocol/menu/container/recovery groups using eight verified installed
+executables, with independent build-tree peers/capture. This includes real
+GTK3/Ayatana/dbusmenu, combined capacity, stale focus messages and
+pointer-over-client keyboard return. Nine C policies, seven Go packages,
+affected Go race/vet and scoped leak-enabled ASan/UBSan pass. Production/build
+inputs remain byte-identical to source34; later changes affect fixtures/docs.
+Three popup and three contained theme/font captures plus tooltip/menu/real-client
+examples are inspected. Positive pixels cover attention fallback/priority,
+named XPM scaling, exact overlays, and real GTK blue-to-orange repaint.
+
+Linux AMD64 and FreeBSD AMD64 completed final-source combined enabled/disabled
+builds, policy/Go, affected installs and standalone/nested/default-X checks.
+FreeBSD ARM64 composes its passed source28 baseline with the passed source34
+three-file icon build/install/policy/pixel delta. Both OpenBSD architectures'
+source29 combined baselines pass; their same final icon deltas now pass.
+FreeBSD/OpenBSD manual rendering passes all four pages; nonzero lint exits3/3/3/4 are
+classified converter diagnostics, not passing lint. Final evidence and the separate review are reconciled.
+#78 is ready to close when this reviewed candidate merges.
+[Completion evidence](verification/VERIFICATION-2026-10-30-TRAY-COMPLETION.md)
+keeps exact source/profile boundaries and original failed observations.
+
+The GTK black capture was traced to the fixture's isolated XDG paths excluding
+base MIME data. Direct loading failed and GtkImage was empty. A controlled
+same-file loader comparison identified the missing MIME data; restoring those
+paths only for toolkit producers resolves it. Five required actual blue/orange
+paint assertions pass; one initial stage is observation-only. No production
+mapping, drawing, resizing or dependency change was needed for this correction.
+
+The topmost Buttons leaf proxy, atomic internal scope return, managed external
+focus cache and explicit core server-time refresh are implemented and exercised.
+They preserve application-child focus and refusal/NoWarp policy. The linked
+decision records their bounded costs. Full Buttons font-lifetime leakage remains
+the separately recorded R2 gap, without a fabricated baseline or clean-session
+claim.
+
+Related #77 bus/SNI consumer checks can share qualification; #72/#77 and generic
+#214/#215 owner closure still require their own remaining acceptance. The full
+Buttons font-lifetime leak gap from PR313 is retained with its finite R2 follow-up;
+do not present it as a clean whole-session leak pass or invent baseline parity.
 
 ## R1 tray bar popup and paging — 2026-10-30
 
 Owner: Cam; `codex/r1-tray-bar`; base merged PR312 above.
-Status: Review candidate; selected implementation and separate final review complete. User authorized
+Status: merged in PR313 as `db6b51ad29c515e06e0d2e0918eead2fc562d240`;
+signature, reviewed tree and DCO verified; source branches retired. User authorized
 merge/cleanup and continued #78 feature work. Broader #78 acceptance stays open.
 
 Batch eight related outcomes: (1) strict `ToggleAt x y width height` native
@@ -5443,7 +5507,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | SESSION-02 | P2 / In progress; optional client/power merged; owned-bus lifetime candidate, broader adapters/qualification open | Comprehensive D-Bus extension of SESSION-01 using the same settings/actions/UI and one documented opt-in: reuse or explicitly create an owned session bus before child startup, honest no-bus fallback, available login1/elogind/inhibitor adapters, native notification/tray integration and configurations for already installed selected agents/portal backends. Select the shared optional dependency contract before NOTIFY/TRAY protocol adoption; qualify enabled/disabled installs, ownership, restart/logout and OS-specific capabilities. No system-bus startup, separate settings store or implicit package installation. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
 | NOTIFY-01 | Done / #76 closed by merged PR311; frozen component acceptance complete | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
-| TRAY-01 | P2 / In progress; standalone XEmbed host selected, container/modern checkpoints pending | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
+| TRAY-01 | P2 / Review; finite completion qualified, closes on candidate merge | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
 | FILE-DATA-01 | P2 / queued, scope approved | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
 | FILE-ACTION-01 | Done / #65 closed by merged PR271; all five finite criteria qualified | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |

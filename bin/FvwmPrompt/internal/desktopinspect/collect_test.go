@@ -331,10 +331,10 @@ func TestMalformedBindingTextNeverLabelsAnObservedCompleteList(t *testing.T) {
 	}
 }
 
-func TestTrayRequestedPolicyUsesNativeNineteenSettingSnapshot(t *testing.T) {
+func TestTrayRequestedPolicyUsesNativeTwentyOneSettingSnapshot(t *testing.T) {
 	request := fixtureRequest(t, "settings")
 	var snapshot map[string]map[string]json.RawMessage
-	if err := json.Unmarshal(request.Settings, &snapshot); err != nil || len(snapshot) != 19 {
+	if err := json.Unmarshal(request.Settings, &snapshot); err != nil || len(snapshot) != 21 {
 		t.Fatal("native settings registry snapshot incomplete", len(snapshot), err)
 	}
 	result, err := Collect(context.Background(), request, nil)
@@ -346,7 +346,7 @@ func TestTrayRequestedPolicyUsesNativeNineteenSettingSnapshot(t *testing.T) {
 		rows[row.Label] = row.Value
 	}
 	for key, requested := range map[string]string{
-		"tray_enabled": "false", "tray_gap": "4", "tray_padding": "4", "tray_orientation": "horizontal",
+		"tray_enabled": "false", "tray_gap": "4", "tray_padding": "4", "tray_orientation": "horizontal", "tray_modern": "false", "tray_icon_size": "24",
 	} {
 		if rows[key+" source"] != "saved; requested-state-submitted; owner=FvwmDesktop" || rows[key+" request"] != "requested="+requested+"; readiness=unobserved" {
 			t.Fatal("tray request was rejected or claimed readiness", key, rows)

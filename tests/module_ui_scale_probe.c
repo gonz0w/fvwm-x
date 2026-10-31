@@ -151,7 +151,7 @@ static bool emit(struct probe *probe, cJSON *object)
 	return ok;
 }
 
-static bool config_record(struct probe *probe, const char *text)
+static bool config_record(struct probe *probe, char *text)
 {
 	bool omitted = probe->omit_end &&
 		strncmp(text, "MonitorUI 1 END ", 16) == 0;
@@ -340,7 +340,7 @@ int main(int argc, char **argv)
 			bool unlocked = false;
 			bool valid = module_packet_body_has_text(packet->body,
 				FvwmPacketBodySize(*packet), 3);
-			const char *text = (const char *)(packet->body + 3);
+			char *text = (char *)(packet->body + 3);
 
 			if (valid)
 				valid = packet->type == M_CONFIG_INFO ?

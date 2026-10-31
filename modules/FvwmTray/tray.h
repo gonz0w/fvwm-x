@@ -2,6 +2,8 @@
 #define FVWM_TRAY_PRIVATE_H
 
 #include "tray_model.h"
+#include "tray_container.h"
+#include "tray_sni_ui.h"
 #include "libs/Module.h"
 #include "libs/module_packet_reader.h"
 #include "libs/module_ui_scale.h"
@@ -13,6 +15,8 @@ typedef struct
 	Window socket;
 	unsigned long serial;
 	bool saved;
+	bool native;
+	uint64_t item_id, item_generation;
 	unsigned int border_width;
 } tray_site;
 
@@ -20,11 +24,12 @@ typedef struct
 {
 	int colorset;
 	unsigned int padding, gap, position;
-	bool vertical, visible;
-	char font_name[257];
+	bool vertical, visible, modern;
+	unsigned int icon_size;
+	char font_name[257], icon_theme[129];
 } tray_options;
 
-typedef struct
+struct tray_ui
 {
 	Display *display;
 	Window root, owner, host, proxy, previous_focus;
@@ -44,7 +49,10 @@ typedef struct
 	unsigned int x_error_code;
 	unsigned long x_error_resource;
 	unsigned int refusals, focus_budget, page;
-	bool anchored;
+	bool anchored, modern;
+	unsigned int icon_size;
+	char icon_theme[129];
+	tray_sni_ui *sni;
 	tray_rect anchor;
 	tray_cell page_prev, page_next;
 	module_packet_reader reader;
@@ -54,13 +62,17 @@ typedef struct
 	tray_model model;
 	tray_layout layout;
 	tray_site sites[TRAY_CLIENT_MAX];
-} tray_ui;
+	tray_container container;
+};
 
 bool tray_startup_pause(tray_ui *ui, int milliseconds);
 bool tray_x11_start(tray_ui *ui);
 void tray_x11_stop(tray_ui *ui);
 void tray_x11_event(tray_ui *ui, XEvent *event);
 void tray_x11_layout(tray_ui *ui);
+void tray_x11_retire(tray_ui *ui, unsigned int index);
+uint32_t tray_x11_focus_target(tray_ui *ui, uint32_t id, int direction);
+void tray_x11_focus_committed(tray_ui *ui, uint32_t id, int direction);
 void tray_x11_focus(tray_ui *ui, uint32_t id, int direction, Time timestamp);
 void tray_x11_unfocus(tray_ui *ui, bool restore);
 void tray_x11_hints(tray_ui *ui);

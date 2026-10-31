@@ -38,6 +38,7 @@
 #include "parse.h"
 #include "keyboard.h"
 #include "buttons_startup.h"
+#include "tray_container.h"
 
 extern int w, h, x, y, xneg, yneg; /* used in ParseConfigLine */
 extern char *config_file;
@@ -937,6 +938,7 @@ static void ParseButton(button_info **uberb, char *s)
 			"selected",
 			"focuscolorset",
 			"disabledcolorset",
+			"tray",
 			NULL
 		};
 		s = trimleft(s);
@@ -1321,6 +1323,7 @@ static void ParseButton(button_info **uberb, char *s)
 				 * b->flags&=b_Frame|b_Back|b_Fore|b_Padding|b_Action;
 				 */
 
+				buttons_tray_forget(b);
 				MakeContainer(b);
 				*uberb = b;
 				s = trimleft(s);
@@ -1333,6 +1336,7 @@ static void ParseButton(button_info **uberb, char *s)
 			case 12: /* End */
 				*uberb = ub->parent;
 				ub->c->buttons[--(ub->c->num_buttons)] = NULL;
+				buttons_tray_forget(b);
 				free(b);
 				if (!ub->parent)
 				{
@@ -1696,6 +1700,10 @@ static void ParseButton(button_info **uberb, char *s)
 				}
 				break;
 
+			case 32: /* Native Tray, separate from generic Swallow. */
+				if (buttons_tray_claim(b))
+					b->flags.b_Tray = 1;
+				break;
 			case 28: /* Disabled */
 				b->flags.b_Disabled = 1;
 				break;
@@ -1854,6 +1862,11 @@ static void ParseButton(button_info **uberb, char *s)
 	else if (*s)
 	{
 		AddButtonAction(b, 0, s);
+	}
+	if (b->flags.b_Tray && (b->flags.b_Swallow || b->flags.b_Panel))
+	{
+		fvwm_debug(MyName, "Tray cannot be combined with Swallow or Panel");
+		buttons_tray_forget(b);
 	}
 	return;
 }

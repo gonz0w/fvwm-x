@@ -24,6 +24,7 @@
 /* ------------------------------- includes -------------------------------- */
 #include "config.h"
 #include "buttons_packet.h"
+#include "tray_container.h"
 #include "libs/FProperty.h"
 #ifdef HAVE_SYS_BSDTYPES_H
 #include <sys/bsdtypes.h> /* Saul */
@@ -32,6 +33,7 @@
 #include <ctype.h>
 #include <errno.h>
 #include <stdio.h>
+#include <strings.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -324,6 +326,8 @@ static void DeadPipeCleanup(void)
 	Window swin;
 
 	signal(SIGPIPE, SIG_IGN);/* Xsync may cause SIGPIPE */
+	buttons_tray_cleanup();
+	buttons_keyboard_cleanup();
 
 	while (NextButton(&ub, &b, &button, 0))
 	{
@@ -820,6 +824,7 @@ int main(int argc, char **argv)
 	MyWindow = XCreateWindow(
 		Dpy, Root, 0, 0, 1, 1, 0, Pdepth, InputOutput, Pvisual,
 		CWColormap | CWBackPixmap | CWBorderPixel, &xswa);
+	buttons_keyboard_init();
 
 #ifdef DEBUG_INIT
 	fvwm_debug(MyName, "OK\n%s: Loading data...\n", __func__);
@@ -881,7 +886,9 @@ int main(int argc, char **argv)
 	SetMessageMask(
 		fd, M_NEW_DESK | M_END_WINDOWLIST | M_MAP | M_WINDOW_NAME
 		| M_RES_CLASS | M_CONFIG_INFO | M_END_CONFIG_INFO | M_RES_NAME
-		| M_SENDCONFIG | M_ADD_WINDOW | M_CONFIGURE_WINDOW | M_STRING);
+		| M_SENDCONFIG | M_ADD_WINDOW | M_CONFIGURE_WINDOW | M_STRING
+		| (buttons_tray_requested()
+		   ? (M_FOCUS_CHANGE | M_DESTROY_WINDOW) : 0));
 	SetMessageMask(fd, MX_PROPERTY_CHANGE);
 
 	/* request a window list, since this triggers a response which
@@ -975,6 +982,11 @@ void ButtonPressProcess (button_info *b, char **act)
 
 	if (!b || b->flags.b_Disabled)
 	{
+		return;
+	}
+	if (b->flags.b_Tray)
+	{
+		(void)buttons_tray_activate(b, 0);
 		return;
 	}
         memset(&tmp, 0, sizeof(tmp));
@@ -1097,6 +1109,10 @@ void Loop(void)
 	{
 		if (My_FNextEvent(Dpy, &Event))
 		{
+			if (buttons_tray_normalize_focus(&Event))
+				continue;
+			if (buttons_tray_event(&Event))
+				continue;
 			if (buttons_keyboard_event(&Event))
 			{
 				continue;
@@ -1339,7 +1355,7 @@ void Loop(void)
 
 	act = NULL;
 	if (!b || b->flags.b_Disabled ||
-	    (!b->flags.b_Panel && (!b->flags.b_Action ||
+	    (!b->flags.b_Tray && !b->flags.b_Panel && (!b->flags.b_Action ||
 	     ((act = GetButtonAction(b, Event.xbutton.button)) == NULL &&
 	      (act = GetButtonAction(b, 0)) == NULL))))
 	{
@@ -2438,8 +2454,12 @@ int My_FNextEvent(Display *Dpy, XEvent *event)
 	ready[1] = (struct pollfd){ fd[1], POLLIN, 0 };
 	/* Session descriptors remain borrowed and range-admitted by fsm. */
 	session_count = fsm_pollfds(ready + 2, FD_SETSIZE);
-	result = fvwmPoll(ready, session_count + 2,
-		FPending(Dpy) ? 0 : (fsm_pending ? 10 : -1));
+	buttons_tray_service();
+	int wait_ms = FPending(Dpy) ? 0 : (fsm_pending ? 10 : -1);
+	int tray_wait = buttons_tray_timeout();
+	if (tray_wait >= 0 && (wait_ms < 0 || tray_wait < wait_ms))
+		wait_ms = tray_wait;
+	result = fvwmPoll(ready, session_count + 2, wait_ms);
 	if (result < 0)
 	{
 		if (errno != EINTR)
@@ -2820,6 +2840,12 @@ void process_message(unsigned long type, unsigned long *body)
 
 	switch (type)
 	{
+	case M_FOCUS_CHANGE:
+		buttons_tray_focus_change((Window)body[0], (Window)body[1]);
+		break;
+	case M_DESTROY_WINDOW:
+		buttons_tray_destroyed((Window)body[0]);
+		break;
 	case M_NEW_DESK:
 		new_desk = body[0];
 		{
@@ -2919,7 +2945,10 @@ void process_message(unsigned long type, unsigned long *body)
 		}
 		break;
 	case M_STRING:
-		parse_message_line((char *)&body[3]);
+		if (!strcasecmp((char *)&body[3], "KeyboardStatus"))
+			buttons_keyboard_status();
+		else
+			parse_message_line((char *)&body[3]);
 		break;
 	default:
 		break;

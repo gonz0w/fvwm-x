@@ -11,8 +11,10 @@ import (
 	"errors"
 	"fmt"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
+	"github.com/fvwmorg/FvwmPrompt/internal/trayicons"
 	"io"
 	"os"
+	"strings"
 	"syscall"
 )
 
@@ -68,6 +70,21 @@ func main() {
 			fmt.Fprintln(os.Stderr, "cannot isolate desktop worker process group")
 			os.Exit(1)
 		}
+	}
+	if len(os.Args) == 2 && os.Args[1] == "--tray-icons" {
+		ctx, cancel := context.WithTimeout(context.Background(), desktopworker.Deadline)
+		defer cancel()
+		environment := map[string]string{}
+		for _, item := range os.Environ() {
+			if key, value, ok := strings.Cut(item, "="); ok {
+				environment[key] = value
+			}
+		}
+		if err := trayicons.Run(ctx, os.Stdin, os.Stdout, environment); err != nil {
+			fmt.Fprintln(os.Stderr, "fvwm-desktop-worker tray icons:", err)
+			os.Exit(1)
+		}
+		return
 	}
 	if len(os.Args) != 1 {
 		fmt.Fprintln(os.Stderr, "fvwm-desktop-worker: private JSON stdin protocol; no arguments")

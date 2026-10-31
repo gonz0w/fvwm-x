@@ -40,6 +40,7 @@ libfvwm3_sources = files(
     'icccm_size_hints.c',
     'Module.c',
     'module_packet_reader.c',
+    'module_startup.c',
     'module_monitor.c',
     'module_ui_scale.c',
     'module_workarea.c',

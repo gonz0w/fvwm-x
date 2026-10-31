@@ -43,7 +43,7 @@ fvwmprompt_test_binaries = custom_target(
         'desktopcontroller.test', 'fvwmdesktop.test', 'runtimepath.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
-        'xdgsource.test', 'transport.test',
+        'xdgsource.test', 'iconrender.test', 'trayicons.test', 'transport.test',
         'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
         'filejobs.test',
         'fvwmpinboard.test', 'pinboard.test',

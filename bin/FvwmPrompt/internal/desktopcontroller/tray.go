@@ -12,9 +12,15 @@ import "fmt"
 func (d *Controller) projectTray() {
 	// Execute the fixed configuration as one core function. A tray's config
 	// request cannot interleave with this tuple's removal/replacement.
+	modern := "Off"
+	if d.effective["tray_modern"] == true {
+		modern = "On"
+	}
 	commands := []string{
 		"DestroyModuleConfig SlateTray:*",
 		"*SlateTray Colorset 2",
+		"*SlateTray StatusNotifier " + modern,
+		fmt.Sprintf("*SlateTray IconSize %d", d.effective["tray_icon_size"].(int)),
 		`*SlateTray Font "$[infostore.slate_font]"`,
 		fmt.Sprintf("*SlateTray Gap %d", d.effective["tray_gap"].(int)),
 		fmt.Sprintf("*SlateTray Padding %d", d.effective["tray_padding"].(int)),

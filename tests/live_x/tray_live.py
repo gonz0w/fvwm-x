@@ -516,6 +516,71 @@ def released(native, peer, identifier):
             s['map'] == 0, 'surviving unmapped foreign root client')
 
 
+def resize_under_layout_load(native, peer, identifier, override):
+    original = peer.state(identifier)
+    socket = original['parent']
+    assert original['override'] == override and original['map'] == 2
+    assert socket != peer.identity['root']
+
+    def projected(width, height):
+        def observed():
+            actual = peer.state(identifier)
+            slot = native.rect(socket)
+            host = native.rect(native.state['host'])
+            if (not actual['exists'] or actual['parent'] != socket or
+                    actual['override'] != override or actual['map'] != 2 or
+                    (actual['width'], actual['height']) != (width, height) or
+                    actual['x'] != 0 or actual['y'] != 0 or
+                    not slot or not host or
+                    (slot['width'], slot['height']) != (width, height)):
+                return None
+            if not (host['x'] <= slot['x'] and host['y'] <= slot['y'] and
+                    slot['x'] + width <= host['x'] + host['width'] and
+                    slot['y'] + height <= host['y'] + host['height']):
+                return None
+            return dict(actual=actual, socket=slot, host=host)
+        return wait_for_predicate('actual resize and socket projection',
+            observed, time.monotonic() + 5, process=native.process)
+
+    samples = []
+    for width, height in ((43, 31), (24, 20), (1, 1)):
+        transaction = peer.request('resize-repaint', id=identifier,
+            width=width, height=height, count=128)
+        assert transaction['host'] == native.state['host']
+        assert transaction['expose_count'] == 128
+        assert transaction['override'] == override
+        native.command('SendToModule FvwmTray Next')
+        fence = native.wait_status()
+        samples.append(dict(transaction=transaction, fence=fence,
+            projected=projected(width, height)))
+    # No state query or native readiness wait between these resize requests.
+    # The final dimensions must survive all preceding dirty/focus work.
+    burst = []
+    for width, height in ((43, 31), (24, 20), (1, 1)):
+        burst.append(peer.request('resize-repaint', id=identifier,
+            width=width, height=height, count=128))
+        native.control.send(b'SendToModule FvwmTray Next\n')
+    fence = native.wait_status()
+    final = projected(1, 1)
+    invalid = None
+    if override:
+        before = native.refusals()
+        transaction = peer.request('resize-repaint', id=identifier,
+            width=257, height=1, count=128)
+        after = native.rejected_after(before)
+        invalid = dict(transaction=transaction, refusals_before=before,
+            refusals_after=after, restored=projected(1, 1))
+    peer.request('resize-repaint', id=identifier, width=original['width'],
+        height=original['height'], count=128)
+    native.wait_status()
+    restored = projected(original['width'], original['height'])
+    native.focus_app()
+    return dict(override=override, samples=samples,
+        consecutive_requests=burst, final_fence=fence, final=final,
+        restored=restored, invalid_override=invalid,
+        requests_replayed_after_failure=False)
+
+
 def run(options):
     runtime = HarnessRuntime(prefix='fvwm-tray-')
     out = options.artifacts_dir.resolve()
@@ -723,6 +788,10 @@ def run(options):
             lambda s: s['map'] == 2 and
                 (s['width'], s['height']) == (37, 23),
             'normal resized plug visible after host Show')
+        evidence['cases']['override_resize_during_repaint_and_focus'] = (
+            resize_under_layout_load(native, first, a, True))
+        evidence['cases']['redirected_resize_during_repaint_and_focus'] = (
+            resize_under_layout_load(native, first, normal, False))
         first.request('destroy', id=normal)
         native.wait_status(lambda s: s['count'] == 2 and s['mapped'] == 2)
         assert not first.state(normal)['exists']

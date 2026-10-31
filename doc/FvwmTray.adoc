@@ -6,7 +6,7 @@
 
 == Name
 
-FvwmTray - optional standalone XEmbed system tray
+FvwmTray - optional native system tray
 
 == Synopsis
 
@@ -14,10 +14,11 @@ Module FvwmTray [_Alias_]
 
 == Description
 
-FvwmTray is an optional native module that displays application-provided
-XEmbed tray windows. Start it explicitly in an FVWM session. It uses the
-existing X11 and FVWM module libraries; it does not need a D-Bus session bus
-or an additional GUI toolkit.
+FvwmTray is an optional native module that displays XEmbed tray windows and,
+when enabled and available, StatusNotifier items. Start it explicitly in an
+FVWM session. The XEmbed host uses existing X11 and FVWM module libraries.
+StatusNotifier uses the optional session D-Bus feature; neither path requires
+an additional GUI toolkit.
 
 The tray owns the system-tray selection for its X screen. It does not replace
 another owner. At startup it allows up to two seconds for an existing owner
@@ -27,18 +28,19 @@ tray remains running, stop that tray before starting FvwmTray. If FvwmTray
 loses the selection, it releases its clients and exits; start it again
 explicitly after the selection becomes available.
 
-This feature is in development. The host can appear as a standalone window
-or an anchored bar popup. It supports the XEmbed docking, mapped-state, activation,
-focus and traversal subset described below. It does not yet support
-StatusNotifier items, application menus, balloon messages, global accelerators,
-XDND or modality forwarding. It accepts windows using the screen's default
-visual and depth; ARGB and other visual/depth combinations are not supported
-in this host. The module does not claim full XEmbed protocol coverage.
+This feature is in development. The host can appear as a standalone window,
+an anchored bar popup or an explicitly configured native FvwmButtons Tray slot.
+The XEmbed host supports the docking, mapped-state, activation, focus and
+traversal subset described below. It accepts windows using the screen's default
+visual and depth; ARGB and other visual/depth combinations are not supported.
+Balloon messages, global accelerators, XDND and modality forwarding are not
+supported. The module does not claim full XEmbed or toolkit coverage.
 
-FvwmButtons swallowing and arbitrary external containers are not supported.
-The adaptive bar opens the host as a root-window popup, without reparenting.
-Do not swallow or reparent the FvwmTray window into another container. External reparenting
-causes the host to release its clients and exit.
+The default adaptive bar opens the host as a root-window popup. The dedicated
+FvwmButtons *Tray* option provides optional containment, when both components
+and the X server support XFixes. Generic Swallow and arbitrary external
+containers are not supported for the tray. Do not reparent the host yourself;
+unsupported external reparenting causes it to release its clients and exit.
 
 == Start and stop
 
@@ -77,7 +79,8 @@ and returns them to the root window before destroying its own windows. It does
 not close or kill those applications. A save set also allows the X server to
 return surviving clients to the root if this standalone host exits abruptly.
 Applications must dock again with a new tray owner; the module does not replay
-old membership after restart.
+old membership after restart. For a native Buttons container, recovery follows
+the two-owner rules in the section below.
 
 == Configuration
 
@@ -93,6 +96,9 @@ Colorset 42 fg #e5edf5, bg #253140
 *FvwmTray Orientation Horizontal
 *FvwmTray Position BottomRight
 *FvwmTray Visible On
+*FvwmTray StatusNotifier Off
+*FvwmTray IconSize 24
+*FvwmTray IconTheme hicolor
 ----
 
 *Colorset* selects an existing FVWM colorset; the default is 0. *Font* uses
@@ -104,11 +110,20 @@ logical UI units from 0 through 64, each defaulting to 4. *Orientation* is
 reject the entire configuration snapshot instead of partially applying it.
 Xft font substitution follows native Fontconfig behavior.
 
+*StatusNotifier* is `On` or `Off`, defaulting to `Off`. *IconSize* is 8 through
+128 logical UI units, defaulting to 24; it sizes StatusNotifier icons, not
+foreign XEmbed windows. *IconTheme* selects a named icon theme, defaulting to
+`hicolor`. Names use the existing desktop icon resolver; unavailable names fall
+back to an available item pixmap or text. The desktop controls its reserved
+`SlateTray` alias and can replace its projected directives on a later refresh.
+Use a separate alias for independently managed module directives.
+
 The host follows the primary monitor's published scale and work area. Its
 own text, padding and geometry follow that scale. Embedded application
 windows retain their actual pixel dimensions; their pixels are not resampled
-by the tray. Colorset, font, orientation, spacing, visibility and placement
-can change while the module runs.
+by the tray. StatusNotifier icons are rendered by the tray at its selected UI
+size and monitor scale. Colorset, font, orientation, spacing, visibility and
+placement can change while the module runs.
 
 After changing stored module directives, request a fresh configuration. Each
 reload builds the complete option set from defaults and the stored directives;
@@ -121,8 +136,8 @@ SendToModule FvwmTray Reload
 Colorset changes and published monitor, scale and work-area changes also
 refresh the running host. Automatic topology/work-area refresh preserves the
 current runtime visibility; an initial or explicitly reloaded configuration
-applies its stored *Visible* value. A reload does not start the module or replace a
-different tray owner.
+applies its stored *Visible* value. A reload does not start the module or
+replace a different tray owner.
 
 == Controls
 
@@ -138,18 +153,21 @@ SendToModule FvwmTray Hide
 SendToModule FvwmTray Show
 SendToModule FvwmTray Reload
 SendToModule FvwmTray Status
+SendToModule FvwmTray ServiceStatus
 SendToModule FvwmTray ToggleAt 100 50 80 28
 SendToModule FvwmTray PageNext
 SendToModule FvwmTray PagePrev
 ----
 
 Choose a binding that does not conflict with your configuration. *Focus*
-selects the current visible client, or the first visible client. *Next* and
-*Prev* move through visible clients and wrap at the ends. Clients can also
-request focus and participate in XEmbed forward or reverse traversal. Key
-presses and releases are forwarded to the selected client. Hiding or removing
-the selected client ends its logical focus. Escape requests a return to the
-previous application through normal window-manager focus policy when possible.
+selects the current visible entry, or the first visible entry. *Next* and
+*Prev* move through visible entries. In standalone mode traversal wraps; in a
+container, outward traversal can return to Buttons. XEmbed clients can request
+focus and participate in forward or reverse traversal, and receive forwarded
+key presses and releases. StatusNotifier entries use Enter for activation and
+Space or the Menu key for their menu. Hiding or removing the selected entry
+ends its logical focus. Escape requests a return through normal window-manager
+focus policy when possible.
 
 *Hide* hides the host; *Show* displays it. Showing it does not itself take
 focus. These commands are transient and last until the next configuration
@@ -168,30 +186,126 @@ button can supply its current coordinates at activation:
 *MyBar: (Title "Tray", Action SendToModule FvwmTray ToggleAt $left $top $width $height)
 ----
 
-*Show* returns to
-standalone placement. Escape hides an anchored popup and requests restoration
-of the previous managed focus. The desktop bar hides the popup before its own
+When the host is not contained, *Show* returns to standalone placement. When
+it is contained, *Show* and *Hide* control the slot content and *ToggleAt*
+refuses to move or detach the host. Escape hides an anchored popup and requests
+restoration of the previous managed focus. The desktop bar hides the popup before its own
 rebuild; reopening uses fresh coordinates. The tray and clients survive the bar.
 Reloading configuration with *Visible Off* can also dismiss the popup while
 retaining clients.
 
 *PageNext* and *PagePrev*, Page Down and Page Up, or the header controls move
 between overflow pages. A page/count and omitted-client cue indicates retained
-clients. The navigation targets are 24 logical units; on work areas too small
-for the 48-unit controls, the host uses a fallback. Clients that cannot fit
-remain members and are not resampled.
+clients in popup mode. Navigation targets are 24 logical units; small work
+areas use a fallback. In a compact container the controls occupy the sides
+when they fit; keyboard and commands remain available for smaller slots.
+Clients that cannot fit remain members and are not resampled.
 
 *Status* emits one numeric `FVWM_TRAY_STATUS` FVWM Echo record. Its fields,
-in order, are client count, mapped-client count, limit, scale in quarters,
+in order, are entry count, mapped/active-entry count, limit, scale in quarters,
 selection-claimed flag, pending-configuration flag, monitor epoch, host window,
 selection-owner window, focus-proxy window and loaded font height. Window
 values are X window IDs; font height is in actual pixels. A quarter-scale value
-of 4 means 1x. The mapped-client count can exceed the number currently visible
-when the host is hidden or the available area overflows.
+of 4 means 1x. Counts include native StatusNotifier entries alongside XEmbed
+clients. Mapped/active flags do not guarantee a currently visible cell: the
+host may be hidden or the available area may overflow.
+
+*ServiceStatus* emits `FVWM_TRAY_SERVICE_STATUS` with thirteen numeric fields:
+compiled StatusNotifier support, requested flag, connected flag, modern item
+count, named-icon worker available flag, adapter busy flag, native-container
+capability flag, attached flag, slot XID, offer XID, menu-open flag, pending
+focus-grant flag and requested child XID (zero without a pending request).
+Pending is not a successful grant. The
+first three and container flags use 0 or 1. Worker availability reports that
+the selected executable is present and accessible; it does not prove that its
+protocol succeeded or an image loaded. A connected bus does not by itself
+prove that an item or watcher is ready.
+
+A tray-owned StatusNotifier cell exposes `_FVWM_TRAY_SNI_ITEM` as five
+CARDINAL/32 words: version 1, item ID low and high words, and item generation
+low and high words. The tray-owned menu window exposes `_FVWM_TRAY_MENU_VIEW`
+as seven CARDINAL/32 words: version 1, menu generation low and high words,
+parent ID, painted row count, selected row and ready flag. A loading or
+invalidated view reports zero selectable rows. These properties are for
+observation only; they do not authorize actions.
+
+== StatusNotifier items and menus
+
+StatusNotifier is optional and off by default. The build must enable the
+existing `session-dbus` feature, and the module needs an explicit inherited
+local Unix `DBUS_SESSION_BUS_ADDRESS`. It does not start a bus, activate a
+service or replace an existing watcher. If a watcher already exists, the tray
+requests host registration. If none exists, it can own the watcher name. Both
+the `org.kde` and `org.freedesktop` StatusNotifier dialects are supported.
+
+For a standalone module, enable the adapter and reload its stored options:
+
+----
+*FvwmTray StatusNotifier On
+SendToModule FvwmTray Reload
+----
+
+For the desktop-owned tray, use `tray_enabled` and `tray_modern` through
+*FvwmDesktop*(1). A requested setting is not proof of a connected bus, watcher
+or item. If the optional build support or address is missing, XEmbed remains
+available. A lost established bus removes its modern entries while the XEmbed
+host continues. After the bus is available again, explicitly reload or
+re-enable StatusNotifier to retry the inherited address. Applications may need
+to register again. Initial connection or a retry can block the isolated tray
+module for up to five seconds; a stalled startup can terminate that module,
+after which surviving XEmbed clients must dock with a new tray owner. A single
+kernel or Xlib call can outlast a deadline.
+
+An active item can display a named icon or pixmap, and an attention item uses
+its attention icon with normal-icon or text fallback. Passive entries are
+retained without a visible cell. Hover shows bounded plain-text tooltip data.
+Left click activates an item, middle click requests its secondary action,
+right click opens its application menu, and the wheel sends scroll actions.
+An item that is itself a menu opens that menu on left click. Coordinates sent
+to applications are actual root pixels.
+
+Menus support normal items, separators, enabled/visible state, checks, radio
+items and bounded submenus. Use arrows, Enter and Escape, or the pointer. When
+a menu is unavailable, the tray requests the item's ContextMenu action.
+Item menus are not a global application-menu registrar. Animated attention
+movies, rich tooltip content and menu icon-data are not supported. Item labels
+and menu contents are data, never FVWM or shell commands. A missing named-icon
+worker keeps pixmap/text fallback; check module diagnostics if an expected
+image is absent.
+
+== Native FvwmButtons container
+
+A Buttons instance can use one dedicated *Tray* button to contain a native
+FvwmTray host. This is an explicit option, not ordinary *Swallow*. The slot
+discovers the tray owner on the same X screen; it does not replace that owner
+or displace a tray already attached to another slot. It needs XFixes support in
+both modules and version 1 or later on the X server. If that capability is
+unavailable, the slot remains unavailable and the root-window tray modes remain
+usable. See *FvwmButtons*(1) and `doc/examples/FvwmTray-Container.fvwm` in the
+source tree for a focus-capable example.
+
+The slot determines the available geometry. The tray uses a compact layout
+without the popup header and preserves foreign client pixels. An empty or
+undersized slot can show clipped fallback text; use *PageNext*/*PagePrev* or
+keyboard traversal when side controls do not fit. Enable Buttons keyboard
+navigation and focus its managed window to enter the slot. Buttons uses an
+owned InputOnly leaf proxy as its effective keyboard-focus window when both
+keyboard navigation and a Tray slot are configured. Escape and outward
+traversal return to that proxy and surrounding Buttons controls. Entry from
+or leaving to another managed application uses normal FVWM focus policy;
+leaving the scope requests restoration of the previous managed application.
+
+The tray protects foreign icons and Buttons protects the foreign tray host
+with root-target, unmap save sets. On normal detach the host is returned to
+the root and hidden. If Buttons exits unexpectedly, its host can recover at
+the root; if FvwmTray exits, surviving icons can recover there unmapped.
+Applications must dock again when a new tray owner starts. Save sets do not
+protect against arbitrary destruction of a live parent by a third party.
 
 == Client limits and recovery
 
-The host admits at most 32 clients. A client window must be an InputOutput
+The host retains at most 32 XEmbed and StatusNotifier entries combined.
+An XEmbed client window must be an InputOutput
 window on the same X screen, use that screen's default visual and depth, and
 provide a valid `_XEMBED_INFO` property with two 32-bit words. At admission it
 must be a direct child of the root window; windows already framed or embedded

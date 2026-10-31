@@ -14,12 +14,14 @@ import (
 
 func TestTrayTypesBoundsAndHistoricalMigration(t *testing.T) {
 	keys, err := Scope("group:tray")
-	want := []string{"tray_enabled", "tray_gap", "tray_padding", "tray_orientation"}
+	want := []string{"tray_enabled", "tray_gap", "tray_padding", "tray_orientation", "tray_modern", "tray_icon_size"}
 	if err != nil || !reflect.DeepEqual(keys, want) {
 		t.Fatal(keys, err)
 	}
 	for key, bad := range map[string][]any{
 		"tray_enabled":     {"on", 1, nil},
+		"tray_modern":      {"on", 1, nil},
+		"tray_icon_size":   {7, 129, true, "24", json.Number("24.0")},
 		"tray_gap":         {-1, 65, true, "4", json.Number("4.0"), json.Number("4e0")},
 		"tray_padding":     {-1, 65, false, nil},
 		"tray_orientation": {"Horizontal", "vertical;Exec bad", false},
@@ -42,7 +44,21 @@ func TestTrayTypesBoundsAndHistoricalMigration(t *testing.T) {
 			}
 		}
 	}
-	for version := 1; version <= 7; version++ {
+	for _, value := range []int{8, 24, 128} {
+		if got, err := Value("tray_icon_size", value, false); err != nil || got != value {
+			t.Fatal(got, err)
+		}
+	}
+	for _, key := range []string{"tray_modern", "tray_icon_size"} {
+		fixture := versionedFixture(7)
+		delete(fixture, "motion")
+		fixture[key] = Defaults()[key]
+		data, _ := json.Marshal(fixture)
+		if _, err := DecodeState(data); err == nil {
+			t.Fatal("schema7 accepted a future modern field", key)
+		}
+	}
+	for version := 1; version <= 8; version++ {
 		fixture := versionedFixture(version)
 		data, _ := json.Marshal(fixture)
 		got, err := DecodeState(data)
@@ -80,13 +96,13 @@ func TestTrayCompactEditorAndUnobservedReadiness(t *testing.T) {
 	}
 	plan, err := Editor(s, "group:tray", false, Values{
 		"tray_enabled": true, "tray_gap": 0, "tray_padding": 64,
-		"tray_orientation": "vertical",
+		"tray_orientation": "vertical", "tray_modern": true, "tray_icon_size": 24,
 	}, token)
-	if err != nil || len(plan.Keys) != 4 || len(plan.Lines) > 65 {
+	if err != nil || len(plan.Keys) != 6 || len(plan.Lines) > 90 {
 		t.Fatal(plan, err)
 	}
 	text := strings.Join(plan.Lines, "\n")
-	for _, part := range []string{`Title "Tray settings"`, "another owner", "tray_enabled_true true on", `Input tray_gap 3 "0"`, "tray_orientation_vertical vertical on", "apply-settings " + token + " $(tray_enabled) $(tray_gap) $(tray_padding) $(tray_orientation)"} {
+	for _, part := range []string{`Title "Tray settings"`, "another owner", "tray_enabled_true true on", `Input tray_gap 3 "0"`, "tray_orientation_vertical vertical on", "apply-settings " + token + " $(tray_enabled) $(tray_gap) $(tray_padding) $(tray_orientation) $(tray_modern) $(tray_icon_size)"} {
 		if !strings.Contains(text, part) {
 			t.Fatal(part, text)
 		}

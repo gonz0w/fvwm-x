@@ -113,6 +113,29 @@ def dependency_identity(system, server_log):
 def fixture_commands(args, build, source):
     if args.server_only:
         return []
+    if getattr(args, 'tray_only', False):
+        paths = {'fvwm': args.fvwm or build / 'fvwm3',
+            'tray': args.tray or build / 'modules/FvwmTray/FvwmTray',
+            'buttons': args.buttons or
+                build / 'modules/FvwmButtons/FvwmButtons',
+            'form': args.form or build / 'modules/FvwmForm/FvwmForm',
+            'desktop': args.desktop or build / 'bin/FvwmPrompt/FvwmDesktop',
+            'session': args.session or build / 'bin/FvwmPrompt/fvwm-session',
+            'worker': args.worker or
+                build / 'bin/FvwmPrompt/fvwm-desktop-worker',
+            'mfl': args.mfl or build / 'modules/FvwmMFL/FvwmMFL',
+            'client': args.tray_client or build / 'tests/tray-client',
+            'sni-client': args.sni_client or build / 'tests/tray-sni-client',
+            'capture': args.capture or build / 'bin/fvwm-desktop-capture'}
+        options = ['--build', str(build), '--phase', 'full',
+            '--execution-profile', args.execution_profile]
+        for name, path in paths.items():
+            options.extend(['--' + name, str(path.resolve())])
+        if args.expect_modern_unavailable:
+            options.append('--expect-modern-unavailable')
+        if args.expect_no_container:
+            options.append('--expect-no-container')
+        return [('tray', options)]
     if args.notify_only:
         paths = {'fvwm': args.fvwm or build / 'fvwm3',
             'notify': args.notify or build / 'modules/FvwmNotify/FvwmNotify',
@@ -179,6 +202,7 @@ def run_once(args):
                 'transport': 'local Unix socket with private Xauthority',
                 'fixtures': {}, 'phase': 'preflight', 'status': 'running'}
     server = None
+    tray_fixture = None
     server_log = Path('/var/log') / ('Xorg.%d.log' % args.display_number)
     previous_log = log_identity(server_log)
     with HarnessRuntime(prefix='bsd-default-x-') as runtime:
@@ -225,8 +249,10 @@ def run_once(args):
                           'script-com': 'script_com_example_live.py',
                           'desktop-menu': 'xdg_menu_live.py',
                           'notify': 'notify_live.py',
+                          'tray': 'tray_modern_live.py',
                           'desktop-controller': 'desktop_live.py'}[name]
-                native_options = [] if name in ('desktop-controller', 'notify') else [
+                native_options = [] if name in (
+                    'desktop-controller', 'notify', 'tray') else [
                     '--fvwm', str(build / 'fvwm3'),
                     '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL')]
                 argv = [sys.executable, str(source / 'tests/live_x' / script),
@@ -234,7 +260,10 @@ def run_once(args):
                     '--display', display, '--artifacts-dir',
                     str(artifacts / name), *extra]
                 child = runtime.start(name, argv, name + '.log', env)
-                timeout = 300 if name in ('desktop-controller', 'notify') else 90
+                if name == 'tray':
+                    tray_fixture = child
+                timeout = (240 if name == 'tray' else
+                    300 if name in ('desktop-controller', 'notify') else 90)
                 status = child.wait_until_exit(time.monotonic() + timeout)
                 evidence['fixtures'][name] = {'command': argv, 'status': status}
                 if status != 0:
@@ -254,7 +283,8 @@ def run_once(args):
                 cleanup_error = None
                 for child in reversed(runtime.processes):
                     try:
-                        child.close(time.monotonic() + 2)
+                        cleanup_seconds = 40 if child is tray_fixture else 2
+                        child.close(time.monotonic() + cleanup_seconds)
                     except BaseException as error:
                         if cleanup_error is None:
                             cleanup_error = error
@@ -293,9 +323,18 @@ def run(args):
         raise ValueError('Repeat is restricted to --server-only.')
     if not args.server_only and args.build_directory is None:
         raise ValueError('--build-directory is required for client fixtures.')
-    if not args.notify_only and any((args.fvwm, args.notify, args.mfl,
-                                    args.notify_client, args.capture)):
+    tray_only = getattr(args, 'tray_only', False)
+    if not (args.notify_only or tray_only) and any((args.fvwm, args.notify,
+                            args.mfl, args.notify_client, args.capture)):
         raise ValueError('Notification path overrides require --notify-only.')
+    if tray_only and any((args.notify, args.notify_client)):
+        raise ValueError('Notification path overrides require --notify-only.')
+    tray_inputs = ('tray', 'buttons', 'form', 'desktop', 'session', 'worker',
+        'tray_client', 'sni_client', 'expect_modern_unavailable',
+        'expect_no_container')
+    if not tray_only and any(getattr(args, name, None) for name in tray_inputs):
+        raise ValueError('Tray path/availability overrides require '
+                         '--tray-only.')
     if args.repeat == 1:
         run_once(args)
     else:
@@ -355,9 +394,26 @@ if __name__ == '__main__':
                         help='Run only the installed xlock menu fixture.')
     modes.add_argument('--notify-only', action='store_true',
                         help='Run the native notification fixture on this authenticated display.')
-    for name in ('fvwm', 'notify', 'mfl', 'notify-client', 'capture'):
+    modes.add_argument('--tray-only', action='store_true',
+                        help='Run modern tray checks on this authenticated '
+                             'display without Linux-only container cases.')
+    for name in ('fvwm', 'mfl', 'capture'):
+        parser.add_argument('--' + name, type=Path,
+                            help='Explicit built/installed path for '
+                                 '--notify-only or --tray-only.')
+    for name in ('notify', 'notify-client'):
         parser.add_argument('--' + name, type=Path,
                             help='Explicit built/installed path for --notify-only.')
+    for name in ('tray', 'buttons', 'form', 'desktop', 'session', 'worker',
+                 'tray-client', 'sni-client'):
+        parser.add_argument('--' + name, type=Path,
+                            help='Explicit built/installed path for '
+                                 '--tray-only.')
+    parser.add_argument('--expect-modern-unavailable', action='store_true',
+                        help='Expect disabled modern support with --tray-only.')
+    parser.add_argument('--expect-no-container', action='store_true',
+                        help='Forward missing containment expectation to '
+                             '--tray-only; container phase is not run.')
     parser.add_argument('--execution-profile', default='unspecified',
                         choices=('unspecified', 'native-cpu', 'emulated-cpu'),
                         help='Declare CPU execution separately from observed OS/architecture.')

@@ -26,7 +26,7 @@ func TestContrastPreviewEditorCapturesEveryDraftField(t *testing.T) {
 		!strings.Contains(lines, "Command SendToModule FvwmDesktop preview-contrast-editor "+arguments) {
 		t.Fatal("contrast preview failed to capture complete editor draft", lines)
 	}
-	if len(Registry()) != 19 {
+	if len(Registry()) != 21 {
 		t.Fatal("resource preview expanded preference registry")
 	}
 }

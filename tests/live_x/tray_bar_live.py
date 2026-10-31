@@ -27,7 +27,8 @@ from session_services_live import Session
 from tray_live import Native, Peer, digest, released, wait_state
 
 
-TRAY_KEYS = {'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation'}
+TRAY_KEYS = {'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation',
+    'tray_modern', 'tray_icon_size'}
 
 
 class MapEvent(C.Structure):
@@ -49,7 +50,10 @@ class Bar(Native):
         self.tray_alias = 'SlateTray'
         # Session owns startup, optional services remain off. No adapter is
         # replaced and all module links point into this caller's candidate.
-        Session.__init__(self, runtime, options, out, 'tray-bar')
+        Session.__init__(self, runtime, options, out, 'tray-bar',
+            bus=getattr(options, 'session_bus', 'off'),
+            address=getattr(options, 'session_address', None),
+            extra_env=getattr(options, 'session_extra_env', None))
         self.evidence.update(cases={}, captures=[], limits=[
             'Disposable synthetic X clients; no toolkit or physical input claim.',
             'Root-child popup, not containment or StatusNotifier support.',

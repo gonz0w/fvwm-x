@@ -1,0 +1,35 @@
+# This example is free software; you can redistribute it and/or modify it
+# under the GNU General Public License, version 2 or any later version.
+#
+# Read once in an FVWM session. Choose an unused colorset and a placement that
+# fits your display. The native Tray slot needs XFixes in both modules and on
+# the X server. Start only one tray owner per X screen.
+Colorset 42 fg #e5edf5, bg #253140
+*FvwmTray Colorset 42
+*FvwmTray Font "xft:Sans:size=11"
+*FvwmTray Gap 4
+*FvwmTray Padding 4
+*FvwmTray Visible On
+
+# StatusNotifier remains optional. Enable this only with a supported build
+# and an inherited local Unix session-bus address.
+*FvwmTray StatusNotifier Off
+*FvwmTray IconSize 24
+*FvwmTray IconTheme hicolor
+
+Style NativeTrayBar !Title, !Borders, !Handles, ClickToFocus
+*NativeTrayBar: Geometry 480x64+80+160
+*NativeTrayBar: Rows 1
+*NativeTrayBar: Columns 8
+*NativeTrayBar: Colorset 42
+*NativeTrayBar: KeyboardNavigation 1
+*NativeTrayBar: (1x1, Id before, Title "Before", Action Nop)
+*NativeTrayBar: (6x1, Id tray, Title "Tray", Tray)
+*NativeTrayBar: (1x1, Id after, Title "After", Action Nop)
+
+Module FvwmTray
+Module FvwmButtons NativeTrayBar
+
+# Focus this bar, use Tab to reach Tray, then Enter to delegate into it.
+# Escape and outward traversal return to the surrounding Buttons controls.
+# For automatic startup, move both Module commands to StartFunction.

@@ -85,6 +85,7 @@ typedef struct
 	unsigned b_Selected       : 1; /* Explicit persistent selected relief */
 	unsigned b_FocusColorset  : 1;
 	unsigned b_DisabledColorset : 1;
+	unsigned b_Tray : 1; /* Explicit native tray slot, not Swallow. */
 } flags_type;
 
 /* Flags for b->swallow */

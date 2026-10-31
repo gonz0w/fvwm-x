@@ -225,7 +225,8 @@ class Session:
             'motion', 'keep_wallpaper', 'launcher_opacity', 'wallpaper_palette',
             'wallpaper_appearance', 'contrast', 'session_bus',
             'session_notifications', 'notification_dnd', 'session_power',
-            'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation'}
+            'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation',
+            'tray_modern', 'tray_icon_size'}
         assert set(snapshot['settings']) == expected, snapshot
         self.settings = snapshot
         return snapshot

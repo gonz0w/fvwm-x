@@ -30,7 +30,7 @@ func TestTrayOffStartupEnableRefreshAndAliasOnlyDisable(t *testing.T) {
 	*commands = nil
 	if err := d.changeSettings(values{
 		"tray_enabled": true, "tray_gap": 0, "tray_padding": 64,
-		"tray_orientation": "vertical",
+		"tray_orientation": "vertical", "tray_modern": true, "tray_icon_size": 32,
 	}); err != nil {
 		t.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func TestTrayOffStartupEnableRefreshAndAliasOnlyDisable(t *testing.T) {
 		t.Fatal("enable did not preserve an existing owner", got)
 	}
 	text := strings.Join(*commands, "\n")
-	for _, expected := range []string{"*SlateTray Colorset 2", `*SlateTray Font "$[infostore.slate_font]"`, "*SlateTray Gap 0", "*SlateTray Padding 64", "*SlateTray Orientation Vertical", "*SlateTray Visible Off", "SendToModule SlateTray Reload", "SendToModule SlateBar ChangeButton tray Enabled 1"} {
+	for _, expected := range []string{"*SlateTray Colorset 2", "*SlateTray StatusNotifier On", "*SlateTray IconSize 32", `*SlateTray Font "$[infostore.slate_font]"`, "*SlateTray Gap 0", "*SlateTray Padding 64", "*SlateTray Orientation Vertical", "*SlateTray Visible Off", "SendToModule SlateTray Reload", "SendToModule SlateBar ChangeButton tray Enabled 1"} {
 		if !strings.Contains(text, expected) {
 			t.Fatal("missing coherent tray projection", expected)
 		}
@@ -48,7 +48,7 @@ func TestTrayOffStartupEnableRefreshAndAliasOnlyDisable(t *testing.T) {
 		t.Fatal("tray started before its hidden configuration or blocked startup", text)
 	}
 	persisted, _, err := loadSettings(d.statePath)
-	if err != nil || persisted["tray_enabled"] != true || persisted["tray_gap"] != 0 || persisted["tray_padding"] != 64 || persisted["tray_orientation"] != "vertical" {
+	if err != nil || persisted["tray_enabled"] != true || persisted["tray_gap"] != 0 || persisted["tray_padding"] != 64 || persisted["tray_orientation"] != "vertical" || persisted["tray_modern"] != true || persisted["tray_icon_size"] != 32 {
 		t.Fatal("typed tray settings did not persist", persisted, err)
 	}
 	for _, refresh := range []func() error{

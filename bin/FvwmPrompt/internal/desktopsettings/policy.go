@@ -20,7 +20,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 7
+const StateVersion = 8
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -133,6 +133,11 @@ var registry = []Setting{
 	{Key: "tray_orientation", Type: "enum", Default: "horizontal",
 		Choices: []string{"horizontal", "vertical"}, Group: "tray",
 		Description: "Tray icon direction"},
+	{Key: "tray_modern", Type: "boolean", Default: false,
+		Group: "tray", Description: "Request StatusNotifier integration"},
+	{Key: "tray_icon_size", Type: "integer", Default: 24,
+		Minimum: 8, Maximum: 128, Group: "tray",
+		Description: "Modern tray icon size (logical pixels)"},
 }
 
 // TrayKey identifies preferences requested from the reserved native tray alias.
@@ -446,7 +451,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -467,6 +472,8 @@ func DecodeState(data []byte) (Values, error) {
 		{"tray_gap", 7, 4},
 		{"tray_padding", 7, 4},
 		{"tray_orientation", 7, "horizontal"},
+		{"tray_modern", 8, false},
+		{"tray_icon_size", 8, 24},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

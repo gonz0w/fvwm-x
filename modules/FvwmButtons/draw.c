@@ -41,6 +41,7 @@
 #include "libs/Graphics.h"
 #include "FvwmButtons.h"
 #include "keyboard.h"
+#include "tray_container.h"
 #include "misc.h" /* ConstrainSize() */
 #include "icons.h" /* ConfigureIconWindow() */
 #include "button.h"
@@ -107,6 +108,8 @@ void MakeButton(button_info *b)
                __func__);
     exit(2);
   }
+  if (b->flags.b_Tray)
+    buttons_tray_layout(b);
   if(b->flags.b_Container)
   {
     fvwm_debug(MyName, "%s: BUG: MakeButton called with container\n", __func__);

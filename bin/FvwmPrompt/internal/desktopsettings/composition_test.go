@@ -199,8 +199,12 @@ func versionedFixture(version int) Values {
 	settings["palette"], settings["appearance"] = "dune", "light"
 	settings["keep_wallpaper"] = true
 	settings["wallpaper"] = Values{"palette": "ink", "appearance": "dark"}
+	if version < 8 {
+		delete(settings, "tray_modern")
+		delete(settings, "tray_icon_size")
+	}
 	if version < 7 {
-		for _, key := range []string{"tray_enabled", "tray_gap", "tray_padding", "tray_orientation"} {
+		for _, key := range []string{"tray_enabled", "tray_gap", "tray_padding", "tray_orientation", "tray_modern", "tray_icon_size"} {
 			delete(settings, key)
 		}
 	}
@@ -228,12 +232,12 @@ func versionedFixture(version int) Values {
 }
 
 func TestExactStoredSchemasAndMigration(t *testing.T) {
-	if StateVersion != 7 {
+	if StateVersion != 8 {
 		t.Fatal(StateVersion)
 	}
-	for _, version := range []int{1, 2, 3, 4, 5, 6, 7} {
+	for _, version := range []int{1, 2, 3, 4, 5, 6, 7, 8} {
 		settings := versionedFixture(version)
-		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16, 6: 17, 7: 21}[version] {
+		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16, 6: 17, 7: 21, 8: 23}[version] {
 			t.Fatal(settings)
 		}
 		data, _ := json.Marshal(settings)
@@ -278,7 +282,7 @@ func TestExactStoredSchemasAndMigration(t *testing.T) {
 	if err != nil || got["wallpaper_palette"] != "grove" || got["wallpaper_appearance"] != "light" {
 		t.Fatal(got, err)
 	}
-	for _, version := range []any{0, 8, -1, true, "4", 4.5, nil} {
+	for _, version := range []any{0, 9, -1, true, "4", 4.5, nil} {
 		bad := versionedFixture(3)
 		bad["schema_version"] = version
 		data, _ := json.Marshal(bad)

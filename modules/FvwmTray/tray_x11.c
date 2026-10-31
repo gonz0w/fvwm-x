@@ -2,6 +2,10 @@
  * under the GNU General Public License, version 2 or any later version. */
 #include "config.h"
 #include "tray.h"
+#include "tray_sni_ui.h"
+#ifdef HAVE_XFIXES
+#include <X11/extensions/Xfixes.h>
+#endif
 #include "libs/FProperty.h"
 #include "libs/XError.h"
 #include "libs/log.h"
@@ -39,6 +43,7 @@ static int tray_error(Display *display, XErrorEvent *event)
 	(void)display;
 	if (tray_error_owner)
 	{
+		tray_sni_creation_error(tray_error_owner, event);
 		tray_error_owner->failed = true;
 		tray_error_owner->x_error_code = event->error_code;
 		tray_error_owner->x_error_resource = event->resourceid;
@@ -146,6 +151,8 @@ static bool send_embed(tray_ui *ui, Window client, long message, long detail,
 	int index = tray_model_index(&ui->model, (uint32_t)client);
 	if (index < 0)
 		return false;
+	if (ui->sites[index].native)
+		return true;
 	XGrabServer(ui->display);
 	foreign_begin(ui, client);
 	Window parent = None;
@@ -159,7 +166,7 @@ static bool send_embed(tray_ui *ui, Window client, long message, long detail,
 }
 
 
-static void retire(tray_ui *ui, unsigned int index)
+void tray_x11_retire(tray_ui *ui, unsigned int index)
 {
 	if (index >= ui->model.count)
 		return;
@@ -167,6 +174,12 @@ static void retire(tray_ui *ui, unsigned int index)
 	tray_site site = ui->sites[index];
 	if (ui->model.focused == client)
 		tray_x11_unfocus(ui, true);
+	if (site.native)
+	{
+		tray_sni_retired(ui, client);
+		XDestroyWindow(ui->display, client);
+		goto compact;
+	}
 	/* A fixed server transaction prevents a client from changing its parent
 	 * or reusing its XID between the state check and save-set release. */
 	XGrabServer(ui->display);
@@ -195,6 +208,8 @@ static void retire(tray_ui *ui, unsigned int index)
 		ui->release_pending = true;
 	XUngrabServer(ui->display);
 	XSync(ui->display, False);
+compact:
+	;
 	bool was_visible = ui->layout.cells[index].visible;
 	tray_model_remove(&ui->model, (uint32_t)client);
 	memmove(&ui->layout.cells[index], &ui->layout.cells[index + 1],
@@ -219,7 +234,7 @@ static void activation(tray_ui *ui, bool active, Time timestamp)
 		if (!send_embed(ui, ui->model.clients[i].id,
 		    active ? XEMBED_WINDOW_ACTIVATE : XEMBED_WINDOW_DEACTIVATE,
 		    0, 0, 0, timestamp))
-			retire(ui, i);
+			tray_x11_retire(ui, i);
 		else
 			i++;
 	}
@@ -228,12 +243,14 @@ static void activation(tray_ui *ui, bool active, Time timestamp)
 
 void tray_x11_unfocus(tray_ui *ui, bool restore)
 {
+	bool had_focus = ui->model.focused != 0;
 	if (ui->model.focused)
 		send_embed(ui, ui->model.focused, XEMBED_FOCUS_OUT,
 		    0, 0, 0, CurrentTime);
 	ui->model.focused = 0;
 	ui->focus_budget = 0;
-	if (restore && ui->previous_focus && ui->active)
+	if (restore && !ui->container.attached && had_focus &&
+	    ui->previous_focus && ui->active)
 	{
 		char command[96];
 		snprintf(command, sizeof(command), "Silent WindowId %lu Focus",
@@ -243,55 +260,105 @@ void tray_x11_unfocus(tray_ui *ui, bool restore)
 	ui->dirty = true;
 }
 
-static void focus_apply(tray_ui *ui, uint32_t id, int direction,
-	Time timestamp)
+uint32_t tray_x11_focus_target(tray_ui *ui, uint32_t id, int direction)
 {
-	uint32_t previous = ui->model.focused;
+	if (ui->container.attached && !id && direction && ui->model.focused)
+	{
+		int first = -1, last = -1;
+		for (unsigned int i = 0; i < ui->model.count; i++)
+			if (ui->layout.cells[i].visible)
+			{
+				if (first < 0)
+					first = (int)i;
+				last = (int)i;
+			}
+		int current = tray_model_index(&ui->model, ui->model.focused);
+		if ((direction < 0 && current == first) ||
+		    (direction > 0 && current == last))
+		{
+			tray_container_return(ui, direction);
+			return 0;
+		}
+	}
+
 	if (!ui->visible || !ui->layout.count)
-		return;
+		return 0;
 	if (id)
 	{
 		int index = tray_model_index(&ui->model, id);
 		if (index < 0 || !ui->layout.cells[index].visible)
-			return;
-		ui->model.focused = id;
+			return 0;
 	}
 	else
-		id = tray_model_focus(&ui->model, &ui->layout, direction);
+	{
+		tray_model snapshot = ui->model;
+		id = tray_model_focus(&snapshot, &ui->layout, direction);
+	}
+	if (!id)
+		return 0;
+	return id;
+}
+
+static void focus_apply(tray_ui *ui, uint32_t id, int direction,
+	Time timestamp, bool proxy_committed)
+{
+	uint32_t previous = ui->model.focused;
+	if (!proxy_committed)
+		id = tray_x11_focus_target(ui, id, direction);
 	if (!id)
 		return;
 	Window focused = None;
 	int revert;
 	XGetInputFocus(ui->display, &focused, &revert);
-	if (focused != ui->proxy && focused != ui->host &&
+	if (proxy_committed && focused != ui->proxy)
+		return;
+	ui->model.focused = id;
+	if (!ui->container.attached && focused != ui->proxy &&
+	    focused != ui->host &&
 	    focused != None && focused != PointerRoot)
 		ui->previous_focus = focused;
 	if (previous && previous != id)
 		send_embed(ui, previous, XEMBED_FOCUS_OUT, 0, 0, 0, timestamp);
-	XSetInputFocus(ui->display, ui->proxy, RevertToPointerRoot, timestamp);
+	if (!proxy_committed)
+		XSetInputFocus(ui->display, ui->proxy, RevertToPointerRoot, timestamp);
 	XGetInputFocus(ui->display, &focused, &revert);
 	activation(ui, focused == ui->proxy, timestamp);
+	if (focused != ui->proxy)
+		return;
 	int detail = direction < 0 ? 2 : (direction > 0 ? 1 : 0);
 	if (!send_embed(ui, id, XEMBED_FOCUS_IN, detail, 0, 0, timestamp))
 	{
 		int index = tray_model_index(&ui->model, id);
 		if (index >= 0)
-			retire(ui, (unsigned int)index);
+			tray_x11_retire(ui, (unsigned int)index);
 	}
 	ui->dirty = true;
 }
 
 void tray_x11_focus(tray_ui *ui, uint32_t id, int direction, Time timestamp)
 {
+	if (tray_container_focus_request(ui, id, direction, timestamp))
+		return;
 	ui->focus_budget = ui->layout.count ? ui->layout.count - 1 : 0;
-	focus_apply(ui, id, direction, timestamp);
+	focus_apply(ui, id, direction, timestamp, false);
+}
+
+void tray_x11_focus_committed(tray_ui *ui, uint32_t id, int direction)
+{
+	ui->focus_budget = ui->layout.count ? ui->layout.count - 1 : 0;
+	focus_apply(ui, id, direction, CurrentTime, true);
 }
 
 static void dock(tray_ui *ui, Window client)
 {
 	XWindowAttributes attributes;
 	bool mapped = false;
-	if (own_window(ui, client) || tray_model_index(&ui->model,
+	unsigned int foreign_count = 0;
+	for (unsigned int i = 0; i < ui->model.count; i++)
+		if (!ui->sites[i].native)
+			foreign_count++;
+	if (foreign_count + tray_sni_count(ui) >= TRAY_CLIENT_MAX ||
+	    own_window(ui, client) || tray_model_index(&ui->model,
 	    (uint32_t)client) >= 0 || ui->model.count == TRAY_CLIENT_MAX ||
 	    ui->model.generation == UINT64_MAX)
 	{
@@ -307,7 +374,9 @@ static void dock(tray_ui *ui, Window client)
 	XGrabServer(ui->display);
 	foreign_begin(ui, client);
 	Window host_parent = None;
-	if (parent_of(ui, ui->host, &host_parent) && host_parent != ui->root)
+	if (parent_of(ui, ui->host, &host_parent) &&
+	    host_parent != (ui->container.attached
+	    ? ui->container.slot : ui->root))
 		ui->stopped = true;
 	Status got = XGetWindowAttributes(ui->display, client, &attributes);
 	bool valid = !ui->stopped && got && attributes.root == ui->root &&
@@ -331,7 +400,13 @@ static void dock(tray_ui *ui, Window client)
 		foreign_begin(ui, client);
 		XSelectInput(ui->display, client,
 		    StructureNotifyMask | PropertyChangeMask);
-		XAddToSaveSet(ui->display, client);
+#ifdef HAVE_XFIXES
+		if (ui->container.capable)
+			XFixesChangeSaveSet(ui->display, client, SetModeInsert,
+			    SaveSetRoot, SaveSetUnmap);
+		else
+#endif
+			XAddToSaveSet(ui->display, client);
 		XUnmapWindow(ui->display, client);
 		XSetWindowBorderWidth(ui->display, client, 0);
 		XReparentWindow(ui->display, client, socket, 0, 0);
@@ -398,7 +473,7 @@ static void dock(tray_ui *ui, Window client)
 			    XEMBED_WINDOW_ACTIVATE,
 			    0, 0, 0, CurrentTime);
 		if (!notified)
-			retire(ui, (unsigned int)current);
+			tray_x11_retire(ui, (unsigned int)current);
 	}
 }
 
@@ -412,13 +487,47 @@ void tray_x11_layout(tray_ui *ui)
 		const tray_cell *cell = &ui->layout.cells[i];
 		Window client = ui->model.clients[i].id;
 		Window socket = ui->sites[i].socket, parent = None;
+		if (ui->sites[i].native)
+		{
+			const tray_client *record = &ui->model.clients[i];
+			XMoveResizeWindow(ui->display, client,
+			    cell->visible ? cell->x : 0,
+			    cell->visible ? cell->y : 0,
+			    record->width, record->height);
+			if (cell->visible)
+			{
+				XMapWindow(ui->display, client);
+				tray_sni_paint(ui, i);
+			}
+			else
+				XUnmapWindow(ui->display, client);
+			i++;
+			continue;
+		}
+		XWindowAttributes attributes;
+		bool size_refused = false;
 		XGrabServer(ui->display);
 		foreign_begin(ui, client);
 		bool member = parent_of(ui, client, &parent) &&
-		    parent == socket;
+		    parent == socket &&
+		    XGetWindowAttributes(ui->display, client, &attributes);
 		if (member)
 		{
 			const tray_client *record = &ui->model.clients[i];
+			/* Direct resizes can precede a queued ConfigureNotify.
+			 * Reconcile before an older projection erases them, and
+			 * retain this transaction through the size writes. */
+			if (attributes.override_redirect &&
+			    (record->width != (unsigned int)attributes.width ||
+			     record->height != (unsigned int)attributes.height))
+			{
+				if (tray_model_resize(&ui->model,
+				    (uint32_t)client, attributes.width,
+				    attributes.height))
+					ui->dirty = true;
+				else
+					size_refused = true;
+			}
 			/* Hidden clients also receive the accepted size.
 			 * ConfigureNotify must describe actual pixels. */
 			XResizeWindow(ui->display, socket,
@@ -442,9 +551,11 @@ void tray_x11_layout(tray_ui *ui)
 		bool valid = foreign_end(ui) && member;
 		XUngrabServer(ui->display);
 		XSync(ui->display, False);
+		if (size_refused)
+			refused(ui);
 		if (!valid)
 		{
-			retire(ui, i);
+			tray_x11_retire(ui, i);
 			/* Reproject after compacting membership. */
 			break;
 		}
@@ -467,7 +578,7 @@ static void info_changed(tray_ui *ui, unsigned int index)
 	if (!valid)
 	{
 		refused(ui);
-		retire(ui, index);
+		tray_x11_retire(ui, index);
 		return;
 	}
 	if (!mapped && ui->model.focused == client)
@@ -490,7 +601,7 @@ static void geometry_changed(tray_ui *ui, unsigned int index)
 	XSync(ui->display, False);
 	if (!valid)
 	{
-		retire(ui, index);
+		tray_x11_retire(ui, index);
 		return;
 	}
 	if (!tray_model_size(attributes.width, attributes.height))
@@ -546,7 +657,7 @@ static void configure(tray_ui *ui, unsigned int index,
 	XUngrabServer(ui->display);
 	XSync(ui->display, False);
 	if (!valid)
-		retire(ui, (unsigned int)current);
+		tray_x11_retire(ui, (unsigned int)current);
 }
 
 static bool hit_target(const tray_cell *target, int x, int y)
@@ -557,6 +668,8 @@ static bool hit_target(const tray_cell *target, int x, int y)
 
 void tray_x11_event(tray_ui *ui, XEvent *event)
 {
+	if (tray_container_event(ui, event) || tray_sni_event(ui, event))
+		return;
 	if (event->type == SelectionClear &&
 	    event->xselectionclear.selection == ui->selection)
 	{
@@ -579,13 +692,17 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 	    event->xreparent.window == ui->host &&
 	    event->xreparent.parent != ui->root)
 	{
-		/* Foreign containers are outside this first profile. */
-		ui->stopped = true;
+		/* An attachment notification may outlive normal detach. */
+		Window parent = None;
+		if (!parent_of(ui, ui->host, &parent) || parent != ui->root)
+			ui->stopped = true;
 		return;
 	}
 	if ((event->type == FocusIn || event->type == FocusOut) &&
 	    event->xfocus.window == ui->proxy && !event->xany.send_event)
 	{
+		if (event->type == FocusOut)
+			tray_sni_focus_out(ui);
 		activation(ui, event->type == FocusIn, CurrentTime);
 		return;
 	}
@@ -620,7 +737,9 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 			if (event->type == KeyPress)
 			{
 				tray_x11_unfocus(ui, true);
-				if (ui->anchored)
+				if (ui->container.attached)
+					tray_container_return(ui, 0);
+				else if (ui->anchored)
 				{
 					ui->visible = false;
 					ui->dirty = true;
@@ -633,6 +752,15 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 			if (event->type == KeyPress)
 				tray_page(ui, key == XK_Page_Up ? -1 : 1,
 				    true, event->xkey.time);
+			return;
+		}
+		if (ui->container.attached &&
+		    (key == XK_Tab || key == XK_ISO_Left_Tab))
+		{
+			if (event->type == KeyPress)
+				tray_x11_focus(ui, 0,
+				    event->xkey.state & ShiftMask ? -1 : 1,
+				    event->xkey.time);
 			return;
 		}
 		if (key == XK_F6)
@@ -663,12 +791,14 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 			XUngrabServer(ui->display);
 			XSync(ui->display, False);
 			if (!valid && index >= 0)
-				retire(ui, (unsigned int)index);
+				tray_x11_retire(ui, (unsigned int)index);
 		}
 		return;
 	}
 	for (unsigned int i = 0; i < ui->model.count; i++)
 	{
+		if (ui->sites[i].native)
+			continue;
 		Window client = ui->model.clients[i].id;
 		if (event->type == ClientMessage &&
 		    event->xclient.window == ui->sites[i].socket &&
@@ -692,7 +822,7 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 						focus_apply(ui, 0,
 						    opcode == XEMBED_FOCUS_PREV
 						    ? -1 : 1,
-						    timestamp);
+						    timestamp, false);
 					}
 					else
 						tray_x11_unfocus(ui, true);
@@ -729,7 +859,7 @@ void tray_x11_event(tray_ui *ui, XEvent *event)
 			    parent == ui->sites[i].socket;
 			foreign_end(ui);
 			if (!member)
-				retire(ui, i);
+				tray_x11_retire(ui, i);
 		}
 		else if (event->type == PropertyNotify &&
 		    event->xproperty.atom == ui->info)
@@ -871,7 +1001,7 @@ bool tray_x11_start(tray_ui *ui)
 	    0, InputOnly, CopyFromParent, CWOverrideRedirect | CWEventMask,
 	    &attributes);
 	attributes.event_mask = ExposureMask | StructureNotifyMask |
-	    ButtonPressMask;
+	    ButtonPressMask | PointerMotionMask | LeaveWindowMask;
 	ui->host = XCreateWindow(ui->display, ui->root, 0, 0, 1, 1, 0,
 	    CopyFromParent, InputOutput, CopyFromParent,
 	    CWOverrideRedirect | CWEventMask, &attributes);
@@ -883,6 +1013,7 @@ bool tray_x11_start(tray_ui *ui)
 	XClassHint class_hint = {"FvwmTray", "FvwmTray"};
 	XSetClassHint(ui->display, ui->host, &class_hint);
 	XSelectInput(ui->display, ui->root, PropertyChangeMask);
+	tray_container_init(ui);
 	tray_x11_hints(ui);
 	unsigned long count = 0;
 	Atom refusals = XInternAtom(ui->display, "_FVWM_TRAY_REFUSALS", False);
@@ -910,7 +1041,7 @@ void tray_x11_stop(tray_ui *ui)
 		return;
 	tray_x11_unfocus(ui, true);
 	while (ui->model.count)
-		retire(ui, ui->model.count - 1);
+		tray_x11_retire(ui, ui->model.count - 1);
 	if (ui->claimed &&
 	    XGetSelectionOwner(ui->display, ui->selection) == ui->owner)
 		XSetSelectionOwner(ui->display, ui->selection, None,

@@ -880,17 +880,19 @@ request {"version":1,"id":"schedule-1","method":"query","resource":"settings","s
 ....
 
 Optional `scope` defaults to `all`. It accepts one registered key or
-`group:appearance`, `group:wallpaper`, `group:schedule`, `group:effects` and
-`group:session`, matching FvwmDesktop's
+`group:appearance`, `group:wallpaper`, `group:schedule`, `group:effects`,
+`group:session` and `group:tray`, matching FvwmDesktop's
 existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 `schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
 and a `settings`
 object keyed by setting name. Each item includes its type/default/choices or
 range, description, saved/effective values, override source and capability.
-The result-level `owner` and `generation` apply to every item in `settings`;
-items omit those two duplicate fields to preserve the fixed reply budget. All
-per-setting values, types, choices/bounds, descriptions, source/application,
-preview/constraint and persistence diagnostics remain in each item. Standalone
+The result-level `owner`, `generation`, `preview`, `persistence_error`,
+`available` and `capability` apply when the corresponding field is absent from
+a setting row. A row's explicit value overrides that inherited default.
+Items omit matching shared values to preserve the fixed reply budget.
+Per-setting values, types, choices/bounds, descriptions, source/application
+and distinct constraint/persistence diagnostics remain in each item. Standalone
 FvwmDesktop `query-settings` records and native inspector metadata retain their
 own per-item owner/generation fields.
 The provider token identifies one helper incarnation. An optional `provider`
@@ -906,11 +908,11 @@ projection. A resolved appearance of `auto` remains schedule policy rather than
 the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
 explains why a saved choice is masked by keep_wallpaper. These fields are stable
 for the preference generation; no clock revision or new resource is introduced.
-The IPC schema remains version 1, independently of the version 6 preference file.
+The IPC schema remains version 1, independently of the version 8 preference file.
 The session group contains `session_bus` (off/reuse/start, default off),
 `session_notifications` (off/external, default off), `notification_dnd`
 (boolean, default false) and `session_power` (portable/login1, default portable).
-The file holds fifteen preferences plus retained wallpaper. The compact Session
+The file holds 21 preferences plus retained wallpaper. The compact Session
 editor edits these four keys; edit-all retains eleven appearance fields. Bus
 policy applies at next owned login. Power, notifications and DND require a
 successful live owner handshake after the atomic preference commit; a saved

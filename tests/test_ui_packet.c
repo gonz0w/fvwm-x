@@ -49,8 +49,8 @@ static void test_owner_boundaries(packet_admission admission, bool iconman)
 		{M_MAP, iconman ? 0 : 1},
 		{M_MINI_ICON, iconman ? offsetof(MiniIconPacket, name) /
 			sizeof(unsigned long) : 0},
-		{M_FOCUS_CHANGE, iconman ? 1 : 0},
-		{M_DESTROY_WINDOW, iconman ? 1 : 0},
+		{M_FOCUS_CHANGE, iconman ? 1 : 2},
+		{M_DESTROY_WINDOW, 1},
 		{M_WINDOWSHADE, iconman ? 1 : 0},
 		{M_DEWINDOWSHADE, iconman ? 1 : 0},
 		{M_NEW_PAGE, iconman ? 3 : 0},

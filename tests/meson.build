@@ -4580,7 +4580,8 @@ endif
 
 notify_startup_test = executable(
     'test-notify-startup',
-    ['test_notify_startup.c', '../modules/FvwmNotify/notify_startup.c'],
+    ['test_notify_startup.c', '../modules/FvwmNotify/notify_startup.c',
+        '../libs/module_startup.c'],
     include_directories: includedirs,
     c_args: ['-UNDEBUG'],
 )
@@ -4620,4 +4621,67 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
             fvwm_session, fvwm_buttons, fvwm_form],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 180)
+endif
+
+
+# Modern tray policy and optional protocol remain isolated from the WM core.
+tray_sni_model_test = executable(
+    'test-tray-sni-model',
+    ['test_tray_sni_model.c', '../modules/FvwmTray/tray_sni_model.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('tray-sni-model', tray_sni_model_test)
+tray_icons_test = executable(
+    'test-tray-icons',
+    ['test_tray_icons.c', '../modules/FvwmTray/tray_icons.c'],
+    dependencies: all_compile_deps,
+    include_directories: includedirs,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('tray-icons', tray_icons_test)
+tray_container_test = executable(
+    'test-tray-container', ['test_tray_container.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('tray-container', tray_container_test)
+buttons_packet_test = executable(
+    'test-buttons-packet',
+    ['test_buttons_packet.c', '../modules/FvwmButtons/buttons_packet.c'],
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('buttons-packet', buttons_packet_test)
+if session_dbus.found()
+    tray_bus_test = executable(
+        'test-tray-bus',
+        ['test_tray_bus.c', '../modules/FvwmTray/tray_bus.c',
+            '../modules/FvwmTray/tray_sni_model.c'],
+        dependencies: all_compile_deps + [session_dbus],
+        include_directories: includedirs,
+        link_with: libfvwm3,
+        c_args: ['-UNDEBUG'],
+    )
+    test('tray-bus', tray_bus_test)
+    tray_sni_client = executable(
+        'tray-sni-client', ['tray_sni_client.c', '../libs/cJSON.c'],
+        dependencies: [session_dbus],
+        include_directories: includedirs,
+        build_by_default: false,
+    )
+    if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+        test('tray-modern-xvfb', py,
+            args: [files('live_x/tray_modern_live.py'),
+                '--build', meson.project_build_root(),
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'tray-modern'],
+            depends: [fvwm3, fvwm_mfl, fvwm_tray, tray_client,
+                tray_sni_client, fvwm_desktop_capture, fvwm_desktop,
+                fvwm_desktop_worker, fvwm_session, fvwm_buttons, fvwm_form],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 240)
+    endif
 endif

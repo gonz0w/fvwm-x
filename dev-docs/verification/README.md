@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Settings default-X acceptance tail](VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md): focused OpenBSD AMD64 continuation for the three remaining #60 scenarios; original failures and reused evidence remain explicit.
+- [Settings default-X acceptance tail](VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md): completed focused OpenBSD AMD64 checks for the three #60 scenarios; original failures and source-bound evidence remain explicit.
 
 - [Settings and preview completion](VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md): frozen 26-setting registry, eight owned previews, optional Settings portal, actual application observations and combined support qualification; exact current results and limits are in the report.
 

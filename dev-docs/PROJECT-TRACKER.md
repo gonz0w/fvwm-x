@@ -7,70 +7,54 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: #60 default-X acceptance tail,
-`codex/settings-default-x-tail`, owner Cam. User authorized merging PR319 and
-continuing issue work. PR319 merged as
-`6000adc249cfdddfbb50393208fe3765ccd6d8b6`; canonical signature, reviewed tree
-`8073ce0baf390c16584ad7e0599e2a431ff60172` and Cam author DCO verified.
-#73 closed on merge. PR316 and the policy-only PR318 remain integrated.
+Current checkpoint: #60 finite settings acceptance qualified; close on merge of
+`codex/settings-observer-acceptance`, owner Cam. User authorized merging PR320
+and continuing. PR320 merged as `3afde248282d4ca077b1248502c17734e4a643f4`;
+canonical signature, reviewed tree `8d1af2b5f1451cfac4e01bf87bff864f84f59caf`
+and Cam author DCO verified. Matching source branches are retired. #73 remains
+closed on merged PR319.
 
-Selected outcome: close #60's remaining support criterion by observing three
-existing scenarios on OpenBSD8.0 AMD64 default Xorg: named launcher-menu
-conflict, nonmodal controller loss and external-root conflict/preservation
-including core shutdown. Keep all existing independent pixel/property/role,
-scalar, terminal-result and process-Wait assertions. No production behavior,
-deadline, configuration contract, new feature or test expectation changes.
+All three missing OpenBSD8.0 AMD64 default-X scenarios now pass: named launcher
+MenuStyle57 conflict, nonmodal controller-actor loss and external-root conflict/
+preservation through clean core shutdown. The unchanged merged PR320 fixture
+ran once in53.202531seconds with existing five-second setup,240-second fixture
+and420-second outer limits. Actual native role/scalar/pixel/terminal assertions,
+core/server Wait0 and independent green root through shutdown pass. Source/input
+pre/post guards and all exact installed/config/probe/PNG identities match. No
+production/fixture change, product rebuild, full matrix or new UI/capture.
 
-Delivery boundary: add an explicit tail-only fixture/default-server entry point,
-reuse source-bound qualified product artifacts, execute one focused default-X
-attempt and reconcile #60 if all remaining observations pass. Preserve the
-nineteen completed default-server groups and both full same-OS Xvfb passes.
-The previous full default invocation and aggregate remain failed; a new focused
-pass does not relabel them. Reuse prior build/install/manual/theme/policy and
-sanitizer evidence because this continuation changes only test selection/docs.
-No new UI requires captures; retain the inspected three-theme set.
+[Final focused evidence and criterion reconciliation](verification/VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md)
+composes the earlier nineteen completed default-server groups and full enabled/
+disabled same-OS Xvfb profiles with these three observations. Prior source-bound
+six-target build/install, optional profiles, policy/race/scoped sanitizer,
+fault/topology/manual and inspected three-theme evidence retain their accepted
+scope. All five finite #60 criteria are supported; issue/Project status is Review
+until the closing PR merges. Historical failed aggregates, skips and lint
+nonpasses remain explicit, with no release/hardware/native-CPU guarantee.
 
-Attempt budget: source/static review and affected host fixture tests, then one
-fresh disposable OpenBSD AMD64 tail-only invocation with the existing240-second
-inner driver limit. One bounded preparation may restore verified compiled
-artifacts; no full matrix, automatic timeout increase or repeated native attempt.
-If preparation or the focused gate fails, preserve evidence, triage and stop
-at a reviewable checkpoint. Native execution stays with the lead; delegated
-implementation/review is source-only. Required acceptance remains binding.
+The bounded diagnostic plan added only a private observational sidecar, capped
+at24 startup samples/two-second queries/1MiB, with finally-run source/binary
+guards. It neither injected replies nor warmed modules or extended deadlines.
+All50 archive members and3323 frozen source files are independently rechecked;
+separate artifact/criterion review is clear. Backend model/effort metadata is
+unverified. Host proxy/default-X regressions pass26/26; foundation/whitespace
+pass. No additional native attempt follows: current acceptance is sufficient.
 
-Attempt outcome: the fresh OpenBSD AMD64 recipe reconstructs all four exact
-installed binaries and passes five loader checks/source precheck without a build.
-The focused adapter fails after18.756451seconds at the unchanged five-second
-initial-observer setup deadline, before any of the three scenarios. Core/Xorg/
-QEMU exit0; no observer X errors, but no proxy-start/Wait receipts are retained.
-The full35-member433,282-byte capture is audited; this is failed evidence.
-[Focused results and disposition](verification/VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md).
+Prior observer startup failure and the old full default-server failure remain
+recorded in the same evidence report. The present pass does not prove their
+historical cause. Two probes exited−15, duplicate MFL1, Backer0; only the core/
+server/QEMU zero exits are claimed. All labs are stopped; runner SIGTERM cleanup
+is not normal guest poweroff evidence. This disposable disk was retired after
+full capture/no-holder verification, recovering3,098,869,760 allocated bytes;
+evidence, current compiled inputs, reusable builds, SDKs, base images and
+performance reference remain.
 
-Final source additionally moves the existing proxy CLI dispatch before unrelated
-fixture imports, retaining exact relay arguments/defaults and ordinary behavior.
-Host checks pass26/26; this simplification's effect on OpenBSD startup is unproven
-and unexecuted. #60 stays open for all three scenarios. The single native attempt
-has ended; there is no automatic retry. Next native work needs a separately
-bounded startup/relay diagnostic plan before the tail. Current delivery is the
-reviewed focused fixture/dispatch change and honest evidence, with source
-integration separate from owner acceptance. No production/deadline change or
-new feature joins this checkpoint. The stopped disposable disk is retired after
-full archive verification/no-holder check, recovering3,086,811,136 allocated bytes;
-failure evidence and reusable inputs remain.
-
-The [completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md)
-retains the implemented26-setting registry, eight reversible appearance previews,
-exact wallpaper/resource recovery and complete optional reduced-motion portal.
-All six target builds/installs and both enabled/disabled native-X profiles pass;
-complete default-X passes on Linux, both FreeBSD architectures and OpenBSD ARM64.
-The source/integration and separate source/artifact/visual reviews were clear.
-No release, physical hardware or blanket toolkit qualification is inferred.
-#257/#258 remain parked. Performance is2/5 after PR319 from the verified PR315
-runnable reference; no comparison is due. All prior owned labs are stopped.
-Verified disposable OpenBSD disks/stages were retired, recovering14,145,748,992
-allocated bytes; compiled evidence, reusable Linux/FreeBSD builds, SDKs, fixed
-base images and performance reference remain. This continuation uses a fresh
-owned disposable job and does not recover deleted authentication material.
+Delivery boundary: #60 closure only. Broader session/file/clipboard and release
+owners retain their existing remaining criteria. #257/#258 remain parked.
+Performance remains2/5 after PR319 from the verified PR315 runnable reference;
+fixture/qualification-only PR320 and this checkpoint do not advance it. No
+comparison is due. Finish source review/status reconciliation and prepare the
+signed author-DCO closing PR; no new feature joins this accepted checkpoint.
 
 ## TEMPER-06 — Bounded delivery instructions
 
@@ -5608,7 +5592,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | ARCHIVE-01 | P2 / after verified migration | Retired planning/upstream notes and dated reports are now relocated with hashes and repaired links; graph auto-update is disabled. Remaining: remove predecessor tooling only after reference, parity, packaging and distribution checks. Preserve history/evidence and user data; do not delete ignored build trees or VM disks. See cleanup roadmap. |
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
-| CFG-01 | P2 / preview implemented in PR319; OpenBSD AMD64 default-X tail open | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
+| CFG-01 | P2 / all finite settings criteria qualified; close on acceptance merge | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |

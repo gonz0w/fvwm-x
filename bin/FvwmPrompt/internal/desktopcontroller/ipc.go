@@ -42,11 +42,12 @@ func exact(r values, keys ...string) bool {
 func failure(code string) values   { return values{"error": values{"code": code}} }
 func success(result values) values { return values{"result": result} }
 
-// Public settings inherit owner, generation, preview and the common persistence
-// error from their result envelope. A distinct per-setting persistence error
-// still belongs to that row, including a runtime-kept unsaved preference.
+// Public settings inherit owner, generation, preview, availability, capability
+// and the common persistence error from their result envelope. Distinct
+// per-setting metadata still belongs to that row, including a runtime-kept
+// unsaved preference.
 // Keep each standalone native/inspector record self-contained, but avoid
-// repeating shared metadata nineteen times inside one bounded reply.
+// repeating shared metadata in every row of one bounded reply.
 // Copies preserve the standalone metadata if a caller retains that query.
 func publicSettings(settings values, commonError string) values {
 	result := values{}
@@ -54,6 +55,9 @@ func publicSettings(settings values, commonError string) values {
 		item := values{}
 		for field, value := range raw.(map[string]any) {
 			if field == "owner" || field == "generation" || field == "preview" && value == false {
+				continue
+			}
+			if field == "available" && value == true || field == "capability" && value == "owned-desktop-preference" {
 				continue
 			}
 			if field == "persistence_error" {
@@ -187,7 +191,8 @@ func (d *Controller) settingsRequest(r values) values {
 	}
 	if op == "query" && r["generation"] == d.generation {
 		return success(values{"owner": "FvwmDesktop", "schema_version": 1, "provider": d.instance, "generation": d.generation,
-			"state": "unchanged", "scope": scope, "snapshot_required": false, "preview": false, "persistence_error": persistence})
+			"state": "unchanged", "scope": scope, "snapshot_required": false, "preview": false, "persistence_error": persistence,
+			"available": true, "capability": "owned-desktop-preference"})
 	}
 	if op == "validate" {
 		settings, err := d.query("all", candidate, effective)
@@ -196,7 +201,8 @@ func (d *Controller) settingsRequest(r values) values {
 		}
 		return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "state": "validated",
 			"generation": d.generation, "saved_revision": d.revision, "settings": publicSettings(settings, d.persistenceError), "persistence": "not-attempted", "persistence_error": persistence,
-			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false})
+			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false,
+			"available": true, "capability": "owned-desktop-preference"})
 	}
 	before := d.generation
 	submissionFailed := false
@@ -250,7 +256,8 @@ func (d *Controller) settingsRequest(r values) values {
 	}
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "generation": d.generation,
 		"state": state, "settings": publicSettings(settings, d.persistenceError), "saved_revision": d.revision, "application": application, "persistence_error": persistence,
-		"asynchronous_completion": "unknown", "preview": false})
+		"asynchronous_completion": "unknown", "preview": false,
+		"available": true, "capability": "owned-desktop-preference"})
 }
 
 type operation struct {

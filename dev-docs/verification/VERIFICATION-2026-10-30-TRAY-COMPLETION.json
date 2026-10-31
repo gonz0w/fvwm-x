@@ -1,0 +1,4858 @@
+{
+  "status": "Affected six-profile qualification passed; separate source/artifact/receipt/visual review completed and provenance wording corrected",
+  "base": "db6b51ad29c515e06e0d2e0918eead2fc562d240",
+  "freebsd_arm64": {
+    "status": "passed",
+    "source_closure": "a90b762545cfb6a9137e988735febd39468e9030e6388951019c4c490e659cb4",
+    "uname": "FreeBSD freebsd 15.1-RELEASE-p4 FreeBSD 15.1-RELEASE-p4 releng/15.1-n283627-db6066678b33 GENERIC arm64",
+    "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+    "sdk": "go version go1.27.2 freebsd/arm64",
+    "scope": "combined affected tray/core/Buttons/worker/preferences checkpoint; not physical hardware or complete desktop acceptance"
+  },
+  "openbsd": [
+    {
+      "target": "openbsd-arm64",
+      "status": "passed",
+      "source_closure": "cdc7c7b6f5ef80a2e32e594f436ea1dff3eb041f6b596c2ce44a0b34f0e490d0",
+      "uname": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#1 arm64",
+      "compiler": "OpenBSD clang version 22.1.6",
+      "sdk": "go version go1.27.2 openbsd/arm64",
+      "acceleration": "hvf",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/openbsd-arm64-02/job/guest-evidence.tgz",
+      "archive_sha256": "ee62f2746a25c56307b5a8f99dc9acb55a43d21a3f3f10c21b5037e20f04922c",
+      "scope": "combined affected tray/core/Buttons/worker/preferences checkpoint; not physical hardware or complete desktop acceptance"
+    },
+    {
+      "target": "openbsd-amd64",
+      "status": "passed",
+      "source_closure": "cdc7c7b6f5ef80a2e32e594f436ea1dff3eb041f6b596c2ce44a0b34f0e490d0",
+      "uname": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#2 amd64",
+      "compiler": "OpenBSD clang version 22.1.6",
+      "sdk": "go version go1.27.2 openbsd/amd64",
+      "acceleration": "tcg",
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/openbsd-amd64-01/job/guest-evidence.tgz",
+      "archive_sha256": "44aa93016b4bf9d2b29ae7da8842a5877a3cecd7e942e9e8f7edca04c3fe43cc",
+      "scope": "combined affected tray/core/Buttons/worker/preferences checkpoint; not physical hardware or complete desktop acceptance"
+    }
+  ],
+  "archives": {
+    "final-linux01-evidence.tgz": "967c84bbdf12fc39a10b9fc112296b6f767667211222544ac3bb4bc48a7e1687",
+    "linux-final-supplement.tgz": "b36ae404e9a75b555c6639086d610e3b6810435f8ed9e3e88e4b5d3f96ad1bc5",
+    "freebsd-arm64/platform04/evidence.tgz": "344ce7111f74101f3db15197d9b2252cf45807839a6ab5a38909f78b58c4e807",
+    "openbsd-arm64-delta02/job/guest-evidence.tgz": {
+      "sha256": "e442e3f561e0f0d032cc249b5aa3ada0cc9e750e3f8a17a37458c8d963786a9d",
+      "bytes": 197482505,
+      "regular_files_verified": 3376
+    },
+    "openbsd-amd64-delta02/job/guest-evidence.tgz": {
+      "sha256": "ef2cbf092c5bf0525e9dd6333ba941ef9b80881a587b9609fc08a83400f7f88f",
+      "bytes": 245862428,
+      "regular_files_verified": 3595
+    }
+  },
+  "manual_render": {
+    "host": "macOS mandoc; generated native Linux roff hash-equal installed pages",
+    "rows": [
+      {
+        "name": "FvwmTray",
+        "sha256": "935f1274b95dd8a0be31e8eb433b6bab46c5fe98bd7ff0fff7f547a0a998df1f",
+        "source_closure": "cb37950a875efe84840e45f5b3604a9da9a8a9857b0e97658e15a1a12f342b48",
+        "render": {
+          "exit": 0,
+          "stdout_bytes": 18827,
+          "stderr_bytes": 0
+        },
+        "lint": {
+          "exit": 3,
+          "stdout_bytes": 4598,
+          "stderr_bytes": 0
+        }
+      },
+      {
+        "name": "FvwmButtons",
+        "sha256": "725176dc86bc48fda1a1ca71ad4a17b810f6707dc3626a3b801e4e6743ee0b4d",
+        "source_closure": "cb37950a875efe84840e45f5b3604a9da9a8a9857b0e97658e15a1a12f342b48",
+        "render": {
+          "exit": 0,
+          "stdout_bytes": 70579,
+          "stderr_bytes": 0
+        },
+        "lint": {
+          "exit": 3,
+          "stdout_bytes": 4696,
+          "stderr_bytes": 0
+        }
+      },
+      {
+        "name": "FvwmDesktop",
+        "sha256": "dfc795ffeb167b748527c6a4a51bc8d3e9f23357af86996d051963046cf8d409",
+        "source_closure": "cb37950a875efe84840e45f5b3604a9da9a8a9857b0e97658e15a1a12f342b48",
+        "render": {
+          "exit": 0,
+          "stdout_bytes": 79721,
+          "stderr_bytes": 0
+        },
+        "lint": {
+          "exit": 3,
+          "stdout_bytes": 24809,
+          "stderr_bytes": 0
+        }
+      },
+      {
+        "name": "FvwmMFL",
+        "sha256": "8642a9ceeed0d47ee5f7429d265bdba88e85225df6e148162e204881b20eaf62",
+        "source_closure": "cb37950a875efe84840e45f5b3604a9da9a8a9857b0e97658e15a1a12f342b48",
+        "render": {
+          "exit": 0,
+          "stdout_bytes": 124895,
+          "stderr_bytes": 0
+        },
+        "lint": {
+          "exit": 4,
+          "stdout_bytes": 69782,
+          "stderr_bytes": 0
+        }
+      }
+    ],
+    "lint_failures_preserved": true
+  },
+  "pending": [],
+  "limitations": [
+    "Guest execution is not physical hardware qualification.",
+    "Scoped sanitizer evidence is not a clean full-session Buttons leak result."
+  ],
+  "failed_attempts": {
+    "freebsd_platform03": "freebsd-arm64/platform03/evidence/result.json: failed nested menu reopen",
+    "openbsd_arm64_01": "openbsd-arm64-01/job/status.json: failed guest gate",
+    "linux_attention03": "linux-final-supplement/r1-tray-completion-attention03/result.json: failed half-size overlay paint",
+    "linux_toolkit01": "linux-toolkit01: source36 GTK image empty and direct PNG error; isolated MIME probe identified the fixture environment cause",
+    "openbsd_arm64_delta01": {
+      "status": "failed before icon gate",
+      "cause": "Resolved cached /home prefix compared with unresolved /root alias in restore launcher",
+      "correction": "Both path operands resolved in version2 launcher; passed new owned job",
+      "run_log_sha256": "e0d9d3195371114369f8765b5def811d8f14635e9ccee87f725914291e6d6b51"
+    },
+    "openbsd_amd64_delta01": {
+      "status": "cancelled during prepare before known-invalid launcher ran",
+      "cause": "Same confirmed alias comparison; runner SIGTERM normal cleanup",
+      "qemu_exit_status": 0,
+      "intent_receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/openbsd-amd64-delta01/cancel-intent.json"
+    }
+  },
+  "evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion",
+  "gtk_appearance_gap": {
+    "status": "resolved fixture environment; no production change",
+    "failed_evidence": "linux-toolkit01.tgz, source36; original failure preserved",
+    "failed_observation": "200x200 black surface; empty GtkImage and direct PNG format error",
+    "cause_evidence": "gtk_loader_probe_linux.json same file+GdkPixbuf: isolated XDG -> application/octet-stream/error; base MIME -> image/png and decoded2x2RGBA",
+    "correction": "Only toolkit producer environment restores base MIME paths; desktop/controller/worker remain isolated. Actual MIME cache paths/hashes retained.",
+    "passed_evidence": "linux-toolkit02 and linux-final-linux02/full source37",
+    "required_paint_assertions": 5,
+    "initial_observation_only_stages": 1,
+    "source_rgba_and_pixels": "blue [30,120,230] then orange [230,90,30], no forced resize/repaint",
+    "observed_client_size": "16x16 initial visible sample; 2x2 after new-XID show"
+  },
+  "manual_diagnostic_classification": {
+    "render": "Host Linux-generated renders and final native FreeBSD/OpenBSD renders all4pages exit0; lint3/3/3/4 remains nonzero and classified separately.",
+    "lint_exits": [
+      3,
+      3,
+      3,
+      4
+    ],
+    "causes": [
+      "Shared generated mso www.tmac/LINKSTYLE preamble errors",
+      "Generated long lines and spacing warnings",
+      "MFL130unsupported tablecell spacing macros; table text/borders readable in saved render"
+    ],
+    "baseline_equivalence": "unconfirmed"
+  },
+  "linux_current": {
+    "source_closure": "b1d4f2ab28f7e9978b120daf27aca6e2ac07511e14ab898f5a40f57cf62d8086",
+    "status": "passed",
+    "installed_inputs": {
+      "fvwm": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+        "sha256": "049e2f13581ced0b6a68efbfb7ee8ca97f469fa34bb3981aeb954c516dff9360",
+        "bytes": 5693488
+      },
+      "tray": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+        "sha256": "d5fabe82c2e23996c4cba7c7509088971206c96f2e780461399dfd2db5b95a31",
+        "bytes": 1912376
+      },
+      "buttons": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmButtons",
+        "sha256": "43332876febf48fd53366a3411470776f9026d4ec7445aaf93249f64c9575eca",
+        "bytes": 1786488
+      },
+      "mfl": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmMFL",
+        "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+        "bytes": 453504
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmForm",
+        "sha256": "2fa41e22e5e815a3e8939373eba87bd32d59bf7440375e8912e5306ae0502742",
+        "bytes": 1805168
+      },
+      "desktop": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72",
+        "bytes": 6578381
+      },
+      "worker": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81",
+        "bytes": 6478141
+      },
+      "session": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "sha256": "fc451cf3b08f213029b42e1f06c6367035e2ac55ffcbf2aeda4d256b31ea14e7",
+        "bytes": 5318078
+      }
+    },
+    "inputs": {
+      "fvwm": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+        "sha256": "049e2f13581ced0b6a68efbfb7ee8ca97f469fa34bb3981aeb954c516dff9360"
+      },
+      "session": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+        "sha256": "fc451cf3b08f213029b42e1f06c6367035e2ac55ffcbf2aeda4d256b31ea14e7"
+      },
+      "desktop": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+      },
+      "buttons": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmButtons",
+        "sha256": "43332876febf48fd53366a3411470776f9026d4ec7445aaf93249f64c9575eca"
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmForm",
+        "sha256": "2fa41e22e5e815a3e8939373eba87bd32d59bf7440375e8912e5306ae0502742"
+      },
+      "tray": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+        "sha256": "d5fabe82c2e23996c4cba7c7509088971206c96f2e780461399dfd2db5b95a31"
+      },
+      "mfl": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmMFL",
+        "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+      },
+      "client": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-client",
+        "sha256": "060610b4c309eb0de9e38f374106774174b4d2d0aced1ea90bf174cb87a40cdf"
+      },
+      "sni_client": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-sni-client",
+        "sha256": "addde49d91411cbfbc51d69be09a34ef4cfe4172d5812400571c5c14fc187ba7"
+      },
+      "worker": {
+        "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+      },
+      "capture": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+      }
+    },
+    "cases": [
+      "incumbent_watcher_host_registration",
+      "registry_seed_continuation_and_owner_loss",
+      "both_dialects_multiple_paths_and_pointer_actions",
+      "bounded_plain_tooltip_no_focus",
+      "tooltip_lifetime",
+      "menu_nested_toggle_pointer_update_and_escape",
+      "external_context_menu_retires_prior_native_tree",
+      "passive_attention_keyboard_malformed_and_late_reply",
+      "missing_attention_name_uses_normal_named_icon",
+      "shared_named_icons_sizing_and_three_themes",
+      "combined_foreign_modern_capacity_refusal_and_recovery",
+      "alias_reference_and_native_watcher_takeover",
+      "real_gtk_xembed_and_ayatana_dbusmenu",
+      "explicit_focus_clock_child_nowarp_and_refusal",
+      "container_attach_resize_focus_competition_both_termination_orders",
+      "additional_native_container",
+      "broker_loss_xembed_survival_and_explicit_recovery"
+    ],
+    "cost_observations": {
+      "modern-off-empty": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "S",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "15448 kB",
+              "VmHWM": "7324 kB",
+              "VmRSS": "7324 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 0,
+            "system_ticks": 0,
+            "descriptors": 8,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "13036 kB",
+              "VmHWM": "22004 kB",
+              "VmRSS": "8012 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 5,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "S",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "15448 kB",
+              "VmHWM": "7324 kB",
+              "VmRSS": "7324 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 0,
+            "system_ticks": 0,
+            "descriptors": 8,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "13036 kB",
+              "VmHWM": "22004 kB",
+              "VmRSS": "8012 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 5,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.0030921400000352,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      },
+      "modern-two-named-icon-ready": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "R",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "17472 kB",
+              "VmHWM": "9360 kB",
+              "VmRSS": "9360 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 1,
+            "system_ticks": 3,
+            "descriptors": 10,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22080 kB",
+              "VmRSS": "14408 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 7,
+            "system_ticks": 11,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "S",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9360 kB",
+              "VmRSS": "9360 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 1,
+            "system_ticks": 3,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22080 kB",
+              "VmRSS": "14408 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 7,
+            "system_ticks": 11,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.0082998139999972,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      },
+      "modern31-plus-xembed1": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "S",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9384 kB",
+              "VmRSS": "9384 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 2,
+            "system_ticks": 4,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22080 kB",
+              "VmRSS": "14408 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 7,
+            "system_ticks": 11,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 304,
+              "state": "S",
+              "ppid": 260,
+              "birth": "36776"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9384 kB",
+              "VmRSS": "9384 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 2,
+            "system_ticks": 4,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 260,
+              "state": "S",
+              "ppid": 251,
+              "birth": "36748"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22080 kB",
+              "VmRSS": "14408 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 7,
+            "system_ticks": 11,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.0046392699999842,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      }
+    },
+    "first_ready_seconds": 0.07747453199999654,
+    "enable_connected_seconds": 0.024611788000015622,
+    "gtk_paint_diagnostics": {
+      "stages": [
+        {
+          "stage": "initial",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777218,
+            "size": 0,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": -1,
+                    "y": -1,
+                    "width": 1,
+                    "height": 1
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": -1,
+                    "y": -1,
+                    "width": 1,
+                    "height": 1
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  16,
+                  16
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 444,
+                "y": 310,
+                "width": 16,
+                "height": 16,
+                "border": 0
+              },
+              "local_center": [
+                8,
+                8
+              ],
+              "pixel": 0,
+              "rgb": [
+                0,
+                0,
+                0
+              ]
+            }
+          ],
+          "expected_rgba": [
+            30,
+            120,
+            230,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 0,
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 0,
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          },
+          "status": "observation-only",
+          "positive_paint": null,
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777218,
+            "size": 16,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  16,
+                  16
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        },
+        {
+          "stage": "host-show",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777218,
+            "size": 16,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  16,
+                  16
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 1868,
+                "y": 1034,
+                "width": 16,
+                "height": 16,
+                "border": 0
+              },
+              "local_center": [
+                8,
+                8
+              ],
+              "pixel": 1997030,
+              "rgb": [
+                30,
+                120,
+                230
+              ]
+            }
+          ],
+          "expected_rgba": [
+            30,
+            120,
+            230,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "positive_paint": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "status": "passed",
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777218,
+            "size": 16,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 16,
+                    "height": 16
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  16,
+                  16
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        },
+        {
+          "stage": "toolkit-show",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 1868,
+                "y": 1034,
+                "width": 2,
+                "height": 2,
+                "border": 0
+              },
+              "local_center": [
+                1,
+                1
+              ],
+              "pixel": 1997030,
+              "rgb": [
+                30,
+                120,
+                230
+              ]
+            }
+          ],
+          "expected_rgba": [
+            30,
+            120,
+            230,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "positive_paint": {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "status": "passed",
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 3,
+                "inspected": 3,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        },
+        {
+          "stage": "blue-centered-hide-toggle",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 2,
+                    "plug:unmap-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 444,
+                "y": 310,
+                "width": 2,
+                "height": 2,
+                "border": 0
+              },
+              "local_center": [
+                1,
+                1
+              ],
+              "pixel": 1997030,
+              "rgb": [
+                30,
+                120,
+                230
+              ]
+            }
+          ],
+          "expected_rgba": [
+            30,
+            120,
+            230,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "positive_paint": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          },
+          "status": "passed",
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  30,
+                  120,
+                  230,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 2,
+                    "plug:unmap-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        },
+        {
+          "stage": "icon-update",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  230,
+                  90,
+                  30,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 2,
+                    "plug:unmap-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 444,
+                "y": 310,
+                "width": 2,
+                "height": 2,
+                "border": 0
+              },
+              "local_center": [
+                1,
+                1
+              ],
+              "pixel": 15096350,
+              "rgb": [
+                230,
+                90,
+                30
+              ]
+            }
+          ],
+          "expected_rgba": [
+            230,
+            90,
+            30,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "positive_paint": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "status": "passed",
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  230,
+                  90,
+                  30,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 2,
+                    "plug:unmap-event": 1
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        },
+        {
+          "stage": "centered-hide-toggle",
+          "toolkit": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  230,
+                  90,
+                  30,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 3,
+                    "plug:unmap-event": 2
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "samples": 1,
+          "changes": [
+            {
+              "actual": {
+                "x": 444,
+                "y": 310,
+                "width": 2,
+                "height": 2,
+                "border": 0
+              },
+              "local_center": [
+                1,
+                1
+              ],
+              "pixel": 15096350,
+              "rgb": [
+                230,
+                90,
+                30
+              ]
+            }
+          ],
+          "expected_rgba": [
+            230,
+            90,
+            30,
+            255
+          ],
+          "first": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "last": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "positive_paint": {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          },
+          "status": "passed",
+          "toolkit_after": {
+            "mode": "xembed",
+            "file_image": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "gtk": [
+              3,
+              24,
+              41
+            ],
+            "embedded": true,
+            "xid": 16777229,
+            "size": 2,
+            "visible": true,
+            "image": {
+              "storage_type": 1,
+              "storage_name": "pixbuf",
+              "pixbuf": {
+                "width": 2,
+                "height": 2,
+                "channels": 4,
+                "rowstride": 8,
+                "bits_per_sample": 8,
+                "has_alpha": true,
+                "first_rgba": [
+                  230,
+                  90,
+                  30,
+                  255
+                ]
+              },
+              "widgets": {
+                "toplevel_count": 4,
+                "inspected": 4,
+                "matched": true,
+                "plug": {
+                  "type": "GtkTrayIcon",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  }
+                },
+                "child": {
+                  "type": "GtkImage",
+                  "mapped": true,
+                  "realized": true,
+                  "visible": true,
+                  "allocation": {
+                    "x": 0,
+                    "y": 0,
+                    "width": 2,
+                    "height": 2
+                  },
+                  "storage_type": 7,
+                  "storage_name": "surface"
+                },
+                "tracked_xids": [
+                  16777218,
+                  16777229
+                ],
+                "signals": {
+                  "counts": {
+                    "plug:configure-event": 3,
+                    "plug:map-event": 3,
+                    "plug:unmap-event": 2
+                  },
+                  "hook_errors": []
+                },
+                "trace": [
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "configure-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "unmap-event"
+                  },
+                  {
+                    "xid": 16777218,
+                    "target": "plug",
+                    "event": "map-event"
+                  },
+                  {
+                    "xid": 16777229,
+                    "target": "plug",
+                    "event": "map-event"
+                  }
+                ],
+                "cairo_binding": {
+                  "available": false,
+                  "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+                }
+              },
+              "gdk_window": {
+                "geometry": [
+                  0,
+                  0,
+                  2,
+                  2
+                ],
+                "visible": true,
+                "viewable": true,
+                "depth": 24,
+                "visual_type": 4
+              }
+            }
+          },
+          "source_loaded": true
+        }
+      ],
+      "initial_rgba": [
+        30,
+        120,
+        230,
+        255
+      ],
+      "source_sha256": "278861dcb62fd34b1cc01c93ac6e635798984829abeff01c51ac98e1a59396b4",
+      "icon_sha256": "496fe3e5c0649eaed509c8bfb53b7900437a12aeb7cb1967acf89786858c315f",
+      "producer_xdg_data_dirs": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/absent-data:/usr/local/share:/usr/share",
+      "base_mime_caches": [
+        {
+          "path": "/usr/share/mime/mime.cache",
+          "sha256": "6fd7ef67f7be559e85ccc71d8fad9ce2d14840bbfc6eedfdf0a2fcf1d22ac94d",
+          "bytes": 157560
+        }
+      ],
+      "updated_icon": {
+        "path": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/toolkit-icon.png",
+        "sha256": "030e3cac36279af26793fbaef203770cecdb766432fa58f93350fb06b6951f6f",
+        "expected_rgba": [
+          230,
+          90,
+          30,
+          255
+        ]
+      },
+      "indicator_icon": {
+        "path": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/toolkit-icon.png",
+        "sha256": "030e3cac36279af26793fbaef203770cecdb766432fa58f93350fb06b6951f6f",
+        "expected_rgba": [
+          230,
+          90,
+          30,
+          255
+        ]
+      }
+    },
+    "archive_sha256": "c01cff7494d1c9ad2d118ce6a5e2ae938252977945340ee3b76a73c32ff57bfe",
+    "archive_bytes": 558671,
+    "archive_files": 68,
+    "archive_path": "linux-final-linux02.tgz",
+    "driver_result_sha256": "e847020f8b620a9b2b00fe658dfd159832c1b526f45d4084dabb1b4156f329d8",
+    "full_result_sha256": "e3f33bf12dd1ed79f70b83edd56db770f8ae38c3b0b3e153305f84b54adc44e5"
+  },
+  "gtk_loader_probe": {
+    "script_sha256": "434363d69b163dda615eee9861da06bc1b578deedfcbf76619133c97b7108cdd",
+    "exit": 0,
+    "seconds": 0.22245987504720688,
+    "stdout": "[\n  {\n    \"label\": \"isolated\",\n    \"exit\": 0,\n    \"stdout\": \"{\\\"formats\\\": [\\\"png\\\", \\\"jpeg\\\", \\\"ani\\\", \\\"bmp\\\", \\\"gif\\\", \\\"icns\\\", \\\"ico\\\", \\\"pnm\\\", \\\"qtif\\\", \\\"svg\\\", \\\"tga\\\", \\\"tiff\\\", \\\"xbm\\\", \\\"xpm\\\"], \\\"type\\\": [\\\"application/octet-stream\\\", true], \\\"xdg\\\": \\\"/nonexistent\\\", \\\"error\\\": \\\"gdk-pixbuf-error-quark: Couldn\\\\u2019t recognize the image file format for file \\\\u201c/tmp/tmpc8vjhmzr.png\\\\u201d (3)\\\"}\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"label\": \"base\",\n    \"exit\": 0,\n    \"stdout\": \"{\\\"formats\\\": [\\\"png\\\", \\\"jpeg\\\", \\\"ani\\\", \\\"bmp\\\", \\\"gif\\\", \\\"icns\\\", \\\"ico\\\", \\\"pnm\\\", \\\"qtif\\\", \\\"svg\\\", \\\"tga\\\", \\\"tiff\\\", \\\"xbm\\\", \\\"xpm\\\"], \\\"type\\\": [\\\"image/png\\\", false], \\\"xdg\\\": \\\"/usr/local/share:/usr/share\\\", \\\"load\\\": [2, 2, [30, 120, 230, 255]]}\\n\",\n    \"stderr\": \"\"\n  }\n]\n",
+    "stderr": ""
+  },
+  "platform_final": {
+    "linux_amd64": {
+      "evidence": "linux-amd64/platform05/evidence/result.json",
+      "status": "passed",
+      "source_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+      "scope": "combined affected tray/core/Buttons/worker/preferences checkpoint; not physical hardware or complete desktop acceptance",
+      "manual_render_lint": null
+    },
+    "freebsd_amd64": {
+      "evidence": "freebsd-amd64/platform05/evidence/result.json",
+      "status": "passed",
+      "source_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+      "scope": "combined affected tray/core/Buttons/worker/preferences checkpoint; not physical hardware or complete desktop acceptance",
+      "manual_render_lint": {
+        "FvwmTray": {
+          "render_exit": 0,
+          "lint_exit": 3,
+          "lint_status": "failed diagnostic; not relabeled as lint pass",
+          "seconds": 0.02571200000011231,
+          "command": [
+            "mandoc",
+            "-Tlint",
+            "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/share/man/man1/FvwmTray.1"
+          ]
+        },
+        "FvwmButtons": {
+          "render_exit": 0,
+          "lint_exit": 3,
+          "lint_status": "failed diagnostic; not relabeled as lint pass",
+          "seconds": 0.03499299999998584,
+          "command": [
+            "mandoc",
+            "-Tlint",
+            "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/share/man/man1/FvwmButtons.1"
+          ]
+        },
+        "FvwmDesktop": {
+          "render_exit": 0,
+          "lint_exit": 3,
+          "lint_status": "failed diagnostic; not relabeled as lint pass",
+          "seconds": 0.03519499999993059,
+          "command": [
+            "mandoc",
+            "-Tlint",
+            "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/share/man/man1/FvwmDesktop.1"
+          ]
+        },
+        "FvwmMFL": {
+          "render_exit": 0,
+          "lint_exit": 4,
+          "lint_status": "failed diagnostic; not relabeled as lint pass",
+          "seconds": 0.04624300000000403,
+          "command": [
+            "mandoc",
+            "-Tlint",
+            "/root/fvwm-style-simplification-recovery-20261016/r1-xdg-installed-prefix/share/man/man1/FvwmMFL.1"
+          ]
+        }
+      }
+    },
+    "freebsd_arm64_delta": {
+      "evidence": "freebsd-arm64/icon-delta/evidence/result.json",
+      "status": "passed",
+      "source_closure": {
+        "closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "checked_files": 3225
+      },
+      "scope": "SNI icon delta composed with passed prior platform checkpoint",
+      "manual_render_lint": {
+        "FvwmTray": {
+          "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmTray.1",
+          "sha256": "1dc69c4a763381203b20b75bdc469ad8be66d4021ccf5c8c1ba58f8bb4751581",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmButtons": {
+          "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmButtons.1",
+          "sha256": "fb809fe5c16237683ea90e630fadf23ac6881914af05a1953956988e5072570c",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmDesktop": {
+          "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmDesktop.1",
+          "sha256": "457c580e389bb20f58f0657d130e5c0b4ab7aa21031bec04e3aa3289b089d2d0",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmMFL": {
+          "path": "/root/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmMFL.1",
+          "sha256": "4407076591723b3c67a38b9e9e84de482ed53a90c84284f0b71973e70825b30e",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 4,
+          "lint_status": "nonzero; not a lint pass"
+        }
+      }
+    },
+    "openbsd_arm64_delta": {
+      "status": "passed",
+      "result_path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/openbsd-arm64-delta02/evidence/result.json",
+      "result_sha256": "88a8275041803383d4d62df6638365d8fd8c5701637b69dc7f1fa8de3c2468fc",
+      "source_pre": {
+        "closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "checked_files": 3225
+      },
+      "source_post": {
+        "closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "checked_files": 3225
+      },
+      "baseline": {
+        "directory": "/home/fvwm-ci/source/builddir-bsd/r1-tray-completion-results",
+        "result_sha256": "0ba3dae04cab46b86376707409776b4b47bfd1d32f7473591f2401082cbe3fda",
+        "source_sha256": "74e2aa18873692a24324e28ada02c6474a0eadb413adc4ddccc43f5ed1939a14",
+        "closure": "cdc7c7b6f5ef80a2e32e594f436ea1dff3eb041f6b596c2ce44a0b34f0e490d0",
+        "differences": [
+          {
+            "path": "README.md",
+            "runtime": false,
+            "before": {
+              "sha256": "59fd50db14a7d15ac10c619e272004464fc80debbac758c348f5e91afbcbaf6f",
+              "bytes": 2414,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "a1188ec63a574266002e5883b8ebd9bf34fdb8d46a6462eedfc5dae47f34cea8",
+              "bytes": 2417,
+              "mode": 420
+            }
+          },
+          {
+            "path": "dev-docs/SUPPORT.md",
+            "runtime": false,
+            "before": {
+              "sha256": "f2fdd3afee1702e2e762b0ed92597ec8b17f70c405c31dc8a2db13fb2cb3615d",
+              "bytes": 18657,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "c2b198d95d1bcb2778e3fc813704ca7bf96ab46ea60078127ce87fd2102fb3a9",
+              "bytes": 20997,
+              "mode": 420
+            }
+          },
+          {
+            "path": "dev-docs/verification/VERIFICATION-2026-10-30-TRAY-COMPLETION.md",
+            "runtime": false,
+            "before": null,
+            "after": {
+              "sha256": "ef8c4c322d71064ac87fd9f492f48dc74ac6c00896f4a218bb187bc345b0fa75",
+              "bytes": 1363,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/development-preview.md",
+            "runtime": false,
+            "before": {
+              "sha256": "1b2c181ef3e8a76cbc0fd8f2049b3bcb29e351c497385741747faa2b1a35fde7",
+              "bytes": 70205,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "1858cd4357cd961ec51fd2bb484345294cd256f0fa3a4896eb3ee920da09791d",
+              "bytes": 70277,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-application-menu.png",
+            "runtime": false,
+            "before": {
+              "sha256": "d35fc11da9d7584caddcab96225825da081050ba10e4949bbf357784e216bf01",
+              "bytes": 35758,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "65905af596806e113ef868d29631743bc07520712c568b22bdcdaf70a8f9ff9c",
+              "bytes": 35591,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-0.png",
+            "runtime": false,
+            "before": {
+              "sha256": "eb3e36cdf08308f0254621883b8dba63ffe312378be46efed44e37d7866ddbfe",
+              "bytes": 30225,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "f5159d80bab1ae894fd4943663da38156a3a562bb3f2322297b60e2723ca02cb",
+              "bytes": 30020,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-1.png",
+            "runtime": false,
+            "before": {
+              "sha256": "a630ec5d7bb02f5c8762cd1126acaf4eb0120e726ef26d1fc1282c306f39ba22",
+              "bytes": 30768,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "4d16032c5b067a76049e400a92f1662cf99db38044773e0633aee0210f62b070",
+              "bytes": 30579,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-2.png",
+            "runtime": false,
+            "before": {
+              "sha256": "df52a6acfbc41cde382565b7f4f1e6b0013764bed15e8ff3b1d662211a3cf466",
+              "bytes": 31336,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "1ae7c5b8cdb428ff0497b1d67ef4217e9fff2e17b7872b6a91c0e20874e02e44",
+              "bytes": 31145,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/manifest.json",
+            "runtime": false,
+            "before": {
+              "sha256": "3655d5480e561e8b316ae15179817605a09f2e9e1fa6072ee708e0bebd4e02ef",
+              "bytes": 2517,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "db64d731800fb61b45902ad250b8773059b6602cae70ff2455219f2fb473e27f",
+              "bytes": 5075,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-0.png",
+            "runtime": false,
+            "before": {
+              "sha256": "36c00697fb90e9404a88d173a9b3c845d48c9afdb859155db9cdef601e4ab2d3",
+              "bytes": 62709,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "5800b23064f2f956c582766d04ed6afaee39331a93b526d753597dac70ad130e",
+              "bytes": 62563,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-1.png",
+            "runtime": false,
+            "before": {
+              "sha256": "d904b15cd7eebe251c6eea089ce23f7afdd040bbf34ebda40e396fc9f2e8c8e1",
+              "bytes": 63631,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "7477f60ade9c8889dee04a3108d107e07b9f0540ee5c95ca56ecb08d26ca9f0e",
+              "bytes": 63494,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-2.png",
+            "runtime": false,
+            "before": {
+              "sha256": "ebdce40a60e666814dab6f5449f78c35e16b738a45b80f9304ebe7be58a56fa7",
+              "bytes": 64250,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "fcc8ef3485c294b2abba10c13d0359e5648ba53bc264db4dc4e008e93a6452a8",
+              "bytes": 64117,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-tooltip.png",
+            "runtime": false,
+            "before": {
+              "sha256": "049a090b940b67aba6191088f7fbf2a2300305d57825e9006667b47d5c6d393f",
+              "bytes": 31731,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "e439c80895e2fa0433894668ec2564e3efd092a887be021da50ac691f0593fbd",
+              "bytes": 31748,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/real-gtk-ayatana-clients.png",
+            "runtime": false,
+            "before": {
+              "sha256": "0f2a22beb1fb0b4f2092b77d8bb1ad48fc310d1c5a066e8de0a54de9b7859b20",
+              "bytes": 44569,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "829241b2b41d14407b85343ba8ef08f36275f05340d20e7feab644fba5046f14",
+              "bytes": 44397,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_model.c",
+            "runtime": true,
+            "before": {
+              "sha256": "3be2cce189fb34fb94eff96f8da32804dc14b3422c08bf56527193df8b8287bc",
+              "bytes": 10814,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "d3283cbc8469a3cb480912cb6f8cb597dacb84cbca2e659e79018338f5eb47d6",
+              "bytes": 12309,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_model.h",
+            "runtime": true,
+            "before": {
+              "sha256": "60799ff7cb4e95aaf54945ffe566789899cf56fc8305f170daf7dd28fe41664b",
+              "bytes": 3432,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "17a28e1ef2ad8705f0d505d150d037b66ef12c2c8ebde22ef02918fb363fa58b",
+              "bytes": 3835,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_ui.c",
+            "runtime": true,
+            "before": {
+              "sha256": "1baa2eafa58c73021280efb16e7b1b8cba5635490bbd23c9077d164cc86f5062",
+              "bytes": 47025,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "f332bfea8cebd05fe8c135ce66506e3744cfce10c4f2106250b11ffac693bcf2",
+              "bytes": 48764,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/live_x/tray_modern_live.py",
+            "runtime": false,
+            "before": {
+              "sha256": "08e904585fb66657d84855bbd9fa4e7af1098ce035dd862a6fda9835a64552f6",
+              "bytes": 55124,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "a73f8152877df450a1ce145ad5c40f98783b0611f8ac9cc2ef71d3bd797804ff",
+              "bytes": 61361,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/test_tray_sni_model.c",
+            "runtime": false,
+            "before": {
+              "sha256": "2502b27521490764917f5d67474baafb2f135ffc9b8a3a70edbbe90c05fe9b6f",
+              "bytes": 7906,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "0779e93f6d526214ba527afcdf72ada594e99b66bc765cefea7a57a0f887c6a7",
+              "bytes": 10637,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/tray_sni_client.c",
+            "runtime": false,
+            "before": {
+              "sha256": "e4a691e09dfe929b4c9553a8c1c9d42f3486e8d9504e3fbdcb55a50bb96414a1",
+              "bytes": 31695,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "b8b2116a4ad1ad1f3904b941138dbdfbdc306a6c9390d5330e532fc4674b9ac1",
+              "bytes": 32127,
+              "mode": 420
+            }
+          }
+        ]
+      },
+      "commands": [
+        {
+          "label": "uname",
+          "exit": 0,
+          "seconds": 0.017614457999998834
+        },
+        {
+          "label": "compiler",
+          "exit": 0,
+          "seconds": 0.038986333999998735
+        },
+        {
+          "label": "meson-version",
+          "exit": 0,
+          "seconds": 0.22406758400000015
+        },
+        {
+          "label": "compilers",
+          "exit": 0,
+          "seconds": 0.21436179200000005
+        },
+        {
+          "label": "enabled-options",
+          "exit": 0,
+          "seconds": 0.2223658749999995
+        },
+        {
+          "label": "project-version",
+          "exit": 0,
+          "seconds": 0.27660212500000014
+        },
+        {
+          "label": "dbus-version",
+          "exit": 0,
+          "seconds": 0.02020179199999994
+        },
+        {
+          "label": "enabled-build",
+          "exit": 0,
+          "seconds": 3.337122417
+        },
+        {
+          "label": "enabled-policy",
+          "exit": 0,
+          "seconds": 0.281290417000001
+        },
+        {
+          "label": "enabled-install",
+          "exit": 0,
+          "seconds": 0.21834437500000092
+        },
+        {
+          "label": "enabled-install-map",
+          "exit": 0,
+          "seconds": 0.21910683299999967
+        },
+        {
+          "label": "enabled-linkage",
+          "exit": 0,
+          "seconds": 0.026463958999999093
+        },
+        {
+          "label": "enabled-size",
+          "exit": 0,
+          "seconds": 0.017725999999999686
+        },
+        {
+          "label": "appearance",
+          "exit": 0,
+          "seconds": 3.7603766249999993
+        },
+        {
+          "label": "disabled-configure",
+          "exit": 0,
+          "seconds": 5.857725417000001
+        },
+        {
+          "label": "disabled-options",
+          "exit": 0,
+          "seconds": 0.21832458300000113
+        },
+        {
+          "label": "disabled-build",
+          "exit": 0,
+          "seconds": 4.237899292000002
+        },
+        {
+          "label": "disabled-policy",
+          "exit": 0,
+          "seconds": 0.3408764580000003
+        },
+        {
+          "label": "disabled-install",
+          "exit": 0,
+          "seconds": 0.27665591699999936
+        },
+        {
+          "label": "disabled-install-map",
+          "exit": 0,
+          "seconds": 0.2191664590000002
+        },
+        {
+          "label": "disabled-linkage",
+          "exit": 0,
+          "seconds": 0.018145166000000046
+        },
+        {
+          "label": "disabled-size",
+          "exit": 0,
+          "seconds": 0.01865095899999858
+        },
+        {
+          "label": "absence",
+          "exit": 0,
+          "seconds": 1.0566647499999995
+        },
+        {
+          "label": "manual-render-FvwmTray",
+          "exit": 0,
+          "seconds": 0.019295375000002224
+        },
+        {
+          "label": "manual-lint-FvwmTray",
+          "exit": 3,
+          "seconds": 0.018214291999999688
+        },
+        {
+          "label": "manual-render-FvwmButtons",
+          "exit": 0,
+          "seconds": 0.019154541999998997
+        },
+        {
+          "label": "manual-lint-FvwmButtons",
+          "exit": 3,
+          "seconds": 0.01681675000000027
+        },
+        {
+          "label": "manual-render-FvwmDesktop",
+          "exit": 0,
+          "seconds": 0.019651749999997747
+        },
+        {
+          "label": "manual-lint-FvwmDesktop",
+          "exit": 3,
+          "seconds": 0.019415750000000287
+        },
+        {
+          "label": "manual-render-FvwmMFL",
+          "exit": 0,
+          "seconds": 0.016242292000001157
+        },
+        {
+          "label": "manual-lint-FvwmMFL",
+          "exit": 4,
+          "seconds": 0.019024000000001706
+        }
+      ],
+      "manual_render_lint": {
+        "FvwmTray": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmTray.1",
+          "sha256": "1dc69c4a763381203b20b75bdc469ad8be66d4021ccf5c8c1ba58f8bb4751581",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmButtons": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmButtons.1",
+          "sha256": "fb809fe5c16237683ea90e630fadf23ac6881914af05a1953956988e5072570c",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmDesktop": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmDesktop.1",
+          "sha256": "457c580e389bb20f58f0657d130e5c0b4ab7aa21031bec04e3aa3289b089d2d0",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmMFL": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmMFL.1",
+          "sha256": "4407076591723b3c67a38b9e9e84de482ed53a90c84284f0b71973e70825b30e",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 4,
+          "lint_status": "nonzero; not a lint pass"
+        }
+      },
+      "collection": {
+        "schema": 1,
+        "scope": "Current source34 compiled cache with passed three-file icon delta composed with unchanged source29 full baseline. Zero test passes imported by future cache reuse; final qualification remains the separate immutable receipts.",
+        "archive_sha256": "e442e3f561e0f0d032cc249b5aa3ada0cc9e750e3f8a17a37458c8d963786a9d",
+        "archive_bytes": 197482505,
+        "standard_passes": 0,
+        "retained_current_capture": "builddir-bsd/r1-tray-icon-delta-results",
+        "source_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "baseline_capture": "builddir-bsd/r1-tray-completion-results",
+        "baseline_result_sha256": "0ba3dae04cab46b86376707409776b4b47bfd1d32f7473591f2401082cbe3fda",
+        "current_result_sha256": "88a8275041803383d4d62df6638365d8fd8c5701637b69dc7f1fa8de3c2468fc",
+        "archive_members": 3957,
+        "gzip_crc_verified": true,
+        "prior_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/source34.json",
+        "reuse_note": "Use source34 as compiled-source input and preserve composition; original source29-only baseline-prefix restore script is not a current-delta restore contract."
+      }
+    },
+    "openbsd_amd64_delta": {
+      "status": "passed",
+      "result_path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/openbsd-amd64-delta02/evidence/result.json",
+      "result_sha256": "4a23ed15315eff4869a9816a6ddb5742b3dc3a2d0953c737f54c166d2a27791f",
+      "source_pre": {
+        "closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "checked_files": 3225
+      },
+      "source_post": {
+        "closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "checked_files": 3225
+      },
+      "baseline": {
+        "directory": "/home/fvwm-ci/source/builddir-bsd/r1-tray-completion-results",
+        "result_sha256": "8237fabea6e9e2740efc51dba1d09aa8fc591836f9a091aa11b2c70e8817f416",
+        "source_sha256": "74e2aa18873692a24324e28ada02c6474a0eadb413adc4ddccc43f5ed1939a14",
+        "closure": "cdc7c7b6f5ef80a2e32e594f436ea1dff3eb041f6b596c2ce44a0b34f0e490d0",
+        "differences": [
+          {
+            "path": "README.md",
+            "runtime": false,
+            "before": {
+              "sha256": "59fd50db14a7d15ac10c619e272004464fc80debbac758c348f5e91afbcbaf6f",
+              "bytes": 2414,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "a1188ec63a574266002e5883b8ebd9bf34fdb8d46a6462eedfc5dae47f34cea8",
+              "bytes": 2417,
+              "mode": 420
+            }
+          },
+          {
+            "path": "dev-docs/SUPPORT.md",
+            "runtime": false,
+            "before": {
+              "sha256": "f2fdd3afee1702e2e762b0ed92597ec8b17f70c405c31dc8a2db13fb2cb3615d",
+              "bytes": 18657,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "c2b198d95d1bcb2778e3fc813704ca7bf96ab46ea60078127ce87fd2102fb3a9",
+              "bytes": 20997,
+              "mode": 420
+            }
+          },
+          {
+            "path": "dev-docs/verification/VERIFICATION-2026-10-30-TRAY-COMPLETION.md",
+            "runtime": false,
+            "before": null,
+            "after": {
+              "sha256": "ef8c4c322d71064ac87fd9f492f48dc74ac6c00896f4a218bb187bc345b0fa75",
+              "bytes": 1363,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/development-preview.md",
+            "runtime": false,
+            "before": {
+              "sha256": "1b2c181ef3e8a76cbc0fd8f2049b3bcb29e351c497385741747faa2b1a35fde7",
+              "bytes": 70205,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "1858cd4357cd961ec51fd2bb484345294cd256f0fa3a4896eb3ee920da09791d",
+              "bytes": 70277,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-application-menu.png",
+            "runtime": false,
+            "before": {
+              "sha256": "d35fc11da9d7584caddcab96225825da081050ba10e4949bbf357784e216bf01",
+              "bytes": 35758,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "65905af596806e113ef868d29631743bc07520712c568b22bdcdaf70a8f9ff9c",
+              "bytes": 35591,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-0.png",
+            "runtime": false,
+            "before": {
+              "sha256": "eb3e36cdf08308f0254621883b8dba63ffe312378be46efed44e37d7866ddbfe",
+              "bytes": 30225,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "f5159d80bab1ae894fd4943663da38156a3a562bb3f2322297b60e2723ca02cb",
+              "bytes": 30020,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-1.png",
+            "runtime": false,
+            "before": {
+              "sha256": "a630ec5d7bb02f5c8762cd1126acaf4eb0120e726ef26d1fc1282c306f39ba22",
+              "bytes": 30768,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "4d16032c5b067a76049e400a92f1662cf99db38044773e0633aee0210f62b070",
+              "bytes": 30579,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/container-theme-2.png",
+            "runtime": false,
+            "before": {
+              "sha256": "df52a6acfbc41cde382565b7f4f1e6b0013764bed15e8ff3b1d662211a3cf466",
+              "bytes": 31336,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "1ae7c5b8cdb428ff0497b1d67ef4217e9fff2e17b7872b6a91c0e20874e02e44",
+              "bytes": 31145,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/manifest.json",
+            "runtime": false,
+            "before": {
+              "sha256": "3655d5480e561e8b316ae15179817605a09f2e9e1fa6072ee708e0bebd4e02ef",
+              "bytes": 2517,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "db64d731800fb61b45902ad250b8773059b6602cae70ff2455219f2fb473e27f",
+              "bytes": 5075,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-0.png",
+            "runtime": false,
+            "before": {
+              "sha256": "36c00697fb90e9404a88d173a9b3c845d48c9afdb859155db9cdef601e4ab2d3",
+              "bytes": 62709,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "5800b23064f2f956c582766d04ed6afaee39331a93b526d753597dac70ad130e",
+              "bytes": 62563,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-1.png",
+            "runtime": false,
+            "before": {
+              "sha256": "d904b15cd7eebe251c6eea089ce23f7afdd040bbf34ebda40e396fc9f2e8c8e1",
+              "bytes": 63631,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "7477f60ade9c8889dee04a3108d107e07b9f0540ee5c95ca56ecb08d26ca9f0e",
+              "bytes": 63494,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-theme-2.png",
+            "runtime": false,
+            "before": {
+              "sha256": "ebdce40a60e666814dab6f5449f78c35e16b738a45b80f9304ebe7be58a56fa7",
+              "bytes": 64250,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "fcc8ef3485c294b2abba10c13d0359e5648ba53bc264db4dc4e008e93a6452a8",
+              "bytes": 64117,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/modern-tooltip.png",
+            "runtime": false,
+            "before": {
+              "sha256": "049a090b940b67aba6191088f7fbf2a2300305d57825e9006667b47d5c6d393f",
+              "bytes": 31731,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "e439c80895e2fa0433894668ec2564e3efd092a887be021da50ac691f0593fbd",
+              "bytes": 31748,
+              "mode": 420
+            }
+          },
+          {
+            "path": "doc/images/tray-completion-20261030/real-gtk-ayatana-clients.png",
+            "runtime": false,
+            "before": {
+              "sha256": "0f2a22beb1fb0b4f2092b77d8bb1ad48fc310d1c5a066e8de0a54de9b7859b20",
+              "bytes": 44569,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "829241b2b41d14407b85343ba8ef08f36275f05340d20e7feab644fba5046f14",
+              "bytes": 44397,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_model.c",
+            "runtime": true,
+            "before": {
+              "sha256": "3be2cce189fb34fb94eff96f8da32804dc14b3422c08bf56527193df8b8287bc",
+              "bytes": 10814,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "d3283cbc8469a3cb480912cb6f8cb597dacb84cbca2e659e79018338f5eb47d6",
+              "bytes": 12309,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_model.h",
+            "runtime": true,
+            "before": {
+              "sha256": "60799ff7cb4e95aaf54945ffe566789899cf56fc8305f170daf7dd28fe41664b",
+              "bytes": 3432,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "17a28e1ef2ad8705f0d505d150d037b66ef12c2c8ebde22ef02918fb363fa58b",
+              "bytes": 3835,
+              "mode": 420
+            }
+          },
+          {
+            "path": "modules/FvwmTray/tray_sni_ui.c",
+            "runtime": true,
+            "before": {
+              "sha256": "1baa2eafa58c73021280efb16e7b1b8cba5635490bbd23c9077d164cc86f5062",
+              "bytes": 47025,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "f332bfea8cebd05fe8c135ce66506e3744cfce10c4f2106250b11ffac693bcf2",
+              "bytes": 48764,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/live_x/tray_modern_live.py",
+            "runtime": false,
+            "before": {
+              "sha256": "08e904585fb66657d84855bbd9fa4e7af1098ce035dd862a6fda9835a64552f6",
+              "bytes": 55124,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "a73f8152877df450a1ce145ad5c40f98783b0611f8ac9cc2ef71d3bd797804ff",
+              "bytes": 61361,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/test_tray_sni_model.c",
+            "runtime": false,
+            "before": {
+              "sha256": "2502b27521490764917f5d67474baafb2f135ffc9b8a3a70edbbe90c05fe9b6f",
+              "bytes": 7906,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "0779e93f6d526214ba527afcdf72ada594e99b66bc765cefea7a57a0f887c6a7",
+              "bytes": 10637,
+              "mode": 420
+            }
+          },
+          {
+            "path": "tests/tray_sni_client.c",
+            "runtime": false,
+            "before": {
+              "sha256": "e4a691e09dfe929b4c9553a8c1c9d42f3486e8d9504e3fbdcb55a50bb96414a1",
+              "bytes": 31695,
+              "mode": 420
+            },
+            "after": {
+              "sha256": "b8b2116a4ad1ad1f3904b941138dbdfbdc306a6c9390d5330e532fc4674b9ac1",
+              "bytes": 32127,
+              "mode": 420
+            }
+          }
+        ]
+      },
+      "commands": [
+        {
+          "label": "uname",
+          "exit": 0,
+          "seconds": 0.04835599999999829
+        },
+        {
+          "label": "compiler",
+          "exit": 0,
+          "seconds": 0.2973119999999909
+        },
+        {
+          "label": "meson-version",
+          "exit": 0,
+          "seconds": 3.6642379999999974
+        },
+        {
+          "label": "compilers",
+          "exit": 0,
+          "seconds": 3.599468999999999
+        },
+        {
+          "label": "enabled-options",
+          "exit": 0,
+          "seconds": 3.6031150000000025
+        },
+        {
+          "label": "project-version",
+          "exit": 0,
+          "seconds": 3.659958000000003
+        },
+        {
+          "label": "dbus-version",
+          "exit": 0,
+          "seconds": 0.06011399999999867
+        },
+        {
+          "label": "enabled-build",
+          "exit": 0,
+          "seconds": 58.92474384400002
+        },
+        {
+          "label": "enabled-policy",
+          "exit": 0,
+          "seconds": 5.706496442999992
+        },
+        {
+          "label": "enabled-install",
+          "exit": 0,
+          "seconds": 3.8375699329999975
+        },
+        {
+          "label": "enabled-install-map",
+          "exit": 0,
+          "seconds": 3.540343517999986
+        },
+        {
+          "label": "enabled-linkage",
+          "exit": 0,
+          "seconds": 0.0782308840000212
+        },
+        {
+          "label": "enabled-size",
+          "exit": 0,
+          "seconds": 0.03957612700000368
+        },
+        {
+          "label": "appearance",
+          "exit": 0,
+          "seconds": 26.719805901
+        },
+        {
+          "label": "disabled-configure",
+          "exit": 0,
+          "seconds": 83.91107296800001
+        },
+        {
+          "label": "disabled-options",
+          "exit": 0,
+          "seconds": 3.6082890000000134
+        },
+        {
+          "label": "disabled-build",
+          "exit": 0,
+          "seconds": 53.44430215900002
+        },
+        {
+          "label": "disabled-policy",
+          "exit": 0,
+          "seconds": 4.856525000000033
+        },
+        {
+          "label": "disabled-install",
+          "exit": 0,
+          "seconds": 3.841587000000004
+        },
+        {
+          "label": "disabled-install-map",
+          "exit": 0,
+          "seconds": 3.536972999999989
+        },
+        {
+          "label": "disabled-linkage",
+          "exit": 0,
+          "seconds": 0.07492899999999736
+        },
+        {
+          "label": "disabled-size",
+          "exit": 0,
+          "seconds": 0.03892200000001367
+        },
+        {
+          "label": "absence",
+          "exit": 0,
+          "seconds": 11.577068999999995
+        },
+        {
+          "label": "manual-render-FvwmTray",
+          "exit": 0,
+          "seconds": 0.10362199999997301
+        },
+        {
+          "label": "manual-lint-FvwmTray",
+          "exit": 3,
+          "seconds": 0.05870300000003681
+        },
+        {
+          "label": "manual-render-FvwmButtons",
+          "exit": 0,
+          "seconds": 0.13456000000002177
+        },
+        {
+          "label": "manual-lint-FvwmButtons",
+          "exit": 3,
+          "seconds": 0.08583099999998467
+        },
+        {
+          "label": "manual-render-FvwmDesktop",
+          "exit": 0,
+          "seconds": 0.1786710009999979
+        },
+        {
+          "label": "manual-lint-FvwmDesktop",
+          "exit": 3,
+          "seconds": 0.07976600000000644
+        },
+        {
+          "label": "manual-render-FvwmMFL",
+          "exit": 0,
+          "seconds": 0.1843939999999975
+        },
+        {
+          "label": "manual-lint-FvwmMFL",
+          "exit": 4,
+          "seconds": 0.08426399999996192
+        }
+      ],
+      "manual_render_lint": {
+        "FvwmTray": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmTray.1",
+          "sha256": "1dc69c4a763381203b20b75bdc469ad8be66d4021ccf5c8c1ba58f8bb4751581",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmButtons": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmButtons.1",
+          "sha256": "fb809fe5c16237683ea90e630fadf23ac6881914af05a1953956988e5072570c",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmDesktop": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmDesktop.1",
+          "sha256": "457c580e389bb20f58f0657d130e5c0b4ab7aa21031bec04e3aa3289b089d2d0",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 3,
+          "lint_status": "nonzero; not a lint pass"
+        },
+        "FvwmMFL": {
+          "path": "/home/fvwm-ci/r1-tray-installed-prefix/share/man/man1/FvwmMFL.1",
+          "sha256": "4407076591723b3c67a38b9e9e84de482ed53a90c84284f0b71973e70825b30e",
+          "render_exit": 0,
+          "rendered_nonempty": true,
+          "lint_exit": 4,
+          "lint_status": "nonzero; not a lint pass"
+        }
+      },
+      "collection": {
+        "schema": 1,
+        "scope": "Current source34 compiled cache with passed three-file icon delta composed with unchanged source29 full baseline. Zero test passes imported by future cache reuse; final qualification remains the separate immutable receipts.",
+        "archive_sha256": "ef2cbf092c5bf0525e9dd6333ba941ef9b80881a587b9609fc08a83400f7f88f",
+        "archive_bytes": 245862428,
+        "standard_passes": 0,
+        "retained_current_capture": "builddir-bsd/r1-tray-icon-delta-results",
+        "source_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+        "baseline_capture": "builddir-bsd/r1-tray-completion-results",
+        "baseline_result_sha256": "8237fabea6e9e2740efc51dba1d09aa8fc591836f9a091aa11b2c70e8817f416",
+        "current_result_sha256": "4a23ed15315eff4869a9816a6ddb5742b3dc3a2d0953c737f54c166d2a27791f",
+        "archive_members": 4183,
+        "gzip_crc_verified": true,
+        "prior_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-30/r1-tray-completion/source34.json",
+        "reuse_note": "Use source34 as compiled-source input and preserve composition; original source29-only baseline-prefix restore script is not a current-delta restore contract."
+      }
+    }
+  },
+  "linux_source34_baseline": {
+    "final_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+    "final_archive_sha256": "b66c89a59c57ef0acb51482595ab499729735d9a19b0591e9ba2fb2d484e8e1e",
+    "final_result_status": "passed",
+    "final_cases": [
+      "incumbent_watcher_host_registration",
+      "registry_seed_continuation_and_owner_loss",
+      "both_dialects_multiple_paths_and_pointer_actions",
+      "bounded_plain_tooltip_no_focus",
+      "tooltip_lifetime",
+      "menu_nested_toggle_pointer_update_and_escape",
+      "external_context_menu_retires_prior_native_tree",
+      "passive_attention_keyboard_malformed_and_late_reply",
+      "missing_attention_name_uses_normal_named_icon",
+      "shared_named_icons_sizing_and_three_themes",
+      "combined_foreign_modern_capacity_refusal_and_recovery",
+      "alias_reference_and_native_watcher_takeover",
+      "real_gtk_xembed_and_ayatana_dbusmenu",
+      "explicit_focus_clock_child_nowarp_and_refusal",
+      "container_attach_resize_focus_competition_both_termination_orders",
+      "additional_native_container",
+      "broker_loss_xembed_survival_and_explicit_recovery"
+    ],
+    "final_cost_observations": {
+      "modern-off-empty": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "15448 kB",
+              "VmHWM": "7292 kB",
+              "VmRSS": "7292 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 0,
+            "system_ticks": 0,
+            "descriptors": 8,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "13040 kB",
+              "VmHWM": "22004 kB",
+              "VmRSS": "8008 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 4,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "15448 kB",
+              "VmHWM": "7292 kB",
+              "VmRSS": "7292 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 0,
+            "system_ticks": 0,
+            "descriptors": 8,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "13040 kB",
+              "VmHWM": "22004 kB",
+              "VmRSS": "8008 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 4,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.0069635820000258,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      },
+      "modern-two-named-icon-ready": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "17476 kB",
+              "VmHWM": "9352 kB",
+              "VmRSS": "9352 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 2,
+            "system_ticks": 2,
+            "descriptors": 10,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22092 kB",
+              "VmRSS": "14404 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 8,
+            "system_ticks": 9,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9352 kB",
+              "VmRSS": "9352 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 2,
+            "system_ticks": 2,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22092 kB",
+              "VmRSS": "14404 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 8,
+            "system_ticks": 9,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.010390285999847,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      },
+      "modern31-plus-xembed1": {
+        "before": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9372 kB",
+              "VmRSS": "9372 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 3,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22092 kB",
+              "VmRSS": "14404 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 8,
+            "system_ticks": 9,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "after": {
+          "tray": {
+            "identity": {
+              "pid": 975,
+              "state": "S",
+              "ppid": 930,
+              "birth": "120171"
+            },
+            "status": {
+              "VmSize": "17464 kB",
+              "VmHWM": "9372 kB",
+              "VmRSS": "9372 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 3,
+            "system_ticks": 3,
+            "descriptors": 9,
+            "executable_bytes": 1912376
+          },
+          "core": {
+            "identity": {
+              "pid": 930,
+              "state": "S",
+              "ppid": 921,
+              "birth": "120143"
+            },
+            "status": {
+              "VmSize": "19376 kB",
+              "VmHWM": "22092 kB",
+              "VmRSS": "14404 kB",
+              "Threads": "1"
+            },
+            "user_ticks": 8,
+            "system_ticks": 9,
+            "descriptors": 19,
+            "executable_bytes": 5693488
+          }
+        },
+        "interval_seconds": 1.0070616240000163,
+        "clock_ticks": 100,
+        "limits": "Sequential proc samples; no X-server/GPU or helper peak RSS bound"
+      }
+    },
+    "first_ready_seconds": 0.07404218700003184,
+    "modern_enable_connected_seconds": 0.027009504999796263,
+    "inputs": {
+      "fvwm": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+      },
+      "session": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-session",
+        "sha256": "fc451cf3b08f213029b42e1f06c6367035e2ac55ffcbf2aeda4d256b31ea14e7"
+      },
+      "desktop": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+        "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+      },
+      "buttons": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmButtons/FvwmButtons",
+        "sha256": "2fcce36f891ba629ce32c069a94392a7de671a492c04562f92f86480c023550d"
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+      },
+      "tray": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmTray/FvwmTray",
+        "sha256": "cb95694d12eb0aabfa59e3ad1787d2af749bfe382cb93e9a50af141b07430f01"
+      },
+      "mfl": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+      },
+      "client": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-client",
+        "sha256": "060610b4c309eb0de9e38f374106774174b4d2d0aced1ea90bf174cb87a40cdf"
+      },
+      "sni_client": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-sni-client",
+        "sha256": "addde49d91411cbfbc51d69be09a34ef4cfe4172d5812400571c5c14fc187ba7"
+      },
+      "worker": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+        "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+      },
+      "capture": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+        "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+      }
+    },
+    "scope": "Historical source34 build-tree functional result; GTK appearance was not asserted. Current installed source37 fixture result is linux_current."
+  },
+  "dependency_runtime_cost": {
+    "optional_feature": "Existing session-dbus libdbus>=1.14 adapter; native modern path defaults Off; disabled Tray has no dbus linkage.",
+    "containment": "Existing optional XFixes build/server>=1 on both owners; missing support preserves root mode.",
+    "gui_toolkit": "No product GTK/Qt dependency; GTK/Ayatana extracted test-only bundle.",
+    "icon_worker": "Existing Go worker/private mode and shared xdgsource/iconrender; no second resolver, daemon or store.",
+    "linux_arm64_installed_unstripped_bytes": {
+      "enabled": 1912376,
+      "dbus_disabled": 1258152
+    },
+    "scope": "Same recorded source34 compile profile, exact installed file bytes; not RSS, stripped-package delta or causal feature-overhead comparison.",
+    "linkage_receipt": "linux-final-supplement/r1-tray-completion-icon-delta/result.json"
+  },
+  "qualified_build_runtime_inputs": {
+    "base": "db6b51ad29c515e06e0d2e0918eead2fc562d240",
+    "source29_closure": "cdc7c7b6f5ef80a2e32e594f436ea1dff3eb041f6b596c2ce44a0b34f0e490d0",
+    "changed_build_runtime_inputs": {
+      "bin/FvwmPrompt/cmd/fvwmdesktopworker/main.go": {
+        "sha256": "9c945e709b5bf33d22f8a37479f7bd652122923ce24a8754764e751387e342cd",
+        "bytes": 2796,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": {
+        "sha256": "0baf451232558f4de7701c1ddfac093e9642a3fac86c90acfe4554e614539d07",
+        "bytes": 15666,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": {
+        "sha256": "a1e670f25ddcc59c93620e9a29faf557a32c272a914dca38249de35d15f1b5a7",
+        "bytes": 18231,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": {
+        "sha256": "a2e13003dc611adda2a11820cde20d73c1dfa90959f2307003d9bb2e026e993d",
+        "bytes": 23174,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": {
+        "sha256": "2d376681139493e82a0ec14fd5065d6eac62af724385a59ac278a203ab9572d9",
+        "bytes": 13089,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/tray.go": {
+        "sha256": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bytes": 2198,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": {
+        "sha256": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bytes": 5132,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": {
+        "sha256": "683a5169eb8ce9e8c02ea4453ec01c073ff20ecedfcf2c5a13e566dd446d0e95",
+        "bytes": 18974,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": {
+        "sha256": "33454d2c485cc03b4425ff050193aea5af51c0bb2433d2150dbc8ce345029e18",
+        "bytes": 18027,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": {
+        "sha256": "f1c4bedac66710a57135b7d4b60eae7c6074eb46a46efbcfd6853ed6a2c5641d",
+        "bytes": 3687,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/policy.go": {
+        "sha256": "290de8f398e8ca5a95ccef2eb3546b8ee194e5ed0fa27b2c141cdc63c375daf6",
+        "bytes": 13605,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": {
+        "sha256": "71e5bafaa408b86aa44718734cbc22b69164849eaeda77dc228bbede8c75023d",
+        "bytes": 9501,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/session_test.go": {
+        "sha256": "3d6c66e9268bcca030a8472ab8e7c21d74e4440ad27dff921939041cab04a7cd",
+        "bytes": 3390,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": {
+        "sha256": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bytes": 4455,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/iconrender/budgets_test.go": {
+        "sha256": "e7b97a8c81d229c6b672abe6d170000394f5f6965fab46ccc605e7f9fa11dd5d",
+        "bytes": 8398,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/iconrender/render.go": {
+        "sha256": "de4e9d6faa449b32fe276726ebb1b895c75857e4442f579e8ee1f580ca619851",
+        "bytes": 10910,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/trayicons/icons.go": {
+        "sha256": "7c5027b8b7b6c265b8b05496ca3a75f478887c5f9d84426ce5c43f18bd0c2042",
+        "bytes": 7599,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/trayicons/icons_test.go": {
+        "sha256": "9d62fa9ecb51672c64549a21f2e8f87d5bca68ecab1af3fa4e5df36da12dbd0b",
+        "bytes": 5307,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgsource/budgets_test.go": {
+        "sha256": "851dd834f4526b2e6ff451fa754b3fda50d77fb183e50643d1619494b72ffd83",
+        "bytes": 910,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/internal/xdgsource/source.go": {
+        "sha256": "b3e40b15327a01a798106b8dc245c67a99bb68251757e75c4dd50b3defafb383",
+        "bytes": 11841,
+        "mode": 420
+      },
+      "bin/FvwmPrompt/meson.build": {
+        "sha256": "92ef0664c7a962606fde71c63bcdaf159c9efa3e18210d3fbf75c947154476f3",
+        "bytes": 14164,
+        "mode": 420
+      },
+      "fvwm/focus.c": {
+        "sha256": "26203742118616df3ac44c066038fedea92e6d02cce916fe3623b836026b7d0b",
+        "bytes": 26919,
+        "mode": 420
+      },
+      "libs/meson.build": {
+        "sha256": "cc7eb69d4d5a6cda5829b8f51ef3c56604d5ae3b16ef7eeff5a764fbcaeb8602",
+        "bytes": 2379,
+        "mode": 420
+      },
+      "libs/module_startup.c": {
+        "sha256": "06271581bbc7a18cc43b77d3b3b675c0d5d0b73b5ac7a8a22a40865bc16b8131",
+        "bytes": 906,
+        "mode": 420
+      },
+      "libs/module_startup.h": {
+        "sha256": "557107ee3b7dc74fc5dda58cecfca54c706b4ae5c84c55af2f567be6795a15f6",
+        "bytes": 666,
+        "mode": 420
+      },
+      "libs/tray_container_protocol.h": {
+        "sha256": "2cc2f877b36de88ac7a40e7ce3d17c9960913ca3c9caa7a2777b421d1eb1270d",
+        "bytes": 1852,
+        "mode": 420
+      },
+      "modules/FvwmButtons/FvwmButtons.c": {
+        "sha256": "5adb7765e1bff284ed4c08d2be97b0f7e39b3048295db48e2411cdfde8c9700a",
+        "bytes": 78795,
+        "mode": 420
+      },
+      "modules/FvwmButtons/FvwmButtons.h": {
+        "sha256": "7e403d6ee66c2d34262a073193c3a94022afe4a362a097fd2b2492439ced4426",
+        "bytes": 11249,
+        "mode": 420
+      },
+      "modules/FvwmButtons/buttons_packet.c": {
+        "sha256": "bcc40a4678ab28d4a1a045b24dc09f9a6dbfe1b479b16a29b9e1daca949e8caf",
+        "bytes": 1212,
+        "mode": 420
+      },
+      "modules/FvwmButtons/draw.c": {
+        "sha256": "332ea9aba870c9c6104d2b5ca44de5c67b846a245ef29dbdcc83581368c076cb",
+        "bytes": 19861,
+        "mode": 420
+      },
+      "modules/FvwmButtons/keyboard.c": {
+        "sha256": "b1b59511aa117673033d27fe068365b900740b30d845931de85efdcb4af82f99",
+        "bytes": 9856,
+        "mode": 420
+      },
+      "modules/FvwmButtons/keyboard.h": {
+        "sha256": "662f464e8f5bf2d64dbc943d9a81f3788852b7e10d0324c710d43f27017019bd",
+        "bytes": 566,
+        "mode": 420
+      },
+      "modules/FvwmButtons/meson.build": {
+        "sha256": "9e226d843e8b1cc66dab0d009f0e0f01496746ff11bbe780f725a0b591810ce9",
+        "bytes": 722,
+        "mode": 420
+      },
+      "modules/FvwmButtons/parse.c": {
+        "sha256": "a892d5c5d3a501d8ef7cd32cf5519281b8ae3444421a4210927ed9766c3eb5ec",
+        "bytes": 42792,
+        "mode": 420
+      },
+      "modules/FvwmButtons/tray_container.c": {
+        "sha256": "baf12cdff2d97dea7b10748bb4f2d46a1f1d30f7c7db6ec4684b7bbe3037072a",
+        "bytes": 21533,
+        "mode": 420
+      },
+      "modules/FvwmButtons/tray_container.h": {
+        "sha256": "3478b5fdd9b7a83ce5b44f0944d005e7690a541051a53c1cd3c07b73065bc207",
+        "bytes": 764,
+        "mode": 420
+      },
+      "modules/FvwmNotify/notify_startup.c": {
+        "sha256": "c9c5ecb79c315d3b664b3862fe50396f653e555b6b043bb862e5fadaadc40d78",
+        "bytes": 388,
+        "mode": 420
+      },
+      "modules/FvwmTray/meson.build": {
+        "sha256": "42f53bff3efe98724d8106b031957a4333fa2cfad5a6f732e41d5cc624dc0206",
+        "bytes": 656,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray.c": {
+        "sha256": "86bf464212ce704261b915cc6e7b55219933436c1a2f89ac8cf70b6ae0badf30",
+        "bytes": 26302,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray.h": {
+        "sha256": "74d03af57321d01f8ac7646b7413122f8654ef77614ee87dccdbae9e1736de26",
+        "bytes": 2456,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_bus.c": {
+        "sha256": "9f8a513be0f9d337df8010f3f62c470e6dc8620e50ebec82d4bff785e97830b6",
+        "bytes": 76328,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_bus.h": {
+        "sha256": "2357642de558c1f7952fad291b592f8dd5301ef179999cc254a228ebc420c3d9",
+        "bytes": 3023,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_bus_disabled.c": {
+        "sha256": "3ca915baed5f232feba1bb91d8f8c326683b927c2712b7b4d59e7ef8b30897e3",
+        "bytes": 3648,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_container.c": {
+        "sha256": "c490270f5f440b6ab10c1d80b5b0ed8ca8b566db21c983e53193478cd0974e77",
+        "bytes": 13903,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_container.h": {
+        "sha256": "e69118ed8e210aefcfb35eb44333057bfd971f45a0ca5355e7b7dfd2ae8d19ed",
+        "bytes": 1176,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_icons.c": {
+        "sha256": "ca2ed61815bb2c8cbff8c28ec3e1a814d4a08e39a8566756102dd265d86f9c6b",
+        "bytes": 16913,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_icons.h": {
+        "sha256": "d1f68b4da726d2753a1756d4b7b2e61beea586bdd96fdabdcf16a9faa1a09a4d",
+        "bytes": 2644,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_model.c": {
+        "sha256": "cd4f5f832e6bb768b159b5e90e9d2b24de63d66b6175352b6ecc95ea492203e6",
+        "bytes": 11394,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_model.h": {
+        "sha256": "ebde8c4da0badd95d58cc0db2f7d49d9a6e2233210463747ea9f4e70c8e59279",
+        "bytes": 3019,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_sni_model.c": {
+        "sha256": "d3283cbc8469a3cb480912cb6f8cb597dacb84cbca2e659e79018338f5eb47d6",
+        "bytes": 12309,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_sni_model.h": {
+        "sha256": "17a28e1ef2ad8705f0d505d150d037b66ef12c2c8ebde22ef02918fb363fa58b",
+        "bytes": 3835,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_sni_ui.c": {
+        "sha256": "f332bfea8cebd05fe8c135ce66506e3744cfce10c4f2106250b11ffac693bcf2",
+        "bytes": 48764,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_sni_ui.h": {
+        "sha256": "60f3dbcf5e8610def0b6a1cd46a6cdd8060e0cc4486689f4586e24d79b087053",
+        "bytes": 1011,
+        "mode": 420
+      },
+      "modules/FvwmTray/tray_x11.c": {
+        "sha256": "130901a88171167d8846f7766446ab288d8d6333e02aae7c0fd520171bd8d5b1",
+        "bytes": 32445,
+        "mode": 420
+      },
+      "tests/meson.build": {
+        "sha256": "a01d8cde52f78861f567f8efa1718e84d5203e15514df34c4b5ffef91a3a4052",
+        "bytes": 188180,
+        "mode": 420
+      }
+    },
+    "rule": "52 listed C/Go/build-directory input tuples are unchanged across full source27/28/29 baselines; three SNI production inputs use source34 hashes qualified by direct full checkpoints or explicit build/install/policy/pixel deltas. Current production bytes match source34.",
+    "final_source34_closure": "ffc46ac9c61e375ae5154ae5040b8350468112f5718dde15079275c29ab5a352",
+    "final_delta": {
+      "modules/FvwmTray/tray_sni_model.c": {
+        "before": {
+          "sha256": "3be2cce189fb34fb94eff96f8da32804dc14b3422c08bf56527193df8b8287bc",
+          "bytes": 10814,
+          "mode": 420
+        },
+        "after": {
+          "sha256": "d3283cbc8469a3cb480912cb6f8cb597dacb84cbca2e659e79018338f5eb47d6",
+          "bytes": 12309,
+          "mode": 420
+        }
+      },
+      "modules/FvwmTray/tray_sni_model.h": {
+        "before": {
+          "sha256": "60799ff7cb4e95aaf54945ffe566789899cf56fc8305f170daf7dd28fe41664b",
+          "bytes": 3432,
+          "mode": 420
+        },
+        "after": {
+          "sha256": "17a28e1ef2ad8705f0d505d150d037b66ef12c2c8ebde22ef02918fb363fa58b",
+          "bytes": 3835,
+          "mode": 420
+        }
+      },
+      "modules/FvwmTray/tray_sni_ui.c": {
+        "before": {
+          "sha256": "1baa2eafa58c73021280efb16e7b1b8cba5635490bbd23c9077d164cc86f5062",
+          "bytes": 47025,
+          "mode": 420
+        },
+        "after": {
+          "sha256": "f332bfea8cebd05fe8c135ce66506e3744cfce10c4f2106250b11ffac693bcf2",
+          "bytes": 48764,
+          "mode": 420
+        }
+      }
+    },
+    "final_rule": "Only three SNI runtime files changed after full baselines; final source34 affected deltas compose immutable baseline results. Final docs/fixtures explicitly separate. All listed current bytes verified against source34."
+  },
+  "performance_cadence": {
+    "merged_counter": 3,
+    "review_interval": 5,
+    "last_paired_reference": "PR310",
+    "due": false
+  },
+  "not_claimed": [
+    "Whole installed desktop qualification; independent peers and capture use the build tree.",
+    "Physical hardware/compositor/native AMD64 execution qualification.",
+    "Clean full-session Buttons leak result or prior-revision leak equivalence.",
+    "Whole release acceptance."
+  ],
+  "cleanup": {
+    "owned_labs": "all stopped with normal runner/holder cleanup; qemu exit0 and Podman stop receipts retained",
+    "retired_disposable_disk_image_bytes": 38507724857,
+    "receipts": [
+      "retired-openbsd-baseline-disks.json",
+      "final-lab-retention.json"
+    ],
+    "preserved": [
+      "Current compiled/evidence archives and useful persistent profiles",
+      "Shared pinned image cache and SDKs",
+      "PR310 runnable performance reference",
+      "Other owners source/builds/disks/evidence"
+    ]
+  },
+  "review": {
+    "artifact_tree": "7d52850750d67702b91059c9b914b27f80d840ee",
+    "patch_sha256": "36d28904284c3de1fd06e57aed3092b8b0c04a10f44acfc7d8377d62fcf23d34",
+    "agent": "/root/tray_checkpoint_review",
+    "role": "temper_reviewer",
+    "requested_model": "gpt-6.1-sol",
+    "requested_effort": "high",
+    "observed_backend_settings": "unverified",
+    "scope": "Separate source/artifact/receipt/visual examination; reviewer did not author code. Agent review is not independent human assurance.",
+    "finding": "P3 stale provenance sentence corrected to52 unchanged inputs plus3 final-delta inputs. No runtime/acceptance blockers found.",
+    "completion_metadata_follows_review": true,
+    "delivered_candidate": "Exact final source is identified by the signed PR head."
+  }
+}

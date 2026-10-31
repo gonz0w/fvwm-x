@@ -1,0 +1,2683 @@
+{
+  "source_closure": "b1d4f2ab28f7e9978b120daf27aca6e2ac07511e14ab898f5a40f57cf62d8086",
+  "base_commit": "db6b51ad29c515e06e0d2e0918eead2fc562d240",
+  "capture_source": "linux-final-linux02/full; source 37",
+  "capture_archive": {
+    "sha256": "c01cff7494d1c9ad2d118ce6a5e2ae938252977945340ee3b76a73c32ff57bfe",
+    "bytes": 558671,
+    "files": 68
+  },
+  "capture_profile": "native Linux Xorg, eight affected installed executables; peers and capture helper build-tree; private bus/display; 3200x1080",
+  "inputs": {
+    "fvwm": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+      "sha256": "049e2f13581ced0b6a68efbfb7ee8ca97f469fa34bb3981aeb954c516dff9360"
+    },
+    "session": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+      "sha256": "fc451cf3b08f213029b42e1f06c6367035e2ac55ffcbf2aeda4d256b31ea14e7"
+    },
+    "desktop": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+      "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72"
+    },
+    "buttons": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmButtons",
+      "sha256": "43332876febf48fd53366a3411470776f9026d4ec7445aaf93249f64c9575eca"
+    },
+    "form": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmForm",
+      "sha256": "2fa41e22e5e815a3e8939373eba87bd32d59bf7440375e8912e5306ae0502742"
+    },
+    "tray": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+      "sha256": "d5fabe82c2e23996c4cba7c7509088971206c96f2e780461399dfd2db5b95a31"
+    },
+    "mfl": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmMFL",
+      "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca"
+    },
+    "client": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-client",
+      "sha256": "060610b4c309eb0de9e38f374106774174b4d2d0aced1ea90bf174cb87a40cdf"
+    },
+    "sni_client": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/tests/tray-sni-client",
+      "sha256": "addde49d91411cbfbc51d69be09a34ef4cfe4172d5812400571c5c14fc187ba7"
+    },
+    "worker": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+      "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81"
+    },
+    "capture": {
+      "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+      "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+    }
+  },
+  "installed_inputs": {
+    "fvwm": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm3",
+      "sha256": "049e2f13581ced0b6a68efbfb7ee8ca97f469fa34bb3981aeb954c516dff9360",
+      "bytes": 5693488
+    },
+    "tray": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmTray",
+      "sha256": "d5fabe82c2e23996c4cba7c7509088971206c96f2e780461399dfd2db5b95a31",
+      "bytes": 1912376
+    },
+    "buttons": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmButtons",
+      "sha256": "43332876febf48fd53366a3411470776f9026d4ec7445aaf93249f64c9575eca",
+      "bytes": 1786488
+    },
+    "mfl": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmMFL",
+      "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+      "bytes": 453504
+    },
+    "form": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmForm",
+      "sha256": "2fa41e22e5e815a3e8939373eba87bd32d59bf7440375e8912e5306ae0502742",
+      "bytes": 1805168
+    },
+    "desktop": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+      "sha256": "a4b6b943dc6dc6a1ecb7b049440fab3cd18678461525504db8144ce35b2f7b72",
+      "bytes": 6578381
+    },
+    "worker": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+      "sha256": "da8e8e7f9877ebf3d4802b778317590df222e7cf73a02e8af2cac56109d90a81",
+      "bytes": 6478141
+    },
+    "session": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/bin/fvwm-session",
+      "sha256": "fc451cf3b08f213029b42e1f06c6367035e2ac55ffcbf2aeda4d256b31ea14e7",
+      "bytes": 5318078
+    }
+  },
+  "gtk_paint_diagnostics": {
+    "stages": [
+      {
+        "stage": "initial",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777218,
+          "size": 0,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": -1,
+                  "y": -1,
+                  "width": 1,
+                  "height": 1
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": -1,
+                  "y": -1,
+                  "width": 1,
+                  "height": 1
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                16,
+                16
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 0,
+            "rgb": [
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        "expected_rgba": [
+          30,
+          120,
+          230,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 16,
+            "height": 16,
+            "border": 0
+          },
+          "local_center": [
+            8,
+            8
+          ],
+          "pixel": 0,
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 16,
+            "height": 16,
+            "border": 0
+          },
+          "local_center": [
+            8,
+            8
+          ],
+          "pixel": 0,
+          "rgb": [
+            0,
+            0,
+            0
+          ]
+        },
+        "status": "observation-only",
+        "positive_paint": null,
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777218,
+          "size": 16,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                16,
+                16
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      },
+      {
+        "stage": "host-show",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777218,
+          "size": 16,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                16,
+                16
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 16,
+              "height": 16,
+              "border": 0
+            },
+            "local_center": [
+              8,
+              8
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          }
+        ],
+        "expected_rgba": [
+          30,
+          120,
+          230,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 16,
+            "height": 16,
+            "border": 0
+          },
+          "local_center": [
+            8,
+            8
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 16,
+            "height": 16,
+            "border": 0
+          },
+          "local_center": [
+            8,
+            8
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "positive_paint": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 16,
+            "height": 16,
+            "border": 0
+          },
+          "local_center": [
+            8,
+            8
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "status": "passed",
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777218,
+          "size": 16,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 16,
+                  "height": 16
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                16,
+                16
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      },
+      {
+        "stage": "toolkit-show",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 1868,
+              "y": 1034,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          }
+        ],
+        "expected_rgba": [
+          30,
+          120,
+          230,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "positive_paint": {
+          "actual": {
+            "x": 1868,
+            "y": 1034,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "status": "passed",
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 3,
+              "inspected": 3,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      },
+      {
+        "stage": "blue-centered-hide-toggle",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 2,
+                  "plug:unmap-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 1997030,
+            "rgb": [
+              30,
+              120,
+              230
+            ]
+          }
+        ],
+        "expected_rgba": [
+          30,
+          120,
+          230,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "positive_paint": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 1997030,
+          "rgb": [
+            30,
+            120,
+            230
+          ]
+        },
+        "status": "passed",
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                30,
+                120,
+                230,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 2,
+                  "plug:unmap-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      },
+      {
+        "stage": "icon-update",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                230,
+                90,
+                30,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 2,
+                  "plug:unmap-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          }
+        ],
+        "expected_rgba": [
+          230,
+          90,
+          30,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "positive_paint": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "status": "passed",
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                230,
+                90,
+                30,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 2,
+                  "plug:unmap-event": 1
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      },
+      {
+        "stage": "centered-hide-toggle",
+        "toolkit": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                230,
+                90,
+                30,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 3,
+                  "plug:unmap-event": 2
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "samples": 1,
+        "changes": [
+          {
+            "actual": {
+              "x": 444,
+              "y": 310,
+              "width": 2,
+              "height": 2,
+              "border": 0
+            },
+            "local_center": [
+              1,
+              1
+            ],
+            "pixel": 15096350,
+            "rgb": [
+              230,
+              90,
+              30
+            ]
+          }
+        ],
+        "expected_rgba": [
+          230,
+          90,
+          30,
+          255
+        ],
+        "first": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "last": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "positive_paint": {
+          "actual": {
+            "x": 444,
+            "y": 310,
+            "width": 2,
+            "height": 2,
+            "border": 0
+          },
+          "local_center": [
+            1,
+            1
+          ],
+          "pixel": 15096350,
+          "rgb": [
+            230,
+            90,
+            30
+          ]
+        },
+        "status": "passed",
+        "toolkit_after": {
+          "mode": "xembed",
+          "file_image": {
+            "width": 2,
+            "height": 2,
+            "channels": 4,
+            "bits_per_sample": 8,
+            "has_alpha": true,
+            "first_rgba": [
+              30,
+              120,
+              230,
+              255
+            ]
+          },
+          "gtk": [
+            3,
+            24,
+            41
+          ],
+          "embedded": true,
+          "xid": 16777229,
+          "size": 2,
+          "visible": true,
+          "image": {
+            "storage_type": 1,
+            "storage_name": "pixbuf",
+            "pixbuf": {
+              "width": 2,
+              "height": 2,
+              "channels": 4,
+              "rowstride": 8,
+              "bits_per_sample": 8,
+              "has_alpha": true,
+              "first_rgba": [
+                230,
+                90,
+                30,
+                255
+              ]
+            },
+            "widgets": {
+              "toplevel_count": 4,
+              "inspected": 4,
+              "matched": true,
+              "plug": {
+                "type": "GtkTrayIcon",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                }
+              },
+              "child": {
+                "type": "GtkImage",
+                "mapped": true,
+                "realized": true,
+                "visible": true,
+                "allocation": {
+                  "x": 0,
+                  "y": 0,
+                  "width": 2,
+                  "height": 2
+                },
+                "storage_type": 7,
+                "storage_name": "surface"
+              },
+              "tracked_xids": [
+                16777218,
+                16777229
+              ],
+              "signals": {
+                "counts": {
+                  "plug:configure-event": 3,
+                  "plug:map-event": 3,
+                  "plug:unmap-event": 2
+                },
+                "hook_errors": []
+              },
+              "trace": [
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "configure-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "unmap-event"
+                },
+                {
+                  "xid": 16777218,
+                  "target": "plug",
+                  "event": "map-event"
+                },
+                {
+                  "xid": 16777229,
+                  "target": "plug",
+                  "event": "map-event"
+                }
+              ],
+              "cairo_binding": {
+                "available": false,
+                "error": "ImportError(\"No module named 'gi._gi_cairo'\")"
+              }
+            },
+            "gdk_window": {
+              "geometry": [
+                0,
+                0,
+                2,
+                2
+              ],
+              "visible": true,
+              "viewable": true,
+              "depth": 24,
+              "visual_type": 4
+            }
+          }
+        },
+        "source_loaded": true
+      }
+    ],
+    "initial_rgba": [
+      30,
+      120,
+      230,
+      255
+    ],
+    "source_sha256": "278861dcb62fd34b1cc01c93ac6e635798984829abeff01c51ac98e1a59396b4",
+    "icon_sha256": "496fe3e5c0649eaed509c8bfb53b7900437a12aeb7cb1967acf89786858c315f",
+    "producer_xdg_data_dirs": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/absent-data:/usr/local/share:/usr/share",
+    "base_mime_caches": [
+      {
+        "path": "/usr/share/mime/mime.cache",
+        "sha256": "6fd7ef67f7be559e85ccc71d8fad9ce2d14840bbfc6eedfdf0a2fcf1d22ac94d",
+        "bytes": 157560
+      }
+    ],
+    "updated_icon": {
+      "path": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/toolkit-icon.png",
+      "sha256": "030e3cac36279af26793fbaef203770cecdb766432fa58f93350fb06b6951f6f",
+      "expected_rgba": [
+        230,
+        90,
+        30,
+        255
+      ]
+    },
+    "indicator_icon": {
+      "path": "/tmp/fvwm-tray-modern-o3zue1x2/tray-bar/toolkit-icon.png",
+      "sha256": "030e3cac36279af26793fbaef203770cecdb766432fa58f93350fb06b6951f6f",
+      "expected_rgba": [
+        230,
+        90,
+        30,
+        255
+      ]
+    }
+  },
+  "fixture_mime_probe": {
+    "script_sha256": "434363d69b163dda615eee9861da06bc1b578deedfcbf76619133c97b7108cdd",
+    "exit": 0,
+    "seconds": 0.22245987504720688,
+    "stdout": "[\n  {\n    \"label\": \"isolated\",\n    \"exit\": 0,\n    \"stdout\": \"{\\\"formats\\\": [\\\"png\\\", \\\"jpeg\\\", \\\"ani\\\", \\\"bmp\\\", \\\"gif\\\", \\\"icns\\\", \\\"ico\\\", \\\"pnm\\\", \\\"qtif\\\", \\\"svg\\\", \\\"tga\\\", \\\"tiff\\\", \\\"xbm\\\", \\\"xpm\\\"], \\\"type\\\": [\\\"application/octet-stream\\\", true], \\\"xdg\\\": \\\"/nonexistent\\\", \\\"error\\\": \\\"gdk-pixbuf-error-quark: Couldn\\\\u2019t recognize the image file format for file \\\\u201c/tmp/tmpc8vjhmzr.png\\\\u201d (3)\\\"}\\n\",\n    \"stderr\": \"\"\n  },\n  {\n    \"label\": \"base\",\n    \"exit\": 0,\n    \"stdout\": \"{\\\"formats\\\": [\\\"png\\\", \\\"jpeg\\\", \\\"ani\\\", \\\"bmp\\\", \\\"gif\\\", \\\"icns\\\", \\\"ico\\\", \\\"pnm\\\", \\\"qtif\\\", \\\"svg\\\", \\\"tga\\\", \\\"tiff\\\", \\\"xbm\\\", \\\"xpm\\\"], \\\"type\\\": [\\\"image/png\\\", false], \\\"xdg\\\": \\\"/usr/local/share:/usr/share\\\", \\\"load\\\": [2, 2, [30, 120, 230, 255]]}\\n\",\n    \"stderr\": \"\"\n  }\n]\n",
+    "stderr": ""
+  },
+  "notes": "Synthetic protocol fixtures; real GTK 3.24.41 and Ayatana 0.5.93 clients. GTK fixture producer restores base MIME paths; desktop and worker remain isolated. Images do not prove interactions or accessibility.",
+  "files": {
+    "modern-theme-0.png": {
+      "sha256": "4f3015a77c1e77dceff7290e8031899705ba2a21240ebe8e9e6b75fd834e6cae",
+      "bytes": 62644
+    },
+    "modern-theme-0.fvwm": {
+      "sha256": "716e7780dc8ff91d8f31fde8d3937eb2b496cfc50b1719d18754cce5e56d2b01",
+      "bytes": 152
+    },
+    "modern-theme-1.png": {
+      "sha256": "666321756a0faea55914381f667f69a7c50c179f17aca5e2887675db2096121f",
+      "bytes": 63496
+    },
+    "modern-theme-1.fvwm": {
+      "sha256": "432b4959ec9feccc2efd5006050ddc5da7ace3820fa037e0925746444b3ca008",
+      "bytes": 153
+    },
+    "modern-theme-2.png": {
+      "sha256": "523cdda47ebcc770081b0b68b4b125ef90ddd0298b5858521f24bd9b7b763f6d",
+      "bytes": 64176
+    },
+    "modern-theme-2.fvwm": {
+      "sha256": "dcf86a9f4d2bee60caa2fcd3ba32b1d7c9d249ea8b9e095f76eae2afac58d694",
+      "bytes": 164
+    },
+    "container-theme-0.png": {
+      "sha256": "aca29d8a6f9d03d1f1bbc5e45c6e74e9d4f0c2cd7f4fbf5190ef2d22d736bac7",
+      "bytes": 30137
+    },
+    "container-theme-0.fvwm": {
+      "sha256": "ca6317b67c231eb9b5acfa59bd714fb9008e727f1f2bc7343357b6d760466a31",
+      "bytes": 123
+    },
+    "container-theme-1.png": {
+      "sha256": "16c7cd2d56531785f2fcb7bbdbe5371a9c4affca45a3b23c77789ac535741c42",
+      "bytes": 30593
+    },
+    "container-theme-1.fvwm": {
+      "sha256": "22b88e78c2cc5934515e3440bda5da255d29f95274ebfc628cfe2101f8cf5485",
+      "bytes": 124
+    },
+    "container-theme-2.png": {
+      "sha256": "f25817542fa17341c2e84dcca8b013305ea4dc655c634eae8d7aa941f4a64d14",
+      "bytes": 31249
+    },
+    "container-theme-2.fvwm": {
+      "sha256": "dcc64f89369a3a3bfa844968279ec1ff31eb964d92a79083686d5ec4b0d446d5",
+      "bytes": 135
+    },
+    "real-gtk-ayatana-clients.png": {
+      "sha256": "018bec43e34090a16422331d57b65b0901035a8772d2b592809ae8627294a001",
+      "bytes": 34185
+    },
+    "container-application-menu.png": {
+      "sha256": "7ab99f38a646ab1a5e49a64ee1f845c39d2874807ab0c336b4288ff6c91aff63",
+      "bytes": 35690
+    },
+    "modern-tooltip.png": {
+      "sha256": "a23ab287d925d6254e75dd9473193c7464274657a27db0aa0c0882b2cecde50f",
+      "bytes": 31607
+    }
+  }
+}

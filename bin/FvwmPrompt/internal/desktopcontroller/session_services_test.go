@@ -187,7 +187,7 @@ func TestSessionDNDAndPublicProviderAreFinite(t *testing.T) {
 		t.Fatal("untyped public lifecycle mutation")
 	}
 }
-func TestAllNineteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
+func TestAllTwentyOneSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	// The initial executed 19-setting projection was 9447 bytes. Shared
 	// envelope metadata must restore this existing cap without dropping rows.
 	d, _ := fixture(t)
@@ -205,11 +205,11 @@ func TestAllNineteenSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 		t.Fatal(err)
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
-	if len(settings) != 19 {
+	if len(settings) != 21 {
 		t.Fatal("missing typed service preferences")
 	}
 	if len(bytes) > 8192 {
-		t.Fatalf("19-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+		t.Fatalf("21-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
 	}
 }
 
@@ -225,8 +225,14 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 		if item["owner"] != "FvwmDesktop" || item["generation"] != d.generation || item["preview"] != false {
 			t.Fatal("standalone native/inspector identity missing", key, item)
 		}
+		if _, ok := item["available"].(bool); !ok || item["capability"] == nil {
+			t.Fatal("standalone native/inspector capability missing", key, item)
+		}
 		want := values{}
 		for field, value := range item {
+			if field == "available" && value == true || field == "capability" && value == "owned-desktop-preference" {
+				continue
+			}
 			if field != "owner" && field != "generation" && field != "preview" && field != "persistence_error" {
 				want[field] = value
 			}
@@ -239,13 +245,24 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 		{"operation": "query", "scope": "all"},
 		{"operation": "validate", "provider": d.instance, "generation": d.generation, "values": values{"motion": true}},
 	} {
+		comparison := native
+		if request["operation"] == "validate" {
+			candidate, effective, err := d.prepare(request["values"].(map[string]any))
+			if err != nil {
+				t.Fatal(err)
+			}
+			comparison, err = d.query("all", candidate, effective)
+			if err != nil {
+				t.Fatal(err)
+			}
+		}
 		reply := d.settingsRequest(request)
 		result, ok := reply["result"].(map[string]any)
-		if !ok || result["owner"] != "FvwmDesktop" || result["generation"] != d.generation || result["preview"] != false {
+		if !ok || result["owner"] != "FvwmDesktop" || result["generation"] != d.generation || result["preview"] != false || result["available"] != true || result["capability"] != "owned-desktop-preference" {
 			t.Fatal("public consumer lost envelope identity", reply)
 		}
 		settings := result["settings"].(map[string]any)
-		if len(settings) != 19 {
+		if len(settings) != 21 {
 			t.Fatal("public projection lost a preference", settings)
 		}
 		for key, raw := range settings {
@@ -262,7 +279,45 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 			if _, exists := item["persistence_error"]; exists {
 				t.Fatal("public item repeated empty envelope error", key)
 			}
+			for _, field := range []string{"available", "capability"} {
+				if value, exists := item[field]; exists && value == result[field] {
+					t.Fatal("public item repeated shared metadata", key, field)
+				}
+			}
+			reconstructed := values{}
+			for field, value := range item {
+				reconstructed[field] = value
+			}
+			for _, field := range []string{"owner", "generation", "preview", "available", "capability"} {
+				if _, exists := reconstructed[field]; !exists {
+					reconstructed[field] = result[field]
+				}
+			}
+			reconstructed["persistence_error"] = nil
+			standalone := comparison[key].(map[string]any)
+			wantJSON, _ := json.Marshal(standalone)
+			gotJSON, _ := json.Marshal(reconstructed)
+			if string(gotJSON) != string(wantJSON) {
+				t.Fatal("envelope inheritance lost standalone metadata", key, reconstructed, standalone)
+			}
 		}
+	}
+}
+
+func TestPublicSettingsRetainDistinctAvailabilityAndCapability(t *testing.T) {
+	native := values{
+		"one": values{"available": false, "capability": "unavailable"},
+		"two": values{"available": true, "capability": "owned-desktop-preference"},
+	}
+	projected := publicSettings(native, "")
+	if !reflect.DeepEqual(projected["one"], native["one"]) {
+		t.Fatal("public projection lost distinct metadata", projected)
+	}
+	if len(projected["two"].(map[string]any)) != 0 {
+		t.Fatal("public projection repeated common metadata", projected)
+	}
+	if len(native["two"].(map[string]any)) != 2 {
+		t.Fatal("public projection mutated standalone query", native)
 	}
 }
 
@@ -316,6 +371,11 @@ func TestPublicSettingsInheritCommonErrorAndRetainDistinctRuntimeErrors(t *testi
 	committed := d.settingsRequest(values{"operation": "set", "provider": d.instance, "generation": d.generation, "values": values{"motion": true}})["result"].(map[string]any)
 	if value, exists := committed["persistence_error"]; !exists || value != nil || committed["preview"] != false {
 		t.Fatal("mutation response lost common metadata", committed)
+	}
+	for _, result := range []values{unchanged, reloaded, committed} {
+		if result["available"] != true || result["capability"] != "owned-desktop-preference" {
+			t.Fatal("settings response lost inherited capability", result)
+		}
 	}
 }
 

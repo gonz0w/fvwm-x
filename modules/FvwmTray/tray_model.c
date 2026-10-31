@@ -104,19 +104,48 @@ int tray_model_index(const tray_model *model, uint32_t id)
 	return -1;
 }
 
-tray_admission tray_model_add(tray_model *model, uint32_t id,
-	unsigned int width, unsigned int height, bool mapped)
+static tray_admission add(tray_model *model, uint32_t id,
+	unsigned int width, unsigned int height, bool mapped,
+	tray_client_kind kind)
 {
 	if (!model || !id || model->count > TRAY_CLIENT_MAX ||
-	    !tray_model_size(width, height) || model->generation == UINT64_MAX)
+	    ((kind == TRAY_CLIENT_XEMBED && !tray_model_size(width, height)) ||
+	     (kind == TRAY_CLIENT_NATIVE && (!width || !height ||
+	      width > 4096 || height > 4096))) ||
+	    model->generation == UINT64_MAX)
 		return TRAY_INVALID;
 	if (tray_model_index(model, id) >= 0)
 		return TRAY_DUPLICATE;
 	if (model->count == TRAY_CLIENT_MAX)
 		return TRAY_FULL;
 	tray_client *client = &model->clients[model->count++];
-	*client = (tray_client){id, ++model->generation, width, height, mapped};
+	*client = (tray_client){id, ++model->generation, width, height, mapped,
+	    kind};
 	return TRAY_ADMITTED;
+}
+
+tray_admission tray_model_add(tray_model *model, uint32_t id,
+	unsigned int width, unsigned int height, bool mapped)
+{
+	return add(model, id, width, height, mapped, TRAY_CLIENT_XEMBED);
+}
+
+tray_admission tray_model_add_native(tray_model *model, uint32_t id,
+	unsigned int width, unsigned int height, bool mapped)
+{
+	return add(model, id, width, height, mapped, TRAY_CLIENT_NATIVE);
+}
+
+bool tray_model_resize_native(tray_model *model, uint32_t id,
+	unsigned int width, unsigned int height)
+{
+	int index = tray_model_index(model, id);
+	if (index < 0 || model->clients[index].kind != TRAY_CLIENT_NATIVE ||
+	    !width || !height || width > 4096 || height > 4096)
+		return false;
+	model->clients[index].width = width;
+	model->clients[index].height = height;
+	return true;
 }
 
 bool tray_model_remove(tray_model *model, uint32_t id)
@@ -137,7 +166,8 @@ bool tray_model_resize(tray_model *model, uint32_t id,
 	unsigned int width, unsigned int height)
 {
 	int index = tray_model_index(model, id);
-	if (index < 0 || !tray_model_size(width, height))
+	if (index < 0 || model->clients[index].kind != TRAY_CLIENT_XEMBED ||
+	    !tray_model_size(width, height))
 		return false;
 	model->clients[index].width = width;
 	model->clients[index].height = height;
@@ -177,12 +207,19 @@ bool tray_model_page(const tray_model *model, int width, int height,
 	    header_width > 4096 || header_height < 0 || header_height > 4096)
 		return false;
 	int available_width = width - padding * 2;
-	int available_height = height - padding * 2 - header_height - gap;
+	int header_gap = header_height ? gap : 0;
+	int available_height =
+	    height - padding * 2 - header_height - header_gap;
 	for (unsigned int i = 0; i < model->count; i++)
 	{
 		const tray_client *client = &model->clients[i];
 		if (!client->id ||
-		    !tray_model_size(client->width, client->height))
+		    ((client->kind == TRAY_CLIENT_XEMBED &&
+		     !tray_model_size(client->width, client->height)) ||
+		     (client->kind == TRAY_CLIENT_NATIVE &&
+		      (!client->width || !client->height ||
+		       client->width > 4096 || client->height > 4096)) ||
+		     client->kind > TRAY_CLIENT_NATIVE))
 			return false;
 		if (!client->mapped)
 			continue;
@@ -205,7 +242,8 @@ bool tray_model_page(const tray_model *model, int width, int height,
 		membership[i] = current + 1;
 		layout->cells[i] = (tray_cell){
 		    padding + (vertical ? 0 : offset),
-		    padding + header_height + gap + (vertical ? offset : 0),
+		    padding + header_height + header_gap +
+		    (vertical ? offset : 0),
 		    w, h, false};
 		cursor = offset + length;
 		on_page++;
@@ -236,6 +274,67 @@ bool tray_model_page(const tray_model *model, int width, int height,
 			layout->height = bottom;
 	}
 	return layout->width <= width && layout->height <= height;
+}
+
+bool tray_model_compact(const tray_model *model, int width, int height,
+	int padding, int gap, int target, bool vertical, bool visible,
+	unsigned int page, tray_layout *layout, tray_cell *previous,
+	tray_cell *next)
+{
+	if (previous)
+		*previous = (tray_cell){0};
+	if (next)
+		*next = (tray_cell){0};
+	if (!layout || !previous || !next || target < 1 || target > 4096)
+		return false;
+	if (!tray_model_page(model, width, height, padding, gap, 0, 0,
+	    vertical, visible, page, layout))
+		return false;
+	/* The slot owns the full allocation, independently of child content. */
+	if (layout->pages > 1 && width >= target * 2 + padding * 2 + 1 &&
+	    height >= target + padding * 2)
+	{
+		tray_layout reserved;
+		if (!tray_model_page(model, width - target * 2, height, padding,
+		    gap, 0, 0, vertical, visible, page, &reserved))
+			return false;
+		/* Controls must not strand an otherwise fitting icon. */
+		if (reserved.omitted != layout->omitted)
+			goto allocation;
+		*layout = reserved;
+		for (unsigned int i = 0; i < TRAY_CLIENT_MAX; i++)
+			if (layout->cells[i].visible)
+				layout->cells[i].x += target;
+		if (visible)
+		{
+			*previous = (tray_cell){padding, (height - target) / 2,
+			    target, target, true};
+			*next = (tray_cell){width - padding - target,
+			    (height - target) / 2, target, target, true};
+		}
+	}
+allocation:
+	layout->width = width;
+	layout->height = height;
+	return true;
+}
+
+bool tray_model_row_at(const tray_rect *bounds, int row_height,
+	unsigned int count, int x, int y, unsigned int *row)
+{
+	if (row)
+		*row = 0;
+	if (!bounds || !row || row_height < 1 || !count ||
+	    bounds->width < 1 || bounds->height < 1 ||
+	    x < bounds->x || y < bounds->y ||
+	    (int64_t)x - bounds->x >= bounds->width ||
+	    (int64_t)y - bounds->y >= bounds->height)
+		return false;
+	uint64_t index = ((int64_t)y - bounds->y) / row_height;
+	if (index >= count)
+		return false;
+	*row = (unsigned int)index;
+	return true;
 }
 
 bool tray_model_layout(const tray_model *model, int width, int height,

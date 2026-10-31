@@ -1,0 +1,4 @@
+Colorset 56 fg #ffffe0, bg #252550
+*SlateTray Colorset 56
+*SlateTray Font "xft:DejaVu Sans Mono:size=18"
+SendToModule SlateTray Reload

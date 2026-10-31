@@ -729,12 +729,13 @@ static void _activate_window_by_command(
 			sf_args.do_force = focused != FW_W(fw) &&
 				(focused == None || focused == PointerRoot ||
 				 GetTopAncestorWindow(dpy, focused) != FW_W_FRAME(fw));
-			/* Proxy keys need not reach the core. Sample server time
-			 * through FEvent before reasserting this explicit request;
-			 * the last core input time can predate the proxy's focus. */
-			if (sf_args.do_force)
-				get_server_time();
 		}
+		/* Module-owned widget focus can be newer than the last core
+		 * input event, including when this command selects a different
+		 * managed window. Sample through FEvent before a real explicit
+		 * transition; retain the same-window child-focus no-op above. */
+		if (sf != fw || sf_args.do_force)
+			get_server_time();
                 sf_args.client_entered = 0;
 		set_focus_to_fwin(FW_W(fw), fw, &sf_args);
 		if (sf != get_focus_window())

@@ -18,7 +18,9 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
@@ -27,15 +29,20 @@ import (
 type Config struct {
 	CacheDir   string
 	Extensions []string
+	// Zero budgets retain the existing menu defaults. Smaller isolated
+	// consumers bound acquisition separately through xdgsource.NewLimited.
+	CacheBytes, OutputBytes, SourcePixels int
+	ExtraRoots                            []string
 }
 
 type Renderer struct {
-	source      *xdgsource.Source
-	finder      *xdgsource.IconFinder
-	dir         string
-	cache       map[xdgmenu.IconRequest]string
-	cacheBytes  int
-	outputBytes int
+	source       *xdgsource.Source
+	finder       *xdgsource.IconFinder
+	dir          string
+	cache        map[xdgmenu.IconRequest]string
+	cacheBytes   int
+	outputBytes  int
+	sourcePixels int
 }
 
 func New(source *xdgsource.Source, paths xdgmenu.SearchPaths, home string, config Config) (*Renderer, error) {
@@ -51,6 +58,29 @@ func New(source *xdgsource.Source, paths xdgmenu.SearchPaths, home string, confi
 		return nil, err
 	}
 	finder := xdgsource.NewIconFinder(source, home, paths, "", 0)
+	if len(config.ExtraRoots) > 4 {
+		return nil, errors.New("too many private icon roots")
+	}
+	for i := len(config.ExtraRoots) - 1; i >= 0; i-- {
+		root := config.ExtraRoots[i]
+		if !filepath.IsAbs(root) || filepath.Clean(root) != root || len(root) > 1024 || !utf8.ValidString(root) || strings.ContainsAny(root, "\x00\r\n") {
+			return nil, errors.New("invalid private icon root")
+		}
+		finder.Roots = append([]string{root}, finder.Roots...)
+	}
+	cacheBytes, outputBytes, pixels := config.CacheBytes, config.OutputBytes, config.SourcePixels
+	if cacheBytes == 0 {
+		cacheBytes = xdgsource.MaxJobBytes
+	}
+	if outputBytes == 0 {
+		outputBytes = xdgsource.MaxJobBytes
+	}
+	if pixels == 0 {
+		pixels = 64 * 1024 * 1024
+	}
+	if cacheBytes < 1 || cacheBytes > xdgsource.MaxJobBytes || outputBytes < 1 || outputBytes > xdgsource.MaxJobBytes || pixels < 1 || pixels > 64*1024*1024 {
+		return nil, errors.New("invalid icon presentation budget")
+	}
 	finder.Extensions = nil
 	for _, extension := range config.Extensions {
 		if extension != "png" && extension != "svg" && extension != "xpm" {
@@ -67,8 +97,8 @@ func New(source *xdgsource.Source, paths xdgmenu.SearchPaths, home string, confi
 		finder.Extensions = append(finder.Extensions, extension)
 	}
 	return &Renderer{source: source, finder: finder, dir: absolute,
-		cache: make(map[xdgmenu.IconRequest]string), cacheBytes: xdgsource.MaxJobBytes,
-		outputBytes: xdgsource.MaxJobBytes}, nil
+		cache: make(map[xdgmenu.IconRequest]string), cacheBytes: cacheBytes,
+		outputBytes: outputBytes, sourcePixels: pixels}, nil
 }
 
 func (r *Renderer) Resolve(request xdgmenu.IconRequest) (string, error) {
@@ -114,12 +144,135 @@ func (r *Renderer) Resolve(request xdgmenu.IconRequest) (string, error) {
 	return path, nil
 }
 
+// xpmSkip consumes only C whitespace and block comments. A limited consumer
+// refuses other comment dialects, nested comments and NUL ambiguity rather
+// than disagreeing with the native XPM reader about the first data string.
+func xpmSkip(data []byte, offset int) (int, error) {
+	for offset < len(data) {
+		switch data[offset] {
+		case ' ', '\t', '\r', '\n', '\v', '\f':
+			offset++
+		case '/':
+			if offset+1 >= len(data) || data[offset+1] != '*' {
+				return 0, errors.New("unsupported XPM comment syntax")
+			}
+			start := offset + 2
+			end := bytes.Index(data[start:], []byte("*/"))
+			if end < 0 {
+				return 0, errors.New("unterminated XPM comment")
+			}
+			comment := data[start : start+end]
+			if bytes.Contains(comment, []byte("/*")) || bytes.IndexByte(comment, 0) >= 0 {
+				return 0, errors.New("ambiguous XPM comment")
+			}
+			offset = start + end + 2
+		default:
+			return offset, nil
+		}
+	}
+	return offset, nil
+}
+
+// limitedXPMHeader locates the first actual XPM3 array string, not a quoted
+// example inside a comment. The source already has an acquisition byte bound.
+// This deliberately accepts a simple declaration subset, without interpreting
+// C preprocessing, character literals, escapes or concatenated header strings.
+func limitedXPMHeader(data []byte) ([]byte, error) {
+	offset := 0
+	declaration, bracket, array, assigned := false, false, false, false
+	for {
+		var err error
+		offset, err = xpmSkip(data, offset)
+		if err != nil {
+			return nil, err
+		}
+		if offset == len(data) {
+			return nil, errors.New("XPM icon has no geometry header")
+		}
+		c := data[offset]
+		if assigned {
+			if c != '{' {
+				return nil, errors.New("unsupported XPM initializer")
+			}
+			offset++
+			break
+		}
+		switch {
+		case c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c == '_':
+			declaration = true
+			offset++
+		case c >= '0' && c <= '9', c == '*':
+			offset++
+		case c == '[' && !bracket && !array:
+			bracket = true
+			offset++
+		case c == ']' && bracket:
+			bracket, array = false, true
+			offset++
+		case c == '=' && declaration && array && !bracket:
+			assigned = true
+			offset++
+		default:
+			return nil, errors.New("unsupported XPM declaration")
+		}
+	}
+	offset, err := xpmSkip(data, offset)
+	if err != nil {
+		return nil, err
+	}
+	if offset == len(data) || data[offset] != '"' {
+		return nil, errors.New("XPM icon has no geometry string")
+	}
+	start := offset + 1
+	for offset = start; offset < len(data) && offset-start <= 128; offset++ {
+		c := data[offset]
+		if c == '"' {
+			next, err := xpmSkip(data, offset+1)
+			if err != nil {
+				return nil, err
+			}
+			if next == len(data) || data[next] != ',' && data[next] != '}' {
+				return nil, errors.New("ambiguous XPM geometry string")
+			}
+			return data[start:offset], nil
+		}
+		if c == '\\' || c < 32 && c != '\t' || c > 126 {
+			return nil, errors.New("unsupported XPM geometry string")
+		}
+	}
+	return nil, errors.New("XPM icon geometry header exceeds limit")
+}
+
 func (r *Renderer) present(path string, size int) (string, error) {
 	data, err := r.source.ReadImage(path)
 	if err != nil {
 		return "", err
 	}
 	extension := filepath.Ext(path)
+	if extension == ".xpm" && r.sourcePixels < 64*1024*1024 {
+		// Native XPM decoding still belongs to the shared picture path.
+		// A smaller consumer first admits only a bounded raster header.
+		header, err := limitedXPMHeader(data)
+		if err != nil {
+			return "", err
+		}
+		fields := strings.Fields(string(header))
+		if len(fields) < 4 {
+			return "", errors.New("invalid XPM icon geometry")
+		}
+		width, e1 := strconv.ParseUint(fields[0], 10, 32)
+		height, e2 := strconv.ParseUint(fields[1], 10, 32)
+		if e1 != nil || e2 != nil || width < 1 || height < 1 || width > 32768 || height > 32768 || width*height > uint64(r.sourcePixels) {
+			return "", errors.New("XPM icon exceeds geometry limits")
+		}
+		colors, e3 := strconv.ParseUint(fields[2], 10, 32)
+		characters, e4 := strconv.ParseUint(fields[3], 10, 32)
+		// A small consumer also bounds native color-table and row work.
+		// Retained cells cannot justify more color records than pixels.
+		if e3 != nil || e4 != nil || colors < 1 || colors > width*height || characters < 1 || characters > 8 {
+			return "", errors.New("XPM icon exceeds color or character limits")
+		}
+	}
 	if extension == ".png" {
 		data, err = r.scaledPNG(data, size)
 		if err != nil {
@@ -161,7 +314,7 @@ func (r *Renderer) scaledPNG(data []byte, size int) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	if config.Width < 1 || config.Height < 1 || config.Width > 32768 || config.Height > 32768 || uint64(config.Width)*uint64(config.Height) > 64*1024*1024 {
+	if config.Width < 1 || config.Height < 1 || config.Width > 32768 || config.Height > 32768 || uint64(config.Width)*uint64(config.Height) > uint64(r.sourcePixels) {
 		return nil, errors.New("PNG icon exceeds geometry limits")
 	}
 	if config.Width == size && config.Height == size {

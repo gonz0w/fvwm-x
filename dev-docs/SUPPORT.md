@@ -310,5 +310,48 @@ pages, client/focus continuity, saved preferences, three theme/font profiles and
 Linux process-authenticated abrupt bar exit. `--buttons` and `--tray` can select
 scoped instrumented modules while the core, Desktop and peer remain normal.
 Failures retain their original mapping assertion even when a diagnostic intervention
-subsequently succeeds. This is action-time anchoring of a root-child popup; true
-containment, real toolkit clients and full #78 release qualification remain open.
+subsequently succeeds. This probe measures action-time anchoring of a root-child popup. The separate
+modern/container probe below covers the additive protocol and containment paths;
+neither probe alone establishes complete desktop or release acceptance.
+
+
+## Combined modern tray and native-container probe
+
+Use a matching native build with `session-dbus=enabled`, the core, Tray, Buttons,
+MFL, Form, Desktop, worker and session programs. Build the two independent test
+clients and capture helper explicitly:
+
+```sh
+ninja -C /path/to/build tests/tray-client tests/tray-sni-client \
+    bin/fvwm-desktop-capture
+python3 tests/live_x/tray_modern_live.py \
+    --build /path/to/build \
+    --xorg-config tests/live_x/xorg-dummy.conf \
+    --execution-profile native-cpu \
+    --artifacts-dir /path/to/new-modern-tray-evidence
+```
+
+Run from the corresponding source root. Replace the execution label with
+`emulated-cpu` when appropriate; retain the actual VM/hypervisor and CPU receipt.
+The fixture owns a private session bus and display. It independently observes
+both StatusNotifier dialects, menu callbacks, late replies, owner loss, bounded
+capacity, keyboard focus, client geometry, containment and explicit bus recovery.
+`--display` selects an already owned disposable display instead. On BSD the
+existing authenticated `tests/run_bsd_default_x.py --tray-only` driver runs the
+same portable cases on its default Xorg server; Linux process-authenticated
+extras remain explicitly unavailable there.
+
+Executable overrides (`--tray`, `--buttons`, `--fvwm`, `--mfl`, `--form`,
+`--desktop`, `--worker`, `--session`) let the gate select current installed or
+scoped instrumented programs. Supplemental modules/configuration may remain in
+the build/source tree, so this does not establish a fully installed desktop.
+For a disabled product profile, pass `--expect-modern-unavailable` and supply
+`--sni-client` from the enabled independent-fixture build. Add
+`--expect-no-container` for a build/server without the optional XFixes container
+capability. The disabled product still provides standalone XEmbed.
+
+Optional `--toolkit-env` selects an independently prepared real-client bundle
+receipt. Without one, synthetic protocol coverage remains valid and real-toolkit
+coverage is recorded unavailable. Test libraries are not product dependencies.
+The [tray completion report](verification/VERIFICATION-2026-10-30-TRAY-COMPLETION.md)
+records exact profiles, toolkit versions, captures, failures, reuse and limits.

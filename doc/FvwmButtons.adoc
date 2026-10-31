@@ -125,12 +125,14 @@ _dumb_ is neither _fixed_ nor _smart._ This is the default.
 *FvwmButtons: KeyboardNavigation 0|1::
   Set to *1* to enable module-local keyboard navigation. The default is
   *0*, which preserves Return activation under the pointer and existing
-  configurations. Navigation applies only while this module's own window
-  has keyboard focus. It does not grab keys or request focus from another
-  application; the window manager's normal focus policy still applies.
+  configurations. Navigation applies only while this module's effective focus
+  window has keyboard focus. With a Tray slot, it uses an owned InputOnly
+  leaf proxy; otherwise it uses the module window. It does not grab keys or
+  request focus from another application; normal FVWM focus policy applies.
 +
-The initial target is the first enabled action button or panel. Labels,
-containers, disabled buttons and swallowed application windows are skipped.
+The initial target is the first enabled action button, panel or native Tray
+slot. Labels, containers, disabled buttons and swallowed application windows
+are skipped.
 An action button must have a default or mouse-button-1 action. Tab and
 Shift+Tab move through configuration order, entering nested containers, and
 wrap at either end. Arrow keys choose a button whose centre is in that
@@ -405,6 +407,39 @@ DisabledColorset colorset:::
     focus, hover, normal. A missing state colorset falls back to the next
     applicable state, then the ordinary inherited colorset. Disabled
     buttons always use the ordinary title and icon.
+
+Tray:::
+    Make this button the one native FvwmTray slot for this FvwmButtons
+    instance. For example:
++
+....
+*MyBar: KeyboardNavigation 1
+*MyBar: (6x1, Id tray, Title "Tray", Tray)
+....
++
+This option discovers the current screen's native tray owner and negotiates
+attachment; it does not start or replace a tray and does not change generic
+*Swallow*. FvwmTray and FvwmButtons need built XFixes support and the X server
+needs XFixes version 1 or later. Without it, the slot stays unavailable while
+the tray can still use root-window placement. A competing slot cannot displace
+an attached host. Only one native Tray slot is accepted per Buttons instance.
++
+The slot owns the tray's allocation. Its compact layout pages entries and can
+show side controls when space permits. Foreign client pixels retain their
+actual sizes. With KeyboardNavigation enabled, focus the managed Buttons window
+using normal FVWM focus policy, navigate to the slot and activate it to enter
+the tray. Escape and outward traversal return focus within the Buttons scope
+to its owned effective focus proxy and surrounding controls. Entry from or
+leaving to another managed application uses normal FVWM focus policy; leaving
+the scope requests restoration of the previous managed application. The default desktop bar keeps its existing focus style;
+use a separately configured focus-capable bar for this interaction.
++
+Both modules protect the other process's windows during orderly release and
+connection loss. Normal detach returns the tray to the root hidden; unexpected
+Buttons exit can also return its host to the root, and unexpected tray exit can
+return surviving client windows to the root unmapped. Applications must dock
+again with a new owner. This does not protect arbitrary parent destruction by
+another live process. See *FvwmTray*(1) for controls and recovery.
 
 Container [(options)]:::
     Specifies that this button will contain a miniature buttonbox,
@@ -1106,6 +1141,17 @@ Example:::
 SendToModule FvwmButtons Silent \
   ChangeButton note1 Icon clock2.xpm, Title "18:00 - Go Home"
 ....
+
+A `SendToModule` request of `KeyboardStatus` emits an Echo record beginning
+`FVWM_BUTTONS_KEYBOARD_STATUS`, followed by the module window ID, keyboard
+navigation enabled flag, observed window focus flag, selected button's
+one-based index in its parent, pressed button's corresponding index and
+pressed keycode, cached external managed-window ID (zero if absent) and
+number of submitted external-focus restore requests as the eighth field
+(saturating at the native unsigned-int maximum), followed by the effective
+keyboard-focus window ID as the ninth field. A request count does not establish completion.
+Zero indices mean no selection/press. This is a diagnostic
+snapshot; it grants no focus or activation and contains no action strings.
 
 == SAMPLE CONFIGURATION
 

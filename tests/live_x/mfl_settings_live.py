@@ -142,7 +142,7 @@ def run(args):
                 'wallpaper_palette', 'wallpaper_appearance', 'contrast',
                 'session_bus', 'session_notifications', 'notification_dnd',
                 'session_power', 'tray_enabled', 'tray_gap', 'tray_padding',
-                'tray_orientation'}
+                'tray_orientation', 'tray_modern', 'tray_icon_size'}
             assert set(snapshot['settings']) == expected_settings, snapshot
             assert snapshot['persistence_error'] is None, snapshot
             for item in snapshot['settings'].values():
@@ -169,7 +169,7 @@ def run(args):
             assert opacity['native_preview'] and not opacity.get(
                 'preview', snapshot['preview'])
             assert set(query(scope='group:tray')['settings']) == {
-                'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation'}
+                'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation', 'tray_modern', 'tray_icon_size'}
             tray = snapshot['settings']['tray_enabled']
             assert tray['saved'] is False and tray['requested'] is False
             assert tray['readiness'] == 'unobserved'
@@ -245,7 +245,7 @@ def run(args):
 
             numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
             assert numeric['settings']['launcher_opacity']['saved'] == 73
-            assert json.loads(state.read_text())['schema_version'] == 7
+            assert json.loads(state.read_text())['schema_version'] == 8
             before_numeric = state.read_bytes()
             for invalid in [True, 73.5, -1, 101, '73']:
                 action('set', numeric['generation'], values={'launcher_opacity': invalid},

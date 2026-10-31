@@ -131,6 +131,89 @@ int main(void)
 	assert(!tray_model_anchor("1 2 3 4\n", &anchor));
 	assert(!tray_model_anchor("1 2 3 4.0", &anchor));
 	assert(!tray_model_anchor("9999999999999999999999 0 1 1", &anchor));
+	/* Native-owned cells may scale; the foreign admission/resize contract
+	 * remains1..256 actual pixels and cannot be used on an owned cell. */
+	tray_model mixed = {0};
+	assert(tray_model_add(&mixed, 1, 512, 512, true) == TRAY_INVALID);
+	assert(tray_model_add_native(&mixed, 1, 512, 512, true) ==
+	    TRAY_ADMITTED);
+	assert(mixed.clients[0].kind == TRAY_CLIENT_NATIVE);
+	assert(!tray_model_resize(&mixed, 1, 20, 20));
+	assert(tray_model_resize_native(&mixed, 1, 24, 24));
+	assert(tray_model_add(&mixed, 2, 24, 20, true) == TRAY_ADMITTED);
+	assert(!tray_model_resize_native(&mixed, 2, 512, 512));
+	assert(!tray_model_resize_native(&mixed, 1, 4097, 1));
+	tray_cell previous, next;
+	for (unsigned int id = 3; id <= 10; id++)
+		assert(tray_model_add(&mixed, id, 24, 20, true) ==
+		    TRAY_ADMITTED);
+	assert(tray_model_compact(&mixed, 152, 36, 4, 4, 24, false, true,
+	    0, &layout, &previous, &next));
+	assert(layout.width == 152 && layout.height == 36);
+	assert(layout.pages > 1 && previous.visible && next.visible);
+	unsigned int compact_pages = layout.pages;
+	unsigned int compact_seen[TRAY_CLIENT_MAX] = {0};
+	for (unsigned int page = 0; page < compact_pages; page++)
+	{
+		assert(tray_model_compact(&mixed, 152, 36, 4, 4, 24, false,
+		    true, page, &layout, &previous, &next));
+		for (unsigned int i = 0; i < mixed.count; i++)
+			if (layout.cells[i].visible)
+			{
+				compact_seen[i]++;
+				assert(layout.cells[i].x >=
+				    previous.x + previous.width);
+				assert(layout.cells[i].x +
+				    layout.cells[i].width <= next.x);
+				assert(layout.cells[i].y +
+				    layout.cells[i].height <= 32);
+			}
+	}
+	for (unsigned int i = 0; i < mixed.count; i++)
+		assert(compact_seen[i] == 1);
+	assert(tray_model_compact(&mixed, 30, 36, 4, 4, 24, false, true,
+	    0, &layout, &previous, &next));
+	assert(!previous.visible && !next.visible);
+	assert(tray_model_compact(&mixed, 152, 36, 4, 4, 24, false, false,
+	    0, &layout, &previous, &next));
+	assert(!layout.count && !previous.visible && !next.visible);
+	/* Side controls yield to wide members: every fitting icon remains
+	 * reachable through keyboard pages, including mixed-width pages. */
+	tray_model wide = {0};
+	assert(tray_model_add(&wide, 1, 80, 20, true) == TRAY_ADMITTED);
+	assert(tray_model_add(&wide, 2, 80, 20, true) == TRAY_ADMITTED);
+	for (unsigned int page = 0; page < 2; page++)
+	{
+		assert(tray_model_compact(&wide, 100, 36, 4, 4, 24, false,
+		    true, page, &layout, &previous, &next));
+		assert(layout.pages == 2 && layout.count == 1);
+		assert(layout.cells[page].visible && !layout.omitted);
+		assert(!previous.visible && !next.visible);
+	}
+	assert(tray_model_resize(&wide, 2, 20, 20));
+	assert(tray_model_add(&wide, 3, 20, 20, true) == TRAY_ADMITTED);
+	for (unsigned int page = 0; page < 2; page++)
+	{
+		assert(tray_model_compact(&wide, 100, 36, 4, 4, 24, false,
+		    true, page, &layout, &previous, &next));
+		assert(layout.pages == 2 && !layout.omitted);
+		assert(layout.count == (page ? 2U : 1U));
+		assert(!previous.visible && !next.visible);
+	}
+	/* Pointer hits use the painted viewport, not total menu membership. */
+	tray_rect rows = {4, 4, 272, 288};
+	unsigned int hit = 99;
+	assert(tray_model_row_at(&rows, 24, 12, 4, 291, &hit));
+	assert(hit == 11);
+	assert(!tray_model_row_at(&rows, 24, 12, 4, 292, &hit));
+	assert(!hit);
+	assert(!tray_model_row_at(&rows, 24, 12, 3, 4, &hit));
+	assert(!tray_model_row_at(&rows, 24, 12, 276, 4, &hit));
+	assert(!tray_model_row_at(&rows, 24, 12, 4, 3, &hit));
+	assert(!tray_model_row_at(&rows, 24, 0, 4, 4, &hit));
+	rows.height = 10;
+	assert(tray_model_row_at(&rows, 24, 1, 4, 13, &hit));
+	assert(!tray_model_row_at(&rows, 24, 1, 4, 14, &hit));
 	model.generation = UINT64_MAX;
 	assert(tray_model_remove(&model, 3));
 	assert(tray_model_add(&model, 3, 20, 20, true) == TRAY_INVALID);

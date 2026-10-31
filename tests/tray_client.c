@@ -24,6 +24,7 @@ static Display *display;
 static Window root, owner_window;
 static Window windows[CLIENT_LIMIT];
 static Atom selection, info_atom, embed_atom, opcode_atom, manager_atom;
+static Atom host_atom;
 static unsigned int window_count;
 static Window reading_window;
 static int expected_errors, unexpected_errors;
@@ -88,6 +89,64 @@ static bool owned(Window window)
 	return false;
 }
 
+static bool parent_of(Window window, Window *parent)
+{
+	Window actual_root = None, *children = NULL;
+	unsigned int count = 0;
+	*parent = None;
+	Status got = XQueryTree(display, window, &actual_root, parent,
+	    &children, &count);
+	if (children)
+		XFree(children);
+	return got && actual_root == root;
+}
+
+static bool resize_repaint(Window window, uint32_t width, uint32_t height,
+	uint32_t count, cJSON *result)
+{
+	Window socket = None, host = None;
+	Atom type = None;
+	int format = 0;
+	unsigned long items = 0, after = 0;
+	unsigned char *data = NULL;
+	XWindowAttributes attributes = {0}, host_attributes;
+	int errors_before = unexpected_errors;
+	XGrabServer(display);
+	Window owner = XGetSelectionOwner(display, selection);
+	bool valid = owner != None &&
+	    XGetWindowAttributes(display, window, &attributes) &&
+	    parent_of(window, &socket) && socket != root &&
+	    parent_of(socket, &host) && host != root && host != socket &&
+	    XGetWindowProperty(display, owner, host_atom, 0, 1, False,
+	        XA_WINDOW, &type, &format, &items, &after, &data) == Success &&
+	    type == XA_WINDOW && format == 32 && items == 1 && after == 0 &&
+	    data && ((unsigned long *)data)[0] == host &&
+	    XGetWindowAttributes(display, host, &host_attributes) &&
+	    host_attributes.class == InputOutput &&
+	    host_attributes.map_state == IsViewable;
+	Bool override = attributes.override_redirect;
+	if (data)
+		XFree(data);
+	if (valid)
+	{
+		/* One bounded, independently validated fixture host. The real
+		 * ConfigureNotify follows every queued Expose, so an older
+		 * native projection must not overwrite the new direct size. */
+		for (uint32_t i = 0; i < count; i++)
+			XClearArea(display, host, 0, 0, 1, 1, True);
+		unsigned long serial = NextRequest(display);
+		XResizeWindow(display, window, width, height);
+		XSync(display, False);
+		cJSON_AddNumberToObject(result, "resize_serial", serial);
+		cJSON_AddNumberToObject(result, "host", host);
+		cJSON_AddNumberToObject(result, "expose_count", count);
+		cJSON_AddBoolToObject(result, "override", override);
+	}
+	XUngrabServer(display);
+	XSync(display, False);
+	return valid && errors_before == unexpected_errors;
+}
+
 static void send_message(Window receiver, Window source, Atom atom,
 	int format, long opcode, long detail, long first, long second)
 {
@@ -145,6 +204,22 @@ static cJSON *events(void)
 				(uint32_t)event.xclient.data.l[1]);
 			cJSON_AddNumberToObject(record, "owner",
 				(uint32_t)event.xclient.data.l[2]);
+		}
+		else if (event.type == ConfigureNotify)
+		{
+			cJSON_AddStringToObject(record, "kind", "configure");
+			cJSON_AddNumberToObject(record, "serial",
+			    event.xconfigure.serial);
+			cJSON_AddNumberToObject(record, "width",
+			    event.xconfigure.width);
+			cJSON_AddNumberToObject(record, "height",
+			    event.xconfigure.height);
+			cJSON_AddNumberToObject(record, "x",
+			    event.xconfigure.x);
+			cJSON_AddNumberToObject(record, "y",
+			    event.xconfigure.y);
+			cJSON_AddBoolToObject(record, "override",
+			    event.xconfigure.override_redirect);
 		}
 		else if (event.type == KeyPress || event.type == KeyRelease)
 		{
@@ -361,6 +436,17 @@ static cJSON *execute(cJSON *command)
 			goto invalid;
 		XResizeWindow(display, id, width, height);
 	}
+	else if (!strcmp(verb, "resize-repaint"))
+	{
+		uint32_t count;
+		if (!owned(id) || !integer(command, "width", 24, &width) ||
+		    !width || width > 512 ||
+		    !integer(command, "height", 24, &height) ||
+		    !height || height > 512 ||
+		    !integer(command, "count", 128, &count) || !count || count > 128 ||
+		    !resize_repaint(id, width, height, count, result))
+			goto invalid;
+	}
 	else if (!strcmp(verb, "map") || !strcmp(verb, "unmap"))
 	{
 		if (!owned(id))
@@ -415,6 +501,7 @@ int main(int argc, char **argv)
 	embed_atom = XInternAtom(display, "_XEMBED", False);
 	opcode_atom = XInternAtom(display, "_NET_SYSTEM_TRAY_OPCODE", False);
 	manager_atom = XInternAtom(display, "MANAGER", False);
+	host_atom = XInternAtom(display, "_FVWM_TRAY_HOST", False);
 	owner_window = XCreateSimpleWindow(display, root, 0, 0, 1, 1, 0, 0, 0);
 	XSelectInput(display, root, StructureNotifyMask);
 	XSync(display, False);

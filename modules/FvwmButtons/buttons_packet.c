@@ -23,6 +23,9 @@ bool buttons_packet_is_valid(unsigned long type, const unsigned long *body,
 	case M_ADD_WINDOW:
 	case M_CONFIGURE_WINDOW:
 		return body_words * sizeof(unsigned long) >= sizeof(ConfigWinPacket);
+	case M_FOCUS_CHANGE:
+		return body_words >= 2;
+	case M_DESTROY_WINDOW:
 	case M_NEW_DESK:
 	case M_MAP:
 		return body_words >= 1;

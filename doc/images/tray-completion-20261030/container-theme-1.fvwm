@@ -1,0 +1,4 @@
+Colorset 56 fg #322a20, bg #eee4cb
+*SlateTray Colorset 56
+*SlateTray Font "xft:Serif:size=12"
+SendToModule SlateTray Reload

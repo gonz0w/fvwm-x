@@ -64,6 +64,17 @@ func New(ctx context.Context) *Source {
 		desktops: make(map[string]*xdgmenu.Desktop), pools: make(map[xdgmenu.AppLocation]map[string]xdgmenu.PoolEntry), Directories: make(map[string]*xdgmenu.Desktop)}
 }
 
+// NewLimited gives an isolated consumer a smaller aggregate acquisition budget.
+// The existing New defaults remain unchanged for menu/controller consumers.
+func NewLimited(ctx context.Context, byteLimit, itemLimit int) (*Source, error) {
+	if byteLimit < 1 || byteLimit > MaxJobBytes || itemLimit < 1 || itemLimit > xdgmenu.MaxItems {
+		return nil, errors.New("invalid acquisition budget")
+	}
+	s := New(ctx)
+	s.bytes, s.items = byteLimit, itemLimit
+	return s, nil
+}
+
 func validPath(path string) bool {
 	return filepath.IsAbs(path) && filepath.Clean(path) == path && len(path) <= xdgmenu.MaxValueBytes && utf8.ValidString(path) && !strings.ContainsRune(path, 0)
 }
@@ -86,6 +97,8 @@ func openFile(path string, directory bool) (*os.File, error) {
 	return openLimitedFile(path, directory, xdgmenu.MaxSourceBytes)
 }
 
+var errInputFileLimit = errors.New("desktop menu input exceeds file limit")
+
 func openLimitedFile(path string, directory bool, limit int) (*os.File, error) {
 	flags := syscall.O_RDONLY | syscall.O_NONBLOCK | syscall.O_CLOEXEC
 	if directory {
@@ -107,7 +120,7 @@ func openLimitedFile(path string, directory bool, limit int) (*os.File, error) {
 	}
 	if !directory && info.Size() > int64(limit) {
 		file.Close()
-		return nil, errors.New("desktop menu input exceeds file limit")
+		return nil, errInputFileLimit
 	}
 	return file, nil
 }
@@ -136,19 +149,31 @@ func (s *Source) readLimited(path string, limit int) ([]byte, error) {
 	if err := s.charge(1, len(path)); err != nil {
 		return nil, err
 	}
+	// Refuse an oversized acquisition before growing a byte slice. Cached
+	// snapshots above were already charged to this operation's budget.
+	jobLimited := limit > s.bytes
+	if jobLimited {
+		limit = s.bytes
+	}
 	file, err := openLimitedFile(path, false, limit)
 	if err != nil {
+		if jobLimited && errors.Is(err, errInputFileLimit) {
+			return nil, errors.New("desktop menu input exceeds job limits")
+		}
 		return nil, err
 	}
 	defer file.Close()
 	var data []byte
-	buffer := make([]byte, 32768)
+	buffer := make([]byte, min(32768, limit+1))
 	for {
 		if err = s.ctx.Err(); err != nil {
 			return nil, err
 		}
 		n, readErr := file.Read(buffer)
 		if len(data) > limit-n {
+			if jobLimited {
+				return nil, errors.New("desktop menu input exceeds job limits")
+			}
 			return nil, errors.New("desktop menu input grew beyond file limit")
 		}
 		if err = s.charge(0, n); err != nil {

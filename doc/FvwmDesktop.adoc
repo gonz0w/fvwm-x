@@ -224,6 +224,9 @@ configuration-center covers these registered preferences:
 * *tray_gap* and *tray_padding*, tray group: logical units, 0 through 64,
   default 4.
 * *tray_orientation*, tray group: horizontal; choices horizontal, vertical.
+* *tray_modern*, tray group: boolean, false; request StatusNotifier integration.
+* *tray_icon_size*, tray group: logical units, 8 through 128, default 24;
+  applies to native StatusNotifier icons, not XEmbed client pixels.
 
 Times range from 00:00 to 23:59 and must differ. Use the schedule form or
 the times command to change both together. Boolean set commands accept
@@ -289,7 +292,8 @@ The all-settings editor retains its eleven appearance fields. Its Session settin
 button (F8), or *edit-settings group:session*, opens a compact editor for the
 four session preferences. The Session panel also opens this scoped editor.
 Its Tray settings button (F9), or *edit-settings group:tray*, opens the compact
-four-field tray editor. The settings menu also offers Tray settings.
+six-field tray editor. The settings menu also offers Tray settings. Existing
+saved schemas 1 through 7 migrate to schema 8 when loaded.
 
 Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
 group:effects, group:session, group:tray or all. It changes only those saved preferences to registered defaults. It
@@ -303,6 +307,8 @@ For example:
 
 ....
 SendToModule FvwmDesktop set tray_enabled on
+SendToModule FvwmDesktop set tray_modern on
+SendToModule FvwmDesktop set tray_icon_size 24
 SendToModule FvwmDesktop settings group:tray
 SendToModule FvwmDesktop edit-settings group:tray
 SendToModule FvwmDesktop query-settings tray-query group:tray
@@ -315,7 +321,12 @@ enablement makes a non-replacing startup attempt and preserves an existing
 owner. Disabling releases only that reserved instance. Theme and bar refresh
 do not restart it. A bar rebuild hides an open popup; its clients remain with
 the tray. The rebuilt bar requests a desktop refresh at startup so its button
-receives the current preference. Appearance or layout reload can also dismiss it. See *FvwmTray*(1) for popup, paging and client limits.
+receives the current preference. Appearance or layout reload can also dismiss
+it. StatusNotifier needs the optional session-D-Bus build feature and an
+inherited explicit local Unix session-bus address. The requested modern
+setting does not establish that the bus, watcher or item is ready. XEmbed
+remains usable without the optional bus. See *FvwmTray*(1) for popup, native
+container, menus, paging and recovery limits.
 
 FvwmMFL also exposes correlated settings queries, typed set/reset/reload and
 non-publishing validation. A validation returns the proposed saved/effective
@@ -325,8 +336,8 @@ overrides; it does not promise that a later write can acquire the lock or pass
 the current saved-file revision check. It is available to read-only IPC clients.
 
 Public settings rows inherit the envelope's owner, generation, generic-preview
-flag and common persistence error. A distinct per-setting persistence error
-remains in that row. Standalone query-settings/inspector records remain
+flag, common persistence error, availability and capability. A distinct
+per-setting value overrides the envelope's value and remains in that row. Standalone query-settings/inspector records remain
 self-contained. This avoids repeated diagnostics inside the bounded IPC reply;
 typed values, choices, limits and requested/unobserved tray status remain per
 row. Each tray row reports its effective value as `requested` and readiness as

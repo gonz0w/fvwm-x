@@ -83,6 +83,8 @@ static tray_options defaults(void)
 	options.padding = options.gap = 4;
 	options.position = 3;
 	options.visible = true;
+	options.icon_size = 24;
+	strcpy(options.icon_theme, "hicolor");
 	strcpy(options.font_name, "fixed");
 	return options;
 }
@@ -121,12 +123,18 @@ static bool update_area(tray_ui *ui)
 	unsigned int quarters = 4;
 	XWindowAttributes root;
 
+	if (ui->container.attached && !tray_container_geometry(ui))
+		tray_container_detach(ui);
 	if (snapshot->count)
 	{
-		if (ui->anchored)
+		if (ui->anchored || ui->container.attached)
 		{
-			rectangle anchor = {ui->anchor.x, ui->anchor.y,
-			    ui->anchor.width, ui->anchor.height};
+			rectangle anchor = ui->container.attached
+			    ? (rectangle){ui->container.root_x,
+			      ui->container.root_y,
+			      ui->container.width, ui->container.height}
+			    : (rectangle){ui->anchor.x, ui->anchor.y,
+			      ui->anchor.width, ui->anchor.height};
 			row = module_ui_scale_select(snapshot, &anchor, None);
 			if (!row)
 				return false;
@@ -170,6 +178,10 @@ static bool update_area(tray_ui *ui)
 		ui->font = font;
 		ui->quarters = quarters;
 	}
+	if (ui->container.attached)
+		area = (module_monitor_area){ui->container.root_x,
+		    ui->container.root_y, ui->container.width,
+		    ui->container.height};
 	ui->area = area;
 	return true;
 }
@@ -220,6 +232,7 @@ void tray_render(tray_ui *ui)
 		ui->failed = true;
 		return;
 	}
+	tray_sni_sync(ui);
 	int padding = scaled(ui, ui->padding);
 	int gap = scaled(ui, ui->gap);
 	/* Reserve the maximum bounded cue so paging itself does not resize
@@ -237,9 +250,14 @@ void tray_render(tray_ui *ui)
 		header_width = 4096;
 	if (header_height < target)
 		header_height = target;
-	if (!tray_model_page(&ui->model, ui->area.width, ui->area.height,
-	    padding, gap, header_width, header_height, ui->vertical,
-	    ui->visible, ui->page, &ui->layout))
+	bool layout_valid = ui->container.attached
+	    ? tray_model_compact(&ui->model, ui->area.width, ui->area.height,
+	      padding, gap, target, ui->vertical, ui->visible, ui->page,
+	      &ui->layout, &ui->page_prev, &ui->page_next)
+	    : tray_model_page(&ui->model, ui->area.width, ui->area.height,
+	      padding, gap, header_width, header_height, ui->vertical,
+	      ui->visible, ui->page, &ui->layout);
+	if (!layout_valid)
 	{
 		refused(ui, "unrepresentable host layout");
 		ui->failed = true;
@@ -250,11 +268,11 @@ void tray_render(tray_ui *ui)
 	if ((!ui->visible && ui->active) ||
 	    (focused >= 0 && !ui->layout.cells[focused].visible))
 		tray_x11_unfocus(ui, true);
-	int x = ui->area.x;
-	int y = ui->area.y;
-	if (ui->position & 1)
+	int x = ui->container.attached ? 0 : ui->area.x;
+	int y = ui->container.attached ? 0 : ui->area.y;
+	if (!ui->container.attached && (ui->position & 1))
 		x += ui->area.width - ui->layout.width;
-	if (ui->position & 2)
+	if (!ui->container.attached && (ui->position & 2))
 		y += ui->area.height - ui->layout.height;
 	if (ui->anchored)
 	{
@@ -285,7 +303,8 @@ void tray_render(tray_ui *ui)
 	else
 		XUnmapWindow(ui->display, ui->host);
 	tray_x11_layout(ui);
-	ui->page_prev = ui->page_next = (tray_cell){0};
+	if (!ui->container.attached)
+		ui->page_prev = ui->page_next = (tray_cell){0};
 	if (!ui->failed && !ui->stopped && ui->visible)
 	{
 		snprintf(header, sizeof(header), "Tray %u/%u (%u)",
@@ -295,6 +314,24 @@ void tray_render(tray_ui *ui)
 			size_t length = strlen(header);
 			snprintf(header + length, sizeof(header) - length,
 			    " -%u", ui->layout.omitted);
+		}
+		if (ui->container.attached)
+		{
+			if (ui->page_prev.visible)
+			{
+				draw_header(ui, "<", ui->page_prev.x,
+				    ui->page_prev.y, target, target);
+				draw_header(ui, ">", ui->page_next.x,
+				    ui->page_next.y, target, target);
+			}
+			else if (!ui->layout.count)
+				draw_header(ui, "Tray", padding, padding,
+				    ui->layout.width - padding * 2,
+				    header_height);
+			XStoreName(ui->display, ui->host, header);
+			tray_sni_repaint_popups(ui);
+			XFlush(ui->display);
+			return;
 		}
 		int width = ui->layout.width - padding * 2;
 		if (width >= target * 2 &&
@@ -316,6 +353,7 @@ void tray_render(tray_ui *ui)
 			draw_header(ui, header, padding, padding,
 			    width, header_height);
 	}
+	tray_sni_repaint_popups(ui);
 	XFlush(ui->display);
 }
 
@@ -431,6 +469,30 @@ static void stage_option(tray_ui *ui, char *text)
 				break;
 			}
 	}
+	else if (!strcasecmp(option, "StatusNotifier"))
+	{
+		valid = !strcasecmp(value, "On") || !strcasecmp(value, "Off");
+		if (valid)
+			ui->staged.modern = !strcasecmp(value, "On");
+	}
+	else if (!strcasecmp(option, "IconSize"))
+	{
+		valid = module_parse_decimal_integers(value, &number, 1) &&
+		    number >= 8 && number <= 128;
+		if (valid)
+			ui->staged.icon_size = number;
+	}
+	else if (!strcasecmp(option, "IconTheme"))
+	{
+		char *theme = NULL;
+		end = GetNextToken(value, &theme);
+		valid = theme && *theme && strlen(theme) <= 128 &&
+		    !strpbrk(theme, "/\\\r\n") && strcmp(theme, ".") &&
+		    strcmp(theme, "..") && (!end || !*skip_space(end));
+		if (valid)
+			strcpy(ui->staged.icon_theme, theme);
+		free(theme);
+	}
 	else if (!strcasecmp(option, "Visible"))
 	{
 		valid = !strcasecmp(value, "On") || !strcasecmp(value, "Off");
@@ -522,11 +584,15 @@ static void config_complete(tray_ui *ui)
 		ui->gap = ui->staged.gap;
 		ui->position = ui->staged.position;
 		ui->vertical = ui->staged.vertical;
+		ui->modern = ui->staged.modern;
+		ui->icon_size = ui->staged.icon_size;
+		strcpy(ui->icon_theme, ui->staged.icon_theme);
 		if (ui->config_apply_visible || !ui->config_ready)
 			ui->visible = ui->staged.visible;
 		ui->config_ready = true;
 		strcpy(ui->font_name, ui->staged.font_name);
 		tray_x11_hints(ui);
+		tray_sni_configure(ui, ui->config_apply_visible);
 		ui->dirty = true;
 	}
 	else
@@ -588,6 +654,11 @@ static void native_message(tray_ui *ui, char *text)
 	    (text[8] == ' ' || text[8] == '\t'))
 	{
 		tray_rect anchor;
+		if (ui->container.attached)
+		{
+			refused(ui, "popup anchor unavailable while contained");
+			return;
+		}
 		if (!tray_model_anchor(text + 8, &anchor))
 		{
 			refused(ui, "invalid popup anchor");
@@ -615,6 +686,8 @@ static void native_message(tray_ui *ui, char *text)
 			tray_x11_focus(ui, 0, !strcasecmp(text, "Next") ? 1 :
 			    (!strcasecmp(text, "Prev") ? -1 : 0), CurrentTime);
 	}
+	else if (!strcasecmp(text, "ServiceStatus"))
+		tray_sni_status_reply(ui);
 	else if (!strcasecmp(text, "Status"))
 	{
 		if (ui->dirty)
@@ -703,6 +776,8 @@ int main(int argc, char **argv)
 	ui->gap = ui->staged.gap;
 	ui->position = ui->staged.position;
 	ui->visible = true;
+	ui->icon_size = ui->staged.icon_size;
+	strcpy(ui->icon_theme, ui->staged.icon_theme);
 	ui->quarters = 4;
 	strcpy(ui->font_name, ui->staged.font_name);
 	snprintf(ui->prefix, sizeof(ui->prefix), "*%s", module->name);
@@ -743,6 +818,7 @@ int main(int argc, char **argv)
 		refused(ui, "tray selection unavailable or startup failed");
 		goto out;
 	}
+	tray_sni_init(ui);
 	SetMessageMask(ui->channel,
 	    M_STRING | M_CONFIG_INFO | M_END_CONFIG_INFO | M_SENDCONFIG);
 	if (!module_packet_reader_init(&ui->reader, ui->channel[1]))
@@ -776,17 +852,29 @@ int main(int argc, char **argv)
 		bool more = service_packets(ui);
 		if (ui->failed || ui->stopped || tray_stopping)
 			break;
+		double stamp = tray_sni_now();
+		tray_container_service(ui, stamp);
+		tray_sni_service(ui, stamp);
 		if (ui->dirty)
 			tray_render(ui);
 		if (ui->failed || ui->stopped || tray_stopping)
 			break;
-		struct pollfd descriptors[3] = {
+		struct pollfd descriptors[6] = {
 		    {ConnectionNumber(ui->display), POLLIN, 0},
 		    {ui->channel[1], POLLIN, 0},
 		    {ui->wake[0], POLLIN, 0}};
 		int timeout = more || ui->dirty || XPending(ui->display)
 		    ? 0 : -1;
-		if (poll(descriptors, 3, timeout) < 0 && errno != EINTR)
+		unsigned int extra = tray_sni_pollfds(ui, descriptors + 3);
+		int service_timeout = tray_sni_timeout(ui, tray_sni_now());
+		if (service_timeout >= 0 &&
+		    (timeout < 0 || service_timeout < timeout))
+			timeout = service_timeout;
+		service_timeout = tray_container_timeout(ui, tray_sni_now());
+		if (service_timeout >= 0 &&
+		    (timeout < 0 || service_timeout < timeout))
+			timeout = service_timeout;
+		if (poll(descriptors, 3 + extra, timeout) < 0 && errno != EINTR)
 		{
 			ui->failed = true;
 			break;
@@ -802,8 +890,10 @@ out:
 	 * Failed release keeps the save set through XCloseDisplay. */
 	if (ui->display)
 	{
+		tray_sni_stop(ui);
 		if (x11_started)
 			tray_x11_stop(ui);
+		tray_sni_destroy(ui);
 		if (ui->x_error_code)
 			fvwm_debug(__func__,
 			    "FvwmTray: X error %u resource %lu",

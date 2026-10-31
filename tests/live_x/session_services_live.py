@@ -12,6 +12,7 @@ import ctypes as C
 import hashlib
 import json
 import os
+from settings_snapshot import expanded_settings
 from pathlib import Path
 import shutil
 import subprocess
@@ -218,7 +219,7 @@ class Session:
         packet = self.rpc.record()['reply']
         if packet['status'] != 'ok':
             return False
-        snapshot = packet['result']
+        snapshot = expanded_settings(packet['result'])
         if snapshot.get('settings', {}).get('palette', {}).get('application') != 'submitted-to-fvwm':
             return False
         expected = {'palette', 'appearance', 'day', 'night', 'transparency',
@@ -226,7 +227,8 @@ class Session:
             'wallpaper_appearance', 'contrast', 'session_bus',
             'session_notifications', 'notification_dnd', 'session_power',
             'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation',
-            'tray_modern', 'tray_icon_size'}
+            'tray_modern', 'tray_icon_size', 'native_settings_enabled',
+            'application_font', 'icon_theme', 'cursor_theme', 'cursor_size'}
         assert set(snapshot['settings']) == expected, snapshot
         self.settings = snapshot
         return snapshot

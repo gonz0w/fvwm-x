@@ -4624,6 +4624,14 @@ if get_option('live-x-tests') and libpng.found() and host_machine.system() in ['
 endif
 
 
+native_settings_policy_test = executable(
+    'test-native-settings-policy',
+    ['test_native_settings_policy.c', '../bin/native_settings_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('native-settings-policy', native_settings_policy_test)
+
 file_manager_policy_test = executable(
     'test-file-manager-policy',
     ['test_file_manager_policy.c', '../bin/file_manager_policy.c',

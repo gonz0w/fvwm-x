@@ -187,7 +187,7 @@ func TestSessionDNDAndPublicProviderAreFinite(t *testing.T) {
 		t.Fatal("untyped public lifecycle mutation")
 	}
 }
-func TestAllTwentyOneSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
+func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	// The initial executed 19-setting projection was 9447 bytes. Shared
 	// envelope metadata must restore this existing cap without dropping rows.
 	d, _ := fixture(t)
@@ -200,16 +200,16 @@ func TestAllTwentyOneSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	}
 	d.persistenceError = "Cannot read private settings; repair the file then reload"
 	reply := d.settingsRequest(values{"operation": "query", "scope": "all"})
-	bytes, err := json.Marshal(reply)
+	bytes, err := encodeProviderReply(reply)
 	if err != nil {
 		t.Fatal(err)
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
-	if len(settings) != 21 {
+	if len(settings) != 26 {
 		t.Fatal("missing typed service preferences")
 	}
 	if len(bytes) > 8192 {
-		t.Fatalf("21-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+		t.Fatalf("26-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
 	}
 }
 
@@ -262,7 +262,7 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 			t.Fatal("public consumer lost envelope identity", reply)
 		}
 		settings := result["settings"].(map[string]any)
-		if len(settings) != 21 {
+		if len(settings) != 26 {
 			t.Fatal("public projection lost a preference", settings)
 		}
 		for key, raw := range settings {
@@ -284,16 +284,7 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 					t.Fatal("public item repeated shared metadata", key, field)
 				}
 			}
-			reconstructed := values{}
-			for field, value := range item {
-				reconstructed[field] = value
-			}
-			for _, field := range []string{"owner", "generation", "preview", "available", "capability"} {
-				if _, exists := reconstructed[field]; !exists {
-					reconstructed[field] = result[field]
-				}
-			}
-			reconstructed["persistence_error"] = nil
+			reconstructed := reconstructedPublicSetting(result, item)
 			standalone := comparison[key].(map[string]any)
 			wantJSON, _ := json.Marshal(standalone)
 			gotJSON, _ := json.Marshal(reconstructed)
@@ -529,5 +520,82 @@ func TestNativeNotificationPolicyProjectsCommittedSettingWithoutActivation(t *te
 	d.projectNotificationPolicy()
 	if len(*commands) != 0 {
 		t.Fatal("closed owner projected policy", *commands)
+	}
+}
+
+// Mirror the documented public metadata precedence and compare with independent
+// standalone records; compaction must never drop or invent a field/value.
+func reconstructedPublicSetting(result, row values) values {
+	reconstructed := values{}
+	for _, field := range []string{"owner", "generation", "preview", "available", "capability", "persistence_error"} {
+		reconstructed[field] = result[field]
+	}
+	reconstructed = merged(reconstructed, result["setting_defaults"].(map[string]any))
+	if row["group"] == "application" {
+		reconstructed = merged(reconstructed, result["application_defaults"].(map[string]any))
+	}
+	return merged(reconstructed, row)
+}
+
+func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
+	for _, font := range []string{strings.Repeat("<", 128), strings.Repeat("&", 128), strings.Repeat(`"\`, 64), strings.Repeat("é", 64)} {
+		for _, override := range []bool{false, true} {
+			d, _ := fixture(t)
+			for key, value := range (values{"application_font": font, "icon_theme": strings.Repeat("I", 128), "cursor_theme": strings.Repeat("C", 128)}) {
+				d.saved[key], d.effective[key] = value, value
+			}
+			if override {
+				for key := range desktopsettings.Registry() {
+					d.overrides[key] = d.effective[key]
+				}
+			}
+			revision := strings.Repeat("f", 64)
+			d.revision = &revision
+			d.lastTheme = []any{"published"}
+			d.persistenceError = "Cannot read private settings; repair the file then reload"
+			d.runtimeHeld = map[string]string{"palette": "ink", "appearance": "light", "contrast": "high"}
+			for key, value := range d.runtimeHeld {
+				d.effective[key] = value
+			}
+			d.native.observation = desktopsettings.NativeObservation{Readiness: "stop-unknown", ResourceState: "unavailable", Reason: "cleanup-unconfirmed", Run: strings.Repeat("f", 32), Sequence: ^uint64(0), XSerial: ^uint32(0)}
+			standalone, err := d.query("all", nil, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			response := d.settingsRequest(values{"operation": "query", "scope": "all"})
+			result := response["result"].(map[string]any)
+			rows := result["settings"].(map[string]any)
+			if len(rows) != 26 {
+				t.Fatal("compaction lost preference", rows)
+			}
+			for key, raw := range rows {
+				got := reconstructedPublicSetting(result, raw.(map[string]any))
+				wantJSON, _ := json.Marshal(standalone[key])
+				gotJSON, _ := json.Marshal(got)
+				if string(wantJSON) != string(gotJSON) {
+					t.Fatal("metadata roundtrip", key, got, standalone[key])
+				}
+			}
+			encoded, err := encodeProviderReply(response)
+			if err != nil || len(encoded) > 8192 {
+				t.Fatalf("worst-case settings budget: override=%t bytes=%d err=%v", override, len(encoded), err)
+			}
+			t.Logf("complete 26-row settings encoding: font-leading=%q override=%t bytes=%d", font[:1], override, len(encoded))
+		}
+	}
+}
+
+func TestProviderReplyEncodingPreservesJSONValuesWithinWireBudget(t *testing.T) {
+	value := values{"font": `Noto <&> "quoted" \ font`, "unicode": "字体"}
+	encoded, err := encodeProviderReply(value)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Contains(string(encoded), `\u003c`) || strings.Contains(string(encoded), `\u0026`) || strings.Contains(string(encoded), `\u003e`) || strings.ContainsAny(string(encoded), "\r\n") {
+		t.Fatal("unexpected wire escaping/framing", string(encoded))
+	}
+	var decoded values
+	if err := json.Unmarshal(encoded, &decoded); err != nil || !reflect.DeepEqual(value, decoded) {
+		t.Fatal("JSON value changed", decoded, err)
 	}
 }

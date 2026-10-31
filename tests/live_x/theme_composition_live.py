@@ -5,6 +5,7 @@
 # (at your option) any later version.
 """Independent wallpaper and high contrast through the desktop owner and real X."""
 import argparse
+from settings_snapshot import expanded_settings
 from collections import Counter
 import ctypes as C
 import hashlib
@@ -105,7 +106,7 @@ def run(args, profile):
                 rpc.send(frame(token, resource='settings', scope='all'))
                 message = rpc.record()['reply']
                 if message['status'] == 'ok':
-                    snapshot = message['result']
+                    snapshot = expanded_settings(message['result'])
                     if snapshot['settings']['palette']['application'] == 'submitted-to-fvwm':
                         break
                 assert time.monotonic() < deadline, message
@@ -1054,7 +1055,7 @@ def run(args, profile):
                         assert item['composition_version'] == 2, item
                         assert item['effective'] == (True if setting == 'transparency' else 82), item
                     raw = json.loads(state.read_text())
-                    assert raw['schema_version'] == 4 and raw['contrast'] == 'high'
+                    assert raw['schema_version'] == 9 and raw['contrast'] == 'high'
                     assert raw['transparency'] is True and raw['launcher_opacity'] == 82
                     assert raw['wallpaper'] == {'palette': 'grove', 'appearance': 'light'}
                     assert opacity() == 100
@@ -1189,7 +1190,7 @@ def run(args, profile):
                     generation=snapshot['generation'], scope='group:wallpaper')
                 barrier()
                 assert set(snapshot['settings']) == {'wallpaper_palette', 'wallpaper_appearance'}
-                assert json.loads(state.read_text())['schema_version'] == 4
+                assert json.loads(state.read_text())['schema_version'] == 9
                 assert json.loads(state.read_text())['wallpaper'] == {'palette': opposite, 'appearance': mode}
                 snapshot = request(scope='all')
                 change({'palette': palette, 'wallpaper_palette': 'grove', 'wallpaper_appearance': 'light'})
@@ -1227,7 +1228,7 @@ def run(args, profile):
                     rpc.send(frame(token, resource='settings', scope='group:wallpaper'))
                     response = rpc.record()['reply']
                     if response['status'] == 'ok':
-                        observed = response['result']
+                        observed = expanded_settings(response['result'])
                         if (observed['provider'] != old_provider and
                                 observed['settings']['wallpaper_palette']['source'] ==
                                 'module-configuration'):

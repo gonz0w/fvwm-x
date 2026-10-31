@@ -7,15 +7,37 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: optional FileManager1 adapter under #67/#77 on
-`codex/r1-filemanager-bus`. User authorized merging PR314 and a coherent next
-feature bundle. PR314 merged as `92742f5d5c2ed300fdb1b1a22e8f1a234a07e9d0`;
-GitHub canonical signature, reviewed tree and author DCO verified; source
-branches retired. Local verification of GitHub's canonical GPG signature is
-unavailable in the unchanged local keyring; the reviewed SSH head and GitHub
-canonical verification remain recorded. #78 closed on merge.
-Counter is 4/5 after merged314; the runnable PR310 reference remains and a paired
-comparison is not yet due.
+Current checkpoint: native preference bridge under #60/#73 on
+`codex/r1-native-preferences`. User authorized merging PR315 and continuing
+related feature bundles. PR315 merged as
+`b19c3b04d5d423bdd3ba05ec266c820389304de0`; canonical signature, reviewed tree
+and Cam author DCO verified; matching source branches retired (GitHub removed
+its remote branch automatically). Broader #67/#77 acceptance remains open.
+The due [PR310-to-PR315 paired core observation](verification/PERFORMANCE-2026-10-31-NATIVE-CORE.md)
+is complete using retained binaries. Command-median ranges overlap, title p95
+is higher in this observation, peak core RSS +8KiB; no speedup/cause claim.
+Counter resets to0/5 at merged315; preserve its verified runnable reference
+after final evidence upkeep.
+Native preference work is selected under the
+[frozen seven-outcome contract](decisions/NATIVE-PREFERENCES-2026-10-31.md),
+before implementation. Reuse the existing CFG store and native module
+transport. Optional settings portal and broad toolkit/platform qualification
+retain their separate acceptance; #257/#258 remain parked.
+
+All seven native preference outcomes are implemented and focused Linux checks
+pass: schema9/off-inherit settings and compact editor; observed private helper
+lifecycle; complete bounded XSETTINGS; generation/serial/no-op recovery; exact
+Xcursor overlay ownership; independent raw-X/GTK3 effects and three inspected
+palette/font captures. [Results and retained failures](verification/VERIFICATION-2026-10-31-NATIVE-PREFERENCES.md)
+record 429 composed ordinary Go records, 370 race records, native normal/scoped
+sanitizer policy/wire groups, legacy settings IPC and installed helper lookup.
+The public registry retains all26 records under8192 bytes (worst case8060);
+MFL empty/128-byte strings retain the separate384-byte total payload cap.
+The optional portal, Qt/browser/cached-cursor, remaining registry/preview and
+full support/release acceptance stay open under #60/#73. Separate final source/artifact/visual review is clear. Verified duplicate evidence
+and old full input copies retired; current builds/source/prefix/caches and the
+PR315 runnable reference remain. Owned lab stopped normally. Candidate is ready
+for maintainer review; this is not whole-issue closure.
 
 ## R1 FileManager1 adapter selection — 2026-10-31
 
@@ -25,8 +47,7 @@ methods; non-replacing ownership/no-bus behavior; byte-safe grouped URI planning
 existing reuse plus private new-browser admission receipts; bounded independent
 child lifetime; independent bus/real-X checks, docs and theme captures.
 Implementation, focused qualification and separate final source/artifact/receipt/
-visual review are complete; no unresolved findings. Candidate is ready for
-maintainer review. [Results, failures and remaining acceptance](verification/VERIFICATION-2026-10-31-FILEMANAGER-BUS.md)
+visual review are complete; no unresolved findings. Merged as PR315 above. [Results, failures and remaining acceptance](verification/VERIFICATION-2026-10-31-FILEMANAGER-BUS.md)
 record final Linux normal/race/vet, installed byte equality, eleven ordinary and
 ASan/UBSan native bridge groups, and twelve actual-X groups in three themes,
 including real MFL/core restart. An early actual FreeBSD ARM64 build/process
@@ -5524,7 +5545,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | ARCHIVE-01 | P2 / after verified migration | Retired planning/upstream notes and dated reports are now relocated with hashes and repaired links; graph auto-update is disabled. Remaining: remove predecessor tooling only after reference, parity, packaging and distribution checks. Preserve history/evidence and user data; do not delete ignored build trees or VM disks. See cleanup roadmap. |
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
-| CFG-01 | P2 / consumers merged; preview/recovery queued with IPC-02 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
+| CFG-01 | P2 / consumers and native preference checkpoint qualified; remaining preview/release open | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
@@ -5548,7 +5569,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
 | XDG-01 | Done / #56 closed by merged PR301; all four frozen criteria qualified | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
-| SETTINGS-01 | P2 / queued shared preferences | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
+| SETTINGS-01 | P2 / native bridge checkpoint qualified; portal/toolkit/support acceptance open | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |
 | THEME-01 | P2 / SVG artwork adopted; focused native Linux review passed | Apply [THEME-STANDARDS.md](THEME-STANDARDS.md) to all shipped palettes/modes/states, bootstrap/assets, density/targets, opacity, enlarged text and keyboard paths. Keep Slate layout/local overrides; record numeric contrast separately from native visual/interaction evidence. Earlier focused text/disabled-role review is preserved in the [standards report](verification/VERIFICATION-2026-10-06-STANDARDS-THEME.md). The user-approved richer SVG artwork replaces 377 geometric PNG assets, with PNG retained for screenshots and existing raster inputs. Native Linux ARM64 passes 51 policy checks, the full desktop/two-monitor gate, 377 worker render/install comparisons, 12 scale renders and 48 meaningful-glyph contrast pairs; SVG/PNG-disabled Session fallback also passes. See the [SVG theme report](verification/VERIFICATION-2026-10-06-SLATE-SVG.md) and [decision](decisions/THEME-SVG-ARTWORK-2026-10-06.md). Six-target/enlarged-text/physical-display/assistive/native-CI qualification remains pending; asynchronous core image activation stays IMAGE-01-owned. Full theme acceptance before RELEASE-01. |
 | RELEASE-01 | P1 / final release gate, queued until coding is complete and user requests release preparation | Final public-launch review of the accepted release candidate: independent identity/attribution, real README/demo, public contributor/community/security files, owned reporting/support channels, tested install/trial/upgrade, source artifacts/checksums/provenance/licenses, excellent installed manuals with optional lightweight HTML, onboarding and quality gates. Reuse CI-01/REPRO-01/DOCS-01/MAINT-02/VERIFY-01/COMPAT-01 and related evidence. Record disposition of X11 walkthroughs, measured results, opt-in diagnostics, customization recipes and public roadmap. Any new code/defect returns to its owner before repeating release checks. No publication authorized. See [full gate](RELEASE-GATE.md). |

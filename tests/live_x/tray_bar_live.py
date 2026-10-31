@@ -12,6 +12,7 @@ import argparse
 import ctypes as C
 import json
 import os
+from settings_snapshot import expanded_settings
 from pathlib import Path
 import shutil
 import signal
@@ -130,7 +131,8 @@ class Bar(Native):
         return self.state
 
     def setting_snapshot(self):
-        snapshot = self.request(resource='settings', scope='group:tray')
+        snapshot = expanded_settings(self.request(
+            resource='settings', scope='group:tray'))
         assert set(snapshot['settings']) == TRAY_KEYS, snapshot
         for item in snapshot['settings'].values():
             assert item['readiness'] == 'unobserved', item

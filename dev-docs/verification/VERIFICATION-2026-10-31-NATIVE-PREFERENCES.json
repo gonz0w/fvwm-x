@@ -1,0 +1,1914 @@
+{
+  "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+  "branch": "codex/r1-native-preferences",
+  "scope": "Seven-outcome native application preference checkpoint under #60/#73; not whole owner/release qualification",
+  "source_freezes": {
+    "01": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "f8e3d409f82feb38caf9c7ab2e9c97539d0bc67caf7e6f6f0846655b408c2ca6",
+      "archive_sha256": "df180cde3772eb662d5ccda0b9e067860f731723999d66dfb185633a5e056e03",
+      "archive_bytes": 27200694
+    },
+    "02": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "05fd2bbb47484f42c34965a8c2e13c7283a35515ec333f1e5a03f04b89c636a6",
+      "archive_sha256": "ee8a90dd393ba7f87b0cef11502b2096465740080d09a3872e2ef640118ecebc",
+      "archive_bytes": 27200636
+    },
+    "03": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "f9c981424661b137cc112bdad8bf0ac0e21ceda153addabff6ceb623591e8dc9",
+      "archive_sha256": "f016655eb5d33a4635daf3df2cad6405442959a57791d16a34c3b62e3b2ec644",
+      "archive_bytes": 27204806
+    },
+    "04": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "archive_sha256": "5855040b3d3566e77d764577055b7873f1d06d0e5834793edcf26adace8af853",
+      "archive_bytes": 27204750
+    },
+    "05": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "archive_sha256": "b0e5e7583707866602b083516a765cda818d75a0d65fb24cf919342708ee6ac8",
+      "archive_bytes": 27206255
+    },
+    "06": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "078ba9e5f5fc59c900f40c3c1a9cf0703f931cbaca9d62b3db6d43d273aa8918",
+      "archive_sha256": "27c16ac8c4c73016223ae2763a415e238340c514aca23796cbc9b89948a14796",
+      "archive_bytes": 27208533
+    },
+    "07": {
+      "base": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+      "closure": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "archive_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+      "archive_bytes": 27208654
+    }
+  },
+  "final_affected_runtime_inputs": {
+    "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": {
+      "sha256": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+      "bytes": 6159,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": {
+      "sha256": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+      "bytes": 13991,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": {
+      "sha256": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+      "bytes": 12498,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": {
+      "sha256": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+      "bytes": 19317,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/module.go": {
+      "sha256": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+      "bytes": 6771,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": {
+      "sha256": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+      "bytes": 8987,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": {
+      "sha256": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+      "bytes": 5544,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": {
+      "sha256": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+      "bytes": 13467,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": {
+      "sha256": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+      "bytes": 3403,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": {
+      "sha256": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+      "bytes": 18231,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": {
+      "sha256": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+      "bytes": 26352,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": {
+      "sha256": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+      "bytes": 13143,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/application_test.go": {
+      "sha256": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+      "bytes": 3866,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": {
+      "sha256": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+      "bytes": 18154,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": {
+      "sha256": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+      "bytes": 3687,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/policy.go": {
+      "sha256": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+      "bytes": 14835,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": {
+      "sha256": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+      "bytes": 9676,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/request.go": {
+      "sha256": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+      "bytes": 7071,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/session_test.go": {
+      "sha256": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+      "bytes": 3390,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": {
+      "sha256": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d",
+      "bytes": 18614,
+      "mode": 420
+    },
+    "bin/FvwmPrompt/meson.build": {
+      "sha256": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+      "bytes": 15719,
+      "mode": 420
+    },
+    "bin/meson.build": {
+      "sha256": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+      "bytes": 4175,
+      "mode": 420
+    },
+    "bin/native_settings.c": {
+      "sha256": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+      "bytes": 19698,
+      "mode": 420
+    },
+    "bin/native_settings_policy.c": {
+      "sha256": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+      "bytes": 13074,
+      "mode": 420
+    },
+    "bin/native_settings_policy.h": {
+      "sha256": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+      "bytes": 1810,
+      "mode": 420
+    },
+    "doc/meson.build": {
+      "sha256": "e30e5d4034a062365415080e44de7da4c2072541833540d4e3d4cf32e46b76fc",
+      "bytes": 6646,
+      "mode": 420
+    },
+    "modules/FvwmMFL/request.c": {
+      "sha256": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+      "bytes": 55210,
+      "mode": 420
+    },
+    "tests/live_x/inspector_live.py": {
+      "sha256": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+      "bytes": 38889,
+      "mode": 420
+    },
+    "tests/live_x/mfl_settings_live.py": {
+      "sha256": "03dfce7ece79fce7ffd9ce7110b19d72a66c096d6e79a0071d37b35a289abe03",
+      "bytes": 26988,
+      "mode": 420
+    },
+    "tests/live_x/native_settings_gtk_probe.py": {
+      "sha256": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+      "bytes": 6941,
+      "mode": 420
+    },
+    "tests/live_x/native_settings_live.py": {
+      "sha256": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+      "bytes": 70979,
+      "mode": 420
+    },
+    "tests/live_x/session_services_live.py": {
+      "sha256": "c34096df6b9290f01811523c6b51d393c87f08ab4793369db1265f878983b8de",
+      "bytes": 47370,
+      "mode": 420
+    },
+    "tests/live_x/settings_snapshot.py": {
+      "sha256": "2c8f47d744babfb93a54ca93acafb4f607de6b6f76b87b89b13d49dd29f89b7e",
+      "bytes": 1041,
+      "mode": 420
+    },
+    "tests/live_x/theme_composition_live.py": {
+      "sha256": "f0953281fd35cd875ae6ee6b4c725fcea9eee961d7cd16590f549b4bca401671",
+      "bytes": 81703,
+      "mode": 420
+    },
+    "tests/live_x/tray_bar_live.py": {
+      "sha256": "b40662bd99dc4bc36fd1e31337e3d21d6652ce18a00cbd92b369284ea06a7b2b",
+      "bytes": 48710,
+      "mode": 420
+    },
+    "tests/meson.build": {
+      "sha256": "51c5a82f8816c84455511a2aa5d90ad434f7d2a31f1dd9edc2e93a3924161e3a",
+      "bytes": 188745,
+      "mode": 420
+    },
+    "tests/test_mfl_request.c": {
+      "sha256": "0807166f7fefab0d13ef2adcc2132b63f6a99483025e90b0139958c6d9628ead",
+      "bytes": 56369,
+      "mode": 420
+    },
+    "tests/test_native_settings_policy.c": {
+      "sha256": "f54dfa70dfbfb8ce63c521c3b8edbb3d8641c008ec88712086153b9d0c0211a8",
+      "bytes": 9345,
+      "mode": 420
+    },
+    "tools/maintenance/manuals.json": {
+      "sha256": "f066cd75c7af6dd41f494559752c316c180b4c61886893f0db460213b6e98ce1",
+      "bytes": 717,
+      "mode": 420
+    }
+  },
+  "archives": [
+    {
+      "label": "gate01",
+      "archive_sha256": "d9bdd6268f97ae0e909149ac158b3326945d88c048e1ff1014f23265a11050aa",
+      "bytes": 176892,
+      "files": 5,
+      "source_closure": "f8e3d409f82feb38caf9c7ab2e9c97539d0bc67caf7e6f6f0846655b408c2ca6",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/FvwmCommand",
+            "bin/FvwmPrompt/FvwmPrompt",
+            "tests/test-native-settings-policy",
+            "doc/FvwmDesktop.1",
+            "doc/fvwm-native-settings.1"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 2.4439379620000636,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "f8e3d409f82feb38caf9c7ab2e9c97539d0bc67caf7e6f6f0846655b408c2ca6",
+      "source_post": "f8e3d409f82feb38caf9c7ab2e9c97539d0bc67caf7e6f6f0846655b408c2ca6",
+      "error": "RuntimeError('affected-build:info\" : YES (cached)\\nChecking if \"libcharset check\" with dependency iconv links: NO (cached)\\nHeader \"libcharset.h\" has symbol \"locale_charset\" : NO (cached)\\nDependency intl found: YES unknown (cached)\\nProgram msgfmt found: YES (/usr/bin/msgfmt)\\nChecking if \"gettext header/library match\" with dependency intl links: YES (cached)\\nDependency libpng found: YES 1.6.59 (cached)\\nDependency librsvg-2.0 found: YES 2.58.0 (cached)\\nDependency cairo found: YES 1.18.0 (cached)\\nChecking if \"librsvg 2.52/Cairo renderer API\" with dependencies librsvg-2.0, cairo links: YES (cached)\\nDependency sm found: YES 1.2.3 (cached)\\nDependency xcursor found: YES 1.2.1 (cached)\\nDependency xfixes found: YES 6.0.0 (cached)\\nProgram gzip found: YES (/usr/bin/gzip)\\nDependency xpm found: YES 3.5.17 (cached)\\nDependency xrender found: YES 0.9.10 (cached)\\nProgram asciidoctor found: YES (/usr/bin/asciidoctor)\\nConfiguring configtemp.h using configuration\\nConfiguring config.h with command\\nProgram msgfmt found: YES (/usr/bin/msgfmt)\\nProgram msginit found: YES (/usr/bin/msginit)\\nProgram msgmerge found: YES (/usr/bin/msgmerge)\\nProgram xgettext found: YES (/usr/bin/xgettext)\\nConfiguring Module.pm using configuration\\nDependency dbus-1 found: YES 1.14.10 (cached)\\nConfiguring FvwmTalk using configuration\\nConfiguring FvwmPerl using configuration\\nConfiguring FvwmScript-ComExample using configuration\\nConfiguring fvwm-perllib using configuration\\nProgram readelf found: YES (/usr/bin/readelf)\\nLibrary dl found: YES\\nConfiguring fvwm3.desktop using configuration\\nBuild targets in project: 328\\n\\nfvwm3 1.1.6\\n\\n  Directories\\n    prefix            : /tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix\\n    bindir            : bin\\n    datadir           : share\\n    docdir            : share/doc/fvwm3\\n    libdir            : lib/aarch64-linux-gnu\\n    libexecdir        : libexec\\n    Module dir        : libexec/fvwm3/1.1.6\\n\\n  Environment\\n    Build             : linux\\n    Build CPU Family  : aarch64\\n    Host CPU Family   : aarch64\\n    Cross-compiling   : false\\n    Build Endianness  : little\\n    Host Endianness   : little\\n    Target            : linux\\n    VCS Version       : released\\n    C Compiler        : gcc\\n    C Compiler Version: 13.3.0\\n    Go Version        : 1.27.2\\n    Linker            : ld.bfd\\n    Python Path       : /workspace/meson-env/bin/python3\\n    Python Version    : 3.12.3\\n    Perl              : /usr/bin/perl\\n    Perl Version      : 5.38.2\\n\\n    asciidoctor       : 2.0.20\\n\\n  Documentation\\n    HTML pages        : NO\\n    Man pages         : YES\\n\\n  Features\\n    BiDi              : YES 1.0.13\\n    FreeType          : YES 26.1.20\\n    Go Modules        : YES\\n    iconv             : YES\\n    NLS               : YES\\n    PNG support       : YES 1.6.59\\n    Session Management: YES 1.2.3\\n    SVG support       : YES 2.58.0\\n    Xcursor           : YES 1.2.1\\n    XFixes            : YES 6.0.0\\n    XPM support       : YES 3.5.17\\n    XRender           : YES 0.9.10\\n\\n  Dependencies\\n    fontconfig        : YES 2.15.0\\n    ice               : YES 1.0.10\\n    libevent          : YES 2.1.12-stable\\n    x11               : YES 1.8.7\\n    xft               : YES 2.3.6\\n    xrandr            : YES 1.5.2\\n    xt                : YES 1.2.1\\n    xtrans            : YES 1.4.0\\n    xext              : YES 1.3.4\\n    cairo             : YES 1.18.0\\n\\n  User defined options\\n    buildtype         : debugoptimized\\n    htmldoc           : false\\n    live-x-tests      : true\\n    mandoc            : true\\n    pkg_config_path   : /tmp/fvwm-deps/libpng-1.6.59/lib/pkgconfig:/usr/local/libdata/pkgconfig:/usr/local/lib/pkgconfig:/usr/X11R6/lib/pkgconfig\\n    png               : enabled\\n    prefix            : /tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix\\n    session-dbus      : enabled\\n    svg               : enabled\\n    xcursor           : enabled\\n    xrender           : enabled\\n\\nFound ninja-1.11.1 at /usr/bin/ninja\\n[1/12] Generating doc/fvwm-native-settings.1 with a custom command\\n[2/12] Generating doc/FvwmDesktop.1 with a custom command\\n[3/12] Generating bin/FvwmPrompt/FvwmCommand with a custom command\\n[4/12] Generating bin/FvwmPrompt/FvwmPrompt with a custom command\\ngithub.com/fvwmorg/FvwmPrompt/internal/desktopsettings\\ngithub.com/fvwmorg/FvwmPrompt/internal/commandmeta\\ngithub.com/fvwmorg/FvwmPrompt\\n[5/12] Generating bin/FvwmPrompt/fvwm-desktop-worker with a custom command\\n[6/12] Compiling C object bin/fvwm-native-settings.p/native_settings.c.o\\nFAILED: bin/fvwm-native-settings.p/native_settings.c.o \\ncc -Ibin/fvwm-native-settings.p -Ibin -I../source/bin -I. -I../source -Ifvwm -I../source/fvwm -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -MD -MQ bin/fvwm-native-settings.p/native_settings.c.o -MF bin/fvwm-native-settings.p/native_settings.c.o.d -o bin/fvwm-native-settings.p/native_settings.c.o -c ../source/bin/native_settings.c\\nIn file included from ../source/libs/fvwm_x11.h:46,\\n                 from ../source/libs/XError.h:3,\\n                 from ../source/bin/native_settings.c:9:\\n/usr/include/X11/Xft/Xft.h:40:10: fatal error: ft2build.h: No such file or directory\\n   40 | #include <ft2build.h>\\n      |          ^~~~~~~~~~~~\\ncompilation terminated.\\n[7/12] Generating bin/FvwmPrompt/FvwmDesktop with a custom command\\nninja: build stopped: subcommand failed.\\n')"
+    },
+    {
+      "label": "gate02",
+      "archive_sha256": "45bb0440c1e7fdade45048f2b910e6905cf59057d85a7bfddfb1e57f0b7b7f52",
+      "bytes": 205538,
+      "files": 9,
+      "source_closure": "05fd2bbb47484f42c34965a8c2e13c7283a35515ec333f1e5a03f04b89c636a6",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/FvwmCommand",
+            "bin/FvwmPrompt/FvwmPrompt",
+            "tests/test-native-settings-policy",
+            "doc/FvwmDesktop.1",
+            "doc/fvwm-native-settings.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.6123655700000654,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native-policy",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-native-settings-policy"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0016119689998959075,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-unit",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/desktopcheck",
+            "./internal/commandmeta",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmdesktopworker"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 4.038290577999987,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "05fd2bbb47484f42c34965a8c2e13c7283a35515ec333f1e5a03f04b89c636a6",
+      "source_post": "05fd2bbb47484f42c34965a8c2e13c7283a35515ec333f1e5a03f04b89c636a6",
+      "error": "RuntimeError('go-unit:alsPreserveWorkingProjection\",\"Output\":\"--- PASS: TestThemeRefusalsPreserveWorkingProjection (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.873639812Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemeRefusalsPreserveWorkingProjection\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.873641937Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\"}\\n{\"Time\":\"2026-10-31T12:21:20.873643728Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"=== RUN   TestThemePreflightRefusesCommitAndReload\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.875243781Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"--- PASS: TestThemePreflightRefusesCommitAndReload (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.875252448Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.875254906Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\"}\\n{\"Time\":\"2026-10-31T12:21:20.875259614Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"=== RUN   TestWallpaperEditorRegistryAndIPCMetadata\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.878783763Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"--- PASS: TestWallpaperEditorRegistryAndIPCMetadata (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.87879568Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.878798555Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\"}\\n{\"Time\":\"2026-10-31T12:21:20.87880018Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"=== RUN   TestWallpaperQuerySelectionPolicyAndPreviewPosition\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.880341899Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"--- PASS: TestWallpaperQuerySelectionPolicyAndPreviewPosition (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.880359315Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.880362399Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\"}\\n{\"Time\":\"2026-10-31T12:21:20.880364065Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"=== RUN   TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.884239216Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"--- PASS: TestTrayOffStartupEnableRefreshAndAliasOnlyDisable (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.8842493Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.884252383Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\"}\\n{\"Time\":\"2026-10-31T12:21:20.884254675Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"=== RUN   TestTraySavedStartupAndInvalidTransaction\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.88573881Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"--- PASS: TestTraySavedStartupAndInvalidTransaction (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.885745727Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:21:20.885747602Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.886365939Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\\\\t3.207s\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:21:20.886373814Z\",\"Action\":\"fail\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Elapsed\":3.207}\\n')"
+    },
+    {
+      "label": "gate03",
+      "archive_sha256": "b9f3591bda6823403030a9b61aa078796d539d766048b7cb43e1c82cb100a290",
+      "bytes": 195623,
+      "files": 7,
+      "source_closure": "f9c981424661b137cc112bdad8bf0ac0e21ceda153addabff6ceb623591e8dc9",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/FvwmCommand",
+            "bin/FvwmPrompt/FvwmPrompt",
+            "tests/test-native-settings-policy",
+            "doc/FvwmDesktop.1",
+            "doc/fvwm-native-settings.1",
+            "doc/FvwmMFL.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.5235690019999311,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-unit",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopcontroller",
+            "./cmd/fvwmdesktop"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 3.8781689799998276,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "f9c981424661b137cc112bdad8bf0ac0e21ceda153addabff6ceb623591e8dc9",
+      "source_post": "f9c981424661b137cc112bdad8bf0ac0e21ceda153addabff6ceb623591e8dc9",
+      "error": "RuntimeError('go-unit:ghtRefusesCommitAndReload\"}\\n{\"Time\":\"2026-10-31T12:33:16.759084394Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"=== RUN   TestThemePreflightRefusesCommitAndReload\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.760969365Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"--- PASS: TestThemePreflightRefusesCommitAndReload (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.76097649Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:33:16.760981365Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\"}\\n{\"Time\":\"2026-10-31T12:33:16.760983657Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"=== RUN   TestWallpaperEditorRegistryAndIPCMetadata\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.76215454Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"    theme_test.go:222: override metadata map[choices:[follow slate dune grove ink] composition_version:2 description:Wallpaper palette (follow uses the desktop palette) effective:grove group:wallpaper resolution:explicit resolved:grove saved:dune]\\\\n\",\"OutputType\":\"error\"}\\n{\"Time\":\"2026-10-31T12:33:16.762244165Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"--- FAIL: TestWallpaperEditorRegistryAndIPCMetadata (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.762249707Z\",\"Action\":\"fail\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:33:16.762252207Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\"}\\n{\"Time\":\"2026-10-31T12:33:16.762256915Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"=== RUN   TestWallpaperQuerySelectionPolicyAndPreviewPosition\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.763732717Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"--- PASS: TestWallpaperQuerySelectionPolicyAndPreviewPosition (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.763740175Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:33:16.763743175Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\"}\\n{\"Time\":\"2026-10-31T12:33:16.763745342Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"=== RUN   TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.767982163Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"--- PASS: TestTrayOffStartupEnableRefreshAndAliasOnlyDisable (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.767994205Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:33:16.767997705Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\"}\\n{\"Time\":\"2026-10-31T12:33:16.768000205Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"=== RUN   TestTraySavedStartupAndInvalidTransaction\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.769552674Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"--- PASS: TestTraySavedStartupAndInvalidTransaction (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.769564174Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:33:16.769566674Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.770075094Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\\\\t3.148s\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:33:16.770086427Z\",\"Action\":\"fail\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Elapsed\":3.148}\\n')"
+    },
+    {
+      "label": "gate04",
+      "archive_sha256": "20b32a4ca68d5d1643f22c96b2aa36517acde50dea90c15d8262292ddc6bebd3",
+      "bytes": 195527,
+      "files": 7,
+      "source_closure": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/FvwmCommand",
+            "bin/FvwmPrompt/FvwmPrompt",
+            "tests/test-native-settings-policy",
+            "doc/FvwmDesktop.1",
+            "doc/fvwm-native-settings.1",
+            "doc/FvwmMFL.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.5018464480003786,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-unit",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopcontroller",
+            "./cmd/fvwmdesktop"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 3.875891295999736,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "source_post": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "error": "RuntimeError('go-unit:reserveWorkingProjection\",\"Output\":\"--- PASS: TestThemeRefusalsPreserveWorkingProjection (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.408869562Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemeRefusalsPreserveWorkingProjection\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.408871271Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\"}\\n{\"Time\":\"2026-10-31T12:40:26.408872771Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"=== RUN   TestThemePreflightRefusesCommitAndReload\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.410156237Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Output\":\"--- PASS: TestThemePreflightRefusesCommitAndReload (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.410162821Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestThemePreflightRefusesCommitAndReload\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.410164779Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\"}\\n{\"Time\":\"2026-10-31T12:40:26.410166737Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"=== RUN   TestWallpaperEditorRegistryAndIPCMetadata\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.413000048Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Output\":\"--- PASS: TestWallpaperEditorRegistryAndIPCMetadata (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.413006464Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperEditorRegistryAndIPCMetadata\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.413008339Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\"}\\n{\"Time\":\"2026-10-31T12:40:26.413010881Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"=== RUN   TestWallpaperQuerySelectionPolicyAndPreviewPosition\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.414004763Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Output\":\"--- PASS: TestWallpaperQuerySelectionPolicyAndPreviewPosition (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.414009804Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestWallpaperQuerySelectionPolicyAndPreviewPosition\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.414011763Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\"}\\n{\"Time\":\"2026-10-31T12:40:26.414012971Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"=== RUN   TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.417772496Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Output\":\"--- PASS: TestTrayOffStartupEnableRefreshAndAliasOnlyDisable (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.417781454Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTrayOffStartupEnableRefreshAndAliasOnlyDisable\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.417783954Z\",\"Action\":\"run\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\"}\\n{\"Time\":\"2026-10-31T12:40:26.417785787Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"=== RUN   TestTraySavedStartupAndInvalidTransaction\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.418711168Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Output\":\"--- PASS: TestTraySavedStartupAndInvalidTransaction (0.00s)\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.418716085Z\",\"Action\":\"pass\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Test\":\"TestTraySavedStartupAndInvalidTransaction\",\"Elapsed\":0}\\n{\"Time\":\"2026-10-31T12:40:26.41871771Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.419128338Z\",\"Action\":\"output\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Output\":\"FAIL\\\\tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\\\\t3.153s\\\\n\",\"OutputType\":\"frame\"}\\n{\"Time\":\"2026-10-31T12:40:26.419136588Z\",\"Action\":\"fail\",\"Package\":\"github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\",\"Elapsed\":3.153}\\n')"
+    },
+    {
+      "label": "gate05",
+      "archive_sha256": "15e8ac180a5a527e99680bf54be9678212933980f2bc76e0dc155d4ddb24d4ce",
+      "bytes": 227485,
+      "files": 17,
+      "source_closure": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "bin/FvwmPrompt/FvwmDesktop",
+            "bin/FvwmPrompt/fvwm-desktop-worker",
+            "bin/FvwmPrompt/FvwmCommand",
+            "bin/FvwmPrompt/FvwmPrompt",
+            "tests/test-native-settings-policy",
+            "doc/FvwmDesktop.1",
+            "doc/fvwm-native-settings.1",
+            "doc/FvwmMFL.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.7853700250002476,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-unit",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./cmd/fvwmdesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 4.035925955000039,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-race",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "test",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-race",
+            "-mod=vendor",
+            "-json",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./cmd/fvwmdesktop"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 6.6459285439996165,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "go-vet",
+          "command": [
+            "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+            "vet",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/source/bin/FvwmPrompt",
+            "-mod=vendor",
+            "./internal/desktopsettings",
+            "./internal/desktopcontroller",
+            "./internal/desktopworker",
+            "./internal/desktopcheck",
+            "./internal/commandmeta",
+            "./cmd/fvwmdesktop",
+            "./cmd/fvwmdesktopworker"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.21717506799996045,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "legacy-settings-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate05/mfl-settings"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 0.2695901980000599,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "source_post": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "error": "RuntimeError('legacy-settings-x:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py\", line 430, in <module>\\n    run(parser.parse_args())\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py\", line 245, in run\\n    reply(discovery, \\'unwatch\\')\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_request_live.py\", line 28, in reply\\n    assert set(value) == {\\'reply\\'}, value\\n           ^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError: {\\'provider_changed\\': {\\'version\\': 1, \\'owner\\': \\'FvwmDesktop\\', \\'provider\\': \\'ae7bbba1706f4867c747659f349b119b\\', \\'generation\\': \\'c5f10f74e03458891b462373b2778ac8\\', \\'snapshot_required\\': True}}\\n')"
+    },
+    {
+      "label": "sanitizer01",
+      "archive_sha256": "1f304201cf2cf9c0fb70277fc641589d5256a9e1141fb6bf388889f76b165fc5",
+      "bytes": 183764,
+      "files": 24,
+      "source_closure": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "sanitizer-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "tests/test-native-settings-policy"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 1.4448741139999584,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "policy-asan",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-native-settings-policy"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.003911317000074632,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "wire-x-asan",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-native-settings",
+            "--groups",
+            "wire",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-sanitizer01/wire",
+            "--execution-profile",
+            "native-linux"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 2.3886934950000978,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "source_post": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f",
+      "error": "RuntimeError('wire-x-asan:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1180, in <module>\\n    raise SystemExit(main())\\n                     ^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1175, in main\\n    run(args, profile)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1069, in run\\n    wire_cases(args, env, out, evidence, observer)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 476, in wire_cases\\n    assert adoption[\\'readiness\\'] == \\'ready\\' and adoption[\\'resource_state\\'] == \\'applied\\'\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError\\n')"
+    },
+    {
+      "label": "x05",
+      "archive_sha256": "32ef3e74915559a1bf65255f5b54bb2d29808619e5ecf305f897da8e1b39922b",
+      "bytes": 218122,
+      "files": 43,
+      "source_closure": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "native-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-x05/live",
+            "--execution-profile",
+            "native-linux",
+            "--toolkit-env",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-completion-clients/receipt.json"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 3.8985234440001477,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "source_post": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e",
+      "error": "RuntimeError('native-x:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1276, in <module>\\n    raise SystemExit(main())\\n                     ^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1271, in main\\n    run(args, profile)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1166, in run\\n    controller_cases(args, profile, runtime, env, out, evidence, observer, native)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 937, in controller_cases\\n    assert code == \\'invalid_value\\', code\\n           ^^^^^^^^^^^^^^^^^^^^^^^\\nAssertionError: invalid_request\\n')"
+    },
+    {
+      "label": "gate06",
+      "archive_sha256": "4f1ade068fb0d87198f20971e38ff2a94d36e0c0194053e9a34c650165e9bbc3",
+      "bytes": 271750,
+      "files": 45,
+      "source_closure": "078ba9e5f5fc59c900f40c3c1a9cf0703f931cbaca9d62b3db6d43d273aa8918",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "-j2",
+            "modules/FvwmMFL/FvwmMFL",
+            "tests/test-mfl-request",
+            "doc/FvwmMFL.1"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.7177347980000377,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "mfl-policy",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0017904689998431422,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "legacy-settings-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/mfl_settings_live.py",
+            "--fvwm",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+            "--mfl",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate06/mfl-settings"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 15.69344053399982,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native-controller-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--groups",
+            "controller",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate06/live",
+            "--execution-profile",
+            "native-linux",
+            "--toolkit-env",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-completion-clients/receipt.json"
+          ],
+          "exit": 1,
+          "process_exit": 1,
+          "seconds": 7.715756144999887,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "078ba9e5f5fc59c900f40c3c1a9cf0703f931cbaca9d62b3db6d43d273aa8918",
+      "source_post": "078ba9e5f5fc59c900f40c3c1a9cf0703f931cbaca9d62b3db6d43d273aa8918",
+      "error": "RuntimeError('native-controller-x:Traceback (most recent call last):\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1369, in <module>\\n    raise SystemExit(main())\\n                     ^^^^^^\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1364, in main\\n    run(args, profile)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1259, in run\\n    controller_cases(args, profile, runtime, env, out, evidence, observer, native)\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py\", line 1072, in controller_cases\\n    wait_for_predicate(\\'actual application editor focused\\',\\n  File \"/tmp/fvwm-module-waits-20261015/source/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\\nlive_x_harness.HarnessError: deadline expired while waiting for actual application editor focused\\n')"
+    },
+    {
+      "label": "gate07",
+      "archive_sha256": "620723fa0f1b36f0012440aa1bdd14443a1b3fa0538f7cc65aa219af3321df9d",
+      "bytes": 851291,
+      "files": 107,
+      "source_closure": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "status": "passed",
+      "commands": [
+        {
+          "label": "native-controller-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--groups",
+            "controller",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate07/live",
+            "--execution-profile",
+            "native-linux",
+            "--toolkit-env",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-completion-clients/receipt.json"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 16.763828859000114,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "source_post": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "error": null
+    },
+    {
+      "label": "supplement01",
+      "archive_sha256": "043d4d623c57dcf54b8b8a7f7c019f13651080f8732db617f70568baa2e9e152",
+      "bytes": 175638,
+      "files": 7,
+      "source_closure": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "status": "failed",
+      "commands": [
+        {
+          "label": "affected-install",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.18775185699996655,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "install-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11887316999991526,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "source_post": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "error": "AssertionError(('doc/FvwmDesktop.1', '/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmDesktop.1'))"
+    },
+    {
+      "label": "supplement02",
+      "archive_sha256": "6e985c1286aeee7c27f27bda0eb494274ba05f6e1832662e854cb0bab4a838c3",
+      "bytes": 458181,
+      "files": 73,
+      "source_closure": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "status": "passed",
+      "commands": [
+        {
+          "label": "affected-install",
+          "command": [
+            "meson",
+            "install",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--no-rebuild",
+            "--tags",
+            "desktop-controller"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.1313169990003189,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "install-map",
+          "command": [
+            "meson",
+            "introspect",
+            "--installed",
+            "/tmp/fvwm-module-waits-20261015/build-gcc"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.11563219199979358,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native-linkage",
+          "command": [
+            "readelf",
+            "-d",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.004453652999927726,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "native-size",
+          "command": [
+            "size",
+            "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.0015890929998931824,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "installed-lookup-x",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--desktop",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-native-settings",
+            "--worker",
+            "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+            "--groups",
+            "controller",
+            "--profiles",
+            "slate-dark",
+            "--installed-helper-lookup",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-supplement02/installed",
+            "--execution-profile",
+            "native-linux",
+            "--toolkit-env",
+            "/tmp/fvwm-module-waits-20261015/r1-tray-completion-clients/receipt.json"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 5.642547591000039,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "sanitizer-build",
+          "command": [
+            "ninja",
+            "-C",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+            "-j2",
+            "bin/fvwm-native-settings",
+            "tests/test-native-settings-policy",
+            "tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.31879835300014747,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "mfl-policy-asan",
+          "command": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-mfl-request"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 0.01614976900009424,
+          "timeout": false,
+          "forced_cleanup": false
+        },
+        {
+          "label": "wire-x-asan",
+          "command": [
+            "python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/native_settings_live.py",
+            "--build",
+            "/tmp/fvwm-module-waits-20261015/build-gcc",
+            "--helper",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-native-settings",
+            "--groups",
+            "wire",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-native-preferences-supplement02/wire",
+            "--execution-profile",
+            "native-linux"
+          ],
+          "exit": 0,
+          "process_exit": 0,
+          "seconds": 2.448648266999953,
+          "timeout": false,
+          "forced_cleanup": false
+        }
+      ],
+      "source_pre": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "source_post": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+      "error": null
+    }
+  ],
+  "normal_go_composition": {
+    "final05": {
+      "desktopsettings": 61,
+      "desktopcontroller": 305,
+      "fvwmdesktop": 4
+    },
+    "unchanged02": {
+      "desktopworker": 37,
+      "desktopcheck": 19,
+      "commandmeta": 1,
+      "fvwmdesktopworker": 2
+    },
+    "total": 429
+  },
+  "race05": {
+    "desktopsettings": 61,
+    "desktopcontroller": 305,
+    "fvwmdesktop": 4,
+    "total": 370
+  },
+  "vet": "seven affected packages pass source05; unchanged since",
+  "reply_budget": {
+    "cap": 8192,
+    "complete_records": 26,
+    "worst_case": 8060,
+    "profiles": 8
+  },
+  "native_policy": "normal source02 pass; scoped ASan/UBSan source04 pass; unchanged C policy retained",
+  "native_wire": {
+    "normal_source05": 13,
+    "sanitizer_source07": 13
+  },
+  "controller_profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "cases": [
+        "old_schema_off_inherit_no_write",
+        "actual_controller_admission_publication",
+        "public_128_byte_and_empty_preference_boundaries",
+        "invalid_save_stale_target_and_noop_unchanged",
+        "gtk_existing_notifications_fresh_and_enlarged_sample",
+        "native_application_editor_cancel",
+        "direct_child_disable_eof_cleanup_reap",
+        "controller_owner_conflict_no_loop_explicit_retry",
+        "actual_desktop_restart_saved_intent_new_run"
+      ],
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "screenshots": {
+        "application-preferences.png": {
+          "sha256": "07cf8377075e951f290c0c8a470152267f81dbc50c95f9152f066a80ac3c1da1",
+          "window": 18874375,
+          "geometry": [
+            0,
+            0,
+            553,
+            394
+          ],
+          "visual_inspection": "pending separate reviewer"
+        }
+      },
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "configuration_sha256": {
+        "configuration.fvwm": "04a85c26554e74c386a5242de4c0a5e24ea5bfccd3e4941bb7a183b1462b6e45",
+        "local.config": "4a9845837e8398e8c79b364a58763ab45fcb02c0af21cb329aa5a45ea0142d9b",
+        "old-state.json": "f7af982a178b683e2695a77c56387dd541cc352d62ffb39a00026cab8e3b4686",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      }
+    },
+    "dune-light": {
+      "status": "passed",
+      "cases": [
+        "old_schema_off_inherit_no_write",
+        "actual_controller_admission_publication",
+        "public_128_byte_and_empty_preference_boundaries",
+        "invalid_save_stale_target_and_noop_unchanged",
+        "gtk_existing_notifications_fresh_and_enlarged_sample",
+        "native_application_editor_cancel",
+        "direct_child_disable_eof_cleanup_reap",
+        "controller_owner_conflict_no_loop_explicit_retry",
+        "actual_desktop_restart_saved_intent_new_run"
+      ],
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "screenshots": {
+        "application-preferences.png": {
+          "sha256": "51a79172b35adbe41de2d6a0ac71a0a3bf85c44afb56b653c009ffacfbf6bcea",
+          "window": 18874375,
+          "geometry": [
+            0,
+            0,
+            553,
+            394
+          ],
+          "visual_inspection": "pending separate reviewer"
+        }
+      },
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "configuration_sha256": {
+        "configuration.fvwm": "7baab62191d3aa24178e3bfcd97de79816b1d6bda0b329347c96c211da6474a0",
+        "local.config": "6be68335116bfa16109b5064e2791974a8385858666db4d88ee174304489ad3d",
+        "old-state.json": "39e7ecea6986460a4f975979e7ee0ea443e40a794ba8b3e85efa689c263c891d",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      }
+    },
+    "classic-large": {
+      "status": "passed",
+      "cases": [
+        "old_schema_off_inherit_no_write",
+        "actual_controller_admission_publication",
+        "public_128_byte_and_empty_preference_boundaries",
+        "invalid_save_stale_target_and_noop_unchanged",
+        "gtk_existing_notifications_fresh_and_enlarged_sample",
+        "native_application_editor_cancel",
+        "direct_child_disable_eof_cleanup_reap",
+        "controller_owner_conflict_no_loop_explicit_retry",
+        "actual_desktop_restart_saved_intent_new_run"
+      ],
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "screenshots": {
+        "application-preferences.png": {
+          "sha256": "ae5c7d0add3ae1f0059d1548bdf0679e8fcb72bca7f937d2d58d3465cd11b7c2",
+          "window": 18874375,
+          "geometry": [
+            0,
+            0,
+            1031,
+            576
+          ],
+          "visual_inspection": "pending separate reviewer"
+        }
+      },
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "configuration_sha256": {
+        "configuration.fvwm": "449b63b014c113f6628e36e230c31d4cbd7ce5c104ac75fe9bdd8184a936c3cc",
+        "local.config": "4a9845837e8398e8c79b364a58763ab45fcb02c0af21cb329aa5a45ea0142d9b",
+        "old-state.json": "f7af982a178b683e2695a77c56387dd541cc352d62ffb39a00026cab8e3b4686",
+        "default.config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "desktop.fvwm": "ed8e41b425659fb9aff7291c426834c4f5c2117f40b77eecddffc55c4ea2a49d",
+        "palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      }
+    }
+  },
+  "installed": {
+    "bin/fvwm-native-settings": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-native-settings",
+      "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7",
+      "bytes": 170304,
+      "provenance": "exact build/installed byte equality"
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/FvwmDesktop",
+      "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8",
+      "bytes": 6671485,
+      "provenance": "exact build/installed byte equality"
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+      "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309",
+      "bytes": 6478549,
+      "provenance": "exact build/installed byte equality"
+    },
+    "doc/FvwmDesktop.1": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmDesktop.1",
+      "sha256": "a079849d260ccc54ad4f4f87e2bcddefb30fd56b20537a90814983f1b6356467",
+      "bytes": 77347,
+      "provenance": "exact build/installed byte equality"
+    },
+    "doc/fvwm-native-settings.1": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/fvwm-native-settings.1",
+      "sha256": "2a5936f18e9a36c5074b517f6266d1bb79e8f52430a07f2e73ca467a21032978",
+      "bytes": 5750,
+      "provenance": "exact build/installed byte equality"
+    },
+    "doc/FvwmMFL.1": {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmMFL.1",
+      "sha256": "028db171c1a418557d940bcb4be51a8f0c5097ec2f01090d2d2923f10fd3f4f8",
+      "bytes": 100360,
+      "provenance": "exact build/installed byte equality"
+    }
+  },
+  "manual_staging": [
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmDesktop.1",
+      "source": "/tmp/fvwm-module-waits-20261015/build-gcc/doc/FvwmDesktop.1",
+      "method": "affected untagged manual copied to canonical Meson install mapping",
+      "sha256": "a079849d260ccc54ad4f4f87e2bcddefb30fd56b20537a90814983f1b6356467"
+    },
+    {
+      "path": "/tmp/fvwm-module-waits-20261015/r1-xdg-installed-prefix/share/man/man1/FvwmMFL.1",
+      "source": "/tmp/fvwm-module-waits-20261015/build-gcc/doc/FvwmMFL.1",
+      "method": "affected untagged manual copied to canonical Meson install mapping",
+      "sha256": "028db171c1a418557d940bcb4be51a8f0c5097ec2f01090d2d2923f10fd3f4f8"
+    }
+  ],
+  "sanitizer_binaries": {
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/bin/fvwm-native-settings": {
+      "sha256": "4bd2a1f4bb4ecb21b4b4421541a391001e368762353d06a33039ee9f2acc79b5",
+      "bytes": 2262248
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-native-settings-policy": {
+      "sha256": "143402b55308be7c52cd1cdf9e27b1b3df1b09f998e48dda15052721106a33ce",
+      "bytes": 2040328
+    }
+  },
+  "manual_render": [
+    {
+      "page": "FvwmDesktop.1",
+      "label": "render",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "utf8",
+        "-O",
+        "width=80",
+        "supplement02/FvwmDesktop.1"
+      ],
+      "exit": 0
+    },
+    {
+      "page": "FvwmDesktop.1",
+      "label": "lint",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "lint",
+        "supplement02/FvwmDesktop.1"
+      ],
+      "exit": 3
+    },
+    {
+      "page": "FvwmMFL.1",
+      "label": "render",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "utf8",
+        "-O",
+        "width=80",
+        "supplement02/FvwmMFL.1"
+      ],
+      "exit": 0
+    },
+    {
+      "page": "FvwmMFL.1",
+      "label": "lint",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "lint",
+        "supplement02/FvwmMFL.1"
+      ],
+      "exit": 4
+    },
+    {
+      "page": "fvwm-native-settings.1",
+      "label": "render",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "utf8",
+        "-O",
+        "width=80",
+        "supplement02/fvwm-native-settings.1"
+      ],
+      "exit": 0
+    },
+    {
+      "page": "fvwm-native-settings.1",
+      "label": "lint",
+      "command": [
+        "/usr/bin/mandoc",
+        "-T",
+        "lint",
+        "supplement02/fvwm-native-settings.1"
+      ],
+      "exit": 3
+    }
+  ],
+  "manual_diagnostics": {
+    "fvwm-native-settings.1.lint.stdout": {
+      "ERROR: skipping insecure request": 1,
+      "ERROR: skipping unknown macro": 1,
+      "STYLE: input text line longer than 80 bytes": 11,
+      "WARNING: skipping paragraph macro": 8
+    },
+    "FvwmMFL.1.lint.stdout": {
+      "ERROR: skipping insecure request": 1,
+      "ERROR: skipping unknown macro": 1,
+      "STYLE: input text line longer than 80 bytes": 261,
+      "UNSUPP: ignoring macro in table": 130,
+      "WARNING: skipping paragraph macro": 28
+    },
+    "FvwmDesktop.1.lint.stdout": {
+      "ERROR: skipping insecure request": 1,
+      "ERROR: skipping unknown macro": 1,
+      "STYLE: input text line longer than 80 bytes": 124,
+      "WARNING: skipping paragraph macro": 20
+    }
+  },
+  "performance_reference": {
+    "script_sha256": "66f1fe217294dc85ddf1af6546191a4a0bb5bdde2c8490168ceba270c993a747",
+    "exit": 0,
+    "seconds": 0.11491962504805997,
+    "stdout": "{\"path\": \"/tmp/fvwm-module-waits-20261015/m5-performance-preferences-20261031\", \"revision\": \"b19c3b04d5d423bdd3ba05ec266c820389304de0\", \"merged_pr\": 315, \"counter\": 0, \"files\": {\"core\": {\"sha256\": \"e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd\", \"bytes\": 5693488}, \"FvwmMFL\": {\"sha256\": \"f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca\", \"bytes\": 453504}}, \"profile\": \"nativeCPU LinuxARM64 GCC13.3 debugoptimized AppleHV; Xvfb\", \"evidence\": \"r1-preferences-performance.tgz\", \"archive_sha256\": \"18086ebc7514016f22e34d244c9655208034e52b1ef4f4fd70163e1a7a8e0294\"}\n",
+    "stderr": ""
+  },
+  "review": {
+    "status": "separate source/artifact/visual review clear; no outstanding findings",
+    "role": "temper_reviewer",
+    "reviewer": "/root/native_settings_final_review",
+    "scope": "seven-outcome checkpoint; final source07 + documented source-bound composed evidence and gallery",
+    "verified_archives": 11,
+    "verified_raw_files": 344,
+    "gallery_copies_verified": 6,
+    "backend_model_effort": "unverified; role selected, no runtime model metadata",
+    "limits": "read-only agent review, no independent human approval; no test re-execution"
+  },
+  "remaining": [
+    "optional settings portal",
+    "Qt/browser and cached-client cursor behavior",
+    "full six-target/compiler/install/default-X/release and physical hardware qualification",
+    "broader #60/#73 registry/preview/provider acceptance"
+  ],
+  "retention": {
+    "status": "complete; owned lab restored to initial stopped state",
+    "guest": {
+      "status": "verified duplicate guest evidence retired",
+      "removed": [
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate01",
+          "archive_sha256": "d9bdd6268f97ae0e909149ac158b3326945d88c048e1ff1014f23265a11050aa",
+          "verified_files": 6,
+          "bytes": 806972
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate02",
+          "archive_sha256": "45bb0440c1e7fdade45048f2b910e6905cf59057d85a7bfddfb1e57f0b7b7f52",
+          "verified_files": 10,
+          "bytes": 1257430
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate03",
+          "archive_sha256": "b9f3591bda6823403030a9b61aa078796d539d766048b7cb43e1c82cb100a290",
+          "verified_files": 8,
+          "bytes": 1129249
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate04",
+          "archive_sha256": "20b32a4ca68d5d1643f22c96b2aa36517acde50dea90c15d8262292ddc6bebd3",
+          "verified_files": 8,
+          "bytes": 1129049
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate05",
+          "archive_sha256": "15e8ac180a5a527e99680bf54be9678212933980f2bc76e0dc155d4ddb24d4ce",
+          "verified_files": 18,
+          "bytes": 1607095
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate06",
+          "archive_sha256": "4f1ade068fb0d87198f20971e38ff2a94d36e0c0194053e9a34c650165e9bbc3",
+          "verified_files": 46,
+          "bytes": 2017282
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-gate07",
+          "archive_sha256": "620723fa0f1b36f0012440aa1bdd14443a1b3fa0538f7cc65aa219af3321df9d",
+          "verified_files": 108,
+          "bytes": 7959569
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-sanitizer01",
+          "archive_sha256": "1f304201cf2cf9c0fb70277fc641589d5256a9e1141fb6bf388889f76b165fc5",
+          "verified_files": 25,
+          "bytes": 849986
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-x05",
+          "archive_sha256": "32ef3e74915559a1bf65255f5b54bb2d29808619e5ecf305f897da8e1b39922b",
+          "verified_files": 44,
+          "bytes": 1213607
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-supplement01",
+          "archive_sha256": "043d4d623c57dcf54b8b8a7f7c019f13651080f8732db617f70568baa2e9e152",
+          "verified_files": 8,
+          "bytes": 810475
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-native-preferences-supplement02",
+          "archive_sha256": "6e985c1286aeee7c27f27bda0eb494274ba05f6e1832662e854cb0bab4a838c3",
+          "verified_files": 74,
+          "bytes": 3492492
+        },
+        {
+          "tree": "/tmp/fvwm-module-waits-20261015/r1-preferences-performance",
+          "archive_sha256": "18086ebc7514016f22e34d244c9655208034e52b1ef4f4fd70163e1a7a8e0294",
+          "verified_files": 50,
+          "bytes": 188410
+        }
+      ],
+      "input_bytes": 27815463,
+      "total_bytes": 50277079,
+      "preserved": [
+        "source",
+        "build-gcc",
+        "build-module-waits-asan",
+        "r1-xdg-installed-prefix",
+        "/tmp/fvwm-module-waits-20261015/m5-performance-preferences-20261031",
+        "SDK and caches",
+        "VM disk"
+      ],
+      "new_reference": {
+        "revision": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+        "merged_pr": 315,
+        "counter": 0,
+        "files": {
+          "core": {
+            "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd",
+            "bytes": 5693488
+          },
+          "FvwmMFL": {
+            "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+            "bytes": 453504
+          }
+        },
+        "profile": "nativeCPU LinuxARM64 GCC13.3 debugoptimized AppleHV; Xvfb",
+        "evidence": "r1-preferences-performance.tgz",
+        "archive_sha256": "18086ebc7514016f22e34d244c9655208034e52b1ef4f4fd70163e1a7a8e0294"
+      }
+    },
+    "old_reference": {
+      "status": "obsolete PR310 runnable reference retired after verified PR315 replacement",
+      "old": {
+        "revision": "merged310 bcf6d52d6c5e7e550d0c7a53477c6492b569fba3",
+        "files": {
+          "core": {
+            "sha256": "0fb343aa0512dc13c32373671642656e2181f321d86872765ffd881f052c068e",
+            "bytes": 5693008
+          },
+          "FvwmMFL": {
+            "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+            "bytes": 453504
+          }
+        }
+      },
+      "new": {
+        "revision": "b19c3b04d5d423bdd3ba05ec266c820389304de0",
+        "merged_pr": 315,
+        "counter": 0,
+        "files": {
+          "core": {
+            "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd",
+            "bytes": 5693488
+          },
+          "FvwmMFL": {
+            "sha256": "f9e4009245440a9ceb1741278bc2ccd9f9a31b534c9ab7ebe2ed2971e501dbca",
+            "bytes": 453504
+          }
+        },
+        "profile": "nativeCPU LinuxARM64 GCC13.3 debugoptimized AppleHV; Xvfb",
+        "evidence": "r1-preferences-performance.tgz",
+        "archive_sha256": "18086ebc7514016f22e34d244c9655208034e52b1ef4f4fd70163e1a7a8e0294"
+      },
+      "bytes": 6146858
+    },
+    "host": {
+      "status": "verified old full inputs compacted; duplicate expanded failures retired",
+      "retired_bytes": 172196480,
+      "source_deltas": [
+        {
+          "version": "01",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "df180cde3772eb662d5ccda0b9e067860f731723999d66dfb185633a5e056e03",
+          "delta": "source01-delta.tgz",
+          "delta_sha256": "36ee51e95a6ae952cf80be2989aa5000688fde3bb2780b8cd1acb095fb5d8057",
+          "delta_bytes": 173571,
+          "changed_files": 20,
+          "omit_reference_files": [
+            "tests/live_x/settings_snapshot.py"
+          ],
+          "reconstructed_closure": "f8e3d409f82feb38caf9c7ab2e9c97539d0bc67caf7e6f6f0846655b408c2ca6"
+        },
+        {
+          "version": "02",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "ee8a90dd393ba7f87b0cef11502b2096465740080d09a3872e2ef640118ecebc",
+          "delta": "source02-delta.tgz",
+          "delta_sha256": "6316f7eae30cd542dbefea7df254481ff6feb1f6ca6c5bd02fff7c99b94406dd",
+          "delta_bytes": 172250,
+          "changed_files": 19,
+          "omit_reference_files": [
+            "tests/live_x/settings_snapshot.py"
+          ],
+          "reconstructed_closure": "05fd2bbb47484f42c34965a8c2e13c7283a35515ec333f1e5a03f04b89c636a6"
+        },
+        {
+          "version": "03",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "f016655eb5d33a4635daf3df2cad6405442959a57791d16a34c3b62e3b2ec644",
+          "delta": "source03-delta.tgz",
+          "delta_sha256": "dc04bff7e8a86a4c0bdd3319c1ba564237d09c154e1afcff7d1a46a8e2bfd531",
+          "delta_bytes": 130918,
+          "changed_files": 13,
+          "omit_reference_files": [],
+          "reconstructed_closure": "f9c981424661b137cc112bdad8bf0ac0e21ceda153addabff6ceb623591e8dc9"
+        },
+        {
+          "version": "04",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "5855040b3d3566e77d764577055b7873f1d06d0e5834793edcf26adace8af853",
+          "delta": "source04-delta.tgz",
+          "delta_sha256": "21d9d0d4e750ef5ddba34dd3012d041f804383407b6c2d6a5b097dcadca22c76",
+          "delta_bytes": 123372,
+          "changed_files": 11,
+          "omit_reference_files": [],
+          "reconstructed_closure": "a8864dd4e90a86b0e483a2d31b2d338333ad8d35c10d73a2fff64d9333c2b96f"
+        },
+        {
+          "version": "05",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "b0e5e7583707866602b083516a765cda818d75a0d65fb24cf919342708ee6ac8",
+          "delta": "source05-delta.tgz",
+          "delta_sha256": "739b168ffd5a0fdcb24cfd3c112e0640a98dea25b2dfd4fc717b4e72dbec49ff",
+          "delta_bytes": 73215,
+          "changed_files": 5,
+          "omit_reference_files": [],
+          "reconstructed_closure": "f0314b1e41c8241ccbb31751712c86c66d7c0294f0bda1737e96e58e497a064e"
+        },
+        {
+          "version": "06",
+          "reference": "source07.tgz",
+          "reference_sha256": "300a5b75f776da1e2e1f25f02af66ba5c2213837d3737b31619dc1f5a43bbae7",
+          "original_archive_sha256": "27c16ac8c4c73016223ae2763a415e238340c514aca23796cbc9b89948a14796",
+          "delta": "source06-delta.tgz",
+          "delta_sha256": "04a2cc354832441c3b77e05462eae4fe8501ed9090e5a89433010545ddc8a6b5",
+          "delta_bytes": 18930,
+          "changed_files": 1,
+          "omit_reference_files": [],
+          "reconstructed_closure": "078ba9e5f5fc59c900f40c3c1a9cf0703f931cbaca9d62b3db6d43d273aa8918"
+        }
+      ],
+      "preserved": [
+        "source07.tgz and all source manifests",
+        "all canonical raw archives including failures",
+        "current gate07/supplement02/performance expanded evidence",
+        "all reusable builds and install prefix"
+      ]
+    },
+    "lab": {
+      "records": [
+        {
+          "command": [
+            "podman",
+            "machine",
+            "start",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Starting machine \"podman-machine-default\"\n\nThis machine is currently configured in rootless mode. If your containers\nrequire root permissions (e.g. ports < 1024), or if you run into compatibility\nissues with non-podman clients, you can switch using the following command:\n\n\tpodman machine set --rootful\n\nAPI forwarding listening on: /var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock\n\nThe system helper service is not installed; the default Docker API socket\naddress can't be used by podman. If you would like to install it, run the following commands:\n\n        sudo /opt/homebrew/Cellar/podman/6.1.0/bin/podman-mac-helper install\n        podman machine stop; podman machine start\n\nYou can still connect Docker API clients by setting DOCKER_HOST using the\nfollowing command in your terminal session:\n\n        export DOCKER_HOST='unix:///var/folders/2k/hbwvd2qn4cb988kpjk1wcn800000gn/T/podman/podman-machine-default-api.sock'\n\nMachine \"podman-machine-default\" started successfully\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "start",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "--connection",
+            "podman-machine-default-root",
+            "stop",
+            "--time",
+            "15",
+            "fvwm-x-linux-arm64-svg"
+          ],
+          "exit": 0,
+          "stdout": "fvwm-x-linux-arm64-svg\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "podman",
+            "machine",
+            "stop",
+            "podman-machine-default"
+          ],
+          "exit": 0,
+          "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+          "stderr": ""
+        }
+      ],
+      "normal_stop": true
+    },
+    "canonical_host_evidence": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-next-bundle"
+  }
+}

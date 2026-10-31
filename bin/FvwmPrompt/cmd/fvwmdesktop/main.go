@@ -26,6 +26,7 @@ import (
 
 var dataDirectory = "/usr/local/share/fvwm3"
 var pngEnabled = "true"
+var nativeSettingsHelperPath = "/usr/local/libexec/fvwm3/fvwm-native-settings"
 
 func environment(key, fallback string) string {
 	if value := os.Getenv(key); value != "" {
@@ -151,9 +152,16 @@ func run(ctx context.Context, args []string) error {
 	if err != nil {
 		return err
 	}
+	nativeHelper := nativeSettingsHelperPath
+	if override := os.Getenv("FVWM_NATIVE_SETTINGS_HELPER"); override != "" {
+		if !filepath.IsAbs(override) {
+			return fmt.Errorf("FVWM_NATIVE_SETTINGS_HELPER must be absolute")
+		}
+		nativeHelper = override
+	}
 	// The optional browser peer is checked only when its explicit action runs.
 	browser, _ := adjacent("fvwm-file-browser", "FVWM_FILE_BROWSER")
-	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: worker, Capture: capture, Browser: browser, PNG: pngEnabled != "false", Input: input, Output: output})
+	return desktopcontroller.Run(desktopcontroller.Options{Context: ctx, Root: environment("FVWM_DESKTOP_ROOT", filepath.Join(data, "default-config")), StatePath: filepath.Join(environment("FVWM_USERDIR", filepath.Join(home, ".fvwm")), "desktop-state.json"), System: system, Worker: worker, Capture: capture, Browser: browser, NativeSettings: nativeHelper, PNG: pngEnabled != "false", Input: input, Output: output})
 }
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT, syscall.SIGHUP)

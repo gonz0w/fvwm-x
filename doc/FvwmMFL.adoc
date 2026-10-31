@@ -881,7 +881,7 @@ request {"version":1,"id":"schedule-1","method":"query","resource":"settings","s
 
 Optional `scope` defaults to `all`. It accepts one registered key or
 `group:appearance`, `group:wallpaper`, `group:schedule`, `group:effects`,
-`group:session` and `group:tray`, matching FvwmDesktop's
+`group:session`, `group:tray` and `group:application`, matching FvwmDesktop's
 existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 `schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
 and a `settings`
@@ -889,10 +889,15 @@ object keyed by setting name. Each item includes its type/default/choices or
 range, description, saved/effective values, override source and capability.
 The result-level `owner`, `generation`, `preview`, `persistence_error`,
 `available` and `capability` apply when the corresponding field is absent from
-a setting row. A row's explicit value overrides that inherited default.
-Items omit matching shared values to preserve the fixed reply budget.
-Per-setting values, types, choices/bounds, descriptions, source/application
-and distinct constraint/persistence diagnostics remain in each item. Standalone
+a setting row. Apply `setting_defaults` next; for rows in the application group,
+apply `application_defaults` after that. Finally apply the row's explicit fields.
+Both defaults maps contain only shared scalar metadata. This precedence preserves
+each complete record while avoiding repeated values in the fixed 8 KiB reply.
+Saved/effective values, choices/bounds, descriptions and per-setting metadata
+differences remain on their rows. Types, defaults, source/application and native
+publication observations can be inherited from the two maps. Non-application
+groups may inherit `group`; application rows always name their group explicitly.
+Standalone
 FvwmDesktop `query-settings` records and native inspector metadata retain their
 own per-item owner/generation fields.
 The provider token identifies one helper incarnation. An optional `provider`
@@ -908,11 +913,11 @@ projection. A resolved appearance of `auto` remains schedule policy rather than
 the current painted light/dark phase. `runtime_constraint: "wallpaper-retained"`
 explains why a saved choice is masked by keep_wallpaper. These fields are stable
 for the preference generation; no clock revision or new resource is introduced.
-The IPC schema remains version 1, independently of the version 8 preference file.
+The IPC schema remains version 1, independently of the version 9 preference file.
 The session group contains `session_bus` (off/reuse/start, default off),
 `session_notifications` (off/external, default off), `notification_dnd`
 (boolean, default false) and `session_power` (portable/login1, default portable).
-The file holds 21 preferences plus retained wallpaper. The compact Session
+The file holds 26 preferences plus retained wallpaper. The compact Session
 editor edits these four keys; edit-all retains eleven appearance fields. Bus
 policy applies at next owned login. Power, notifications and DND require a
 successful live owner handshake after the atomic preference commit; a saved
@@ -989,6 +994,11 @@ than infer refusal or automatically replay the action.
 Settings requests share the eight pending slots and absolute five-second
 deadline. The normalized provider input is limited to 384 bytes, excluding
 client IDs and outer envelope; larger input returns `request_too_large`.
+Setting strings may be empty or contain up to 128 UTF-8 bytes; each registry
+key still applies its own type and value rules. The 384-byte total also applies
+to multi-key updates, so individually valid values can exceed it together.
+The native Application preferences editor uses its own bounded atomic draft
+route for editing the complete group.
 The internal reply is at most 8192 decoded bytes in 32 ordered chunks. Partial,
 malformed or out-of-order replies return `invalid_provider_reply`; expiry and
 disconnect release assembly storage. A restart cookie plus nonreused serial

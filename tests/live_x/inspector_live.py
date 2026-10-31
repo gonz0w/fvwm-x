@@ -11,6 +11,7 @@ file gate delays only an inspect request, with a one-second hard bound. Neither
 helper invents inventory rows or runs inspected FVWM commands.
 """
 import argparse
+from settings_snapshot import expanded_settings
 from collections import Counter
 import ctypes as C
 import hashlib
@@ -515,7 +516,7 @@ def run(args, profile):
                 response = rpc.record()['reply']
                 if response['status'] != 'ok':
                     return None
-                value = response['result']
+                value = expanded_settings(response['result'])
                 return value if value['settings']['palette']['application'] == 'submitted-to-fvwm' else None
 
             settings_before = wait_for_predicate('desktop provider settings', settings_ready,

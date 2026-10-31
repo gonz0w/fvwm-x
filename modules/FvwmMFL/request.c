@@ -102,9 +102,14 @@ static bool settings_values(const cJSON *value)
 	{
 		size_t length = strlen(item->string);
 
+		/* The registry validates keys. Application preferences inherit
+		 * with empty strings; transport keeps a finite byte cap. */
 		if (++count > 8 || length == 0 || length > 32 ||
-		    strspn(item->string, "abcdefghijklmnopqrstuvwxyz_") != length ||
-		    !(cJSON_IsBool(item) || bounded_string(item, 64) ||
+		    strspn(item->string,
+		    "abcdefghijklmnopqrstuvwxyz_") != length ||
+		    !(cJSON_IsBool(item) ||
+		      (cJSON_IsString(item) &&
+		       strlen(item->valuestring) <= 128) ||
 		      (cJSON_IsNumber(item) && item->valuedouble >= INT_MIN &&
 		       item->valuedouble <= INT_MAX &&
 		       item->valuedouble == item->valueint)))

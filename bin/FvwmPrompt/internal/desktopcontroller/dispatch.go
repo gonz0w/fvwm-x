@@ -172,6 +172,11 @@ func (d *Controller) handle(command, argument string) error {
 		return d.changeSettings(values{argument: !raw})
 	case "reset":
 		return d.resetSettings(argument)
+	case "retry-native-settings":
+		if argument != "" {
+			return errors.New("retry-native-settings takes no arguments")
+		}
+		return d.retryNativeSettings()
 	case "reload-settings":
 		if argument != "" {
 			return errors.New("reload-settings takes no arguments")
@@ -398,6 +403,7 @@ func (d *Controller) handle(command, argument string) error {
 	return d.fatal
 }
 func (d *Controller) tick() {
+	d.nativeTick(time.Now())
 	d.sessionTick()
 	d.pollBrowserLaunches()
 	d.pollLocker()

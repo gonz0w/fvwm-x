@@ -284,6 +284,57 @@ static void test_settings_requests(void)
 	cJSON_Delete(root);
 }
 
+static void test_settings_string_bounds(void)
+{
+	struct mfl_request request;
+	char text[600], value[130];
+	const char *token = "0123456789abcdef0123456789abcdef";
+	const size_t lengths[] = {0, 64, 128, 129};
+	const char *methods[] = {"action", "validate"};
+
+	for (size_t method = 0; method < 2; method++)
+	{
+		enum mfl_request_kind expected = method == 0 ?
+			MFL_REQUEST_SETTINGS_SET :
+			MFL_REQUEST_SETTINGS_VALIDATE;
+		for (size_t i = 0; i < sizeof(lengths) / sizeof(lengths[0]);
+		    i++)
+		{
+			memset(value, 'a', lengths[i]);
+			value[lengths[i]] = '\0';
+			int length = snprintf(text, sizeof(text),
+				"{\"version\":1,\"id\":\"s\",\"method\":\"%s\","
+				"\"resource\":\"settings\",%s"
+				"\"generation\":\"%s\",\"provider\":\"%s\","
+				"\"values\":{\"application_font\":\"%s\"}}",
+				methods[method], method == 0 ?
+				"\"operation\":\"set\"," : "",
+				token, token, value);
+
+			assert(length > 0 && (size_t)length < sizeof(text));
+			if (lengths[i] > 128)
+			{
+				assert(!mfl_request_parse(text, &request));
+				assert(request.kind == MFL_REQUEST_INVALID);
+				assert(!strcmp(request.error,
+				    "invalid_request"));
+				continue;
+			}
+			assert(mfl_request_parse(text, &request));
+			assert(request.kind == expected);
+			cJSON *payload = cJSON_Parse(request.settings_payload);
+			assert(payload);
+			cJSON *values = cJSON_GetObjectItemCaseSensitive(
+				payload, "values");
+			cJSON *font = cJSON_GetObjectItemCaseSensitive(values,
+				"application_font");
+			assert(cJSON_IsString(font));
+			assert(strcmp(font->valuestring, value) == 0);
+			cJSON_Delete(payload);
+		}
+	}
+}
+
 static void test_settings_assembly_and_cleanup(void)
 {
 	struct mfl_pending_request pending = {.kind = MFL_REQUEST_SETTINGS_QUERY,
@@ -1364,6 +1415,7 @@ int main(void)
 	test_private_core_tags();
 	test_core_results_and_reply_ownership();
 	test_settings_requests();
+	test_settings_string_bounds();
 	test_settings_assembly_and_cleanup();
 	return 0;
 }

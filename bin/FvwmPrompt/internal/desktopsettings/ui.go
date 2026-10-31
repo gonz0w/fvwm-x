@@ -6,6 +6,7 @@
 package desktopsettings
 
 import (
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"strings"
@@ -71,7 +72,7 @@ func Editor(s Snapshot,
 	if scope == "all" {
 		appearance := keys[:0]
 		for _, key := range keys {
-			if !SessionKey(key) && !TrayKey(key) {
+			if !SessionKey(key) && !TrayKey(key) && !ApplicationKey(key) {
 				appearance = append(appearance, key)
 			}
 		}
@@ -124,6 +125,16 @@ func Editor(s Snapshot,
 		lines = append(lines, "Line left",
 			`Text "Enablement requests the optional tray; another owner may refuse it."`)
 	}
+	if len(keys) > 0 && ApplicationKey(keys[0]) {
+		lines[0] = `Title "Application preferences"`
+		lines = append(lines, "Line left", `Text "Supported clients choose which preferences they use."`,
+			"Line left", `Text "Empty font/theme fields and size zero inherit existing preferences."`,
+			"Line left", "Label native_state 42 "+quote("Native: "+s.Native.Readiness),
+			"Line left", "Label native_resource 42 "+quote("Cursor resources: "+s.Native.ResourceState),
+			"Line left", "Label native_reason 42 "+quote("Reason: "+s.Native.Reason),
+			`Button continue "Retry native publication" F4`,
+			"Command SendToModule FvwmDesktop retry-native-settings")
+	}
 	previous := ""
 	for _, key := range plan.Keys {
 		item, _ := find(key)
@@ -141,7 +152,9 @@ func Editor(s Snapshot,
 			previous = item.Group
 		}
 		lines = append(lines, "Line left", "Text "+quote(item.Description))
-		if item.Type == "time" || item.Type == "integer" {
+		if item.Type == "font" || item.Type == "theme" {
+			lines = append(lines, "InputHex "+key+" 24 x"+hex.EncodeToString([]byte(value.(string))))
+		} else if item.Type == "time" || item.Type == "integer" {
 			width := 5
 			if item.Type == "integer" {
 				width = 3
@@ -184,7 +197,12 @@ func Editor(s Snapshot,
 	action := "SendToModule FvwmDesktop "
 	fields := []string{}
 	for _, key := range plan.Keys {
-		fields = append(fields, "$("+key+")")
+		item, _ := find(key)
+		if item.Type == "font" || item.Type == "theme" {
+			fields = append(fields, "x$("+key+":Base64)")
+		} else {
+			fields = append(fields, "$("+key+")")
+		}
 	}
 	arguments := token + " " + strings.Join(fields, " ")
 	lines = append(lines,
@@ -203,6 +221,7 @@ func Editor(s Snapshot,
 	if scope == "all" {
 		lines = append(lines, `Button continue "Session settings..." F8`, "Command "+action+"edit-settings group:session")
 		lines = append(lines, `Button continue "Tray settings..." F9`, "Command "+action+"edit-settings group:tray")
+		lines = append(lines, `Button continue "Application preferences..." F10`, "Command "+action+"edit-settings group:application")
 	}
 	if has(plan.Keys, "launcher_opacity") {
 		lines = append(lines,
@@ -270,7 +289,7 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 					Row{text(value),
 						"SendToModule FvwmDesktop set " + key + " " + text(value)})
 			}
-		} else if setting.Type == "integer" {
+		} else if setting.Type == "integer" || setting.Type == "font" || setting.Type == "theme" {
 			options = append(options,
 				Row{"Edit saved value...",
 					"SendToModule FvwmDesktop edit-settings " + key})
@@ -314,6 +333,9 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 	} else {
 		rows = append(rows, Row{"High contrast is already active", "Greyed"})
 	}
+	rows = append(rows, Row{"Application preferences...", "SendToModule FvwmDesktop edit-settings group:application"},
+		Row{"Native: " + s.Native.Readiness + "; cursor resources: " + s.Native.ResourceState, "Greyed"},
+		Row{"Retry native publication", "SendToModule FvwmDesktop retry-native-settings"})
 	rows = append(rows,
 		Row{"Preview launcher opacity...",
 			"Popup SlateOpacityPreview"},
@@ -383,6 +405,7 @@ func AppearanceMenu(settings Values) Menu {
 			"SendToModule FvwmDesktop settings"},
 		Row{"Edit saved preferences...",
 			"SendToModule FvwmDesktop edit-settings"})
+	rows = append(rows, Row{"Application preferences...", "SendToModule FvwmDesktop edit-settings group:application"})
 	rows = append(rows, Row{"Tray settings...", "SendToModule FvwmDesktop edit-settings group:tray"})
 	rows = append(rows, Row{"", "Nop"})
 	for _, contrast := range []string{"normal", "high"} {

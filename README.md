@@ -12,7 +12,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 - Session controls, cooperative logout, optional services and scaling.
 - Opt-in native text notifications, actions, keyboard center and bounded history;
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
-- Atomic button updates, responsive layout and settings/editor.
+- Atomic buttons, responsive layout and settings/editor;
+  [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
 - Source-aware errors and configuration reports.
 - Structured IPC and settings preview/recovery.
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),

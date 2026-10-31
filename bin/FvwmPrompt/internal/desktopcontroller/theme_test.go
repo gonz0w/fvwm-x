@@ -215,9 +215,10 @@ func TestWallpaperEditorRegistryAndIPCMetadata(t *testing.T) {
 		t.Fatal("module override authority lost")
 	}
 	response := d.settingsRequest(values{"operation": "query", "scope": "group:wallpaper"})
-	settings := response["result"].(map[string]any)["settings"].(map[string]any)
+	result := response["result"].(map[string]any)
+	settings := result["settings"].(map[string]any)
 	for key, resolved := range map[string]string{"wallpaper_palette": "grove", "wallpaper_appearance": "light"} {
-		item := settings[key].(map[string]any)
+		item := reconstructedPublicSetting(result, settings[key].(map[string]any))
 		if item["source"] != "module-configuration" || item["resolution"] != "explicit" || item["resolved"] != resolved || item["composition_version"] != 2 {
 			t.Fatal("override metadata", item)
 		}
@@ -257,7 +258,7 @@ func TestWallpaperEditorRegistryAndIPCMetadata(t *testing.T) {
 		t.Fatal(err)
 	}
 	state, err := desktopsettings.DecodeJSON(data)
-	if err != nil || state.(map[string]any)["schema_version"] != json.Number("8") {
+	if err != nil || state.(map[string]any)["schema_version"] != json.Number("9") {
 		t.Fatal("saved schema was not version 7", string(data), err)
 	}
 }

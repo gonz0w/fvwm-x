@@ -1,0 +1,399 @@
+{
+  "source_closure": "d65732843aa1ad841a269bad8341832300313f6bc62a14072cd865291270cc4a",
+  "gate_archive_sha256": "620723fa0f1b36f0012440aa1bdd14443a1b3fa0538f7cc65aa219af3321df9d",
+  "profiles": {
+    "slate-dark": {
+      "image": "native-preferences-slate-dark.png",
+      "configuration": "native-preferences-slate-dark.fvwm",
+      "image_sha256": "07cf8377075e951f290c0c8a470152267f81dbc50c95f9152f066a80ac3c1da1",
+      "configuration_sha256": "04a85c26554e74c386a5242de4c0a5e24ea5bfccd3e4941bb7a183b1462b6e45",
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "focus": {
+        "target": 18874375,
+        "commands": [
+          "WindowId 18874375 Raise",
+          "WindowId 18874375 Focus NoWarp"
+        ],
+        "status": "focus-observed",
+        "actual_focus": 18874375,
+        "observed_at": 3387.665745171
+      },
+      "geometry": [
+        0,
+        0,
+        553,
+        394
+      ],
+      "visual_review": "lead and separate temper_reviewer inspected original full-size capture; controls readable/contained"
+    },
+    "dune-light": {
+      "image": "native-preferences-dune-light.png",
+      "configuration": "native-preferences-dune-light.fvwm",
+      "image_sha256": "51a79172b35adbe41de2d6a0ac71a0a3bf85c44afb56b653c009ffacfbf6bcea",
+      "configuration_sha256": "7baab62191d3aa24178e3bfcd97de79816b1d6bda0b329347c96c211da6474a0",
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "focus": {
+        "target": 18874375,
+        "commands": [
+          "WindowId 18874375 Raise",
+          "WindowId 18874375 Focus NoWarp"
+        ],
+        "status": "focus-observed",
+        "actual_focus": 18874375,
+        "observed_at": 3393.235817678
+      },
+      "geometry": [
+        0,
+        0,
+        553,
+        394
+      ],
+      "visual_review": "lead and separate temper_reviewer inspected original full-size capture; controls readable/contained"
+    },
+    "classic-large": {
+      "image": "native-preferences-classic-large.png",
+      "configuration": "native-preferences-classic-large.fvwm",
+      "image_sha256": "ae5c7d0add3ae1f0059d1548bdf0679e8fcb72bca7f937d2d58d3465cd11b7c2",
+      "configuration_sha256": "449b63b014c113f6628e36e230c31d4cbd7ce5c104ac75fe9bdd8184a936c3cc",
+      "source_sha256": {
+        "tests/live_x/native_settings_live.py": "a61bd51d37824f00a0745ed44fc62f51de0c1bf93cec79e55f0e6e73c175f40e",
+        "tests/live_x/native_settings_gtk_probe.py": "c41b0efbb7ad8532ec192fda24bce9029c8affd9408283fb2069cb89ace234f1",
+        "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+        "tests/live_x/browser_handoff_live.py": "afcb47c8b82202b8de5ff30512983eeaa3e92ed8caaa34131819dad3715269bc",
+        "tests/live_x/colorset_live.py": "6a7653c9a20de1513b0ba2cf4f41712caca3c76755d9fd9d6981a979ce8a665c",
+        "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+        "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+        "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+        "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+        "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+        "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+        "tests/live_x/mfl_request_live.py": "c5c3a562dd1343751c117c1dfe0971cdf8c41b913ce8fe4dbcec9fd2c897460e",
+        "tests/live_x/mfl_stream_live.py": "2a8d45b6bc9a79cc78a35f2150169a101730042892c4a925d3f56698022e80ef",
+        "bin/native_settings.c": "26cc4438cb8e41433a9876a6989a1a17a4eb61de60fd8f571f50950655811ae2",
+        "bin/native_settings_policy.c": "f4fe4483e4e5e64d17b0b809cefd1af3fb0d25dc829ee78a6a5bbbe20184c31e",
+        "bin/native_settings_policy.h": "0554f192434f2494352e77090b0ac1c6f6892e238f50006771a3ad6c815ab0f9",
+        "bin/meson.build": "89eb6c0f272c75e121b78a87ed154640085e5e3bcc85d0b9589795e35b17bb6d",
+        "bin/FvwmPrompt/meson.build": "623aadf74d9b35af71af8f4c6f167efb54e9d0ef5adc32b70dc4326d3c8b0598",
+        "bin/FvwmPrompt/cmd/fvwmdesktop/main.go": "f29e459caf5dba1870d17d866418c349a95aa9aafceee43fb1749a53559ef655",
+        "modules/FvwmMFL/request.c": "709358229e47e9f2a3409caef8021688b35679dde5507bcbd14e3c4306fc07f9",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings.go": "410cd9729186d17b5b042c8e942b2a40b807b7207681c29950f678d26176dc4e",
+        "bin/FvwmPrompt/internal/desktopcontroller/bindings_test.go": "040bcd1b3df46133816e9ae50b9a1a98b210a4c460ef655680319e9267bbdd14",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff.go": "ca9c0e1d54fa821cde416ac921ee68d151b38313393d9113f5f73eed62e11fe7",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_handoff_test.go": "b7d1bbfe0b081e48151bc655b67eaa63ac8db58e37e41488c928d614c38dc670",
+        "bin/FvwmPrompt/internal/desktopcontroller/browser_menu_test.go": "9ad6030fa5cb02aee1aecf2a0debc211100a0ea6935444a51cf13447999f8e47",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview.go": "fdddfbfdac8c27c4bcdd65df18cec2a8af3d19ac3bdd5e4240eab9c40cff6f19",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_preview_test.go": "68e541add23182b2a62503afbacf2b0bf44b989ac6043769a37da3c1f75d04da",
+        "bin/FvwmPrompt/internal/desktopcontroller/contrast_test.go": "c94d9077afded1505d5e2b5825fb9d0e3752ee605486e9e470b3d9db2538b47f",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "a8f20c3f196f0dd523b7f9e6e22d2802370f5144b0f1f2313d9b9a7942e00853",
+        "bin/FvwmPrompt/internal/desktopcontroller/controller_test.go": "34fa930544bf2addd7f8e184d05008aea21885946f8bd5501bcd63c2e18b14ba",
+        "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "8a1dcd961e820a71a8ee9d746c779bb163c06331cf1184a5e5d6ea2ad7fa3dcc",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector.go": "235af13780bdb22289d0512d2f7760b814f01fc631aa5b79f7fdb86c90fc2944",
+        "bin/FvwmPrompt/internal/desktopcontroller/inspector_test.go": "823fd5a30b5f6d984f016b99e66a03132fb56c7c6b366cc02ff42b0852ba52d8",
+        "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "52fa1aaeb7214f40254deb629d23f0b96308c77579ea7015618f8d367d815ab4",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs.go": "82f20c727f0dbe3bc8c69bf55af6fa65f75a4cb0fb877a9cd22200fc734b2800",
+        "bin/FvwmPrompt/internal/desktopcontroller/jobs_test.go": "026d5a875f867b9c73fa58ef79362035030849ad164a0ae7430f175ebda0a264",
+        "bin/FvwmPrompt/internal/desktopcontroller/module.go": "ac6ce3b65297ca94b6467b29179119e6d3c010b4077fb03897a53db16a3afcef",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings.go": "7de862879bbad89cb9f21f4988d290d0ba99c785dec7cbc9a519138370e88e7e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_supervisor.go": "a0673ca9daaf4d7af91f00c6e887dfdc2e7f384b68b68a194d0ec5db4982e187",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_test.go": "ddb42ea19a7807485881f95a2fe2bccc34f6f46cdba5e6aaaac8f6e1c766567e",
+        "bin/FvwmPrompt/internal/desktopcontroller/native_settings_wire.go": "7b59a02c841a4199cc4cc364fad60fdde30e14ba0533b8cd5ddb9f4b94f086f0",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "d796f8537717d8d36c1b9e3464c5410659168f2e050618854a94b325391f215b",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "851e57c9a43e80a3e8998b7adc7bf1d2f6d63a575ab3b090f48dcf3ec5b8b922",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_test.go": "eb848f2a29e8bd315150321ff278e5f27abd3b9cd87ddc90dd4ff3e89648a562",
+        "bin/FvwmPrompt/internal/desktopcontroller/preview.go": "297599c461990c08a411308a914b6f57282205672adf6d2eb2dd92c23491f032",
+        "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "2ecd44bf7cb6a6396f905915a26fe55b4acfd54c7a88245aa932b7ede211a2bc",
+        "bin/FvwmPrompt/internal/desktopcontroller/services.go": "5d1ee5379a920beee815d1053c6254f377b78046569a32c0138ce9484f82746c",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout.go": "1544dd58af5e948ac6205d14b54e349de615724f73c96d6f4aa448d5c81b8a65",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_logout_test.go": "7997aa29bf9cd7d3b4f547e48d1a667817c54b07083351e84c8d0732c50ad624",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power.go": "1bdbefad7469a61728d77cf09337d6fe9d61552f578aa0a6ffc18625230b46b4",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_power_test.go": "68c2333569455ade1d9c04cc0ab36c2b3fa4675f73ee61300f88c2f21d939988",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services.go": "1d0837d4722871a047ac79eaa14b1ae3f38a09c54d17e898f62a005b61478098",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "37777973b4c47e98b9ab003ba39dc1ac86e688b0609192a82e8ece07e59b54f3",
+        "bin/FvwmPrompt/internal/desktopcontroller/session_test.go": "3c2e979e96a4e989f08561178729ed4658400b58c984647d25cb9e3be59a3239",
+        "bin/FvwmPrompt/internal/desktopcontroller/source.go": "de538d92ff6d5685c566d45f494c8a7d189b3d2da55ea63ec21d1620a49e1a52",
+        "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "d8eca00c7927842d0ff74e2674e6b317afe6b58c055efeea1a8e8a02211ebee7",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups.go": "70f1c28a9470706aa804f50c8fd80165a920d8fe1ed2998578c8c8ed6ec3b66f",
+        "bin/FvwmPrompt/internal/desktopcontroller/startups_test.go": "22253e45c19947b18d2692f5e81b3a7bcfee2f0a2779aada37a7b0496638fb44",
+        "bin/FvwmPrompt/internal/desktopcontroller/state.go": "330f98b869ec64951976176a45d83c96cf2e947274eb79561845f9da82b27552",
+        "bin/FvwmPrompt/internal/desktopcontroller/state_test.go": "5741bfd577bd5c7b3c7b5ca52e4351d957e2c9780c7e651905829b9ad7aa7a91",
+        "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "5da728dd0bcd41fee4d6a7b17f052c6364e37a8bce4fed166e3a5a329800a0ec",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray.go": "ff40dbb67d8c1ee1818a1411dd451135a0992cfb014e58b84f17c35a842d6cff",
+        "bin/FvwmPrompt/internal/desktopcontroller/tray_test.go": "2a93ebbb25a04f9949be22090822052eb46ef7597cd87c1cc678dd5c7105649e",
+        "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "af793521ed965aff9cd415b1499b38f7a9769034607d505db990114af26c05f1",
+        "bin/FvwmPrompt/internal/desktopsettings/application_test.go": "58421812eca2aeee8d5c870e337197e9b47c85edca16b77aa76f9a28251762bd",
+        "bin/FvwmPrompt/internal/desktopsettings/composition.go": "9d4b223bfa3b0045603a1903e578600787174f5aa103c6cea59684165d72dd3c",
+        "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "27d99f6afb047a9babd77933b3fd0511f790482492c412d1edf83b302c1c4096",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "fe2f9ad14ee42c19bb9a4bf277676b69f26baa340d2f65081c17a93a45b1487b",
+        "bin/FvwmPrompt/internal/desktopsettings/contrast_test.go": "60192cf58fc35b9b1f5fd00df6450fb3bcde7dfbe2bb3ba07af4a3964de88f14",
+        "bin/FvwmPrompt/internal/desktopsettings/policy.go": "b1ca746dba1ace1119d0f0e9f03751735e90b340b3e39c9b62f31e1c65bfda4c",
+        "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "33079a67868f4df8715c045984795b9ea4775be962be74a0f920721d56a3b1e8",
+        "bin/FvwmPrompt/internal/desktopsettings/request.go": "ec73c0c373b0aa707fdf8eca457868dee84266eb86ada623d6a7f41c38464310",
+        "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "723fdc284000976779bf09fae26b1db91ef9046d8723932aaf74e6fa10c20a40",
+        "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "9ef9785bfb3d5de4f40114f3ad1e8767cd01d030e9c47ca58c5b8179720f22f3",
+        "bin/FvwmPrompt/internal/desktopsettings/tray_test.go": "a7c3fe14e9e5c9694bda2948dcd7015f01416d3e4ecac4f5949e47818969b677",
+        "bin/FvwmPrompt/internal/desktopsettings/ui.go": "cf830d3845c6b58b9d5290cade023d31550a457e04586d54209b147d9198e50d"
+      },
+      "binary_inputs": {
+        "fvwm": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+          "sha256": "e2b9bf9b77ae3691e7bd82b2fff0f6600d245eb10fd8bb1de74f94872082e4cd"
+        },
+        "mfl": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+          "sha256": "5cbd04ddae0e471c06d9933a8b1277923bee47aeb726ea12e067e1b189204bd2"
+        },
+        "form": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+          "sha256": "1ee38cf653305bd91d83378c4b08e975207d95c918d55cb949b6a384957c4a06"
+        },
+        "desktop": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/FvwmDesktop",
+          "sha256": "5168b0663fc25025fedd02921058f6ab71c6522e3351038b154019d3947d73b8"
+        },
+        "worker": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/FvwmPrompt/fvwm-desktop-worker",
+          "sha256": "50b8e6f4fa68cb259dc5dafb7d6c2ed6ad8df7e7e0d7d77aa87dd1b05b43f309"
+        },
+        "helper": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-native-settings",
+          "sha256": "7b8dedcf86c0d0cf8dcb7ff4a40710dcda5b480df6a9e3a0fa69cf59d10bb0a7"
+        },
+        "capture": {
+          "path": "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+          "sha256": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e"
+        }
+      },
+      "focus": {
+        "target": 18874375,
+        "commands": [
+          "WindowId 18874375 Raise",
+          "WindowId 18874375 Focus NoWarp"
+        ],
+        "status": "focus-observed",
+        "actual_focus": 18874375,
+        "observed_at": 3398.850072256
+      },
+      "geometry": [
+        0,
+        0,
+        1031,
+        576
+      ],
+      "visual_review": "lead and separate temper_reviewer inspected original full-size capture; controls readable/contained"
+    }
+  }
+}

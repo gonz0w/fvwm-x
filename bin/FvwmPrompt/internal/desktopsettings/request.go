@@ -16,7 +16,15 @@ type Snapshot struct {
 	PersistenceError            *string
 	Submitted                   bool
 	RuntimeHeld                 map[string]string
+	Native                      NativeObservation
 	SessionAvailable            bool
+}
+
+// NativeObservation is immutable controller-loop state, independent of saved intent.
+type NativeObservation struct {
+	Readiness, ResourceState, Run, Reason string
+	Sequence                              uint64
+	XSerial                               uint32
 }
 
 func identity(value any) (string, error) {
@@ -159,6 +167,19 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		}
 		if observed && s.Submitted {
 			v["application"] = "submitted-to-fvwm"
+		}
+		if NativeKey(key) {
+			v["native_mapping"] = true
+		}
+		if ApplicationKey(key) {
+			v["capability"] = "optional-native-application-preference"
+			v["application"] = "not-observed"
+			if observed {
+				v["application"] = "native-" + s.Native.Readiness
+				v["readiness"], v["resource_state"] = s.Native.Readiness, s.Native.ResourceState
+				v["native_run"], v["native_sequence"] = s.Native.Run, s.Native.Sequence
+				v["xserial"], v["failure_reason"] = s.Native.XSerial, s.Native.Reason
+			}
 		}
 		if TrayKey(key) {
 			v["capability"] = "optional-tray-preference"

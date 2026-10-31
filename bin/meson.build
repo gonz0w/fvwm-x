@@ -80,6 +80,19 @@ fvwm_startup_launch = executable(
     install_tag: 'desktop-controller',
 )
 
+# The optional application-preference owner has one private X connection and
+# inherits no graphics/toolkit or session-bus dependency.
+fvwm_native_settings = executable(
+    'fvwm-native-settings',
+    ['native_settings.c', 'native_settings_policy.c'],
+    include_directories: includedirs,
+    link_with: libfvwm3,
+    dependencies: all_compile_deps + [summary_depvals['x11']],
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'desktop-controller',
+)
+
 # Default profiles install a dependency-free refusal stub. Only the optional
 # client/owned-bus guardian links libdbus; core and Go owner do not acquire it.
 session_bus_sources = ['session_bus_disabled.c']

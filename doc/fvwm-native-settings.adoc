@@ -1,0 +1,98 @@
+= fvwm-native-settings(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-native-settings - private XSETTINGS and cursor-resource publisher
+
+== SYNOPSIS
+
+*fvwm-native-settings*
+
+== DESCRIPTION
+
+FvwmDesktop(1) starts this installed native helper when application preference
+publication is explicitly enabled. Normally use *Application preferences...* in
+the desktop settings menu. The helper accepts no command-line options and reads
+complete private preference snapshots from its parent. It does not read or write
+the saved preference file. Starting it alone does not configure applications.
+
+Publication is disabled by default. The helper requires the current X display;
+it requires no D-Bus service, GTK/Qt library or additional desktop framework.
+Font and theme availability depends on the installed applications and resources.
+
+== SUPPORTED VALUES
+
+The parent supplies the saved/effective settings from the existing typed registry:
+
+* *application_font* publishes the GTK font description, as *Gtk/FontName*.
+* *icon_theme* publishes *Net/IconThemeName*.
+* *cursor_theme* publishes *Gtk/CursorThemeName* and the *Xcursor.theme* resource.
+* *cursor_size* publishes *Gtk/CursorThemeSize* and *Xcursor.size*.
+* Existing *motion* publishes *Gtk/EnableAnimations* as zero or one.
+
+Empty font/theme values and cursor size zero omit the owned value. They inherit
+the toolkit or environment fallback; they do not select a replacement default.
+Font descriptions are at most 128 UTF-8 bytes without control characters. Theme names
+use letters, digits, underscore, hyphen and dot, excluding dot and dot-dot alone.
+Cursor size is 0 through 128. Text is data, never an executable command or path.
+
+FVWM palette names are not GTK themes. This helper does not publish a toolkit
+theme, infer application DPI from monitor scale, install themes, or provide a
+settings portal. Applications decide which settings they honor. Existing clients
+may cache cursor resources; a published value does not prove an immediate repaint
+or that every toolkit and browser uses it.
+
+== OWNERSHIP AND UPDATES
+
+The helper serves the selected X screen. It claims the XSETTINGS manager
+selection only when unowned, allowing up to two seconds for a retiring manager.
+It never displaces a competing owner. Selection loss stops publication and
+retires the helper. The parent reports observed readiness and resource status
+separately; process creation alone is not readiness.
+
+Updates are complete bounded snapshots with parent/run identity and increasing
+sequence. Unchanged settings do not cause property churn. Old or conflicting
+sequences cannot mutate a newer snapshot. The private pipe protocol is bounded
+to 2048-byte lines and is not a general configuration or remote-control API.
+
+Cursor resources use a marked overlay in the root RESOURCE_MANAGER property.
+Unrelated resource bytes and user files are preserved. An edited, removed or
+ambiguous overlay causes a resource conflict; the helper does not restore an old
+whole-property snapshot over another writer. Oversized or unsafe properties are
+refused. XSETTINGS can remain available while cursor resources report a conflict
+or unavailable state. These are separate publications, not one atomic operation.
+
+== STOPPING AND RECOVERY
+
+Closing the parent's input is the normal stop request. Cleanup removes only the
+unchanged owned resource overlay and releases the selection only if still owner.
+The parent observes actual process exit before allowing a replacement. It can
+terminate an unresponsive owned helper; forced termination cannot promise resource
+cleanup. A strictly validated orphan overlay can be retired on a later explicit
+start only after its recorded owner window is confirmed gone.
+
+There is no automatic crash-restart loop. After resolving a competing manager,
+missing helper or resource conflict, choose *Retry native publication* or reload
+the desktop settings. An unconfirmed stop prevents a second helper from starting.
+The isolated helper contains blocked X calls; a cooperative work budget does not
+provide a hard real-time or memory guarantee.
+
+== ENVIRONMENT
+
+*DISPLAY* and *XAUTHORITY* select the existing X connection. FvwmDesktop uses the
+installed private helper path. *FVWM_NATIVE_SETTINGS_HELPER* is an explicit
+absolute executable override for controlled development builds; it is interpreted
+by the parent, not by this helper. Do not point it at an unrelated program.
+
+== EXIT STATUS
+
+Zero denotes ordinary parent-requested retirement. Nonzero indicates invalid
+input, unavailable or lost X ownership, or a native failure. The parent's observed
+process state and independent resource status determine whether a retry is safe.
+
+== SEE ALSO
+
+FvwmDesktop(1), fvwm-session(1)

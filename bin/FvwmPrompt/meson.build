@@ -8,6 +8,11 @@ fvwmprompt_files = r.stdout().strip().split()
 # Explicit service inputs keep incremental rebuilds correct for an existing
 # configured browser target as the bounded adapter lands.
 foreach filemanager_source : [
+    'internal/desktopcontroller/native_settings.go',
+    'internal/desktopcontroller/native_settings_wire.go',
+    'internal/desktopcontroller/native_settings_supervisor.go',
+    'internal/desktopcontroller/native_settings_test.go',
+    'internal/desktopsettings/application_test.go',
     'cmd/fvwmfilebrowser/filemanager_child.go',
     'cmd/fvwmfilebrowser/filemanager_plan.go',
     'cmd/fvwmfilebrowser/filemanager_service.go',
@@ -304,6 +309,12 @@ if not desktop_data_linker.contains('\'')
 elif not desktop_data_linker.contains('"')
     desktop_data_linker = '"' + desktop_data_linker + '"'
 endif
+desktop_native_linker = 'main.nativeSettingsHelperPath=' + (fvwm_moduledir / 'fvwm-native-settings')
+if not desktop_native_linker.contains('\'')
+    desktop_native_linker = '\'' + desktop_native_linker + '\''
+elif not desktop_native_linker.contains('"')
+    desktop_native_linker = '"' + desktop_native_linker + '"'
+endif
 fvwm_desktop = custom_target(
     'FvwmDesktop',
     output: 'FvwmDesktop',
@@ -313,6 +324,7 @@ fvwm_desktop = custom_target(
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
         '-ldflags', '-X ' + startup_module_linker + ' -X ' + desktop_data_linker
+            + ' -X ' + desktop_native_linker
             + ' -X main.pngEnabled=' + (libpng.found() ? 'true' : 'false'),
         '-o', meson.current_build_dir() / 'FvwmDesktop',
         './cmd/fvwmdesktop',

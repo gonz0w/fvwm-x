@@ -10,6 +10,7 @@ package desktopcontroller
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -52,6 +53,7 @@ type Controller struct {
 	trayInitialized, trayRequested           bool
 	runtimeHeld                              map[string]string
 	editor                                   *editor
+	native                                   nativeControl
 	preview                                  preview
 	session                                  sessionControl
 	palette                                  *paletteView
@@ -140,6 +142,13 @@ func (d *Controller) Close() {
 	d.appBinding.policy.Close()
 	d.systemBinding.policy.Close()
 	d.cancel()
+	if d.native.slot != nil {
+		d.native.slot.close()
+		select {
+		case <-d.native.slot.done:
+		case <-time.After(2 * time.Second):
+		}
+	}
 	deadline := time.NewTimer(2 * time.Second)
 	defer deadline.Stop()
 	for d.active > 0 {
@@ -196,7 +205,7 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
 		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
-		RuntimeHeld: held, SessionAvailable: d.sessionObserved()}
+		RuntimeHeld: held, Native: d.nativeObservation(), SessionAvailable: d.sessionObserved()}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {
@@ -250,6 +259,7 @@ func (d *Controller) finishConfiguration() error {
 	d.announceSettings()
 	d.projectTray()
 	d.applyTrayLifecycle(false)
+	d.applyNativeSettings(true)
 	return d.fatal
 }
 func (d *Controller) prepare(changes values) (values, values, error) {
@@ -306,6 +316,7 @@ func (d *Controller) changeSettings(changes values) error {
 	}
 	_, explicitTray := changes["tray_enabled"]
 	d.applyTrayLifecycle(explicitTray)
+	d.applyNativeSettings(false)
 	return d.fatal
 }
 func (d *Controller) reloadSettings() error {
@@ -335,6 +346,7 @@ func (d *Controller) reloadSettings() error {
 		return err
 	}
 	d.applyTrayLifecycle(false)
+	d.applyNativeSettings(true)
 	return d.fatal
 }
 func (d *Controller) resetSettings(scope string) error {
@@ -388,7 +400,19 @@ func (d *Controller) editorValues(argument string) (*editor, values, error) {
 	}
 	changes := values{}
 	for i, key := range e.keys {
-		value, err := desktopsettings.Value(key, words[i+1], true)
+		text := words[i+1]
+		item := desktopsettings.Registry()[key]
+		if item.Type == "font" || item.Type == "theme" {
+			if len(text) > 173 || len(text) < 1 || text[0] != 'x' {
+				return nil, nil, errors.New("Invalid encoded application preference")
+			}
+			decoded, err := base64.RawURLEncoding.Strict().DecodeString(text[1:])
+			if err != nil {
+				return nil, nil, errors.New("Invalid encoded application preference")
+			}
+			text = string(decoded)
+		}
+		value, err := desktopsettings.Value(key, text, true)
 		if err != nil {
 			return nil, nil, err
 		}

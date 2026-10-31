@@ -17,10 +17,11 @@ import (
 	"io"
 	"strconv"
 	"strings"
+	"unicode"
 	"unicode/utf8"
 )
 
-const StateVersion = 8
+const StateVersion = 9
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -48,7 +49,7 @@ var registry = []Setting{
 			"grove",
 			"ink"},
 		Group:       "appearance",
-		Description: "Desktop color palette"},
+		Description: "Palette"},
 	{Key: "appearance",
 		Type:    "enum",
 		Default: "auto",
@@ -56,89 +57,109 @@ var registry = []Setting{
 			"dark",
 			"auto"},
 		Group:       "appearance",
-		Description: "Light, dark or scheduled appearance"},
+		Description: "Appearance mode"},
 	{Key: "day",
 		Type:        "time",
 		Default:     "07:00",
 		Minimum:     "00:00",
 		Maximum:     "23:59",
 		Group:       "schedule",
-		Description: "Local time when light appearance starts"},
+		Description: "Light start (local)"},
 	{Key: "night",
 		Type:        "time",
 		Default:     "19:00",
 		Minimum:     "00:00",
 		Maximum:     "23:59",
 		Group:       "schedule",
-		Description: "Local time when dark appearance starts"},
+		Description: "Dark start (local)"},
 	{Key: "transparency",
 		Type:        "boolean",
 		Default:     true,
 		Group:       "effects",
-		Description: "Tinted root background and menu snapshots"},
+		Description: "Tinted root and menus"},
 	{Key: "motion",
 		Type:        "boolean",
 		Default:     false,
 		Group:       "effects",
-		Description: "Menu repositioning and window shade steps"},
+		Description: "Animate menus/shading"},
 	{Key: "keep_wallpaper",
 		Type:        "boolean",
 		Default:     false,
 		Group:       "appearance",
-		Description: "Retain the current palette wallpaper"},
+		Description: "Keep current wallpaper"},
 	{Key: "launcher_opacity",
 		Type:        "integer",
 		Default:     94,
 		Minimum:     0,
 		Maximum:     100,
 		Group:       "effects",
-		Description: "Launcher opacity (percent)"},
+		Description: "Launcher opacity (%)"},
 	{Key: "wallpaper_palette",
 		Type:        "enum",
 		Default:     "follow",
 		Choices:     []string{"follow", "slate", "dune", "grove", "ink"},
 		Group:       "wallpaper",
-		Description: "Wallpaper palette (follow uses the desktop palette)"},
+		Description: "Wallpaper palette"},
 	{Key: "wallpaper_appearance",
 		Type:        "enum",
 		Default:     "follow",
 		Choices:     []string{"follow", "light", "dark"},
 		Group:       "wallpaper",
-		Description: "Wallpaper appearance (follow uses the desktop schedule)"},
+		Description: "Wallpaper appearance"},
 	{Key: "contrast",
 		Type:        "enum",
 		Default:     "normal",
 		Choices:     []string{"normal", "high"},
 		Group:       "appearance",
-		Description: "Normal or high contrast desktop presentation"},
+		Description: "Desktop contrast"},
 	{Key: "session_bus", Type: "enum", Default: "off",
 		Choices: []string{"off", "reuse", "start"}, Group: "session",
-		Description: "Session bus (next login)"},
+		Description: "Bus (next login)"},
 	{Key: "session_notifications", Type: "enum", Default: "off",
 		Choices: []string{"off", "external"}, Group: "session",
-		Description: "Use an existing notification server"},
+		Description: "Existing notification server"},
 	{Key: "notification_dnd", Type: "boolean", Default: false,
 		Group: "session", Description: "Do not disturb"},
 	{Key: "session_power", Type: "enum", Default: "portable",
 		Choices: []string{"portable", "login1"}, Group: "session",
-		Description: "Power provider (live owner handshake)"},
+		Description: "Live power provider"},
 	{Key: "tray_enabled", Type: "boolean", Default: false,
-		Group: "tray", Description: "Request the desktop tray"},
+		Group: "tray", Description: "Request tray"},
 	{Key: "tray_gap", Type: "integer", Default: 4,
 		Minimum: 0, Maximum: 64, Group: "tray",
-		Description: "Tray icon gap (logical pixels)"},
+		Description: "Icon gap (logical px)"},
 	{Key: "tray_padding", Type: "integer", Default: 4,
 		Minimum: 0, Maximum: 64, Group: "tray",
-		Description: "Tray padding (logical pixels)"},
+		Description: "Padding (logical px)"},
 	{Key: "tray_orientation", Type: "enum", Default: "horizontal",
 		Choices: []string{"horizontal", "vertical"}, Group: "tray",
-		Description: "Tray icon direction"},
+		Description: "Icon direction"},
 	{Key: "tray_modern", Type: "boolean", Default: false,
-		Group: "tray", Description: "Request StatusNotifier integration"},
+		Group: "tray", Description: "Request StatusNotifier"},
 	{Key: "tray_icon_size", Type: "integer", Default: 24,
 		Minimum: 8, Maximum: 128, Group: "tray",
-		Description: "Modern tray icon size (logical pixels)"},
+		Description: "Modern icon size (logical px)"},
+	{Key: "native_settings_enabled", Type: "boolean", Default: false,
+		Group: "application", Description: "Publish preferences"},
+	{Key: "application_font", Type: "font", Default: "",
+		Group: "application", Description: "Application font"},
+	{Key: "icon_theme", Type: "theme", Default: "",
+		Group: "application", Description: "Icon theme"},
+	{Key: "cursor_theme", Type: "theme", Default: "",
+		Group: "application", Description: "Cursor theme"},
+	{Key: "cursor_size", Type: "integer", Default: 0,
+		Minimum: 0, Maximum: 128, Group: "application",
+		Description: "Cursor size"},
 }
+
+// ApplicationKey identifies the separate application editor and helper lifecycle.
+func ApplicationKey(key string) bool {
+	item, ok := find(key)
+	return ok && item.Group == "application"
+}
+
+// NativeKey includes the existing animation preference projected to applications.
+func NativeKey(key string) bool { return ApplicationKey(key) || key == "motion" }
 
 // TrayKey identifies preferences requested from the reserved native tray alias.
 // They do not participate in the optional session-service owner handshake.
@@ -255,6 +276,19 @@ func Value(key string, value any, text bool) (any, error) {
 	case "enum":
 		s, ok := value.(string)
 		valid = ok && has(item.Choices, s)
+	case "font":
+		s, ok := value.(string)
+		valid = ok && len(s) <= 128 && utf8.ValidString(s)
+		for _, c := range s {
+			valid = valid && unicode.IsPrint(c) && c != '\u2028' && c != '\u2029'
+		}
+	case "theme":
+		s, ok := value.(string)
+		valid = ok && len(s) <= 128 && s != "." && s != ".."
+		for _, c := range s {
+			valid = valid && (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' ||
+				c >= '0' && c <= '9' || c == '_' || c == '-' || c == '.')
+		}
 	case "time":
 		s, ok := value.(string)
 		if ok {
@@ -451,7 +485,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -474,6 +508,11 @@ func DecodeState(data []byte) (Values, error) {
 		{"tray_orientation", 7, "horizontal"},
 		{"tray_modern", 8, false},
 		{"tray_icon_size", 8, 24},
+		{"native_settings_enabled", 9, false},
+		{"application_font", 9, ""},
+		{"icon_theme", 9, ""},
+		{"cursor_theme", 9, ""},
+		{"cursor_size", 9, 0},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

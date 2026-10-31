@@ -6,6 +6,7 @@
 import argparse
 import json
 import os
+from settings_snapshot import expanded_settings
 from pathlib import Path
 import shlex
 import shutil
@@ -142,15 +143,19 @@ def run(args):
                 'wallpaper_palette', 'wallpaper_appearance', 'contrast',
                 'session_bus', 'session_notifications', 'notification_dnd',
                 'session_power', 'tray_enabled', 'tray_gap', 'tray_padding',
-                'tray_orientation', 'tray_modern', 'tray_icon_size'}
+                'tray_orientation', 'tray_modern', 'tray_icon_size',
+                'native_settings_enabled', 'application_font', 'icon_theme',
+                'cursor_theme', 'cursor_size'}
             assert set(snapshot['settings']) == expected_settings, snapshot
             assert snapshot['persistence_error'] is None, snapshot
-            for item in snapshot['settings'].values():
+            for key, item in snapshot['settings'].items():
                 # Public IPC rows inherit common metadata from the envelope.
                 # Distinct per-key errors remain overrides when present.
                 assert 'owner' not in item and 'generation' not in item, item
                 assert 'preview' not in item and 'persistence_error' not in item, item
-                assert isinstance(item['native_preview'], bool), item
+                resolved = expanded_settings(snapshot)['settings'][key]
+                assert isinstance(resolved['native_preview'], bool), resolved
+            snapshot = expanded_settings(snapshot)
             assert set(query(scope='group:wallpaper')['settings']) == {
                 'wallpaper_palette', 'wallpaper_appearance'}
             assert snapshot['settings']['wallpaper_palette']['resolved'] == 'slate'
@@ -237,7 +242,35 @@ def run(args):
             watcher.send(frame('unwatch', method='unwatch', resource='provider'))
             assert reply(watcher, 'unwatch')['state'] == 'unwatched'
             discovery.send(frame('unwatch', method='unwatch', resource='provider'))
-            reply(discovery, 'unwatch')
+            # Discovery watches both owners. Their independent observations can
+            # invalidate between the first ready notice and this acknowledgment.
+            # Retain and validate those bounded notifications rather than treating
+            # a legitimate asynchronous record as the unwatch reply.
+            extra_notices = []
+            for _ in range(8):
+                record = discovery.record()
+                if 'reply' in record:
+                    assert set(record) == {'reply'}, record
+                    acknowledgment = record['reply']
+                    assert acknowledgment['version'] == 1
+                    assert acknowledgment['id'] == 'unwatch'
+                    assert acknowledgment['status'] == 'ok'
+                    assert acknowledgment['result']['state'] == 'unwatched'
+                    break
+                assert set(record) == {'provider_changed'}, record
+                invalidation = record['provider_changed']
+                assert set(invalidation) == set(ready_notice), invalidation
+                assert invalidation['version'] == 1
+                assert invalidation['owner'] == 'FvwmDesktop'
+                assert invalidation['snapshot_required'] is True
+                for key in ('provider', 'generation'):
+                    value = invalidation[key]
+                    assert len(value) == 32 and all(
+                        c in '0123456789abcdef' for c in value)
+                extra_notices.append(invalidation)
+            else:
+                raise AssertionError('unwatch acknowledgment exceeded notice bound')
+            evidence['discovery_extra_invalidations'] = extra_notices
             evidence['provider_observation'] = dict(provider=provider_state,
                 conditional_unchanged=True, stale_query_refresh=True,
                 configuration_ready_discovery=True, notifications_exclude_values=True,
@@ -245,7 +278,7 @@ def run(args):
 
             numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
             assert numeric['settings']['launcher_opacity']['saved'] == 73
-            assert json.loads(state.read_text())['schema_version'] == 8
+            assert json.loads(state.read_text())['schema_version'] == 9
             before_numeric = state.read_bytes()
             for invalid in [True, 73.5, -1, 101, '73']:
                 action('set', numeric['generation'], values={'launcher_opacity': invalid},
@@ -253,7 +286,7 @@ def run(args):
                 assert state.read_bytes() == before_numeric
             action('reset', numeric['generation'], scope='launcher_opacity')
             changed = query(provider=snapshot['provider'])
-            evidence['typed_integer_setting'] = dict(saved=73, schema=7,
+            evidence['typed_integer_setting'] = dict(saved=73, schema=9,
                 malformed_refused=True, reset=94)
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'

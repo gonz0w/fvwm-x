@@ -6,10 +6,13 @@
 package desktopcontroller
 
 import (
+	"bytes"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
+	"reflect"
+	"sort"
 	"strings"
 	"time"
 
@@ -79,6 +82,90 @@ func publicSettings(settings values, commonError string) values {
 			item[field] = value
 		}
 		result[key] = item
+	}
+	return result
+}
+
+// Public IPC additionally inherits repeated metadata from two explicit maps.
+// Saved/effective values, descriptions and choices/bounds stay per row.
+// Application rows retain their group explicitly to select application defaults.
+// Shared type/default and observation metadata have explicit inheritance maps.
+// Standalone query/inspector records remain self-contained.
+func compactPublicSettings(settings values, commonError string) (values, values, values) {
+	rows := publicSettings(settings, commonError)
+	defaults := sharedSettingMetadata(rows, false, []string{
+		"native_preview", "runtime_constraint", "source", "application", "type", "default", "group"})
+	application := sharedSettingMetadata(rows, true, []string{
+		"capability", "native_mapping", "application", "readiness", "resource_state",
+		"native_run", "native_sequence", "xserial", "failure_reason", "type", "default"})
+	// The application group is the explicit discriminator for its second
+	// defaults map. Other groups may use the ordinary shared metadata default.
+	if defaults["group"] == "application" {
+		delete(defaults, "group")
+	}
+	for field, value := range application {
+		if common, present := defaults[field]; present && reflect.DeepEqual(common, value) {
+			delete(application, field)
+		}
+	}
+	for _, raw := range rows {
+		row := raw.(map[string]any)
+		inherited := merged(defaults, nil)
+		if row["group"] == "application" {
+			inherited = merged(inherited, application)
+		}
+		for field, value := range inherited {
+			if field == "group" && row["group"] == "application" {
+				continue
+			}
+			if actual, present := row[field]; present && reflect.DeepEqual(actual, value) {
+				delete(row, field)
+			}
+		}
+	}
+	return rows, defaults, application
+}
+
+func sharedSettingMetadata(rows values, application bool, fields []string) values {
+	result := values{}
+	for _, field := range fields {
+		counts := map[string]int{}
+		original := values{}
+		eligible, present := 0, 0
+		for _, raw := range rows {
+			row := raw.(map[string]any)
+			if application && row["group"] != "application" {
+				continue
+			}
+			eligible++
+			value, ok := row[field]
+			if !ok {
+				continue
+			}
+			present++
+			encoded, _ := json.Marshal(value) // Fixed scalar metadata only.
+			key := string(encoded)
+			counts[key]++
+			original[key] = value
+		}
+		// A default must not manufacture fields absent from standalone records.
+		if eligible < 2 || present != eligible {
+			continue
+		}
+		keys := make([]string, 0, len(counts))
+		for key := range counts {
+			keys = append(keys, key)
+		}
+		sort.Strings(keys)
+		best, count := "", 1
+		for _, key := range keys {
+			if counts[key] > count {
+				best, count = key, counts[key]
+			}
+		}
+		if count > 1 {
+			result[field] = original[best]
+		}
 	}
 	return result
 }
@@ -199,8 +286,9 @@ func (d *Controller) settingsRequest(r values) values {
 		if err != nil {
 			return failure("invalid_value")
 		}
+		rows, defaults, applicationDefaults := compactPublicSettings(settings, d.persistenceError)
 		return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "state": "validated",
-			"generation": d.generation, "saved_revision": d.revision, "settings": publicSettings(settings, d.persistenceError), "persistence": "not-attempted", "persistence_error": persistence,
+			"generation": d.generation, "saved_revision": d.revision, "settings": rows, "setting_defaults": defaults, "application_defaults": applicationDefaults, "persistence": "not-attempted", "persistence_error": persistence,
 			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false,
 			"available": true, "capability": "owned-desktop-preference"})
 	}
@@ -254,8 +342,9 @@ func (d *Controller) settingsRequest(r values) values {
 	if d.persistenceError != "" {
 		persistence = d.persistenceError
 	}
+	rows, defaults, applicationDefaults := compactPublicSettings(settings, d.persistenceError)
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "generation": d.generation,
-		"state": state, "settings": publicSettings(settings, d.persistenceError), "saved_revision": d.revision, "application": application, "persistence_error": persistence,
+		"state": state, "settings": rows, "setting_defaults": defaults, "application_defaults": applicationDefaults, "saved_revision": d.revision, "application": application, "persistence_error": persistence,
 		"asynchronous_completion": "unknown", "preview": false,
 		"available": true, "capability": "owned-desktop-preference"})
 }
@@ -442,6 +531,21 @@ func (d *Controller) operationRequest(r values) values {
 	}
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "operation": d.operationSnapshot(record, false), "disconnect": "continue"})
 }
+
+// Replies travel as hexadecimal JSON over the private module channel, never as
+// embedded HTML. Keep printable '<', '>' and '&' literal so a valid 128-byte
+// font cannot consume six times its value length in the fixed reply budget.
+// The standard encoder still escapes quotes, backslashes and control bytes.
+func encodeProviderReply(value any) ([]byte, error) {
+	var buffer bytes.Buffer
+	encoder := json.NewEncoder(&buffer)
+	encoder.SetEscapeHTML(false)
+	if err := encoder.Encode(value); err != nil {
+		return nil, err
+	}
+	return bytes.TrimSuffix(buffer.Bytes(), []byte{'\n'}), nil
+}
+
 func (d *Controller) ipc(argument string) {
 	parts := strings.Split(argument, " ")
 	if len(parts) != 3 || !address(parts[0]) || !identity(parts[1], 16) || parts[1] == "0000000000000000" {
@@ -468,17 +572,17 @@ func (d *Controller) ipc(argument string) {
 	if response == nil {
 		return
 	}
-	data, _ := json.Marshal(response)
+	data, _ := encodeProviderReply(response)
 	if len(data) > 8192 {
 		if result, ok := response["result"].(map[string]any); ok {
 			if _, settings := result["settings"]; settings {
 				delete(result, "settings")
 				result["settings_unavailable"] = "reply_too_large"
-				data, _ = json.Marshal(response)
+				data, _ = encodeProviderReply(response)
 			}
 		}
 		if len(data) > 8192 {
-			data, _ = json.Marshal(failure("provider_reply_too_large"))
+			data, _ = encodeProviderReply(failure("provider_reply_too_large"))
 		}
 	}
 	prefix := "SendToModule FvwmMFL MFL_SETTINGS_1 " + parts[0] + " " + parts[1]

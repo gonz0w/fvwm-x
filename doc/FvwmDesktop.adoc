@@ -126,6 +126,42 @@ has an ordinary application lifetime and can stay open after the desktop helper
 restarts. Closing a browser releases its launch slot when its exit is observed.
 This menu action does not require a session bus or a FileManager1 service.
 
+== APPLICATION PREFERENCES
+
+Choose *Application preferences...* from the settings menu, or press F10 in the
+appearance editor. These preferences use the same private saved state and module
+override precedence as other desktop settings. Publication is off by default.
+
+* *native_settings_enabled*: boolean, false. Request the optional native publisher.
+* *application_font*: font description, empty. For example, `Sans 12`.
+* *icon_theme*: installed icon-theme name, empty.
+* *cursor_theme*: installed cursor-theme name, empty.
+* *cursor_size*: integer 0..128, default 0.
+
+Empty font/theme fields and size zero inherit toolkit/environment fallbacks.
+Font descriptions accept at most 128 UTF-8 bytes without control characters; theme
+names use letters/digits/underscore/hyphen/dot and exclude dot/dot-dot alone.
+Saving syntactically valid names does not establish that a font or theme exists.
+Existing *motion* also controls the published animation preference when enabled.
+
+The editor reports native publication and cursor-resource state independently.
+Use *Retry native publication* after resolving an unavailable helper, competing
+XSETTINGS manager or resource conflict. A submitted start request is not observed
+readiness. Applications can ignore settings or cache resources; this does not
+change application pixels through the window manager, create GTK/Qt themes, infer
+DPI from monitor scale, or provide a settings portal. See
+fvwm-native-settings(1) for ownership, bounds and recovery.
+
+New preferences load from older state schemas with off/inherit defaults. Loading
+does not rewrite the file; the next successful save uses schema 9. Existing personal
+FVWM configuration does not need a migration. For an explicit module override:
+
+....
+*FvwmDesktop: native_settings_enabled on
+*FvwmDesktop: application_font Sans 12
+*FvwmDesktop: cursor_size 24
+....
+
 == CONFIGURATION
 
 Read the installed default-config/config to use the baseline. Normal FVWM

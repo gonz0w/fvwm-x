@@ -7,6 +7,36 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Native application preferences (in progress)
+
+The optional [application preferences editor](FvwmDesktop.adoc#_application_preferences)
+shares the existing saved settings. It publishes supported font, icon, cursor
+and animation values through an owned native helper. Publication starts disabled;
+empty font/theme fields and cursor size zero inherit application fallbacks.
+The editor shows observed native and cursor-resource status separately.
+
+Slate dark shows the native editor and two actual GTK3 clients using Sans 22.
+
+![Slate application preferences with actual GTK3 font samples](screenshots/native-preferences-slate-dark.png)
+
+Dune uses the same controls with light theme roles.
+
+![Dune application preferences](screenshots/native-preferences-dune-light.png)
+
+The enlarged Classic customization uses DejaVu Sans Mono 18 for FVWM UI.
+
+![Enlarged Classic application preferences](screenshots/native-preferences-classic-large.png)
+
+The [capture manifest](screenshots/native-preferences-manifest.json) retains
+exact [Slate](screenshots/native-preferences-slate-dark.fvwm),
+[Dune](screenshots/native-preferences-dune-light.fvwm) and
+[Classic](screenshots/native-preferences-classic-large.fvwm) configurations.
+These contain temporary lab paths; adapt them before use. Actual GTK3 settings,
+notifications, existing/fresh clients, enlarged text and fresh Xcursor lookups
+were observed. This does not establish Qt/browser behavior, cached-client cursor
+refresh, a settings portal or full platform/release acceptance. See the
+[source-bound report](../dev-docs/verification/VERIFICATION-2026-10-31-NATIVE-PREFERENCES.md).
+
 ## What is available
 
 Recent checkpoints add atomic button updates, desktop settings/editor and

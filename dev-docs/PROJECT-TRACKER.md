@@ -27,6 +27,46 @@ reconciled independently. Do not invent additional settings from broad examples.
 
 The [combined completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md) records passing native normal/software/minimal, scoped sanitizer, actual fault/topology, three-theme and application checks. Linux support is composed with host manual formatting; FreeBSD ARM64 combined acceptance passes. FreeBSD AMD64 and OpenBSD ARM64 complete their combined checkpoints. OpenBSD AMD64's build/install/Go/portal checks pass; its v3 preparation observation exhausted the fixed deadline. A persistent fresh-snapshot test helper passes focused Linux verification, and the affected AMD64 fresh-guest checkpoint is running. Issue closure and final review remain pending.
 
+## TEMPER-06 — Bounded delivery instructions
+
+State: source integration observed in merged PR318 as
+`6d252ede5db1cf2c678c3a83d8e68bb9a247b7d1`; canonical signature/tree and author
+DCO verified during PR319 integration. The original bounded scope is retained.
+Owner: Temper rollout coordinator under the owner-selected 2026-10-31 update.
+GitHub mirror: [issue 317](https://github.com/gonz0w/fvwm-x/issues/317); parent
+coordination: [Temper 38](https://github.com/gonz0w/agent-temper/issues/38).
+
+Outcome: retain reviewed Temper cf928f4120b687f34f1b1f974603a4979b5b874c and
+route the actual agent entry point to bounded batches, discovery disposition,
+milestone priorities and verification stopping rules. Scope is bundle/provenance,
+AGENTS and current policy pin only. Native preference/product work and its owners
+remain separate. No new runtime, broad platform matrix, role/model, CI/hooks,
+validator, authority, release or deployment change. No historical waiver is renewed.
+
+Acceptance: exact retained source and manifest; coherent reader routes; preserved
+local tracker, WIP, product work and authority; existing documentation gate and
+separate source review; integration only after applicable current checks and
+authority, with canonical source verified. All required broader gates remain
+binding where applicable; method-only work does not create a new WM/VM campaign.
+
+Attempt: one bounded source update, permitted source checks and separate review.
+Stop on drift, unavailable required input or unexplained repeated failure;
+record findings for later selection instead of expanding the batch.
+
+Continuation: verify and review the isolated candidate; preserve the active
+checkout's dirty work and existing feature selection. Do not reset, stash or
+silently overwrite it.
+
+Final verification attempt: finish only the remaining #60/#73 OpenBSD AMD64
+recovery-fixture qualification on frozen source24. The lead owns one fresh
+8.0 AMD64 job, bounded by its existing7200-second run timeout and300-second
+nested-X /420-second default-X command limits; at most two owned VMs remain the
+resource cap. The new persistent native probe passed focused Linux verification
+and removes the observed preparation-window startup cost. On success, reconcile
+PR319 and both frozen issue criteria. On another failure, preserve the draft and
+explicitly replan the affected gate; do not automatically renew this attempt.
+No extra features, performance campaign or parked #257/#258 work joins this batch.
+
 ## R1 FileManager1 adapter selection — 2026-10-31
 
 Owner: Cam. [Frozen eight-outcome contract](decisions/FILEMANAGER-BUS-2026-10-31.md):

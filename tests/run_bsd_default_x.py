@@ -113,7 +113,8 @@ def dependency_identity(system, server_log):
 def fixture_commands(args, build, source):
     if args.server_only:
         return []
-    if getattr(args, 'complete_preview_only', False):
+    if (getattr(args, 'complete_preview_only', False) or
+            getattr(args, 'complete_preview_tail_only', False)):
         paths = {'fvwm': args.fvwm or build / 'fvwm3',
             'mfl': args.mfl or build / 'modules/FvwmMFL/FvwmMFL',
             'backer': args.backer or build / 'modules/FvwmBacker/FvwmBacker',
@@ -122,6 +123,8 @@ def fixture_commands(args, build, source):
             'config-header': args.preview_config_header or build / 'config.h'}
         options = ['--complete-bundle-only', '--execution-profile',
                    args.execution_profile]
+        if getattr(args, 'complete_preview_tail_only', False):
+            options.append('--complete-bundle-tail-only')
         for name, path in paths.items():
             options.extend(['--' + name, str(path.resolve())])
         return [('complete-preview', options)]
@@ -338,7 +341,8 @@ def run(args):
     if not args.server_only and args.build_directory is None:
         raise ValueError('--build-directory is required for client fixtures.')
     tray_only = getattr(args, 'tray_only', False)
-    preview_only = getattr(args, 'complete_preview_only', False)
+    preview_only = (getattr(args, 'complete_preview_only', False) or
+                    getattr(args, 'complete_preview_tail_only', False))
     if not (args.notify_only or tray_only or preview_only) and any((args.fvwm, args.notify,
                             args.mfl, args.notify_client, args.capture)):
         raise ValueError('Notification path overrides require --notify-only.')
@@ -348,7 +352,8 @@ def run(args):
                       'preview_config_header')
     if not preview_only and any(getattr(args, name, None)
                                 for name in preview_inputs):
-        raise ValueError('Preview path overrides require --complete-preview-only.')
+        raise ValueError('Preview path overrides require --complete-preview-only '
+                         'or --complete-preview-tail-only.')
     if tray_only and any((args.notify, args.notify_client)):
         raise ValueError('Notification path overrides require --notify-only.')
     tray_inputs = ('tray', 'buttons', 'form', 'desktop', 'session', 'worker',
@@ -419,10 +424,13 @@ if __name__ == '__main__':
     modes.add_argument('--complete-preview-only', action='store_true',
                         help='Run owned root/resource preview recovery on this '
                              'authenticated display.')
+    modes.add_argument('--complete-preview-tail-only', action='store_true',
+                        help='Run only named launcher conflict, actor loss and '
+                             'external-root preservation through core shutdown.')
     for name in ('backer', 'image-worker', 'preview-probe',
                  'preview-config-header'):
         parser.add_argument('--' + name, type=Path,
-                            help='Explicit path for --complete-preview-only.')
+                            help='Explicit path for either complete-preview mode.')
     modes.add_argument('--tray-only', action='store_true',
                         help='Run modern tray checks on this authenticated '
                              'display without Linux-only container cases.')

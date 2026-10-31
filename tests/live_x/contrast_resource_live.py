@@ -10,6 +10,9 @@ separate scalar-opacity regression. --execution-profile labels actual execution;
 it does not establish native CPU or sanitizer qualification.
 
 --complete-bundle-only selects the version3 group without rerunning v1/v2.
+--complete-bundle-tail-only selects only named launcher conflict, nonmodal actor
+loss and external-root conflict/preservation through actual core shutdown. Earlier
+v3 groups are explicitly skipped; their prior results must be retained separately.
 --owned-root-shutdown-only selects normal owned publication, Quit and removal
 without leases or external takeover; full v3 separately preserves external roots.
 Supply the actual --backer and --worker; ordinary CoreOwnedPixmap publication
@@ -35,6 +38,12 @@ import subprocess
 import sys
 import time
 
+# Native wrappers must relay immediately, before fixture imports initialize X.
+if (__name__ == '__main__' and len(sys.argv) > 1 and
+        sys.argv[1] == '--module-proxy'):
+    from native_module_proxy import module_proxy
+    raise SystemExit(module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:]))
+
 from geometry_transition_live import Client, Pointer, ConfigureEvent
 from image_colorsets_live import records, XColor
 from colorset_live import WindowAttributes
@@ -46,7 +55,6 @@ from mfl_stream_live import Connection
 from session_x_errors import SessionXErrors
 from browser_continuity_live import cleanup_receipts
 from browser_handoff_live import child_identity
-from native_module_proxy import module_proxy
 from settings_preview_live import (BufferedTintReference, PreviewWitness,
     binary_hash, hashes, png_rgb)
 
@@ -891,6 +899,89 @@ def run(args):
                         raise
                     assert bundle() == original
 
+                def external_conflict(external):
+                    evidence['v3_case_context'] = dict(
+                        group='external-command-conflict', command=external)
+                    original = reset_owned()
+                    item, candidate = activate(original)
+                    if external.startswith('Colorset'):
+                        published_command(external, (14,),
+                            lambda rows: rows[14][2] == 0x135724)
+                    else:
+                        command(external)
+                    after = bundle()
+                    result = terminal('conflicted', 'refused-conflict')
+                    assert bundle() == after
+                    action(item, 'revert', error='preview_conflict')
+                    cases['external-' + external] = dict(
+                        preserved=after, terminal=result)
+
+                def controller_actor_loss():
+                    evidence['v3_case_context'] = dict(
+                        group='nonmodal-controller-actor-loss')
+                    original = reset_owned()
+                    image.unlink(missing_ok=True)
+                    actor = connect()
+                    activate(original, c=actor)
+                    actor.close()
+                    connections.remove(actor)
+                    restored(original)
+                    assert rpc(other)['state'] == 'inactive'
+                    cases['actual-controller-actor-loss'] = 'passed'
+                    evidence['owned_root_before_shutdown'] = witness.root_state()
+
+                def external_root_conflict():
+                    evidence['v3_case_context'] = dict(
+                        group='external-root-conflict-preservation')
+                    # External authority is terminal for this core incarnation.
+                    # No later reset/selector may reclaim it or adopt its XID.
+                    original = reset_owned()
+                    item, candidate = activate(original)
+                    external = publish_root(0x00cc33)
+                    terminal('conflicted', 'refused-conflict')
+                    assert witness.property('_XROOTPMAP_ID') == external
+                    assert witness.drawable(external)['corner_pixels'] == (
+                        [0x00cc33] * 4)
+                    external_rows = snapshot(ids)
+                    assert all(external_rows[identifier] == (
+                        candidate['roles'][identifier])
+                        for identifier in ids if identifier != 10)
+                    action(item, 'revert', error='preview_conflict')
+                    external_state = witness.root_state(owned=False)
+                    cases['external-root-conflict-preserves-external'] = dict(
+                        root=external_state, roles=external_rows,
+                        buffered10=(witness.drawable(external_rows[10][8])
+                            if external_rows[10][8] > 1 else None))
+                    evidence['external_root_before_shutdown'] = external_state
+
+                if args.complete_bundle_tail_only:
+                    evidence['complete_bundle_scope'] = 'remaining-tail-only'
+                    evidence['v3_skipped_prior_groups'] = [
+                        'reverted-deleted-source', 'expired-deleted-source',
+                        'confirmed-deleted-source', 'root-mode-retain',
+                        'root-mode-solid', 'root-mode-png',
+                        'root-transparency-False', 'root-transparency-True',
+                        'actual-worker-decode-failure',
+                        'queued-apply-notification-flood',
+                        'nested-menu-revert', 'nested-menu-confirm',
+                        'nested-menu-expiry', 'nested-menu-owner-loss',
+                        'actual-nested-Wait-active-expiry',
+                        'actual-nested-Wait-preparing-expiry',
+                        'actual-Backer-loss-retains-core-root',
+                        'external-Colorset 14 bg #135724',
+                        'external-MenuStyle * Translucent 64']
+                    evidence['group_results']['v3'] = (
+                        'skipped full group by --complete-bundle-tail-only')
+                    evidence['v3_skipped_optional_groups'] = [
+                        'actual-color-allocation-failure',
+                        'actual-topology-change', 'plain-normal-root']
+                    evidence['group_results']['v3-tail'] = 'pending'
+                    external_conflict(
+                        'MenuStyle SlateLauncherStyle Translucent 57')
+                    controller_actor_loss()
+                    external_root_conflict()
+                    return
+
                 if args.owned_root_shutdown_only:
                     original = reset_owned()
                     evidence['owned_root_before_shutdown'] = original['root']
@@ -1169,30 +1260,9 @@ def run(args):
                 for external in ('Colorset 14 bg #135724',
                         'MenuStyle * Translucent 64',
                         'MenuStyle SlateLauncherStyle Translucent 57'):
-                    original = reset_owned()
-                    item, candidate = activate(original)
-                    if external.startswith('Colorset'):
-                        published_command(external, (14,),
-                            lambda rows: rows[14][2] == 0x135724)
-                    else:
-                        command(external)
-                    after = bundle()
-                    result = terminal('conflicted', 'refused-conflict')
-                    assert bundle() == after
-                    action(item, 'revert', error='preview_conflict')
-                    cases['external-' + external] = dict(
-                        preserved=after, terminal=result)
+                    external_conflict(external)
 
-                original = reset_owned()
-                image.unlink(missing_ok=True)
-                actor = connect()
-                activate(original, c=actor)
-                actor.close()
-                connections.remove(actor)
-                restored(original)
-                assert rpc(other)['state'] == 'inactive'
-                cases['actual-controller-actor-loss'] = 'passed'
-                evidence['owned_root_before_shutdown'] = witness.root_state()
+                controller_actor_loss()
                 cases['plain-normal-root'] = dict(
                     status='passed' if args.plain_root else 'skipped',
                     reason='solid setup; build feature profile is separate')
@@ -1257,26 +1327,7 @@ def run(args):
                         terminal=result_state,
                         before=before_topology, after=after_topology,
                         restored=restored_topology)
-                # External authority is terminal for this core incarnation.
-                # No later reset/selector may reclaim it or adopt its XID.
-                original = reset_owned()
-                item, candidate = activate(original)
-                external = publish_root(0x00cc33)
-                terminal('conflicted', 'refused-conflict')
-                assert witness.property('_XROOTPMAP_ID') == external
-                assert witness.drawable(external)['corner_pixels'] == (
-                    [0x00cc33] * 4)
-                external_rows = snapshot(ids)
-                assert all(external_rows[identifier] == (
-                    candidate['roles'][identifier])
-                    for identifier in ids if identifier != 10)
-                action(item, 'revert', error='preview_conflict')
-                external_state = witness.root_state(owned=False)
-                cases['external-root-conflict-preserves-external'] = dict(
-                    root=external_state, roles=external_rows,
-                    buffered10=(witness.drawable(external_rows[10][8])
-                        if external_rows[10][8] > 1 else None))
-                evidence['external_root_before_shutdown'] = external_state
+                external_root_conflict()
                 evidence['complete_bundle'] = cases
                 evidence['group_results']['v3'] = 'passed'
 
@@ -1770,12 +1821,18 @@ def run(args):
                 if (client and evidence.get('external_root_before_shutdown') and
                         core.poll() is not None):
                     def external_preserved():
+                        if args.complete_bundle_tail_only:
+                            assert core.process.returncode == 0, (
+                                evidence['core_wait'])
                         actual = PreviewWitness(client).root_state(owned=False)
                         assert actual == evidence['external_root_before_shutdown']
                         return dict(root=actual,
                             external_publication_and_pixels_preserved=True)
                     evidence['external_root_shutdown'] = clean(
                         'external root shutdown preservation', external_preserved)
+                    if (args.complete_bundle_tail_only and
+                            evidence['external_root_shutdown'] is not None):
+                        evidence['group_results']['v3-tail'] = 'passed'
                 elif (client and evidence.get('owned_root_before_shutdown') and
                         core.poll() is not None):
                     def root_retired():
@@ -1809,8 +1866,6 @@ def run(args):
 
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1 and sys.argv[1] == '--module-proxy':
-        raise SystemExit(module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:]))
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     for name in ('fvwm', 'mfl', 'probe', 'artifacts-dir'):
         parser.add_argument('--' + name, type=Path, required=True)
@@ -1825,6 +1880,9 @@ if __name__ == '__main__':
         help='Only actual normal root publication, Quit, Wait and removal')
     parser.add_argument('--complete-bundle-only', action='store_true',
         help='Run v3 complete bundles; keep existing v1/v2 groups separate')
+    parser.add_argument('--complete-bundle-tail-only', action='store_true',
+        help='Only named launcher conflict, actor loss and external root '
+             'through shutdown')
     parser.add_argument('--plain-root', action='store_true',
         help='Use a solid ordinary root for a minimal feature-profile run')
     parser.add_argument('--topology-change', type=Path,
@@ -1836,6 +1894,13 @@ if __name__ == '__main__':
     parser.add_argument('--allocation-failure', action='store_true',
         help='--fvwm is a separate test core linked with contrast_alloc_fail.c')
     options = parser.parse_args()
+    if options.complete_bundle_tail_only:
+        if (options.complete_bundle or options.owned_root_shutdown_only or
+                options.opaque_colors or options.metadata_limit or
+                options.allocation_failure or options.topology_change):
+            parser.error('--complete-bundle-tail-only conflicts with full, '
+                'owned-root, v1/v2, allocation and topology selections')
+        options.complete_bundle_only = True
     if options.owned_root_shutdown_only:
         options.complete_bundle_only = True
     for name in ('fvwm', 'mfl', 'probe', 'artifacts_dir'):

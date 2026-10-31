@@ -39,6 +39,34 @@ and old full input copies retired; current builds/source/prefix/caches and the
 PR315 runnable reference remain. Owned lab stopped normally. Candidate is ready
 for maintainer review; this is not whole-issue closure.
 
+## TEMPER-06 — Bounded delivery instructions
+
+State: source preparation; checks, separate review and integration pending.
+Owner: Temper rollout coordinator under the owner-selected 2026-10-31 update.
+GitHub mirror: [issue 317](https://github.com/gonz0w/fvwm-x/issues/317); parent
+coordination: [Temper 38](https://github.com/gonz0w/agent-temper/issues/38).
+
+Outcome: retain reviewed Temper cf928f4120b687f34f1b1f974603a4979b5b874c and
+route the actual agent entry point to bounded batches, discovery disposition,
+milestone priorities and verification stopping rules. Scope is bundle/provenance,
+AGENTS and current policy pin only. Native preference/product work and its owners
+remain separate. No new runtime, broad platform matrix, role/model, CI/hooks,
+validator, authority, release or deployment change. No historical waiver is renewed.
+
+Acceptance: exact retained source and manifest; coherent reader routes; preserved
+local tracker, WIP, product work and authority; existing documentation gate and
+separate source review; integration only after applicable current checks and
+authority, with canonical source verified. All required broader gates remain
+binding where applicable; method-only work does not create a new WM/VM campaign.
+
+Attempt: one bounded source update, permitted source checks and separate review.
+Stop on drift, unavailable required input or unexplained repeated failure;
+record findings for later selection instead of expanding the batch.
+
+Continuation: verify and review the isolated candidate; preserve the active
+checkout's dirty work and existing feature selection. Do not reset, stash or
+silently overwrite it.
+
 ## R1 FileManager1 adapter selection — 2026-10-31
 
 Owner: Cam. [Frozen eight-outcome contract](decisions/FILEMANAGER-BUS-2026-10-31.md):

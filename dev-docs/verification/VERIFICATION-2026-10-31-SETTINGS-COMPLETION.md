@@ -1,22 +1,27 @@
-# Settings and preview completion — evidence in progress
+# Settings previews and native bridge — PR319 evidence
 
-CFG-01 #60 / SETTINGS-01 #73. **Acceptance remains pending.** This is a
-working evidence summary, not issue closure or release qualification. The
-frozen contracts are [preview completion](../decisions/SETTINGS-PREVIEW-COMPLETION-2026-10-31.md)
-and [Settings portal](../decisions/SETTINGS-PORTAL-2026-10-31.md). Results below
-are scoped observations; they do not establish all six target profiles or native
-CPU qualification.
+CFG-01 #60 / SETTINGS-01 #73, owner Cam. This is a coherent source-integration
+checkpoint. #73's frozen native bridge/portal/application criteria are complete;
+#60 retains the specific OpenBSD AMD64 default-server tail below. PR319 closes
+only #73 on merge. Source integration and broader owner/release acceptance are
+separate under [the workflow](../WORKFLOW.md#implementation-batches-and-test-cadence).
+The [preview](../decisions/SETTINGS-PREVIEW-COMPLETION-2026-10-31.md) and
+[portal](../decisions/SETTINGS-PORTAL-2026-10-31.md) contracts remain unchanged.
+No full default-server, physical, compositor or release pass is inferred. A
+guest using its host's CPU through Apple Hypervisor is identified as such below;
+emulated execution does not establish native-CPU qualification. Native Linux
+ASan/UBSan execution remains a separate qualification.
 
 ## Criterion map
 
 | Criterion | Evidence and remaining work |
 | --- | --- |
-| Owned complete preview, recovery and root lifetime | Gate 21 passed its controlled normal recovery and existing fixtures. Gate 22 passed controlled 128-event real-child configure, complete native-X and owned-root shutdown checks; classic-large failed as described below. Gate 25 passed the corrected Slate, Dune and classic-large workflows in 88.84 seconds, plus UI policy and Desktop build. Combined acceptance remains pending. |
+| Owned complete preview, recovery and root lifetime | Gate 21 passed its controlled normal recovery and existing fixtures. Gate 22 passed controlled 128-event real-child configure, complete native-X and owned-root shutdown checks; classic-large failed as described below. Gate 25 passed the corrected Slate, Dune and classic-large workflows in 88.84 seconds, plus UI policy and Desktop build. #60 default-server tail acceptance remains open. |
 | Typed plans, native and Go policy | Gate 21 passed preview, MFL request, image background and PNG setup policy tests. Gate 15 passed affected Go race and vet checks and command metadata. Gate 28 passed full v3 in software PNG/no-Render and minimal no-PNG/no-SVG/no-Render profiles (22.984 and 20.883 seconds). Gate 30 passed actual legacy v1/v2 (23.651 seconds); its single worst 26-row test observed at most 8170 of 8192 reply bytes across eight logged cases. |
 | Portal protocol and CFG source | Gate 04 passed frontend and CFG-to-frontend checks. The frontend profile exercised ReadAll, ReadOne, legacy Read nesting, signals, activation, restarts and CFG update. Native application cases driven by raw standard input do not themselves establish CFG provenance. |
 | Application effects | Gate 14 passed the actual Firefox 159 profile with portal enabled and disabled. CSS reduced motion changed false → true → false with events; fresh and restarted clients observed true in the reduced-motion state. No portal-route attribution follows because both profiles behaved similarly. CSS fonts and device pixel ratio stayed unchanged. The Qt 5.15.13/PyQt 5.15.10 XCB default-Fusion profile observed font 9, hicolor and animation hints unchanged during updates; this is a profile observation, not a general Qt compliance judgment. Protected browser maps were unavailable as metadata. |
 | Sanitizers and fault/topology | Sanitizer 01 passed nine older-source C unit checks and direct portal exercise. Gate 29 passed all nine leak-enabled sanitizer units and sanitizer core v3 (21.142 seconds); no sanitizer MFL or worker execution is claimed. Its allocation-fault run passed (19.011 seconds) with one actual wrapper fault witness. Xorg topology passed (20.757 seconds), observing 1920 → 1024 → 1920. |
-| Install, support and manuals | Linux ARM gate 27 passed enabled/disabled builds and installs, six C policies in each, Go, catalog, portal/native wire, both Xvfb profiles and default Xorg. Its aggregate failed because guest mandoc was missing. Four generated/installed manuals were exported byte-bound and host mandoc UTF-8 rendering passed; lint did not pass: Desktop 3, MFL 4, Backer 3, portal 3. Thus the ARM contract results are composed evidence, not a passing aggregate. Other platform and final manual reconciliation remain pending. |
+| Install, support and manuals | Linux ARM gate 27 passed enabled/disabled builds and installs, six C policies in each, Go, catalog, portal/native wire, both Xvfb profiles and default Xorg. Its aggregate failed because guest mandoc was missing. Four generated/installed manuals were exported byte-bound and host mandoc UTF-8 rendering passed; lint did not pass: Desktop 3, MFL 4, Backer 3, portal 3. Thus the ARM contract results are composed evidence, not a passing aggregate. All six builds/installs and enabled/disabled real-X profiles are now covered; the OpenBSD AMD64 full default-server invocation remains failed. |
 
 The Firefox profile used an official ARM64 executable, headful under uid 65534
 with sandbox retained. Its x86_64 user-agent privacy string is not architecture
@@ -48,7 +53,7 @@ guaranteed.
   an inference, not a passing run. Follow-up 04 using source20 passed the same strict default-Xorg checks in 219.14 seconds; unchanged installed production inputs are explicitly verified.
 - FreeBSD ARM platform 02 failed before build because the old Meson 1.10 cached
   option registry did not recognize `settings-portal`. The helper now refreshes
-  that registry without adding a new flag; platform 05 passed the full combined checkpoint in 129.86 seconds. FreeBSD AMD64 and OpenBSD ARM64 subsequently passed their complete combined checkpoints. OpenBSD AMD64 retains the preparation-observation failure and pending source24 rerun.
+  that registry without adding a new flag; platform 05 passed the full combined checkpoint in 129.86 seconds. FreeBSD AMD64 and OpenBSD ARM64 subsequently passed their complete combined checkpoints. OpenBSD AMD64's later source24 run and its failed default-server aggregate are recorded below.
 - Gate 10's overall actual-application run returned unavailable; its Qt profile
   observations are retained as such. Gate 14 supplies the later browser profile,
   not retroactive success for gate 10.
@@ -106,7 +111,7 @@ manual render outcomes and four byte hashes are in `manual-render-host.json`.
 | Linux AMD64, emulated CPU | Source17 platform02 builds/installs, policies, Go, portal/native wire and both nested-X profiles pass; source20 fixture-only follow-up04 default Xorg passes. |
 | FreeBSD ARM64, native CPU/Apple Hypervisor | Source20 platform05 full combined enabled/disabled/default-X/manual rendering passes. Lint3/4/3/3 are nonpasses. |
 | FreeBSD AMD64 | Source20 platform05 full combined enabled/disabled/default-X/manual rendering passes (1034.15 seconds). Lint3/4/3/3 are nonpasses. |
-| OpenBSD8.0 AMD64 | Source20 build/install/policy/Go/portal/native-wire pass; v3 expiry setup failed as described below. Source24 fresh-guest follow-up is running. |
+| OpenBSD8.0 AMD64 | Source24 enabled/disabled builds, installs, policy/Go, portal/native wire and both full Xvfb runs pass. Default Xorg:19 completed groups,1 allocation skip, then cancellation at the inner240-second limit. Program and aggregate FAILED. All four installed manuals are byte-identical to the ARM64 pages whose renders passed; see composition below. |
 | OpenBSD8.0 ARM64 | Source20 full enabled/disabled/default-X/manual checkpoint passes, with5701 collected archive members independently audited. |
 | Final chooser UI | Source21 changes only two portable Go files for a private opaque chooser; source22 restores the canonical generated Perl timestamp0. Gate 31 passed all three full theme workflows (89.097 seconds), two Go packages (4.09 seconds), Desktop build (2.08 seconds), and actual normal installation with byte-equal FvwmDesktop and canonical epoch-zero Perl metadata. Inspection of all nine new captures found opaque chooser rows without the gate 25 underlying-text bleed. The small fixture probe title remains truncated in Slate and Dune. Inspection does not establish accessibility or functional correctness. |
 
@@ -125,18 +130,26 @@ passed193 tests. The composed maintenance result is272 passes/20 skips;
 this is not a successful rerun of the original `make verify` invocation.
 The original failure remains recorded, and source/code catalog parity is retained.
 
+OpenBSD manual composition: `openbsd-manual-composition.json` compares all four
+AMD64 installed pages byte-for-byte with the actual source20 ARM64 pages. All
+match; the ARM64 renders returned 0, and its Desktop/MFL/Backer/portal lint
+results were 3/4/3/3, respectively, not passes. AMD64 formatter commands were
+not reached after the failed default-X invocation; the ARM64 render evidence is
+reused by byte identity, not represented as an AMD64 formatter run.
+
 Retention:32 fully host-verified guest evidence trees/archives (152,967,548 bytes)
 were retired. Nineteen superseded full source archives (523,362,044 bytes) were
 replaced by3,534,465 bytes of verified changed-input deltas plus the source20
 basis. All original manifests and payload closures remain reconstructible;
-the original gzip streams are not retained. Current builds, useful installed
-prefixes, SDK/dependency caches, private test runtimes and performance reference
-remain. Linux ARM64/AMD64 and FreeBSD ARM64 labs stopped normally with observed
-QEMU exits. FreeBSD AMD64 also stopped normally. Both first OpenBSD disposable runners exited zero through their established cleanup; this does not establish normal guest poweroff. The source24 AMD64 follow-up is running.
+the original gzip streams are not retained. Later source21–23 archives also
+use verified deltas relative to source24. Three stopped task-owned disposable
+OpenBSD disks and their copied stages were retired after archive verification,
+recovering14,145,748,992 allocated bytes; their compiled evidence archives remain.
+Reusable Linux/FreeBSD builds and prefixes, SDK/dependency caches, fixed base
+images, private test runtimes and the performance reference remain. Linux ARM64/AMD64 and FreeBSD ARM64 labs stopped normally with observed
+QEMU exits. FreeBSD AMD64 also stopped normally. Both first OpenBSD disposable runners exited zero through their established cleanup; this does not establish normal guest poweroff. The source24 AMD64 follow-up also exited through the established runner cleanup; all owned labs are stopped.
 
-Pending lead reconciliation: record each required profile, exact final source
-and artifact identity, commands, pass/fail/skip/unavailable outcome, retained
-failure, manual review and separate review before any closure decision.
+Integration review and issue reconciliation are recorded below. The only remaining #60 condition is the named default-server tail; this checkpoint makes no whole-#60 closure claim.
 
 ## Fresh snapshot fixture correction
 
@@ -161,8 +174,8 @@ processes and core exit0, without X observer errors. All nineteen pre-APPLY
 receipts were still prepared with at least4875 ms remaining. These are Linux
 harness observations, not a WM performance comparison or an OpenBSD pass.
 Allocation and topology are skipped in gate33 and retain gate29's actual passes.
-The original reviewed fresh-guest OpenBSD driver is reused for the remaining
-AMD64 qualification, avoiding new cache or credential-recovery machinery.
+The original reviewed fresh-guest OpenBSD driver was reused for the source24
+AMD64 attempt, avoiding new cache or credential-recovery machinery.
 
 The two source24 test files have hashes
 `bdfdf6db304844b4e9316963040cac5d79aec5357f713a8380c6cd9068bf1a21`
@@ -180,3 +193,78 @@ SHA-256 `7b6e94bf16aedd1e416669a4f8d5149d92d5836a17846673cde1941811aa00e5`.
 Final staged whitespace validation removed one redundant EOF blank line from
 `libs/image_background.c`. Its C tokens are unchanged from qualified source24;
 no native behavior or profile result is inferred from this formatting correction.
+
+## Final OpenBSD AMD64 outcome and delivery decision
+
+Source24 completed both builds/installs, six policies per profile, Go and catalog,
+portal/native-wire checks and full enabled/disabled Xvfb preview runs
+(99.046/108.146 seconds). The default-X driver allowed240 seconds inside the
+outer420-second command budget. It cancelled its child; the command returned
+failure after245.713 seconds. The native program and aggregate remain **failed**.
+This was the last recorded native attempt. No further attempt follows automatically.
+
+The independently audited archive is272,670,487 bytes with4638 members
+(4029 regular payloads), SHA-256
+`752f07d7a76f5adbb43dde5a32ab72503b0d31f697359e9a2bc52a8ea36b1b4c`.
+Source pre/post closure matches source24. The default-server fixture and enabled
+Xvfb fixture use identical installed binaries, build config and probe.
+
+Actual default-X evidence establishes nineteen completed groups: deleted-source
+revert/expiry/confirmation, retain/solid/PNG roots, both transparency directions,
+decode refusal, queued publication, four modal menu endings, both active and
+preparing Wait expiry, Backer loss, and external Colorset14/default MenuStyle64
+conflicts. The separate allocation case is an explicit skip. Native1920×1200
+root/buffer pixels, fourteen roles and both scalars are independent observations.
+Both Wait cases have successful terminal results; their stale context label does
+not describe where cancellation occurred. Core/server Wait statuses are0; no
+observer X errors were recorded. Cancellation reaped the two probes with-15;
+the duplicate fixture MFL exited1 and both Backers exited0. These are not five
+zero exits.
+
+Not completed on that default server: named launcher MenuStyle57 conflict,
+nonmodal controller loss, external-root conflict/preservation and preservation
+after core shutdown. Both same-OS enabled/disabled Xvfb runs complete these
+functional cases, including the independent2×2 green external root through core
+exit. This does not make the uncompleted default-server tail a pass.
+
+Separate source/evidence review supports the code and found no new product
+assertion before cancellation. One reviewer considers the existing default-X
+server coverage plus same-OS complete Xvfb results sufficient for finite
+criterion-level composition; complex analysis retains the external-root default
+server risk. The lead chooses the conservative owner boundary: **#60 stays open**.
+PR319 can integrate the qualified implementation and close independently complete
+#73. A future bounded tail-only gate can reuse the nineteen completed groups and
+all unchanged build/install evidence. It does not need another full matrix.
+
+## #73 acceptance mapping and source review
+
+1. Supported key/type mapping, precedence, single ownership, serialized updates,
+   generation/serial/restart and loss handling: merged PR316's13 raw-X groups,
+   actual controller/GTK observations and current six-target native-wire checks.
+2. XSETTINGS/Xcursor publication without rewriting personal configuration or
+   another store: PR316 ownership/property evidence and unchanged publisher;
+   current native wire checks confirm the supported cross-platform contract.
+3. Optional portal: actual installed frontend1.18.4 ReadAll/ReadOne/legacy Read,
+   activation/signals/restarts and CFG→native-owner→frontend provenance in gate04;
+   six-target direct protocol and enabled/disabled install/linkage/metadata evidence.
+4. Actual toolkit/browser effects and non-effects: PR316 existing/fresh/restarted
+   GTK3 and enlarged-font/Xcursor observations; actual Qt and Firefox profiles
+   above, with enabled/disabled portal results and explicit non-effects.
+
+All four finite #73 criteria are supported. This is not blanket toolkit compliance
+or whole SESSION-02/#77 acceptance. #60's current26-setting metadata/atomic store,
+eight-key runtime/save/recovery and inspected three-theme functionality are
+implemented and observed; its final support criterion retains the named tail.
+
+Separate implementer/product/analyst/reviewer roles were used within the selected
+Temper routes. Source/artifact reviews are separate from authorship and are not
+human approval. Actual backend model/effort metadata remains unverified. Final
+integration takes the already merged PR318 method-only update byte-for-byte;
+its retained bundle manifest verifies. Native product inputs remain source-bound
+to the recorded base316 snapshots; the policy/documentation merge adds no runtime
+change. The one final C EOF-blank removal is token-equivalent to qualified code.
+
+Final separate readiness review found no source-integration or #73 closure
+blocker. It independently verified all four OpenBSD manual byte identities and
+retains the failed default-server aggregate and three remaining #60 scenarios.
+No further native attempt was made for final documentation/status reconciliation.

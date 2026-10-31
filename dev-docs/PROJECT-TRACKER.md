@@ -7,25 +7,50 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: #60/#73 completion on `codex/r1-settings-completion`.
-User authorized merging PR316 and continuing both owners toward closure. PR316
-merged as `6630bb9edc54dd305e6914ca907bcc78ae4b5f03`; exact reviewed tree,
-canonical signature and Cam author DCO verified; matching branches retired.
-Performance is 1/5 after merged316 from the verified PR315 runnable reference;
-no new comparison is due. The previous native preference checkpoint is merged,
-with its [exact results and limits](verification/VERIFICATION-2026-10-31-NATIVE-PREFERENCES.md).
+Current checkpoint: [PR319](https://github.com/gonz0w/fvwm-x/pull/319),
+`codex/r1-settings-completion`. User authorized merging PR316 and continuing
+#60/#73. PR316 merged as `6630bb9edc54dd305e6914ca907bcc78ae4b5f03`;
+canonical signature/tree and Cam author DCO verified; matching branches retired.
+The policy-only PR318 update is integrated without changing product code.
 
-The [optional Settings bridge contract](decisions/SETTINGS-PORTAL-2026-10-31.md)
-is frozen before implementation: reuse existing effective XSETTINGS and optional
-libdbus, provide only the standard reduced-motion key through an installed portal
-frontend, keep ordinary builds disabled, and verify actual ownership/recovery,
-frontend forwarding and application effects/non-effects. No extra registry/store,
-mandatory toolkit or broad portal frontend is implied. #73 retains its required
-support/profile acceptance; #60's named owned preview/registry closure is being
-reconciled independently. Do not invent additional settings from broad examples.
-#257/#258 remain parked.
+Delivery boundary: the existing 26-setting registry, eight owned appearance
+previews, exact wallpaper/resource recovery and optional reduced-motion Settings
+portal are implemented together. This candidate closes #73's frozen native
+bridge/portal/application criteria when merged. #60 remains open for the named
+OpenBSD AMD64 default-X qualification below. No criterion is waived, no extra
+feature joins the batch, and no release/hardware qualification is inferred.
 
-The [combined completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md) records passing native normal/software/minimal, scoped sanitizer, actual fault/topology, three-theme and application checks. Linux support is composed with host manual formatting; FreeBSD ARM64 combined acceptance passes. FreeBSD AMD64 and OpenBSD ARM64 complete their combined checkpoints. OpenBSD AMD64's build/install/Go/portal checks pass; its v3 preparation observation exhausted the fixed deadline. A persistent fresh-snapshot test helper passes focused Linux verification, and the affected AMD64 fresh-guest checkpoint is running. Issue closure and final review remain pending.
+The [completion evidence](verification/VERIFICATION-2026-10-31-SETTINGS-COMPLETION.md)
+records source-bound normal/software/minimal, policy/race/vet, scoped native
+sanitizer, actual allocation/topology/recovery, installed helper/manual and
+three-theme results. All six target builds/installs and both enabled/disabled
+native-X profiles pass. Complete default-X runs pass on Linux, both FreeBSD
+architectures and OpenBSD ARM64. OpenBSD AMD64's final default-X invocation
+completed nineteen case groups, then hit its inner240-second driver limit;
+its program and aggregate remain failed. The native core exited0 and no observer
+X errors were recorded. This is an incomplete check, not a new product finding.
+
+Remaining #60 acceptance: observe named launcher-menu conflict, nonmodal
+controller loss and external-root preservation including core shutdown on the
+OpenBSD AMD64 default server. Both same-OS Xvfb profiles already pass these
+cases; preserve and reuse the nineteen completed default-server outcomes.
+Next action is a separately recorded, bounded tail-only qualification plan,
+not another automatic full matrix. The final recorded attempt has ended;
+no further native attempt is started in this checkpoint.
+
+Final review keeps code integration separate from owner acceptance, as permitted
+by [the workflow](WORKFLOW.md#implementation-batches-and-test-cadence). The
+source/integration gate and separate source/artifact/visual review are complete;
+PR319 is ready for review with #73 closing only on merge. #60's broader remaining condition is retained in R1. The
+[preview contract](decisions/SETTINGS-PREVIEW-COMPLETION-2026-10-31.md) and
+[portal contract](decisions/SETTINGS-PORTAL-2026-10-31.md) remain unchanged.
+#257/#258 remain parked. Performance remains1/5 after PR316 from the verified
+PR315 runnable reference; this feature merge advances it to2/5. No comparison
+is due. Current builds, required caches/reference and compact qualification
+records remain; superseded task-owned duplicates are retired. Three stopped,
+task-owned disposable OpenBSD disks and their copied stages were retired after
+archive verification, recovering 14,145,748,992 allocated bytes. Reusable Linux/
+FreeBSD builds, SDKs, fixed base images and the performance reference remain.
 
 ## TEMPER-06 — Bounded delivery instructions
 
@@ -56,16 +81,6 @@ record findings for later selection instead of expanding the batch.
 Continuation: verify and review the isolated candidate; preserve the active
 checkout's dirty work and existing feature selection. Do not reset, stash or
 silently overwrite it.
-
-Final verification attempt: finish only the remaining #60/#73 OpenBSD AMD64
-recovery-fixture qualification on frozen source24. The lead owns one fresh
-8.0 AMD64 job, bounded by its existing7200-second run timeout and300-second
-nested-X /420-second default-X command limits; at most two owned VMs remain the
-resource cap. The new persistent native probe passed focused Linux verification
-and removes the observed preparation-window startup cost. On success, reconcile
-PR319 and both frozen issue criteria. On another failure, preserve the draft and
-explicitly replan the affected gate; do not automatically renew this attempt.
-No extra features, performance campaign or parked #257/#258 work joins this batch.
 
 ## R1 FileManager1 adapter selection — 2026-10-31
 
@@ -5573,7 +5588,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | ARCHIVE-01 | P2 / after verified migration | Retired planning/upstream notes and dated reports are now relocated with hashes and repaired links; graph auto-update is disabled. Remaining: remove predecessor tooling only after reference, parity, packaging and distribution checks. Preserve history/evidence and user data; do not delete ignored build trees or VM disks. See cleanup roadmap. |
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
-| CFG-01 | P2 / consumers and native preference checkpoint qualified; remaining preview/release open | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
+| CFG-01 | P2 / preview implemented in PR319; OpenBSD AMD64 default-X tail open | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |
@@ -5597,7 +5612,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | SELECTION-01 | P1 manager handoff locally qualified; broader roles/transfer open | Qualify adopted ICCCM clipboard/selection roles and define participating native XDND targets. Reuse bounded DATA-01 transport and INPUT/PROC ownership; test chunks, timestamps, cancellation, owner death, malformed/flood input and independent clients. CLIPBOARD-01 separately scopes a configurable manager consumer, asynchronous text/image roles and CLIPBOARD_MANAGER/SAVE_TARGETS adoption; this audit alone implies no daemon, generic WM drag interception or dropped-file autorun. The [stage3 role audit](verification/RECONCILIATION-2026-10-12-STAGE3.md) separates core WM_Sn, Script PRIMARY/private messages, Form cut buffers and future desktop roles. The [fixed requirement register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md), S01–S16, records owner/target/requestor checks and the source-found missing MANAGER owner-window field. Required Script owner targets, INCR and broader manager ownership/target coverage remain open; the startup handoff subset is locally qualified in [PR145](verification/VERIFICATION-2026-10-21-MANAGER-HANDOFF.md). Remaining bounded role/transfer adoption follows stage5; later desktop services retain their own stages. |
 | XDG-01 | Done / #56 closed by merged PR301; all four frozen criteria qualified | Exact adopted Desktop Entry Exec/field-code parsing, lookup/visibility/localization/actions, startup notification, base-directory rules, MIME application roles and inherited icon lookup. Reuse launcher/UTIL/PROC/parser contracts and existing providers; preserve legacy FVWM paths. Native independent fixtures, safe literal arguments, absent providers and installed-platform acceptance. Stage 5 after underlying parser/process work; autostart remains SESSION-01-owned. |
 | TEXT-01 | P2 / queued native text/input | Define Unicode data/version, grapheme editing, bidi/shaping/font fallback and XIM/IME composition for FVWM-owned controls. Audit existing locale/font helpers first; preserve legacy encodings and client pixels. Coordinate SCRIPT-01/I18N-01, review any dependency contract explicitly, and test real composed input plus pure boundaries. Stage 5 before dependent desktop primitives. |
-| SETTINGS-01 | P2 / native bridge checkpoint qualified; portal/toolkit/support acceptance open | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
+| SETTINGS-01 | P2 / all finite criteria supported; PR319 closes on merge | Publish supported CFG-01 preferences through native XSETTINGS/X resources and, when enabled, the selected settings portal path. Single ownership, typed bounded updates, serials, restart and actual toolkit/browser observations; do not claim every toolkit obeys every key. Native bridge in stage 6 after CFG/session contracts; optional bridge in stage 7 with SESSION-02. GTK/Qt theme creation remains deferred. |
 | A11Y-01 | P2 / queued native accessibility | Apply [native accessibility guidance](THEME-STANDARDS.md): complete keyboard paths and visible focus with BUTTON-01/02; define accessible names/roles/states/actions/events for selected FVWM UI and optional AT-SPI profiles. Real keyboard and assistive-client evidence, focus return, scaling and unavailable-service tests. Follow TEXT/button/CFG contracts in stage 6; qualify optional bus export in stage 7. No new mandatory GUI toolkit. |
 | THEME-01 | P2 / SVG artwork adopted; focused native Linux review passed | Apply [THEME-STANDARDS.md](THEME-STANDARDS.md) to all shipped palettes/modes/states, bootstrap/assets, density/targets, opacity, enlarged text and keyboard paths. Keep Slate layout/local overrides; record numeric contrast separately from native visual/interaction evidence. Earlier focused text/disabled-role review is preserved in the [standards report](verification/VERIFICATION-2026-10-06-STANDARDS-THEME.md). The user-approved richer SVG artwork replaces 377 geometric PNG assets, with PNG retained for screenshots and existing raster inputs. Native Linux ARM64 passes 51 policy checks, the full desktop/two-monitor gate, 377 worker render/install comparisons, 12 scale renders and 48 meaningful-glyph contrast pairs; SVG/PNG-disabled Session fallback also passes. See the [SVG theme report](verification/VERIFICATION-2026-10-06-SLATE-SVG.md) and [decision](decisions/THEME-SVG-ARTWORK-2026-10-06.md). Six-target/enlarged-text/physical-display/assistive/native-CI qualification remains pending; asynchronous core image activation stays IMAGE-01-owned. Full theme acceptance before RELEASE-01. |
 | RELEASE-01 | P1 / final release gate, queued until coding is complete and user requests release preparation | Final public-launch review of the accepted release candidate: independent identity/attribution, real README/demo, public contributor/community/security files, owned reporting/support channels, tested install/trial/upgrade, source artifacts/checksums/provenance/licenses, excellent installed manuals with optional lightweight HTML, onboarding and quality gates. Reuse CI-01/REPRO-01/DOCS-01/MAINT-02/VERIFY-01/COMPAT-01 and related evidence. Record disposition of X11 walkthroughs, measured results, opt-in diagnostics, customization recipes and public roadmap. Any new code/defect returns to its owner before repeating release checks. No publication authorized. See [full gate](RELEASE-GATE.md). |

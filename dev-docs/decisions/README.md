@@ -1,5 +1,6 @@
 # Proposals and decisions
 
+- [Native file clipboard and drag-and-drop](FILE-TRANSFER-2026-10-31.md): #67/#22 file-only owner/requestor, native Form gestures and confirmed grouped jobs.
 - [Settings preview completion](SETTINGS-PREVIEW-COMPLETION-2026-10-31.md): finite 26-setting registry, eight reversible choices, core-owned roots and exact resource recovery.
 
 - [Optional Settings portal](SETTINGS-PORTAL-2026-10-31.md): bounded XSETTINGS reduced-motion bridge, explicit build/activation and application observation limits.

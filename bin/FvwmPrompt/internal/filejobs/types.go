@@ -21,15 +21,16 @@ const (
 )
 
 type Request struct {
-	Schema      int                 `json:"schema_version"`
-	ID          string              `json:"id"`
-	Generation  uint64              `json:"generation"`
-	Operation   string              `json:"operation"`
-	Snapshot    *filemodel.Snapshot `json:"snapshot"`
-	IDs         []string            `json:"ids,omitempty"`
-	Destination []byte              `json:"destination_bytes,omitempty"`
-	Name        []byte              `json:"name_bytes,omitempty"`
-	Permanent   bool                `json:"permanent,omitempty"`
+	Schema              int                 `json:"schema_version"`
+	ID                  string              `json:"id"`
+	Generation          uint64              `json:"generation"`
+	Operation           string              `json:"operation"`
+	Snapshot            *filemodel.Snapshot `json:"snapshot"`
+	IDs                 []string            `json:"ids,omitempty"`
+	Destination         []byte              `json:"destination_bytes,omitempty"`
+	DestinationIdentity *filemodel.Identity `json:"destination_identity,omitempty"`
+	Name                []byte              `json:"name_bytes,omitempty"`
+	Permanent           bool                `json:"permanent,omitempty"`
 }
 
 type Control struct {

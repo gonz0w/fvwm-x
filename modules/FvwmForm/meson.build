@@ -19,6 +19,7 @@ install_data(
 fvwmform_sources = [
     'FvwmForm.c',
     'form_input.c',
+    'file_transfer_form.c',
     'form_list.c',
     'form_scale.c',
     'form_scale_policy.c',

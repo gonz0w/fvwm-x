@@ -27,6 +27,7 @@ func parseOptions(args []string, home string, output io.Writer) (options, error)
 	flags.BoolVar(&o.hidden, "hidden", false, "include hidden entries")
 	flags.BoolVar(&o.inspect, "inspect", false, "emit bounded schema-1 directory JSON without X")
 	flags.BoolVar(&o.reuse, "reuse", false, "hand off to an idle matching browser; otherwise start an independent view")
+	flags.BoolVar(&o.fileTransfer, "file-transfer", false, "enable native file Copy/Cut/Paste and drag-and-drop")
 	flags.BoolVar(&o.fileManagerService, "filemanager-service", false, "own the optional FileManager1 session-bus service")
 	if err := flags.Parse(args); err != nil {
 		return o, err
@@ -34,7 +35,7 @@ func parseOptions(args []string, home string, output io.Writer) (options, error)
 	dirSet, custom := false, false
 	serviceConflict := false
 	flags.Visit(func(f *flag.Flag) {
-		if f.Name != "filemanager-service" && f.Name != "socket" {
+		if f.Name != "filemanager-service" && f.Name != "socket" && f.Name != "file-transfer" {
 			serviceConflict = true
 		}
 		if f.Name == "dir" {
@@ -47,7 +48,7 @@ func parseOptions(args []string, home string, output io.Writer) (options, error)
 	})
 	if o.fileManagerService {
 		if serviceConflict || flags.NArg() != 0 {
-			return o, errors.New("--filemanager-service accepts only --socket")
+			return o, errors.New("--filemanager-service accepts only --socket and --file-transfer")
 		}
 		return o, nil
 	}

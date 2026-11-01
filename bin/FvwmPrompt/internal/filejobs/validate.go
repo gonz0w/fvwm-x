@@ -108,6 +108,9 @@ func ValidateRequest(req Request) error {
 	if req.Operation != "copy" && req.Operation != "move" && req.Operation != "link" && len(req.Destination) != 0 {
 		return errors.New("unexpected destination")
 	}
+	if req.DestinationIdentity != nil && ((req.Operation != "copy" && req.Operation != "move" && req.Operation != "link") || !req.DestinationIdentity.Mode.IsDir()) {
+		return errors.New("unexpected destination identity or non-directory type")
+	}
 	if req.Permanent != (req.Operation == "delete") {
 		return errors.New("permanent deletion requires explicit confirmation")
 	}

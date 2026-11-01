@@ -166,3 +166,15 @@ fvwm_session_bus = executable(
     install_dir: fvwm_moduledir,
     install_tag: 'session-startup',
 )
+
+# Browser-lived, file-only X11 clipboard and XDND owner. No bus/toolkit.
+fvwm_file_transfer = executable(
+    'fvwm-file-transfer',
+    ['file_transfer.c', 'file_transfer_policy.c'],
+    include_directories: includedirs,
+    link_with: libfvwm3,
+    dependencies: all_compile_deps + [summary_depvals['x11']],
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'file-browser',
+)

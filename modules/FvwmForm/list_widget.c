@@ -7,6 +7,7 @@
 #include "libs/fvwmlib.h"
 #include "libs/Colorset.h"
 #include "FvwmForm.h"
+#include "file_transfer_form.h"
 #include "libs/flocale_font_types.h"
 
 /* Native monochrome type marks scale with the item's font. They introduce
@@ -153,6 +154,7 @@ void form_list_draw(Item *item)
 			top, CF.ui_metrics.thumb_width ? CF.ui_metrics.thumb_width : 10,
 			thumb);
 	}
+	form_transfer_border(item);
 }
 
 static void list_focus_item(Item *next)
@@ -178,6 +180,25 @@ static void list_watch_change(Item *list, const form_list_state *before)
 	snprintf(command, sizeof(command), "Echo FVWM_FORM_CHANGED %s",
 		list->list.watch.token);
 	SendText(Channel, command, 0);
+}
+
+/* A real drag preserves an already selected group. An unselected row joins
+ * the selection using the same toggle/watch path as a normal click. */
+bool form_list_drag_select(Item *item, int index)
+{
+	form_list_state *state = item->list.state;
+	form_list_state before = *state;
+
+	if (index < 0 || index >= state->count)
+		return false;
+	list_focus_item(item);
+	form_list_focus(state, index);
+	if (!(state->bits[index / 8] & (1u << (index % 8))) &&
+	    !form_list_toggle(state, index))
+		return false;
+	list_watch_change(item, &before);
+	RedrawItem(item, 0, NULL);
+	return true;
 }
 
 Bool form_list_key(KeySym key, unsigned int modifiers)

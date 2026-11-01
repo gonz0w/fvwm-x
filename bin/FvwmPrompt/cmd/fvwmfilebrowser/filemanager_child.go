@@ -59,6 +59,9 @@ func (children *fileManagerChildren) reserve(count int) ([]uint64, bool) {
 
 func fileManagerChildArgs(o options, socket string) []string {
 	args := []string{"--_filemanager-child", "--reuse"}
+	if o.fileTransfer {
+		args = append(args, "--file-transfer")
+	}
 	if socket != "" {
 		args = append(args, "--socket", socket)
 	}

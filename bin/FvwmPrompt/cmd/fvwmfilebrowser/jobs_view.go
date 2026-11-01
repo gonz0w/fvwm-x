@@ -29,6 +29,7 @@ type jobView struct {
 	hidden                int
 	confirmDelete         bool
 	admitted              bool
+	transfer              bool
 	paintedDecision       uint64
 	paintedDelete         bool
 	page                  int
@@ -228,9 +229,17 @@ func (b *browser) renderJobs() error {
 	line("UIScale monitor")
 	line(`Title "File jobs"`)
 	line("Line left")
-	label("job-source", "Source: "+string(view.snapshot.Path))
+	source := "Source: " + string(view.snapshot.Path)
+	if view.transfer {
+		source = "Incoming file references; destination is the displayed folder"
+	}
+	label("job-source", source)
 	line("Line left")
-	label("job-selection", fmt.Sprintf("Captured: %d selected; %d hidden by filter. Reopen F9 to capture changes.", len(view.ids), view.hidden))
+	selectionSummary := fmt.Sprintf("Captured: %d selected; %d hidden by filter. Reopen F9 to capture changes.", len(view.ids), view.hidden)
+	if view.transfer {
+		selectionSummary = "Confirmed file transfer; main browser shows aggregate group counts."
+	}
+	label("job-selection", selectionSummary)
 	line("Line left")
 	label("job-status", "Ready. Choose an operation for the captured selection.")
 	line("Line left")
@@ -302,7 +311,8 @@ func jobResultRows(view *jobView, job *jobState) []string {
 	if job == nil {
 		return rows
 	}
-	for _, event := range job.outcomes {
+	events := append(append([]filejobs.Event(nil), job.priorOutcomes...), job.outcomes...)
+	for i, event := range events {
 		value := event.State + ": " + filepath.Base(string(event.Path))
 		if event.Outcome != nil {
 			value = event.Outcome.State + ": " + filepath.Base(string(event.Path))
@@ -314,6 +324,9 @@ func jobResultRows(view *jobView, job *jobState) []string {
 			if event.Outcome.SourceRemaining && event.Outcome.DestinationPresent {
 				value += " (source and destination remain)"
 			}
+		}
+		if job.transfer {
+			value = fmt.Sprintf("Item %d: %s", i+1, event.State)
 		}
 		rows = append(rows, displayText(value, 140))
 	}
@@ -333,6 +346,9 @@ func jobRowsPage(rows []string, page int) ([]string, int) {
 }
 
 func (b *browser) armJobDelete() error {
+	if b.jobs != nil && b.jobs.transfer {
+		return errors.New("Incoming transfers allow only their confirmed Copy or Move")
+	}
 	view := b.jobs
 	if view == nil || view.admitted {
 		return errors.New("Reopen Jobs for a fresh selection before deleting.")
@@ -357,7 +373,7 @@ func (b *browser) updateJobs() error {
 	count := len(rows)
 	if job := b.job; job != nil {
 		status = fmt.Sprintf("%s: %s", job.request.Operation, jobStateText(job.state))
-		if job.latest.Detail != "" {
+		if job.latest.Detail != "" && !job.transfer {
 			status += ". " + job.latest.Detail
 		}
 		if job.latest.TotalKnown {

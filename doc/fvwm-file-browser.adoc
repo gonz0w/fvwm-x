@@ -12,20 +12,21 @@ fvwm-file-browser - bounded native folder browser and file jobs
 *fvwm-file-browser* [*--dir* _local-target_] [*--hidden*]
 [*--view* list|grid] [*--watch* off|auto] [*--socket* _path_]
 [*--opener* _executable_] [*--terminal* _executable_]
-[*--action* _label=executable_] ...
+[*--action* _label=executable_] ... [*--file-transfer*]
 
 *fvwm-file-browser* *--reveal* _local-target_ [*--reveal* _local-target_ ...]
 [*--view* list|grid] [*--watch* off|auto] [*--socket* _path_] [*--hidden*]
+[*--file-transfer*]
 
 *fvwm-file-browser* *--properties* _local-target_ [*--properties* _local-target_ ...]
 [*--action* _label=executable_] ... [*--view* list|grid]
-[*--watch* off|auto] [*--socket* _path_] [*--hidden*]
+[*--watch* off|auto] [*--socket* _path_] [*--hidden*] [*--file-transfer*]
 
 *fvwm-file-browser* *--inspect* [*--dir* _local-target_] [*--hidden*]
 
 *fvwm-file-browser* [*--reuse*] [_local-folder_]
 
-*fvwm-file-browser* *--filemanager-service* [*--socket* _path_]
+*fvwm-file-browser* *--filemanager-service* [*--socket* _path_] [*--file-transfer*]
 
 *fvwm-file-browser* *--reuse* [*--dir* _local-folder_]
 [*--reveal* _local-target_ ... | *--properties* _local-target_ ...]
@@ -203,6 +204,37 @@ snapshot without querying the filesystem or file contents. Its fixed native
 area updates without replacing input or collection windows. Refresh updates
 the observation; if any inspected identity disappears, the old panel clears.
 Opening a file still uses the isolated worker's separate identity validation.
+
+== FILE CLIPBOARD AND DRAG AND DROP
+
+Start with `fvwm-file-browser --file-transfer` to enable file Copy, Cut,
+Paste and drag and drop. Select entries and use the buttons or, while the
+list has focus, Ctrl-C, Ctrl-X and Ctrl-V. Copy or Cut captures file references;
+Cut does not move files until a confirmed Paste. The clipboard survives folder
+navigation. A new Copy or Cut replaces it; ownership changes or browser exit
+end it. There is no file clipboard history or PRIMARY synchronization.
+
+Drag selected entries after moving the pointer four scaled logical units. A
+click without a drag retains its normal selection behavior. Dragging requests
+Copy by default; hold Shift to request Move. Paste and drops target the displayed
+directory, not a folder under the pointer. Each received operation requires one
+explicit Confirm
+Copy/Move before any mutation. Alt-Y confirms; Alt-Z cancels the transfer.
+The confirmation expires after 30 seconds.
+Only local file URIs are accepted; transferred references are never executed.
+
+A transfer can contain up to 256 references from eight parent folders. Groups
+run in order using file jobs. Failure or cancellation can leave partial results;
+inspect Jobs and the destination before deciding whether to retry. A cancelled
+or timed-out filesystem operation can have an unknown outcome until its worker
+actually finishes. The browser does not automatically retry uncertain work or
+roll back completed groups.
+
+The installed native helper is discovered by the browser. If transfer is
+unavailable, browsing remains available; check the installation and restart the
+browser. Controlled test builds may set `FVWM_FILE_TRANSFER_HELPER` to an
+absolute helper path. No additional toolkit or D-Bus service is required for
+file transfer.
 
 == COMPLETE VALUE DETAILS
 
@@ -593,8 +625,13 @@ MFL files provider. The separately enabled FileManager1 service is described bel
   Reveal one to 256 entries in a common parent; repeat the option to show their
   observed selection summary immediately.
 
+*--file-transfer*::
+  Enable file clipboard and drag-and-drop support for this browser. See FILE
+  CLIPBOARD AND DRAG AND DROP.
+
 *--filemanager-service*::
-  Run the optional FileManager1 service. Only --socket may accompany this option.
+  Run the optional FileManager1 service. Only --socket and --file-transfer may
+  accompany this option.
   See FILEMANAGER1 SERVICE for setup, limits and failure behavior.
 
 *--socket* _path_::
@@ -645,6 +682,7 @@ fvwm-file-browser --reveal /home/user/Documents/report.txt
 fvwm-file-browser --properties file:///home/user/Documents/report%20draft.txt
 fvwm-file-browser --inspect --reveal /home/user/Documents/report.txt
 fvwm-file-browser --dir /home/user/Documents --watch auto
+fvwm-file-browser --dir /home/user/Documents --file-transfer
 ----
 
 The browser uses a random per-process Form alias and existing Form defaults.
@@ -843,7 +881,8 @@ fvwm-file-browser --reuse --properties '/home/user/Work files/report.txt'
 
 Run `fvwm-file-browser --filemanager-service` explicitly in an FVWM session
 with FvwmMFL running and `DBUS_SESSION_BUS_ADDRESS` set to an existing local
-Unix session bus. An optional `--socket` selects the FvwmMFL socket. The service
+Unix session bus. An optional `--socket` selects the FvwmMFL socket. Add
+`--file-transfer` to enable file transfer in browsers started by the service. The service
 uses the installed `fvwm-session-bus filemanager` bridge. Controlled builds may
 set `FVWM_FILEMANAGER_BUS_HELPER` to an absolute helper path. Builds without the
 optional bus support report the service unavailable; the ordinary browser CLI

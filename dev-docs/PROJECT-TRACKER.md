@@ -7,54 +7,203 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: #60 finite settings acceptance qualified; close on merge of
-`codex/settings-observer-acceptance`, owner Cam. User authorized merging PR320
-and continuing. PR320 merged as `3afde248282d4ca077b1248502c17734e4a643f4`;
-canonical signature, reviewed tree `8d1af2b5f1451cfac4e01bf87bff864f84f59caf`
-and Cam author DCO verified. Matching source branches are retired. #73 remains
-closed on merged PR319.
+Current checkpoint: R1 file clipboard/XDND and installed interoperability,
+`codex/r1-filemanager-acceptance`, owner Cam. User directed continuous R1 batches
+and merging reviewed, applicable-green PRs without waiting for individual merge
+requests. [Standing authority](policy/authority.md#decisions-and-action-authority)
+records that instruction; required checks/review and other operational authority
+remain binding. PR321 merged as `4dcb17284fc4ec1e906b8f67a1ae45a63abebb5e`;
+canonical signature, reviewed tree `5b5cb18609d4664ad6af4608e2d74e9160858054`
+and author DCO verify. #60 is closed; #73 remains closed. Source branches retire.
 
-All three missing OpenBSD8.0 AMD64 default-X scenarios now pass: named launcher
-MenuStyle57 conflict, nonmodal controller-actor loss and external-root conflict/
-preservation through clean core shutdown. The unchanged merged PR320 fixture
-ran once in53.202531seconds with existing five-second setup,240-second fixture
-and420-second outer limits. Actual native role/scalar/pixel/terminal assertions,
-core/server Wait0 and independent green root through shutdown pass. Source/input
-pre/post guards and all exact installed/config/probe/PNG identities match. No
-production/fixture change, product rebuild, full matrix or new UI/capture.
+Selected finite batch: finish FILE-INTEGRATION-01 #67 with the required
+SELECTION-01 #22 file-only source/target subset. Existing portable roles,
+FileManager1 and file jobs remain accepted. Missing functionality is actual file
+Copy/Cut/Paste and XDND source/target ownership, plus installed platform/profile
+qualification. The [file-transfer contract](decisions/FILE-TRANSFER-2026-10-31.md)
+freezes architecture, roles, bounds, private metadata/data channels and success.
+Do not close #67 using adapter-only evidence. Whole #22 and protected text/image
+clipboard/history/storage keep their own criteria.
 
-[Final focused evidence and criterion reconciliation](verification/VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md)
-composes the earlier nineteen completed default-server groups and full enabled/
-disabled same-OS Xvfb profiles with these three observations. Prior source-bound
-six-target build/install, optional profiles, policy/race/scoped sanitizer,
-fault/topology/manual and inspected three-theme evidence retain their accepted
-scope. All five finite #60 criteria are supported; issue/Project status is Review
-until the closing PR merges. Historical failed aggregates, skips and lint
-nonpasses remain explicit, with no release/hardware/native-CPU guarantee.
+Implement together: bounded asynchronous native selection/INCR and XDND helper;
+cooperative Form window/gesture/feedback metadata; byte-preserving URI/lease
+policy and grouped existing-job confirmation/coordinator; independent-client,
+installed-path and portable fixture coverage; manuals, configuration example and
+three-theme captures. The native helper lives with an explicitly opted-in browser,
+not Form generations, so Cut → navigate → Paste survives window replacement.
+No new mandatory toolkit/bus, default resident daemon or protected payload route
+through Go/core/labels/logs. Source and target use Copy/Move only and the displayed
+directory; no dropped subject executes and no mutation precedes confirmation.
 
-The bounded diagnostic plan added only a private observational sidecar, capped
-at24 startup samples/two-second queries/1MiB, with finally-run source/binary
-guards. It neither injected replies nor warmed modules or extended deadlines.
-All50 archive members and3323 frozen source files are independently rechecked;
-separate artifact/criterion review is clear. Backend model/effort metadata is
-unverified. Host proxy/default-X regressions pass26/26; foundation/whitespace
-pass. No additional native attempt follows: current acceptance is sufficient.
+Lead owns tracker, contract, integration, execution and evidence. Assign disjoint
+native helper/protocol, Form and Go implementation ownership with separate final
+review. Use affected incremental Linux checks during the coherent implementation,
+one combined normal/race/scoped-native-sanitizer/real-X/theme checkpoint, early
+BSD for actual socket/OS changes, and one affected six-target installed closeout.
+Reuse unchanged PR315/settings/core evidence; no full unrelated matrix per helper.
+Allow bounded corrections of reproduced acceptance defects within the same open
+checkpoint; stop an unexplained repeated failure for analyst triage/replan.
 
-Prior observer startup failure and the old full default-server failure remain
-recorded in the same evidence report. The present pass does not prove their
-historical cause. Two probes exited−15, duplicate MFL1, Backer0; only the core/
-server/QEMU zero exits are claimed. All labs are stopped; runner SIGTERM cleanup
-is not normal guest poweroff evidence. This disposable disk was retired after
-full capture/no-holder verification, recovering3,098,869,760 allocated bytes;
-evidence, current compiled inputs, reusable builds, SDKs, base images and
-performance reference remain.
+Acceptance: independent clipboard/XDND peers and actual browser gestures/jobs,
+byte/URI/type/timestamp/INCR/owner-loss/cancel/stale/partial-outcome limits,
+normal installed helper discovery and enabled/minimal/no-bus profiles, complete
+user syntax/examples and reviewed exact evidence. #67 closes only when all four
+finite criteria have linked results. Related #22 rows are contributions only.
+Merge the qualified checkpoint under standing R1 authority, reconcile issues and
+continue the next accepted R1 work. No release publication or deadline waiver.
 
-Delivery boundary: #60 closure only. Broader session/file/clipboard and release
-owners retain their existing remaining criteria. #257/#258 remain parked.
-Performance remains2/5 after PR319 from the verified PR315 runnable reference;
-fixture/qualification-only PR320 and this checkpoint do not advance it. No
-comparison is due. Finish source review/status reconciliation and prepare the
-signed author-DCO closing PR; no new feature joins this accepted checkpoint.
+Performance remains 2/5 after PR319; qualification-only PR320/321 do not
+advance it. No general comparison is due. R1 has 53 open issues after #60
+closed. #257/#258 remain parked. Retain useful current builds, caches and
+references; retire verified superseded owned duplicates without disk expansion.
+
+Current focused results: Go, other C/header and Meson inputs are unchanged
+since source24. The native helper receives the confirmed peer-clock correction
+in source32 below. Linux gate27 passes two native policies, eighteen independent
+helper groups normally and under scoped ASan/UBSan, and ten actual browser groups
+in each of Slate, Dune and enlarged Classic (seven real job Waits per theme).
+Both internal Go packages retain source02 race passes; the corrected final
+browser normal/race/vet passes in gate24. Gate28 supplies current three-package
+normal passes. Shared Form buttons retain the eleven-case composed native result
+and scoped fast-click sanitizer observation; the actual fast-drag regression
+passes in the three full UI profiles. Original failures and scoped limits remain.
+
+The three reproduced native defects are corrected together: cancel superseded
+self-clipboard reads before replacing their lease; retain native Shift/Move
+intent when drag data arrives late; subscribe to Button1 motion before Form
+processes a fast press. All three controlled pre-fix cases fail in gate26 and
+pass in gate27. A distinct earlier Go producer timestamp defect has red/green
+coverage. One metadata diagnostic proves the earlier drag-target failure was a
+fixture coordinate race; all temporary production diagnostics are removed.
+
+Final screenshot event servicing is qualified separately in gate31: one actual
+Copy group per theme, nine inspected PNGs and byte-verified paired configuration
+files. It composes the full gate27 functional runs, not thirty repeated groups.
+The earlier post-copy images caught incomplete exposure handling after Raise;
+one controlled diagnostic recovers pixels with unchanged geometry, stacking,
+generation and selection. Two read-only native status turns precede capture;
+this is a fixture rule, not a universal paint fence. The public preview includes
+three unmodified selected captures and their exact theme configurations.
+
+Normal installed helper discovery passes Linux enabled, minimal and software/
+no-bus profiles: nine UI groups plus one named helper-EOF skip in each, seven
+actual jobs, browser Escape/Wait0 and observed direct helper PID retirement.
+Helper diagnostics and exit status are independently unavailable in direct
+installed mode. Actual stdin-EOF/helper Wait0 is separately observed in each
+full themed run. Both affected installed manuals match generated bytes; Linux
+has no renderer, so exact host mandoc reader results compose. The initial private
+tagged install omitted an untagged Form manual; normal Meson installation fixes
+that qualification recipe without product/build-default changes.
+
+FreeBSD15.1 ARM64 passes the current installed profile, policies, three Go
+packages, two rendered manuals and eighteen raw helper groups. Its authenticated
+800x600 default Xorg continuation now passes all nine installed groups, with one
+EOF skip, seven real jobs and server Wait0. Failed default runs retain two fixture
+causes: End scrolled the wanted row away; a new corroborator then mistook valid
+pending ListBegin/Commit reports for refusal. Actual selection transitions and
+completed native replies now prove row discovery without changing product UI,
+fonts, display modes or timeouts. Linux's Xorg-dummy continuation also passes.
+
+Linux AMD64 passes its combined installed/raw/default-X checkpoint: nine UI
+groups plus one EOF skip on each server, eighteen raw helper groups, two C
+policies, three Go packages and two manuals. The reused lab is Debian13 under
+CPU emulation; it is not a new Ubuntu/native-AMD64 release result. Verified export
+precedes normal guest poweroff and QEMU Wait0.
+
+OpenBSD8.0 ARM64 source30 passes its affected normal installed profile,
+two C policies, three Go packages, two manuals, eighteen independent helper
+groups and authenticated vendor-X continuation. Each UI run passes nine groups,
+one named EOF skip and seven jobs. OpenBSD AMD64 source30 passes the same build,
+C2/Go3/install/manual components but its initial state RPC times out before any
+UI group/job. The query is eventually serviced during cleanup; two heavy fixture
+proxy launches each take about4s before child start, then under0.4s to Form ack.
+This supports a fixture launch-cost seam, not a permanently blocked product or
+measured Python-import root cause. Source32 invokes the existing standalone
+stdlib relay with identical ownership/Wait behavior; RPC serial/timing traces
+are added, with unchanged5s socket/10s ready limits and all case assertions.
+
+The repeated FreeBSD AMD64 group4 failure has a confirmed native cause. One
+private metadata diagnostic reproduces actual peer closure after a longer
+mixed-parent job; genuine later Ctrl-V has correct focus but Form readiness is
+false. Separate analysis traces COMPLETE→fresh feedback→deadlines before
+POLLOUT: the new output queue inherited an old shared input/write timestamp.
+Source32 separates input/output clocks, starts output time at empty→nonempty,
+refreshes only corresponding positive I/O and retains both5s inactivity limits.
+No diagnostics are installed and no Go/ABI/configuration contract changes.
+The earlier attachment-order hypothesis and focus-seam causality are unproved.
+
+The preserved old helper fails the new admitted-job regression exactly: six
+quiet seconds without peer traffic, successful simulated completion, then EOF
+instead of fresh IDLE. Fixed FreeBSD source32 passes all nineteen raw groups,
+nine actual installed groups and nine authenticated default-X groups, each UI
+with one EOF skip and seven real jobs. Linux source32 passes all nineteen raw
+groups normally and under native ASan/UBSan plus installed nine/seven jobs.
+Other actors, Go/C policies, manuals, three-theme captures and unaffected default
+server results compose exact retained identities; no broad matrix repeats.
+Separate source32 delta review has no actionable findings; final receipts and
+delivery/documentation reconciliation remain required before integration.
+
+Both OpenBSD source32 helper/fixture continuations now pass their normal
+installed nine groups, nineteen raw groups and authenticated vendor-X nine
+groups. Each UI run retains one helper-EOF skip and seven actual jobs. AMD first
+passes its corrected startup-only check, then the full UI run. The helper alone
+rebuilds after the expected two-command plan; unchanged source30 Go3/C2/manual
+components and the four other installed actors compose by exact identity. Both
+full exports and every compact member are byte-verified. Original failures remain
+visible; runner Wait0 with SIGTERM cleanup is not a normal-poweroff claim.
+
+The completed OpenBSD clones/input duplicates are retired after verified export;
+current full compiled payloads and base caches remain. The source32 retirements
+recover5,875,859,936 ARM and5,150,798,245 AMD logical bytes, in addition to the
+previous recorded retirements. Source34 installed-service closeout has 37 of 55 actual groups passed: Linux
+ARM64 enabled 9/disabled 2, Linux AMD64 enabled 8, FreeBSD ARM64 enabled 8/disabled 2,
+and FreeBSD AMD64 enabled 8. All exported member bytes verify, qualified actors
+remain unchanged, and completed owned Linux/FreeBSD labs stop normally. The
+FreeBSD disabled setup preserves two effective directory values after Meson's
+new-prefix defaults differed; its existing same-SDK baseline cache is reused
+through a separately reviewed narrow private guard. Both preparation failures
+remain recorded with zero groups; no product expectation or deadline changed.
+
+Both OpenBSD service jobs stop in preparation before any service group: the
+adapter looked for a top-level DBus receipt whose retained source32 path is
+nested. A bounded private adapter repair checks every cached receipt lookup.
+No product source, fixture or acceptance change is selected. All failed setup
+logs/statuses are compacted and byte-verified; stopped disposable clones retire
+(4,202,889,216 ARM and 4,169,400,320 AMD bytes). Current compiled payloads and
+base caches remain. No owned lab is currently running. The remaining 18 OpenBSD
+service groups and final delivery review are pending; see the [service report](verification/VERIFICATION-2026-10-31-FILEMANAGER-INSTALLED.md).
+Keep useful current source/builds/install stages/SDKs/caches/performance references.
+Performance remains 2/5 before the next runtime merge.
+#257/#258 remain parked. Whole #67 additionally retains the explicit FileManager1 installed/service
+acceptance in the durable file-manager contract; transfer success alone does not
+close it. Separate coverage review found this finite gap in accepted PR315's
+Linux service evidence/early FreeBSD process evidence. The same coherent owner
+checkpoint now includes eight installed enabled-service groups on six target
+profiles, two disabled-adapter groups on representative Linux/FreeBSD/OpenBSD
+ARM64 profiles, and one Linux-only service→file-transfer option observation
+(55 groups maximum). Bus support remains optional and defaults disabled.
+
+Use actual installed helper discovery, independent bus clients, folder/reveal/
+properties consumers and byte paths, same-view presentation, competing owners,
+failed/absent bus and explicit service exit/restart preserving browsers and the
+borrowed bus. Disabled installed service must refuse honestly while ordinary
+browsing remains usable. Reuse detailed PR315 Linux protocol/fault/restart/race/
+sanitizer/theme evidence and all current transfer/default-X qualification.
+Do not rerun them per adapter profile. No new product UI, service activation
+file, dependency, backend or broad #77 qualification is selected.
+
+Build only current native bus/helper policy and required normal install-tag
+closure; never treat a cached stale bridge as current. Disabled BSD profiles
+use distinct owner-controlled builds/prefixes, established SDK/dependencies and
+only session-startup/file-browser tag targets. Record exact profile/cache/actor
+reuse and any bounded dependency plan before execution; stop for unexplained
+failure or scope drift. A new portable installed fixture avoids Linux-only
+process assumptions and closes retained views through actual Form input.
+The lead owns this accepted 2026-10-31 verification selection, execution, final
+review, signed integration and four-criterion issue reconciliation. Keep #67
+and whole #22 open until their actual requirements qualify. After #67's qualified
+checkpoint, select the finite remaining Script owner/requestor slice under #22.
+
 
 ## TEMPER-06 — Bounded delivery instructions
 
@@ -5592,7 +5741,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | ARCHIVE-01 | P2 / after verified migration | Retired planning/upstream notes and dated reports are now relocated with hashes and repaired links; graph auto-update is disabled. Remaining: remove predecessor tooling only after reference, parity, packaging and distribution checks. Preserve history/evidence and user data; do not delete ignored build trees or VM disks. See cleanup roadmap. |
 | BUTTON-01 | P2 / merged PR149; locally qualified | Native FvwmButtons keyboard focus, navigation and disabled state. Add module-local Tab/arrow navigation, visible focus, Enter/Space activation and disabled-action refusal. Preserve existing bindings and activation behavior through an opt-in compatibility path. See the configuration/module backlog below. |
 | BUTTON-02 | P2 / merged PR150; locally qualified atomic groups | Complete bounded dynamic button updates, including enabled/selected/focus and hover/pressed colorset assignments. Validate a whole per-module update before applying it and repaint once; reject invalid updates without partial mutation. See the configuration/module backlog below. |
-| CFG-01 | P2 / all finite settings criteria qualified; close on acceptance merge | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
+| CFG-01 | Done / #60 closed by merged PR321 | Typed desktop settings registry and a configuration-center consumer using existing modules/runtime. Define defaults, ranges, choices, descriptions, capabilities and reset behavior; keep persisted preferences data-only, private and atomic. See the configuration/module backlog below. |
 | CFG-02 | Done / #61 closed by merged PR268 | Source-aware configuration diagnostics and non-executing validation of supported declarative syntax. Owned runtime source/span/include diagnostics and selected Desktop errors, frozen literal checking and complete paged reports pass the affected six-target/eight-profile closeout. Explicit dynamic/enclosing-origin limits remain. [Results](verification/VERIFICATION-2026-10-26-CONFIGURATION-DIAGNOSTICS.md). |
 | IPC-02 | P2 / PR154–161 merged; appearance inspection/copy repair focused checks passed, integration pending | Additive structured state queries and correlated operation results over existing module/MFL transport. Bound requests/replies, retain command ordering, distinguish accepted/applied/failed operations and preserve legacy text commands/events. See the configuration/module backlog below. |
 | SESSION-01 | P2 / In progress; startup/control/services/providers/recovery merged; owned-bus lifetime candidate, broader acceptance open | Portable default session lifecycle integrated with existing FVWM UI/configuration: environment, controlled XDG autostart, owned/borrowed services, bounded startup/readiness/recovery, restart vs cooperative logout, OS capability/power/locker coordination and commented installed configuration/man pages. No D-Bus requirement, new authentication implementation or mandatory desktop packages. Preserve direct FVWM/custom/XSMP compatibility; reuse CFG/IPC and process/readiness owners. Follow stage 6 BUTTON/CFG/IPC primitives; file-manager additions are not session startup prerequisites. See [session scope](decisions/SESSION-INTEGRATION-2026-10-06.md). |

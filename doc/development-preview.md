@@ -98,6 +98,45 @@ current-Form interactive feedback. The
 [file-browser manual](fvwm-file-browser.adoc) specifies controls, limits,
 worker lifetime, literal-path actions and error behavior.
 
+## File clipboard and drag work in progress
+
+Start the optional browser with `fvwm-file-browser --file-transfer` to enable
+file Copy, Cut, Paste and XDND drag and drop. In the focused list, Ctrl-C,
+Ctrl-X and Ctrl-V copy, cut and paste file references. Cut moves files only
+after a confirmed Paste; a genuine Shift drag requests Move. Paste and drops
+target the displayed folder. Confirm with Alt-Y or cancel with Alt-Z before
+mutation; confirmation expires after 30 seconds.
+
+A transfer admits up to 256 references from eight parent folders, processed in
+groups. Failure or cancellation can leave partial results, so inspect Jobs and
+the destination before retrying. The file clipboard survives folder navigation;
+a new Copy or Cut replaces it, and ownership changes or browser exit end it.
+There is no file clipboard history or PRIMARY synchronization. Protected text
+clipboard content remains separate work. See the [browser manual](fvwm-file-browser.adoc)
+and [example configuration](examples/FvwmFileTransfer.fvwm) for usage and limits.
+
+These three unmodified native Linux captures were visually reviewed. Slate shows
+a completed copy, Dune a clipboard confirmation, and enlarged Classic the
+transfer controls ready for use.
+
+![Slate completed file copy](screenshots/file-transfer-slate-dark.png)
+
+![Dune file clipboard confirmation](screenshots/file-transfer-dune-light.png)
+
+![Classic enlarged file transfer controls](screenshots/file-transfer-classic-large.png)
+
+The [capture manifest](screenshots/file-transfer-manifest.json) records image,
+source, binary, configuration and build-header hashes, profiles and actual window
+sizes. The same-run session and theme configurations are retained for
+[Slate](screenshots/file-transfer-slate-dark.fvwm) and its [theme](screenshots/file-transfer-slate-dark.local.config),
+[Dune](screenshots/file-transfer-dune-light.fvwm) and its [theme](screenshots/file-transfer-dune-light.local.config),
+and [Classic](screenshots/file-transfer-classic-large.fvwm) and its [theme](screenshots/file-transfer-classic-large.local.config).
+They contain temporary lab paths; adapt them before use. The capture follow-up
+covered one Copy group per profile; the earlier functional run covered ten
+groups per profile. The separate [checkpoint report](../dev-docs/verification/VERIFICATION-2026-10-31-FILE-TRANSFER.md)
+records the functional scope and remaining checks. These captures do not establish
+accessibility, physical scaling or release qualification.
+
 ## FileManager1 browser requests — work in progress
 
 The explicit `fvwm-file-browser --filemanager-service` mode accepts

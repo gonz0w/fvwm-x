@@ -232,8 +232,10 @@ The following commands are accepted while the form is displayed:
  Stop
  UnMap
 
-The "Map", "UnMap" and "Stop" facility is under development and is
-currently not explained in this document, since it is likely to change.
+Send these as active module configuration directives for the running alias.
+For example, `*MyForm: UnMap` hides MyForm and `*MyForm: Map` shows it again.
+`*MyForm: Stop` exits that Form process. Unmapping cancels a held button press;
+a later release does not activate it after remapping.
 
 The order of the options DOES matter. The first background text color,
 "*FvwmFormBack", encountered before a displayable item sets the default
@@ -565,6 +567,16 @@ below the thumb scroll one viewport. Function keys retain button shortcuts.
 Restart restores configured selections/focus. These rules apply to forms with
 List; existing forms retain their input/history traversal.
 
+**FvwmForm: FileTransfer ``_list_ _socket_ _nonce_ _epoch_``*::
+  Attach the named List to the browser's native file-transfer helper. This is
+  literal whitespace-delimited metadata: the socket is an absolute private
+  path, the nonce is 32 lowercase hexadecimal digits, and the epoch is a
+  positive decimal number. The browser owner creates and supplies these values
+  for each Form; theme authors should preserve the directive when customizing
+  that Form. It is not a generic clipboard payload or Echo interface. File
+  references travel through the browser and helper, not Form substitutions.
+  See fvwm-file-browser(1) for the opt-in and operation.
+
 **FvwmForm: ListGrid ``_columns_``*::
   Immediately after List and before any ListItem, choose a grid with 2..8
   columns. List's rows now count visual grid rows. Each column needs at least
@@ -857,6 +869,12 @@ selected.
   This option specifies an action button. The button has _string_ as a
   label, and executes a set of Fvwm _command_ when it is activated. The
   commands are the following *FvwmForm: Commands.
++
+In release-activation mode, the same pointer button must press the control
+and then release inside it. An outside release cancels the activation;
+unrelated releases do not activate it. Withdrawing the form or activating
+another button command cancels a held press. `ActivateOnPress on` retains
+press activation.
 +
 The optional _key_ specifies a keyboard shortcut that activates the
 button. It can be a control character, specified as ^@, ^A, ...,

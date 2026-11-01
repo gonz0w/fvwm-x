@@ -11,8 +11,18 @@ import (
 )
 
 func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
+	for _, enabled := range []bool{false, true} {
+		t.Run(fmt.Sprintf("file-transfer=%t", enabled), func(t *testing.T) {
+			browserShortcutContract(t, enabled)
+		})
+	}
+}
+
+func browserShortcutContract(t *testing.T, fileTransfer bool) {
+	t.Helper()
 	b, peer := layoutBrowser(t, "list")
 	b.renderPath = "/old-folder"
+	b.transferOptIn = fileTransfer
 	for i := 1; i <= maxActions; i++ {
 		b.actions = append(b.actions, configuredAction{Label: fmt.Sprintf("Action %d", i), Program: "/configured"})
 	}
@@ -42,11 +52,19 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		"^M":    {"Open (Enter)", "focused", "-"},
 		"^[":    {"Close (Esc)", "close", "-"},
 	}
+	if fileTransfer {
+		want["Alt-Y"] = struct{ label, action, argument string }{"Confirm Copy/Move (Alt-Y)", "transfer-confirm", "-"}
+		want["Alt-Z"] = struct{ label, action, argument string }{"Cancel transfer (Alt-Z)", "transfer-cancel", "-"}
+	}
 	for i := 1; i <= maxActions; i++ {
 		key := fmt.Sprintf("Alt-%d", i)
 		want[key] = struct{ label, action, argument string }{fmt.Sprintf("Action %d (%s)", i, key), "custom", fmt.Sprint(i - 1)}
 	}
 	seen := make(map[string]bool)
+	// These actions deliberately retain only Form's list-focused Ctrl handlers.
+	// A global Ctrl binding here would steal shortcuts from text input fields.
+	listActions := map[string]string{"Copy": "transfer-copy", "Cut": "transfer-cut", "Paste": "transfer-paste"}
+	seenList := make(map[string]bool)
 	notify, pending := "", ""
 	helped := false
 	_, err := layoutScript(t, b, peer, b.show, func(command string) string {
@@ -58,14 +76,23 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		}
 		if _, text, found := strings.Cut(command, `: Button continue "`); found {
 			label, key, valid := strings.Cut(text, `" `)
-			entry, known := want[key]
-			if !valid || !known || seen[key] || label != entry.label {
-				t.Fatal("missing/duplicate/undocumented shortcut", command)
-			}
-			seen[key] = true
-			pending = fmt.Sprintf("Command Echo FVWM_FILES_3 %s %d %s %s x$(picks:Base64) $(FormJob:Token)", b.instance, b.form, entry.action, entry.argument)
-			if key == "F1" {
-				pending = fmt.Sprintf("Command Echo FVWM_FILES_DETAILS_OPEN_1 %s %d $(FormJob:Token)", b.instance, b.form)
+			if key == "" {
+				action, known := listActions[label]
+				if !valid || !fileTransfer || !known || seenList[label] {
+					t.Fatal("unexpected unbound/list-focused action", command)
+				}
+				seenList[label] = true
+				pending = fmt.Sprintf("Command Echo FVWM_FILES_3 %s %d %s - x$(picks:Base64) $(FormJob:Token)", b.instance, b.form, action)
+			} else {
+				entry, known := want[key]
+				if !valid || !known || seen[key] || label != entry.label {
+					t.Fatal("missing/duplicate/undocumented shortcut", command)
+				}
+				seen[key] = true
+				pending = fmt.Sprintf("Command Echo FVWM_FILES_3 %s %d %s %s x$(picks:Base64) $(FormJob:Token)", b.instance, b.form, entry.action, entry.argument)
+				if key == "F1" {
+					pending = fmt.Sprintf("Command Echo FVWM_FILES_DETAILS_OPEN_1 %s %d $(FormJob:Token)", b.instance, b.form)
+				}
 			}
 		}
 		if strings.Contains(command, `: Text "Alt-letter/digit: labeled actions; Ctrl-U: clear input."`) {
@@ -82,7 +109,11 @@ func TestBrowserButtonsHaveUniqueDocumentedShortcuts(t *testing.T) {
 		}
 		return ""
 	})
-	if err != nil || len(seen) != len(want) || pending != "" || !helped {
+	expectedListActions := 0
+	if fileTransfer {
+		expectedListActions = len(listActions)
+	}
+	if err != nil || len(seen) != len(want) || len(seenList) != expectedListActions || pending != "" || !helped {
 		t.Fatal("not every browser action is keyboard-accessible", err, seen)
 	}
 }

@@ -64,5 +64,6 @@ bool form_scale_holds_view(void);
 void form_scale_cleanup(void);
 void form_scale_status(char *text);
 bool form_scale_list_geometry(int units, int columns, int *cell, int *height);
+int form_scale_drag_threshold(void);
 
 #endif

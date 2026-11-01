@@ -312,6 +312,9 @@ func runFileManagerService(o options) (result error) {
 			lastID = id
 			status := "invalid"
 			if groups, err := planFileManager(frame); err == nil {
+				for i := range groups {
+					groups[i].fileTransfer = o.fileTransfer
+				}
 				admissionCtx, cancel := context.WithTimeout(bridge.context, fileManagerAdmissionWait)
 				status = children.admit(admissionCtx, executable, groups, o.socket, frame.StartupID)
 				cancel()

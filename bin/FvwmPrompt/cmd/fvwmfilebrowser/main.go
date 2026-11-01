@@ -41,6 +41,7 @@ type options struct {
 	hidden, inspect               bool
 	reuse                         bool
 	fileManagerService            bool
+	fileTransfer                  bool
 	fileManagerReceipt            *os.File
 	targets                       [][]byte
 	properties                    bool
@@ -58,6 +59,8 @@ type completedWork struct {
 }
 
 type browser struct {
+	transferOptIn              bool
+	transfer                   *browserTransfer
 	session                    *transport.Session
 	executable, instance, home string
 	alias                      string
@@ -467,6 +470,12 @@ func (b *browser) action(message string) (bool, error) {
 		if err == nil {
 			b.inspected = nil
 		}
+	case "transfer-copy", "transfer-cut", "transfer-paste":
+		err = b.fileTransferAction(strings.TrimPrefix(parts[3], "transfer-"), nil)
+	case "transfer-confirm":
+		err = b.confirmTransfer()
+	case "transfer-cancel":
+		b.cancelTransfer()
 	case "jobs":
 		err = b.openJobs()
 	case "file-roles":
@@ -606,6 +615,7 @@ func run(o options) error {
 		opener: o.opener, terminal: o.terminal, actions: o.actions, view: o.view, hidden: o.hidden, acks: make(chan string, 1), native: make(chan string, 1), nativeChanges: make(chan nativeChange, 1), nativeWatchReplies: &nativeWatchReplyGate{}, results: make(chan completedWork, 1), detailEvents: make(chan detailCallback, 16), detailAckReplies: &nativeWatchReplyGate{}, jobEvents: make(chan jobNotice, 16), jobProgress: make(chan jobNotice, 1), jobCallbacks: make(chan jobCallback, 16), jobAckReplies: &nativeWatchReplyGate{}, jobListReplies: &nativeWatchReplyGate{}, roleEvents: make(chan directoryRoleCallback, 16), roleAckReplies: &nativeWatchReplyGate{}}
 	b.watch = &directoryWatch{enabled: o.watch == "auto", events: make(chan watchEvent, 1)}
 	defer func() {
+		b.shutdownTransfer()
 		b.shutdownWorker()
 		b.shutdownJob()
 		b.retireJobs()
@@ -621,6 +631,10 @@ func run(o options) error {
 			session.Send("DestroyModuleConfig " + b.alias + ":*")
 		}
 	}()
+	b.transferOptIn = o.fileTransfer
+	if o.fileTransfer {
+		b.startTransfer()
+	}
 	events := make(chan string, 16)
 	queries := make(chan fileQuery, 1)
 	registered := make(chan providerRegistration, 1)
@@ -730,7 +744,21 @@ func run(o options) error {
 	if err := b.show(); err != nil {
 		return err
 	}
+	var transferTicks <-chan time.Time
+	if b.transfer != nil {
+		transferTicker := time.NewTicker(100 * time.Millisecond)
+		defer transferTicker.Stop()
+		transferTicks = transferTicker.C
+	}
 	for {
+		if b.transfer != nil && len(b.transfer.deferred) != 0 {
+			event := b.transfer.deferred[0]
+			b.transfer.deferred = b.transfer.deferred[1:]
+			if err := b.transferEvent(event); err != nil {
+				return err
+			}
+			continue
+		}
 		jobActive := b.job != nil && !b.job.reaped
 		if jobActive && jobLease == nil {
 			jobLease = time.NewTicker(30 * time.Second)
@@ -751,6 +779,27 @@ func run(o options) error {
 		select {
 		case <-ctx.Done():
 			return nil
+		case event := <-b.transferEvents():
+			if err := b.transferEvent(event); err != nil {
+				return err
+			}
+			renewIdle()
+		case <-b.transferDone():
+			b.transferUnavailable()
+			b.transfer.exited = true
+			if err := b.show(); err != nil {
+				return err
+			}
+		case prepared := <-b.transferPrepared():
+			if err := b.acceptTransferPrepared(prepared); err != nil {
+				return err
+			}
+		case now := <-transferTicks:
+			if b.transferTick(now) {
+				if err := b.show(); err != nil {
+					return err
+				}
+			}
 		case <-idle.C:
 			if b.job != nil && !b.job.reaped {
 				idle.Reset(idleLimit)
@@ -792,7 +841,7 @@ func run(o options) error {
 			}
 		case now := <-watchTicks:
 			changed := b.watch.tick(now, b.executable)
-			if request := b.watch.takeRefresh(now, b.active || b.pending != nil); request != nil {
+			if request := b.watch.takeRefresh(now, b.active || b.pending != nil || b.transferBusy()); request != nil {
 				if err := b.navigate(string(request.Path), "watch"); err != nil {
 					b.watch.fail("Automatic refresh refused")
 				}

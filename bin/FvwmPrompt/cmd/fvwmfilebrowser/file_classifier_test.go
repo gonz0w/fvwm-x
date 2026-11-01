@@ -170,7 +170,13 @@ func TestOwnedWorkerGroupRetiresOnEveryOutcome(t *testing.T) {
 			heartbeat := filepath.Join(t.TempDir(), "child")
 			t.Setenv("FVWM_TEST_ROLE_HEARTBEAT", heartbeat)
 			t.Setenv("FVWM_TEST_ROLE_WORKER", mode)
-			ctx, cancel := context.WithTimeout(context.Background(), 500*time.Millisecond)
+			// Check output and lifetime, not startup or throughput benchmarks.
+			// Cancellation keeps its separate shorter deadline.
+			limit := 5 * time.Second
+			if mode == "cancel" {
+				limit = 500 * time.Millisecond
+			}
+			ctx, cancel := context.WithTimeout(context.Background(), limit)
 			defer cancel()
 			result := startWorker(ctx, executable, workRequest{Operation: "scan"})
 			if mode == "cancel" && result.Status != "cancelled" || mode != "cancel" && result.Status != "failed" {

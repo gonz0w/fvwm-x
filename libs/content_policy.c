@@ -48,6 +48,36 @@ static void bytes_add(struct content_bytes *used, struct content_bytes added)
 	used->derived += added.derived;
 }
 
+static bool storage_room(struct content_storage used,
+	struct content_storage added, struct content_storage limit)
+{
+	return room(used.mapped, added.mapped, limit.mapped) &&
+		room(used.locked, added.locked, limit.locked);
+}
+
+bool content_storage_charge(size_t bytes, size_t page,
+	size_t mapped_extra_pages, size_t locked_extra_pages,
+	struct content_storage *output)
+{
+	size_t pages, maximum;
+
+	if (!output)
+		return false;
+	*output = (struct content_storage){0};
+	if (!page || mapped_extra_pages > 8 ||
+		locked_extra_pages > mapped_extra_pages)
+		return false;
+	if (!bytes)
+		bytes = 1;
+	pages = bytes / page + (bytes % page != 0);
+	maximum = SIZE_MAX / page;
+	if (!room(pages, mapped_extra_pages, maximum))
+		return false;
+	output->mapped = (pages + mapped_extra_pages) * page;
+	output->locked = (pages + locked_extra_pages) * page;
+	return true;
+}
+
 static enum content_result hint_check(enum content_hint hint)
 {
 	switch (hint)
@@ -145,6 +175,11 @@ static enum content_result candidate_check(struct content_policy *policy,
 		return CONTENT_INVALID;
 	if (candidate->count > limits->per_item)
 		return CONTENT_FULL;
+	if (candidate->storage.locked > candidate->storage.mapped)
+		return CONTENT_INVALID;
+	if (!storage_room((struct content_storage){0}, candidate->storage,
+		limits->per_item_storage))
+		return CONTENT_FULL;
 	for (size_t i = 0; i < candidate->count; i++)
 	{
 		const struct content_representation *rep = &candidate->reps[i];
@@ -211,6 +246,8 @@ enum content_result content_reserve(struct content_policy *policy,
 		!room(policy->usage.representations, candidate->count,
 			policy->limits.representations) ||
 		!room(policy->usage.work, 1, policy->limits.work) ||
+		!storage_room(policy->usage.storage, candidate->storage,
+			policy->limits.storage) ||
 		!bytes_room(policy->usage.bytes, bytes, policy->limits.total))
 		return CONTENT_FULL;
 	for (size_t i = 0; i < policy->limits.items; i++)
@@ -227,7 +264,8 @@ enum content_result content_reserve(struct content_policy *policy,
 		.descriptor = {
 			.hint = candidate->hint,
 			.deadline_ms = candidate->deadline_ms,
-			.count = candidate->count
+			.count = candidate->count,
+			.storage = candidate->storage
 		},
 		.charged = bytes, .work = true
 	};
@@ -241,6 +279,8 @@ enum content_result content_reserve(struct content_policy *policy,
 	policy->usage.representations += candidate->count;
 	policy->usage.work++;
 	bytes_add(&policy->usage.bytes, bytes);
+	policy->usage.storage.mapped += candidate->storage.mapped;
+	policy->usage.storage.locked += candidate->storage.locked;
 	*output = ref;
 	return CONTENT_OK;
 }
@@ -371,16 +411,11 @@ enum content_result content_acquire(struct content_policy *policy,
 	return CONTENT_OK;
 }
 
-enum content_result content_release(struct content_policy *policy,
+static struct content_lease *find_lease(struct content_policy *policy,
 	struct content_lease lease)
 {
-	struct content_item *item;
-
-	if (!policy || !policy->configured)
-		return CONTENT_UNCONFIGURED;
-	item = find_item(policy, lease.ref);
-	if (!item || !lease.id)
-		return CONTENT_STALE;
+	if (!lease.id)
+		return NULL;
 	for (size_t i = 0; i < policy->limits.leases; i++)
 	{
 		struct content_lease *slot = &policy->leases[i];
@@ -388,12 +423,39 @@ enum content_result content_release(struct content_policy *policy,
 		if (slot->id != lease.id || !same_ref(slot->ref, lease.ref) ||
 			slot->representation != lease.representation)
 			continue;
-		*slot = (struct content_lease){0};
-		item->leases--;
-		policy->usage.leases--;
-		return CONTENT_OK;
+		return slot;
 	}
-	return CONTENT_STALE;
+	return NULL;
+}
+
+enum content_result content_release(struct content_policy *policy,
+	struct content_lease lease)
+{
+	struct content_item *item;
+	struct content_lease *slot;
+
+	if (!policy || !policy->configured)
+		return CONTENT_UNCONFIGURED;
+	item = find_item(policy, lease.ref);
+	slot = find_lease(policy, lease);
+	if (!item || !slot)
+		return CONTENT_STALE;
+	*slot = (struct content_lease){0};
+	item->leases--;
+	policy->usage.leases--;
+	return CONTENT_OK;
+}
+
+enum content_result content_lease_check(struct content_policy *policy,
+	struct content_lease lease, uint64_t now_ms)
+{
+	struct content_item *item;
+	enum content_result result = live_item(
+		policy, lease.ref, now_ms, &item);
+
+	if (result != CONTENT_OK)
+		return result;
+	return find_lease(policy, lease) ? CONTENT_OK : CONTENT_STALE;
 }
 
 enum content_result content_cleanup_ack(struct content_policy *policy,
@@ -413,6 +475,8 @@ enum content_result content_cleanup_ack(struct content_policy *policy,
 	policy->usage.bytes.encoded -= item->charged.encoded;
 	policy->usage.bytes.decoded -= item->charged.decoded;
 	policy->usage.bytes.derived -= item->charged.derived;
+	policy->usage.storage.mapped -= item->descriptor.storage.mapped;
+	policy->usage.storage.locked -= item->descriptor.storage.locked;
 	*item = (struct content_item){0};
 	return CONTENT_OK;
 }

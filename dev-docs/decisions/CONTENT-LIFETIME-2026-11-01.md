@@ -105,3 +105,10 @@ No UI is added, so no new screenshot cycle is needed.
 Next: select the protected-memory ownership/backend evaluation and finite
 native owner/transport adoption before adding a collection consumer. Keep #63,
 #71 and #74 open; this foundation does not complete their release contracts.
+
+## Protected-memory evaluation continuation
+
+The [next source checkpoint](CONTENT-MEMORY-EVALUATION-2026-11-01.md) extends
+reservations with separate mapped/locked physical budgets and an exact live
+lease-access check. Its two non-installed synthetic probes compare candidate
+preparation/refusal/cleanup without choosing a production storage backend.

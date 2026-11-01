@@ -6,8 +6,11 @@ filesystem and memory protection suitable for frequently copied passwords. A
 separate user-directed thread can consume qualified primitives to build the
 configuration/theme in parallel with further runtime work. This records scope;
 no runtime implementation, public syntax, dependency or security qualification
-is selected or claimed. Password retention and persistence defaults remain open
-decisions. Order and status belong to the
+is selected or claimed. The owner resolved first-release defaults on 2026-11-01: session-only history,
+recognized sensitive/password items excluded, persistence off. Capture and
+synchronization defaults, numeric capacities, lock behavior and protected storage
+adoption remain separate decisions. These defaults do not enable a consumer.
+Order and status belong to the
 [project tracker](../PROJECT-TRACKER.md#execution-order).
 
 Owners: CONTENT-01, RETENTION-01, STORE-01 and CLIPBOARD-01. Reuse SELECTION-01

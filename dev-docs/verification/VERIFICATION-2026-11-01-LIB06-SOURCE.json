@@ -1,0 +1,2349 @@
+{
+  "owner": "Cam; LIB-06 #48",
+  "scope": "non-installed synthetic source prototype; host development observation only",
+  "base": "55d02b028bf849a218e8ea5b672f4e3b36f7a7ec",
+  "platform": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "compiler": {
+    "path": "/usr/bin/cc",
+    "sha256": "ed6f5284033aa2aae6a58427c25ba3ab119947b40365627b24e5d51a4b70a1cd",
+    "version": "Apple clang version 21.0.0 (clang-2100.3.20.102)\nTarget: arm64-apple-darwin27.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n"
+  },
+  "config_sha256": "063063b0215b88a55abae4a676bc8eb23afcb4a413d2599c750a2df7a9708d2c",
+  "compile_commands": [
+    [
+      "/usr/bin/cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-D_DARWIN_C_SOURCE",
+      "-O2",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+      "-c",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/status_serializer_probe.c",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/baseline-probe.o"
+    ],
+    [
+      "/usr/bin/cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-D_DARWIN_C_SOURCE",
+      "-O2",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+      "-c",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/libs/cJSON.c",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/cjson.o"
+    ],
+    [
+      "/usr/bin/cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-D_DARWIN_C_SOURCE",
+      "-O2",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+      "-DSERIALIZER_YYJSON",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/src",
+      "-c",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/status_serializer_probe.c",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/candidate-probe.o"
+    ],
+    [
+      "/usr/bin/cc",
+      "-std=c11",
+      "-D_POSIX_C_SOURCE=200809L",
+      "-D_DARWIN_C_SOURCE",
+      "-O2",
+      "-g",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02",
+      "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+      "-c",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/src/yyjson.c",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/yyjson.o"
+    ],
+    [
+      "/usr/bin/cc",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/baseline-probe.o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/cjson.o",
+      "-lm",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/baseline"
+    ],
+    [
+      "/usr/bin/cc",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/candidate-probe.o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/yyjson.o",
+      "-lm",
+      "-o",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/candidate"
+    ]
+  ],
+  "compile_exits": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "artifacts": {
+    "baseline": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/baseline",
+      "bytes": 79800,
+      "sha256": "8ddaa84e4be614181997a556263270b2cfeb5ad1cd241612d18eccec8715f894"
+    },
+    "candidate": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/candidate",
+      "bytes": 272856,
+      "sha256": "237e05f092bc5c90c710b66dbee35496d158cfba51fa82673168f25b65579263"
+    }
+  },
+  "execution": {
+    "plan_sha256": "377f161775bbd87c0ff89ee901647ecbfa2b2f831f9715c388bb23732e0ea711",
+    "started": 1793574274.663413,
+    "source_pre": "matched",
+    "argv": [
+      "python3",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/compare_status_serializers.py",
+      "--baseline",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/baseline",
+      "--candidate",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/compile02/candidate",
+      "--output",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/observation01",
+      "--repetitions",
+      "3",
+      "--iterations",
+      "20"
+    ],
+    "exit": 0,
+    "actual_wait": 0,
+    "source_post": "matched",
+    "seconds": 1.1041597500443459
+  },
+  "results": {
+    "baseline": {
+      "ordinary": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "344ca05f102950797c72a5ab8ab246962646d23236952197af85bc87632e3b98",
+        "encoded_bytes": 70,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 70,
+          "attempts_last": 11,
+          "requested_total": 631,
+          "requested_peak": 631,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 8000,
+          "cpu_ns": 7000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1916928
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "construct-refused",
+            0
+          ],
+          [
+            4,
+            "construct-refused",
+            0
+          ],
+          [
+            5,
+            "construct-refused",
+            0
+          ],
+          [
+            6,
+            "construct-refused",
+            0
+          ],
+          [
+            7,
+            "construct-refused",
+            0
+          ],
+          [
+            8,
+            "construct-refused",
+            0
+          ],
+          [
+            9,
+            "write-refused",
+            0
+          ],
+          [
+            10,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 20000,
+            "cpu_ns": 21000,
+            "process_wall_ns": 2142500,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 1982464
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 17000,
+            "cpu_ns": 17000,
+            "process_wall_ns": 2066292,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 1998848
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 15000,
+            "cpu_ns": 16000,
+            "process_wall_ns": 2082000,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 1982464
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 850.0,
+          "range": [
+            750.0,
+            1000.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 850.0,
+          "range": [
+            800.0,
+            1050.0
+          ]
+        }
+      },
+      "unicode": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b2bbfb01ee86974279890a0da1472c92693617fe2a3dec7bcbbebb3d3434b648",
+        "encoded_bytes": 55,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 55,
+          "attempts_last": 11,
+          "requested_total": 610,
+          "requested_peak": 610,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 2000,
+          "cpu_ns": 3000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1916928
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "c434de875ac530aff8c76d88d7f3d2c4253a0a2dd58996777bc6c62be8785093",
+        "encoded_bytes": 66,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 66,
+          "attempts_last": 11,
+          "requested_total": 617,
+          "requested_peak": 617,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 2000,
+          "cpu_ns": 3000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1916928
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "construct-refused",
+            0
+          ],
+          [
+            4,
+            "construct-refused",
+            0
+          ],
+          [
+            5,
+            "construct-refused",
+            0
+          ],
+          [
+            6,
+            "construct-refused",
+            0
+          ],
+          [
+            7,
+            "construct-refused",
+            0
+          ],
+          [
+            8,
+            "construct-refused",
+            0
+          ],
+          [
+            9,
+            "write-refused",
+            0
+          ],
+          [
+            10,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy-keys": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "4aad13fad246c7ca2a39f9d9b9ba12b38791eef74513120e635c970be0421551",
+        "encoded_bytes": 23,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 23,
+          "attempts_last": 7,
+          "requested_total": 476,
+          "requested_peak": 476,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 3000,
+          "cpu_ns": 2000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1916928
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "construct-refused",
+            0
+          ],
+          [
+            4,
+            "construct-refused",
+            0
+          ],
+          [
+            5,
+            "write-refused",
+            0
+          ],
+          [
+            6,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "numbers": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "32a60cef247b0d00439d7798d5e0ce786054b3adc75193de15a52ef58cef7299",
+        "encoded_bytes": 137,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 137,
+          "attempts_last": 15,
+          "requested_total": 1183,
+          "requested_peak": 1183,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 10000,
+          "cpu_ns": 10000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1916928
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "construct-refused",
+            0
+          ],
+          [
+            4,
+            "construct-refused",
+            0
+          ],
+          [
+            5,
+            "construct-refused",
+            0
+          ],
+          [
+            6,
+            "construct-refused",
+            0
+          ],
+          [
+            7,
+            "construct-refused",
+            0
+          ],
+          [
+            8,
+            "construct-refused",
+            0
+          ],
+          [
+            9,
+            "construct-refused",
+            0
+          ],
+          [
+            10,
+            "construct-refused",
+            0
+          ],
+          [
+            11,
+            "construct-refused",
+            0
+          ],
+          [
+            12,
+            "construct-refused",
+            0
+          ],
+          [
+            13,
+            "write-refused",
+            0
+          ],
+          [
+            14,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "large": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "afb3bbecac846785e46b87edbed49d7e06a9e186e9ce70ef8e59b33c9c72145f",
+        "encoded_bytes": 65538,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 65538,
+          "attempts_last": 5,
+          "requested_total": 262476,
+          "requested_peak": 262220,
+          "live_final": 0,
+          "workspace_bytes": 65537,
+          "elapsed_ns": 72000,
+          "cpu_ns": 72000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2277376
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "afb3bbecac846785e46b87edbed49d7e06a9e186e9ce70ef8e59b33c9c72145f",
+          "encoded_bytes": 65538,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 1026000,
+            "cpu_ns": 1026000,
+            "process_wall_ns": 3037708,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2244608
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 1161000,
+            "cpu_ns": 1161000,
+            "process_wall_ns": 3032083,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2244608
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 1040000,
+            "cpu_ns": 1040000,
+            "process_wall_ns": 3102959,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2244608
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 52000.0,
+          "range": [
+            51300.0,
+            58050.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 52000.0,
+          "range": [
+            51300.0,
+            58050.0
+          ]
+        }
+      },
+      "stress": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "d04bd29adbc69c543bc55fb258db24a4ddec05233fe0201e354ce6fc6b6a07f3",
+        "encoded_bytes": 77313,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 77313,
+          "attempts_last": 2315,
+          "requested_total": 375268,
+          "requested_peak": 296376,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 150000,
+          "cpu_ns": 150000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2457600
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "d04bd29adbc69c543bc55fb258db24a4ddec05233fe0201e354ce6fc6b6a07f3",
+          "encoded_bytes": 77313,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 3327000,
+            "cpu_ns": 3328000,
+            "process_wall_ns": 5471875,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2424832
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 2084000,
+            "cpu_ns": 2083000,
+            "process_wall_ns": 4259208,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2424832
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 2020000,
+            "cpu_ns": 2019000,
+            "process_wall_ns": 4014417,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2441216
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 104200.0,
+          "range": [
+            101000.0,
+            166350.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 104150.0,
+          "range": [
+            100950.0,
+            166400.0
+          ]
+        }
+      },
+      "queue-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "f9df5683901369283febbefe8c2d2829dbd09e17b3d3af639daf0b75a21b5304",
+        "encoded_bytes": 262143,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262143,
+          "attempts_last": 5,
+          "requested_total": 1048896,
+          "requested_peak": 1048640,
+          "live_final": 0,
+          "workspace_bytes": 262142,
+          "elapsed_ns": 258000,
+          "cpu_ns": 258000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 3047424
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "queue-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "932b4f73150e66f729e02758780d5891a07712d208a9151fe7ea69363260e419",
+        "encoded_bytes": 262144,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262144,
+          "attempts_last": 5,
+          "requested_total": 1048900,
+          "requested_peak": 1048644,
+          "live_final": 0,
+          "workspace_bytes": 262143,
+          "elapsed_ns": 239000,
+          "cpu_ns": 240000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 3047424
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b1c6d91357a702c8d5e04bf9bac2ecee30b1290ded90e294e288593f104fd161",
+        "encoded_bytes": 1048575,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048575,
+          "attempts_last": 5,
+          "requested_total": 4194624,
+          "requested_peak": 4194368,
+          "live_final": 0,
+          "workspace_bytes": 1048574,
+          "elapsed_ns": 992000,
+          "cpu_ns": 993000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 6193152
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "9a0a2a51df0699027c0a68f2854ed250e4005dc0cfbe0ecfb6bff016dbd26b06",
+        "encoded_bytes": 1048576,
+        "tracked": {
+          "backend": "patched-cJSON-1.7.19",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048576,
+          "attempts_last": 5,
+          "requested_total": 4194628,
+          "requested_peak": 4194372,
+          "live_final": 0,
+          "workspace_bytes": 1048575,
+          "elapsed_ns": 1019000,
+          "cpu_ns": 1019000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 6209536
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "candidate": {
+      "ordinary": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "344ca05f102950797c72a5ab8ab246962646d23236952197af85bc87632e3b98",
+        "encoded_bytes": 70,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 70,
+          "attempts_last": 4,
+          "requested_total": 952,
+          "requested_peak": 952,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 7000,
+          "cpu_ns": 6000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 12000,
+            "cpu_ns": 12000,
+            "process_wall_ns": 2156625,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2064384
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 11000,
+            "cpu_ns": 11000,
+            "process_wall_ns": 1879750,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2064384
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 12000,
+            "cpu_ns": 12000,
+            "process_wall_ns": 2019792,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2064384
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 600.0,
+          "range": [
+            550.0,
+            600.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 600.0,
+          "range": [
+            550.0,
+            600.0
+          ]
+        }
+      },
+      "unicode": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b2bbfb01ee86974279890a0da1472c92693617fe2a3dec7bcbbebb3d3434b648",
+        "encoded_bytes": 55,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 55,
+          "attempts_last": 4,
+          "requested_total": 952,
+          "requested_peak": 952,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 5000,
+          "cpu_ns": 5000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy": {
+        "result": "refused",
+        "semantic_parity": false,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "write-refused",
+          "repeat": 1,
+          "complete": 0,
+          "encoded_bytes": 0,
+          "attempts_last": 4,
+          "requested_total": 952,
+          "requested_peak": 952,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 4000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy-keys": {
+        "result": "refused",
+        "semantic_parity": false,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "write-refused",
+          "repeat": 1,
+          "complete": 0,
+          "encoded_bytes": 0,
+          "attempts_last": 4,
+          "requested_total": 920,
+          "requested_peak": 920,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 4000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "construct-refused",
+            0
+          ],
+          [
+            3,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "numbers": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b26196b27788b6e959d2ba207bdc0385a34e1f328d25dfe471b34a1e5a46a99e",
+        "encoded_bytes": 144,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 144,
+          "attempts_last": 3,
+          "requested_total": 792,
+          "requested_peak": 792,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 6000,
+          "cpu_ns": 6000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2015232
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "large": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "afb3bbecac846785e46b87edbed49d7e06a9e186e9ce70ef8e59b33c9c72145f",
+        "encoded_bytes": 65538,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 65538,
+          "attempts_last": 4,
+          "requested_total": 459277,
+          "requested_peak": 459277,
+          "live_final": 0,
+          "workspace_bytes": 65537,
+          "elapsed_ns": 23000,
+          "cpu_ns": 22000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2260992
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "afb3bbecac846785e46b87edbed49d7e06a9e186e9ce70ef8e59b33c9c72145f",
+          "encoded_bytes": 65538,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 259000,
+            "cpu_ns": 259000,
+            "process_wall_ns": 2350875,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2310144
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 272000,
+            "cpu_ns": 272000,
+            "process_wall_ns": 2205125,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2310144
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 262000,
+            "cpu_ns": 262000,
+            "process_wall_ns": 2327750,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2310144
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 13100.0,
+          "range": [
+            12950.0,
+            13600.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 13100.0,
+          "range": [
+            12950.0,
+            13600.0
+          ]
+        }
+      },
+      "stress": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "d04bd29adbc69c543bc55fb258db24a4ddec05233fe0201e354ce6fc6b6a07f3",
+        "encoded_bytes": 77313,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 77313,
+          "attempts_last": 21,
+          "requested_total": 442584,
+          "requested_peak": 361704,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 53000,
+          "cpu_ns": 53000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2441216
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "d04bd29adbc69c543bc55fb258db24a4ddec05233fe0201e354ce6fc6b6a07f3",
+          "encoded_bytes": 77313,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 516000,
+            "cpu_ns": 516000,
+            "process_wall_ns": 2582042,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2523136
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 471000,
+            "cpu_ns": 470000,
+            "process_wall_ns": 2603541,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2523136
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 474000,
+            "cpu_ns": 474000,
+            "process_wall_ns": 2640041,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2523136
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 23700.0,
+          "range": [
+            23550.0,
+            25800.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 23700.0,
+          "range": [
+            23500.0,
+            25800.0
+          ]
+        }
+      },
+      "queue-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "f9df5683901369283febbefe8c2d2829dbd09e17b3d3af639daf0b75a21b5304",
+        "encoded_bytes": 262143,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262143,
+          "attempts_last": 4,
+          "requested_total": 1835512,
+          "requested_peak": 1835512,
+          "live_final": 0,
+          "workspace_bytes": 262142,
+          "elapsed_ns": 70000,
+          "cpu_ns": 70000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2834432
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "queue-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "932b4f73150e66f729e02758780d5891a07712d208a9151fe7ea69363260e419",
+        "encoded_bytes": 262144,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262144,
+          "attempts_last": 4,
+          "requested_total": 1835519,
+          "requested_peak": 1835519,
+          "live_final": 0,
+          "workspace_bytes": 262143,
+          "elapsed_ns": 73000,
+          "cpu_ns": 72000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2834432
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b1c6d91357a702c8d5e04bf9bac2ecee30b1290ded90e294e288593f104fd161",
+        "encoded_bytes": 1048575,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048575,
+          "attempts_last": 4,
+          "requested_total": 7340536,
+          "requested_peak": 7340536,
+          "live_final": 0,
+          "workspace_bytes": 1048574,
+          "elapsed_ns": 282000,
+          "cpu_ns": 282000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 5210112
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "9a0a2a51df0699027c0a68f2854ed250e4005dc0cfbe0ecfb6bff016dbd26b06",
+        "encoded_bytes": 1048576,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "copied",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048576,
+          "attempts_last": 4,
+          "requested_total": 7340543,
+          "requested_peak": 7340543,
+          "live_final": 0,
+          "workspace_bytes": 1048575,
+          "elapsed_ns": 308000,
+          "cpu_ns": 308000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 5210112
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      }
+    },
+    "candidate-borrowed": {
+      "ordinary": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "344ca05f102950797c72a5ab8ab246962646d23236952197af85bc87632e3b98",
+        "encoded_bytes": 70,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 70,
+          "attempts_last": 3,
+          "requested_total": 696,
+          "requested_peak": 696,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 4000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 10000,
+            "cpu_ns": 10000,
+            "process_wall_ns": 1985417,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2048000
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 10000,
+            "cpu_ns": 10000,
+            "process_wall_ns": 2081250,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2048000
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 10000,
+            "cpu_ns": 10000,
+            "process_wall_ns": 1988666,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2048000
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 500.0,
+          "range": [
+            500.0,
+            500.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 500.0,
+          "range": [
+            500.0,
+            500.0
+          ]
+        }
+      },
+      "unicode": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b2bbfb01ee86974279890a0da1472c92693617fe2a3dec7bcbbebb3d3434b648",
+        "encoded_bytes": 55,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 55,
+          "attempts_last": 3,
+          "requested_total": 696,
+          "requested_peak": 696,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 4000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy": {
+        "result": "refused",
+        "semantic_parity": false,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "write-refused",
+          "repeat": 1,
+          "complete": 0,
+          "encoded_bytes": 0,
+          "attempts_last": 3,
+          "requested_total": 696,
+          "requested_peak": 696,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 3000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "legacy-keys": {
+        "result": "refused",
+        "semantic_parity": false,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "write-refused",
+          "repeat": 1,
+          "complete": 0,
+          "encoded_bytes": 0,
+          "attempts_last": 3,
+          "requested_total": 664,
+          "requested_peak": 664,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 4000,
+          "cpu_ns": 4000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 1982464
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "numbers": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b26196b27788b6e959d2ba207bdc0385a34e1f328d25dfe471b34a1e5a46a99e",
+        "encoded_bytes": 144,
+        "byte_parity": false,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 144,
+          "attempts_last": 3,
+          "requested_total": 792,
+          "requested_peak": 792,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 5000,
+          "cpu_ns": 5000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2015232
+        },
+        "faults": [
+          [
+            0,
+            "construct-refused",
+            0
+          ],
+          [
+            1,
+            "construct-refused",
+            0
+          ],
+          [
+            2,
+            "write-refused",
+            0
+          ]
+        ],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "large": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "afb3bbecac846785e46b87edbed49d7e06a9e186e9ce70ef8e59b33c9c72145f",
+        "encoded_bytes": 65538,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 65538,
+          "attempts_last": 3,
+          "requested_total": 393724,
+          "requested_peak": 393724,
+          "live_final": 0,
+          "workspace_bytes": 65537,
+          "elapsed_ns": 18000,
+          "cpu_ns": 18000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2179072
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "9b95eb227ec0567200460031306d49e7c6d0fb5f00a43de3bf2fc5d4e5c8b511",
+          "encoded_bytes": 65538,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 233000,
+            "cpu_ns": 232000,
+            "process_wall_ns": 2283708,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2228224
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 254000,
+            "cpu_ns": 255000,
+            "process_wall_ns": 2270167,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2228224
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 234000,
+            "cpu_ns": 233000,
+            "process_wall_ns": 2310667,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2228224
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 11700.0,
+          "range": [
+            11650.0,
+            12700.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 11650.0,
+          "range": [
+            11600.0,
+            12750.0
+          ]
+        }
+      },
+      "stress": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "d04bd29adbc69c543bc55fb258db24a4ddec05233fe0201e354ce6fc6b6a07f3",
+        "encoded_bytes": 77313,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 77313,
+          "attempts_last": 12,
+          "requested_total": 311768,
+          "requested_peak": 230888,
+          "live_final": 0,
+          "workspace_bytes": 257,
+          "elapsed_ns": 45000,
+          "cpu_ns": 45000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": true,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2359296
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ],
+        "input_lifetime_control": {
+          "result": "complete",
+          "semantic_parity": true,
+          "encoded_sha256": "5c23f01edc4e8be5f16f70c7e906aa92d1a7911c6e5842ef1b8d27c56ff05d54",
+          "encoded_bytes": 77313,
+          "output": null
+        },
+        "native_samples": [
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 396000,
+            "cpu_ns": 396000,
+            "process_wall_ns": 2473333,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2342912
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 394000,
+            "cpu_ns": 393000,
+            "process_wall_ns": 2397042,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2342912
+          },
+          {
+            "repeat": 20,
+            "complete": 20,
+            "elapsed_ns": 391000,
+            "cpu_ns": 389000,
+            "process_wall_ns": 2406791,
+            "rusage_available": true,
+            "rusage_maxrss_raw": 2342912
+          }
+        ],
+        "elapsed_ns_per_iteration": {
+          "median": 19700.0,
+          "range": [
+            19550.0,
+            19800.0
+          ]
+        },
+        "cpu_ns_per_iteration": {
+          "median": 19650.0,
+          "range": [
+            19450.0,
+            19800.0
+          ]
+        }
+      },
+      "queue-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "f9df5683901369283febbefe8c2d2829dbd09e17b3d3af639daf0b75a21b5304",
+        "encoded_bytes": 262143,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262143,
+          "attempts_last": 3,
+          "requested_total": 1573354,
+          "requested_peak": 1573354,
+          "live_final": 0,
+          "workspace_bytes": 262142,
+          "elapsed_ns": 68000,
+          "cpu_ns": 66000,
+          "mfl_empty_admitted": true,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2555904
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "queue-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "932b4f73150e66f729e02758780d5891a07712d208a9151fe7ea69363260e419",
+        "encoded_bytes": 262144,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 262144,
+          "attempts_last": 3,
+          "requested_total": 1573360,
+          "requested_peak": 1573360,
+          "live_final": 0,
+          "workspace_bytes": 262143,
+          "elapsed_ns": 57000,
+          "cpu_ns": 56000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 2555904
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-below": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "b1c6d91357a702c8d5e04bf9bac2ecee30b1290ded90e294e288593f104fd161",
+        "encoded_bytes": 1048575,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048575,
+          "attempts_last": 3,
+          "requested_total": 6291946,
+          "requested_peak": 6291946,
+          "live_final": 0,
+          "workspace_bytes": 1048574,
+          "elapsed_ns": 229000,
+          "cpu_ns": 230000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": true,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 4112384
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      },
+      "status-at": {
+        "result": "complete",
+        "semantic_parity": true,
+        "encoded_sha256": "9a0a2a51df0699027c0a68f2854ed250e4005dc0cfbe0ecfb6bff016dbd26b06",
+        "encoded_bytes": 1048576,
+        "byte_parity": true,
+        "tracked": {
+          "backend": "yyjson-0.13.0",
+          "allocator": "tracked-copy-realloc",
+          "strings": "caller-borrowed",
+          "outcome": "complete",
+          "repeat": 1,
+          "complete": 1,
+          "encoded_bytes": 1048576,
+          "attempts_last": 3,
+          "requested_total": 6291952,
+          "requested_peak": 6291952,
+          "live_final": 0,
+          "workspace_bytes": 1048575,
+          "elapsed_ns": 225000,
+          "cpu_ns": 226000,
+          "mfl_empty_admitted": false,
+          "mfl_128_queued_admitted": false,
+          "status_empty_admitted": false,
+          "rusage_available": true,
+          "rusage_maxrss_raw": 4128768
+        },
+        "faults": [],
+        "budget_outcomes": [
+          [
+            "construct-refused",
+            0,
+            0
+          ],
+          [
+            "construct-refused",
+            0,
+            0
+          ]
+        ]
+      }
+    }
+  },
+  "private_evidence": {
+    "compile01/plan.json": {
+      "sha256": "aa27ef1fcfce8e6bb07454af91acb25537cf019794371746f98772c5adea36b4",
+      "bytes": 6529
+    },
+    "compile01/result.json": {
+      "sha256": "0b8bb8b23dbc54c841c0a36bf1f76eac48a17bce32803a4ff02228c399e19315",
+      "bytes": 1085
+    },
+    "compile02/plan.json": {
+      "sha256": "9d35833f204b01e557dac8358ace0784f669da4b56a9b2f429d2cc7fb225114f",
+      "bytes": 6641
+    },
+    "compile02/result.json": {
+      "sha256": "05ad98acaa0d540075cfe87fba27ec08bffb5a228e688215e16b3ef3666e10f8",
+      "bytes": 4530
+    },
+    "observation-plan.json": {
+      "sha256": "377f161775bbd87c0ff89ee901647ecbfa2b2f831f9715c388bb23732e0ea711",
+      "bytes": 3870
+    },
+    "observation01-execution.json": {
+      "sha256": "4966e7f8bbb905e45de3c007dd5bd3b6b491718447a0623d48415904af2b8979",
+      "bytes": 807
+    },
+    "observation01/result.json": {
+      "sha256": "f3cface72b72c0621f45b85030fe8cc1d03ba37d5d7d6088d0fe92396a85bae4",
+      "bytes": 114988
+    }
+  },
+  "source_pins": {
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/libs/cJSON.c": "0027420b409663cbd44e5aeeb2accaf0d6a9ad67c59631e06e4c4cbf6415c3ae",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/libs/cJSON.h": "25b0145150d500498e4d209cec69c18c42cf818bffcc54690be3b895a2a16dee",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/libs/json_print_policy.h": "f4c669d060b62d1bc5b4cf195626c3d783414e6709b8026fb9b1a1881446a53b",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/fvwm/status_json.c": "add272f648a610adecbd47e21fd6cf90a28074b22d4078e24831f3b7d1f9227b",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/fvwm/status_pipe.h": "ac50c125eb069fc388c567e558dada2f6aeaf5a6aea757196f1775d7a6ed75ad",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/modules/FvwmMFL/FvwmMFL.c": "57a0385cd3022d7f71364502863b2011e241800053e35883f8387a355fcdcaca",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/modules/FvwmMFL/request.c": "d44a3ae51ba65cb46a9b01118c1752c2bd3432abcb8f1799397a6c16e7c9b519",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/modules/FvwmMFL/stream.c": "ed4f4af870d5dbae4dc3d26f5544ab89e1b6d90a4aa4d9dfdf7082d2178a5553",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/modules/FvwmMFL/stream.h": "0d9f81e1d19d1b874916cd74dec2a381b74eacf222f8ab307600dd5a4340b550",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/src/yyjson.c": "d2d58ef0a3b2267862dc363832c4f3185fd375aea933d5d3419d1a940d6ece2e",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/src/yyjson.h": "ef803cda5c06b8962face6dfa39c3284b3bcf3e73f4d7317664690cc779679ca",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/LICENSE": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-status-serializer-comparison/yyjson-0.13.0/doc/API.md": "b9968ddeca2e058b67bd5d4bb105a8221dd72162fcd5a991173f9343e2320aba",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/status_serializer_probe.c": "297e5a5de69bda801b0ad25cdb2167591f45318dfc72441ca5f83f5c4bf09333",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/compare_status_serializers.py": "0a1b1ac105481d009abcf4d02f90968d1fdaff39a87b46c3fdabbae6ddb6a834",
+    "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/meson.build": "f337de48190a9b89f421cbae497c581c7be9b17ca3e47f6bbe13213683628710"
+  },
+  "decision": "pending; patched cJSON retained",
+  "supported_target_results": {
+    "Linux AMD64": "pending",
+    "Linux ARM64": "pending",
+    "FreeBSD AMD64": "pending",
+    "FreeBSD ARM64": "pending",
+    "OpenBSD AMD64": "pending",
+    "OpenBSD ARM64": "pending"
+  },
+  "production_parity": "pending actual builders/independent MFL",
+  "limits": [
+    "Synthetic construction/write/disposal; no end-to-end WM/service claim",
+    "Raw rusage is whole-process maximum in platform-native units",
+    "Requested peak excludes headers/allocator overhead/input workspace",
+    "Tracked instrumentation changes realloc behavior; native timing is separate",
+    "Host short intervals include clock quantization; no adoption/performance conclusion",
+    "No supported-profile/install/default-X/theme/native-sanitizer run"
+  ],
+  "private_workspace": "builddir/codex-2026-11-01/r1-status-serializer-comparison"
+}

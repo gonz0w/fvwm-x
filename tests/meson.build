@@ -329,6 +329,16 @@ json_serialization_test = executable(
 )
 test('json-serialization', json_serialization_test)
 
+# Explicit LIB-06 synthetic comparison baseline; not installed or a test gate.
+status_serializer_probe = executable(
+    'status-serializer-probe',
+    ['status_serializer_probe.c', '../libs/cJSON.c'],
+    include_directories: includedirs,
+    dependencies: cc.find_library('m', required: false),
+    build_by_default: false,
+    install: false,
+)
+
 window_children_test = executable(
     'test-window-children', 'test_window_children.c',
     include_directories: includedirs,

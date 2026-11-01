@@ -37,6 +37,8 @@ fvwm_sources = [
     'fvwm/session_clients_policy.c',
     'fvwm/geometry.c',
     'fvwm/icccm2.c',
+    'fvwm/manager_selection.c',
+    'fvwm/manager_selection_queue.c',
     'fvwm/icons.c',
     'fvwm/image_async.c',
     'fvwm/root_background.c',

@@ -90,6 +90,7 @@ if get_option('htmldoc')
             dest,
             input: source,
             output: dest,
+            depend_files: doc_name_attribute in ['fvwm3', 'fvwm3all'] ? files(main_file) : [],
             command: [
                 asciidoc,
                 '-b', 'html5',
@@ -178,6 +179,7 @@ if get_option('mandoc')
             dest,
             input: source,
             output: dest,
+            depend_files: doc_name_attribute in ['fvwm3', 'fvwm3all'] ? files(main_file) : [],
             command: [
                 asciidoc,
                 '-b', 'manpage',

@@ -1396,7 +1396,8 @@ static int FvwmErrorHandler(Display *disp, XErrorEvent *event)
 {
 	char errtext[512];
 
-	if (image_async_handle_error(event))
+	if (icccm2_handle_selection_error(event) ||
+	    image_async_handle_error(event))
 	{
 		return 0;
 	}

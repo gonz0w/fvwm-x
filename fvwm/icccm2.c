@@ -14,6 +14,7 @@
  */
 
 #include "config.h"
+#include "icccm2.h"
 
 #include <stdio.h>
 #include <errno.h>
@@ -32,6 +33,7 @@
 #include "libs/FEvent.h"
 #include "libs/FProperty.h"
 #include "property_policy.h"
+#include "manager_selection.h"
 #include <stdint.h>
 #include "fvwm.h"
 #include "externs.h"
@@ -42,6 +44,7 @@
 
 Time managing_since;
 static uint64_t manager_acquired_ns;
+static manager_selection manager_transport;
 
 Atom _XA_WM_SX;
 Atom _XA_MANAGER;
@@ -55,7 +58,6 @@ Atom _XA_WM_COLORMAP_NOTIFY;
 
 long conversion_targets[MAX_TARGETS];
 
-long icccm_version[] = { 2, 0 };
 
 /* Only the old-owner watch/query may race its window's destruction. */
 static int manager_window_error(Display *display, XErrorEvent *error)
@@ -143,7 +145,8 @@ SetupICCCM2(Bool replace_wm)
 	snprintf(wm_sx, sizeof(wm_sx), "WM_S%lu", Scr.screen);
 	/* All names are independent; finish interning before selection ownership. */
 	char *names[] = { wm_sx, "MANAGER", "ATOM_PAIR", "TARGETS",
-		"MULTIPLE", "TIMESTAMP", "VERSION", "WM_COLORMAP_NOTIFY" };
+		"MULTIPLE", "TIMESTAMP", "VERSION", "WM_COLORMAP_NOTIFY",
+		"_FVWM_MANAGER_CONVERSION_ACK" };
 	Atom atoms[sizeof(names) / sizeof(*names)];
 	atom_batch_intern(dpy, names, sizeof(names) / sizeof(*names), atoms);
 	_XA_WM_SX = atoms[0];
@@ -183,6 +186,18 @@ SetupICCCM2(Bool replace_wm)
 	if (XGetSelectionOwner(dpy, _XA_WM_SX) != Scr.NoFocusWin)
 	{
 		failure = "failed to acquire selection ownership";
+		goto failed;
+	}
+
+	Atom manager_targets[MAX_TARGETS];
+
+	for (size_t i = 0; i < MAX_TARGETS; i++)
+		manager_targets[i] = (Atom)conversion_targets[i];
+	if (!manager_selection_init(&manager_transport, dpy, Scr.Root,
+	    Scr.NoFocusWin, _XA_WM_SX, _XA_ATOM_PAIR, atoms[8], manager_targets,
+	    managing_since, manager_acquired_ns))
+	{
+		failure = "unable to initialize manager conversion state";
 		goto failed;
 	}
 
@@ -234,133 +249,56 @@ failed:
 void
 CloseICCCM2(void)
 {
+	manager_selection_close(&manager_transport);
 	XSelectInput(dpy, Scr.Root, NoEventMask);
 	XFlush(dpy);
 
 	return;
 }
 
-/* Conversion output and SelectionNotify use the same ordered connection.
- * Asynchronous server allocation errors retain the normal X error policy. */
-static Bool
-convertProperty(Window w, Atom target, Atom property)
+/* Metadata writes complete on the ordinary X connection without a new
+ * synchronous barrier. Queue/deadline/error ownership stays manager-local. */
+void
+icccm2_handle_selection_request(const XEvent *event)
 {
-	if (target == _XA_TARGETS)
-	{
-		XChangeProperty(
-			dpy, w, property, XA_ATOM, 32, PropModeReplace,
-			(unsigned char *)conversion_targets, MAX_TARGETS);
-	}
-	else if (target == _XA_TIMESTAMP)
-	{
-		long local_managing_since;
-
-		local_managing_since = managing_since;
-		XChangeProperty(
-			dpy, w, property, XA_INTEGER, 32, PropModeReplace,
-			(unsigned char *)&local_managing_since, 1);
-	}
-	else if (target == _XA_VERSION)
-	{
-		XChangeProperty(
-			dpy, w, property, XA_INTEGER, 32, PropModeReplace,
-			(unsigned char *)icccm_version, 2);
-	}
-	else
-	{
-		return False;
-	}
-	/* Flushing submits writes; it is not a server-allocation success check. */
-	XFlush(dpy);
-
-	return True;
+	manager_selection_admit(&manager_transport, &event->xselectionrequest,
+		events_monotonic_ns());
+	icccm2_service_selection();
 }
 
-void
-icccm2_handle_selection_request(const XEvent *e)
+Bool icccm2_handle_selection_event(const XEvent *event)
 {
-	XSelectionRequestEvent ev = e->xselectionrequest;
-	XEvent response = { 0 };
-	XSelectionEvent *reply = &response.xselection;
+	return manager_selection_event(&manager_transport, event);
+}
 
-	reply->type = SelectionNotify;
-	reply->display = dpy;
-	reply->requestor = ev.requestor;
-	reply->selection = ev.selection;
-	reply->target = ev.target;
-	reply->property = None;
-	reply->time = ev.time;
+Bool icccm2_defer_selection_event(const XEvent *event)
+{
+	return manager_selection_defer_event(&manager_transport, event);
+}
 
-	/* Dispatch also receives synthetic events. Only this manager role and
-	 * acquisition period may publish our conversion data. No X round trip
-	 * is needed: ownership loss is handled by the ordered SelectionClear. */
-	if (ev.selection != _XA_WM_SX || ev.owner != Scr.NoFocusWin ||
-	    !fvwm_selection_request_time_is_valid(ev.time, managing_since,
-	    manager_acquired_ns, events_monotonic_ns()))
-	{
-		fvwm_debug(__func__, "Refusing foreign or stale manager request");
-		goto notify;
-	}
+void icccm2_selection_interaction(void)
+{
+	manager_selection_interaction(&manager_transport);
+	manager_selection_service(&manager_transport);
+}
 
-	if (ev.target == _XA_MULTIPLE)
-	{
-		if (ev.property != None)
-		{
-			unsigned char *data;
-			size_t bytes;
-			FPropertyLimits limits = {.min_bytes = 0,
-			    .max_bytes = FVWM_SELECTION_PAIR_MAX_BYTES, .format = 32};
-			FPropertyResult result = FPropertyRead(dpy, ev.requestor,
-			    ev.property, _XA_ATOM_PAIR, limits, &data, &bytes);
+Bool icccm2_handle_selection_error(const XErrorEvent *event)
+{
+	return manager_selection_error(&manager_transport, event);
+}
 
-			if (result == FPROPERTY_OK &&
-			    fvwm_selection_pair_length_is_valid(bytes))
-			{
-				const uint32_t *values = (const uint32_t *)data;
-				unsigned long pairs[FVWM_SELECTION_PAIR_MAX_BYTES / 4];
-				size_t count = bytes / 4;
+void icccm2_service_selection(void)
+{
+	manager_selection_ordinary(&manager_transport);
+}
 
-				/* XChangeProperty expects native longs for format 32. */
-				for (size_t i = 0; i < count; i++)
-				{
-					pairs[i] = values[i];
-				}
-				for (size_t i = 0; i < count; i += 2)
-				{
-					if (pairs[i + 1] == None || !convertProperty(
-					    ev.requestor, pairs[i], pairs[i + 1]))
-					{
-						pairs[i + 1] = None;
-					}
-				}
-				XChangeProperty(dpy, ev.requestor, ev.property,
-				    _XA_ATOM_PAIR, 32, PropModeReplace,
-				    (unsigned char *)pairs, (int)count);
-				reply->property = ev.property;
-			}
-			else
-			{
-				fvwm_debug(__func__, "Ignoring invalid MULTIPLE pairs");
-			}
-			free(data);
-		}
-	}
-	else
-	{
-		if (ev.property == None)
-		{
-			ev.property = ev.target;
-		}
-		if (convertProperty(ev.requestor, ev.target, ev.property))
-		{
-			reply->property = ev.property;
-		}
-	}
-notify:
-	FSendEvent(dpy, ev.requestor, False, 0L, &response);
-	XFlush(dpy);
+int icccm2_selection_timeout_ms(int other_ms)
+{
+	int manager_ms = manager_selection_timeout_ms(&manager_transport,
+		events_monotonic_ns());
 
-	return;
+	return manager_ms >= 0 && (other_ms < 0 || manager_ms < other_ms) ?
+		manager_ms : other_ms;
 }
 
 /* If another wm is requesting ownership of the selection,
@@ -368,8 +306,10 @@ notify:
    release all resources and destroy manager_win. Done() calls
    CloseICCCM2() after undecorating all windows. */
 void
-icccm2_handle_selection_clear(void)
+icccm2_handle_selection_clear(const XSelectionClearEvent *event)
 {
+	if (!manager_selection_clear(&manager_transport, event))
+		return;
 	Done(0, NULL);
 
 	return;

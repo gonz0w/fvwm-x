@@ -1171,8 +1171,15 @@ Manager startup in `fvwm/icccm2.c::SetupICCCM2` owns the selection acquisition,
 initialized MANAGER event, old-owner watch and finite handoff. It reuses the
 monotonic deadline policy and signal-aware poll before normal event dispatch
 exists. Only old-owner destruction is consumed; failures close the startup
-connection and clear the display pointer before exit hooks. Selection transfer
-and EWMH desktop geometry remain separate owners.
+connection and clear the display pointer before exit hooks. Core manager metadata
+then uses an explicit [bounded continuation](../fvwm/manager_selection.c) for
+TARGETS/TIMESTAMP/VERSION and ordered MULTIPLE. Exact write/error serials and a
+private per-screen marker separate submission from confirmed success. The
+[queue adapter](../fvwm/manager_selection_queue.c) preserves input/loss ordering
+through modal and ordinary dispatch; timed-out records remain until their final
+barrier or connection close. The context stays alive through XCloseDisplay,
+with fork guards on inherited resource control. Clipboard content and EWMH
+desktop geometry remain separate owners. [Contract and limits](decisions/MANAGER-SELECTION-2026-11-01.md).
 
 Desktop root publication in `fvwm/ewmh.c` prepares one bounded count/viewport/
 work-area snapshot. `ewmh_desktop_policy.h` owns pure count/index admission and

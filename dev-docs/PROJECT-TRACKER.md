@@ -7,6 +7,65 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current source checkpoint: core-manager selection ownership and truthful
+conversion completion under #22, owner Cam, branch
+`codex/r1-manager-selection-epochs`, based on merged PR326
+`90221112121ae200afff1e1de9f2cd1505bbcbb8`. The prior source branch is retired;
+canonical reviewed tree/signature and Cam author DCO verify; PR326 is Done.
+
+The coherent batch implements active-epoch/display/role/window/server-clear
+admission, a manager-only asynchronous completion queue and modal/ordinary-loop
+continuation. Fixed bounds are one active request, sixteen headers, one second
+from admission, 128 pairs and a 32-event queue prefix. Direct output is confirmed
+once; MULTIPLE confirms data writes then its corrected control list. Exact
+serial records survive timeout/loss/Close until safe retirement; errors only mark
+owned records. No new core XSync, ownership query, dependency, configuration
+migration or generic transport framework. The private per-screen InputOnly marker
+avoids NoFocusWin mask restoration. A source review correction closes the saved
+marker's return-from-interaction liveness gap while preserving loss/input order.
+
+[Results and queued acceptance](verification/VERIFICATION-2026-11-01-MANAGER-SELECTION.md)
+record source review, actual affected compilation and the
+[frozen role/source map](verification/SELECTION-2026-11-01-ROLES.json). The reused
+Linux ARM64 GCC incremental profile passes thirteen commands: six core objects,
+three probe objects, two links and two manual generations. An observed missing
+manual include dependency is corrected only for the two aggregate pages; exact
+manuals render on the host. Repository/whitespace/Python AST checks pass.
+No new unit, native-X, sanitizer, theme, install or whole-platform suite ran.
+Separate source review clears freeze05; final signed delivery review remains.
+
+The authored production-linked probe covers identity, exact serial errors,
+phase-two publication, queue expiry/tombstones, close/fork and modal/ordinary
+continuation. Independent native-X cases cover real rejected writes and two
+actual screen managers. A peer assigning another selection to the core's window
+owns it itself, so that discarded test proposal supplies no core-clear evidence.
+The Script/Form/file-only component receipts retain their own source/profile
+scope. The baseline manager implementation/header match PR148 upkeep; the events
+file does not, so no old full-core pass count qualifies these new sources.
+
+The lead implements under the recorded two-agent quota fallback; the selected
+analyst, workflow inventory and separate reviewer provide bounded source work.
+Actual backend model/effort metadata remains unverified. #22 stays open for the
+new manager shared-runtime gate and conditional clipboard-manager handoff.
+The Script 320-byte Fontconfig clean-exit failure still needs finite attribution
+and affected qualification. #67 remains 3/4, 53/55: Q67 D1/D2 never ran after the
+source-copy network failure. Do not retry a broad matrix or resurrect its failed
+disk. #257/#258 stay parked. Full support/install/default-server qualification
+waits for milestone/release; no performance run is due (1/5 since observation,
+2/5 after this implementation merges).
+
+Next shared checkpoint: execute the authored linked manager and independent
+ownership/target cases with warranted scoped sanitizers once after the selected
+major-feature group is assembled. Keep equivalent-font attribution and Q67
+transport preparation finite and separate; prior failures remain failures.
+Until then, source review/static checks and necessary incremental compilation
+are the per-PR cadence. No new UI or screenshot cycle is selected for manager
+metadata changes. Next source selection follows the frozen adopted-role gaps,
+then the accepted CONTENT/RETENTION clipboard prerequisites, without reopening
+completed Script or file-transfer campaigns.
+
+Previous combined checkpoint record:
+
 Current checkpoint: delivery of the combined Script checkpoint over merged
 PR323 transport, PR324 ownership and PR325 consumer adoption. Owner Cam, branch
 `codex/r1-script-selection-checkpoint`. All three implementation PRs used source

@@ -17,6 +17,42 @@ from mfl_stream_live import Connection
 from selection_live import Event, SelectionRequest
 
 
+class XError(C.Structure):
+    _fields_ = [('type', C.c_int), ('display', C.c_void_p),
+        ('resourceid', C.c_ulong), ('serial', C.c_ulong),
+        ('error_code', C.c_ubyte), ('request_code', C.c_ubyte),
+        ('minor_code', C.c_ubyte)]
+
+
+def nonexistent_atom(x, display):
+    invalid, errors = 0xffffffff, []
+    callback_type = C.CFUNCTYPE(C.c_int, C.c_void_p, C.POINTER(XError))
+
+    def record(connection, error):
+        value = error.contents
+        errors.append((connection, value.resourceid, value.error_code,
+            value.request_code))
+        return 0
+
+    x.XGetAtomName.argtypes = [C.c_void_p, C.c_ulong]
+    x.XGetAtomName.restype = C.c_void_p
+    x.XSetErrorHandler.argtypes = [C.c_void_p]
+    x.XSetErrorHandler.restype = C.c_void_p
+    callback = callback_type(record)
+    x.XSync(display, False)
+    previous = x.XSetErrorHandler(C.cast(callback, C.c_void_p))
+    try:
+        name = x.XGetAtomName(display, invalid)
+        if name:
+            x.XFree(name)
+        assert not name
+        x.XSync(display, False)
+    finally:
+        x.XSetErrorHandler(previous)
+    assert errors == [(display, invalid, 5, 17)], errors
+    return invalid
+
+
 def run(args):
     args.fvwm = args.fvwm.resolve()
     args.mfl = args.mfl.resolve()
@@ -188,6 +224,33 @@ def run(args):
                 assert reply(atom('VERSION'), result) == result
                 assert read(result, 'INTEGER') == [2, 0]
                 evidence['vanished_requestor_recovery'] = 'passed'
+            elif args.case == 'refusal':
+                invalid = nonexistent_atom(x, d)
+                # XConvertSelection would reject this atom before core sees
+                # it. A synthetic request reaches the actual output write.
+                assert reply(atom('VERSION'), invalid, forged={}) == 0
+                assert reply(atom('VERSION'), result) == result
+                assert read(result, 'INTEGER') == [2, 0]
+                control = atom('FVWM_MANAGER_REFUSAL_PAIRS')
+                sibling = atom('FVWM_MANAGER_REFUSAL_SIBLING')
+                values = [atom('VERSION'), result, atom('TIMESTAMP'), invalid,
+                    atom('VERSION'), sibling]
+                change(control, values)
+                assert reply(atom('MULTIPLE'), control) == control
+                expected = list(values)
+                expected[3] = 0
+                assert read(control, 'ATOM_PAIR') == expected
+                assert read(result, 'INTEGER') == [2, 0]
+                assert read(sibling, 'INTEGER') == [2, 0]
+                change(control, [atom('VERSION'), control,
+                    atom('VERSION'), result])
+                assert reply(atom('MULTIPLE'), control) == control
+                assert read(control, 'ATOM_PAIR') == [atom('VERSION'), 0,
+                    atom('VERSION'), result]
+                assert reply(atom('TIMESTAMP'), stamp) == stamp
+                assert read(stamp, 'INTEGER') == [acquired]
+                evidence['server-rejected-write-refusal-and-recovery'] = 'passed'
+                evidence['multiple-failed-pair-and-control-order'] = 'passed'
             else:
                 refused = []
                 for label, timestamp, fields in [
@@ -235,5 +298,5 @@ if __name__ == '__main__':
     for name in ['fvwm', 'mfl', 'artifacts-dir']:
         parser.add_argument('--' + name, required=True, type=Path)
     parser.add_argument('--display')
-    parser.add_argument('--case', choices=['values', 'multiple', 'admission'], required=True)
+    parser.add_argument('--case', choices=['values', 'multiple', 'admission', 'refusal'], required=True)
     run(parser.parse_args())

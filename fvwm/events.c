@@ -3058,6 +3058,9 @@ HandlePropertyNotify(const evh_args_t *ea)
 	char		 *urgency_action = NULL;
 	FvwmWindow *const fw		 = ea->exc->w.fw;
 
+	if (icccm2_defer_selection_event(te))
+		return;
+
 	bool owned_root = root_background_notification(&te->xproperty);
 
 	startup_notification_raw_property(&te->xproperty);
@@ -3463,7 +3466,7 @@ HandleSelectionRequest(const evh_args_t *ea)
 void
 HandleSelectionClear(const evh_args_t *ea)
 {
-	icccm2_handle_selection_clear();
+	icccm2_handle_selection_clear(&ea->exc->x.etrigger->xselectionclear);
 
 	return;
 }
@@ -3804,7 +3807,7 @@ dispatch_event_without_source(XEvent *e)
 	    .update_configuration = topology_update_configuration,
 	    .mark_dirty		  = topology_mark_dirty,
 	};
-	if (image_async_handle_event(e)) {
+	if (icccm2_handle_selection_event(e) || image_async_handle_event(e)) {
 		return;
 	}
 	XFlush(dpy);
@@ -4090,6 +4093,7 @@ Bool events_interaction_poll(int timeout_ms)
 	squeue_execute_interaction();
 	module_cleanup();
 	image_async_transport();
+	icccm2_selection_interaction();
 	if (isTerminated)
 	{
 		return True;
@@ -4116,10 +4120,12 @@ Bool events_interaction_poll(int timeout_ms)
 	result = image_async_wait(readiness.descriptors,
 		readiness.module_count * 2 + EVENTS_MODULE_WATCH,
 		timeout_ms < 0 ? NULL : &timeout,
-		image_async_timeout_ms(False), &image_timeout);
+		icccm2_selection_timeout_ms(image_async_timeout_ms(False)),
+		&image_timeout);
 	poll_error = result < 0 ? errno : 0;
 	startup_notification_service();
 	image_async_transport();
+	icccm2_selection_interaction();
 	if (result < 0)
 	{
 		healthy = poll_error == EINTR;
@@ -4177,6 +4183,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 	startup_notification_service();
 	/* Pump even under an X-event flood, without changing any owner. */
 	image_async_transport();
+	icccm2_service_selection();
 
 	/* Remaining module work forces a descriptor poll before the next batch.
 	 */
@@ -4287,7 +4294,8 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 		num_fd = image_async_wait(readiness.descriptors,
 			readiness.module_count * 2 + EVENTS_MODULE_WATCH,
 			force_poll ? &poll_timeout : timeoutP,
-			image_async_timeout_ms(outer_boundary), &image_timeout);
+			icccm2_selection_timeout_ms(
+				image_async_timeout_ms(outer_boundary)), &image_timeout);
 		/* Preserve ordinary base-connection error retry. Invalid module
 		 * endpoints instead retire that producer during shared service. */
 		if (num_fd >= 0 &&
@@ -4299,6 +4307,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 			errno = EBADF;
 		}
 		image_async_transport();
+		icccm2_service_selection();
 		startup_notification_service();
 		fvwm_process_deferred_signals();
 		if (is_waiting_with_timeout) {
@@ -4334,7 +4343,7 @@ events_next_event(Display *disp, XEvent *event, Bool outer_boundary)
 	} else {
 		events_readiness_clear(&readiness);
 		if (!force_poll) {
-			/* A decoder-only deadline cannot finish module startup. */
+			/* An internal service deadline cannot finish module startup. */
 			if (fFvwmInStartup && !image_timeout &&
 			    !startup_activity_timeout) {
 				fvwm_debug(__func__,

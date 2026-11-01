@@ -4284,6 +4284,27 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
     endforeach
 endif
 
+manager_selection_test = executable(
+    'test-manager-selection',
+    ['test_manager_selection.c', '../fvwm/manager_selection.c',
+     '../fvwm/manager_selection_queue.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+test('manager-selection', manager_selection_test)
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    test('manager-ownership-xvfb', py,
+        args: [files('live_x/manager_ownership_live.py'),
+            '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+            '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts/manager-ownership'],
+        depends: [fvwm3, fvwm_mfl],
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 60,
+    )
+endif
+
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     foreach manager_case : ['announcement', 'replacement', 'failure']
         test('manager-handoff-' + manager_case + '-xvfb', py,
@@ -4339,7 +4360,7 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
 endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
-    foreach manager_case : ['values', 'multiple', 'admission']
+    foreach manager_case : ['values', 'multiple', 'admission', 'refusal']
         test('manager-targets-' + manager_case + '-xvfb', py,
             args: [files('live_x/manager_targets_live.py'),
                 '--fvwm', fvwm3, '--mfl', fvwm_mfl,

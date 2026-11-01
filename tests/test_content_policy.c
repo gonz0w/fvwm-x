@@ -235,6 +235,53 @@ static void publication_and_bounds(void)
 	assert(content_acquire(&policy, ref, 1, 13, &extra) == CONTENT_STALE);
 }
 
+static void physical_and_access(void)
+{
+	struct content_storage cost;
+	struct content_ref first, second, output;
+	struct content_lease lease, bad;
+
+	assert(content_storage_charge(0, 4096, 2, 0, &cost));
+	assert(cost.mapped == 12288 && cost.locked == 4096);
+	assert(content_storage_charge(4097, 4096, 4, 1, &cost));
+	assert(cost.mapped == 24576 && cost.locked == 12288);
+	assert(!content_storage_charge(SIZE_MAX, 4096, 4, 1, &cost));
+	assert(cost.mapped == 0 && cost.locked == 0);
+	assert(!content_storage_charge(1, 0, 2, 0, &cost));
+	assert(!content_storage_charge(1, 4096, 9, 0, &cost));
+	assert(!content_storage_charge(1, 4096, 0, 1, &cost));
+	setup();
+	policy.limits.storage = (struct content_storage){24576, 8192};
+	policy.limits.per_item_storage = policy.limits.storage;
+	assert(content_storage_charge(40, 4096, 2, 0, &candidate.storage));
+	first = reserve();
+	publish(first);
+	assert(content_acquire(&policy, first, 1, 12, &lease) == CONTENT_OK);
+	assert(content_lease_check(&policy, lease, 12) == CONTENT_OK);
+	bad = lease;
+	bad.representation++;
+	assert(content_lease_check(&policy, bad, 12) == CONTENT_STALE);
+	assert(content_reserve(&policy, &candidate, true, &first, 13, &second)
+		== CONTENT_OK);
+	assert(content_lease_check(&policy, lease, 13) == CONTENT_STALE);
+	assert(policy.usage.storage.mapped == 24576);
+	assert(content_reserve(&policy, &candidate, true, NULL, 13, &output)
+		== CONTENT_FULL);
+	assert(content_cleanup_ack(&policy, first) == CONTENT_BUSY);
+	assert(policy.usage.storage.locked == 8192);
+	assert(content_release(&policy, lease) == CONTENT_OK);
+	assert(content_cleanup_ack(&policy, first) == CONTENT_OK);
+	assert(policy.usage.storage.mapped == 12288);
+	publish(second);
+	assert(content_lease_check(&policy, lease, 14) == CONTENT_STALE);
+	assert(content_acquire(&policy, second, 1, 14, &lease) == CONTENT_OK);
+	assert(content_lease_check(&policy, lease, 500) == CONTENT_EXPIRED);
+	assert(content_release(&policy, lease) == CONTENT_OK);
+	assert(content_clear(&policy) == CONTENT_OK);
+	assert(content_cleanup_ack(&policy, second) == CONTENT_OK);
+	assert(policy.usage.storage.mapped == 0);
+}
+
 int main(void)
 {
 	admission();
@@ -242,5 +289,6 @@ int main(void)
 	replacement();
 	expiry_and_identity();
 	publication_and_bounds();
+	physical_and_access();
 	return 0;
 }

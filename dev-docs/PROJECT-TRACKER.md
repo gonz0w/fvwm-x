@@ -7,7 +7,70 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current source checkpoint: CONTENT-01 / RETENTION-01 native metadata foundation
+Current source checkpoint: STORE-01 #74 protected-memory evaluation and
+CONTENT-01 #63 native resource/access prerequisites. Owner Cam; branch
+`codex/r1-protected-content-evaluation`, based on merged PR328
+`42e00b03f2fde83b01cf99391597b31fe8e8a1c9`.
+
+Select four related stories: freeze a protected-memory/copy/failure contract;
+add page-rounded mapped/locked reservations and exact lease-access checks to
+the native policy; author two non-installed synthetic candidate probes (base-OS
+C and existing libsodium 1.0.22); bind their preparation/retirement/cleanup to
+that same content ledger. No installed backend, persistence, native transport,
+X capture, cryptography or clipboard UI is selected. The dependency is evaluated
+only when explicitly compiled; no mandatory dependency/build-default change.
+
+Acceptance: account physical reservations separately from logical representation
+bytes; refuse overflow/cap excess before allocation; exact live leases alone
+permit candidate access. Synthetic bytes enter only after checked memory lock,
+regional dump restriction and access protection preparation; wipe is observed
+while memory is valid before release. Refusal and partial cleanup preserve exact
+charges. Compare the same bounded fixture and report unavailable guarantees,
+inherited limits, allocator overhead and cleanup observability honestly. Do not
+claim protected stack/register/transport/decoder copies or X11 confidentiality.
+Installed capacities, capture/formats and lock transitions remain separate owner
+policy; fixture values are not defaults. Session-only history, sensitive/password
+exclusion and persistence-off remain fixed by the owner's prior answer.
+
+The simpler candidate uses dedicated native mappings and base-system facilities;
+libsodium is the named alternative under #74, not a chosen production backend.
+Go/Lua remain metadata-only. Freeze exact APIs/source and candidate identities
+before comparison. Author lifecycle/refusal/overflow cases with source changes;
+use separate review/static checks and affected compilation during development.
+Execute the assembled native memory/content/manager shared checkpoint once, with
+warranted scoped sanitizers and directly affected target probes. Full WM/install/
+default-X and unrelated support suites remain milestone/release work. Existing
+Script clean-exit and Q67 gaps remain explicit; parked #257/#258 stay untouched.
+No new UI screenshots. Performance counter is 3/5 after PR328.
+
+The [memory source receipt](verification/VERIFICATION-2026-11-01-CONTENT-MEMORY-SOURCE.md)
+records actual strict C11 production/test and both candidate compile/link on the
+host using existing libsodium 1.0.22; zero runtime tests. Separate source review
+corrects a probe-only epoch reuse and otherwise clears the checked arithmetic,
+lease and cleanup paths. Final signed delivery review remains required. No
+production backend, dependency replacement or protection qualification follows.
+
+Selected parallel acceptance pickup: #67 Q67 only, one fresh OpenBSD 8.0 ARM64
+attempt using the unchanged reviewed dispatcher and source34/cache/SDK pins.
+All 25 frozen inputs and the 28,947,708-byte source archive verify before launch;
+source closure remains `7708bcbf4f45e31bb93cb9f20a140f30922be5e244ff9595699cfdfdb491d6ec`.
+Use fresh `arm64-owned-run02`; never resume the retired failed disk. Preserve
+HVF/virtio network, 4 GiB/two CPUs, functional deadlines and exact Meson
+`licensedir == ''` semantics. Review the generated disabled plan before approving
+only D1/D2. No enabled/transfer/full suite repeat. Stop after this attempt on any
+phase failure, retain evidence and clean only the owned clone after verified
+export. Results remain source34 component evidence, not current manager/memory
+qualification. An earlier virtual-network reset is a failure boundary, not a
+diagnosed root cause. The existing runner's SIGTERM cleanup is not normal guest
+poweroff. Lead owns execution/resource control; analyst's recipe review is read-only.
+
+The two implementation agents remain quota-limited; the lead implements under
+the recorded adequate-lead fallback with separate analyst/reviewer support.
+Requested backend model/effort metadata remains unverified. User direction on
+2026-11-01 is to continue R1 through milestone completion, merging reviewed
+checkpoints without waiting for a per-PR reply; release publication is separate.
+
+Merged source checkpoint: CONTENT-01 / RETENTION-01 native metadata foundation
 under #63 and #71; default decision also informs #74. Owner Cam; branch
 `codex/r1-content-retention-foundation`, based on merged PR327
 `2c26920ee2354b0d68e16eea8d5e72a38ff84b6f`.
@@ -45,8 +108,11 @@ The [source-checkpoint receipt](verification/VERIFICATION-2026-11-01-CONTENT-LIF
 records native macOS C11 compile/link of the feature-independent production
 policy and authored test target with strict warnings; no test was executed or
 VM started. Meson registration awaits configured shared qualification.
-Separate source review clears freeze03 with no unresolved findings; final signed
-delivery review remains. Source inspection corrects the clock floor on refused
+Separate source and final signed delivery review clear candidate
+`e68264669b825e81a02d3224fad5ed6d729b73e3`, tree
+`c10c8b50e0c5e538b17f927526155babcf0f9a2c`. PR328 merged as
+`42e00b03f2fde83b01cf99391597b31fe8e8a1c9` with that exact tree, verified
+canonical signature and Cam author DCO. Branch retired; Project Done. Source inspection corrects the clock floor on refused
 observations so stale time cannot resurrect observed-expired content.
 The two implementation agents remain quota-limited; the lead implements under
 the recorded fallback, with bounded analyst and separate reviewer support.

@@ -29,6 +29,9 @@ struct content_ref {
 struct content_bytes {
 	size_t encoded, decoded, derived;
 };
+struct content_storage {
+	size_t mapped, locked;
+};
 struct content_representation {
 	uint32_t id;
 	enum content_kind kind;
@@ -40,16 +43,19 @@ struct content_candidate {
 	enum content_hint hint;
 	uint64_t deadline_ms;
 	size_t count;
+	struct content_storage storage;
 	struct content_representation reps[CONTENT_REPRESENTATIONS_MAX];
 };
 struct content_limits {
 	size_t items, representations, per_item, leases, work;
 	struct content_bytes total, per_representation;
+	struct content_storage storage, per_item_storage;
 	uint64_t lifetime_ms;
 };
 struct content_usage {
 	size_t items, representations, leases, work;
 	struct content_bytes bytes;
+	struct content_storage storage;
 };
 struct content_item {
 	enum content_phase phase;
@@ -104,6 +110,15 @@ enum content_result content_acquire(struct content_policy *policy,
 	struct content_lease *output);
 enum content_result content_release(struct content_policy *policy,
 	struct content_lease lease);
+/* Recheck immediately before native access; an outstanding lease retains
+ * resources after retirement but no longer grants permission to read them. */
+enum content_result content_lease_check(struct content_policy *policy,
+	struct content_lease lease, uint64_t now_ms);
+/* Explicit allocator model, not a measurement. Round at least one byte to
+ * pages, then account bounded allocator/guard overhead before allocation. */
+bool content_storage_charge(size_t bytes, size_t page,
+	size_t mapped_extra_pages, size_t locked_extra_pages,
+	struct content_storage *output);
 /* Caller invokes this only AFTER actual backend cleanup. An early call is
  * refused, never remembered as permission to release future resources. */
 enum content_result content_cleanup_ack(struct content_policy *policy,

@@ -4818,3 +4818,14 @@ content_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('content-policy', content_policy_test)
+
+# Explicit diagnostic only: the equivalent-shutdown mode may reproduce the
+# known Script Fontconfig leak. It must not become a passing routine test.
+font_lifetime_probe = executable(
+    'font-lifetime-probe', 'font_lifetime_probe.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+    build_by_default: false,
+)

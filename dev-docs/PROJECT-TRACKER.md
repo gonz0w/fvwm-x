@@ -7,7 +7,56 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current source checkpoint: STORE-01 #74 protected-memory evaluation and
+Current checkpoint: integrate manager/content shared qualification and normal
+Script font finalization under #22/#63/#74, and close FILE-INTEGRATION-01 #67
+with independently verified Q67 evidence. Owner Cam; branch
+`codex/r1-content-shared-checkpoint`, based on merged PR329
+`0649fc24a6c1a729a24beaf0b01f8211e4e1f906`.
+
+The [shared report](verification/VERIFICATION-2026-11-01-CONTENT-SHARED.md)
+records 14 manager/content passes: two original normal policy passes retained by
+exact unchanged inputs/artifacts, and twelve fresh normal/scoped-ASan/UBSan
+cases. The initial ownership fixture failure was a display-suffix socket
+spelling mismatch; its correction follows existing MFL punctuation filtering.
+No deadline/assertion changed. The prior failure remains recorded.
+
+Paired actual-Xft controls reproduce 320 bytes/3 allocations without selection
+and clear them with process finalization, with matching fonts/libraries/locale
+and positive 76×16 metrics. The unchanged actual Script failed its clean-exit
+assertion with the same native diagnostic. The bounded correction preserves the
+exported Quit signature, marks only normal Quit/MainLoop termination and calls
+FftFini after existing widget/font/display retirement. Fatal partial acquisitions,
+dead-pipe early return and recursive-exit limits remain explicit. Separate
+source review clears it; two objects/one link per profile compile; both actual
+normal and scoped-sanitizer Script owner/consumer fixtures now pass, including
+newer-owner survival and shutdown/grace. No leak suppression or broad rewrite.
+
+[Q67](verification/VERIFICATION-2026-11-01-Q67-NOBUS.md) completes 55/55 selected
+installed-service groups, all four #67 criteria, with 98/98 verified receipt
+files and exact source34/actor guards. Only D1/D2 ran fresh. Source34 component
+evidence does not qualify later manager/content or whole R1. The stopped owned
+QEMU clone and duplicate inputs were retired after verified export: 5,879,726,080
+allocated bytes removed. Current receipts/archive and useful SDK/build/base
+caches remain; unrelated NetBSD VM/resources are preserved.
+
+The current Linux lab is reused for the due core comparison (4/5 after PR329;
+this production correction reaches 5/5). The [due core observation](verification/PERFORMANCE-2026-11-01-CONTENT-CHECKPOINT.md)
+completes three alternating pairs in 32.34 seconds. Idle command medians rise
+0.064 ms; resize timer medians fall 0.122 ms; other ranges overlap. No causal
+speed claim. Core file +36,304 bytes; median peak RSS -4 KiB. Cadence resets
+at this checkpoint; the next production batch is 1/5. No full support/install/
+default-X/theme sweep or new UI is selected. Memory candidate execution/backend adoption,
+capacities/capture/lock policy and protected clipboard consumer remain open;
+#22's conditional clipboard-manager role is not adopted. Native Linux hardware
+and final release coverage remain separate. Implementation agents remain
+quota-limited; lead implements under recorded fallback, with bounded workflow/
+analyst inspection and separate review. Actual backend model/effort metadata is
+unverified. Continue accepted R1 work after reviewed integration; #257/#258 stay
+parked. No missing check or whole milestone is called complete.
+
+Previous source/checkpoint records retain their original observations below.
+
+Merged source checkpoint: STORE-01 #74 protected-memory evaluation and
 CONTENT-01 #63 native resource/access prerequisites. Owner Cam; branch
 `codex/r1-protected-content-evaluation`, based on merged PR328
 `42e00b03f2fde83b01cf99391597b31fe8e8a1c9`.
@@ -47,7 +96,11 @@ The [memory source receipt](verification/VERIFICATION-2026-11-01-CONTENT-MEMORY-
 records actual strict C11 production/test and both candidate compile/link on the
 host using existing libsodium 1.0.22; zero runtime tests. Separate source review
 corrects a probe-only epoch reuse and otherwise clears the checked arithmetic,
-lease and cleanup paths. Final signed delivery review remains required. No
+lease and cleanup paths. Separate final signed delivery review clears head
+`4c007d13706e1b98f4dcef2f1005be39be5d2d22`, tree
+`1c32b7ed2e2c2ac88559ef1ea1a66aa62d108c10`; merged PR329
+`0649fc24a6c1a729a24beaf0b01f8211e4e1f906` retains that exact tree, valid
+canonical signature and Cam author DCO. Source refs retired. No
 production backend, dependency replacement or protection qualification follows.
 
 Selected parallel acceptance pickup: #67 Q67 only, one fresh OpenBSD 8.0 ARM64
@@ -6098,7 +6151,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | FILE-ACTION-01 | Done / #65 closed by merged PR271; all five finite criteria qualified | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
 | FILE-JOBS-01 | Done / #68 closed by merged PR290; finite job/UI and support coverage qualified | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
 | DESKTOP-ICONS-01 | Done / #64 closed by merged PR291; finite support closeout qualified | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
-| FILE-INTEGRATION-01 | P2 / In progress; Files-menu adoption qualified, broader role/adapter/support acceptance open | Fourth checkpoint: portable installed folder/reveal/properties entry point and XDG directory/application roles, then optional FileManager1 ShowFolders/ShowItems/ShowItemProperties adapter under SESSION-02. Design request contracts with the first browser; do not overwrite defaults or execute reveal targets. Reuse SELECTION-01 for file clipboard/XDND. Portable portion in stage 6; optional adapter in stage 7 after the common bus contract. Independent-client, competing-owner/no-bus and installed-platform gates; a new Open/Save portal backend is separate scope. See file-manager scope. |
+| FILE-INTEGRATION-01 | Complete at reviewed checkpoint / #67 closure on integration | All four frozen criteria have source-bound component evidence, including 55/55 installed-service groups after Q67 D1/D2. [Q67 report](verification/VERIFICATION-2026-11-01-Q67-NOBUS.md). Final release integration remains separately owned; no later core/content or protected clipboard qualification inferred. |
 | FILE-ADVANCED-01 | P2 / deferred candidates | Thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo require individually bounded adoption decisions and prerequisite gates. Reuse qualified collection/jobs/image/process contracts and optional providers; no autorun, mandatory desktop stack or aggregate rewrite. Not a prerequisite for the initial primitive/config handoff or earlier file-manager checkpoints. See file-manager scope. |
 | CONTENT-01 | P2 / queued, primitives-first scope approved | Reusable bounded content items with stable IDs/generations, original bytes and multiple text/image/URI representations separate from labels/previews. Explicit leases, sensitivity/lifetime propagation and stale-reference refusal; deduplication/pinning preserve budgets and policy. Stage 6 with SELECTION-01 and shared collection/action contracts; no filesystem-path impersonation or arbitrary database framework. See [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |
 | RETENTION-01 | P2 / queued, scope approved; defaults pending | CFG-01-controlled capture/pause, formats, source exclusions, expiry/pinning/clear/lock and separate current-selection/history/persistence states. Honor supported secret hints before retention/previews/actions; remove derivatives and pending work on expiry without clearing newer clipboard data. Password-history and persistence defaults remain open decisions. Stage 6 with CONTENT-01/STORE-01; native policy and real-X lifecycle/failure gates. See clipboard scope. |

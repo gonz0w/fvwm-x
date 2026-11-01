@@ -61,11 +61,12 @@
         "packed_control_bytes": 1024,
         "queued_event_prefix": 32
       },
-      "status": "new implementation reviewed/compiled; runtime queued; startup/target historical evidence remains named-profile only",
+      "status": "Linux ARM64 normal/scoped-sanitizer shared manager checkpoint passes; broader supported release profiles remain separate",
       "evidence": [
         "VERIFICATION-2026-10-21-MANAGER-HANDOFF.md",
         "VERIFICATION-2026-10-21-MANAGER-TARGETS.md",
-        "VERIFICATION-2026-11-01-MANAGER-SELECTION.md"
+        "VERIFICATION-2026-11-01-MANAGER-SELECTION.md",
+        "VERIFICATION-2026-11-01-CONTENT-SHARED.md"
       ],
       "source_sha256": {
         "fvwm/icccm2.c": "68b51ba526321b85e52ff22e12455d36386da07e98a32230aac1e517e460909d",
@@ -112,9 +113,10 @@
         "multiple_pairs": 128,
         "multiple_aggregate_bytes": 131072
       },
-      "status": "normal Linux source-bound component evidence retained; full sanitized owner exit failed; no new run",
+      "status": "Linux ARM64 normal and scoped-sanitizer actual owner/consumer clean exit pass after normal-only process font finalization; previous failure retained",
       "evidence": [
-        "VERIFICATION-2026-11-01-SCRIPT-SELECTION.md"
+        "VERIFICATION-2026-11-01-SCRIPT-SELECTION.md",
+        "VERIFICATION-2026-11-01-CONTENT-SHARED.md"
       ],
       "source_sha256": {
         "libs/FSelection.c": "251062fa60d0f9523e91d549ef596af1043b78fe9eace057097473b0959be67d",
@@ -122,8 +124,8 @@
         "modules/FvwmScript/script_selection.c": "6b7eed68c174f8d506af471376b6b0d1a773eca59e45e830e6a06888028b90c5",
         "modules/FvwmScript/script_selection.h": "ffd3d4bc67b13bdc306fd43abbed7c0161f180e5b3cb751bd11b48c843668186",
         "modules/FvwmScript/script_message.c": "d16fb737240db0e2bf62512931ffecc6b0b334e511edf378ba26ef557b0e1c8b",
-        "modules/FvwmScript/FvwmScript.c": "cdbba3a233a53e0597509e80da49a585f18f8c77bb295f3cc88b06efbd0d9d15",
-        "modules/FvwmScript/Instructions.c": "8a30eb6af6e0638871fb009a789722ebe20248988423d204544f939c42b08bfd",
+        "modules/FvwmScript/FvwmScript.c": "2f5fcb8695a6aa8d9b2e922f7659c18a2cb36cdecbe1ebec9496315d77d6f627",
+        "modules/FvwmScript/Instructions.c": "9ad661b050dfc188526ba515e147e07e5352af54a0cb5baaa86a65e6ea54d7df",
         "modules/FvwmScript/Widgets/TextField.c": "47fd3b2a82f64d1a3c9d93747d961d2f42ded92429a6c0663f2af18ffa1fadff"
       }
     },
@@ -189,8 +191,8 @@
     }
   ],
   "independent_debt": {
-    "filemanager_service": "#67: D1/D2 unrun after source-copy network failure; 53/55 unchanged",
-    "script_sanitizer": "320 bytes/three allocations via Fontconfig initialization at exit; attribution and clean-exit acceptance pending",
+    "filemanager_service": "#67: Q67 completes55/55 source34 installed-service groups; final release integration separate",
+    "script_sanitizer": "normal-only finalization correction qualifies actual Linux ARM64 normal/scoped sanitizer owner exit; prior320/3 failure retained",
     "release": "full supported profiles/install/default-X and separately owned physical gates"
   }
 }

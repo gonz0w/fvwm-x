@@ -52,6 +52,7 @@
 #include <ctype.h>
 
 #include "FvwmForm.h"
+#include "file_transfer_form.h"
 #include "form_input.h"
 #include "libs/flocale_font_types.h"
 /* Coalesce adjacent events without searching an arbitrarily large X queue. */
@@ -89,6 +90,39 @@ static void process_history(int direction);
 static void process_paste_request (XEvent *event, Item *item);
 static void ToggleChoice (Item *item);
 static void ResizeFrame (void);
+
+/* Runtime press ownership is independent of cur_button, the parse cursor. */
+static Item *form_armed_button;
+static unsigned int form_armed_button_number;
+
+void
+form_button_cancel(Bool retiring)
+{
+	Item *item = form_armed_button;
+
+	form_armed_button = NULL;
+	form_armed_button_number = 0;
+	if (item == NULL)
+		return;
+	if (!retiring)
+	{
+		RedrawItem(item, 0, NULL);
+		if (CF.grab_server && CF.server_grabbed)
+		{
+			/* Keep the modal Form's existing pointer/focus behavior. */
+			XGrabPointer(dpy, CF.frame, True, 0, GrabModeAsync,
+				GrabModeAsync, None, None, CurrentTime);
+		}
+		else
+			XUngrabPointer(dpy, CurrentTime);
+	}
+	else
+	{
+		/* The frame is already unmapped or destroyed: no window access. */
+		XUngrabPointer(dpy, CurrentTime);
+	}
+	XFlush(dpy);
+}
 
 /* Keyboard activations use the same first-defined button and command path. */
 static Bool form_activate_button_key(int keypress)
@@ -149,6 +183,11 @@ void ReadXServer (void)
       FEventsQueued(dpy, QueuedAfterReading)) {
     FNextEvent(dpy, &event);
     serviced++;
+    if (event.xany.window == CF.frame &&
+        (event.type == UnmapNotify || event.type == DestroyNotify))
+      form_button_cancel(True);
+    if (form_transfer_event(&event))
+      continue;
     if (event.xany.window == CF.frame) {
       switch (event.type) {
       case ClientMessage:
@@ -499,13 +538,19 @@ void ReadXServer (void)
 	  if (item->type == I_CHOICE)
 	    ToggleChoice(item);
 	  if (item->type == I_BUTTON) {
+	    if (!CF.activate_on_press && form_armed_button != NULL)
+	      break;
 	    RedrawItem(item, 1, NULL);    /* push button in */
 	    if (CF.activate_on_press) {
 	      usleep(MICRO_S_FOR_10MS);   /* make sure its visible */
 	      RedrawItem(item, 0, NULL);  /* pop button out */
 	      DoCommand(item);            /* execute the button command */
 	    } else {
-	      XGrabPointer(dpy, item->header.win,
+	      int grab_status;
+
+	      form_armed_button = item;
+	      form_armed_button_number = event.xbutton.button;
+	      grab_status = XGrabPointer(dpy, item->header.win,
 			   False,         /* owner of events */
 			   ButtonReleaseMask, /* events to report */
 			   GrabModeAsync, /* keyboard mode */
@@ -518,30 +563,26 @@ void ReadXServer (void)
 			      else I can find...dje */
 			   CF.pointer[button_in_pointer],   /* cursor */
 			   CurrentTime);
+	      if (grab_status != GrabSuccess) {
+		form_armed_button = NULL;
+		form_armed_button_number = 0;
+		RedrawItem(item, 0, NULL);
+	      }
 	    } /* end activate on press */
 	  }
 	  break;
 	case ButtonRelease:
-	  if (!CF.activate_on_press) {
-	    RedrawItem(item, 0, NULL);
-	    if (CF.grab_server && CF.server_grabbed) {
-	      /* You have to regrab the pointer, or focus
-		 can go to another window.
-		 grab...
-	      */
-	      XGrabPointer(dpy, CF.frame, True, 0, GrabModeAsync, GrabModeAsync,
-			   None, None, CurrentTime);
-	      XFlush(dpy);
-	    } else {
-	      XUngrabPointer(dpy, CurrentTime);
-	      XFlush(dpy);
-	    }
-	    if (event.xbutton.x >= 0 &&
-		event.xbutton.x < item->header.size_x &&
-		event.xbutton.y >= 0 &&
-		event.xbutton.y < item->header.size_y) {
+	  if (item->type == I_BUTTON && !CF.activate_on_press &&
+	      item == form_armed_button &&
+	      event.xbutton.button == form_armed_button_number) {
+	    Bool inside = event.xbutton.x >= 0 &&
+	      event.xbutton.x < item->header.size_x &&
+	      event.xbutton.y >= 0 &&
+	      event.xbutton.y < item->header.size_y;
+
+	    form_button_cancel(False);
+	    if (inside)
 	      DoCommand(item);
-	    }
 	  }
 	  break;
 	}

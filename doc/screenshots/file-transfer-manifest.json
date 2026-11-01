@@ -1,0 +1,210 @@
+{
+  "description": "Three visually reviewed unmodified gate 31 Copy follow-up captures and same-run configuration files. Configuration files contain lab paths; adapt before use.",
+  "capture_source_closure_sha256": "e1f8c94ec04e1a8f291549b68f0f33ad82b2ce3869f161cff623cec562be2f57",
+  "gate31_archive_sha256": "e830bdb00c20acc48127ba7b786283ab38d54249144c73d08d38cb4f26a89dca",
+  "capture_scope": "One Copy UI group and one job per profile; intentional TERM teardown, not normal helper EOF.",
+  "functional_evidence": {
+    "gate": "27",
+    "source_closure_sha256": "6fee16e5bb76f8fef4a1b622ec842076bcddac4a84b3e6e8e8e9bbc79d136ead",
+    "archive_sha256": "e41a43d37d36ef8044f1dc2038394f39585927d27e1d40807afcc5f326b89379",
+    "scope": "Ten UI groups per profile; separate from capture follow-up."
+  },
+  "profiles": {
+    "slate-dark": {
+      "image": "file-transfer-slate-dark.png",
+      "image_sha256": "88c61bf6b187b5e0da04ffc06e19f34933481af2cd1a14432e8aa790c8d55bad",
+      "capture": "clipboard-copy-completed.png",
+      "actual_window_size_pixels": [
+        649,
+        881
+      ],
+      "font": "Sans 10",
+      "palette": "slate",
+      "appearance": "dark",
+      "execution_profile": "native-linux-capture-focused-followup",
+      "configuration": {
+        "config": {
+          "file": "file-transfer-slate-dark.fvwm",
+          "sha256": "63cc41b075b19db22a9ad04c158ba3eba6ba1f16fbf781a6a8353b250b05115d"
+        },
+        "user/local.config": {
+          "file": "file-transfer-slate-dark.local.config",
+          "sha256": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+        }
+      }
+    },
+    "dune-light": {
+      "image": "file-transfer-dune-light.png",
+      "image_sha256": "ba2d61def710d346bb5fd45cf2f8d71bdc68595e849f881011b17b0d9d648323",
+      "capture": "clipboard-copy-confirm.png",
+      "actual_window_size_pixels": [
+        649,
+        881
+      ],
+      "font": "Sans 10",
+      "palette": "dune",
+      "appearance": "light",
+      "execution_profile": "native-linux-capture-focused-followup",
+      "configuration": {
+        "config": {
+          "file": "file-transfer-dune-light.fvwm",
+          "sha256": "866df4bfe1269446911b1f49c7bc3ef9a1fc677e5487bd70dff848aa1021efc7"
+        },
+        "user/local.config": {
+          "file": "file-transfer-dune-light.local.config",
+          "sha256": "cb6ecaf66c6b79b6cee015fb57653661cadb4bc712b6d804484361a5bb328fbb"
+        }
+      }
+    },
+    "classic-large": {
+      "image": "file-transfer-classic-large.png",
+      "image_sha256": "f600e8967c9de7d6724467aa8853972056126e833dca0a96fdb8827be57c000a",
+      "capture": "transfer-ready.png",
+      "actual_window_size_pixels": [
+        1178,
+        1323
+      ],
+      "font": "DejaVu Sans Mono 18",
+      "palette": "slate",
+      "appearance": "dark",
+      "execution_profile": "native-linux-capture-focused-followup",
+      "configuration": {
+        "config": {
+          "file": "file-transfer-classic-large.fvwm",
+          "sha256": "4ba867b17b22fcceabc2f619f34880fb8a74384878599ad50e95fa162aac80a6"
+        },
+        "user/local.config": {
+          "file": "file-transfer-classic-large.local.config",
+          "sha256": "93a05830715e1b56190b44af5c18339ec6e3a54390d9359a48bace3467e03d12"
+        }
+      }
+    }
+  },
+  "binary_sha256": {
+    "fvwm": "6c03886d99a47b4811535934a5b4f268ae4dd289fbfddbc6e60d6a2d3a3fbac0",
+    "mfl": "3033aaa23933405db7f0baacee91b9718b2419697e9ef7791b3275a196ba5810",
+    "form": "f8049ade5f327ccfd0627ad13d352b14a2406366de490d1f4ade761500ef41c0",
+    "browser": "635cf11bc1cefec79451650b0457271d278badb3bcd3cd18a51f97c9b03eb45f",
+    "helper": "7e0e6776af484ffc4b7debaaad207cb5ec34aad01983920b72b5273f537e763c",
+    "capture": "31b4ebb29b229ae13bf53c7348e1e08f38e9956ecd9ef1c6325462b08b5f101e",
+    "desktop": "95bd58d6236f5d2bdedfb1e474a7755dc891928f85189f433acf9fcbcdd3e84c",
+    "worker": "208b2726e562782f8fdaaf97ed4d7169eb31aaad343415ab5653daf123e290e0"
+  },
+  "config_header_sha256": "30a993a0ff00e1d553cf291e429bb40205162c148f81f5c9525ceefc4793d9db",
+  "source_sha256": {
+    "tests/live_x/file_transfer_browser_live.py": "5f0568910cd927a0a26da79bcdf1f62c7a99e2b6ae9b5658d248aecef85439d2",
+    "bin/file_transfer.c": "568e4ec34ceab86deab6cb3a6c1fa4df15b2f083bdeb829662bf62e1f8d0006e",
+    "bin/file_transfer_policy.c": "05ae114bb7c66349f2e9d921f15f58f623934fd8347b65f87c0f5b38fb02def3",
+    "libs/file_transfer_protocol.c": "6d4c93f2f284a7ed8e2a9fd0ed134f39b9cd73486185377db95f0e26bd06e10b",
+    "dev-docs/decisions/FILE-TRANSFER-2026-10-31.md": "cd4cad411f539f86e35cba183e4a16cf6b28cc9268059920dd4c0bebbbe17c34",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/actions.go": "43fc0b09ffeeb07fb3a26827f192be9d8396030baff37408ceed47cf9219c29f",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/actions_test.go": "8401a8e85c67cae6cdc7be8258167239d0b82c3afcaf0946a54c4b93b9c4152a",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/bindings.go": "b80112082a5f359ae51ef55624527c22ac8e2c7ddcf9b67b31d21859a260b544",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/bindings_test.go": "7924681e9447387f70ef4a7dc9580570b0489b0d36992894c9900701023647bd",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/details.go": "ef8ded3b98a64e6a89e0deb876fb177edc2fa6f3e2f3dd3ee0c6df9689db71a0",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/details_test.go": "ae97d2f7175d0c48809bd19dc7cfc4785a2a819ea761de492f47e1e745e61e34",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles.go": "04c1a7cbaa63d2fad7aedb69f93b1ffcd62cbeed59fb763fc03f90f1009a1ee3",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_contract_test.go": "850f36dfa9d1033f77f2cc876d3bbea86bd16fa4886cf442d4e70d4ef2ddf20c",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_test.go": "b0701caaefd00b7be9f9fe81f35540f54e7f4ee211a5463d1ca20403ae901e8b",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_worker.go": "438cf6418866b9fa37e8c76ce7c07a591109ab137d95942c7fa1cb40276ac592",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/directory_roles_worker_test.go": "3695bd3e57b8fec4f7e67afba428af492449876aa798b1effbcb284059b7afda",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_classifier.go": "ac7c83010f83677d8aa79ec7e99bf01674bffe0f45ad0cba124876f6c8b48edc",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_classifier_test.go": "a0c2dd23535a9f9ef8bde52facaa919691e36bdb0b511f44b04790dc8284271e",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles.go": "ddb7db9a553398f4caf4af624db1357ff6f8dc592c02ae6d1042945abdb65421",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_contract_test.go": "7edcf4b84ed070160068a5a379e8e4469ab14353e3ac22bcf51d4bf6a190b49d",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_test.go": "54673ad26a42435142b3cc99977175435775969746cf0b05dd588d6969f8fcba",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_roles_worker.go": "23925edd2de316d185568f64ac6a80637e091deb492d43718cf3204f96f80a01",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_transfer.go": "9f4b0c5ac5afa3b6e27d541391482ecb507b9a3b30ce2d2fc8725eddcdaa9c77",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_transfer_test.go": "e65e98fac99f86a9b7c25fbbd90dfd236f55fbf492c6251890a4465d61fc9596",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/filemanager_child.go": "06c5443ffdda436bbf157225d7c75a18aee99b58110126f008287c84b1117518",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/filemanager_plan.go": "9a6096a1604246b05299f1f2b089acc394d0a44354985a4b8192157b64412e7e",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/filemanager_plan_test.go": "575e3abe3c9bbb1b30e83d181f356dd28c36fb60abf7dd9741e0114b7e827574",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/filemanager_service.go": "fbf7cfa52135a47e6bead7a799cb9e02fd85663710adad8ec58d53114b6b5bd3",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/filemanager_service_test.go": "c4edba602ac9a8681556061ec261a0e15859ba991e7882507f7dd01f50a90f3d",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/job_worker.go": "ee9db611700a3e96fb6d19c9024566cb481f3d28d9828aba6ea36b1fe2bb15d5",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/jobs.go": "1dcf55ec8df9d562b699c8fc5fffa9b0db539b38c771a7a70a51f3b0092c8ae4",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/jobs_test.go": "f3f579579fc96ecf384ad96bc5534eae1f8300ba98ba0aa452b826dd39aff883",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/jobs_view.go": "dfd9677e0d778b309c51a48cf0ad38c3180ac3dcfb4592dd210c1c75330c8377",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main.go": "8fe769852249079601d67da66279258d7c350c1e3ffc774b30e4d93941b3ac7d",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/main_test.go": "f2be75edcef9d3a5d2de0cd5a2fbe80fb6f6061ca6fb7c32327e3b57016a6ce4",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native.go": "de6ae1b428639652a78f3aacd78417623258f665a1aa06e6431f80c646587bb4",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native_feedback.go": "88ba0e4322b664fb0d4676e60b78d2ce9b8827fb882e193b1b83debf9fb3f284",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native_feedback_test.go": "0154adb0fd51f27d638cdb6b23b1ec982c2d54bb9205bd10819a836b8d01a6a5",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/native_layout_test.go": "2e2874f3df0b91c9995a9ab7e7439cb9af5620b6e5258cc8c782c5b44cbefd76",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/options.go": "0f48711fc6611bc1eb1a22cb735f614a12ba1163bd823743f72b8ab5aaf483ce",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider.go": "11474fad0a903c8faa683ccf0d55fd2a6b9730548ebb493ddc8d830af198ae89",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action.go": "bfa0d5709644635ba217c563e2a1efbd7680a943cf1a84df7569cf0ab29b1f59",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_action_test.go": "376caf8fa735c9bbabb8c0a61bae441ee816e4731f09a7253da3a0b2f7d6b4b5",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_apply.go": "41eaba37425ba1d492346143d7987da6eca5595af68449055cc0fd3aba59f912",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations.go": "5789d908e3e46da4e346249e8a2702e4b6a84459cd059570fd51e0f93e29d5aa",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_operations_test.go": "0da573bbf8a2e4acf46267ddebcb9de494b9a3be4ba97458ec80a9d24946a667",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_query.go": "916c3b81c1cb2c255db76b19e9cddbc537ed7b2700722ac16b6979c55910eedd",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_targets_test.go": "c08b074b0fc1361c87714518b62799dba93d81af11cb0b7abf52dbce23451a2e",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_test.go": "e01bd2c55cc53d34e801623be98d983c2b6c0b6596e146574f8258c5ce5ef88a",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_values.go": "7547cd1e0ef29bb00bde298c5620a45e4d6f071e6b3695885a1ae0a11b46ad30",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_work.go": "9e9b5a4b4768af7804830d02445f07673ebf49a3b8a41bdddbe96d86df883709",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/provider_work_test.go": "eedf73c1a874252ae875db257a27833d63307fc842691cdab15ecfe42b611af5",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/reuse.go": "0811aa519c7c92067431862ca5497a05b4bafdb5c0fa89ada4c8ad72d29abd35",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/reuse_test.go": "57bc73ba3f6f8e7b6767c31174a50a965363f08a258b7dd8a1da8d9eabad2ed5",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/target.go": "f79b6f8338bb6395d0aa4b66d7a96c13086752d01e0ac7aba0c3347ec71f2718",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/target_test.go": "c73adcc9c90e32220a676d0276e947c7f31de5c923ed03ef6d0268f09234a61f",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view.go": "5a30bc76ba6469f39959679717fb0af1a7b4e8a31aa0c5bba8d92a077374f763",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view_scale_test.go": "3b0f87029df213241905f1062949ff124dfd9d33075863b628dc397b129ef8ca",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/view_shortcuts_test.go": "4bf23b4498282c2b5fa1d293235432b324b717deeadb310f1dde6126cee48113",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch.go": "2f67e677814b9e0b194d5012aa5bc829f891cbc630d4e763f49c66db4a30d3ab",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_bsd.go": "7c3ac515d3bb51c5281bc91be24e2eece18712916a12a19aa47ebe812c0f5563",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_linux.go": "efdc12a1129b4957e8d2a9adb714253f00d7cabd2055b0392f4515444d31d32c",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_linux_test.go": "08f11c6ff7619b78d2b5017d0ef5e79b3094edb8997c0df4fc5a70952dc7a60e",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_other.go": "b7cf57b20f584f696b91f7415ea688f744e16f043f68dccb7bb2bba4df32cb7b",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_test.go": "ec3e83513a0944839493d08297e2a830f953b8ea9438663d4ad325aa81693a36",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_worker.go": "70c3bfb0bce888a75ad47f1741a78eed6c71abc504934130a778129a9e08ea46",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/watch_worker_test.go": "5ff2465358fc194606f0cafdca78bb06774ceb9a4ef2335ff2fa51c32e9d1936",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker.go": "f40b8ae9364703a3f989671cbb889eaee1dc300ac7c5b0a3aa294d99adbad9e3",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_group.go": "9f98ff95569ae16dfb9fb7499f62f19f6b541069d8c6eb584ab4969c7dafa449",
+    "bin/FvwmPrompt/cmd/fvwmfilebrowser/worker_shutdown_test.go": "186714025195bb3a5a30528b1c202e04eb69879fa9c5ab6dd555ef28e5d0795d",
+    "bin/FvwmPrompt/internal/filetransfer/client.go": "50520075cc7f5c5845a0382c4e27f2509e19a0165fe6b5bedc8443150404520b",
+    "bin/FvwmPrompt/internal/filetransfer/client_test.go": "ac7699f19b331d7a371d8f570478c93e8d310d37949243db1acd235a561f0563",
+    "bin/FvwmPrompt/internal/filetransfer/policy.go": "e5010e0b776efd7e18e4a1603819792dc1a68c316dfed872c7726b021c0200d9",
+    "bin/FvwmPrompt/internal/filetransfer/policy_test.go": "d3436265da0e8ddfbd7db9c9d2855a236f57be7f176e6ab691415dfef29d6a54",
+    "bin/FvwmPrompt/internal/filetransfer/protocol.go": "adf8887af8cd4ac31238b942969af7103ee304860224ebbf3743a7e6b918ff03",
+    "bin/FvwmPrompt/internal/filejobs/copy.go": "6b4169eef1b523adfee68ac1b7a8e81d69bcfc84c9a6cd9fc2adcbbe6ef9f0b1",
+    "bin/FvwmPrompt/internal/filejobs/destination.go": "4478b2de6c9897d6be3d621c58998b35c05864c3f601d04e170df33458ef6b48",
+    "bin/FvwmPrompt/internal/filejobs/destination_identity_test.go": "74580a1b916125b324f846384655c960fdf03c1cc7278624bfcaa21dc955a787",
+    "bin/FvwmPrompt/internal/filejobs/jobs_test.go": "4393060ea8fa0aac794b65ce931091690952f4c12b88eea873a854e33c17a647",
+    "bin/FvwmPrompt/internal/filejobs/location.go": "cd59881b8bc81d4a31409dfe594a40cd19902d3ac14cd572066ee42f9585ec5d",
+    "bin/FvwmPrompt/internal/filejobs/move.go": "a8772ddebd037241b7a6aef005bdd07bdc927cc8c8a1b98d97a98c5ed625cc5a",
+    "bin/FvwmPrompt/internal/filejobs/native_fs_test.go": "ab1416403df85d86449d68e9b87befea282e3cdd0e26dba540439fe3bc3cdba1",
+    "bin/FvwmPrompt/internal/filejobs/not_attempted.go": "1395667e28b040d301037ee18d641becc8802a1283195228fd1116088b5b25dc",
+    "bin/FvwmPrompt/internal/filejobs/run.go": "689d10cac31dd86d752be0f2edb229449d9b7e61c8418c31c972533ac589d287",
+    "bin/FvwmPrompt/internal/filejobs/stream.go": "629a0007cbab0e15b232e7f3e19727b06b10c3f97b6cb42ebb6a743f0bbddafa",
+    "bin/FvwmPrompt/internal/filejobs/trash.go": "577d1abe95ec991c0430ea8815a311dd9f5f770585b46ebdeeaa6990af724a3f",
+    "bin/FvwmPrompt/internal/filejobs/types.go": "576931f1557295019801de805161ffd3d4cb7a8bf1992423ed3d8e246f01607d",
+    "bin/FvwmPrompt/internal/filejobs/validate.go": "863f24afc0e2e40fe13a32128bd2de923c1711e3cd00097895f1e1304e2b2e50",
+    "bin/FvwmPrompt/internal/filemodel/model.go": "44fd5503d70d12d3c0202b2dcbb89c30cdaa09d48c0709f28ebae450a8766ff0",
+    "bin/FvwmPrompt/internal/filemodel/model_test.go": "d12558390225bd5d65f54d90ab41a8d0e32aaf91a601661b4e0a7b4cbd9982af",
+    "bin/FvwmPrompt/internal/filemodel/observation.go": "96946b57cb830b2686d95d6056b939279ef82c10108c55a46457e6ccc6422e10",
+    "bin/FvwmPrompt/internal/filemodel/observation_test.go": "5a663a3500f4385ae9c21d154680d934a77e47276c4c7fb27824f1100cb0ff16",
+    "bin/FvwmPrompt/internal/filemodel/selection.go": "458dd794c1bb2e2e411a5e6f5df54ef286b40d5e829025bc4b92483fd05c4f2e",
+    "bin/FvwmPrompt/internal/filemodel/selection_test.go": "9749109fe3a3ce2d78fc341671c235f62c97b5c5a78c2bc34acd38b1167386aa",
+    "bin/FvwmPrompt/internal/filemodel/target.go": "dcdefd372c454a1f0490a9f80f4feb0522881adcec646bba593e31db412da89c",
+    "bin/FvwmPrompt/internal/filemodel/target_test.go": "5f5d67d2aabf82747cc078d9c87a9a306f2f829d07e1ef7fd98d7bc4fa8eb4ac",
+    "bin/FvwmPrompt/internal/filemodel/view.go": "40e489aa204471d73e2999ad1da07ffc3103126f5d65f70e045d195e4cf8e0bd",
+    "bin/FvwmPrompt/internal/filemodel/view_test.go": "869f3be6a873d882a0501d4a50ef8bfaddc6750c809a6e41122c5834684fb9f6",
+    "modules/FvwmForm/file_transfer_form.c": "2e03a335ae08fba22c24cb6335da666326e70e9114cddaf174db0c43126980ce",
+    "modules/FvwmForm/file_transfer_form.h": "db8bda9a3c360fd228b5d522f9968b183945886539a5caa2a90bfe3e4d7c9a3f",
+    "modules/FvwmForm/ReadXServer.c": "4b1ba18c53dcccbf3fb360f8659f5f71a2b19af40f163ba0c06b5f576b8bbec9",
+    "modules/FvwmForm/list_widget.c": "82e5cb947c6c3d1f55b8281b6cf992d2395ee7e24e653376a0be8d0dc62978e9",
+    "modules/FvwmForm/FvwmForm.c": "5ea3999d19e7c71d6526a1df1825bebe02c37c27bc3f60be5a916c376ec42250",
+    "fvwm/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+    "bin/FvwmPrompt/meson.build": "a4c453daa08dda1585019bf836914f1544c6d1919a595f40d68b710bfb9a214b",
+    "tests/live_x/file_transfer_live.py": "0929a3679504381e58a881b27c80a03754caa486b9f91221d413de75e4b0e292",
+    "tests/live_x/native_module_proxy.py": "857102690b56cba8e5dd110811f52a9b75546897e2174382f818e4ef83176601",
+    "tests/live_x/native_bindings_live.py": "fe99221b0d8a7696125be79554ff2768746f53768198f17eb1b843e8bd5bc343",
+    "tests/live_x/browser_continuity_live.py": "e99d0de6e3fbdd7aeded02b7a5fba3fb98437260f87da9f4111518e0ab230907",
+    "tests/live_x/live_x_harness.py": "5223b9b9c428cc1523bf8431c9e51f67e329b3f649200dca611cf00ec9fd7c2c",
+    "tests/live_x/session_x_errors.py": "eb01b22c4e57fb64b1d2cf63c49f21939066a7c39be6e39ff91c91a15bcbd9df",
+    "tests/live_x/inspector_live.py": "b7be2d459818e459f1c19da216608bfce8aa78960740957831e38230ef05b24a",
+    "tests/live_x/native_capture.py": "becd0d78f7356a7ab2b7bda5c4598f1c3e2a365552e57c3a360a39ab3817b8e7",
+    "tests/live_x/geometry_transition_live.py": "1364d024fe37db5ce66969ac330d5d6c5d8b0b98589d8975d72927624edf5357"
+  }
+}

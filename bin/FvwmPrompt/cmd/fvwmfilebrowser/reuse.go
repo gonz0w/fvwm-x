@@ -126,13 +126,17 @@ func reuseBrowser(parent context.Context, endpoint string, o options) (json.RawM
 				break
 			}
 			var state struct {
-				Path       []byte   `json:"path_bytes"`
-				Generation string   `json:"generation"`
-				Busy       bool     `json:"busy"`
-				Operations []string `json:"action_operations"`
+				Path         []byte   `json:"path_bytes"`
+				Generation   string   `json:"generation"`
+				Busy         bool     `json:"busy"`
+				Operations   []string `json:"action_operations"`
+				FileTransfer bool     `json:"file_transfer"`
 			}
 			if json.Unmarshal(response.Result, &state) != nil || !hexToken(state.Generation, 32) {
 				return nil, false, errors.New("invalid browser state")
+			}
+			if o.fileTransfer && !state.FileTransfer {
+				break
 			}
 			if state.Busy || !bytes.Equal(state.Path, []byte(folder)) || !slices.Contains(state.Operations, operation) || !slices.Contains(state.Operations, "present") {
 				break

@@ -28,6 +28,9 @@ func (b *browser) render() error {
 	alias := "FvwmFiles-" + b.instance + "-" + strconv.FormatUint(b.form, 10) + "-ready"
 	b.alias = alias
 	b.lastControl = 0
+	if err := b.transferExpect(); err != nil {
+		b.transferUnavailable()
+	}
 	mode := b.requestedView()
 	callback := "Command Echo FVWM_FILES_3 " + b.instance + " " + strconv.FormatUint(b.form, 10) + " "
 	commands := []string{}
@@ -83,6 +86,9 @@ func (b *browser) render() error {
 	}
 	line("ListVersioned")
 	line("ListWatch " + b.nativeWatchToken())
+	if b.transfer != nil && b.transfer.ready && !b.transfer.exited {
+		line(fmt.Sprintf("FileTransfer picks %s %s %d", b.transfer.socket, b.transfer.token, b.form))
+	}
 	entries := b.model.VisibleEntries()
 	for _, item := range entries {
 		selected := "off"
@@ -122,6 +128,17 @@ func (b *browser) render() error {
 	button("Hidden (F6)", "F6", "hidden", "-")
 	button("Watch (F8)", "F8", "watch", "-")
 	button("Jobs (F9)", "F9", "jobs", "-")
+	if b.transferOptIn {
+		line("Line left")
+		label("transfer", b.transferSummary())
+		line("Line left")
+		button("Copy", "", "transfer-copy", "-")
+		button("Cut", "", "transfer-cut", "-")
+		button("Paste", "", "transfer-paste", "-")
+		line("Line left")
+		button("Confirm Copy/Move (Alt-Y)", "Alt-Y", "transfer-confirm", "-")
+		button("Cancel transfer (Alt-Z)", "Alt-Z", "transfer-cancel", "-")
+	}
 	line("Line left")
 	button("Open (Enter)", "^M", "focused", "-")
 	button("Selected (F3)", "F3", "selected", "-")

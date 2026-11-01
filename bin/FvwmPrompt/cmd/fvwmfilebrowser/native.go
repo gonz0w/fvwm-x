@@ -302,6 +302,9 @@ func (b *browser) update() error {
 	}
 	labels := []nativeLabel{{"path-label", b.currentPath()}, {"status", b.feedbackStatus()}, {"watcher", b.watchText()}, {"projection", b.projectionText()}, {"counts", b.countText()}, {"progress", b.progressText()}, {"readiness", b.readinessText()}}
 	labels = append(labels, b.inspectorLabels()...)
+	if b.transferOptIn {
+		labels = append(labels, nativeLabel{"transfer", b.transferSummary()})
+	}
 	commands := make([]string, 0, len(labels))
 	for _, label := range labels {
 		commands = append(commands, "SendToModule "+b.alias+" SetLabel "+label.name+" \""+displayText(label.value, 120)+"\"")
@@ -364,6 +367,7 @@ func (b *browser) show() (err error) {
 		return err
 	}
 	b.revealFocus = false
+	b.transferContext()
 	active := 0
 	if b.active {
 		active = 1

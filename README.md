@@ -9,23 +9,25 @@ No compositor or Wayland backend.
 **Status:** in development toward R1: a configurable, fast, low-memory desktop
 lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 
-- Session controls, cooperative logout, optional services and scaling.
-- Opt-in native text notifications, actions, keyboard center and bounded history;
+- Session controls, logout, services and scaling.
+- Opt-in notifications, actions, keyboard center and bounded history;
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
 - Atomic buttons, responsive layout and settings/editor;
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
 - Source-aware errors and configuration reports.
-- Structured IPC and conditional eight-setting preview/recovery; optional
+- Structured IPC and eight-setting preview/recovery; optional
   [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
   palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff, application choosers
   and live updates; [opt-in FileManager1](doc/fvwm-file-browser.adoc#filemanager1-service).
+- Opt-in file Copy/Cut/Paste and XDND;
+  [preview](doc/development-preview.md#file-clipboard-and-drag-work-in-progress).
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
 - In-progress native tray: XEmbed, opt-in StatusNotifier, bar popup and optional
   Buttons slot; [usage](doc/FvwmTray.adoc) and [current captures](doc/development-preview.md#native-tray-completion-work-in-progress).
-- Optional desktop pinboard: saved references, shaped cells and management;
+- Optional pinboard: saved references, shaped cells and management;
   unpin preserves targets.
 
 Slate: desktop pinboard.
@@ -37,8 +39,8 @@ Dune: 4096-entry grid.
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
-File-manager, clipboard, accessibility and release qualification remain open.
-Folder menus remain default. OpenBSD follows new releases; baseline 8.0.
+File-manager, clipboard and release qualification remain open.
+Folder menus remain default. OpenBSD tracks releases; baseline 8.0.
 
 [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
 and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).

@@ -49,6 +49,13 @@ work complete.
 
 ## Implementation batches and test cadence
 
+User direction, 2026-10-31: develop across several related PRs before running
+runtime qualification. Select a major feature or shared feature checkpoint,
+usually spanning four to six related implementation PRs, and test that integrated
+result once. A new PR, small feature or helper is not a test checkpoint. This
+replaces the earlier per-feature-PR runtime gate; it does not turn deferred
+coverage into a pass or remove milestone/release acceptance.
+
 User direction, 2026-10-26: use the [three-release plan](decisions/RELEASE-PLAN-2026-10-26.md)
 and finite issue contracts. R1 delivers all currently planned desktop features
 with required profile/quality acceptance; R2/R3 carry explicitly deferred
@@ -71,35 +78,37 @@ counts are not a target for invented stories or unrelated rewrites. Keep related
 cleanup in the open owner PR when it improves the same contract. The user has
 reopened bounded cleanup; the old full hardening backlog remains deferred.
 
-Implement a coherent group before its combined focused test gate. Use cheap
-affected compilation when useful during editing; test early for a reproduced
-failure or a dependent contract that needs proof. Do not repeat suites, theme
-sets, sanitizers, installs or platform checks after each small edit.
+Implement a coherent group before its combined runtime gate. Write meaningful
+coverage with the change, but run it at the selected major-feature/shared
+checkpoint. During editing, use source review, cheap static checks and affected
+incremental compilation when needed. A reproduced defect gets its small focused
+regression check; it does not restart the broader suites.
 
-### Feature PR gate
+### Implementation PR checks
 
-Use one existing incremental Linux development profile and compile affected
-targets. Run the affected policy/regression tests, plus nested-X integration
-for changed X-visible behavior. Add scoped sanitizers for changed memory/lifetime ownership and race checks
-for changed concurrency; moving an unchanged caller is not such a change. Run repository/link/diff checks and inspect the change. When OS APIs,
-native ABI/architecture, signals/descriptors, compiler or build behavior actually
-change, check the affected target early. An unchanged portable socket/process
-API is not itself a reason for another BSD boot. Run the focused gate once at
-the combined checkpoint; repeat only affected checks after a correction.
+An implementation PR gets separate source review and repository/link/diff checks,
+plus an affected incremental build when needed. Fresh runtime tests, nested-X,
+sanitizers, race suites, installs and theme sets are not required for each PR.
+Record **implementation merged / runtime qualification queued** honestly and
+carry the named affected checks into the shared checkpoint. Do not claim a
+feature owner complete while its required acceptance is still pending.
 
-An ordinary PR does not rerun every compiler, optional profile, staged install
-or BSD default-server session. Test the built affected module/helper directly.
-Run an early installed-path test when packaging, install rules, resource lookup,
-runtime linking or installed entry points change. Run the affected default-X
-gate early for server-dependent pointer/grab/RandR/rendering behavior. Broaden
-for shared dispatch/ordering, native packet changes or a concrete regression
-when the selected focused checks cannot establish the changed contract. Record
-the reason and relevant targets rather than automatically running everything.
+At the selected major-feature/shared checkpoint, use one reused Linux profile
+for the affected policy/regression and nested-X checks. Add scoped sanitizers
+for changed memory/lifetime ownership and race checks for changed concurrency.
+Run this combined gate once over the accumulated changes. After a correction,
+repeat only the affected failing checks, preserving the other valid results.
 
-For visible native UI work, capture and inspect screenshots from the affected
-actual-X run and include a small review set in the user handoff. Preserve them
-with canonical source-bound evidence. Reuse that integration run; screenshots
-do not require another matrix or a separate desktop setup.
+Check an affected platform, installed path or default server early only for a
+concrete changed OS API, native ABI, dependency/link/install contract or observed
+server-specific failure that the ordinary profile cannot establish. Record that
+specific reason and target; generic portability or a moved helper is not enough.
+Do not expand that check into the full OS/compiler/install/theme matrix.
+
+For visible UI, capture and inspect screenshots when the major feature is
+runnable at the shared native-X checkpoint. Include a small review set with the
+feature handoff. Reuse that run for theme checks and screenshots; do not create
+a second desktop setup or multiply protocol cases by every theme/profile/OS.
 
 ### Representative theme compatibility
 
@@ -111,10 +120,11 @@ larger fonts and explicit legacy module colors. Keep actual configuration
 snapshots and screenshots with the owning checkpoint; coverage remains pending
 until those configurations execute.
 
-Run this small set once on the reused Linux native-X build at shared UI
-checkpoints, and earlier when a change directly affects font, palette, focus,
-layout or rendering contracts. A local geometry/focus iteration may use one
-profile; run the other profiles together before the checkpoint. Add affected
+Run this small set once on the reused Linux native-X build at the selected
+major-feature/shared UI checkpoint. During development, use one profile only
+when needed to diagnose a concrete geometry/focus/rendering failure; do not
+require the theme set for each UI PR. Run the other profiles together at the
+shared checkpoint. Add affected
 BSD/font/backend checks where needed, without multiplying every compiler,
 install or OS run by all themes. Reuse built binaries and the existing session
 harness. Fix a regression and repeat affected checks only. The wider default
@@ -142,7 +152,8 @@ remain separate. No release qualification is inferred from focused PR passes.
 
 Maintain a short cycle ledger in the tracker: integrated reference, merged
 feature PRs since it, affected subsystems, deferred gates and closure trigger.
-Feature PRs may merge as **focused checks passed / broader coverage pending**.
+Implementation PRs may merge as **review/static checks passed / runtime
+qualification queued**; a fresh runtime pass is not a per-PR merge requirement.
 Do not close a broader owner or acceptance checkpoint until its criteria pass,
 or count deferred checks as successful execution. Preserve valid earlier
 evidence with its actual source/profile scope. A later correction reruns
@@ -183,9 +194,10 @@ batch when further work is needed.
 
 | Stage | Checks and status |
 | --- | --- |
-| Feature PR | One incremental Linux profile; affected compile, policy/regression and nested-X checks, scoped sanitizers when warranted, screenshots for visible UI, repository/diff review. Explicitly record integration/release coverage pending. |
-| Platform/install/server-sensitive change | Add the affected target or installed/default-X gate early. Broaden only for the changed contract or a concrete unresolved regression. |
-| Accumulated risk review | About five merged implementation batches or a substantial subsystem handoff; inspect coverage debt and select justified affected targets. No automatic all-OS run or next-batch blocker. |
+| Implementation PR | Separate review and repository/diff/static checks; affected incremental build when needed. Queue runtime qualification for the named major-feature/shared checkpoint. |
+| Major feature / shared feature checkpoint | Test the accumulated related PRs once on the reused Linux profile: affected policy/regression, native-X and warranted scoped sanitizer/race checks. Capture new UI and run the representative themes together here. |
+| Platform/install/server-sensitive change | Add an early affected-target check only for a specific changed contract or observed failure that ordinary checks cannot establish. No automatic broad sweep. |
+| Accumulated risk review | Use the ledger to choose the next major-feature/shared checkpoint, normally after four to six related PRs. This is not an automatic all-OS run or a per-PR test gate. |
 | Milestone / release candidate | Complete required full matrix, compiler/features, staged installs, default-X, applicable sanitizers and acceptance; reuse exact valid cycle evidence and execute missing coverage. |
 | Failure or later change | Fix the concrete failure and rerun affected checks. Preserve valid earlier evidence; repeat broader checks only when changed shared behavior, build inputs or unresolved concerns justify them. Never carry a stale result forward as qualification for different code. |
 
@@ -285,7 +297,11 @@ five merged implementation checkpoints against the last recorded reference.
 Record the reference revision, completed-checkpoint count and next comparison
 in the tracker. A change expected to affect hot-path cost or retained memory
 can bring the comparison forward and reset the count. Documentation-only PRs
-do not advance it. This is checkpoint upkeep, not a scheduled background job.
+do not advance it. A due comparison joins the next major-feature/shared runtime
+checkpoint using its existing lab and binaries; the counter alone does not
+trigger another guest boot or delay an implementation PR. Record it as due until
+that observation completes. This is checkpoint upkeep, not a scheduled background
+job.
 
 Use `tests/compare_performance.py` on one quiet Linux development profile with
 already built reference/current binaries. It alternates three paired runs of

@@ -235,6 +235,21 @@ func Run(ctx context.Context, req Request, controls <-chan Control, emit func(Ev
 			return r.refused(root, items, "failed", err.Error())
 		}
 		defer destination.Close()
+		if req.DestinationIdentity != nil {
+			// Validate the directory actually opened, ignoring mutable size/time.
+			f, checkErr := destination.Open(".")
+			if checkErr == nil {
+				info, statErr := f.Stat()
+				f.Close()
+				checkErr = statErr
+				if statErr == nil && !sameObject(stamp(info), *req.DestinationIdentity) {
+					checkErr = errors.New("captured destination folder changed")
+				}
+			}
+			if checkErr != nil {
+				return r.refused(root, items, "failed", "Captured destination is unavailable or changed; no changes started")
+			}
+		}
 	} else {
 		destination = root
 	}

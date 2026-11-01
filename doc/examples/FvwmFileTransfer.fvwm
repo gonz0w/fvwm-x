@@ -1,0 +1,15 @@
+# Optional file references only; the browser and private helper own their lifetime.
+# Invoke Function FvwmXFilesWithTransfers from your existing menu or binding.
+# Every Paste/drop needs explicit confirmation before a Copy or Move job.
+AddToFunc FvwmXFilesWithTransfers I Exec exec fvwm-file-browser --file-transfer
+
+# List focus: Ctrl-C Copy, Ctrl-X Cut, Ctrl-V Paste. Drag to an XDND target;
+# Shift requests Move. The receiving browser uses its displayed directory.
+# Alt-Y confirms a received operation; Alt-Z cancels the confirmation.
+# Copied references survive folder navigation, and end with this browser.
+# Ordinary file paths are supported; no text/image clipboard history is implied.
+
+# If using the optional FileManager1 service, add --file-transfer to its one
+# existing service definition, for example:
+# AddToFunc StartFunction I Exec exec fvwm-file-browser --filemanager-service --file-transfer
+# A competing service is never replaced. D-Bus is optional for ordinary browsing.

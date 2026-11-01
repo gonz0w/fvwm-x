@@ -17,6 +17,7 @@ libfvwm3_sources = files(
     'FRenderInit.c',
     'FScreen.c',
     'FSelection.c',
+    'file_transfer_protocol.c',
     'FShape.c',
     'FTips.c',
     'Fft.c',

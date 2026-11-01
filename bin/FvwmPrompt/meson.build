@@ -63,7 +63,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'iconrender.test', 'trayicons.test', 'transport.test',
         'fvwmfilebrowser.test', 'collection.test', 'filemodel.test',
-        'filejobs.test',
+        'filejobs.test', 'filetransfer.test',
         'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
         'startuplaunch.test', 'sessionowner.test', 'fvwmsession.test',
@@ -245,6 +245,12 @@ if not filemanager_bus_linker.contains('\'')
 elif not filemanager_bus_linker.contains('"')
     filemanager_bus_linker = '"' + filemanager_bus_linker + '"'
 endif
+file_transfer_linker = 'main.fileTransferHelperInstallPath=' + (fvwm_moduledir / 'fvwm-file-transfer')
+if not file_transfer_linker.contains('\'')
+    file_transfer_linker = '\'' + file_transfer_linker + '\''
+elif not file_transfer_linker.contains('"')
+    file_transfer_linker = '"' + file_transfer_linker + '"'
+endif
 fvwm_file_browser = custom_target(
     'fvwm-file-browser',
     output: 'fvwm-file-browser',
@@ -253,7 +259,8 @@ fvwm_file_browser = custom_target(
         'env', 'GOCACHE=' + fvwmprompt_go_cache,
         'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
         golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
-        '-ldflags', '-X ' + startup_module_linker + ' -X ' + filemanager_bus_linker,
+        '-ldflags', '-X ' + startup_module_linker + ' -X ' + filemanager_bus_linker
+            + ' -X ' + file_transfer_linker,
         '-o', meson.current_build_dir() / 'fvwm-file-browser',
         './cmd/fvwmfilebrowser',
     ],
@@ -270,6 +277,7 @@ install_data('fvwm-file-browser.desktop',
 test('file-browser-policy', golang,
     args: ['test', '-C', fvwmprompt_build, '-json', '-count=1', '-mod=vendor',
         './internal/collection', './internal/filemodel', './internal/filejobs',
+        './internal/filetransfer',
         './cmd/fvwmfilebrowser', './cmd/fvwmcommand', './transport'],
     env: prompt_test_env,
     timeout: 180,

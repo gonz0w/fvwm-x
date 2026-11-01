@@ -40,17 +40,19 @@ type jobNotice struct {
 }
 
 type jobState struct {
-	request      filejobs.Request
-	process      *jobProcess
-	lastSequence uint64
-	lastReliable uint64
-	latest       filejobs.Event
-	terminal     *filejobs.Event
-	outcomes     []filejobs.Event
-	state        string
-	decision     uint64
-	cancelled    bool
-	reaped       bool
+	request       filejobs.Request
+	process       *jobProcess
+	lastSequence  uint64
+	lastReliable  uint64
+	latest        filejobs.Event
+	terminal      *filejobs.Event
+	outcomes      []filejobs.Event
+	priorOutcomes []filejobs.Event
+	transfer      bool
+	state         string
+	decision      uint64
+	cancelled     bool
+	reaped        bool
 }
 
 func offerJobProgress(channel chan jobNotice, notice jobNotice) {
@@ -270,6 +272,9 @@ func jobRequest(view *jobView, instance string, serial uint64, operation string,
 }
 
 func (b *browser) startJob(operation string, destination, name []byte, permanent bool) error {
+	if b.transfer != nil && b.transfer.plan != nil {
+		return errors.New("A confirmed file transfer owns the job slot")
+	}
 	if b.job != nil && !b.job.reaped {
 		return errors.New("A file job is still active. Wait for it or cancel it first.")
 	}
@@ -354,6 +359,14 @@ func (b *browser) jobNotice(notice jobNotice) error {
 			job.latest = *job.terminal
 		}
 		job.decision = 0
+		if job.transfer {
+			if b.jobs != nil {
+				if err := b.updateJobs(); err != nil {
+					return err
+				}
+			}
+			return b.transferJobReaped()
+		}
 		// Refresh only this still-visible source, never supersede navigation
 		// or another pending intent. The mutation worker has already reaped.
 		if b.snapshot != nil && bytes.Equal(b.snapshot.Path, job.request.Snapshot.Path) &&
@@ -450,6 +463,9 @@ func (b *browser) jobSummary() map[string]any {
 	result["sequence"], result["decision"], result["items"] = job.lastSequence, job.decision, len(job.outcomes)
 	result["done"], result["total"], result["total_known"] = job.latest.Done, job.latest.Total, job.latest.TotalKnown
 	result["bytes"], result["detail"] = job.latest.Bytes, displayText(job.latest.Detail, 160)
+	if job.transfer {
+		result["detail"] = "File transfer; per-item outcomes are available in Jobs"
+	}
 	result["cancel_requested"] = job.cancelled
 	return result
 }

@@ -13,12 +13,20 @@ routine implementation/documentation details within scope, run authorized checks
 and prepare signed, actual-author-DCO review candidates. Existing commit and PR rules remain. Use only the existing authorized signing identity;
 do not create keys, trust files or alter security configuration to force a pass.
 
-Leave PRs open for maintainer review. Current policy requires explicit maintainer
-merge authorization; method adoption and review permission do not supply it.
-Required checks, review findings and final source/signature/DCO verification must
-be resolved before an authorized merge. Release, publication, deployment,
-credentials, operational/native effects and changes outside the owning work item
-retain their separate authority. The adopted method grants none of these.
+Maintainer direction, 2026-10-31: continue through R1 without waiting for the
+owner to merge each PR. The lead has standing authorization to merge coherent R1
+checkpoints after their applicable checks and separate review pass, and to
+continue with the next accepted batch until blocked. This replaces the per-PR
+merge wait for R1. Record the exact reviewed head, canonical signature/tree and
+author DCO before each merge; preserve failed or pending broader acceptance.
+Stop dependent work for unresolved findings, missing required execution or an
+owner decision, and continue other accepted R1 work where possible.
+
+Outside that R1 direction, PRs retain explicit maintainer merge authorization.
+Method adoption and review permission supply no merge authority themselves.
+Release, publication, deployment, credentials, operational/native effects and
+changes outside the owning work item retain their separate authority. The
+adopted method grants none of these.
 
 If a required decision is missing or applicable rules conflict, record the
 question in the owning work item, ask the owner and stop only dependent work.

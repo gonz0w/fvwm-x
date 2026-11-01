@@ -4730,3 +4730,19 @@ if session_dbus.found()
             is_parallel: false, timeout: 240)
     endif
 endif
+
+file_transfer_protocol_test = executable(
+    'test-file-transfer-protocol',
+    ['test_file_transfer_protocol.c', '../libs/file_transfer_protocol.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('file-transfer-protocol', file_transfer_protocol_test)
+file_transfer_policy_test = executable(
+    'test-file-transfer-policy',
+    ['test_file_transfer_policy.c', '../bin/file_transfer_policy.c',
+        '../libs/cJSON.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('file-transfer-policy', file_transfer_policy_test)

@@ -57,6 +57,12 @@ static struct
 	Line *line[FORM_SCALE_ITEMS];
 } scale = {.quarters = 4, .desired = 4, .state = "disabled"};
 
+int form_scale_drag_threshold(void)
+{
+	/* Four logical units: scale.quarters is the currently adopted UI scale. */
+	return scale.initialized ? (int)scale.quarters : 4;
+}
+
 void form_scale_configure(char *text)
 {
 	if (strcmp(text, "monitor") == 0)

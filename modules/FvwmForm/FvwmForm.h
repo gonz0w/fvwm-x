@@ -290,6 +290,8 @@ extern int Channel[2];
 
 /* prototypes */
 void ReadXServer(void);                  /* ReadXServer.c */
+/* Retiring frames must not be redrawn or regain a modal pointer grab. */
+void form_button_cancel(Bool retiring);
 /* Returned encoded field is owned by the caller. */
 char *form_encoded_value(const Item *item);
 void RedrawText(Item *item);             /* FvwmForm.c */
@@ -313,6 +315,7 @@ RETSIGTYPE DeadPipe(int nonsense);            /* FvwmForm.c */
 /* Native collection input; legacy forms keep their existing input ring. */
 Bool form_list_key(KeySym key, unsigned int modifiers);
 void form_list_click(Item *item, XButtonEvent *event);
+bool form_list_drag_select(Item *item, int index);
 void form_list_draw(Item *item);
 void form_viewport_resize(int width, int height);
 void form_viewport_set_minimum(int width, int height);

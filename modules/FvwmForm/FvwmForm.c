@@ -56,6 +56,7 @@
 #include "libs/Rectangles.h"
 
 #include "FvwmForm.h"
+#include "file_transfer_form.h"
 #include "libs/ui_layout.h"
 #include "form_input.h"			/* common FvwmForm stuff */
 #include <limits.h>
@@ -122,6 +123,7 @@ static void TimerHandler(evutil_socket_t, short int, void *);
 static int ErrorHandler(Display *dpy, XErrorEvent *error_event);
 static void cleanup_form_timer(void)
 {
+  form_transfer_cleanup();
   if (pev != NULL)
   {
     event_free(pev);
@@ -140,9 +142,15 @@ static Bool SetupTimer(void)
   if (form_timer_base == NULL)
     return False;
 
+  if (atexit(cleanup_form_timer) != 0)
+  {
+    cleanup_form_timer();
+    return False;
+  }
+  if (timer == NULL)
+    return True;
   pev = event_new(form_timer_base, -1, EV_PERSIST, TimerHandler, NULL);
-  if (pev == NULL || evtimer_add(pev, &tv_100ms) < 0 ||
-      atexit(cleanup_form_timer) != 0)
+  if (pev == NULL || evtimer_add(pev, &tv_100ms) < 0)
   {
     cleanup_form_timer();
     return False;
@@ -257,6 +265,7 @@ static struct CommandTable ct_table[] =
   {"Colorset",ct_Colorset},
   {"Command",ct_Command},
   {"CommandAppend",ct_CommandAppend},
+  {"FileTransfer",form_transfer_configure},
   {"Font",ct_Font},
   {"Fore",ct_Fore},
   {"Geometry",ct_Geometry},
@@ -389,9 +398,23 @@ static void ParseConfigLine(char *buf)
     return;
   } /* Now I know its for me. */
   p = buf+module->namelen+1;		      /* jump to end of my name */
+  /* Private file-transfer metadata must never undergo Form expansion. */
+  if (strncasecmp(p, "FileTransfer", 12) == 0 &&
+      isspace((unsigned char)p[12]))
+  {
+    p += 12;
+    while (isspace((unsigned char)*p)) p++;
+    form_transfer_configure(p);
+    return;
+  }
   /* at this point we have recognized "*FvwmForm" */
   FormVarsCheck(&p);
   e = FindToken(p,ct_table,struct CommandTable);/* find cmd in table */
+  if (e != NULL && e->function == form_transfer_configure)
+  {
+    fprintf(stderr, "%s: FileTransfer requires literal metadata\n", module->name);
+    return;
+  }
   if (e == 0) {			      /* if no match */
     fprintf(stderr,"%s: unknown command: %s\n",module->name,buf);
     return;
@@ -1239,6 +1262,7 @@ static void form_native_cleanup(void)
 {
   Item *p;
 
+  form_transfer_cleanup();
   free(CF.close_command);
   CF.close_command = NULL;
   for (p = root_item_ptr; p != NULL; p = p->header.next)
@@ -2031,6 +2055,7 @@ static void Restart(void)
 {
   Item *item;
 
+  form_transfer_reset();
   CF.cur_input = NULL;
   CF.cur_list = NULL;
   CF.abs_cursor = CF.rel_cursor = 0;
@@ -2873,6 +2898,8 @@ void DoCommand (Item *cmd)
     return;
   }
 
+  form_button_cancel(False);
+
   /* pre-command */
   if (cmd->button.key == IB_QUIT)
   {
@@ -3230,7 +3257,7 @@ static void OpenWindows(void)
 			    0, CF.screen_background,
 			    item->header.dt_ptr->dt_colors[c_item_bg]);
       XSelectInput(dpy, item->header.win,
-		   ButtonPressMask | ExposureMask);
+		   ButtonPressMask | ButtonReleaseMask | ExposureMask);
       xswa.cursor = CF.pointer[button_pointer];
       XChangeWindowAttributes(dpy, item->header.win, CWCursor, &xswa);
       if (itemcolorset >= 0)
@@ -3533,6 +3560,7 @@ static void am_Map(char *cp)
 }
 static void am_UnMap(char *cp)
 {
+  form_button_cancel(False);
   XUnmapWindow(dpy, CF.frame);
   myfprintf((stderr, "UnMap: got it\n"));
 }
@@ -3546,9 +3574,10 @@ static void am_Stop(char *cp)
 /* main event loop */
 static void MainLoop(void)
 {
-  struct pollfd ready[2];
+  struct pollfd ready[3];
 
   while ( !isTerminated ) {
+    form_transfer_generation();
     /* TA:  20091219:  Automatically flush the buffer from the XServer and
      * process each request as we receive them.
      */
@@ -3565,10 +3594,13 @@ static void MainLoop(void)
       break;
     }
     int timeout_ms = form_readiness_timeout(FPending(dpy) != 0,
-      pev != NULL && event_pending(pev, EV_TIMEOUT, NULL));
+      (pev != NULL && event_pending(pev, EV_TIMEOUT, NULL)) ||
+      form_transfer_waiting());
     ready[0] = (struct pollfd){ Channel[1], POLLIN, 0 };
     ready[1] = (struct pollfd){ fd_x, POLLIN, 0 };
-    int result = fvwmPoll(ready, 2, timeout_ms);
+    ready[2] = (struct pollfd){ form_transfer_fd(),
+      form_transfer_poll_events(), 0 };
+    int result = fvwmPoll(ready, 3, timeout_ms);
     if (result < 0)
     {
       if (errno == EINTR)
@@ -3623,6 +3655,7 @@ TimerHandler(evutil_socket_t fd, short ev, void *arg)
     myfprintf((stderr, "Final command: %s\n", parsed_command));
 
     /* A refused command leaves the existing form available. */
+    form_button_cancel(False);
     if (!XWithdrawWindow(dpy, CF.frame, screen))
     {
       /* hm, what can we do now? just ignore this situation. */
@@ -3778,10 +3811,12 @@ int main (int argc, char **argv)
   for (Item *p = root_item_ptr; p != NULL; p = p->header.next)
     if (p->type == I_LIST && p->list.notify[0])
       form_list_report(p, p->list.notify, true);
-  if (timer != NULL && !SetupTimer()) {
+  if ((timer != NULL || form_transfer_requested()) && !SetupTimer()) {
     fprintf(stderr, "%s: Unable to initialize timeout service\n", module->name);
-    return 1;
+    if (timer != NULL)
+      return 1;
   }
+  form_transfer_start(form_timer_base);
   MainLoop();				/* start */
 
   return 0;				/* */
@@ -3800,6 +3835,8 @@ RETSIGTYPE DeadPipe(int nonsense)
 static int
 ErrorHandler(Display *dpy, XErrorEvent *event)
 {
+  if (form_transfer_xerror(event))
+    return 0;
   /* some errors are OK=ish */
   if (event->error_code == BadPixmap)
     return 0;

@@ -1,21 +1,55 @@
 # FVWM-X project tracker
 
-Updated: 2026-10-31. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-01. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: Script requestor adoption and selection-wait servicing under
-#22, owner Cam, branch `codex/r1-script-selection-adoption`. Owner PR324 merged
-as `562992dcf88ad060c33bbe5f7aabac97fbbbb871`, reviewed tree
-`e48700d30fae887f6c2972bf26f952053ff226b9`; canonical GitHub signature and actual
-Cam author DCO verify. Its source branch is retired. The transport and owner
-batches are integrated with runtime qualification queued. Performance is 5/5
-due; observe it in the same shared Script session, without a separate lab boot.
-One owned Linux ARM64 incremental build lab remains warm. #22 stays open;
-#67's Q67-OPENBSD-NOBUS two-group debt joins the same later checkpoint.
+Current checkpoint: delivery of the combined Script checkpoint over merged
+PR323 transport, PR324 ownership and PR325 consumer adoption. Owner Cam, branch
+`codex/r1-script-selection-checkpoint`. All three implementation PRs used source
+review/static checks and incremental builds without per-PR runtime suites.
+The shared session now passes normal policy/owner/consumer/direct/INCR/modal
+coverage and three component palette/font captures. A reproduced 32 KiB paste
+stall receives a local character-boundary viewport search and ASCII/multibyte
+regression coverage. Separate source review is clear at fixture-freeze07.
+[Results and retained failures](verification/VERIFICATION-2026-11-01-SCRIPT-SELECTION.md)
+record exact source, scoped outcomes and the two explained fixture corrections.
+
+The four scoped sanitizer policies and raw transport pass. The actual sanitized
+owner run reaches shutdown, then fails with LeakSanitizer reporting 320 bytes /
+three allocations through Fontconfig initialization. Keep this failed clean-exit
+gate open; no suppression or leak-free claim. Actual model/effort metadata is
+unverified. Two implementation agents reached account usage limits; the lead
+performed the bounded additions/correction under the recorded adequate-lead
+fallback, with separate analyst/source/delivery review. No model substitution.
+
+Q67's fresh owned OpenBSD 8.0 ARM attempt fails SSH source upload with a virtual
+network reset before preparation/tests. Zero new groups; D1/D2 stay pending and
+#67 remains 3/4, 53/55 service groups. The reviewed Meson empty-directory setup
+correction is not qualified by this failure. Do not retry a whole matrix or
+resume the failed disk. #22 remains open for its frozen register reconciliation,
+clipboard-manager handoff and explicit support/sanitizer gates; parked #257/#258
+remain untouched. Full platform/install/default-server qualification waits for
+milestone/release; unrelated R1 work can proceed independently.
+
+The due [paired core observation](verification/PERFORMANCE-2026-11-01-SCRIPT-CHECKPOINT.md)
+is complete using existing PR305/PR325 binaries. Command/timer ranges overlap;
+core file +142,768 bytes and median peak RSS -20 KiB are observations, not a
+causal speed/memory improvement. No Script workload claim. Current core/MFL and
+Script/Form reference binaries are retained at `r1-script-reference-20261101`
+in the owned Linux workspace. Performance cadence resets at this observation;
+the local TextField correction is the next implementation batch on merge.
+
+Next bounded source pickup: reconcile the frozen #22 role rows against these
+results and existing manager/Form/file-only participant evidence; identify only
+required missing R1 consumer contracts. Do not turn wider historical race/flood
+or physical acceptance notes into an unbounded prerequisite. Keep the 320-byte
+sanitizer clean-exit and Q67 infrastructure/disabled-profile gaps explicit.
+
+Prior implementation records (historical selection, not a second active queue):
 
 Selected adoption batch: switch TextField PRIMARY/CLIPBOARD and exact private
 message reads to the typed transport; preserve NUL-inclusive private messages,

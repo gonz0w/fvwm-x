@@ -7,6 +7,36 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Script selection and paste (in progress)
+
+Script TextFields now negotiate external PRIMARY/CLIPBOARD text and accept
+bounded direct/INCR transfers. PRIMARY snapshots and private-message metadata
+have separate ownership; private messages retain exact bytes and FIFO ordering.
+The [manual](FvwmScript.adoc) describes targets and limits. The combined
+[checkpoint report](../dev-docs/verification/VERIFICATION-2026-11-01-SCRIPT-SELECTION.md)
+records complete 32 KiB ASCII/multibyte paste and subsequent command handling,
+along with remaining sanitizer/platform acceptance.
+
+These raw native-X captures show a standalone Script component with Slate dark,
+Dune light and enlarged Classic palette/font recipes. They do not qualify the
+whole desktop theme or clipboard-manager/history services.
+
+![Slate Script field after clipboard paste](screenshots/script-selection-slate-dark.png)
+
+![Dune Script field after clipboard paste](screenshots/script-selection-dune-light.png)
+
+![Classic Script field with enlarged font after clipboard paste](screenshots/script-selection-classic-large.png)
+
+The [capture manifest](screenshots/script-selection-manifest.json) identifies
+source and raw PNGs. Exact Script examples are paired with the
+[Slate](screenshots/script-selection-slate-dark.script),
+[Dune](screenshots/script-selection-dune-light.script) and
+[Classic](screenshots/script-selection-classic-large.script) captures. They are
+test recipes: their report paths refer to the original temporary directories
+and must be changed to an owned writable path before reuse. The paired `.config`
+files contain the KeyboardFocus module setting; `.packet.config` records its
+core-normalized wire form and is not a user configuration file.
+
 ## Settings preview (in progress)
 
 The [FvwmDesktop manual](FvwmDesktop.adoc#_preview_one_setting) describes the

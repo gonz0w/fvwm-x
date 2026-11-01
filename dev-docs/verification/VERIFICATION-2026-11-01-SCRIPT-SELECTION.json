@@ -1,0 +1,1040 @@
+{
+  "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+  "source": {
+    "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+    "files": {
+      "dev-docs/PROJECT-TRACKER.md": "8895309d2ec8d439f14e36bc656053baca667f769aa39c306fa8b43de43b7a18",
+      "tests/live_x/script_selection_owner_live.py": "d697a0bca2e9aac3bf7fee4e8d54444dcd0cf58ac44d5b95044a71ad7c3b4af7",
+      "tests/meson.build": "ac4d12329f93d7ed14db1afde3d026684a311ed56d7a1fac09cc447b96bbc783",
+      "tests/test_script_selection_owner_api.c": "f916c47b19ff818b1de75f597ce692bbada76b3795260e753246f7d3e50196f1",
+      "modules/FvwmScript/Widgets/TextField.c": "47fd3b2a82f64d1a3c9d93747d961d2f42ded92429a6c0663f2af18ffa1fadff"
+    },
+    "execution": "source review required before affected TextField compile and normal/scoped-sanitizer owner reruns; no completed independent suites repeat"
+  },
+  "profile": "Linux ARM64 owned Podman/AppleHV VM; native instruction set, nested Xvfb; not physical hardware or six-platform qualification",
+  "status": "normal scoped checks passed; sanitizer owner clean exit and Q67 pending",
+  "runs": {
+    "linux01": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/linux01/guest-evidence.tgz",
+      "sha256": "59cffac611697ddaea8209d5a87d16c09dd4d3be6bde4c27880a98cbc5500dc8",
+      "bytes": 28896,
+      "result": {
+        "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+        "scope": "shared Script checkpoint over PR323-325",
+        "status": "failed",
+        "commands": [
+          {
+            "label": "normal-dry-current",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "-n",
+              "-v",
+              "fvwm3",
+              "modules/FvwmMFL/FvwmMFL",
+              "modules/FvwmForm/FvwmForm",
+              "modules/FvwmScript/FvwmScript",
+              "bin/fvwm-desktop-capture",
+              "tests/test-selection-x",
+              "tests/test-script-message",
+              "tests/test-script-selection",
+              "tests/test-script-selection-wait",
+              "tests/test-script-selection-owner-api",
+              "tests/test-script-base-owner",
+              "tests/test-script-base-lifecycle",
+              "doc/FvwmScript.1"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.015952961999573745
+          },
+          {
+            "label": "san-dry-current",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-n",
+              "-v",
+              "modules/FvwmScript/FvwmScript",
+              "tests/test-selection-x",
+              "tests/test-script-message",
+              "tests/test-script-selection",
+              "tests/test-script-selection-wait",
+              "tests/test-script-selection-owner-api",
+              "tests/test-script-base-owner"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.015918294999210048
+          },
+          {
+            "label": "normal-build",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "-j2",
+              "fvwm3",
+              "modules/FvwmMFL/FvwmMFL",
+              "modules/FvwmForm/FvwmForm",
+              "modules/FvwmScript/FvwmScript",
+              "bin/fvwm-desktop-capture",
+              "tests/test-selection-x",
+              "tests/test-script-message",
+              "tests/test-script-selection",
+              "tests/test-script-selection-wait",
+              "tests/test-script-selection-owner-api",
+              "tests/test-script-base-owner",
+              "tests/test-script-base-lifecycle",
+              "doc/FvwmScript.1"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.3648643680007808
+          },
+          {
+            "label": "policy-and-service",
+            "argv": [
+              "meson",
+              "test",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--num-processes",
+              "1",
+              "script-message",
+              "script-selection",
+              "script-selection-wait",
+              "script-base-owner"
+            ],
+            "timeout": 120,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.16560879799908435
+          },
+          {
+            "label": "actual-owner-consumers",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--api-probe",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-script-selection-owner-api",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "slate-dark",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint01/slate"
+            ],
+            "timeout": 180,
+            "exit": 1,
+            "actual_wait": 1,
+            "seconds": 4.658918815999641
+          }
+        ],
+        "runtime_tests": 4,
+        "error": "AssertionError('actual-owner-consumers')",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input01/linux_gate.py\", line 78, in <module>\n    run('actual-owner-consumers',['python3',s/'tests/live_x/script_selection_owner_live.py','--module',b/'modules/FvwmScript/FvwmScript','--api-probe',b/'tests/test-script-selection-owner-api','--capture',b/'bin/fvwm-desktop-capture','--profile','slate-dark','--artifacts-dir',out/'slate'],180);result['runtime_tests']+=1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input01/linux_gate.py\", line 29, in run\n    save(out/(a.phase+'-commands.json'),result['commands']);print(label,row.get('exit'),round(row['seconds'],2),flush=True);assert row['exit']==0,label;assert not common.command_group_members(child.pid),label+' unanchored children remain';return (out/(a.phase+'-'+label+'.stdout')).read_text()\n                                                                                                                                   ^^^^^^^^^^^^^^\nAssertionError: actual-owner-consumers\n",
+        "source_post": "ed188b93cdd088b6985f016ad3b1f74213670616a91e41bfe5b8ad6109a475c1"
+      },
+      "fixtures": {},
+      "unit_results": {
+        "execute-policy-and-service-testlog.json": [
+          {
+            "name": "fvwm3 / script-message",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0013213157653808594
+          },
+          {
+            "name": "fvwm3 / script-selection",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0010230541229248047
+          },
+          {
+            "name": "fvwm3 / script-selection-wait",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.003153562545776367
+          },
+          {
+            "name": "fvwm3 / script-base-owner",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.001657724380493164
+          }
+        ]
+      }
+    },
+    "linux02": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/linux02/guest-evidence.tgz",
+      "sha256": "fc311c423eb50f633f79227f9ab02bea20d0132a396ba708befa6227b70f0e89",
+      "bytes": 3555,
+      "result": {
+        "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+        "scope": "shared Script checkpoint over PR323-325",
+        "status": "failed",
+        "commands": [
+          {
+            "label": "actual-owner-consumers",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "slate-dark",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint02/slate"
+            ],
+            "timeout": 180,
+            "exit": 1,
+            "actual_wait": 1,
+            "seconds": 9.16278539799896
+          }
+        ],
+        "runtime_tests": 0,
+        "source_pre": "fecc70d1a86c344f0b511a2d85550ff567f2911a9f8815fc2e2ce6f668b7a6d7",
+        "error": "AssertionError('actual-owner-consumers')",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input02/continue_gate.py\", line 57, in <module>\n    run('actual-owner-consumers',['python3',s/'tests/live_x/script_selection_owner_live.py','--module',b/'modules/FvwmScript/FvwmScript','--capture',b/'bin/fvwm-desktop-capture','--profile','slate-dark','--artifacts-dir',out/'slate'],180);result['runtime_tests']+=1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input02/continue_gate.py\", line 29, in run\n    save(out/(a.phase+'-commands.json'),result['commands']);print(label,row.get('exit'),round(row['seconds'],2),flush=True);assert row['exit']==0,label;assert not common.command_group_members(child.pid),label+' unanchored children remain';return (out/(a.phase+'-'+label+'.stdout')).read_text()\n                                                                                                                                   ^^^^^^^^^^^^^^\nAssertionError: actual-owner-consumers\n",
+        "source_post": "fecc70d1a86c344f0b511a2d85550ff567f2911a9f8815fc2e2ce6f668b7a6d7"
+      },
+      "fixtures": {
+        "slate/evidence.json": {
+          "status": "failed",
+          "runtime": "not completed",
+          "primary-snapshot-metadata-multiple-cutbuffers": "passed",
+          "primary-loss-visible-unselection": {
+            "status": "passed",
+            "selected_pixel": 14669262,
+            "unselected_pixel": 2107953
+          },
+          "primary-confirmed-replacement-stale-clear-loss": "passed",
+          "actual-exact-private-direct-incr-nul-recovery": "passed",
+          "actual-nested-reader-refusal-keeps-outer-read": "passed",
+          "actual-periodic-service-during-paste": "passed",
+          "actual-widget-mutation-while-paste-pending": {
+            "status": "passed",
+            "retirement_seconds": 0.10486910700092267,
+            "limit": "mutation outcome; immediate cause covered by linked probe"
+          },
+          "error": "HarnessError('deadline expired while waiting for case-31')"
+        }
+      }
+    },
+    "linux03": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/linux03/guest-evidence.tgz",
+      "sha256": "71ae4421a79a2ae5c671dd903c8885d6c6949989c59792f58ebfa30632a69ca8",
+      "bytes": 17032,
+      "result": {
+        "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+        "scope": "shared Script checkpoint over PR323-325",
+        "status": "passed selected remaining checks; owner fixture acceptance pending",
+        "commands": [
+          {
+            "label": "san-dry-reviewed",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-n",
+              "-v",
+              "modules/FvwmScript/FvwmScript",
+              "tests/test-selection-x",
+              "tests/test-script-message",
+              "tests/test-script-selection",
+              "tests/test-script-selection-wait",
+              "tests/test-script-selection-owner-api",
+              "tests/test-script-base-owner"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.016635967998809065
+          },
+          {
+            "label": "ui-dune-light",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "dune-light",
+              "--ui-only",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint03/dune-light"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 1.14218759600044
+          },
+          {
+            "label": "ui-classic-large",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "classic-large",
+              "--ui-only",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint03/classic-large"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 1.1604646159994445
+          },
+          {
+            "label": "transport-and-actual-modules",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/selection_live.py",
+              "--probe",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/tests/test-selection-x",
+              "--fvwm",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+              "--mfl",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+              "--script",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--form",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint03/selection"
+            ],
+            "timeout": 150,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 18.62861694899948
+          },
+          {
+            "label": "modal-interactions",
+            "argv": [
+              "meson",
+              "test",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "script-modal-xvfb",
+              "script-base-owner-xvfb"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 18.27229928399902
+          },
+          {
+            "label": "san-build",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-j2",
+              "modules/FvwmScript/FvwmScript",
+              "tests/test-selection-x",
+              "tests/test-script-message",
+              "tests/test-script-selection",
+              "tests/test-script-selection-wait",
+              "tests/test-script-selection-owner-api",
+              "tests/test-script-base-owner"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 1.4811386600013066
+          },
+          {
+            "label": "san-policies",
+            "argv": [
+              "meson",
+              "test",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "--no-rebuild",
+              "--print-errorlogs",
+              "--num-processes",
+              "1",
+              "script-message",
+              "script-selection",
+              "script-selection-wait",
+              "script-base-owner"
+            ],
+            "timeout": 120,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.16505425200011814
+          },
+          {
+            "label": "san-transport",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/selection_live.py",
+              "--probe",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-selection-x",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint03/san-transport"
+            ],
+            "timeout": 60,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 4.296837335999953
+          }
+        ],
+        "runtime_tests": 10,
+        "source_pre": "fecc70d1a86c344f0b511a2d85550ff567f2911a9f8815fc2e2ce6f668b7a6d7",
+        "instrumented_scope": "selection library, Script owner/consumer/service and linked probes; external libraries/server not instrumented",
+        "source_post": "fecc70d1a86c344f0b511a2d85550ff567f2911a9f8815fc2e2ce6f668b7a6d7"
+      },
+      "fixtures": {
+        "classic-large/evidence.json": {
+          "status": "passed",
+          "runtime": "completed",
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": {
+            "path": "script-selection-classic-large.png",
+            "sha256": "0d4e475e282fddafa239bbbad993c59f34350f193025128f2946354447112f95",
+            "scope": "Script component palette/font; no full desktop claim",
+            "visual_review": "required separately"
+          }
+        },
+        "dune-light/evidence.json": {
+          "status": "passed",
+          "runtime": "completed",
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": {
+            "path": "script-selection-dune-light.png",
+            "sha256": "8e84d4e6a5d036384df800a886f81343b4e3602379a9555c494b05fff69518cf",
+            "scope": "Script component palette/font; no full desktop claim",
+            "visual_review": "required separately"
+          }
+        },
+        "selection/widget-results.json": {
+          "script-message-exchange": "passed",
+          "script-single-evaluation-long-launch": "passed",
+          "script-file-and-index-bounds": "passed",
+          "script-exact-output-long-word-and-command": "passed",
+          "script-subprocess-protocol-pipes-closed": "passed",
+          "script-widget-indices-and-edge-id": "passed",
+          "script-default-process-timeout-and-recovery": "passed",
+          "script-value-bounds-and-compatibility": "passed",
+          "script-loop-range-and-owned-value": "passed",
+          "script-configured-process-timeout-and-recovery": "passed",
+          "script-empty-and-invalid-target": "passed",
+          "script-eight-cut-buffers": "passed",
+          "script-valid": "passed",
+          "script-format32": "passed",
+          "script-type": "passed",
+          "script-oversize": "passed",
+          "script-silent": "passed",
+          "script-recovery": "passed",
+          "form-valid": "passed",
+          "form-format32": "passed",
+          "form-type": "passed",
+          "form-oversize": "passed",
+          "form-recovery": "passed",
+          "form-utf8-boundary": "passed"
+        }
+      },
+      "unit_results": {
+        "execute-modal-interactions-testlog.json": [
+          {
+            "name": "fvwm3:live-x / script-base-owner-xvfb",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 1.5351903438568115
+          },
+          {
+            "name": "fvwm3:live-x / script-modal-xvfb",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 16.578174591064453
+          }
+        ],
+        "execute-san-policies-testlog.json": [
+          {
+            "name": "fvwm3 / script-message",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.004266023635864258
+          },
+          {
+            "name": "fvwm3 / script-selection",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0035088062286376953
+          },
+          {
+            "name": "fvwm3 / script-selection-wait",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0056149959564208984
+          },
+          {
+            "name": "fvwm3 / script-base-owner",
+            "result": "OK",
+            "returncode": 0,
+            "duration": 0.0061261653900146484
+          }
+        ]
+      }
+    },
+    "linux04": {
+      "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/linux04/guest-evidence.tgz",
+      "sha256": "01c61f7edc3b8a2deb139804948bbe6c903a1a1e74a0e6f3496d1b6f4a2620b7",
+      "bytes": 23164,
+      "result": {
+        "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+        "scope": "shared Script checkpoint over PR323-325",
+        "status": "failed",
+        "commands": [
+          {
+            "label": "normal-textfield-dry",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "-n",
+              "-v",
+              "modules/FvwmScript/FvwmScript"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.016126736998558044
+          },
+          {
+            "label": "normal-textfield-build",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-gcc",
+              "-j2",
+              "modules/FvwmScript/FvwmScript"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.17620293399886577
+          },
+          {
+            "label": "san-textfield-dry",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-n",
+              "-v",
+              "modules/FvwmScript/FvwmScript"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.01616140400074073
+          },
+          {
+            "label": "san-textfield-build",
+            "argv": [
+              "ninja",
+              "-C",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan",
+              "-j2",
+              "modules/FvwmScript/FvwmScript"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 0.2296615560007922
+          },
+          {
+            "label": "actual-owner-consumers",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "slate-dark",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint04/slate"
+            ],
+            "timeout": 180,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 15.518615218999912
+          },
+          {
+            "label": "ui-dune-light",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "dune-light",
+              "--ui-only",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint04/dune-light"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 1.1422306939984992
+          },
+          {
+            "label": "ui-classic-large",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+              "--capture",
+              "/tmp/fvwm-module-waits-20261015/build-gcc/bin/fvwm-desktop-capture",
+              "--profile",
+              "classic-large",
+              "--ui-only",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint04/classic-large"
+            ],
+            "timeout": 90,
+            "exit": 0,
+            "actual_wait": 0,
+            "seconds": 1.1238514409997151
+          },
+          {
+            "label": "san-owner-consumers",
+            "argv": [
+              "python3",
+              "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+              "--module",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript",
+              "--api-probe",
+              "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/test-script-selection-owner-api",
+              "--artifacts-dir",
+              "/tmp/fvwm-module-waits-20261015/r1-script-shared-checkpoint04/san-owner"
+            ],
+            "timeout": 180,
+            "exit": 1,
+            "actual_wait": 1,
+            "seconds": 9.212231860001339
+          }
+        ],
+        "runtime_tests": 3,
+        "source_pre": "57e1332dcdd0a860fd31b193bc7b545294684fd48490d5e1496d51f3bee81c68",
+        "error": "AssertionError('san-owner-consumers')",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input04/corrected_owner_gate.py\", line 64, in <module>\n    run('san-owner-consumers',['python3',s/'tests/live_x/script_selection_owner_live.py','--module',san/'modules/FvwmScript/FvwmScript','--api-probe',san/'tests/test-script-selection-owner-api','--artifacts-dir',out/'san-owner'],180);result['runtime_tests']+=1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-module-waits-20261015/r1-script-checkpoint-input04/corrected_owner_gate.py\", line 29, in run\n    save(out/(a.phase+'-commands.json'),result['commands']);print(label,row.get('exit'),round(row['seconds'],2),flush=True);assert row['exit']==0,label;assert not common.command_group_members(child.pid),label+' unanchored children remain';return (out/(a.phase+'-'+label+'.stdout')).read_text()\n                                                                                                                                   ^^^^^^^^^^^^^^\nAssertionError: san-owner-consumers\n",
+        "source_post": "57e1332dcdd0a860fd31b193bc7b545294684fd48490d5e1496d51f3bee81c68"
+      },
+      "fixtures": {
+        "classic-large/evidence.json": {
+          "status": "passed",
+          "runtime": "completed",
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": {
+            "path": "script-selection-classic-large.png",
+            "sha256": "6da32176f0a2ee2a0e6eaaa57d05c1519492dc7a2c0609485f71c87d0dbcab7f",
+            "scope": "Script component palette/font; no full desktop claim",
+            "visual_review": "required separately"
+          }
+        },
+        "dune-light/evidence.json": {
+          "status": "passed",
+          "runtime": "completed",
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": {
+            "path": "script-selection-dune-light.png",
+            "sha256": "7ed0538f0e76dc04b0f6b45e0944879e7dcb4fe6bc53ce2bac2a9839dd2096ac",
+            "scope": "Script component palette/font; no full desktop claim",
+            "visual_review": "required separately"
+          }
+        },
+        "san-owner/evidence.json": {
+          "status": "failed",
+          "runtime": "not completed",
+          "native-owner-api-boundaries": "passed",
+          "primary-snapshot-metadata-multiple-cutbuffers": "passed",
+          "primary-loss-visible-unselection": {
+            "status": "passed",
+            "selected_pixel": 14669262,
+            "unselected_pixel": 2107953
+          },
+          "primary-confirmed-replacement-stale-clear-loss": "passed",
+          "actual-exact-private-direct-incr-nul-recovery": "passed",
+          "actual-nested-reader-refusal-keeps-outer-read": "passed",
+          "actual-periodic-service-during-paste": "passed",
+          "actual-widget-mutation-while-paste-pending": {
+            "status": "passed",
+            "retirement_seconds": 0.10079536699959135,
+            "limit": "mutation outcome; immediate cause covered by linked probe"
+          },
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": "not requested",
+          "private-observational-metadata-ordered-multiple": "passed",
+          "private-malformed-control-stale-foreign-pair-bound": "passed",
+          "private-nonexistent-property-atom-preserves-fifo": "passed",
+          "private-wire-cap-and-aggregate-budget-retention": "passed",
+          "error": "AssertionError()"
+        },
+        "slate/evidence.json": {
+          "status": "passed",
+          "runtime": "completed",
+          "primary-snapshot-metadata-multiple-cutbuffers": "passed",
+          "primary-loss-visible-unselection": {
+            "status": "passed",
+            "selected_pixel": 14669262,
+            "unselected_pixel": 2107953
+          },
+          "primary-confirmed-replacement-stale-clear-loss": "passed",
+          "actual-exact-private-direct-incr-nul-recovery": "passed",
+          "actual-nested-reader-refusal-keeps-outer-read": "passed",
+          "actual-periodic-service-during-paste": "passed",
+          "actual-widget-mutation-while-paste-pending": {
+            "status": "passed",
+            "retirement_seconds": 0.11693352099973708,
+            "limit": "mutation outcome; immediate cause covered by linked probe"
+          },
+          "actual-negotiated-primary-and-clipboard-paste": "passed",
+          "init-exact-read-services-independent-owner-metadata": "passed",
+          "capture": {
+            "path": "script-selection-slate-dark.png",
+            "sha256": "87bec6999a93dd8ae097fdf7aa066ef9d0159c3d9f648c0f4b17fb2b67be8cb6",
+            "scope": "Script component palette/font; no full desktop claim",
+            "visual_review": "required separately"
+          },
+          "private-observational-metadata-ordered-multiple": "passed",
+          "private-malformed-control-stale-foreign-pair-bound": "passed",
+          "private-nonexistent-property-atom-preserves-fifo": "passed",
+          "private-wire-cap-and-aggregate-budget-retention": "passed",
+          "newer-primary-and-private-owner-survive-shutdown": "passed",
+          "existing-40-41-and-grace-controls": "passed"
+        },
+        "slate/message-controls/evidence.json": {
+          "silent-admitted": 40,
+          "silent": {
+            "status": "passed",
+            "seconds": 2.016801817999294
+          },
+          "drain-admitted": 40,
+          "drain": {
+            "status": "passed",
+            "seconds": 0.0663877950009919
+          },
+          "invalid-admitted": 40,
+          "invalid-refusals": 101,
+          "invalid": {
+            "status": "passed",
+            "seconds": 2.0122499949993653
+          },
+          "cancel-admitted": 40,
+          "cancel": {
+            "status": "passed",
+            "seconds": 0.001859595999121666
+          },
+          "empty": {
+            "status": "passed",
+            "seconds": 0.06027479499971378
+          }
+        }
+      },
+      "sanitizer_owner_log": "\n=================================================================\n==1210==ERROR: LeakSanitizer: detected memory leaks\n\nDirect leak of 256 byte(s) in 1 object(s) allocated from:\n    #0 0xaaaacb8cc534 in malloc (/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript+0x26c534) (BuildId: e44862dce4d3dc5301a8497f01eaebf0b960041a)\n    #1 0xffffa07e0f4c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x20f4c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #2 0xffffa07e5be8  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x25be8) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #3 0xffffa07f3f08  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x33f08) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #4 0xffffa02ac56c  (/lib/aarch64-linux-gnu/libexpat.so.1+0xc56c) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #5 0xffffa02ad094  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd094) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #6 0xffffa02ad764  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd764) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #7 0xffffa02af9e4  (/lib/aarch64-linux-gnu/libexpat.so.1+0xf9e4) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #8 0xffffa02a36a0  (/lib/aarch64-linux-gnu/libexpat.so.1+0x36a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #9 0xffffa02a83a0 in XML_ParseBuffer (/lib/aarch64-linux-gnu/libexpat.so.1+0x83a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #10 0xffffa07eee58  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2ee58) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #11 0xffffa07ef67c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f67c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #12 0xffffa07ef820  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f820) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #13 0xffffa07f28b0  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x328b0) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #14 0xffffa02ac56c  (/lib/aarch64-linux-gnu/libexpat.so.1+0xc56c) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #15 0xffffa02ad094  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd094) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #16 0xffffa02ad764  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd764) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #17 0xffffa02af9e4  (/lib/aarch64-linux-gnu/libexpat.so.1+0xf9e4) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #18 0xffffa02a36a0  (/lib/aarch64-linux-gnu/libexpat.so.1+0x36a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #19 0xffffa02a83a0 in XML_ParseBuffer (/lib/aarch64-linux-gnu/libexpat.so.1+0x83a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #20 0xffffa07eee58  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2ee58) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #21 0xffffa07ef67c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f67c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #22 0xffffa07d664c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1664c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #23 0xffffa07d120c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1120c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #24 0xffffa07d695c in FcInit (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1695c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #25 0xffffa078f28c in XftInit (/lib/aarch64-linux-gnu/libXft.so.2+0xf28c) (BuildId: 7f97d2d7d8a065bc3044da4630ca402868545fee)\n    #26 0xffffa078f2cc in XftFontMatch (/lib/aarch64-linux-gnu/libXft.so.2+0xf2cc) (BuildId: 7f97d2d7d8a065bc3044da4630ca402868545fee)\n    #27 0xaaaacbb8dc74 in FftGetFontAtScale /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Fft.c:180:18\n    #28 0xaaaacba7bfcc in FlocaleGetFftFont /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Flocale.c:1148:9\n    #29 0xaaaacba53f40 in FlocaleGetFontOrFontSet /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Flocale.c:1394:10\n\nIndirect leak of 64 byte(s) in 2 object(s) allocated from:\n    #0 0xaaaacb8cc708 in calloc (/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript+0x26c708) (BuildId: e44862dce4d3dc5301a8497f01eaebf0b960041a)\n    #1 0xffffa07e5b80  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x25b80) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #2 0xffffa07f3f08  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x33f08) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #3 0xffffa02ac56c  (/lib/aarch64-linux-gnu/libexpat.so.1+0xc56c) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #4 0xffffa02ad094  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd094) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #5 0xffffa02ad764  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd764) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #6 0xffffa02af9e4  (/lib/aarch64-linux-gnu/libexpat.so.1+0xf9e4) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #7 0xffffa02a36a0  (/lib/aarch64-linux-gnu/libexpat.so.1+0x36a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #8 0xffffa02a83a0 in XML_ParseBuffer (/lib/aarch64-linux-gnu/libexpat.so.1+0x83a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #9 0xffffa07eee58  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2ee58) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #10 0xffffa07ef67c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f67c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #11 0xffffa07ef820  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f820) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #12 0xffffa07f28b0  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x328b0) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #13 0xffffa02ac56c  (/lib/aarch64-linux-gnu/libexpat.so.1+0xc56c) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #14 0xffffa02ad094  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd094) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #15 0xffffa02ad764  (/lib/aarch64-linux-gnu/libexpat.so.1+0xd764) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #16 0xffffa02af9e4  (/lib/aarch64-linux-gnu/libexpat.so.1+0xf9e4) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #17 0xffffa02a36a0  (/lib/aarch64-linux-gnu/libexpat.so.1+0x36a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #18 0xffffa02a83a0 in XML_ParseBuffer (/lib/aarch64-linux-gnu/libexpat.so.1+0x83a0) (BuildId: 2a74b3a542dbcd9cd54f8473908b57a6882ef1eb)\n    #19 0xffffa07eee58  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2ee58) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #20 0xffffa07ef67c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x2f67c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #21 0xffffa07d664c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1664c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #22 0xffffa07d120c  (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1120c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #23 0xffffa07d695c in FcInit (/lib/aarch64-linux-gnu/libfontconfig.so.1+0x1695c) (BuildId: 80005a450f568b98f575ef85ff92e6122c0e2864)\n    #24 0xffffa078f28c in XftInit (/lib/aarch64-linux-gnu/libXft.so.2+0xf28c) (BuildId: 7f97d2d7d8a065bc3044da4630ca402868545fee)\n    #25 0xffffa078f2cc in XftFontMatch (/lib/aarch64-linux-gnu/libXft.so.2+0xf2cc) (BuildId: 7f97d2d7d8a065bc3044da4630ca402868545fee)\n    #26 0xaaaacbb8dc74 in FftGetFontAtScale /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Fft.c:180:18\n    #27 0xaaaacba7bfcc in FlocaleGetFftFont /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Flocale.c:1148:9\n    #28 0xaaaacba53f40 in FlocaleGetFontOrFontSet /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Flocale.c:1394:10\n    #29 0xaaaacba4f804 in FlocaleLoadFontAtScale /tmp/fvwm-module-waits-20261015/build-module-waits-asan/../source/libs/Flocale.c:1606:9\n\nSUMMARY: AddressSanitizer: 320 byte(s) leaked in 3 allocation(s).\n"
+    }
+  },
+  "first_fixture_logs": {
+    "archive": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/linux01/orphan-evidence.tgz",
+    "sha256": "65342eb815b4d2046e207adbb04e67eec5b026b18b10335fa951e212f7bca757",
+    "cleanup": {
+      "pid": 641,
+      "start_ticks": "1105361",
+      "log": "/tmp/fvwm-script-owner-uwn81r8c/xserver.log",
+      "identity_verified": true,
+      "method": "pidfd TERM and readiness",
+      "normal_guest_shutdown": false
+    }
+  },
+  "q67": {
+    "result": {
+      "exit": 1,
+      "uploaded": false,
+      "error": null,
+      "status": {
+        "profile": "openbsd-arm64",
+        "source": {
+          "sha256": "9726801aa8963c300e9cc6076289500e69a204511ba17e50b6503ee455c9550d",
+          "members": 3343,
+          "expanded_bytes": 90922551
+        },
+        "status": "failed",
+        "phase": "source-copy",
+        "acceleration": "hvf",
+        "phase_started_at": 1793559954.160383,
+        "prepare_script": {
+          "sha256": "a6cb2d4a2e156e61b2b76c82bc989eb529762f335cc74564503979de521f9d76",
+          "bytes": 11818
+        },
+        "run_script": {
+          "sha256": "eb337e82ea07e91d50d091a3fba8ec12081968368580a46c8bc24dfc1b8bee0b",
+          "bytes": 692
+        },
+        "input_manifest": {
+          "profile": "openbsd-arm64",
+          "lock_sha256": "6f06bb151ab7e672daa2aa0f7eaaf5475839056e1c21602f22e0cb340987db60:91ed25282ae84c66603a1ab687b988fe3c3d5cd8389967bafe7f658df76a982b",
+          "status": "verified inputs; no extraction, execution or boot",
+          "assets": [
+            {
+              "name": "openbsd-8.0-aarch64.profile.json",
+              "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.profile.json",
+              "size": 532,
+              "sha256": "b15cb61a452ced2c1c2d18ad9943a920e36b33a1380195c368addd98c4918c87",
+              "origin": "verified-cache",
+              "mode": "0600"
+            },
+            {
+              "name": "openbsd-8.0-aarch64.qcow2.zst",
+              "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64.qcow2.zst",
+              "size": 1295618078,
+              "sha256": "dc0a18daba9f0e6d94ded2e71c1d101634761cd5a75c3e9b552310918fbbd8a4",
+              "origin": "verified-cache",
+              "mode": "0600"
+            },
+            {
+              "name": "openbsd-8.0-aarch64-host.id_rsa",
+              "url": "https://github.com/anyvm-org/openbsd-builder/releases/download/v2.1.1/openbsd-8.0-aarch64-host.id_rsa",
+              "size": 411,
+              "sha256": "c313890d6f3336c70b53e8c00b57c72e4dccce9998f035696cb0bc9022738ab2",
+              "origin": "verified-cache",
+              "mode": "0600"
+            },
+            {
+              "name": "QEMU_EFI-2024.02-2ubuntu0.9.fd",
+              "url": "https://github.com/anyvm-org/firmware/releases/download/v0.0.2/QEMU_EFI-2024.02-2ubuntu0.9.fd",
+              "size": 2097152,
+              "sha256": "8ff1fb8da2d8baf739bfdf020ff9ede225172c3a1b9d98e64e2b7935fd5ad4ab",
+              "origin": "verified-cache",
+              "mode": "0600"
+            }
+          ]
+        },
+        "published_profile": {
+          "anyvm_profile_version": 1,
+          "arch": "aarch64",
+          "balloon": false,
+          "console": false,
+          "cpu_cap": null,
+          "cpu_model": "neoverse-n1",
+          "disk_if": "virtio",
+          "firmware_kind": "edk2-pflash",
+          "machine_opts": "gic-version=3,usb=on,acpi=off",
+          "machine_type": "virt",
+          "mem_cap_mb": null,
+          "net_bus": null,
+          "net_card": "virtio-net-pci",
+          "os": "openbsd",
+          "qemu_min_version": null,
+          "release": "8.0",
+          "rng": "pci",
+          "rtc_base": "utc",
+          "transport": "ssh",
+          "vga": "virtio-gpu-pci",
+          "virtio_transport": "pci"
+        },
+        "image": {
+          "children": [
+            {
+              "name": "file",
+              "info": {
+                "children": [],
+                "virtual-size": 3066560512,
+                "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/disk.qcow2",
+                "format": "file",
+                "actual-size": 3075137536,
+                "format-specific": {
+                  "type": "file",
+                  "data": {}
+                },
+                "dirty-flag": false
+              }
+            }
+          ],
+          "virtual-size": 214748364800,
+          "filename": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/disk.qcow2",
+          "cluster-size": 65536,
+          "format": "qcow2",
+          "actual-size": 3075137536,
+          "format-specific": {
+            "type": "qcow2",
+            "data": {
+              "compat": "1.1",
+              "compression-type": "zlib",
+              "lazy-refcounts": false,
+              "refcount-bits": 16,
+              "corrupt": false,
+              "extended-l2": false
+            }
+          },
+          "dirty-flag": false
+        },
+        "expanded_image_sha256": "18c41ee22adf15a3b134d1df555e14a2452a98f583a59e68e413ef504a5e6e70",
+        "qemu_argv": [
+          "qemu-system-aarch64",
+          "-machine",
+          "virt,gic-version=3,acpi=off",
+          "-accel",
+          "hvf",
+          "-cpu",
+          "host",
+          "-m",
+          "4096",
+          "-smp",
+          "2",
+          "-display",
+          "none",
+          "-monitor",
+          "none",
+          "-serial",
+          "stdio",
+          "-netdev",
+          "user,id=net0,ipv6=off,hostfwd=tcp:127.0.0.1:63008-:22",
+          "-device",
+          "virtio-net-pci,netdev=net0",
+          "-drive",
+          "if=none,id=root,format=qcow2,file=/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/disk.qcow2",
+          "-device",
+          "virtio-blk-pci,drive=root,bootindex=1",
+          "-device",
+          "qemu-xhci",
+          "-device",
+          "usb-kbd",
+          "-device",
+          "usb-tablet",
+          "-bios",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/inputs/QEMU_EFI-2024.02-2ubuntu0.9.fd",
+          "-device",
+          "ramfb"
+        ],
+        "qemu_pid": 69204,
+        "guest_release": [
+          "OpenBSD",
+          "8.0",
+          "arm64",
+          "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+        ],
+        "error": "command failed; see source-copy.log",
+        "failed_phase": "source-copy",
+        "qemu_exit_status": 0,
+        "finished_at": 1793559969.582478
+      },
+      "reviewed_plan_approvals": [],
+      "scope": "Dispatch outcome only; acceptance needs reviewed fixture results and complete collected payload verification."
+    },
+    "source_copy_log": "Timeout, server 127.0.0.1 not responding.\n",
+    "console_tail": "d-queue smtpd-scheduler sshd-auth sshd-session httpd smtpd sshd.\nstarting early daemons: syslogd pflogd ntpd.\nstarting RPC daemons:.\nsavecore: no core dump\nchecking quotas: done.\nkern.securelevel: 0 -> 1\ncreating runtime link editor directory cache.\npreserving editor files.\nstarting network daemons: sshd smtpd sndiod.\nstarting local daemons: cron.\nSun Nov  1 19:05:51 UTC 2026\nqemu-system-aarch64: Guest moved used index from 15784 to 15617\nvio0: device needs reset\n\nqemu-system-aarch64: terminating on signal 15 from pid 69187 (<unknown process>)\n",
+    "groups_executed": 0,
+    "acceptance": "D1 and D2 still pending; enabled eight not repeated",
+    "retirement": {
+      "retired": [
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/disk.qcow2",
+          "bytes": 3148677120,
+          "reason": "Stopped failed owned VM clone; no source/test changes or future resume needed"
+        },
+        {
+          "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-31/r1-script-selection-checkpoint/q67-openbsd-arm/arm64-owned-run01/job/source.tgz",
+          "bytes": 28947708,
+          "reason": "Exact duplicate of retained source34 archive"
+        }
+      ],
+      "process_scan": "no matching QEMU using this exact owned disk",
+      "preserved": "Failure logs, receipts, controllers, cached base/SDK/builds and canonical source34 archive",
+      "normal_guest_poweroff": false
+    }
+  },
+  "final_source_and_reference": {
+    "base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+    "source_closure": "57e1332dcdd0a860fd31b193bc7b545294684fd48490d5e1496d51f3bee81c68",
+    "reference": "/tmp/fvwm-module-waits-20261015/r1-script-reference-20261101",
+    "binaries": {
+      "core": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/fvwm3",
+        "sha256": "6c03886d99a47b4811535934a5b4f268ae4dd289fbfddbc6e60d6a2d3a3fbac0",
+        "bytes": 5832128
+      },
+      "FvwmMFL": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmMFL/FvwmMFL",
+        "sha256": "3033aaa23933405db7f0baacee91b9718b2419697e9ef7791b3275a196ba5810",
+        "bytes": 463752
+      },
+      "script": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript",
+        "sha256": "6683baaadf411db4768f64e1a799dc60190e401ea5fd53bffa08752a16dbbe72",
+        "bytes": 2271184
+      },
+      "form": {
+        "path": "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmForm/FvwmForm",
+        "sha256": "f8049ade5f327ccfd0627ad13d352b14a2406366de490d1f4ade761500ef41c0",
+        "bytes": 1926656
+      }
+    },
+    "source_verified": true,
+    "active_X_or_Script_processes": [],
+    "scope": "current reference/cache only; no runtime execution"
+  },
+  "manual_render": {
+    "exit": 0,
+    "scope": "render exact generated manual on macOS host; no install qualification"
+  },
+  "linux_lab_cleanup": [
+    {
+      "argv": [
+        "podman",
+        "--connection",
+        "podman-machine-default-root",
+        "stop",
+        "--time",
+        "20",
+        "fvwm-x-linux-arm64-svg"
+      ],
+      "exit": 0,
+      "stdout": "fvwm-x-linux-arm64-svg\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "podman",
+        "machine",
+        "stop",
+        "podman-machine-default"
+      ],
+      "exit": 0,
+      "stdout": "Machine \"podman-machine-default\" stopped successfully\n",
+      "stderr": ""
+    }
+  ]
+}

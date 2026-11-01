@@ -14,6 +14,7 @@ import argparse
 import ctypes as C
 import json
 from pathlib import Path
+import re
 import shutil
 import time
 
@@ -75,7 +76,9 @@ class Screen:
             '-c', 'AddToFunc StartFunction I Module FvwmMFL'],
             f'core-{index}.log', runtime.environment({
                 'FVWMMFL_SOCKET_PATH': str(self.root)}))
-        endpoint = self.root / f"fvwm_mfl_{display.replace(':', '_')}.sock"
+        # MFL filters all display punctuation, including the screen suffix.
+        socket_display = re.sub(r'[^A-Za-z0-9_-]', '_', display)
+        endpoint = self.root / f"fvwm_mfl_{socket_display}.sock"
         wait_for_predicate('screen manager startup', endpoint.exists,
             time.monotonic() + 12, process=self.core)
         self.link = Connection(endpoint)

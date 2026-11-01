@@ -39,6 +39,7 @@
 #include "libs/Cursor.h"
 #include "libs/FEvent.h"
 #include "libs/FGettext.h"
+#include "libs/FftInterface.h"
 #include "libs/FProperty.h"
 #include "libs/FRender.h"
 #include "libs/FRenderInit.h"
@@ -106,6 +107,7 @@ int grab_server = 0;
 /* Opt-in keyboard focus leaves legacy scripts' pointer routing untouched. */
 static char *keyboard_focus_title = NULL;
 static int keyboard_focus = -1;
+static Bool script_font_shutdown_ready = False;
 static script_execution execution = {
   .step_limit = SCRIPT_EXECUTION_DEFAULT_STEPS,
   .depth_limit = SCRIPT_EXECUTION_DEFAULT_DEPTH
@@ -250,6 +252,14 @@ static void release_script_resources(void)
   TabCObj = NULL;
 }
 
+/* Keep ordinary termination distinct from fatal allocation exits, which may
+ * interrupt acquisition before a temporary font reaches its owning widget. */
+void Quit(int NbArg, long *TabArg)
+{
+  script_font_shutdown_ready = True;
+  exit(0);
+}
+
 /* Exit procedure - called whenever we call exit(), or when main() ends */
 static void
 ShutdownX(void)
@@ -258,6 +268,11 @@ ShutdownX(void)
   XEvent event;
   struct pollfd ready;
   struct timespec start, now;
+  Bool finalize_fonts = script_font_shutdown_ready;
+
+  /* QuitFunc must return before the proven normal path can finalize fonts.
+   * Recursive exit from an exit handler remains unsupported. */
+  script_font_shutdown_ready = False;
 
 #ifdef DEBUG                    /* For debugging */
   XSync(dpy,0);
@@ -336,6 +351,8 @@ ShutdownX(void)
   XFlush(dpy);
   fsm_close();
   XCloseDisplay(dpy);
+  if (finalize_fonts)
+    FftFini();
 }
 
 
@@ -2136,5 +2153,6 @@ int main (int argc, char **argv)
   SendFinishedStartupNotification(fd);
 
   MainLoop();
+  script_font_shutdown_ready = True;
   return 0;
 }

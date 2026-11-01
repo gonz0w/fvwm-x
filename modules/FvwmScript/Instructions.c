@@ -1542,12 +1542,6 @@ static void MyWarpPointer(int NbArg,long *TabArg)
   free(arg);
 }
 
-/* Quit */
-void Quit (int NbArg,long *TabArg)
-{
-  exit(0);
-}
-
 /* IfThen */
 static void IfThen (int NbArg,long *TabArg)
 {

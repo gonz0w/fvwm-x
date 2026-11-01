@@ -1,0 +1,284 @@
+{
+  "owner": "Cam; SELECTION-01 #22 / CONTENT-01 #63 / STORE-01 #74",
+  "scope": "Linux ARM64 owned AppleHV Podman guest; GCC13.3 normal and Clang18.1.3 scoped ASan/UBSan; not native hardware or full support acceptance",
+  "base": "0649fc24a6c1a729a24beaf0b01f8211e4e1f906",
+  "composed_manager_content_passes": 14,
+  "affected_script_passes": 2,
+  "new_ui": false,
+  "runs": {
+    "runtime01": {
+      "result_sha256": "e05ce2da59abb61e2090731dcfd6ed8a6da57438375c23d445fd36bb70e61eca",
+      "archive_sha256": "6a1c05e3ebee65a2ddf733d2207dfbc1036765c4e2b2447aa3b271bb8d9bffd7",
+      "archive_bytes": 2789,
+      "status": "failed",
+      "source_pre": "c29c1ad2270cab0559bf0a8c7b88eeecd01c7d457717566625a222e98f6a5f6b",
+      "source_post": "c29c1ad2270cab0559bf0a8c7b88eeecd01c7d457717566625a222e98f6a5f6b",
+      "commands": [
+        {
+          "label": "normal-manager-selection",
+          "exit": 0,
+          "seconds": 0.001998718000095323
+        },
+        {
+          "label": "normal-content-policy",
+          "exit": 0,
+          "seconds": 0.001960843000006207
+        },
+        {
+          "label": "normal-manager-ownership-xvfb",
+          "exit": 1,
+          "seconds": 12.130272219000062
+        }
+      ]
+    },
+    "runtime02": {
+      "result_sha256": "78e49b38a34e0bd50714dc2d92d3f168b80b870778f1ce7e13ae371d6280eda5",
+      "archive_sha256": "53c329b9e3a2ddd2df01e7bb8ec2e905e234726b9705570aade1c65eb525fc74",
+      "archive_bytes": 9026,
+      "status": "passed",
+      "source_pre": "7f231f4c627e67faa2987cfe922afddfdda6a19e521006172b157e388af13c9c",
+      "source_post": "7f231f4c627e67faa2987cfe922afddfdda6a19e521006172b157e388af13c9c",
+      "commands": [
+        {
+          "label": "normal-manager-ownership-xvfb",
+          "exit": 0,
+          "seconds": 0.3247259859999758
+        },
+        {
+          "label": "normal-manager-targets-values-xvfb",
+          "exit": 0,
+          "seconds": 0.5006275649998315
+        },
+        {
+          "label": "normal-manager-targets-multiple-xvfb",
+          "exit": 0,
+          "seconds": 0.3370651479999651
+        },
+        {
+          "label": "normal-manager-targets-admission-xvfb",
+          "exit": 0,
+          "seconds": 0.3888289769997755
+        },
+        {
+          "label": "normal-manager-targets-refusal-xvfb",
+          "exit": 0,
+          "seconds": 0.43834312699982547
+        },
+        {
+          "label": "normal-manager-handoff-announcement-xvfb",
+          "exit": 0,
+          "seconds": 0.16681631299979927
+        },
+        {
+          "label": "normal-manager-handoff-replacement-xvfb",
+          "exit": 0,
+          "seconds": 0.2766968880000604
+        },
+        {
+          "label": "normal-manager-handoff-failure-xvfb",
+          "exit": 0,
+          "seconds": 10.165312485999948
+        },
+        {
+          "label": "san-manager-selection",
+          "exit": 0,
+          "seconds": 0.007832300000245596
+        },
+        {
+          "label": "san-content-policy",
+          "exit": 0,
+          "seconds": 0.0036230230002729513
+        },
+        {
+          "label": "san-manager-ownership-xvfb",
+          "exit": 0,
+          "seconds": 0.3311595270001817
+        },
+        {
+          "label": "san-manager-targets-refusal-xvfb",
+          "exit": 0,
+          "seconds": 0.4452497960000983
+        }
+      ]
+    },
+    "script-runtime01": {
+      "result_sha256": "cbb8b4015437241f72f9fff78690e9e50e32195f7e46332066fd4c5ba6fbcfb7",
+      "archive_sha256": "0693f722a2ed833b21edb20c91e324d03787cdc62f3201d4bc6d1033be41ea4c",
+      "archive_bytes": 8852,
+      "status": "passed",
+      "source_pre": "500115ef019d76bad6f8cfd13940c7575d869bef0a57a571d4cf6aaac616189a",
+      "source_post": "500115ef019d76bad6f8cfd13940c7575d869bef0a57a571d4cf6aaac616189a",
+      "commands": [
+        {
+          "label": "normal-script-selection-owner-xvfb",
+          "exit": 0,
+          "seconds": 15.594769236000047
+        },
+        {
+          "label": "san-script-selection-owner-xvfb",
+          "exit": 0,
+          "seconds": 15.65538829199977
+        }
+      ]
+    }
+  },
+  "source_sha256": {
+    "modules/FvwmScript/FvwmScript.c": "2f5fcb8695a6aa8d9b2e922f7659c18a2cb36cdecbe1ebec9496315d77d6f627",
+    "modules/FvwmScript/Instructions.c": "9ad661b050dfc188526ba515e147e07e5352af54a0cb5baaa86a65e6ea54d7df",
+    "tests/font_lifetime_probe.c": "fd630b4aa5ea3c41f0b7712426b3c0cf8a3d613591d10a2d5d5ea9fd05ee2de9",
+    "tests/live_x/manager_ownership_live.py": "2871fe34aeff791c5a64b29804d629ffc66a2311b433017ab94246f22aa0e509",
+    "libs/content_policy.c": "64a79a064261aa946820551834e5d0883982951ef16f726f48efb8fe696e8a12",
+    "libs/content_policy.h": "d23a229c7029a6594f55f75a0e5a806b2d950ffcc61ccd48bc7accc593e6a467"
+  },
+  "limits": [
+    "No full support/install/default-X or new theme run",
+    "External X server and font libraries are not sanitizer-instrumented",
+    "#67 source34 component acceptance remains separate",
+    "No production protected-memory backend or capture adopted; memory candidate execution still pending",
+    "No clipboard-manager/SAVE_TARGETS service adopted; #22 remains open",
+    "Fatal partial font acquisition and recursive exit are not normal-finalization qualification"
+  ],
+  "script_artifacts": {
+    "/tmp/fvwm-module-waits-20261015/build-gcc/modules/FvwmScript/FvwmScript": {
+      "sha256": "363f1efd84ded78d66d5d6f8eac60ed09d2dfae0d1a861b56c151ce161edb189",
+      "bytes": 2271568
+    },
+    "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript": {
+      "sha256": "918d38d3df86191e1a0263c6c9448c1dcaf75affe17f72ef002b0c78459dfe37",
+      "bytes": 10904696
+    }
+  },
+  "font_attribution": {
+    "result": {
+      "scope": "paired font attribution only; actual Script clean-exit remains its own acceptance",
+      "observations": [
+        {
+          "label": "equivalent",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/font-lifetime-probe"
+          ],
+          "exit": -6,
+          "seconds": 0.17282144999990123,
+          "leak_summaries": [
+            [
+              "320",
+              "3"
+            ]
+          ],
+          "positive_xft_metrics": [
+            [
+              "0",
+              "76",
+              "16"
+            ]
+          ],
+          "font_stack_family": true,
+          "raw_log": "equivalent.log"
+        },
+        {
+          "label": "finalize",
+          "argv": [
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/tests/font-lifetime-probe",
+            "--finalize"
+          ],
+          "exit": 0,
+          "seconds": 0.015742469000088022,
+          "leak_summaries": [],
+          "positive_xft_metrics": [
+            [
+              "1",
+              "76",
+              "16"
+            ]
+          ],
+          "font_stack_family": false,
+          "raw_log": "finalize.log"
+        },
+        {
+          "label": "actual-script",
+          "argv": [
+            "/workspace/meson-env/bin/python3",
+            "/tmp/fvwm-module-waits-20261015/source/tests/live_x/script_selection_owner_live.py",
+            "--module",
+            "/tmp/fvwm-module-waits-20261015/build-module-waits-asan/modules/FvwmScript/FvwmScript",
+            "--display",
+            ":0",
+            "--artifacts-dir",
+            "/tmp/fvwm-module-waits-20261015/r1-font-pair01/actual-script"
+          ],
+          "exit": 1,
+          "seconds": 9.178380298999855,
+          "leak_summaries": [],
+          "positive_xft_metrics": [],
+          "font_stack_family": false,
+          "raw_log": "actual-script.log"
+        }
+      ],
+      "source_sha256": {
+        "tests/font_lifetime_probe.c": "fd630b4aa5ea3c41f0b7712426b3c0cf8a3d613591d10a2d5d5ea9fd05ee2de9",
+        "tests/live_x/script_selection_owner_live.py": "d697a0bca2e9aac3bf7fee4e8d54444dcd0cf58ac44d5b95044a71ad7c3b4af7",
+        "libs/Fft.c": "e84e8a90e07d07557ccae428602ae56a5cccfc6e934a121c694518337f7fbabb",
+        "libs/Flocale.c": "af81f48296b3fef51d4834f4074570b12df879724c22ff8291d4a873516a2a9c"
+      },
+      "binary_sha256": {
+        "probe": "45a2c0d0f391aa913af8ff12b82100ae175da395afd5ff73057bbc135a929413",
+        "script": "d6845a87363ff7a3ebc9cddc28a910ca6796a597cfcebc486079adbc1ec15594"
+      },
+      "environment": {
+        "HOME": "/root",
+        "LANG": null,
+        "LC_ALL": null,
+        "LC_CTYPE": "C.UTF-8",
+        "FONTCONFIG_FILE": null,
+        "FONTCONFIG_PATH": null,
+        "ASAN_OPTIONS": "detect_leaks=1:abort_on_error=1",
+        "UBSAN_OPTIONS": "halt_on_error=1:print_stacktrace=1"
+      },
+      "core_limit": [
+        0,
+        0
+      ],
+      "display": ":0",
+      "font_dependencies": {
+        "probe": {
+          "libfontconfig.so.1": {
+            "path": "/usr/lib/aarch64-linux-gnu/libfontconfig.so.1.12.1",
+            "sha256": "82c60a33531ebcbc55bb09f6ceab408347c22298f4564d9412cbe0f883254ce7"
+          },
+          "libXft.so.2": {
+            "path": "/usr/lib/aarch64-linux-gnu/libXft.so.2.3.6",
+            "sha256": "36e080baabeeaa6304d1ef303af522350b658506f0ad66143e07f9e122c9e27d"
+          },
+          "libexpat.so.1": {
+            "path": "/usr/lib/aarch64-linux-gnu/libexpat.so.1.9.1",
+            "sha256": "b4b445a092ad711e535cfa7241974f709b716194c58227abc75b05e3a3bec7f7"
+          }
+        },
+        "script": {
+          "libfontconfig.so.1": {
+            "path": "/usr/lib/aarch64-linux-gnu/libfontconfig.so.1.12.1",
+            "sha256": "82c60a33531ebcbc55bb09f6ceab408347c22298f4564d9412cbe0f883254ce7"
+          },
+          "libXft.so.2": {
+            "path": "/usr/lib/aarch64-linux-gnu/libXft.so.2.3.6",
+            "sha256": "36e080baabeeaa6304d1ef303af522350b658506f0ad66143e07f9e122c9e27d"
+          },
+          "libexpat.so.1": {
+            "path": "/usr/lib/aarch64-linux-gnu/libexpat.so.1.9.1",
+            "sha256": "b4b445a092ad711e535cfa7241974f709b716194c58227abc75b05e3a3bec7f7"
+          }
+        }
+      },
+      "matched_font_files": [
+        {
+          "path": "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+          "sha256": "ae7b7855e115a5966d8b1b3f80f254ccc117ec86f9965e202ee2940453837280"
+        }
+      ],
+      "status": "observations completed; not an actual-Script passing claim"
+    },
+    "archive_sha256": "bf0147d2274a0b1316dabd0bf2add4fc1dbd3afa99a919055981f361b7718339",
+    "archive_bytes": 6198
+  },
+  "private_workspace": "builddir/codex-2026-11-01/r1-content-shared-checkpoint"
+}

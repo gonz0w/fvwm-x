@@ -36,6 +36,7 @@ void __real_PictureFreeColors(Display *, Colormap, Pixel *, int,
 	unsigned long, Bool);
 Atom __real_XInternAtom(Display *, const char *, Bool);
 int __real_XSetSelectionOwner(Display *, Atom, Window, Time);
+int __real_XDestroyWindow(Display *, Window);
 bool __real_script_widget_prepare(struct XObj *);
 void __real_SendText(int *, const char *, unsigned long);
 void __real_SendFinishedStartupNotification(int *);
@@ -50,6 +51,7 @@ static struct {
 } widgets[16];
 static GC base_gc;
 static Atom registered_selection;
+static Window registered_owner;
 static unsigned int selection_releases, prepared;
 static bool dead_pipe_entered;
 static XErrorHandler error_handler;
@@ -188,25 +190,33 @@ int __wrap_XSetSelectionOwner(Display *display, Atom atom, Window owner,
 	Time time)
 {
 	assert(!dead_pipe_entered && x11base != NULL && atom != None);
-	if (owner == x11base->win)
+	/* Script acquisition uses its own hidden window, never the visible
+	 * frame or root. The real server confirmation follows this request. */
+	assert(owner != None && owner != x11base->win && owner != x11base->root);
+	watch_base();
+	registered_selection = atom;
+	registered_owner = owner;
+	if (child_id != NULL)
 	{
-		watch_base();
-		registered_selection = atom;
-		if (child_id != NULL)
-		{
-			assert(x11base->TabScriptId[1] != child_id);
-			assert(strcmp(x11base->TabScriptId[1], child_id) == 0);
-			assert(x11base->TabScriptId[0] != NULL);
-		}
-	}
-	else if (owner == x11base->root)
-	{
-		/* The established selection survives QuitFunc/message grace and
-		 * is released before widget destruction. Partial startup skips it. */
-		assert(atom == registered_selection && destroys == 0);
-		selection_releases++;
+		assert(x11base->TabScriptId[1] != child_id);
+		assert(strcmp(x11base->TabScriptId[1], child_id) == 0);
+		assert(x11base->TabScriptId[0] != NULL);
 	}
 	return __real_XSetSelectionOwner(display, atom, owner, time);
+}
+
+int __wrap_XDestroyWindow(Display *display, Window window)
+{
+	assert(!dead_pipe_entered);
+	if (window == registered_owner && registered_owner != None)
+	{
+		/* Retire only the registered window before widget callbacks;
+		 * duplicate release is a failure, not another ownership action. */
+		assert(x11base != NULL && destroys == 0);
+		assert(selection_releases == 0);
+		selection_releases++;
+	}
+	return __real_XDestroyWindow(display, window);
 }
 
 int __wrap_XFlush(Display *display)

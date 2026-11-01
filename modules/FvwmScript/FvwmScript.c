@@ -168,6 +168,7 @@ Bool script_base_release(unsigned int active_depth, Bool release_x)
 		return False;
 	if (x11base != NULL)
 	{
+		script_selection_release(&x11base->selections, release_x);
 		if (release_x)
 		{
 			script_base_colors_clear(x11base);
@@ -285,7 +286,8 @@ ShutdownX(void)
   if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
     fvwm_debug(__func__, "Unable to initialize message shutdown clock");
   else
-    while (!isTerminated && BuffSend.count > 0)
+    while (!isTerminated && BuffSend.count > 0 &&
+           script_selection_private_owned(&x11base->selections))
     {
       if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
       {
@@ -302,6 +304,9 @@ ShutdownX(void)
         FNextEvent(dpy, &event);
         if (event.type == SelectionRequest)
           SendMsgToScript(event);
+        else if (event.type == SelectionClear)
+          script_selection_clear(&x11base->selections,
+                                 &event.xselectionclear);
         continue;
       }
       ready = (struct pollfd){ x_fd, POLLIN, 0 };
@@ -317,12 +322,7 @@ ShutdownX(void)
     }
   script_message_clear(&BuffSend);
 
-  if (x11base->script_selection != None)
-  {
-    XSetSelectionOwner(dpy, x11base->script_selection,
-                      x11base->root, CurrentTime);
-    x11base->script_selection = None;
-  }
+  script_selection_release(&x11base->selections, true);
   XFlush(dpy);
 
   for (i=0; i<initialized_widgets; i++)
@@ -832,6 +832,11 @@ void OpenWindow (void)
   if (name_property != NULL)
     XFree(Name.value);
   Scrapt = fxcalloc(sizeof(char), 1);
+  if (!script_selection_init(&x11base->selections, dpy, &BuffSend))
+  {
+    fvwm_debug(__func__, "Unable to initialize selection ownership");
+    exit(1);
+  }
 
   /* Build atoms for inter application communication */
   propriete = XInternAtom(dpy,"Prop_selection",False);
@@ -1193,36 +1198,11 @@ void SendMsgAndString(char *action, char *type)
  */
 void SendMsgToScript(XEvent event)
 {
-  Atom sender;
-  XEvent reply = {0};
-  XSelectionRequestEvent *request = &event.xselectionrequest;
-  char *message;
+  Window primary = x11base->selections.primary.window;
 
-  sender = XInternAtom(dpy, x11base->TabScriptId[1], True);
-  reply.xselection.type = SelectionNotify;
-  reply.xselection.requestor = request->requestor;
-  reply.xselection.selection = request->selection;
-  reply.xselection.target = request->target;
-  reply.xselection.time = request->time;
-  reply.xselection.property = None;
-
-  /* A refusal must echo the requested target, even for an empty queue. */
-  if (sender != None && request->selection == sender &&
-      request->target != None)
-  {
-    message = script_message_take(&BuffSend, request->target);
-    if (message != NULL)
-    {
-      /* ICCCM permits old requestors to omit the property atom. */
-      reply.xselection.property = request->property != None ?
-        request->property : request->target;
-      XChangeProperty(dpy, request->requestor, reply.xselection.property,
-                      request->target, 8, PropModeReplace,
-                      (unsigned char *)message, strlen(message) + 1);
-      free(message);
-    }
-  }
-  FSendEvent(dpy, request->requestor, False, 0, &reply);
+  script_selection_request(&x11base->selections, &event.xselectionrequest);
+  if (primary != None && x11base->selections.primary.window == None)
+    UnselectAllTextField(tabxobj);
 }
 
 static
@@ -1278,7 +1258,7 @@ void UpdateRootTransparency(Bool pr_only)
 /* read an X event */
 static void script_dispatch_x_event(const XEvent *input)
 {
-  XEvent event = *input, evnt_sel;
+  XEvent event = *input;
   int i;
   int isTab = 0;
   KeySym ks;
@@ -1481,37 +1461,12 @@ static void script_dispatch_x_event(const XEvent *input)
       update_keyboard_lock_mask();
       break;
     case SelectionRequest:
-      if (event.xselectionrequest.selection == XA_PRIMARY)
-      {
-	evnt_sel.type = SelectionNotify;
-	evnt_sel.xselection.requestor = event.xselectionrequest.requestor;
-	evnt_sel.xselection.selection = event.xselectionrequest.selection;
-	evnt_sel.xselection.target = event.xselectionrequest.target;
-	evnt_sel.xselection.time = event.xselectionrequest.time;
-	evnt_sel.xselection.property = event.xselectionrequest.property;
-	switch (event.xselectionrequest.target)
-	{
-	case XA_STRING:
-	  XChangeProperty(dpy,
-			  evnt_sel.xselection.requestor,
-			  evnt_sel.xselection.property,
-			  evnt_sel.xselection.target,
-			  8,
-			  PropModeReplace,
-			  (unsigned char *)(Scrapt),
-			  strlen(Scrapt)+1);
-	  break;
-	default:evnt_sel.xselection.property = None;
-	}
-	FSendEvent(dpy,evnt_sel.xselection.requestor,
-		   False,0,&evnt_sel);
-      }
-      else
-	SendMsgToScript(event);
+      SendMsgToScript(event);
       break;
     case SelectionClear:
-      if (event.xselectionclear.selection == XA_PRIMARY)
-	UnselectAllTextField(tabxobj);
+      if (script_selection_clear(&x11base->selections,
+                                 &event.xselectionclear))
+        UnselectAllTextField(tabxobj);
       break;
     case ClientMessage:
       if ((event.xclient.format == 32) &&
@@ -1863,8 +1818,11 @@ static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
     myatom = XInternAtom(dpy,x11base->TabScriptId[1],True);
     if (myatom != None)
     {
-      XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
-      x11base->script_selection = myatom;
+      if (!script_selection_private_set(&x11base->selections, myatom))
+      {
+        fvwm_debug(__func__, "Unable to acquire private Script selection");
+        exit(1);
+      }
     }
   }
   else
@@ -1886,8 +1844,11 @@ static void ReadFvwmScriptArg(int argc, char **argv,int IsFather)
     myatom=XInternAtom(dpy, x11base->TabScriptId[1], True);
     if (myatom != None)
     {
-      XSetSelectionOwner(dpy, myatom, x11base->win, CurrentTime);
-      x11base->script_selection = myatom;
+      if (!script_selection_private_set(&x11base->selections, myatom))
+      {
+        fvwm_debug(__func__, "Unable to acquire private Script selection");
+        exit(1);
+      }
     }
   }
 }

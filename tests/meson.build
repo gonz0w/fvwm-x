@@ -2950,6 +2950,13 @@ script_message_test = executable(
 )
 test('script-message', script_message_test)
 
+script_selection_test = executable(
+    'test-script-selection', 'test_script_selection.c',
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('script-selection', script_selection_test)
+
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-message-xvfb', py,
         args: [files('live_x/script_message_live.py'), '--module', fvwm_script,
@@ -2957,6 +2964,13 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         depends: fvwm_script,
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 60)
+    test('script-selection-owner-xvfb', py,
+        args: [files('live_x/script_selection_owner_live.py'),
+               '--module', fvwm_script,
+               '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-selection-owner'],
+        depends: fvwm_script,
+        suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+        is_parallel: false, timeout: 120)
 endif
 
 script_message_owner_test = executable(
@@ -3006,7 +3020,8 @@ script_base_owner_test = executable(
         '-Wl,--wrap=GetColor', '-Wl,--wrap=XSelectInput',
         '-Wl,--wrap=XStringListToTextProperty', '-Wl,--wrap=XSetWMProperties',
         '-Wl,--wrap=XInternAtom', '-Wl,--wrap=XSetWMProtocols',
-        '-Wl,--wrap=SetWindowBackground', '-Wl,--wrap=PictureFreeColors'],
+        '-Wl,--wrap=SetWindowBackground', '-Wl,--wrap=PictureFreeColors',
+        '-Wl,--wrap=script_selection_init'],
     c_args: ['-UNDEBUG', '-fno-builtin-free'],
 )
 test('script-base-owner', script_base_owner_test)
@@ -3022,6 +3037,7 @@ script_base_lifecycle_probe = executable(
         '-Wl,--wrap=XCreateFontCursor', '-Wl,--wrap=XFreeCursor',
         '-Wl,--wrap=fvwmlib_XCreateGC', '-Wl,--wrap=XFreeGC',
         '-Wl,--wrap=XInternAtom', '-Wl,--wrap=XSetSelectionOwner',
+        '-Wl,--wrap=XDestroyWindow',
         '-Wl,--wrap=script_widget_prepare', '-Wl,--wrap=SendText',
         '-Wl,--wrap=SendFinishedStartupNotification', '-Wl,--wrap=XFlush',
         '-Wl,--wrap=XUnmapWindow', '-Wl,--wrap=XCloseDisplay',

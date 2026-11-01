@@ -7,16 +7,59 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: Script selection transport under #22, owner Cam, branch
-`codex/r1-script-selection-transport`. PR322 merged as
-`27623cd2e296565c4f2d52bd3dba7c2bee8839ad`; canonical signature, Cam author DCO and
-reviewed tree `81739ddba9a464d665a9aa8391d09442c75b751d` verify. Its source branch
-is retired. The file-transfer implementation is integrated; #67 stays open for
-Q67-OPENBSD-NOBUS (two unrun disabled-profile checks), queued with the next
-Script-selection major-feature/shared checkpoint. Whole #22 remains open.
-Performance is 3/5 after PR322; no comparison is due. One owned Linux ARM64
-build environment is warm for necessary incremental compilation; no runtime
-qualification has run for this new phase.
+Current checkpoint: Script selection ownership and metadata under #22, owner
+Cam, branch `codex/r1-script-selection-owner`. Transport PR323 merged as
+`c06e3a13563ec0685d63f1ac548b146a8257aa93`, reviewed tree
+`9ed73400de4bffaa48e6c1cd246f7afc7d4c1e62`; canonical GitHub signature and Cam
+DCO verify. The source branch is retired. Local candidate SSH signature verifies;
+local verification of GitHub's squash signature lacks its public GPG key, so
+canonical GitHub verification is the source for that signature. No trust files
+changed. Transport runtime qualification is queued, not passed. Performance is
+4/5 after PR323; no comparison is due. One owned Linux ARM64 incremental build
+lab stays warm; no runtime qualification has run for this Script feature group.
+#67 stays open for Q67-OPENBSD-NOBUS's two disabled-profile checks, queued with
+this same major-feature/shared checkpoint. Whole #22 remains open.
+
+Selected owner batch: implement S07/S08/S11/S14 owner-side behavior together:
+immutable confirmed PRIMARY snapshots separated from cut-buffer/widget state;
+truthful bounded TARGETS/TIMESTAMP/MULTIPLE; private message metadata preserving
+FIFO and queued bytes; matching loss/epoch handling and shutdown that preserves
+newer owners. Reuse existing Script lifetime/X-error/FProperty policy and the
+40-message limit. Reader API adoption, INCR paste and selection-wait servicing
+remain the next related batch; do not advertise them as active yet. The
+[Script selection decision](decisions/SCRIPT-SELECTION-2026-10-31.md) supplies
+roles and numerical bounds. Implementer owns Script owner/queue/TextField
+integration and authored policy coverage; lead owns manuals/tracker/build
+execution/integration. Separate review and an affected incremental compile
+precede merge; native policy/X/sanitizer/theme qualification joins the major
+Script checkpoint after requestor/event-servicing adoption. No new dependencies,
+configuration migration, core-loop work or whole-issue closure is selected.
+
+Owner source checkpoint: the coherent snapshot/metadata/private-queue/lifecycle
+implementation and authored pure/independent-X coverage are complete. Separate
+review of the frozen 20-file candidate found two owner/test-consumer issues:
+validate nonzero property atoms before any queue take/write, and adapt the old
+base fixtures to confirmed hidden-window ownership. Both are corrected and
+source-reviewed. Initial queue admission now waits for confirmed private
+acquisition. The independent fixture also corrects its typed XFlush declaration
+and guarantees pointer release on a failed grab. No runtime reproduction or
+passing runtime result is claimed for these source findings.
+
+One affected Linux ARM64 GCC build passes Script and four probes (selection
+policy, message queue, base owner and base lifecycle): 35 compile/link commands,
+unchanged profile options, no runtime suite. Repository/AST/diff checks pass.
+Receipts: `builddir/codex-2026-10-31/r1-script-selection-owner/compile01`.
+Runtime policy/X/scoped sanitizers, actual acquisition/UI boundary/vanished-peer
+coverage and theme captures remain queued. The existing direct requestors and
+wait servicing are unchanged; adopt the new transport and safe servicing next.
+The owner PR advances performance to 5/5 when merged; that due observation joins
+the same later shared session and does not force another lab boot.
+
+Both implementation agents reached their account usage limit during final
+corrections. The lead completed the finite correction/mock/fixture work under
+the recorded fallback; the separate reviewer remained available and reviewed it.
+Requested Temper routes are recorded; actual backend model/effort metadata
+remains unavailable. No model override, permission or trust change was made.
 
 Owner direction, 2026-10-31: develop across several related PRs before runtime
 qualification. Use separate review/static checks and necessary affected

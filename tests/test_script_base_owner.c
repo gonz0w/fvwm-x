@@ -158,6 +158,19 @@ void __wrap_SetWindowBackground(Display *display, Window window,
 	(void)colorset; (void)depth; (void)gc; (void)clear;
 }
 
+#ifndef SCRIPT_BASE_BASELINE_CONTROL
+/* This fixture owns no display; selection protocol has its native-X fixture.
+ * Keep the real base setup/teardown while modeling an unowned initial queue. */
+bool __wrap_script_selection_init(script_selection_state *state,
+	Display *display, script_message_queue *queue)
+{
+	assert(display == NULL && queue != NULL);
+	*state = (script_selection_state){.display = display, .queue = queue};
+	script_message_retire(queue);
+	return true;
+}
+#endif
+
 static void make_base(const char *cursor)
 {
 	x11base = calloc(1, sizeof(*x11base));

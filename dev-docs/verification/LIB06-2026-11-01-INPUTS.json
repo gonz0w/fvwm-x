@@ -1,0 +1,69 @@
+{
+  "candidate": "yyjson0.13.0",
+  "annotated_tag": "138b4a7e757426bbbaa11ca37f257ce8d8489007",
+  "commit": "6447536015f3d600f3d65323b10976103b337ca7",
+  "files": {
+    "src/yyjson.c": {
+      "url": "https://raw.githubusercontent.com/ibireme/yyjson/6447536015f3d600f3d65323b10976103b337ca7/src/yyjson.c",
+      "sha256": "d2d58ef0a3b2267862dc363832c4f3185fd375aea933d5d3419d1a940d6ece2e",
+      "bytes": 424765
+    },
+    "src/yyjson.h": {
+      "url": "https://raw.githubusercontent.com/ibireme/yyjson/6447536015f3d600f3d65323b10976103b337ca7/src/yyjson.h",
+      "sha256": "ef803cda5c06b8962face6dfa39c3284b3bcf3e73f4d7317664690cc779679ca",
+      "bytes": 330896
+    },
+    "LICENSE": {
+      "url": "https://raw.githubusercontent.com/ibireme/yyjson/6447536015f3d600f3d65323b10976103b337ca7/LICENSE",
+      "sha256": "45e384d3d52c73cba3a64d6e6c25d47cd738cd8a55c30629e3201046eda62947",
+      "bytes": 1084
+    },
+    "doc/API.md": {
+      "url": "https://raw.githubusercontent.com/ibireme/yyjson/6447536015f3d600f3d65323b10976103b337ca7/doc/API.md",
+      "sha256": "b9968ddeca2e058b67bd5d4bb105a8221dd72162fcd5a991173f9343e2320aba",
+      "bytes": 75677
+    }
+  },
+  "owner": "LIB-06 #48",
+  "baseline_commit": "55d02b028bf849a218e8ea5b672f4e3b36f7a7ec",
+  "baseline": {
+    "libs/cJSON.c": {
+      "sha256": "0027420b409663cbd44e5aeeb2accaf0d6a9ad67c59631e06e4c4cbf6415c3ae",
+      "bytes": 81929
+    },
+    "libs/cJSON.h": {
+      "sha256": "25b0145150d500498e4d209cec69c18c42cf818bffcc54690be3b895a2a16dee",
+      "bytes": 16394
+    },
+    "libs/json_print_policy.h": {
+      "sha256": "f4c669d060b62d1bc5b4cf195626c3d783414e6709b8026fb9b1a1881446a53b",
+      "bytes": 1172
+    },
+    "fvwm/status_json.c": {
+      "sha256": "add272f648a610adecbd47e21fd6cf90a28074b22d4078e24831f3b7d1f9227b",
+      "bytes": 3682
+    },
+    "fvwm/status_pipe.h": {
+      "sha256": "ac50c125eb069fc388c567e558dada2f6aeaf5a6aea757196f1775d7a6ed75ad",
+      "bytes": 900
+    },
+    "modules/FvwmMFL/FvwmMFL.c": {
+      "sha256": "57a0385cd3022d7f71364502863b2011e241800053e35883f8387a355fcdcaca",
+      "bytes": 54659
+    },
+    "modules/FvwmMFL/request.c": {
+      "sha256": "d44a3ae51ba65cb46a9b01118c1752c2bd3432abcb8f1799397a6c16e7c9b519",
+      "bytes": 58416
+    },
+    "modules/FvwmMFL/stream.c": {
+      "sha256": "ed4f4af870d5dbae4dc3d26f5544ab89e1b6d90a4aa4d9dfdf7082d2178a5553",
+      "bytes": 2934
+    },
+    "modules/FvwmMFL/stream.h": {
+      "sha256": "0d9f81e1d19d1b874916cd74dec2a381b74eacf222f8ab307600dd5a4340b550",
+      "bytes": 1211
+    }
+  },
+  "license": "MIT; unmodified notice retained with private candidate",
+  "adopted": false
+}

@@ -235,3 +235,5 @@ separate; the former public-helper output decision is still deferred.
 - [Optional session bus client](SESSION-SERVICES-ADAPTER-2026-10-29.md): finite comparison, disabled default and ownership limits.
 
 - [Fixed session providers and power requests](SESSION-POWER-PROVIDERS-2026-10-29.md): shared policy, confirmation identity and unconfirmed locker/suspend boundaries.
+
+- [Script selection owner and requestor checkpoint](SCRIPT-SELECTION-2026-10-31.md) — finite staged #22 scope and shared qualification.

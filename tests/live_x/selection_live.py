@@ -14,6 +14,7 @@ import shutil
 import time
 
 from geometry_transition_live import Client
+from colorset_live import WindowAttributes
 from mfl_stream_live import Connection
 from live_x_harness import HarnessError, HarnessRuntime, start_display_server, wait_for_predicate
 
@@ -63,6 +64,9 @@ def widgets(runtime, display, args):
             C.c_ulong, C.c_int, C.c_int, C.c_void_p, C.c_int]
         x.XGetSelectionOwner.argtypes = [C.c_void_p, C.c_ulong]
         x.XGetSelectionOwner.restype = C.c_ulong
+        x.XGetWindowAttributes.argtypes = [C.c_void_p, C.c_ulong,
+            C.POINTER(WindowAttributes)]
+        x.XGetWindowAttributes.restype = C.c_int
         x.XSetSelectionOwner.argtypes = [C.c_void_p, C.c_ulong, C.c_ulong, C.c_ulong]
         x.XCheckTypedEvent.argtypes = [C.c_void_p, C.c_int, C.POINTER(Event)]
         x.XSendEvent.argtypes = [C.c_void_p, C.c_ulong, C.c_int, C.c_long, C.POINTER(Event)]
@@ -395,11 +399,24 @@ def widgets(runtime, display, args):
         evidence['script-configured-process-timeout-and-recovery'] = 'passed'
         # Exercise the production sender with an empty queue, including a
         # forged None target that previously selected queue element -1.
-        owner = named('MessageProbe')
-        selection = next((value for index in range(16, 256)
-            if x.XGetSelectionOwner(d, value := x.XInternAtom(d,
-                b'\xa1' + format(index, 'x').encode() + b'FvwmScript10', 1)) == owner), None)
-        assert selection, 'child selection owner not found'
+        visible = named('MessageProbe')
+        candidates = []
+        for index in range(16, 256):
+            selection = x.XInternAtom(d,
+                b'\xa1' + format(index, 'x').encode() + b'FvwmScript10', 1)
+            if selection:
+                owner = x.XGetSelectionOwner(d, selection)
+                if owner:
+                    candidates.append((selection, owner))
+        # This fixture launches exactly one first child. Do not guess when
+        # another active parent makes the generated private ID ambiguous.
+        assert len(candidates) == 1, candidates
+        selection, owner = candidates[0]
+        attributes = WindowAttributes()
+        assert visible and owner != visible
+        assert x.XGetWindowAttributes(d, owner, C.byref(attributes))
+        assert attributes.window_class == 2  # Confirm the hidden InputOnly role.
+        assert x.XGetSelectionOwner(d, selection) == owner
         for target, prop in ((0, 0), (atom('absent-recipient'), 0),
                              (atom('absent-recipient'), atom('probe-property'))):
             request = Event()
@@ -436,6 +453,21 @@ def widgets(runtime, display, args):
                 lambda: x.XCheckTypedEvent(d, 30, C.byref(event)),
                 time.monotonic() + 3, process=core)
             req = event.request
+            assert req.target == atom('TARGETS')
+            # This peer explicitly models a legacy owner, so negotiation must
+            # see a correlated refusal before exercising its ordinary payload.
+            if mode != 'silent':
+                refusal = Event()
+                refusal.selection = SelectionNotify(type=31, display=d,
+                    requestor=req.requestor, selection=req.selection,
+                    target=req.target, property=0, time=req.time)
+                x.XSendEvent(d, req.requestor, 0, 0, C.byref(refusal))
+                x.XSync(d, 0)
+                wait_for_predicate('legacy payload request ' + mode,
+                    lambda: x.XCheckTypedEvent(d, 30, C.byref(event)),
+                    time.monotonic() + 3, process=core)
+                req = event.request
+                assert req.target == atom('UTF8_STRING')
             connection.echo("request-captured-" + mode)
             if mode != 'silent':
                 data = C.create_string_buffer(b'hello')

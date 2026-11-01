@@ -162,8 +162,9 @@ corresponding script commands are not used in the script.
   Bindings ignore Caps Lock and the actual Num Lock modifier. In this mode
   TextField also supports Ctrl+A selection, replacement of selected text,
   Ctrl+V clipboard paste, Home/End, and forward Delete. Clipboard requests
-  use UTF8_STRING with a STRING fallback and the existing bounded selection
-  transport (up to one second per attempt and 32 KiB per reply).
+  negotiate UTF8_STRING or STRING through bounded direct or INCR transfer.
+  One total second covers negotiation, fallback and all chunks; wire data
+  is limited to 32 KiB.
   Other scripts retain their existing pointer-based keyboard routing.
 
 == ANATOMY OF A SCRIPT
@@ -754,15 +755,28 @@ equality and inequality compare text directly.
   This function returns the identification number of the script father.
 (ReceivFromScript \{int})::
   This function returns the message sent by the script numbered int.
-  Requests wait at most one second for a selection owner. Missing, refused,
-  malformed, or oversized replies return "No message". Messages must be
-  complete format-8 properties of at most 32 KiB.
+  Requests wait at most one second in total for a selection owner, including
+  incremental transfer. Missing, refused, malformed or oversized replies return
+  "No message". Messages must be complete format-8 properties of at most 32 KiB,
+  including one final NUL, with no earlier embedded NUL. This exact custom-target
+  protocol does not probe metadata or recode valid message bytes.
 +
-TextField requests to external selection owners use the same one-second
-timeout and 32 KiB limit. Invalid replies leave the existing text unchanged. Incremental (INCR)
-selection transfers are not supported. Root cut buffers are accepted only
-as complete STRING/8 properties of at most 64 KiB. Invalid updates preserve
-the stored cut-buffer text; they do not alter an owned PRIMARY snapshot.
+TextField requests negotiate TARGETS and prefer usable UTF8_STRING, then STRING.
+Only a TARGETS refusal permits legacy guessing; malformed metadata is refused.
+Both direct and INCR data use the same total one-second and 32 KiB limits.
+TARGETS is limited to 256 atoms, including incremental metadata; a data transfer
+accepts at most 4096 nonempty chunks and requires a correctly typed empty end.
+Text rejects embedded NUL, removes one sole trailing wire NUL and validates
+UTF-8 when that representation is chosen. Invalid or cancelled replies leave
+text unchanged. A widget mutation cancels a pending paste before applying it.
++
+One Script reader runs at a time. Waiting services bounded safe X ownership and
+drawing events without dispatching unrelated input or entering a second packet
+reader. Termination or transport loss cancels the wait. Individual X calls and
+already entered configured callbacks still require responsive execution; the
+time budget cannot preempt them. Root cut buffers are accepted only as complete
+STRING/8 properties of at most 64 KiB. Invalid updates preserve stored
+cut-buffer text; they do not alter an owned PRIMARY snapshot.
 (RemainderOfDiv {int1 int2}): t::
   This function returns the remainder of the division (_int1_/_int2_).
 (GetTime)::

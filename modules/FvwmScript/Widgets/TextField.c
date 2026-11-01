@@ -266,15 +266,16 @@ void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
 		{
 			if (before != None)
 				UnselectAllTextField(tabxobj);
-			char *received = FSelectionRequestTextWithService(dpy, XA_PRIMARY,
-				XA_STRING, propriete, EvtButton->time,
-				FSELECTION_TIMEOUT_MS, FvwmScriptModalService, xobj);
-			if (received == NULL)
+			FSelectionResult received = {0};
+
+			if (FvwmScriptSelectionText(xobj, XA_PRIMARY,
+			    EvtButton->time, &received) != FSELECTION_OK)
 				return;
 			free(Scrapt);
-			Scrapt = received;
+			/* Transfer the complete normalized buffer to the paste cache. */
+			Scrapt = (char *)received.data;
 			paste = Scrapt;
-			length = strlen(paste);
+			length = received.length;
 		}
 		if (length != 0)
 		{
@@ -399,27 +400,20 @@ void EvtKeyTextField(struct XObj *xobj,XKeyEvent *EvtKey)
 		if ((EvtKey->state & ControlMask) && (ks == XK_v || ks == XK_V))
 		{
 			Atom clipboard = XInternAtom(dpy, "CLIPBOARD", False);
-			Atom utf8 = XInternAtom(dpy, "UTF8_STRING", False);
-			char *text = FSelectionRequestTextWithService(dpy, clipboard, utf8,
-				propriete, EvtKey->time, FSELECTION_TIMEOUT_MS,
-				FvwmScriptModalService, xobj);
-			int byte;
+			FSelectionResult text = {0};
 
-			if (text == NULL)
-				text = FSelectionRequestTextWithService(dpy, clipboard, XA_STRING,
-					propriete, EvtKey->time, FSELECTION_TIMEOUT_MS,
-				FvwmScriptModalService, xobj);
-			if (text == NULL)
+			if (FvwmScriptSelectionText(xobj, clipboard, EvtKey->time,
+			    &text) != FSELECTION_OK)
 				return;
-			for (byte = 0; text[byte] != '\0'; byte++)
-				if ((unsigned char)text[byte] < ' ')
-					text[byte] = ' ';
-			if (!text_field_edit(xobj, text, strlen(text), True))
-			{
-				free(text);
+			for (size_t byte = 0; byte < text.length; byte++)
+				if (text.data[byte] < ' ')
+					text.data[byte] = ' ';
+			Bool edited = text_field_edit(xobj, (char *)text.data,
+				text.length, True);
+
+			FSelectionResultFree(&text);
+			if (!edited)
 				return;
-			}
-			free(text);
 			DrawTextField(xobj, NULL);
 			SendMsg(xobj, SingleClic);
 			return;

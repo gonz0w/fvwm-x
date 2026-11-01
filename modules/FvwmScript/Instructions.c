@@ -699,7 +699,7 @@ static char *ReceivFromScript (int *NbArg,long *TabArg)
   char *arg,*msg;
   int send;
   Atom AReceiv,ASend;
-  char *received;
+  FSelectionResult received = {0};
 
   (*NbArg)++;
   arg = CalcArg(TabArg,NbArg);
@@ -742,19 +742,13 @@ static char *ReceivFromScript (int *NbArg,long *TabArg)
   else
     return msg;
 
-  received = FSelectionRequestTextWithService(dpy, ASend, AReceiv, propriete,
-    CurrentTime, FSELECTION_TIMEOUT_MS, FvwmScriptModalService, NULL);
-  if (received != NULL)
+  if (FvwmScriptSelectionExact(ASend, AReceiv, CurrentTime, &received) ==
+      FSELECTION_OK && received.length > 1)
   {
-    if (received[0] != '\0')
-    {
-      free(msg);
-      msg = bounded_value_copy(received);
-      free(received);
-    }
-    else
-      free(received);
+    free(msg);
+    msg = bounded_value_copy((char *)received.data);
   }
+  FSelectionResultFree(&received);
   return msg;
 }
 

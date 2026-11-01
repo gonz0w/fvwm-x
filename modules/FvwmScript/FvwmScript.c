@@ -116,7 +116,7 @@ static unsigned int keyboard_lock_mask = LockMask;
 struct XObj *tabxobj[1000];
 char *Scrapt;
 Atom propriete,type;
-static Atom wm_del_win;
+static Atom wm_del_win, wm_protocols;
 char *imagePath = NULL;
 static Bool is_dead_pipe = False;
 static int initialized_widgets;
@@ -841,6 +841,7 @@ void OpenWindow (void)
   /* Build atoms for inter application communication */
   propriete = XInternAtom(dpy,"Prop_selection",False);
   wm_del_win = XInternAtom(dpy,"WM_DELETE_WINDOW",False);
+  wm_protocols = XInternAtom(dpy,"WM_PROTOCOLS",False);
   XSetWMProtocols(dpy,x11base->win,&wm_del_win,1);
 
   free(classHints.res_class);
@@ -1256,7 +1257,7 @@ void UpdateRootTransparency(Bool pr_only)
 
 
 /* read an X event */
-static void script_dispatch_x_event(const XEvent *input)
+static void script_dispatch_x_event(const XEvent *input, Bool coalesce)
 {
   XEvent event = *input;
   int i;
@@ -1275,7 +1276,7 @@ static void script_dispatch_x_event(const XEvent *input)
       ey = event.xexpose.y;
       ex2 = event.xexpose.x + event.xexpose.width;
       ey2 = event.xexpose.y + event.xexpose.height;
-      for (unsigned budget = 0; budget < 32 &&
+      for (unsigned budget = 0; coalesce && budget < 32 &&
            FCheckTypedWindowEvent(dpy, event.xany.window, Expose, &event);
            budget++)
       {
@@ -1325,7 +1326,7 @@ static void script_dispatch_x_event(const XEvent *input)
 
       fev_sanitise_configure_notify(&event.xconfigure);
       moved = event.xconfigure.send_event;
-      for (unsigned budget = 0; budget < 32 &&
+      for (unsigned budget = 0; coalesce && budget < 32 &&
            FCheckTypedEvent(dpy, ConfigureNotify, &event); budget++)
       {
 	fev_sanitise_configure_notify(&event.xconfigure);
@@ -1510,7 +1511,7 @@ void ReadXServer(void)
   {
     XEvent event;
     FNextEvent(dpy, &event);
-    script_dispatch_x_event(&event);
+    script_dispatch_x_event(&event, True);
   }
 }
 
@@ -1740,6 +1741,176 @@ static bool script_modal_unchanged(const struct XObj *before,
     memcmp(before->TabColor, after->TabColor, sizeof(before->TabColor)) == 0;
 }
 
+/* One module-local operation borrows a base/widget that outlives returning
+ * callbacks. Saved title/font resources are compared, never dereferenced. */
+typedef struct {
+  X11base *base;
+  struct XObj *object;
+  struct XObj initial;
+} script_selection_reader;
+
+static bool script_selection_reader_active;
+
+static bool script_reader_valid(const script_selection_reader *reader)
+{
+  return !isTerminated && !is_dead_pipe && x11base == reader->base &&
+    x11base != NULL && FvwmScriptExecutionAllowed() &&
+    (reader->object == NULL ||
+     script_modal_unchanged(&reader->initial, reader->object));
+}
+
+static Bool script_reader_window(Window window)
+{
+  if (window == None)
+    return False;
+  if (window == x11base->win)
+    return True;
+  for (int i = 0; i < nbobj; i++)
+    if (tabxobj[i] != NULL && window == tabxobj[i]->win)
+      return True;
+  return False;
+}
+
+static Bool script_reader_event(Display *display, XEvent *event,
+  XPointer context)
+{
+  (void)display;
+  (void)context;
+  switch (event->type)
+  {
+    case SelectionRequest:
+    case SelectionClear:
+    case MappingNotify:
+      return True;
+    case Expose:
+      return script_reader_window(event->xexpose.window);
+    case ConfigureNotify:
+      return script_reader_window(event->xconfigure.window);
+    case PropertyNotify:
+      return event->xproperty.window == Root &&
+        event->xproperty.atom >= XA_CUT_BUFFER0 &&
+        event->xproperty.atom <= XA_CUT_BUFFER7;
+    case ClientMessage:
+      return event->xclient.window == x11base->win &&
+        event->xclient.format == 32 &&
+        event->xclient.message_type == wm_protocols &&
+        event->xclient.data.l[0] == (long)wm_del_win;
+  }
+  /* Input and every requestor reply/property stay with their owner. */
+  return False;
+}
+
+static bool script_reader_health(void)
+{
+  struct pollfd ready[2] = {
+    {x_fd, POLLIN, 0}, {fd[1], POLLIN, 0}};
+  int result;
+
+  if (x_fd < 0 || fd[1] < 0)
+  {
+    fvwmSetTerminate(0);
+    return false;
+  }
+  result = fvwmPoll(ready, 2, 0);
+
+  if (result < 0 && errno == EINTR)
+    return !isTerminated;
+  if (result < 0 ||
+      (ready[0].revents & (POLLERR | POLLHUP | POLLNVAL)) ||
+      (ready[1].revents & (POLLERR | POLLHUP | POLLNVAL)))
+  {
+    fvwmSetTerminate(0);
+    return false;
+  }
+  return true;
+}
+
+static bool script_reader_service(void *context)
+{
+  script_selection_reader *reader = context;
+  bool guarded = script_active_runtime == NULL ||
+    script_active_runtime->servicing || execution.depth != 0;
+
+  if (!script_reader_valid(reader) ||
+      (guarded && !script_reader_health()))
+    return false;
+  for (unsigned budget = 0; budget < 32; budget++)
+  {
+    XEvent event;
+
+    if (!FCheckIfEvent(dpy, &event, script_reader_event, NULL))
+      break;
+    if (event.type == ClientMessage)
+      fvwmSetTerminate(0); /* Unwind the reader before normal shutdown. */
+    else
+      script_dispatch_x_event(&event, False);
+    if (!script_reader_valid(reader))
+      return false;
+  }
+  if (script_active_runtime != NULL && !script_service_runtime(0))
+    return false;
+  return script_reader_valid(reader) &&
+    (!guarded || script_reader_health());
+}
+
+static FSelectionStatus script_selection_read(struct XObj *object,
+  Atom selection, Atom target, Time time, FSelectionResult *result)
+{
+  script_selection_reader reader = {.base = x11base, .object = object};
+  FSelectionStatus status;
+
+  if (result == NULL)
+    return FSELECTION_INVALID;
+  *result = (FSelectionResult){0};
+  if (script_selection_reader_active)
+    return FSELECTION_CANCELLED;
+  if (object != NULL)
+    reader.initial = *object;
+  if (!script_reader_valid(&reader) || !script_reader_health())
+    return FSELECTION_CANCELLED;
+  script_selection_reader_active = true;
+  status = target == None ?
+    FSelectionRequestTextNegotiated(dpy, selection, propriete, time,
+      FSELECTION_TIMEOUT_MS, script_reader_service, &reader, result) :
+    FSelectionRequestExact(dpy, selection, target, propriete, time,
+      FSELECTION_TIMEOUT_MS, script_reader_service, &reader, result);
+  if (!script_reader_valid(&reader) || !script_reader_health())
+  {
+    FSelectionResultFree(result);
+    status = FSELECTION_CANCELLED;
+  }
+  script_selection_reader_active = false;
+  return status;
+}
+
+FSelectionStatus FvwmScriptSelectionExact(Atom selection, Atom target,
+  Time time, FSelectionResult *result)
+{
+  FSelectionStatus status;
+
+  if (target == None)
+  {
+    if (result != NULL)
+      *result = (FSelectionResult){0};
+    return FSELECTION_INVALID;
+  }
+  status = script_selection_read(NULL, selection, target, time, result);
+  if (status == FSELECTION_OK && (result->length == 0 ||
+      result->data[result->length - 1] != '\0' ||
+      memchr(result->data, '\0', result->length - 1) != NULL))
+  {
+    FSelectionResultFree(result);
+    return FSELECTION_INVALID;
+  }
+  return status;
+}
+
+FSelectionStatus FvwmScriptSelectionText(struct XObj *object, Atom selection,
+  Time time, FSelectionResult *result)
+{
+  return script_selection_read(object, selection, None, time, result);
+}
+
 bool FvwmScriptModalService(void *context)
 {
   struct XObj *object = context;
@@ -1774,7 +1945,7 @@ bool FvwmScriptModalEvent(struct XObj *object, XEvent *event, int timeout_ms)
       case ClientMessage:
       case PropertyNotify:
       case MappingNotify:
-        script_dispatch_x_event(event);
+        script_dispatch_x_event(event, True);
         event->type = 0;
         break;
     }

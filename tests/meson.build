@@ -2957,6 +2957,20 @@ script_selection_test = executable(
 )
 test('script-selection', script_selection_test)
 
+script_selection_wait_test = executable(
+    'test-script-selection-wait', 'test_script_selection_wait.c',
+    objects: fvwm_script.extract_all_objects(recursive: false),
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: [libfvwm3, libWidgets],
+    link_args: ['-Wl,--wrap=main', '-Wl,--wrap=FCheckIfEvent',
+        '-Wl,--wrap=FCheckTypedEvent', '-Wl,--wrap=FCheckTypedWindowEvent',
+        '-Wl,--wrap=FSelectionRequestExact',
+        '-Wl,--wrap=FSelectionRequestTextNegotiated'],
+    c_args: ['-UNDEBUG'],
+)
+test('script-selection-wait', script_selection_wait_test)
+
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-message-xvfb', py,
         args: [files('live_x/script_message_live.py'), '--module', fvwm_script,

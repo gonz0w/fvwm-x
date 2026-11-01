@@ -7,18 +7,60 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: Script selection ownership and metadata under #22, owner
-Cam, branch `codex/r1-script-selection-owner`. Transport PR323 merged as
-`c06e3a13563ec0685d63f1ac548b146a8257aa93`, reviewed tree
-`9ed73400de4bffaa48e6c1cd246f7afc7d4c1e62`; canonical GitHub signature and Cam
-DCO verify. The source branch is retired. Local candidate SSH signature verifies;
-local verification of GitHub's squash signature lacks its public GPG key, so
-canonical GitHub verification is the source for that signature. No trust files
-changed. Transport runtime qualification is queued, not passed. Performance is
-4/5 after PR323; no comparison is due. One owned Linux ARM64 incremental build
-lab stays warm; no runtime qualification has run for this Script feature group.
-#67 stays open for Q67-OPENBSD-NOBUS's two disabled-profile checks, queued with
-this same major-feature/shared checkpoint. Whole #22 remains open.
+Current checkpoint: Script requestor adoption and selection-wait servicing under
+#22, owner Cam, branch `codex/r1-script-selection-adoption`. Owner PR324 merged
+as `562992dcf88ad060c33bbe5f7aabac97fbbbb871`, reviewed tree
+`e48700d30fae887f6c2972bf26f952053ff226b9`; canonical GitHub signature and actual
+Cam author DCO verify. Its source branch is retired. The transport and owner
+batches are integrated with runtime qualification queued. Performance is 5/5
+due; observe it in the same shared Script session, without a separate lab boot.
+One owned Linux ARM64 incremental build lab remains warm. #22 stays open;
+#67's Q67-OPENBSD-NOBUS two-group debt joins the same later checkpoint.
+
+Selected adoption batch: switch TextField PRIMARY/CLIPBOARD and exact private
+message reads to the typed transport; preserve NUL-inclusive private messages,
+text normalization/refusal, one absolute second and one active Script reader.
+Add bounded safe non-input X servicing with operation-initial widget mutation
+checks and existing module/runtime/lifetime guards. Transfer protocol events
+must remain with FSelection; unrelated input stays queued in order. No new
+interpreter/packet reader or core-loop blocking work. Init-time reads have no
+MainLoop runtime and may service safe X work only. Preserve configurations.
+Author meaningful affected consumer coverage and update the manual; run runtime
+policy/native-X/scoped sanitizer/theme checks once after this major feature is
+assembled, plus the queued Q67 two checks and due performance observation.
+Full platform/install/server matrices remain milestone/release work.
+
+The lead owns this bounded implementation under the recorded adequate-lead
+fallback after the implementation agents reached their usage limit. The
+selected analyst supplies a finite servicing/lifetime integration plan;
+separate reviewer remains the merge gate. Do not retry the limited agents or
+silently change models. Actual backend metadata remains unverified.
+
+Adoption source checkpoint: all three callers use typed transport. Exact private
+reads require their terminal wire NUL and reject earlier NULs; TextField reads
+negotiate under one deadline. One reader captures the initial base/widget
+revision and preserves transfer/input ownership while servicing at most 32 safe
+X records with coalescing disabled. Entry/final read-free fd checks also cancel
+fast transfers that never call service. The new linked-production shim probe
+authors Init servicing, event count/input/packet-byte retention, recursive-read
+refusal, mutation/fast-HUP cancellation, exact byte validation and recovery.
+
+Separate source review is clear after two corrections: fence fast-path fd
+health independently of callbacks, and discover the actual hidden private
+owner in the existing live fixture. Both reviewed corrections and authored
+assertions are retained. The initial affected Script/new-probe build passes 23
+commands; the narrow correction builds only the two objects and their links.
+No runtime suite has run. Receipts: `builddir/codex-2026-10-31/`
+`r1-script-selection-adoption/compile01` and `compile02`.
+
+After implementation integration, select one shared Linux runtime checkpoint
+for the accumulated transport/owner/adoption PRs: affected policies and linked
+adapter probe, independent native-X transport/owner and actual Script consumers,
+scoped sanitizers and representative UI themes/captures; include the due
+performance observation and Q67's two queued OpenBSD checks. Author missing
+server-acquisition/PRIMARY-boundary/vanished-peer controls before that run.
+Do not repeat unaffected installed-service/default-X or six-target matrices.
+#22's broader core/manager rows remain separate; no whole-issue closure yet.
 
 Selected owner batch: implement S07/S08/S11/S14 owner-side behavior together:
 immutable confirmed PRIMARY snapshots separated from cut-buffer/widget state;

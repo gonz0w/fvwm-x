@@ -12,11 +12,19 @@
 bool script_message_enqueue(script_message_queue *queue,
 	unsigned long target, char *text)
 {
-	if (queue->count == SCRIPT_MESSAGE_LIMIT || target == 0 || text == NULL)
+	if (queue->retired || queue->count == SCRIPT_MESSAGE_LIMIT ||
+	    target == 0 || text == NULL)
 	{
 		return false;
 	}
-	queue->entries[queue->count++] = (script_message){target, text};
+	size_t length = strnlen(text, SCRIPT_MESSAGE_MAX_BYTES);
+
+	if (length == SCRIPT_MESSAGE_MAX_BYTES)
+	{
+		return false;
+	}
+	queue->entries[queue->count++] =
+		(script_message){target, text, length + 1};
 	return true;
 }
 
@@ -47,4 +55,47 @@ void script_message_clear(script_message_queue *queue)
 		free(queue->entries[queue->count].text);
 		queue->entries[queue->count] = (script_message){0};
 	}
+}
+
+const script_message *script_message_peek(const script_message_queue *queue,
+	unsigned long target)
+{
+	for (size_t i = 0; i < queue->count; i++)
+	{
+		if (queue->entries[i].target == target)
+			return &queue->entries[i];
+	}
+	return NULL;
+}
+
+size_t script_message_targets(const script_message_queue *queue,
+	unsigned long *targets, size_t capacity)
+{
+	size_t count = 0;
+
+	for (size_t i = 0; i < queue->count; i++)
+	{
+		size_t j;
+
+		for (j = 0; j < count; j++)
+			if (targets[j] == queue->entries[i].target)
+				break;
+		if (j != count)
+			continue;
+		if (count == capacity)
+			break;
+		targets[count++] = queue->entries[i].target;
+	}
+	return count;
+}
+
+void script_message_retire(script_message_queue *queue)
+{
+	script_message_clear(queue);
+	queue->retired = true;
+}
+
+void script_message_open(script_message_queue *queue)
+{
+	queue->retired = false;
 }

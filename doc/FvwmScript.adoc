@@ -478,6 +478,16 @@ follow the insert point. An incomplete final multibyte character stays
 within the available bytes. If an edit cannot be allocated or its result
 cannot be represented by the widget's integer indices, the text stays
 unchanged.
++
+Selecting text publishes an immutable PRIMARY snapshot after the X server
+confirms ownership. Later edits and root cut-buffer updates do not change that
+snapshot. Middle-button paste from Script's own PRIMARY uses the snapshot.
+Ownership loss retires it; shutdown leaves a newer owner's selection intact.
+PRIMARY offers STRING, TARGETS, TIMESTAMP and MULTIPLE. STRING preserves the
+selected bytes, up to 32 KiB, without a wire NUL terminator; it does not claim a
+UTF-8 representation. MULTIPLE accepts at most 128 target/property pairs and
+128 KiB of total output, including the rewritten control property. Invalid
+requests are refused without replacing the snapshot.
 
 *VDipstick*: Display a vertical dipstick.::
   *Value*: specify the current value of the dipstick.
@@ -630,7 +640,18 @@ SendToScript id_script \{str11} \{str2} etc::
   messages still pending. Unrelated requests do not extend this grace period;
   termination or a connection error cancels it. An empty or drained queue
   exits immediately. X server calls still require a responsive server.
-
+  Losing private selection ownership discards pending messages and refuses
+  further admission under that ownership. Shutdown preserves a newer owner.
++
+The private message selection offers TARGETS, TIMESTAMP and MULTIPLE alongside
+currently queued destination targets. Metadata requests do not collect messages.
+A custom destination reply collects one oldest matching message and preserves
+its bytes, including the terminating NUL. MULTIPLE processes pairs in order;
+repeated destinations collect successive messages. Unsupported, malformed,
+stale or over-budget requests do not collect their messages. The limits are
+128 pairs and 128 KiB of total output per MULTIPLE, including its rewritten
+control property. Submission to X is not a delivery acknowledgement; a receiver
+that disappears does not requeue a submitted message.
 
 Key _Keyname_ _Modifier_ _id_ _sig_ _str1_ _str2_ etc::
   Binds a keyboard key to the instruction
@@ -741,7 +762,7 @@ TextField requests to external selection owners use the same one-second
 timeout and 32 KiB limit. Invalid replies leave the existing text unchanged. Incremental (INCR)
 selection transfers are not supported. Root cut buffers are accepted only
 as complete STRING/8 properties of at most 64 KiB. Invalid updates preserve
-the stored clipboard text.
+the stored cut-buffer text; they do not alter an owned PRIMARY snapshot.
 (RemainderOfDiv {int1 int2}): t::
   This function returns the remainder of the division (_int1_/_int2_).
 (GetTime)::

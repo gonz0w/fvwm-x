@@ -4,6 +4,7 @@
 #define FVWMSCRIPT_TYPES_H
 
 #include "script_message.h"
+#include "script_selection.h"
 #include "libs/fvwmlib.h"
 #include "libs/Module.h"
 #include "libs/Picture.h"
@@ -156,7 +157,7 @@ typedef struct
   GC gc ;
   Pixel TabColor[4];
   Bool color_owned[4];           /* Successful named-color allocations only. */
-  Atom script_selection;        /* None until communication is registered. */
+  script_selection_state selections;
   XSizeHints size;
   char *backcolor;
   char *forecolor;
@@ -169,7 +170,6 @@ typedef struct
   char *title;
   Bloc *periodictasks;
   Bloc *quitfunc;
-  int HaveXSelection;
   char* TabScriptId[999];        /* Every populated identifier is owned. */
   int NbChild;
   time_t BeginTime;

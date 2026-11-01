@@ -49,6 +49,7 @@ fvwmscript_sources = [
     'script_storage.c',
     'script_packet.c',
     'script_message.c',
+    'script_selection.c',
     'libyywrap.c',
     'scanner.c',
     'script.c',

@@ -226,18 +226,25 @@ static int text_field_pointer(struct XObj *xobj, int pointer_x)
 	return characters;
 }
 
-static void text_field_save_selection(struct XObj *xobj, Time time)
+static bool text_field_save_selection(struct XObj *xobj, Time time)
 {
 	char *text = GetText(xobj, xobj->value2);
 	int length = strlen(text);
 	int i;
 
+	if (!script_selection_primary_set(&x11base->selections,
+	    text, length, time))
+	{
+		free(text);
+		return false;
+	}
 	for (i = 0; i <= 7; i++)
 		XStoreBuffer(dpy, text, length, i);
+	/* Root cut buffers remain a separate legacy cache. The owner has its
+	 * own immutable copy, independent of this alias and widget edits. */
 	free(Scrapt);
 	Scrapt = text;
-	x11base->HaveXSelection = True;
-	XSetSelectionOwner(dpy, XA_PRIMARY, x11base->win, time);
+	return true;
 }
 
 void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
@@ -250,8 +257,15 @@ void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
 	text_field_normalize(xobj);
 	if (EvtButton->button == Button2)
 	{
-		if (!x11base->HaveXSelection)
+		size_t length = 0;
+		Window before = x11base->selections.primary.window;
+		const char *paste = script_selection_primary_text(
+			&x11base->selections, &length);
+
+		if (paste == NULL)
 		{
+			if (before != None)
+				UnselectAllTextField(tabxobj);
 			char *received = FSelectionRequestTextWithService(dpy, XA_PRIMARY,
 				XA_STRING, propriete, EvtButton->time,
 				FSELECTION_TIMEOUT_MS, FvwmScriptModalService, xobj);
@@ -259,10 +273,12 @@ void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
 				return;
 			free(Scrapt);
 			Scrapt = received;
+			paste = Scrapt;
+			length = strlen(paste);
 		}
-		if (Scrapt[0] != '\0')
+		if (length != 0)
 		{
-			if (!text_field_edit(xobj, Scrapt, strlen(Scrapt), False))
+			if (!text_field_edit(xobj, paste, length, False))
 				return;
 			DrawTextField(xobj, NULL);
 			SendMsg(xobj, SingleClic);
@@ -296,9 +312,16 @@ void EvtMouseTextField(struct XObj *xobj, XButtonEvent *EvtButton)
 	}
 	if (xobj->value != xobj->value2)
 	{
-		text_field_save_selection(xobj, EvtButton->time);
-		if (EvtButton->button == Button1)
-			SelectOneTextField(xobj);
+		if (text_field_save_selection(xobj, EvtButton->time))
+		{
+			if (EvtButton->button == Button1)
+				SelectOneTextField(xobj);
+		}
+		else
+		{
+			xobj->value2 = xobj->value;
+			DrawTextField(xobj, NULL);
+		}
 	}
 }
 

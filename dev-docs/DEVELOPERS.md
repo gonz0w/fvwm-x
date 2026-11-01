@@ -122,13 +122,15 @@ CI remains separate; configured workflows or emulated passes are not that result
 Use [BSD.md](BSD.md) for the BSD harness. Run appropriate tests once, then broaden
 when failures, new changes or unresolved concerns justify it.
 Use the [batch cadence](WORKFLOW.md#implementation-batches-and-test-cadence):
-focused merge gates on one incremental Linux profile, affected-platform checks
-when needed, and an accumulated risk review after roughly five merged batches.
-The review selects justified missing coverage; it does not automatically run all
-six targets or block the next portable cleanup batch. Full install/default-X/compiler/feature acceptance belongs
-at milestone/release boundaries unless the changed contract needs it earlier.
-A PR may merge with focused checks passed and integration explicitly pending;
-track deferred gates and do not report them as successful execution.
+separate source review, repository/static checks and necessary affected
+incremental compilation per implementation PR. Runtime policy/native-X/scoped
+sanitizer and representative theme checks run once at the completed major
+feature/shared checkpoint across several related PRs, normally four to six.
+Full install/default-X/compiler/feature acceptance belongs at milestone/release
+boundaries; an earlier affected-platform check needs a specific changed
+contract or observed failure. Track deferred gates explicitly. A PR may merge
+with review/static checks passed and runtime qualification queued; neither
+integration nor queued coverage is a passing runtime result.
 
 Record source/profile scope, actual checks, retained failures and remaining gaps
 in a dated [verification report](verification/README.md). Retain results in Git;

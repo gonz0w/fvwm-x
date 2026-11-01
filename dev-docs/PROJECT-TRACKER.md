@@ -7,7 +7,52 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current source checkpoint: core-manager selection ownership and truthful
+Current source checkpoint: CONTENT-01 / RETENTION-01 native metadata foundation
+under #63 and #71; default decision also informs #74. Owner Cam; branch
+`codex/r1-content-retention-foundation`, based on merged PR327
+`2c26920ee2354b0d68e16eea8d5e72a38ff84b6f`.
+
+Owner decision, 2026-11-01: first-release history is session-only, recognized
+sensitive/password items are excluded, and persistence is off. This resolves
+those default questions, not installed capacities, capture/synchronization,
+protection backend or lock behavior. Record these separately before adoption.
+
+Select three related stories: (1) typed native payload-free descriptors and
+explicit bounded admission; (2) exact identities, leases, overlapping replacement
+and deferred retirement accounting; (3) expiry/clear/pin and safe metadata/action
+validation in that same authority. Use caller-owned bounded arrays, no payload
+allocation, and no second Go lifetime registry. A Go collection projection waits
+for an actual native transport; existing collections remain unchanged. Metadata
+lifetime policy is intended for the eventual isolated native content owner;
+this does not select a storage backend, service, crypto, database or X capture.
+
+Acceptance: atomic refusal before accounting mutation; nonwrapping epoch/item/
+generation/lease identities; expired/retired content cannot publish or acquire;
+late work and leases can drain only their exact generation; replacement charges
+both generations until explicit backend-cleanup acknowledgement; pinning cannot
+waive expiry/caps; no labels, bytes, hashes, paths or keys enter this policy.
+All limits and monotonic times are explicit, with structural scan ceilings.
+Source hints are typed; absent hints are not confidentiality evidence. Sensitive,
+malformed or unavailable classifications are excluded from history admission.
+
+Author boundary/lifecycle regression cases before source implementation. Use
+separate final review, repository checks and necessary native pure-C compilation
+only. Runtime qualification joins the clipboard major-feature checkpoint; no
+new unit/native-X/sanitizer/theme/install suite this PR. No new UI/screenshots or
+performance observation is due (2/5 after PR327). #63/#71/#74 stay open for their
+remaining owner, payload/protection, transport, configuration and runtime gates.
+The [source-checkpoint receipt](verification/VERIFICATION-2026-11-01-CONTENT-LIFETIME.md)
+records native macOS C11 compile/link of the feature-independent production
+policy and authored test target with strict warnings; no test was executed or
+VM started. Meson registration awaits configured shared qualification.
+Separate source review clears freeze03 with no unresolved findings; final signed
+delivery review remains. Source inspection corrects the clock floor on refused
+observations so stale time cannot resurrect observed-expired content.
+The two implementation agents remain quota-limited; the lead implements under
+the recorded fallback, with bounded analyst and separate reviewer support.
+Actual backend model/effort metadata remains unverified.
+
+Merged source checkpoint: core-manager selection ownership and truthful
 conversion completion under #22, owner Cam, branch
 `codex/r1-manager-selection-epochs`, based on merged PR326
 `90221112121ae200afff1e1de9f2cd1505bbcbb8`. The prior source branch is retired;
@@ -32,7 +77,7 @@ three probe objects, two links and two manual generations. An observed missing
 manual include dependency is corrected only for the two aggregate pages; exact
 manuals render on the host. Repository/whitespace/Python AST checks pass.
 No new unit, native-X, sanitizer, theme, install or whole-platform suite ran.
-Separate source review clears freeze05; final signed delivery review remains.
+Separate final review clears signed candidate 4bb362fde009185fed9838bc13125468715ddddb; PR327 merged as 2c26920ee2354b0d68e16eea8d5e72a38ff84b6f with the same reviewed tree, verified canonical signature and Cam author DCO. Source branch retired; Project Done.
 
 The authored production-linked probe covers identity, exact serial errors,
 phase-two publication, queue expiry/tombstones, close/fork and modal/ordinary

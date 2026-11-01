@@ -4809,3 +4809,12 @@ file_transfer_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('file-transfer-policy', file_transfer_policy_test)
+
+# Native metadata policy only; no clipboard owner or storage backend yet.
+content_policy_test = executable(
+    'test-content-policy',
+    ['test_content_policy.c', '../libs/content_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('content-policy', content_policy_test)

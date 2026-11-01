@@ -991,8 +991,28 @@ Legacy Motif and Open Look decoration properties are also checked for type,
 format and complete length before use. Four-field Motif records remain
 supported alongside standard five-field records. Open Look window attributes
 must contain three or five values. ICCCM *MULTIPLE* selection requests are
-limited to 128 complete atom pairs; invalid requests are refused, and valid
-requests receive a selection acknowledgement after the conversions finish.
+limited to 128 complete atom pairs. Invalid lists are refused. Unsupported or
+failed pair conversions have their destination replaced with None, while
+successful pairs retain their original order. A pair cannot overwrite the
+MULTIPLE control property. The corrected list is published before success is
+acknowledged.
+
+The core owns only its screen's WM_Sn manager selection. It supports TARGETS,
+MULTIPLE, TIMESTAMP and VERSION metadata; this does not make it a clipboard
+manager. A confirmed server ownership-loss event for that manager ends its
+session. Synthetic or unrelated SelectionClear events do not request logout.
+
+Manager conversions admit one active request and at most 16 queued request
+headers. A request has one second from admission, including its queue wait.
+The owner confirms output writes asynchronously before reporting success;
+refusal, failed writes and observed expiry report property None. A timed-out
+conversion retains its error records until its final server acknowledgement or
+connection close, so a late error cannot be attributed to another request.
+Missing completion resources refuse further conversions. A bounded modal queue
+scan preserves input and ownership-loss order; an incomplete scan can cause a
+request to expire rather than publish past an unseen loss. An entered Xlib call
+cannot be preempted by the deadline. These are protocol limits, not new
+configuration directives.
 
 == CONFIGURATION
 

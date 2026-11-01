@@ -1,0 +1,196 @@
+{
+  "owner": "SELECTION-01 #22",
+  "frozen_adopted_role_inventory": true,
+  "whole_issue_complete": false,
+  "base": "90221112121ae200afff1e1de9f2cd1505bbcbb8",
+  "historical_upkeep_manifest": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-21/manager-targets/upkeep-source.json",
+    "sha256": "36052b63cd7a2ea58b59b7b1b84392049ba2c4317946abddd8259ded0e46d394",
+    "archive_sha256": "ee355a7c30786eda7f56098df8927bb4a73d635eb5d4935250aad9760eb26bfe"
+  },
+  "baseline_bindings": {
+    "fvwm/icccm2.c": {
+      "baseline_sha256": "16d290db48e85c7aa7222ec90d016f381b4f4fdfe9bdf745ec1ec7fb74fef42e",
+      "upkeep_sha256": "16d290db48e85c7aa7222ec90d016f381b4f4fdfe9bdf745ec1ec7fb74fef42e",
+      "baseline_matches_upkeep": true,
+      "candidate_sha256": "68b51ba526321b85e52ff22e12455d36386da07e98a32230aac1e517e460909d"
+    },
+    "fvwm/events.c": {
+      "baseline_sha256": "29d63976dac2e3622cb24dd3bf9e7e64362df8e4c66293c86435f645f0bfe9e7",
+      "upkeep_sha256": "a84b54514ef93683abfaee1b7910ccd2e33d970cf6f8214824d1d97758e652f1",
+      "baseline_matches_upkeep": false,
+      "candidate_sha256": "15f854285dcd9f88ecdd7ff0b9e941bcaabc8e01227b6a2f2a14ea28537045cd"
+    },
+    "fvwm/icccm2.h": {
+      "baseline_sha256": "2993359722f8539597133463c379672c4471edea00cb37653f4288460af3d9f5",
+      "upkeep_sha256": "2993359722f8539597133463c379672c4471edea00cb37653f4288460af3d9f5",
+      "baseline_matches_upkeep": true,
+      "candidate_sha256": "698ec2a836ec80ab405ec29b79331ed20a0bef3fe13304f41810638a085e6c52"
+    }
+  },
+  "roles": [
+    {
+      "rows": [
+        "S01",
+        "S02",
+        "S03",
+        "S04",
+        "S05",
+        "S06"
+      ],
+      "owner": "core WM_Sn per X screen",
+      "targets": [
+        "TARGETS",
+        "MULTIPLE",
+        "TIMESTAMP",
+        "VERSION"
+      ],
+      "sources": [
+        "fvwm/icccm2.c",
+        "fvwm/manager_selection.c",
+        "fvwm/manager_selection.h",
+        "fvwm/manager_selection_queue.c",
+        "fvwm/events.c",
+        "fvwm/fvwm3.c"
+      ],
+      "bounds": {
+        "active": 1,
+        "queued_headers": 16,
+        "total_lifetime_ns": 1000000000,
+        "pairs": 128,
+        "packed_control_bytes": 1024,
+        "queued_event_prefix": 32
+      },
+      "status": "new implementation reviewed/compiled; runtime queued; startup/target historical evidence remains named-profile only",
+      "evidence": [
+        "VERIFICATION-2026-10-21-MANAGER-HANDOFF.md",
+        "VERIFICATION-2026-10-21-MANAGER-TARGETS.md",
+        "VERIFICATION-2026-11-01-MANAGER-SELECTION.md"
+      ],
+      "source_sha256": {
+        "fvwm/icccm2.c": "68b51ba526321b85e52ff22e12455d36386da07e98a32230aac1e517e460909d",
+        "fvwm/manager_selection.c": "9c0973a66e07c709545b58b24c5c3b24afd7b8a9ac8b823a416d06655e7c2edf",
+        "fvwm/manager_selection.h": "661b24b08052a014ec9a1fb3ea9ed3574dbba5be7b36b4708001777ffe220cfe",
+        "fvwm/manager_selection_queue.c": "228587e27661ad86726cd0319e812aa1fc646f1a7fb4f4bb954f04f44bcabff7",
+        "fvwm/events.c": "15f854285dcd9f88ecdd7ff0b9e941bcaabc8e01227b6a2f2a14ea28537045cd",
+        "fvwm/fvwm3.c": "f2edc2cef153c7c4a7b6f73e531e62bba5f0b673fbbcca2e3738cea5b85e434a"
+      }
+    },
+    {
+      "rows": [
+        "S07",
+        "S08",
+        "S09",
+        "S10",
+        "S11",
+        "S13",
+        "S14"
+      ],
+      "owner": "Script immutable PRIMARY, destructive private queue, negotiated/exact requestors",
+      "targets": [
+        "PRIMARY: STRING/TARGETS/TIMESTAMP/MULTIPLE",
+        "private: TARGETS/TIMESTAMP/MULTIPLE plus queued destination atoms",
+        "requestors: negotiated UTF8_STRING/STRING, exact custom target"
+      ],
+      "sources": [
+        "libs/FSelection.c",
+        "libs/FSelection.h",
+        "modules/FvwmScript/script_selection.c",
+        "modules/FvwmScript/script_selection.h",
+        "modules/FvwmScript/script_message.c",
+        "modules/FvwmScript/FvwmScript.c",
+        "modules/FvwmScript/Instructions.c",
+        "modules/FvwmScript/Widgets/TextField.c"
+      ],
+      "bounds": {
+        "wire_bytes": 32768,
+        "private_messages": 40,
+        "total_request_seconds": 1,
+        "shutdown_grace_seconds": 2,
+        "nonempty_incr_chunks": 4096,
+        "target_atoms": 256,
+        "multiple_pairs": 128,
+        "multiple_aggregate_bytes": 131072
+      },
+      "status": "normal Linux source-bound component evidence retained; full sanitized owner exit failed; no new run",
+      "evidence": [
+        "VERIFICATION-2026-11-01-SCRIPT-SELECTION.md"
+      ],
+      "source_sha256": {
+        "libs/FSelection.c": "251062fa60d0f9523e91d549ef596af1043b78fe9eace057097473b0959be67d",
+        "libs/FSelection.h": "ad2a78c0128daa5a2435c945a7f930f50d47f4c9000af09b438df3bad30e58c2",
+        "modules/FvwmScript/script_selection.c": "6b7eed68c174f8d506af471376b6b0d1a773eca59e45e830e6a06888028b90c5",
+        "modules/FvwmScript/script_selection.h": "ffd3d4bc67b13bdc306fd43abbed7c0161f180e5b3cb751bd11b48c843668186",
+        "modules/FvwmScript/script_message.c": "d16fb737240db0e2bf62512931ffecc6b0b334e511edf378ba26ef557b0e1c8b",
+        "modules/FvwmScript/FvwmScript.c": "cdbba3a233a53e0597509e80da49a585f18f8c77bb295f3cc88b06efbd0d9d15",
+        "modules/FvwmScript/Instructions.c": "8a30eb6af6e0638871fb009a789722ebe20248988423d204544f939c42b08bfd",
+        "modules/FvwmScript/Widgets/TextField.c": "47fd3b2a82f64d1a3c9d93747d961d2f42ded92429a6c0663f2af18ffa1fadff"
+      }
+    },
+    {
+      "rows": [
+        "S12"
+      ],
+      "owner": "Form STRING/8 cut-buffer consumer",
+      "targets": [
+        "CUT_BUFFER0 consumer; no selection-owner target obligations"
+      ],
+      "sources": [
+        "modules/FvwmForm/ReadXServer.c"
+      ],
+      "status": "historical and PR326-source normal Linux consumer observations retained; no new run",
+      "evidence": [
+        "RECONCILIATION-2026-10-12-STAGE3.md",
+        "VERIFICATION-2026-11-01-SCRIPT-SELECTION.md"
+      ],
+      "source_sha256": {
+        "modules/FvwmForm/ReadXServer.c": "4b1ba18c53dcccbf3fb360f8659f5f71a2b19af40f163ba0c06b5f576b8bbec9"
+      }
+    },
+    {
+      "rows": [
+        "S16"
+      ],
+      "owner": "opt-in browser-owned file helper and cooperative Form file participants",
+      "targets": [
+        "file-only clipboard and XDND roles selected by FILE-TRANSFER-2026-10-31 decision"
+      ],
+      "sources": [
+        "bin/file_transfer.c",
+        "bin/file_transfer_policy.c",
+        "modules/FvwmForm/file_transfer_form.c",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_transfer.go"
+      ],
+      "status": "PR322 scoped transfer evidence retained with original source32/source34/target differences; no fresh claim",
+      "evidence": [
+        "VERIFICATION-2026-10-31-FILE-TRANSFER.md"
+      ],
+      "source_sha256": {
+        "bin/file_transfer.c": "47dfbf1b9f710bd377805e522f81447593e6c789d4571434795319183218154b",
+        "bin/file_transfer_policy.c": "05ae114bb7c66349f2e9d921f15f58f623934fd8347b65f87c0f5b38fb02def3",
+        "modules/FvwmForm/file_transfer_form.c": "2e03a335ae08fba22c24cb6335da666326e70e9114cddaf174db0c43126980ce",
+        "bin/FvwmPrompt/cmd/fvwmfilebrowser/file_transfer.go": "9f4b0c5ac5afa3b6e27d541391482ecb507b9a3b30ce2d2fc8725eddcdaa9c77"
+      }
+    },
+    {
+      "rows": [
+        "S15"
+      ],
+      "owner": "CLIPBOARD-01 with CONTENT/RETENTION/STORE",
+      "targets": [
+        "CLIPBOARD_MANAGER/SAVE_TARGETS only upon separate adoption"
+      ],
+      "sources": [],
+      "status": "conditional handoff; no manager/history/image/persistence service adopted by this manager metadata batch",
+      "evidence": [
+        "../decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md"
+      ],
+      "source_sha256": {}
+    }
+  ],
+  "independent_debt": {
+    "filemanager_service": "#67: D1/D2 unrun after source-copy network failure; 53/55 unchanged",
+    "script_sanitizer": "320 bytes/three allocations via Fontconfig initialization at exit; attribution and clean-exit acceptance pending",
+    "release": "full supported profiles/install/default-X and separately owned physical gates"
+  }
+}

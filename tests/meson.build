@@ -2971,6 +2971,17 @@ script_selection_wait_test = executable(
 )
 test('script-selection-wait', script_selection_wait_test)
 
+script_selection_owner_api = executable(
+    'test-script-selection-owner-api',
+    ['test_script_selection_owner_api.c',
+     '../modules/FvwmScript/script_selection.c',
+     '../modules/FvwmScript/script_message.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-message-xvfb', py,
         args: [files('live_x/script_message_live.py'), '--module', fvwm_script,
@@ -2981,8 +2992,9 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
     test('script-selection-owner-xvfb', py,
         args: [files('live_x/script_selection_owner_live.py'),
                '--module', fvwm_script,
+               '--api-probe', script_selection_owner_api,
                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'script-selection-owner'],
-        depends: fvwm_script,
+        depends: [fvwm_script, script_selection_owner_api],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 120)
 endif

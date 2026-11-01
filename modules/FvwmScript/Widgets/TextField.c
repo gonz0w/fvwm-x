@@ -151,12 +151,32 @@ void DrawTextField(struct XObj *xobj, XEvent *evp)
 	length = strlen(xobj->title);
 	cursor = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value);
 	left = getByteOffsetBoundsCheck(xobj->Ffont, xobj->title, xobj->value3);
-	/* Stop at the cursor: no negative text length reaches the font API. */
-	while (left < cursor && FlocaleTextWidth(xobj->Ffont,
+	/* Search character boundaries, measuring the actual suffix each time.
+	 * Walking one character at a time repeatedly measures almost the whole
+	 * title after a large paste. The cursor bounds the empty endpoint;
+	 * retain each measured fitting suffix even for unusual font advances. */
+	if (left < cursor && FlocaleTextWidth(xobj->Ffont,
 	    xobj->title + left, cursor - left) > width - 10)
 	{
-		left += script_locale_text_next(xobj->Ffont, xobj->title + left,
-			length - left);
+		int outside = xobj->value3;
+		int inside = xobj->value;
+
+		left = cursor;
+		while (inside - outside > 1)
+		{
+			int middle = outside + (inside - outside) / 2;
+			int byte = getByteOffsetBoundsCheck(xobj->Ffont,
+				xobj->title, middle);
+
+			if (FlocaleTextWidth(xobj->Ffont, xobj->title + byte,
+			    cursor - byte) > width - 10)
+				outside = middle;
+			else
+			{
+				inside = middle;
+				left = byte;
+			}
+		}
 	}
 	xobj->value3 = getCharOffsetBoundsCheck(xobj->Ffont, xobj->title, left);
 	right = previous = left;

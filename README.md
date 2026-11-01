@@ -3,8 +3,7 @@
 FVWM-X is an X11 window manager from FVWM3, for Linux, FreeBSD Xorg
 and OpenBSD Xenocara on AMD64 and ARM64.
 
-Preserves FVWM configuration/theme compatibility.
-No compositor or Wayland backend.
+Preserves FVWM configurations. No compositor or Wayland.
 
 **Status:** in development toward R1: a configurable, fast, low-memory desktop
 lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
@@ -21,6 +20,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff, application choosers
   and live updates; [opt-in FileManager1](doc/fvwm-file-browser.adoc#filemanager1-service).
+- Script selection metadata and bounded INCR paste;
+  [preview](doc/development-preview.md#script-selection-and-paste-in-progress).
 - Opt-in file Copy/Cut/Paste and XDND;
   [preview](doc/development-preview.md#file-clipboard-and-drag-work-in-progress).
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
@@ -40,7 +41,7 @@ Dune: 4096-entry grid.
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
 File-manager, clipboard and release qualification remain open.
-Folder menus remain default. OpenBSD tracks releases; baseline 8.0.
+OpenBSD baseline: 8.0.
 
 [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
 and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).

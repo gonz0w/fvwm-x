@@ -1,0 +1,56 @@
+{
+  "scope": "Standalone FvwmScript component; three palette/font recipes, no full desktop/config theme claim",
+  "source_base": "132e52e62e7d83603f56fa09632a1cb73ad389ea",
+  "fixture_sha256": "d697a0bca2e9aac3bf7fee4e8d54444dcd0cf58ac44d5b95044a71ad7c3b4af7",
+  "visual_review": "lead inspected all three raw unedited PNGs: readable paste text, cursor and field edges; enlarged Classic font visible; separate delivery review required",
+  "files": {
+    "script-selection-classic-large.config": {
+      "bytes": 40,
+      "sha256": "8a07781447f605bdb55bd8dab8f5dd44764b8ef0ed49d119d516036a3a9f5064"
+    },
+    "script-selection-classic-large.packet.config": {
+      "bytes": 38,
+      "sha256": "79904e885ed861730c21f0215c2618177f89c67e9be68888a9ca0ffec6f9a195"
+    },
+    "script-selection-classic-large.png": {
+      "bytes": 4872,
+      "sha256": "6da32176f0a2ee2a0e6eaaa57d05c1519492dc7a2c0609485f71c87d0dbcab7f"
+    },
+    "script-selection-classic-large.script": {
+      "bytes": 34285,
+      "sha256": "14864f01efd3211db66fbd9cc6194676872a0f4f7a5ebc600df6f707fea6a49c"
+    },
+    "script-selection-dune-light.config": {
+      "bytes": 40,
+      "sha256": "8a07781447f605bdb55bd8dab8f5dd44764b8ef0ed49d119d516036a3a9f5064"
+    },
+    "script-selection-dune-light.packet.config": {
+      "bytes": 38,
+      "sha256": "79904e885ed861730c21f0215c2618177f89c67e9be68888a9ca0ffec6f9a195"
+    },
+    "script-selection-dune-light.png": {
+      "bytes": 3337,
+      "sha256": "7ed0538f0e76dc04b0f6b45e0944879e7dcb4fe6bc53ce2bac2a9839dd2096ac"
+    },
+    "script-selection-dune-light.script": {
+      "bytes": 34287,
+      "sha256": "418f471bbb64f2a83d847099bcb278dbf543b41c4ee327506f964faa3ee9e82b"
+    },
+    "script-selection-slate-dark.config": {
+      "bytes": 40,
+      "sha256": "8a07781447f605bdb55bd8dab8f5dd44764b8ef0ed49d119d516036a3a9f5064"
+    },
+    "script-selection-slate-dark.packet.config": {
+      "bytes": 38,
+      "sha256": "79904e885ed861730c21f0215c2618177f89c67e9be68888a9ca0ffec6f9a195"
+    },
+    "script-selection-slate-dark.png": {
+      "bytes": 3338,
+      "sha256": "87bec6999a93dd8ae097fdf7aa066ef9d0159c3d9f648c0f4b17fb2b67be8cb6"
+    },
+    "script-selection-slate-dark.script": {
+      "bytes": 34289,
+      "sha256": "862773e95992ac5f19eb5336a3465a37e1f329dfb902f7dde43c80b9809993e2"
+    }
+  }
+}

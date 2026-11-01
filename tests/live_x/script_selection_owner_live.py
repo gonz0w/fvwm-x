@@ -5,19 +5,21 @@
 """Independent Script owner acceptance, for the shared Script checkpoint.
 
 Authoring this fixture does not establish a runtime result. Run only under the
-checkpoint's execution authority. No requestor INCR/paste servicing is asserted.
+checkpoint's execution authority. Actual requestor INCR/paste is exercised.
 The Script starts through real module pipes, as in script_message_live; XTest
 drives its mapped TextField without requiring a WM or a second packet reader.
 Existing 40/41 and two-second grace controls are composed unchanged at the end.
 """
 import argparse
 import ctypes as C
+import hashlib
 import json
 import os
 from pathlib import Path
 import selectors
 import shutil
 import struct
+import subprocess
 import time
 from types import SimpleNamespace
 
@@ -62,6 +64,8 @@ class Peer:
         p, w, i = C.c_void_p, C.c_ulong, C.c_int
         signatures = {
             'XFlush': ([p], i),
+            'XSetInputFocus': ([p, w, i, w], i),
+            'XKeysymToKeycode': ([p, w], C.c_uint),
             'XSetErrorHandler': ([p], p),
             'XGetAtomName': ([p, w], p),
             'XInternAtom': ([p, C.c_char_p, i], w),
@@ -98,6 +102,98 @@ class Peer:
     def atom(self, name):
         raw = name.encode() if isinstance(name, str) else name
         return self.x.XInternAtom(self.d, raw, False)
+
+    def next_request(self, selection, target=None):
+        event = Event()
+        self.wait('independent owner request', lambda:
+            self.x.XCheckTypedWindowEvent(self.d, self.window, 30,
+                C.byref(event)))
+        request = SelectionRequest.from_buffer_copy(event.request)
+        assert request.selection == selection
+        if target is not None:
+            assert request.target == target, request.target
+        print('owner request', selection, request.target,
+            hex(request.requestor), flush=True)
+        return request
+
+    def watch_requestor(self, request):
+        # Report a stale fixture request with a Python traceback and retained
+        # logs. Xlib's default handler exits before our evidence cleanup runs.
+        # No X error is accepted by this subscription operation.
+        errors = []
+        callback_type = C.CFUNCTYPE(C.c_int, C.c_void_p, C.POINTER(Error))
+
+        def record(display, error):
+            value = error.contents
+            errors.append((display, value.resourceid, value.error_code,
+                value.request_code, value.serial))
+            return 0
+
+        callback = callback_type(record)
+        self.x.XSync(self.d, False)
+        previous = self.x.XSetErrorHandler(C.cast(callback, C.c_void_p))
+        try:
+            self.x.XSelectInput(self.d, request.requestor,
+                (1 << 22) | (1 << 17))
+            self.x.XSync(self.d, False)
+        finally:
+            self.x.XSetErrorHandler(previous)
+        assert not errors, ('requestor subscription failed',
+            request.selection, request.target, request.requestor, errors)
+
+    def answer(self, request, payload, kind=None, form=8):
+        # Subscribe before answering; requestor retirement is the completion
+        # barrier before asking the module to report a post-paste value.
+        self.watch_requestor(request)
+        self.put(request.property, kind or request.target, form, payload,
+            window=request.requestor)
+        reply = Event()
+        reply.selection = SelectionNotify(type=31, display=self.d,
+            requestor=request.requestor, selection=request.selection,
+            target=request.target, property=request.property, time=request.time)
+        assert self.x.XSendEvent(self.d, request.requestor, False, 0,
+            C.byref(reply))
+        self.x.XFlush(self.d)
+
+    def refuse(self, request):
+        self.watch_requestor(request)
+        reply = Event()
+        reply.selection = SelectionNotify(type=31, display=self.d,
+            requestor=request.requestor, selection=request.selection,
+            target=request.target, property=0, time=request.time)
+        assert self.x.XSendEvent(self.d, request.requestor, False, 0,
+            C.byref(reply))
+        self.x.XFlush(self.d)
+
+    def incremental(self, request, payload):
+        self.answer(request, [len(payload)], self.atom('INCR'), 32)
+        event = Event()
+
+        def deleted():
+            for _ in range(32):
+                if not self.x.XCheckTypedWindowEvent(self.d,
+                        request.requestor, 28, C.byref(event)):
+                    return False
+                if (event.property.atom, event.property.state) == (
+                        request.property, 1):
+                    return True
+            return False
+
+        self.wait('INCR header acknowledgement', deleted)
+        middle = max(1, len(payload) // 2)
+        for chunk in (payload[:middle], payload[middle:]):
+            if chunk:
+                self.put(request.property, request.target, 8, chunk,
+                    window=request.requestor)
+                self.wait('INCR chunk acknowledgement', deleted)
+        self.put(request.property, request.target, 8, b'',
+            window=request.requestor)
+
+    def retired(self, request):
+        event = Event()
+        self.wait('requestor retired before consumer observation', lambda:
+            self.x.XCheckTypedWindowEvent(self.d, request.requestor, 17,
+                C.byref(event)))
 
     def nonexistent_atom(self):
         # Confirm the atom on this isolated peer connection. Only this one
@@ -275,7 +371,7 @@ class Peer:
 class Script:
     """One real Script process; only the fixture owns its native pipe ends."""
 
-    def __init__(self, runtime, module, display, peer):
+    def __init__(self, runtime, module, display, peer, profile='slate-dark'):
         self.runtime, self.peer = runtime, peer
         self.report = runtime.root / 'owner.report'
         source = runtime.root / 'owner.script'
@@ -297,10 +393,31 @@ class Script:
             24: (' SendToScript 0 {invalid-atom-first}\n'
                 ' SendToScript 0 {invalid-atom-second}\n'),
             23: ' Quit\n',
+            30: (' Set $reply=(ReceivFromScript 0)\n'
+                ' WriteToFile $file {message:} $reply\n'),
+            31: ' WriteToFile $file {text:} (GetTitle 1)\n',
+            32: ' ChangeTitle 1 {}\n',
         }
+        profiles = {
+            'slate-dark': ('xft:DejaVu Sans:size=10', '#e5edf0', '#202a31',
+                '#536570', '#122128'),
+            'dune-light': ('xft:DejaVu Sans:size=10', '#30291f', '#f4ead6',
+                'white', '#b5a282'),
+            'classic-large': ('xft:DejaVu Sans Mono:size=18', 'wheat', 'navy',
+                'white', 'black'),
+        }
+        font, fore, back, high, shadow = profiles[profile]
+        self.profile = profile
+        self.source = source
         source.write_text('WindowTitle {OwnerProbe}\nWindowSize 300 70\n'
-            'Font {fixed}\nInit\nBegin\n Set $file={' + str(self.report) +
-            '}\n WriteToFile $file {ready}\nEnd\n'
+            'WindowPosition 60 60\nFont "' + font + '"\n'
+            'ForeColor {' + fore + '}\nBackColor {' + back + '}\n'
+            'HilightColor {' + high + '}\nShadowColor {' + shadow + '}\n'
+            'Init\nBegin\n Set $file={' + str(self.report) +
+            '}\n WriteToFile $file {ready}\n'
+            ' Set $init=(ReceivFromScript 0)\n'
+            ' WriteToFile $file {init-message:} $init\nEnd\n'
+            'PeriodicTasks\nBegin\n WriteToFile $file {heartbeat}\nEnd\n'
             'QuitFunc\nBegin\n WriteToFile $file {quitting}\nEnd\n'
             'Widget 1\nProperty\n Type TextField\n Position 10 10\n'
             ' Size 260 26\n Title {owner-one}\nMain\nCase message of\n' +
@@ -322,15 +439,40 @@ class Script:
         os.set_blocking(self.consumer, False)
         self.buffer, self.commands = bytearray(), []
         self.receive(lambda: any('Send_ConfigInfo' in c for c in self.commands))
+        self.config = runtime.root / 'owner.module.config'
+        self.config.write_text('*FvwmScript: KeyboardFocus "OwnerProbe"\n')
+        # Direct module packets contain the core-normalized resource form.
+        self.packet_config = runtime.root / 'owner.module-packet.config'
+        self.packet_config.write_text('*FvwmScriptKeyboardFocus "OwnerProbe"\n')
+        os.write(self.producer, packet(1 << 18, (0, 0, 0),
+            self.packet_config.read_text().strip()))
         os.write(self.producer, packet(1 << 19))
+        initial = peer.next_request(self.parent, self.selection)
+        # Before answering Init's exact read, independently query Script's
+        # private owner. This requires its safe-X pump without MainLoop.
+        targets, _ = peer.metadata(self.selection)
+        assert targets == {peer.atoms[name] for name in
+            ('TARGETS', 'TIMESTAMP', 'MULTIPLE')}
+        peer.answer(initial, b'init-ok\0')
+        peer.retired(initial)
         self.receive(lambda: 'NOP FINISHED STARTUP' in self.commands)
         self.peer.wait('Script initialization', lambda: self.report.exists()
             and 'ready' in self.report.read_text() and peer.named('OwnerProbe'),
             seconds=10, process=self.process)
+        assert 'init-message:init-ok' in self.report.read_text()
         self.window = peer.named('OwnerProbe')
         self.peer.wait('TextField mapped', lambda:
             bool(peer.children(self.window)), process=self.process)
         self.field = peer.children(self.window)[0]
+
+        def viewable(window):
+            attributes = WindowAttributes()
+            return (peer.x.XGetWindowAttributes(peer.d, window,
+                C.byref(attributes)) and attributes.map_state == 2)
+
+        self.peer.wait('base and TextField viewable', lambda:
+            viewable(self.window) and viewable(self.field),
+            process=self.process)
         self.peer.wait('private ownership', lambda: peer.owner(self.selection)
             not in (0, peer.client.root), process=self.process)
 
@@ -355,12 +497,58 @@ class Script:
                         2 * WORD + length]).decode())
                     del self.buffer[:size]
 
-    def command(self, number):
+    def begin(self, number):
+        marker = 'quitting' if number == 23 else f'case-{number}'
+        count = self.report.read_text().count(marker)
+        print('script command', number, count, flush=True)
         os.write(self.producer, packet(1 << 22, (0, 0, 0),
             f'SendString 1 {number}'))
-        marker = 'quitting' if number == 23 else f'case-{number}'
-        self.peer.wait(marker, lambda: marker in self.report.read_text(),
+        return marker, count
+
+    def complete(self, ticket):
+        marker, count = ticket
+        self.peer.wait(marker, lambda:
+            self.report.read_text().count(marker) > count,
             process=self.process)
+
+    def command(self, number):
+        self.complete(self.begin(number))
+
+    def reported(self, prefix):
+        lines = self.report.read_text().splitlines()
+        values = [line[len(prefix):] for line in lines
+            if line.startswith(prefix)]
+        assert values, prefix
+        return values[-1]
+
+    def paste(self, clipboard=False):
+        pointer = Pointer(self.peer.client)
+        if clipboard:
+            pointer.x.XTestFakeKeyEvent.argtypes = [C.c_void_p, C.c_uint,
+                C.c_int, C.c_ulong]
+            pointer.x.XTestFakeKeyEvent.restype = C.c_int
+            self.peer.x.XSetInputFocus(self.peer.d, self.window, 1, 0)
+            control = self.peer.x.XKeysymToKeycode(self.peer.d, 0xffe3)
+            key = self.peer.x.XKeysymToKeycode(self.peer.d, ord('v'))
+            assert control and key
+            assert pointer.x.XTestFakeKeyEvent(self.peer.d, control, True, 0)
+            try:
+                assert pointer.x.XTestFakeKeyEvent(self.peer.d, key, True, 0)
+            finally:
+                pointer.x.XTestFakeKeyEvent(self.peer.d, key, False, 0)
+                pointer.x.XTestFakeKeyEvent(self.peer.d, control, False, 0)
+                self.peer.x.XSync(self.peer.d, False)
+            return
+        x, y, child = C.c_int(), C.c_int(), C.c_ulong()
+        assert self.peer.x.XTranslateCoordinates(self.peer.d, self.field,
+            self.peer.client.root, 0, 0, C.byref(x), C.byref(y), C.byref(child))
+        pointer.motion(x.value + 8, y.value + 12)
+        assert pointer.x.XTestFakeButtonEvent(self.peer.d, 2, True, 0)
+        try:
+            self.peer.x.XSync(self.peer.d, False)
+        finally:
+            pointer.x.XTestFakeButtonEvent(self.peer.d, 2, False, 0)
+            self.peer.x.XSync(self.peer.d, False)
 
     def select(self):
         pointer = Pointer(self.peer.client)
@@ -588,6 +776,140 @@ def private_cases(peer, script, evidence):
     evidence['newer-primary-and-private-owner-survive-shutdown'] = 'passed'
 
 
+def requestor_cases(peer, script, evidence, ui_only=False):
+    a = peer.atoms
+    if not ui_only:
+        for payload, incremental, expected in (
+                (b'literal # $ message\0', False, 'literal # $ message'),
+                (b'incremental message\0', True, 'incremental message'),
+                (None, False, 'No message'),
+                (b'\0', False, 'No message'),
+                (b'missing terminator', False, 'No message'),
+                (b'embedded\0invalid\0', False, 'No message'),
+                (b'recovered\0', False, 'recovered')):
+            ticket = script.begin(30)
+            request = peer.next_request(script.parent, script.selection)
+            if payload is None:
+                peer.refuse(request)
+            elif incremental:
+                peer.incremental(request, payload)
+            else:
+                peer.answer(request, payload)
+            peer.retired(request)
+            script.complete(ticket)
+            assert script.reported('message:') == expected
+        evidence['actual-exact-private-direct-incr-nul-recovery'] = 'passed'
+
+        script.command(32)
+        peer.x.XSetSelectionOwner(peer.d, a['PRIMARY'], peer.window, 0)
+        peer.x.XSync(peer.d, False)
+        script.paste()
+        metadata = peer.next_request(a['PRIMARY'], a['TARGETS'])
+        peer.answer(metadata, [a['UTF8_STRING']], a['ATOM'], 32)
+        pending = peer.next_request(a['PRIMARY'], a['UTF8_STRING'])
+        ticket = script.begin(30)
+        script.complete(ticket)
+        assert script.reported('message:') == 'No message'
+        event = Event()
+        assert not peer.x.XCheckTypedWindowEvent(peer.d, peer.window, 30,
+            C.byref(event)), 'nested read issued another conversion'
+        peer.answer(pending, b'nested read refused')
+        peer.retired(pending)
+        script.command(31)
+        assert script.reported('text:') == 'nested read refused'
+        evidence['actual-nested-reader-refusal-keeps-outer-read'] = 'passed'
+
+        before = script.report.read_text().count('heartbeat')
+        peer.wait('periodic reference tick', lambda:
+            script.report.read_text().count('heartbeat') > before,
+            process=script.process)
+        # Place the next one-second periodic tick inside the one-second read,
+        # with a margin on both sides; this does not extend its deadline.
+        time.sleep(.3)
+        before = script.report.read_text().count('heartbeat')
+        script.command(32)
+        script.paste()
+        metadata = peer.next_request(a['PRIMARY'], a['TARGETS'])
+        peer.answer(metadata, [a['UTF8_STRING']], a['ATOM'], 32)
+        pending = peer.next_request(a['PRIMARY'], a['UTF8_STRING'])
+        before = script.report.read_text().count('heartbeat')
+        peer.wait('periodic tick serviced during pending paste', lambda:
+            script.report.read_text().count('heartbeat') > before,
+            process=script.process)
+        peer.answer(pending, b'periodic service kept paste')
+        peer.retired(pending)
+        script.command(31)
+        assert script.reported('text:') == 'periodic service kept paste'
+        evidence['actual-periodic-service-during-paste'] = 'passed'
+
+        script.command(32)
+        script.paste()
+        metadata = peer.next_request(a['PRIMARY'], a['TARGETS'])
+        peer.answer(metadata, [a['UTF8_STRING']], a['ATOM'], 32)
+        pending = peer.next_request(a['PRIMARY'], a['UTF8_STRING'])
+        peer.watch_requestor(pending)
+        started = time.monotonic()
+        script.command(10)
+        peer.retired(pending)
+        script.command(31)
+        assert script.reported('text:') == 'widget-updated'
+        evidence['actual-widget-mutation-while-paste-pending'] = dict(
+            status='passed', retirement_seconds=time.monotonic() - started,
+            limit='mutation outcome; immediate cause covered by linked probe')
+
+    cases = [(False, b'direct paste', False, True),
+        (True, b'Paste ready', True, True)]
+    if not ui_only:
+        cases[1:1] = [(False, b'x' * 32768, True, True),
+            (False, ('éµ' * 8192).encode(), True, True),
+            (False, b'x' * 32769, False, False)]
+    for clipboard, payload, incremental, accepted in cases:
+        script.command(32)
+        selection = peer.atom('CLIPBOARD') if clipboard else a['PRIMARY']
+        peer.x.XSetSelectionOwner(peer.d, selection, peer.window, 0)
+        peer.x.XSync(peer.d, False)
+        script.paste(clipboard)
+        metadata = peer.next_request(selection, a['TARGETS'])
+        peer.answer(metadata, [a['UTF8_STRING'], a['STRING']], a['ATOM'], 32)
+        request = peer.next_request(selection, a['UTF8_STRING'])
+        assert request.requestor != metadata.requestor
+        if incremental:
+            peer.incremental(request, payload)
+        else:
+            peer.answer(request, payload)
+        peer.retired(request)
+        script.command(31)
+        expected = payload.decode() if accepted else ''
+        assert script.reported('text:') == expected
+    evidence['actual-negotiated-primary-and-clipboard-paste'] = 'passed'
+    evidence['init-exact-read-services-independent-owner-metadata'] = 'passed'
+
+
+def capture(script, peer, runtime, display, args, evidence):
+    if args.capture is None:
+        evidence['capture'] = 'not requested'
+        return
+    # Two real owner metadata replies order this module's preceding draw work
+    # before capture; XSync on the peer alone would not order another client.
+    peer.metadata(script.selection)
+    result = subprocess.run([str(args.capture), str(args.artifacts_dir)],
+        env=runtime.environment({'DISPLAY': display}), capture_output=True,
+        text=True, timeout=15)
+    assert result.returncode == 0
+    assert result.stdout.startswith('Screenshot saved: ')
+    path = Path(result.stdout.rstrip().removeprefix('Screenshot saved: '))
+    assert path.parent.resolve() == args.artifacts_dir.resolve()
+    assert path.is_file()
+    name = 'script-selection-' + args.profile + '.png'
+    destination = args.artifacts_dir / name
+    path.replace(destination)
+    raw = destination.read_bytes()
+    assert raw.startswith(b'\x89PNG\r\n\x1a\n')
+    evidence['capture'] = dict(path=destination.name,
+        sha256=hashlib.sha256(raw).hexdigest(),
+        scope='Script component palette/font; no full desktop claim',
+        visual_review='required separately')
+
 def run(args):
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     evidence = {'status': 'started', 'runtime': 'not completed'}
@@ -599,10 +921,23 @@ def run(args):
                 _, display = start_display_server(runtime, 'Xvfb',
                     ['Xvfb', '-screen', '0', '800x600x24', '-noreset'],
                     'xserver.log', time.monotonic() + 10)
+            if args.api_probe is not None:
+                probe = runtime.start('owner-api', [str(args.api_probe)],
+                    'owner-api.log',
+                    environment=runtime.environment({'DISPLAY': display}))
+                assert probe.wait_until_exit(time.monotonic() + 15) == 0
+                evidence['native-owner-api-boundaries'] = 'passed'
             peer = Peer(display)
-            script = Script(runtime, args.module, display, peer)
-            primary_cases(peer, script, evidence)
-            private_cases(peer, script, evidence)
+            script = Script(runtime, args.module, display, peer, args.profile)
+            if not args.ui_only:
+                primary_cases(peer, script, evidence)
+            requestor_cases(peer, script, evidence, args.ui_only)
+            capture(script, peer, runtime, display, args, evidence)
+            if not args.ui_only:
+                private_cases(peer, script, evidence)
+            else:
+                script.command(23)
+                assert script.process.wait_until_exit(time.monotonic() + 3) == 0
             text = script.process.log_path.read_text()
             assert not any(marker in text for marker in
                 ('AddressSanitizer', 'runtime error:', 'Assertion')), text
@@ -610,11 +945,12 @@ def run(args):
             script = None
             peer.close()
             peer = None
-            # Compose rather than duplicate prior count/grace/cancel controls.
-            message_controls(SimpleNamespace(module=args.module,
-                artifacts_dir=args.artifacts_dir / 'message-controls',
-                display=display, case='all'))
-            evidence['existing-40-41-and-grace-controls'] = 'passed'
+            if not args.ui_only:
+                # Compose the existing count/grace/cancel controls once.
+                message_controls(SimpleNamespace(module=args.module,
+                    artifacts_dir=args.artifacts_dir / 'message-controls',
+                    display=display, case='all'))
+                evidence['existing-40-41-and-grace-controls'] = 'passed'
             evidence.update(status='passed', runtime='completed')
         except BaseException as error:
             evidence.update(status='failed', error=repr(error))
@@ -624,7 +960,7 @@ def run(args):
                 script.close()
             if peer:
                 peer.close()
-            for pattern in ('*.log', '*.script', '*.report'):
+            for pattern in ('*.log', '*.script', '*.report', '*.config'):
                 for path in runtime.root.glob(pattern):
                     shutil.copy2(path, args.artifacts_dir / path.name)
             (args.artifacts_dir / 'evidence.json').write_text(
@@ -636,7 +972,16 @@ if __name__ == '__main__':
     parser.add_argument('--module', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--display')
+    parser.add_argument('--api-probe', type=Path)
+    parser.add_argument('--capture', type=Path)
+    parser.add_argument('--profile', choices=('slate-dark', 'dune-light',
+        'classic-large'), default='slate-dark')
+    parser.add_argument('--ui-only', action='store_true')
     options = parser.parse_args()
     options.module = options.module.resolve()
     options.artifacts_dir = options.artifacts_dir.resolve()
+    if options.api_probe is not None:
+        options.api_probe = options.api_probe.resolve()
+    if options.capture is not None:
+        options.capture = options.capture.resolve()
     run(options)

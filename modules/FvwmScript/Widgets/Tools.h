@@ -9,6 +9,7 @@
 #include "../script_geometry.h"
 
 #include "libs/Flocale.h"
+#include "libs/FSelection.h"
 
 extern Display *dpy;
 extern int screen;
@@ -39,6 +40,13 @@ extern FlocaleWinString *FwinString;
 /* Cancellation-aware modal readiness shares MainLoop packet/session ownership.
  * A zero-type event means a finite timeout. A callback changing the active
  * widget cancels the old interaction before its cached geometry is used. */
+/* One reader owns its initial widget snapshot until return. Text negotiates;
+ * exact private messages require their wire NUL and never probe metadata. */
+FSelectionStatus FvwmScriptSelectionExact(Atom selection, Atom target,
+	Time time, FSelectionResult *result);
+FSelectionStatus FvwmScriptSelectionText(struct XObj *object, Atom selection,
+	Time time, FSelectionResult *result);
+
 bool FvwmScriptModalService(void *context);
 bool FvwmScriptModalEvent(struct XObj *object, XEvent *event, int timeout_ms);
 bool script_widget_next_event(struct XObj *object, XEvent *event);

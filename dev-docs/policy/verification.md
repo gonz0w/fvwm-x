@@ -10,6 +10,16 @@ their existing scope. The owner changes required policy through the existing pro
 
 Documentation-only changes use `make check`, working/staged whitespace checks and affected source/link review. Preserve the current larger-batch and risk-based cadence; no WM build, VM or broad matrix solely for this adoption.
 
+Owner direction, 2026-10-31: runtime qualification runs once across a major
+feature/shared checkpoint spanning several related PRs, normally four to six.
+Per-PR review/static checks and affected incremental compilation remain; fresh
+runtime suites are not a per-PR merge gate. Queue required runtime coverage in
+the tracker and complete it at the named checkpoint. Representative themes join
+the shared UI checkpoint; the full platform/install/default-server matrix waits
+for milestone/release, with only specifically justified affected-target checks
+earlier. See [WORKFLOW.md](../WORKFLOW.md). Reproduced defects retain focused regressions; pending acceptance
+is not a pass. This explicitly replaces the earlier per-feature-PR runtime cadence.
+
 Follow existing behavior-first/regression and PRD/EDD/Test Design obligations
 where they apply. Prose changes use source, link, policy and reader checks; do not
 invent red/green runtime history. Preserve final required checks and conservative

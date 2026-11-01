@@ -8,6 +8,7 @@ Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
 Current checkpoint: R1 file clipboard/XDND and installed interoperability,
+[implementation PR322](https://github.com/gonz0w/fvwm-x/pull/322),
 `codex/r1-filemanager-acceptance`, owner Cam. User directed continuous R1 batches
 and merging reviewed, applicable-green PRs without waiting for individual merge
 requests. [Standing authority](policy/authority.md#decisions-and-action-authority)
@@ -15,6 +16,16 @@ records that instruction; required checks/review and other operational authority
 remain binding. PR321 merged as `4dcb17284fc4ec1e906b8f67a1ae45a63abebb5e`;
 canonical signature, reviewed tree `5b5cb18609d4664ad6af4608e2d74e9160858054`
 and author DCO verify. #60 is closed; #73 remains closed. Source branches retire.
+
+Testing cadence update, 2026-10-31: the owner directs development across several
+related PRs before runtime qualification. Use separate review/static checks and
+necessary incremental compilation per PR; run accumulated policy/native-X/scoped
+sanitizer/race/theme coverage once at the named major-feature/shared checkpoint,
+normally after four to six related PRs. Full OS/install/default-X sweeps wait for
+milestone/release or a specifically justified changed platform contract. Keep
+qualification queued distinct from passed. Finish the current already-running
+OpenBSD service closeout without adding another sweep. Next Script work uses the
+new cadence; see [WORKFLOW.md](WORKFLOW.md#implementation-batches-and-test-cadence).
 
 Selected finite batch: finish FILE-INTEGRATION-01 #67 with the required
 SELECTION-01 #22 file-only source/target subset. Existing portable roles,
@@ -155,25 +166,42 @@ visible; runner Wait0 with SIGTERM cleanup is not a normal-poweroff claim.
 The completed OpenBSD clones/input duplicates are retired after verified export;
 current full compiled payloads and base caches remain. The source32 retirements
 recover5,875,859,936 ARM and5,150,798,245 AMD logical bytes, in addition to the
-previous recorded retirements. Source34 installed-service closeout has 37 of 55 actual groups passed: Linux
-ARM64 enabled 9/disabled 2, Linux AMD64 enabled 8, FreeBSD ARM64 enabled 8/disabled 2,
-and FreeBSD AMD64 enabled 8. All exported member bytes verify, qualified actors
-remain unchanged, and completed owned Linux/FreeBSD labs stop normally. The
-FreeBSD disabled setup preserves two effective directory values after Meson's
-new-prefix defaults differed; its existing same-SDK baseline cache is reused
-through a separately reviewed narrow private guard. Both preparation failures
-remain recorded with zero groups; no product expectation or deadline changed.
+previous recorded retirements. Source34 service closeout has 53 of 55 selected groups passed. Linux ARM64
+passes enabled 9/disabled 2; Linux AMD64, FreeBSD AMD64 and both OpenBSD targets
+pass enabled 8 each; FreeBSD ARM64 passes enabled 8/disabled 2. All current compact
+and full collected member bytes verify. Source/actor identity, actual owned
+process Waits, independent calls and read-only browser/helper PID retirement are
+recorded separately. Completed Linux/FreeBSD labs stop normally; OpenBSD runner
+Wait 0 uses its existing SIGTERM cleanup, not a normal-poweroff claim. No owned
+lab is active.
 
-Both OpenBSD service jobs stop in preparation before any service group: the
-adapter looked for a top-level DBus receipt whose retained source32 path is
-nested. A bounded private adapter repair checks every cached receipt lookup.
-No product source, fixture or acceptance change is selected. All failed setup
-logs/statuses are compacted and byte-verified; stopped disposable clones retire
-(4,202,889,216 ARM and 4,169,400,320 AMD bytes). Current compiled payloads and
-base caches remain. No owned lab is currently running. The remaining 18 OpenBSD
-service groups and final delivery review are pending; see the [service report](verification/VERIFICATION-2026-10-31-FILEMANAGER-INSTALLED.md).
-Keep useful current source/builds/install stages/SDKs/caches/performance references.
-Performance remains 2/5 before the next runtime merge.
+The OpenBSD ARM aggregate remains failed: its eight enabled groups pass, then
+new disabled-profile setup stops at Meson's `licensedir` normalization (`''`
+versus `'.'`) before either disabled group or target build. This is retained as
+qualification debt, not relabelled success. Earlier directory/default/cache and
+receipt-path failures also remain recorded with their zero functional-group
+counts. The portable authenticated plan handoff preserves every source/input/
+plan check after OpenBSD's `head` rejects `-c`; actual lead reviews and matching
+guest approval objects are retained separately from the broken controller's
+empty summary field.
+
+Q67-OPENBSD-NOBUS is the finite remaining service obligation: preserve the enabled
+profile's effective empty `licensedir` default when preparing the separate
+OpenBSD ARM disabled profile, then execute only D1 explicit installed-service
+refusal and D2 ordinary no-bus browsing. Owner: lead/Cam. Queue these two groups
+at the next Script-selection major-feature/shared checkpoint; do not repeat the
+six enabled-service or file-transfer sweeps. #67's fourth criterion stays open.
+The source implementation may merge after final review/static checks under the
+owner's new cadence; that merge is not whole-issue or release qualification.
+Next source work may proceed independently under #22 after PR322 integration,
+using the accepted Script owner/requestor slice and one later combined runtime
+gate. Do not wait on this profile-only setup debt to start that implementation.
+
+See the [service report](verification/VERIFICATION-2026-10-31-FILEMANAGER-INSTALLED.md)
+for exact results, sources, retained failures and deferred checks. Current full
+compiled payloads, SDKs/caches and useful install/build references remain. Failed
+setup clones are retired only after verified export. Performance remains 2/5
+before this runtime merge; any later due observation joins the shared checkpoint.
 #257/#258 remain parked. Whole #67 additionally retains the explicit FileManager1 installed/service
 acceptance in the durable file-manager contract; transfer success alone does not
 close it. Separate coverage review found this finite gap in accepted PR315's
@@ -201,8 +229,9 @@ failure or scope drift. A new portable installed fixture avoids Linux-only
 process assumptions and closes retained views through actual Form input.
 The lead owns this accepted 2026-10-31 verification selection, execution, final
 review, signed integration and four-criterion issue reconciliation. Keep #67
-and whole #22 open until their actual requirements qualify. After #67's qualified
-checkpoint, select the finite remaining Script owner/requestor slice under #22.
+and whole #22 open until their actual requirements qualify. The owner's new
+cadence permits the recorded independent #22 continuation after implementation
+integration while Q67-OPENBSD-NOBUS remains queued.
 
 
 ## TEMPER-06 — Bounded delivery instructions

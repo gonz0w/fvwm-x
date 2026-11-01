@@ -90,17 +90,16 @@ instructions; retired GSD plans and graph data are historical references.
   risk requires it, and full acceptance at milestone/release boundaries.
   Physical hardware/toolkits/compositors retain their own checks; emulated
   passes do not establish native-CPU qualification.
-- Follow the tiered cadence in `dev-docs/WORKFLOW.md`: normal feature PRs use one
-  incremental Linux profile, affected policy/X tests and scoped sanitizers when
-  warranted. Check platform-sensitive changes early on the affected target.
-  Implement larger related batches before one combined focused gate. Review
-  coverage debt after roughly five merged batches; this is not an automatic
-  matrix or a blocker on the next portable cleanup batch. Use affected BSD/
-  architecture checks for changed contracts or concrete failures. Full compiler/
-  feature/install/default-X qualification belongs at milestone/release boundaries
-  unless the changed contract requires it earlier. Track deferred gates in the
-  tracker; focused-checks-passed PRs may merge while
-  integration is pending. Do not report deferred checks as passes.
+- Follow the shared-checkpoint cadence in `dev-docs/WORKFLOW.md`: merge several
+  related implementation PRs with separate review/static checks and affected
+  incremental compilation when needed. Run runtime policy/X/sanitizer/race/theme
+  checks once at a major-feature/shared checkpoint, normally after four to six
+  related PRs, not per PR or small helper. A reproduced defect gets its focused
+  regression. Early affected-target checks need a concrete changed OS/ABI/build/
+  install/server contract or observed failure; do not broaden them automatically.
+  Full compiler/feature/install/default-X qualification belongs at milestone/
+  release boundaries. Track runtime qualification queued separately from passes;
+  do not close an owner before its actual required acceptance is complete.
 - Default to one PR per coherent batch: usually six to ten related improvements
   where useful, or a complete reviewable owner slice. Keep related implementation,
   tests, docs, evidence and review fixes together. Reuse owner-controlled

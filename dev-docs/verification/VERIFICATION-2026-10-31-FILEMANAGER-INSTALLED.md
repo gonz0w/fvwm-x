@@ -4,8 +4,10 @@ FILE-INTEGRATION-01 #67 remains open. The selected closeout covers eight enabled
 service groups on each of six targets, two disabled groups on one ARM target per
 OS, and one Linux ARM service-to-`--file-transfer` observation: at most 55
 groups. Linux ARM passed all 11 applicable groups; FreeBSD ARM and Linux AMD64 each
-passed eight enabled groups; FreeBSD AMD64 passed eight and FreeBSD ARM
-disabled passed two: 37 of 55 passed, with 18 pending. Final review and integration remain pending, and whole
+passed eight enabled groups; FreeBSD AMD64 passed eight, FreeBSD ARM
+disabled passed two, and both OpenBSD enabled runs passed eight each: 53 of
+55 passed. The two OpenBSD ARM disabled groups remain unrun. Final review and
+integration remain pending, and whole
 SELECTION-01 #22 remains open.
 
 The [transfer report](VERIFICATION-2026-10-31-FILE-TRANSFER.md) and retained
@@ -139,12 +141,11 @@ was reused without copying it.
 
 ## OpenBSD preparation failures
 
-Both PREPARE01 runs stopped before any service group, so 37 of 55 groups remain
-passed and 18 remain pending. They could not find the stale top-level cache
+Both PREPARE01 runs stopped before any service group. They could not find the stale top-level cache
 receipt `builddir-bsd/provider-dbus.txt`; the source32 receipt was nested in
 transfer-continuation preparation. These are preparation failures, not service
-behavior failures. Adapter v2 is being repaired for all cached receipt lookups;
-no source, gate or case changed and no retry has run.
+behavior failures. Adapter v2 repaired the cached receipt lookups;
+no source, gate or case changed. The later v2 runs are recorded below.
 
 The verified AMD64 archive
 `a667947b980dfc23660555dae33815531ab26db3dbeeda9e6355802496c809d2`
@@ -158,10 +159,45 @@ Original compiled payloads and base assets remain. No owned labs remain active.
 Linux AMD64, FreeBSD AMD64 and FreeBSD ARM completed normal shutdown with QEMU
 Wait 0; Linux ARM's Podman container and machine stops also returned zero.
 
+## OpenBSD service02 continuation
+
+Both OpenBSD 8.0 enabled runs passed eight groups with zero cleanup failures
+and source34 postguard. ARM64 used native CPU under HVF; AMD64 used emulated TCG.
+ARM's aggregate job failed the disabled inspection before build or D1/D2:
+`licensedir` was empty on the retained enabled profile but `.` on the new
+profile after directory defaults were copied. Its two disabled groups were not
+run. AMD's job passed. Both QEMU Waits were zero through SIGTERM cleanup; normal
+guest poweroff is not claimed and no owned labs are active.
+
+ARM's compact archive SHA-256 is
+`eb754f179eb220bcd4f0f63fa1e59a800584e5c053c85f5b818fceec81e893de`
+(154 current and 11 host members). Its full archive is
+`cb8c2ce87d764f8db746a467ecad729ab86aac738af6717722491ed00b5430f0`
+(4,682 members). AMD's compact archive is
+`0b6574b439e92affae1f50aadc9c3a4586ff761f189d3ecbd513d4bcaa37fd65`
+(152 current and 11 host members), and full archive is
+`9375b98caf674b924fafcab2cf6776fc8f55be573377b20eaaa1d615efb3e691`
+(4,608 members). Full member manifests and export-verification receipts are
+retained; compact member bytes and hashes were checked.
+
+OpenBSD `head` rejected `-c`, so the v2 controller's ready reader silently
+reported not-ready. The lead fetched exact ready, plan and input bytes with a
+bounded Python handoff, reviewed the actual dry plan and atomically uploaded
+the matching frozen approval object. The guest still checked approval, hashes
+and re-inspected plan equality. The compact archives retain the handoff and
+actual guest approval. The outer controller's empty approval list reflects its
+broken reader, not an absent actual approval; this is not a human or automatic
+approval claim. A reviewer P3 whole-template equality correction preceded the
+AMD handoff; the first ARM object was already correct. No product, source,
+test, gate or deadline changed.
+
 ## Remaining acceptance
 
-Run both OpenBSD enabled targets (16 groups) and the OpenBSD ARM disabled
-profile (two groups), under the selected source and artifact
-identity checks. Reconcile any failures, obtain separate final review, and complete
-integration before closing #67. No whole-issue or release qualification follows
-from this development run alone.
+The two OpenBSD ARM disabled groups remain unrun. The identified future setup
+fix is to skip empty directory values in the new profile, then qualify only
+D1/D2 at the next major or shared checkpoint under the updated
+[workflow cadence](../WORKFLOW.md). This gap does not block implementation
+merge under that cadence, but remains pending qualification and #67 stays open.
+No further test jobs are selected now. Final delivery review, signature and merge
+remain pending; whole #22 also remains open. Do not claim all 55 groups or whole
+issue acceptance from the 53 observed passes.

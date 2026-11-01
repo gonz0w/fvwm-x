@@ -131,9 +131,10 @@ imports of whole historical passes. ARM64's compact export contains 176 members
 and its full collection 4,335; AMD64's contain 201 and 4,608 respectively.
 Both QEMU processes returned Wait 0; normal guest poweroff is not claimed.
 Verified clones and input duplicates were retired (5,875,859,936 ARM64 and
-5,150,798,245 AMD64 logical bytes); compiled payloads and current caches remain. The full collected payload of 4,415 members and
-594,391,889
-expanded bytes and artifact provenance were verified. Runner exit was 1 and
+5,150,798,245 AMD64 logical bytes); compiled payloads and current caches remain.
+
+The earlier source30 AMD64 failed-run collection contained 4,415 members and
+594,391,889 expanded bytes; member bytes and artifact provenance were verified. Runner exit was 1 and
 QEMU Wait 0; normal guest poweroff is not claimed. Old unmodified runtime
 warnings remain retained. The ended owned clone and hash-verified input
 duplicates were retired (5,112,336,125 logical bytes); current compact and full
@@ -143,8 +144,8 @@ the same five built-artifact provenance and no historical pass imports. QEMU
 exited 0 through the unchanged runner SIGTERM/Wait; normal guest poweroff is
 not claimed. Verified disposable clone/input duplicates were retired (5,855,027,000
 logical bytes); caches and full payload were preserved. All OpenBSD labs
-stopped. Linux was restarted only to prepare native bus/helper
-policy and tag closure; no service fixture has run.
+stopped. The separate [installed-service report](VERIFICATION-2026-10-31-FILEMANAGER-INSTALLED.md)
+records subsequent service execution, cleanup and any remaining target gates.
 
 Whole #67 remains open for the FileManager1 installed-service criterion in
 [FILE-MANAGER-PRIMITIVES](../decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md)
@@ -154,7 +155,8 @@ lead selected a focused service closeout: eight enabled groups on six targets,
 two disabled groups on representative Linux, FreeBSD and OpenBSD ARM, and one
 Linux ARM service-to-file-transfer option observation, at most 55 observations.
 Existing transfer, theme, default-X, sanitizer and detailed PR315 protocol
-evidence is reused. The portable service fixture is being implemented; these
-gates have not run. This does not add product features or complete whole #77.
+evidence is reused. The portable service fixture is implemented, and its actual
+passed groups, preparation failures and pending targets are recorded in that
+separate report. This does not add product features or complete whole #77.
 Final delivery review remains pending; neither #67 nor whole #22 is closed and
 no merge or whole acceptance is claimed.

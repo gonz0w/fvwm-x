@@ -7,25 +7,52 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current checkpoint: R1 file clipboard/XDND and installed interoperability,
-[implementation PR322](https://github.com/gonz0w/fvwm-x/pull/322),
-`codex/r1-filemanager-acceptance`, owner Cam. User directed continuous R1 batches
-and merging reviewed, applicable-green PRs without waiting for individual merge
-requests. [Standing authority](policy/authority.md#decisions-and-action-authority)
-records that instruction; required checks/review and other operational authority
-remain binding. PR321 merged as `4dcb17284fc4ec1e906b8f67a1ae45a63abebb5e`;
-canonical signature, reviewed tree `5b5cb18609d4664ad6af4608e2d74e9160858054`
-and author DCO verify. #60 is closed; #73 remains closed. Source branches retire.
+Current checkpoint: Script selection transport under #22, owner Cam, branch
+`codex/r1-script-selection-transport`. PR322 merged as
+`27623cd2e296565c4f2d52bd3dba7c2bee8839ad`; canonical signature, Cam author DCO and
+reviewed tree `81739ddba9a464d665a9aa8391d09442c75b751d` verify. Its source branch
+is retired. The file-transfer implementation is integrated; #67 stays open for
+Q67-OPENBSD-NOBUS (two unrun disabled-profile checks), queued with the next
+Script-selection major-feature/shared checkpoint. Whole #22 remains open.
+Performance is 3/5 after PR322; no comparison is due. One owned Linux ARM64
+build environment is warm for necessary incremental compilation; no runtime
+qualification has run for this new phase.
 
-Testing cadence update, 2026-10-31: the owner directs development across several
-related PRs before runtime qualification. Use separate review/static checks and
-necessary incremental compilation per PR; run accumulated policy/native-X/scoped
-sanitizer/race/theme coverage once at the named major-feature/shared checkpoint,
-normally after four to six related PRs. Full OS/install/default-X sweeps wait for
-milestone/release or a specifically justified changed platform contract. Keep
-qualification queued distinct from passed. Finish the current already-running
-OpenBSD service closeout without adding another sweep. Next Script work uses the
-new cadence; see [WORKFLOW.md](WORKFLOW.md#implementation-batches-and-test-cadence).
+Owner direction, 2026-10-31: develop across several related PRs before runtime
+qualification. Use separate review/static checks and necessary affected
+incremental compilation per PR. Run accumulated policy/native-X/scoped
+sanitizer/race/theme coverage once at the selected major-feature/shared
+checkpoint, normally after four to six related PRs. Full platform/install/default
+server matrices wait for milestone/release or a specifically justified changed
+contract. A due performance observation joins the same shared session. Keep
+qualification queued distinct from passed; owner closure still needs acceptance.
+See [WORKFLOW.md](WORKFLOW.md#implementation-batches-and-test-cadence).
+
+Selected next major-feature group: the finite Script owner/requestor slice
+S07–S11/S13/S14 under #22. The [Script selection decision](decisions/SCRIPT-SELECTION-2026-10-31.md)
+records the role/limits and implementation sequence. The first implementation PR
+adds typed, bounded exact/negotiated direct/INCR request primitives in FSelection,
+with authored coverage and existing callers/wrappers unchanged. It does not
+adopt the API into Script or claim new user-visible behavior yet. Later related
+PRs add immutable owner/metadata state, private-message and TextField adoption,
+and safe event/modal servicing. Then execute one combined runtime checkpoint,
+including Q67's two queued checks; do not repeat the six-target service sweep.
+Lead owns docs/tracker/integration/execution; implementer owns the bounded
+FSelection implementation/tests; separate review precedes each merge.
+
+Transport source review is clear at C `251062fa60d0` / header `ad2a78c0128d`
+and probe `e49d91eb9938` (SHA-256 prefixes). Repository/static checks and the
+Linux ARM64 GCC incremental Script/probe build pass. The first dry-plan guard
+stopped before compilation; the next build compiled production objects but
+caught a prohibited raw `XPending` call in the probe. Using the project
+`FPending` wrapper completes the remaining three compile/link commands.
+No runtime test was executed. The 51 authored owner/protocol cases, scoped
+sanitizers and Script/theme adoption coverage remain queued for the combined
+checkpoint. Private command/output receipts: `builddir/codex-2026-10-31/`
+`r1-script-selection-transport/compile01` through `compile03`. This additive API
+has no production caller yet and changes no visible UI or configuration syntax.
+
+## Integrated PR322 file clipboard/XDND implementation
 
 Selected finite batch: finish FILE-INTEGRATION-01 #67 with the required
 SELECTION-01 #22 file-only source/target subset. Existing portable roles,
@@ -63,8 +90,8 @@ finite criteria have linked results. Related #22 rows are contributions only.
 Merge the qualified checkpoint under standing R1 authority, reconcile issues and
 continue the next accepted R1 work. No release publication or deadline waiver.
 
-Performance remains 2/5 after PR319; qualification-only PR320/321 do not
-advance it. No general comparison is due. R1 has 53 open issues after #60
+At pickup, performance was 2/5 after PR319; qualification-only PR320/321 did
+not advance it. PR322 is now 3/5; no general comparison is due. R1 has 53 open issues after #60
 closed. #257/#258 remain parked. Retain useful current builds, caches and
 references; retire verified superseded owned duplicates without disk expansion.
 
@@ -200,8 +227,8 @@ gate. Do not wait on this profile-only setup debt to start that implementation.
 See the [service report](verification/VERIFICATION-2026-10-31-FILEMANAGER-INSTALLED.md)
 for exact results, sources, retained failures and deferred checks. Current full
 compiled payloads, SDKs/caches and useful install/build references remain. Failed
-setup clones are retired only after verified export. Performance remains 2/5
-before this runtime merge; any later due observation joins the shared checkpoint.
+setup clones are retired only after verified export. Performance is now 3/5 after PR322; any later due observation joins the shared
+checkpoint.
 #257/#258 remain parked. Whole #67 additionally retains the explicit FileManager1 installed/service
 acceptance in the durable file-manager contract; transfer success alone does not
 close it. Separate coverage review found this finite gap in accepted PR315's

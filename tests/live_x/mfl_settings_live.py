@@ -105,7 +105,7 @@ def run(args):
             writer.send(b'set echo\n')
             writer.echo('settings-started')
             serial = 0
-            def query(c=writer, scope='all', provider=None, generation=None):
+            def query(c=writer, scope='all', provider=None, generation=None, raw=False):
                 nonlocal serial
                 deadline = time.monotonic() + 5
                 while True:
@@ -120,7 +120,7 @@ def run(args):
                     response = record['reply']
                     assert response['version'] == 1 and response['id'] == token, response
                     if response['status'] == 'ok':
-                        return response['result']
+                        return response['result'] if raw else expanded_settings(response['result'])
                     assert response['error']['code'] == 'provider_not_ready', response
                     assert time.monotonic() < deadline, 'provider never configured'
                     time.sleep(.01)
@@ -134,8 +134,8 @@ def run(args):
                 result = reply(c, token, 'error' if expected else 'ok')
                 if expected:
                     assert result == expected, result
-                return result
-            snapshot = query()
+                return result if expected else expanded_settings(result)
+            snapshot = query(raw=True)
             assert snapshot['owner'] == 'FvwmDesktop' and not snapshot['preview']
             assert query(provider=snapshot['provider'])['provider'] == snapshot['provider']
             expected_settings = {'palette', 'appearance', 'day', 'night',
@@ -145,7 +145,8 @@ def run(args):
                 'session_power', 'tray_enabled', 'tray_gap', 'tray_padding',
                 'tray_orientation', 'tray_modern', 'tray_icon_size',
                 'native_settings_enabled', 'application_font', 'icon_theme',
-                'cursor_theme', 'cursor_size'}
+                'cursor_theme', 'cursor_size', 'desktop_font', 'desktop_density',
+                'desktop_border', 'desktop_icon_theme'}
             assert set(snapshot['settings']) == expected_settings, snapshot
             assert snapshot['persistence_error'] is None, snapshot
             for key, item in snapshot['settings'].items():
@@ -217,7 +218,7 @@ def run(args):
             reader.send(frame('validate', method='validate', resource='settings',
                 provider=snapshot['provider'], generation=snapshot['generation'],
                 values={'palette': 'grove', 'motion': False}))
-            candidate = reply(reader, 'validate')
+            candidate = expanded_settings(reply(reader, 'validate'))
             assert candidate['state'] == 'validated'
             assert candidate['generation'] == snapshot['generation']
             assert candidate['settings']['palette']['effective'] == 'grove'

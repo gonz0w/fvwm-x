@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "checkpoint": "A4 shared appearance acceptance",
+  "base": "765191d7b3ba8e6d2f6936cb205f3a853ef83445",
+  "source_manifest_sha256": "2858e034f926a0dcd1954afe48fccf63f88b0e61984a81c96c1628bfddd22e9e",
+  "captures": [
+    {
+      "profile": "slate-dark",
+      "file": "desktop-components-slate-dark-form.png",
+      "sha256": "d85585287b622fcf8e47cca3a7e7fb56826c2b2b60b7535f0396a797c83b56db",
+      "bytes": 92851,
+      "raw_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-appearance-checkpoint/native06/capture/export/artifacts06/components/slate-dark/component-enlarged-form.png",
+      "configuration": "desktop-components-slate-dark.fvwm",
+      "configuration_sha256": "9e60f58a308d59bbbb2833984d21547efdfcc4f528f12b036d55b3d9d035b38e",
+      "source_receipt_sha256": "b765361af63dd3ee04b5b96e5a95aa994dc00b3d7704ba369a1d088fa83ef564",
+      "component_preferences_at_capture": {
+        "desktop_font": "xft:Sans:size=18",
+        "desktop_density": "spacious",
+        "desktop_border": "strong"
+      }
+    },
+    {
+      "profile": "dune-light",
+      "file": "desktop-components-dune-light-form.png",
+      "sha256": "cdb74b2ff546d3e19a8865aa4e3391f8d2ddef6491910e6b4e02bcf639abe2bc",
+      "bytes": 92729,
+      "raw_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-appearance-checkpoint/native06/capture/export/artifacts06/components/dune-light/component-enlarged-form.png",
+      "configuration": "desktop-components-dune-light.fvwm",
+      "configuration_sha256": "d1596ecddef3572d917073dae6bfe24ff0877518b2372ad73159384002463e3c",
+      "source_receipt_sha256": "6ac2f83dffe2773168af1dba514f19f4160c980ccd80dc9415ed9e3b2cf68a36",
+      "component_preferences_at_capture": {
+        "desktop_font": "xft:Sans:size=18",
+        "desktop_density": "spacious",
+        "desktop_border": "strong"
+      }
+    },
+    {
+      "profile": "classic-large",
+      "file": "desktop-components-classic-large-form.png",
+      "sha256": "950b07b785a6fdf08f9c000f461a610877db0d91b020e334c80743bc8ad4df86",
+      "bytes": 101952,
+      "raw_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-appearance-checkpoint/native06/capture/export/artifacts06/components/classic-large/component-enlarged-form.png",
+      "configuration": "desktop-components-classic-large.fvwm",
+      "configuration_sha256": "83014bf99121791e9d2994110e3a15bb5185b7c07e051df79f5d861da839fcb3",
+      "source_receipt_sha256": "aa8618cb4bb62b37038abf46bcfca677e0db7fbdf5a0bf48b4615c4d3164366c",
+      "component_preferences_at_capture": {
+        "desktop_font": "xft:Sans:size=18",
+        "desktop_density": "spacious",
+        "desktop_border": "strong"
+      }
+    },
+    {
+      "profile": "classic-large",
+      "file": "desktop-components-classic-large-menu.png",
+      "sha256": "599b7c44f7dcc73717bb9ad0bc696be281ed9e2eac6ca7184804666b13d36edc",
+      "bytes": 55739,
+      "raw_source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-appearance-checkpoint/native06/capture/export/artifacts06/components/classic-large/component-product-menu.png",
+      "configuration": "desktop-components-classic-large.fvwm",
+      "configuration_sha256": "83014bf99121791e9d2994110e3a15bb5185b7c07e051df79f5d861da839fcb3",
+      "source_receipt_sha256": "aa8618cb4bb62b37038abf46bcfca677e0db7fbdf5a0bf48b4615c4d3164366c",
+      "component_preferences_at_capture": {
+        "desktop_font": "xft:Sans:size=18",
+        "desktop_density": "spacious",
+        "desktop_border": "strong"
+      }
+    }
+  ],
+  "inspection": "temper_product inspected all three enlarged forms/product menus; lead inspection composes; static images only",
+  "limits": "Unmodified native-X captures from focused Linux ARM64. Configs are lab recipes with temporary paths and runtime settings; adapt paths and use the documented component editor. Not accessibility or release acceptance."
+}

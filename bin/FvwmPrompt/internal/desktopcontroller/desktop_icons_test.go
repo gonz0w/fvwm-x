@@ -23,11 +23,9 @@ func TestDesktopIconsScopedThemeResetAndNoReload(t *testing.T) {
 	if !strings.Contains(text, "AddToFunc SlateTrayConfigure I *SlateTray IconTheme UserTheme") || !strings.Contains(text, "AddToFunc SlateTrayConfigure I SendToModule SlateTray Refresh") || !d.desktopIconsSubmitted() {
 		t.Fatal(text)
 	}
-	for _, bad := range []string{"Colorset ", "MenuStyle ", "Style *", "SendToModule SlateBar", "KillModule FvwmTray", "Module FvwmTray ", "PersonalTray"} {
-		if strings.Contains(text, bad) {
-			t.Fatal("expanded icon preference scope", bad, text)
-		}
-	}
+	forbidComponentCommands(t, *commands, "Colorset ", "MenuStyle ", "Style *",
+		"SendToModule SlateBar", "KillModule FvwmTray", "Module FvwmTray ",
+		"*PersonalTray", "SendToModule PersonalTray")
 	*commands = nil
 	if err := d.changeSettings(values{"desktop_icon_theme": "UserTheme"}); err != nil {
 		t.Fatal(err)
@@ -69,20 +67,15 @@ func TestDesktopIconThemeWaitsForResourceRecovery(t *testing.T) {
 	if err := d.theme(true); err != nil || len(*commands) != 0 {
 		t.Fatal(err, *commands)
 	}
-	// A synthetic release tests the existing replay seam, not core recovery.
-	d.preview.blocked = false
-	d.preview.control = nil
 	*commands = nil
-	if err := d.theme(true); err != nil || !d.desktopIconsSubmitted() {
-		t.Fatal(err, *commands)
+	completeComponentRecovery(t, d)
+	if !d.desktopIconsSubmitted() {
+		t.Fatal("recovered icon profile not submitted", *commands)
 	}
 	text := strings.Join(*commands, "\n")
 	if !strings.Contains(text, "*SlateTray IconTheme NewNative") {
 		t.Fatal(text)
 	}
-	for _, bad := range []string{"Colorset ", "MenuStyle ", "Style *", "SendToModule SlateBar"} {
-		if strings.Contains(text, bad) {
-			t.Fatal("icon-only recovery widened scope", bad, text)
-		}
-	}
+	forbidComponentCommands(t, *commands, "Colorset ", "MenuStyle ", "Style *",
+		"SendToModule SlateBar")
 }

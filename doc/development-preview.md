@@ -37,6 +37,36 @@ and must be changed to an owned writable path before reuse. The paired `.config`
 files contain the KeyboardFocus module setting; `.packet.config` records its
 core-normalized wire form and is not a user configuration file.
 
+## Desktop component preferences (in progress)
+
+The [desktop component editor](FvwmDesktop.adoc#_desktop_settings) adds
+independent font, spacing, launcher border and native tray icon preferences.
+Open it with `SendToModule FvwmDesktop edit-settings group:desktop`.
+Forms adopt these choices at their next start; the named launcher updates after
+resource-preview recovery. Existing application preferences remain separate.
+
+These original Linux native-X captures use font `xft:Sans:size=18`, Spacious
+spacing and Strong launcher border. The shared checkpoint observed geometry,
+retained/reopened Forms and ordinary/conflicted preview recovery in Slate dark,
+Dune light and enlarged Classic. The [report](../dev-docs/verification/VERIFICATION-2026-11-02-APPEARANCE-CHECKPOINT.md)
+records the exact scope and remaining platform/release checks.
+
+![Slate dark desktop component editor with enlarged text](screenshots/desktop-components-slate-dark-form.png)
+
+![Dune light desktop component editor with enlarged text](screenshots/desktop-components-dune-light-form.png)
+
+![Classic desktop component editor with enlarged text](screenshots/desktop-components-classic-large-form.png)
+
+![Classic product launcher with enlarged text and spacious items](screenshots/desktop-components-classic-large-menu.png)
+
+The [capture manifest](screenshots/desktop-components-manifest.json) pairs raw
+PNGs with their [Slate](screenshots/desktop-components-slate-dark.fvwm),
+[Dune](screenshots/desktop-components-dune-light.fvwm) and
+[Classic](screenshots/desktop-components-classic-large.fvwm) configuration recipes
+and runtime preferences. The recipes contain temporary lab paths; adapt those
+paths before reuse and choose the listed preferences in the component editor.
+The images show development snapshots, not accessibility or release acceptance.
+
 ## Settings preview (in progress)
 
 The [FvwmDesktop manual](FvwmDesktop.adoc#_preview_one_setting) describes the

@@ -210,7 +210,8 @@ class Session:
         self.serial += 1
         token = 'session-' + str(self.serial)
         self.rpc.send(frame(token, method=method, resource=resource, **fields))
-        return reply(self.rpc, token)
+        result = reply(self.rpc, token)
+        return expanded_settings(result) if resource == 'settings' else result
 
     def ready(self):
         self.serial += 1
@@ -228,7 +229,8 @@ class Session:
             'session_notifications', 'notification_dnd', 'session_power',
             'tray_enabled', 'tray_gap', 'tray_padding', 'tray_orientation',
             'tray_modern', 'tray_icon_size', 'native_settings_enabled',
-            'application_font', 'icon_theme', 'cursor_theme', 'cursor_size'}
+            'application_font', 'icon_theme', 'cursor_theme', 'cursor_size',
+            'desktop_font', 'desktop_density', 'desktop_border', 'desktop_icon_theme'}
         assert set(snapshot['settings']) == expected, snapshot
         self.settings = snapshot
         return snapshot
@@ -256,7 +258,7 @@ class Session:
                 'id': token, 'attempt': attempt + 1, 'status': packet['status'],
                 'error': code, 'generation': snapshot['generation']})
             if packet['status'] == 'ok':
-                self.settings = packet['result']
+                self.settings = expanded_settings(packet['result'])
                 break
             # A rejected CAS performed no mutation. Only that explicit reply
             # permits rereading the generation and resubmitting these values.

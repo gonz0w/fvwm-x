@@ -26,6 +26,7 @@ from live_x_harness import (HarnessRuntime, start_display_server,
     wait_for_predicate)
 from mfl_stream_live import Connection
 from tray_bar_live import Bar, wait
+from settings_snapshot import expanded_settings
 from tray_live import digest, wait_state, released
 
 SERVICE_FIELDS = ('compiled', 'requested', 'connected', 'modern_count',
@@ -262,15 +263,15 @@ def png(path, rgba):
     path.write_bytes(data)
 
 
-def install_icon_fixture(session):
-    root = session.home / 'data/icons/hicolor'
+def install_icon_fixture(session, theme='hicolor', rgba=(10, 220, 70, 255)):
+    root = session.home / 'data/icons' / theme
     directory = root / '24x24/apps'
     directory.mkdir(parents=True, exist_ok=True)
     (root / 'index.theme').write_text('[Icon Theme]\nName=Fixture\n'
         'Directories=24x24/apps\n[24x24/apps]\nSize=24\nType=Fixed\n'
         'Context=Applications\n')
     path = directory / 'tray-fixture.png'
-    png(path, [10, 220, 70, 255])
+    png(path, list(rgba))
     xpm = directory / 'tray-fixture-xpm.xpm'
     xpm.write_text('/* XPM */\nstatic char *fixture[] = {\n'
         '"3 3 1 1", "b c #1450dc", "bbb", "bbb", "bbb"};\n')
@@ -616,6 +617,35 @@ def theme_cases(session, evidence, peer, all_peers):
         session.cell('Tray named icon'), session)
     results = []
     initial_id = session.cell('Tray named icon')['id']
+    # Exercise the controller's independent desktop choice, not only raw tray
+    # IconTheme commands. Exact synthetic pixels distinguish all three profiles.
+    before = expanded_settings(session.request(resource='settings', scope='all'))
+    application = before['settings']['icon_theme']['effective']
+    independent = []
+    session.show_centered()
+    for theme, rgba in [('probe-red', (230, 20, 30, 255)),
+            ('probe-blue', (20, 50, 230, 255)), ('', (10, 220, 70, 255))]:
+        asset = install_icon_fixture(session, theme, rgba) if theme else icon
+        session.change({'desktop_icon_theme': theme})
+        cell = wait('independent icon choice retains live cell', lambda:
+            (lambda value: value if value and value['actual'] else None)(
+                session.cell('Tray named icon')), session)
+        assert cell['id'] == initial_id
+        target = (rgba[0] << 16) | (rgba[1] << 8) | rgba[2]
+        pixels = wait('independent selected-theme pixels', lambda:
+            (lambda values: values if target in values else None)(
+                session.sample_pixels(cell['window'])), session)
+        observed = expanded_settings(session.request(
+            resource='settings', scope='all'))
+        assert observed['settings']['icon_theme']['effective'] == application
+        choice = observed['settings']['desktop_icon_theme']
+        assert choice['effective'] == theme and choice['resolved'] == (
+            theme or 'hicolor'), choice
+        assert choice['application'] == 'tray-configuration-submitted', choice
+        assert session.attrs(session.state['host']).map_state == 2
+        independent.append(dict(choice=choice, application_icon_theme=application,
+            cell=cell, actual_pixels=pixels, asset=asset))
+    evidence['cases']['independent_desktop_icon_choice_and_reset'] = independent
     profiles = [('slate', 'dark', 'xft:Sans:size=11', '#e5edf5', '#253140'),
         ('dune', 'light', 'xft:Serif:size=12', '#322a20', '#eee4cb'),
         ('slate', 'dark', 'xft:DejaVu Sans Mono:size=18', '#ffffe0', '#252550')]

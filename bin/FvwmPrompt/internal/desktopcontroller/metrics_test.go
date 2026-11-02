@@ -12,6 +12,37 @@ import (
 	"testing"
 )
 
+// Check executable command boundaries, including immediate function bodies.
+// Menu labels and module configuration may legitimately name core directives.
+func forbidComponentCommands(t *testing.T, commands []string, prefixes ...string) {
+	t.Helper()
+	for _, command := range commands {
+		body := command
+		if words := strings.SplitN(command, " ", 4); len(words) == 4 && words[0] == "AddToFunc" && words[2] == "I" {
+			body = words[3]
+		}
+		for _, prefix := range prefixes {
+			if strings.HasPrefix(body, prefix) {
+				t.Fatal("expanded component command scope", command)
+			}
+		}
+	}
+}
+
+func completeComponentRecovery(t *testing.T, d *Controller) {
+	t.Helper()
+	if d.preview.pending == nil || !d.preview.recovering || !d.preview.replay {
+		t.Fatal("fixture has no pending recovery", d.preview)
+	}
+	// Release only the fixture's synthetic blocked marker. The ordinary reply
+	// decoder must clear transaction state and perform the guarded replay.
+	d.preview.blocked = false
+	contrastReply(&d.preview, colorResult("terminal", "abandoned", "restored"))
+	if d.preview.pending != nil || d.preview.control != nil || d.preview.recovering || d.preview.replay {
+		t.Fatal("terminal reply did not complete recovery", d.preview)
+	}
+}
+
 func TestDesktopMetricsScopedPublicationAndInherit(t *testing.T) {
 	d, commands := fixture(t)
 	if err := d.theme(true); err != nil {
@@ -31,11 +62,9 @@ func TestDesktopMetricsScopedPublicationAndInherit(t *testing.T) {
 	if !strings.Contains(text, want) || !d.desktopSubmitted() {
 		t.Fatal(text)
 	}
-	for _, bad := range []string{"Colorset ", "MenuStyle *", "Style *", "SendToModule SlateBar", "SlateTray", "DefaultFont ", "InfoStoreAdd slate_", "SlatePanel", "KillModule FvwmButtons", "EwmhBaseStruts"} {
-		if strings.Contains(text, bad) {
-			t.Fatal("expanded component scope", bad, text)
-		}
-	}
+	forbidComponentCommands(t, *commands, "Colorset ", "MenuStyle *", "Style *",
+		"SendToModule SlateBar", "*SlateTray", "SendToModule SlateTray", "SlateTrayConfigure",
+		"DefaultFont ", "InfoStoreAdd slate_", "SlatePanel", "KillModule FvwmButtons", "EwmhBaseStruts")
 	*commands = nil
 	if err := d.changeSettings(values{"desktop_density": "spacious"}); err != nil {
 		t.Fatal(err)
@@ -93,13 +122,12 @@ func TestDesktopMetricsWaitForRecoveryAndKeepOldFormTuple(t *testing.T) {
 	if err := d.theme(true); err != nil || len(*commands) != 0 || *d.lastDesktop != before {
 		t.Fatal(*commands, err)
 	}
-	// Synthetic release proves the ordinary replay seam; real core recovery and
-	// pixels remain part of the combined native checkpoint.
-	d.preview.control = nil
-	d.preview.blocked = false
+	// This unit drives the terminal decoder with a synthetic core reply; real
+	// core recovery and pixels remain part of the combined native checkpoint.
 	*commands = nil
-	if err := d.theme(true); err != nil || !d.desktopSubmitted() {
-		t.Fatal(err)
+	completeComponentRecovery(t, d)
+	if !d.desktopSubmitted() {
+		t.Fatal("recovered metrics not submitted", *commands)
 	}
 	for _, command := range *commands {
 		for _, prefix := range []string{"Colorset ", "MenuStyle *", "Style *", "SendToModule SlateBar", "*SlateTray"} {

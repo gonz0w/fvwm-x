@@ -546,11 +546,12 @@ static void config_message(tray_ui *ui, char *text)
 	    (text[length] && text[length] != ':' && text[length] != ' ' &&
 	    text[length] != '\t'))
 		return;
-	/* Unsolicited module changes request a complete authoritative snapshot;
-	 * never partially apply a lone line outside a transaction. */
+	/* Unsolicited module changes request a complete authoritative snapshot
+	 * without acquiring Reload's visibility/retry semantics. An explicit
+	 * Reload can still dominate an overlapping automatic refresh. */
 	if (!ui->config_pending)
 	{
-		tray_request_config(ui);
+		request_config(ui, false);
 		return;
 	}
 	text += length;

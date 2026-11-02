@@ -208,7 +208,7 @@ func TestAllEditorSeparatesActionNavigationAndPreviewRows(t *testing.T) {
 		{{"cancel-settings " + token, "^["}, {"defaults-settings " + token, "F2"},
 			{"apply-settings " + arguments, "F3"}},
 		{{"edit-settings group:session", "F8"}, {"edit-settings group:tray", "F9"},
-			{"edit-settings group:application", "F10"}},
+			{"edit-settings group:application", "F10"}, {"edit-settings group:desktop", "F11"}},
 		{{"preview-choose-editor " + arguments, "F5"}},
 	}
 	previousRow := -1

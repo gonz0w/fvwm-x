@@ -35,6 +35,132 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: A4 shared appearance acceptance under #214/#215, branch
+`codex/r1-appearance-checkpoint`, base merged PR348
+`765191d7b3ba8e6d2f6936cb205f3a853ef83445`. Owner Cam; selected lead
+implementation fallback continues. Batch these four related acceptance stories:
+
+1. Run affected desktop policy/controller/worker ordinary and race coverage once
+   for the accumulated A1/A2 sources. Retain exact schemas, scoped/no-op effects,
+   overrides, preview recovery and icon publication contracts as distinct facts.
+2. Extend existing native appearance fixtures with observable named-launcher
+   font/spacing/border and future-form metrics, plus retained/submitted metrics
+   and icon intent across actual preview recovery. Use actual X/IPC evidence;
+   command submission alone is not rendered acknowledgement.
+3. Configure the optional private targets in a suitable owned Linux tool profile,
+   then exercise both A3 exact-path acquisition traces and the authored ordinary
+   tray Refresh visibility/keyboard/fallback cases. Preserve the expected bad
+   control outcome separately from product-positive acceptance.
+4. Capture and inspect Slate dark, Dune light and enlarged classic UI using the
+   real composed binaries, configurations and source hashes. Record finite
+   failures/gaps, confirmed cleanup and reused inputs. This is one focused Linux
+   shared checkpoint; no automatic full-platform/install/default-server matrix.
+
+Freeze and separately review each native build/execution plan before dispatch;
+no runtime is selected by source-only tooling review. Asset-package evaluation,
+reference-safe disk-cache retirement and broader panel roles remain their finite
+owner work after this checkpoint. C2–C5 clipboard acceptance remains queued and
+capture remains off. The two reproduced production corrections advance performance
+to 5/5 on merge; its quiet comparison remains due/unavailable, not reset.
+
+A4 focused Linux acceptance now passes: ten ordinary/race Go jobs (644 passing
+top-level tests), five decoder cases, four tray jobs and one corrected
+three-profile component job. Original failed attempts are retained. Exact
+geometry, preview recovery/conflict, icon load positive/control, visibility and
+raw screenshots are bound in the [checkpoint report](verification/VERIFICATION-2026-11-02-APPEARANCE-CHECKPOINT.md).
+All owned labs are stopped. Separate integrated/signed-delivery review is next;
+#214/#215 retain their remaining acceptance and stay open.
+
+<details>
+<summary>A4 attempts and bounded corrections</summary>
+
+A4 execution evidence so far: the existing Meson 1.7 tool configured the owned
+PNG/SVG/session-D-Bus profile (NLS/docs disabled), then all 21 selected native
+products/probes and ten Go test binaries built. The original ambiguous executable
+selector was corrected without repeating configuration. A later continuation
+recompiled only two settings test binaries and ran all ten package jobs: settings,
+checker, worker and XDG menu pass ordinary/race; controller has 169 top-level
+passes and six failures in each mode. UI jobs remain held. All owned labs are
+confirmed stopped and failed receipts are preserved.
+
+The controller failures concern overbroad command-text assertions, incomplete
+synthetic terminal recovery and stale 26-key public snapshots. Correct those
+oracles without changing production recovery behavior. Measure the complete
+30-key public response with valid maximum component/application strings,
+distinct overrides and exact standalone reconstruction before selecting any
+encoding repair. Retain the 8192-byte cap; a size overflow is not yet observed.
+Use one focused host pure-Go check to resolve this boundary before another
+native continuation; host results do not substitute for Linux/native-X coverage.
+
+A4 focused host regression now reproduces a production reply-budget defect:
+the complete default/override snapshot is 8211 bytes and the maximum valid
+30-setting cases reach 10668 bytes, exceeding the existing 8192-byte limit.
+Corrected command-scope and terminal-reply tests pass; host compiler-limit failure
+and all earlier failed native attempts remain preserved. No new UI pass exists.
+
+Select the bounded repair within #214/#215: factor repeated metadata into
+explicit group defaults and version-matched desktop metric defaults, preserving
+every standalone field/value and the fixed reply cap. Update shipped decoding,
+independent reconstruction tests and primary manuals together. Measure exact
+roundtrips and maximum-value query/validate replies before the next native
+continuation; do not raise the cap or drop rows. Additional value inheritance
+is considered only if this simpler factoring cannot meet the measured bound.
+
+The first scoped-metadata repair preserves exact records and passes Python
+wire examples, but its strongest host case remains 8907 bytes. Select the
+additional measured repair: explicit version-1 value inheritance for equal
+saved/effective values, resolution/effective pairs and typed tray/session
+requested values. Preserve every unequal or explicit-null value. Update both
+decoders and manuals; retain all original fields in expanded/native records.
+Share identical group bounds as metadata. No rows, diagnostics or cap changes.
+
+The focused host value-inheritance check passes (10 Go/5 Python cases); the
+maximum tested string/override response is 8181 bytes. Before native pickup,
+strengthen scalar/enum limits too and complete the natural default→saved→effective
+inheritance chain to keep useful headroom. Caller fixtures must expand settings
+at their response seams while preserving raw wire evidence and standalone state.
+No new Linux/UI pass is inferred from the host result.
+
+A4 remaining Linux controller ordinary/race and Python wire checks now pass.
+The first five UI jobs ran independently and failed: component setup could not
+read root-built config.h; three modern/session jobs hit the private Unix socket
+length limit from the long TMPDIR; ordinary tray exposed unsolicited config
+snapshots applying Reload visibility before a preserving Refresh. Preserve all
+failures and cleanup receipts; the lab is stopped.
+
+Select the focused correction: automatic unsolicited snapshots preserve visibility
+and retry policy, while initial/explicit Reload/M_SENDCONFIG retain existing
+semantics. Keep the reproduced hidden/shown regression and add actual Reload
+and overlap precedence observations. Separately make the owned public generated
+header readable and use an exclusive short temporary directory in the lab.
+Do not change product behavior to accommodate those two harness conditions.
+Only the five UI jobs need continuation; already passed package checks stay
+accepted. The due quiet performance observation is unavailable while another
+owner's QEMU VM is running; preserve that VM and do not delay implementation.
+
+A4 native05 passes ordinary tray (including explicit Reload and both overlap
+orders), acquisition positive/control and modern appearance. Components fail
+only at the external-role predicate: it checks the background slot after changing
+foreground. The retained native subscriber log proves foreground publication.
+Correct that tuple index without changing production behavior or conflict
+expectations; continue only the three-profile component job with existing
+binaries. All five jobs reaped their children and the lab is confirmed stopped.
+
+</details>
+
+PR348 is merged after separate source/plan/integrated/signed-delivery reviews.
+Head `9ceabfbb062a64daa8a4cd509e7a8ba6beb474f9`, tree
+`9dc913e1e0c6489426e95277befaef55e858b66f`, canonical merge
+`765191d7b3ba8e6d2f6936cb205f3a853ef83445`; Cam signature, author DCO,
+reviewed parent/tree, clean synchronized main and completed refs verified.
+The publication DNS failure recovered without rebuilding. PR Project Done and
+#214/#215 In progress verify; R1 retains 50 open issues. Ten fresh objects and
+two private links pass, 54 exports verify and both build-only labs are stopped.
+Actual Meson configuration/runtime traces remain A4 acceptance, not A3 passes.
+
+<details>
+<summary>A3 delivered source/build scope and retained acceptance</summary>
+
 Current work: A3 deterministic tray icon acquisition observation under #214/
 #215, branch `codex/r1-tray-icon-observer`, base merged PR347
 `04e4e31a97ccad3e5306623b0cbc9daeb13116b0`. Owner Cam; lead implementation
@@ -84,6 +210,8 @@ Go builds, syntax checks and both stopped build-only labs are recorded. No
 runtime/test/fixture outcome or screenshot was claimed. Seven superseded host
 compile-only binaries were retired (49,584,974 bytes); latest artifacts,
 comparison executables, SDKs/caches and all compact receipts remain.
+
+</details>
 
 <details>
 <summary>A2 delivered icon preference and retained acceptance</summary>

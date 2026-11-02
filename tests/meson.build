@@ -397,6 +397,7 @@ test('desktop-policy', golang,
         './internal/actionpalette', './cmd/fvwmdesktop'],
     env: prompt_test_env, timeout: 90)
 test('desktop-assets', py, args: [files('test_desktop.py')])
+test('settings-snapshot', py, args: [files('test_settings_snapshot.py')])
 test('responsiveness-profile-evidence', py,
     args: [files('test_responsiveness_profile.py')])
 

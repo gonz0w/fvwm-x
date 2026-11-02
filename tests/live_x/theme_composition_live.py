@@ -76,7 +76,7 @@ def run(args, profile):
                 if executable.is_file():
                     (modules / directory.name).symlink_to(executable)
             (modules / 'FvwmDesktop').symlink_to(build / 'bin/FvwmPrompt/FvwmDesktop')
-            if args.complete_bundle_preview:
+            if args.complete_bundle_preview or args.component_metrics:
                 native = runtime.root / 'native-records'
                 native.mkdir()
                 for name, executable in (
@@ -138,6 +138,7 @@ def run(args, profile):
                     ('capture', 'bin/fvwm-desktop-capture')]}
             inputs = ['tests/live_x/theme_composition_live.py',
                 'tests/live_x/settings_preview_live.py',
+                'tests/live_x/desktop_component_cases.py',
                 'tests/live_x/native_module_proxy.py',
                 'tests/live_x/live_x_harness.py', 'tests/live_x/settings_snapshot.py',
                 'tests/live_x/session_x_errors.py', 'tests/live_x/colorset_live.py',
@@ -187,7 +188,15 @@ def run(args, profile):
                 serial += 1
                 token = 'composition-' + str(serial)
                 rpc.send(frame(token, method=method, resource=resource, **fields))
-                return reply(rpc, token)
+                result = reply(rpc, token)
+                if resource == 'settings':
+                    if args.component_metrics:
+                        wire = evidence.setdefault('settings_wire', [])
+                        wire.append(dict(id=token, method=method, fields=fields,
+                            result=result))
+                        assert len(wire) <= 512
+                    return expanded_settings(result)
+                return result
 
             deadline = time.monotonic() + 15
             while True:
@@ -232,7 +241,7 @@ def run(args, profile):
             x.XGetWindowAttributes.argtypes = [C.c_void_p, C.c_ulong,
                 C.POINTER(WindowAttributes)]
             preview_updates = runtime.root / 'preview-roles.txt'
-            if args.complete_bundle_preview:
+            if args.complete_bundle_preview or args.component_metrics:
                 control.send(('Module PreviewObserver colorsets ' +
                     str(preview_updates) + '\n').encode())
                 wait_for_predicate('actual native preview subscriber snapshot',
@@ -1721,7 +1730,7 @@ def run(args, profile):
                         assert item['composition_version'] == 2, item
                         assert item['effective'] == (True if setting == 'transparency' else 82), item
                     raw = json.loads(state.read_text())
-                    assert raw['schema_version'] == 9 and raw['contrast'] == 'high'
+                    assert raw['schema_version'] == 11 and raw['contrast'] == 'high'
                     assert raw['transparency'] is True and raw['launcher_opacity'] == 82
                     assert raw['wallpaper'] == {'palette': 'grove', 'appearance': 'light'}
                     assert opacity() == 100
@@ -1823,7 +1832,17 @@ def run(args, profile):
                     'normal_restores_requests': True}
 
             state = user / 'desktop-state.json'
-            if args.contrast:
+            if args.component_metrics:
+                from desktop_component_cases import run as component_cases
+                component_cases(profile=profile, evidence=evidence,
+                    change=change, request=request, barrier=barrier,
+                    control=control, client=client, core=core,
+                    attributes=attributes, children=children,
+                    named_windows=named_windows, capture=capture,
+                    bar_color=bar_color, palette=palette, mode=mode, state=state,
+                    native=native, desktop=build / 'bin/FvwmPrompt/FvwmDesktop',
+                    updates=preview_updates)
+            elif args.contrast:
                 contrast_cases()
             else:
                 initial = wallpaper()
@@ -1856,7 +1875,7 @@ def run(args, profile):
                     generation=snapshot['generation'], scope='group:wallpaper')
                 barrier()
                 assert set(snapshot['settings']) == {'wallpaper_palette', 'wallpaper_appearance'}
-                assert json.loads(state.read_text())['schema_version'] == 9
+                assert json.loads(state.read_text())['schema_version'] == 11
                 assert json.loads(state.read_text())['wallpaper'] == {'palette': opposite, 'appearance': mode}
                 snapshot = request(scope='all')
                 change({'palette': palette, 'wallpaper_palette': 'grove', 'wallpaper_appearance': 'light'})
@@ -1983,6 +2002,8 @@ if __name__ == '__main__':
         help='Actual image-owner-probe native subscriber for v3 root witnesses')
     parser.add_argument('--worker', type=Path,
         help='Actual private background/image worker; default build-tree helper')
+    parser.add_argument('--component-metrics', action='store_true',
+        help='Run scoped launcher/future-Form metrics on the shared checkpoint')
     parser.add_argument('--contrast', action='store_true',
         help='Run high contrast, native Form/menu pixels and opacity recovery cases')
     parser.add_argument('--contrast-preview', action='store_true',
@@ -1992,7 +2013,10 @@ if __name__ == '__main__':
     parser.add_argument('--profiles', nargs='+', default=['slate-dark', 'dune-light', 'classic-large'],
         choices=['slate-dark', 'dune-light', 'classic-large'])
     options = parser.parse_args()
-    if options.complete_bundle_preview:
+    if options.component_metrics and (options.contrast or options.contrast_preview
+            or options.palette_preview or options.complete_bundle_preview):
+        parser.error('--component-metrics is a separate focused case group')
+    if options.complete_bundle_preview or options.component_metrics:
         if options.execution_profile == 'unspecified':
             parser.error('v3 requires an explicit --execution-profile label')
         options.probe = (options.probe or

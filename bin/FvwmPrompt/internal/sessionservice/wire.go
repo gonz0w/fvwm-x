@@ -141,8 +141,25 @@ func RequestTo(ctx context.Context, path, capability string, message RequestMess
 	if reply.Version != Version || !Plain(reply.Error, 512) {
 		return Reply{}, errors.New("invalid session reply")
 	}
+	if reply.Clipboard != nil && message.Verb != "clipboard" || reply.ClipboardCapabilities != nil && message.Verb != "clipboard-status" || reply.ClipboardPage != nil && message.Verb != "clipboard-list" {
+		return Reply{}, errors.New("unsolicited clipboard metadata")
+	}
 	if reply.Error != "" {
 		return reply, errors.New(reply.Error)
+	}
+	switch message.Verb {
+	case "clipboard":
+		if reply.Clipboard == nil || message.Clipboard == nil || reply.Clipboard.ValidateFor(*message.Clipboard) != nil {
+			return Reply{}, errors.New("invalid clipboard action result")
+		}
+	case "clipboard-status":
+		if reply.ClipboardCapabilities == nil || reply.ClipboardCapabilities.Validate() != nil {
+			return Reply{}, errors.New("invalid clipboard capability result")
+		}
+	case "clipboard-list":
+		if reply.ClipboardPage == nil || message.ClipboardPage == nil || reply.ClipboardPage.Validate(*message.ClipboardPage) != nil {
+			return Reply{}, errors.New("invalid clipboard page result")
+		}
 	}
 	if err = reply.Status.Validate(); err != nil {
 		return Reply{}, err

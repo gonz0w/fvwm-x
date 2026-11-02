@@ -34,6 +34,7 @@ type Terminal struct {
 // signals and process Wait. The reader has one bounded metadata mailbox.
 type Client struct {
 	epoch    uint64
+	config   Config
 	calls    chan call
 	stop     chan struct{}
 	done     chan struct{}
@@ -45,7 +46,7 @@ func Start(config Config, environment []string) (*Client, error) {
 	if err := config.Validate(); err != nil {
 		return nil, err
 	}
-	client := &Client{epoch: config.Epoch, calls: make(chan call, 1), stop: make(chan struct{}), done: make(chan struct{})}
+	client := &Client{epoch: config.Epoch, config: config, calls: make(chan call, 1), stop: make(chan struct{}), done: make(chan struct{})}
 	go client.supervise(config, append([]string(nil), environment...))
 	return client, nil
 }
@@ -68,9 +69,16 @@ func (c *Client) Call(ctx context.Context, request Request) (Reply, error) {
 	if err := ctx.Err(); err != nil {
 		return Reply{}, err
 	}
+	select {
+	case <-c.stop:
+		return Reply{}, errors.New("clipboard owner stopping")
+	default:
+	}
 	result := make(chan callResult, 1)
 	select {
 	case c.calls <- call{ctx, request, result}:
+	case <-c.stop:
+		return Reply{}, errors.New("clipboard owner stopping")
 	case <-c.done:
 		return Reply{}, errors.New("clipboard owner ended")
 	case <-ctx.Done():
@@ -82,9 +90,13 @@ func (c *Client) Call(ctx context.Context, request Request) (Reply, error) {
 	case value := <-result:
 		return value.reply, value.err
 	case <-ctx.Done():
-		// A submitted control may already be on the wire. Never accept a late
-		// pause response as a newer barrier or continue with uncertain state.
-		c.Close()
+		// A read-only observation may finish into its bounded private reply
+		// mailbox after the frontend leaves. Preserve the session-owned history.
+		// Mutations/barriers can already be on the wire: never accept a late
+		// pause result as a newer operation or continue with uncertain state.
+		if request.Verb != Status && request.Verb != List {
+			c.Close()
+		}
 		return Reply{}, ctx.Err()
 	case <-c.done:
 		return Reply{}, errors.New("clipboard owner ended")
@@ -193,6 +205,13 @@ func (c *Client) supervise(config Config, environment []string) {
 	for {
 		select {
 		case request := <-c.calls:
+			select {
+			case <-c.stop:
+				request.reply <- callResult{err: errors.New("clipboard owner stopping")}
+				beginStop()
+				continue
+			default:
+			}
 			if stopping || active != nil || request.ctx.Err() != nil {
 				request.reply <- callResult{err: errors.New("clipboard control unavailable")}
 				continue
@@ -234,6 +253,12 @@ func (c *Client) supervise(config Config, environment []string) {
 			if active == nil || frame.reply.Sequence != sequence || frame.reply.Ref.Epoch != c.epoch {
 				badIO = true
 				failActive(errors.New("clipboard response identity mismatch"))
+				beginStop()
+				continue
+			}
+			if frame.reply.ValidateFor(active.request) != nil {
+				badIO = true
+				failActive(errors.New("clipboard reply does not match its operation"))
 				beginStop()
 				continue
 			}

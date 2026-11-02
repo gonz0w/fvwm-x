@@ -24,6 +24,8 @@ func TestMain(m *testing.M) {
 		}
 		epoch := os.Args[2]
 		state := uint64(Unknown)
+		statusCalls := 0
+		held := false
 		reader := bufio.NewScanner(os.Stdin)
 		for reader.Scan() {
 			fields := strings.Fields(reader.Text())
@@ -45,21 +47,66 @@ func TestMain(m *testing.M) {
 			if mode == "wrong-sequence" {
 				sequence = "900"
 			}
-			fmt.Printf("1 %s 0 %s 0 0 0 0 0 0 %d 0 0 0\n", sequence, epoch, state)
+			verb, _ := strconv.ParseUint(fields[2], 10, 64)
+			slot, _ := strconv.ParseUint(fields[6], 10, 64)
+			if mode == "hold-status" && verb == Status && !held {
+				marker := os.Getenv("FVWM_TEST_CLIPBOARD_HOLD")
+				if os.WriteFile(marker+".ready", []byte("ready\n"), 0600) != nil {
+					os.Exit(70)
+				}
+				end := time.Now().Add(2 * time.Second)
+				for {
+					if _, err := os.Stat(marker + ".release"); err == nil {
+						break
+					}
+					if time.Now().After(end) {
+						os.Exit(71)
+					}
+					time.Sleep(5 * time.Millisecond)
+				}
+				held = true
+			}
+			if mode == "page-final-lock" && verb == Status {
+				statusCalls++
+				if statusCalls == 2 {
+					state = Locked
+				}
+			}
+			if (mode == "page" || mode == "page-lock" || mode == "page-final-lock") && verb == List {
+				if mode == "page-lock" && slot == 1 {
+					state = Locked
+				}
+				if state != Unlocked {
+					fmt.Printf("1 %s 1 %s 0 0 0 0 0 0 %d 0 0 0\n", sequence, epoch, state)
+				} else if slot == 0 {
+					fmt.Printf("1 %s 0 %s 7 2 1 5 10000 0 1 1 65536 32768\n", sequence, epoch)
+				} else {
+					fmt.Printf("1 %s 7 %s 0 0 0 0 0 0 1 1 65536 32768\n", sequence, epoch)
+				}
+				continue
+			}
+			result := uint64(OK)
+			if verb == List {
+				result = Empty
+				if state != Unlocked {
+					result = Blocked
+				}
+			}
+			fmt.Printf("1 %s %d %s 0 0 0 0 0 0 %d 0 0 0\n", sequence, result, epoch, state)
 		}
 		os.Exit(0)
 	}
 	os.Exit(m.Run())
 }
 
-func peer(t *testing.T, mode string) *Client {
+func peer(t *testing.T, mode string, extra ...string) *Client {
 	t.Helper()
 	executable, err := os.Executable()
 	if err != nil {
 		t.Fatal(err)
 	}
 	config := Config{Path: executable, Epoch: 19, Items: 4, Bytes: 32768, Total: 131072, Mapped: 196608, Locked: 131072, LifetimeMilliseconds: 10000}
-	environment := append(os.Environ(), "FVWM_TEST_CLIPBOARD_PEER="+mode)
+	environment := append(append(os.Environ(), extra...), "FVWM_TEST_CLIPBOARD_PEER="+mode)
 	owner, err := Start(config, environment)
 	if err != nil {
 		t.Fatal(err)
@@ -163,5 +210,67 @@ func TestNativeChildMetadata(t *testing.T) {
 	reply, err = owner.Call(ctx, Request{Verb: State, Ref: Ref{Epoch: 37}, Value: Locked})
 	if err != nil || reply.Result != OK || reply.Mode != Locked {
 		t.Fatalf("native barrier %+v %v", reply, err)
+	}
+}
+
+func TestCancelledReadKeepsSessionOwner(t *testing.T) {
+	marker := t.TempDir() + "/hold"
+	owner := peer(t, "hold-status", "FVWM_TEST_CLIPBOARD_HOLD="+marker)
+	ctx, cancel := context.WithCancel(context.Background())
+	returned := make(chan error, 1)
+	go func() { _, err := owner.Call(ctx, Request{Verb: Status, Ref: Ref{Epoch: 19}}); returned <- err }()
+	defer cancel()
+	end := time.Now().Add(time.Second)
+	for {
+		if _, err := os.Stat(marker + ".ready"); err == nil {
+			break
+		}
+		if time.Now().After(end) {
+			t.Fatal("read did not reach independent peer")
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	cancel()
+	select {
+	case err := <-returned:
+		if err != context.Canceled {
+			t.Fatalf("cancel result %v", err)
+		}
+	case <-time.After(time.Second):
+		t.Fatal("read cancellation blocked")
+	}
+	if err := os.WriteFile(marker+".release", []byte("release\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	live, stop := context.WithTimeout(context.Background(), 2*time.Second)
+	defer stop()
+	for time.Now().Before(end.Add(time.Second)) {
+		select {
+		case <-owner.Done():
+			t.Fatal("frontend cancellation ended history owner")
+		default:
+		}
+		reply, err := owner.Call(live, Request{Verb: Status, Ref: Ref{Epoch: 19}})
+		if err == nil {
+			if reply.Mode != Unknown {
+				t.Fatal("observation changed lock state")
+			}
+			return
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	t.Fatal("session owner did not recover after abandoned numeric observation")
+}
+
+func TestClosedOwnerRejectsNewSubmissionBeforeWait(t *testing.T) {
+	owner := &Client{epoch: 19, calls: make(chan call, 1), stop: make(chan struct{}), done: make(chan struct{})}
+	owner.Close()
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	if _, err := owner.Call(ctx, Request{Verb: Status, Ref: Ref{Epoch: 19}}); err == nil {
+		t.Fatal("closed owner accepted a read")
+	}
+	if len(owner.calls) != 0 {
+		t.Fatal("closed owner queued work while Wait was still pending")
 	}
 }

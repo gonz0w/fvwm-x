@@ -87,9 +87,12 @@ it is not a payload lease. Blocked state hides history descriptors and usage.
 Result codes are OK=0, BLOCKED=1, REFUSED=2, STALE=3, INVALID=4, FULL=5, FATAL=6
 and EMPTY=7. Modes are UNKNOWN=0, UNLOCKED=1 and LOCKED=2. Only one frame/reply is
 retained at a time, and output uses bounded nonblocking writes. The parent
-checks exact response sequence/epoch and treats malformed or late replies as
-terminal; canceled submitted operations stop the child rather than accepting a
-late lock barrier.
+checks exact response sequence/epoch and treats malformed replies or response
+deadline loss as terminal. C2 keeps canceled read-only STATUS/LIST observations
+independent of frontend lifetime: their one correlated numeric reply drains
+privately under the existing deadline before another wire request can start.
+Canceled submitted mutations/barriers still stop the child rather than accepting
+a late lock barrier. Closing an observation does not close session history.
 
 ## Lock dependency and qualification
 

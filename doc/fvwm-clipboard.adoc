@@ -1,0 +1,171 @@
+= fvwm-clipboard(1)
+:doctype: manpage
+:manmanual: FVWM-X Manual
+:mansource: FVWM-X
+
+== NAME
+
+fvwm-clipboard - inspect and manage session clipboard history metadata
+
+== SYNOPSIS
+
+*fvwm-clipboard* [*status*]
+
+*fvwm-clipboard* *list* [*--offset* _slot_] [*--limit* _count_]
+
+*fvwm-clipboard* { *pin* | *unpin* | *remove* }
+*--epoch* _epoch_ *--item* _item_ *--generation* _generation_
+
+*fvwm-clipboard* *clear* *--epoch* _epoch_
+
+*fvwm-clipboard* { *help* | *--help* }
+
+== DESCRIPTION
+
+*fvwm-clipboard* reports the capabilities and numeric metadata of the
+session-owned clipboard history. It can list references, pin or unpin an item,
+remove an item, and clear history. It writes compact JSON to standard output.
+The output does not contain clipboard text, previews, labels, source titles or
+hashes. Large identifiers, budgets and deadlines are decimal strings in JSON.
+
+This interface is in development. The normal installed session does not enable
+clipboard capture. Item operations require a compatible session with a
+configured native owner and a qualified lock-state source; that installed
+integration is still pending. *status* can report disabled or unavailable when
+the session control endpoint is reachable. It does not start a service.
+
+The client uses the private control endpoint inherited from *fvwm-session*.
+Run it in that session's environment. It does not create another socket or
+print the endpoint path or capability token. If the endpoint is unavailable,
+start or return to the owned session and retry the command there.
+
+== COMMANDS
+
+*status*::
+  Report availability, owner state, configured budgets and the required
+  protection contract. This is the default when no command is given. Configured
+  budgets are limits, not a guarantee that the operating system will grant a
+  later memory-locking request. A refused protection request does not permit
+  unprotected storage.
+
+*list* [*--offset* _slot_] [*--limit* _count_]::
+  List a page of numeric text-source descriptors. The offset defaults to 0;
+  the limit defaults to 16 and must be from 1 through 16. A page can contain
+  fewer items than the limit when slots are empty. Use the returned page
+  position to continue. A slot is a page position, not an item identity.
+
+*pin* | *unpin* | *remove*::
+  Act on the exact item reference supplied by *--epoch*, *--item* and
+  *--generation*. The values are positive decimal unsigned 64-bit integers.
+  Pinning does not extend an item's expiry or bypass capacity limits. Removing
+  an item retires it; native cleanup releases its resource charge afterward.
+
+*clear* *--epoch* _epoch_::
+  Clear the history for the specified current owner epoch. Clear waits for an
+  ordered source observation so an earlier clipboard change does not recapture
+  the unchanged source immediately after the command.
+
+*help* | *--help*::
+  Show usage.
+
+Item references include an owner epoch, an item ID and a generation. A stale
+reference or epoch is refused. Run *status* or *list* again and use a current
+reference before trying another action. The client does not retry an action
+against a different reference. State changes and native-owner shutdown are not
+public commands. Closing a read-only observation does not end the session
+history owner. A cancelled submitted mutation remains uncertain and can retire
+the native owner; it is never retried against a new reference.
+
+== OUTPUT CONTRACT
+
+The metadata contract version is 1. Status distinguishes disabled, blocked,
+ready and unavailable. A failed or cancelled status observation does not prove
+that the native process exited. Process-prepared status records successful
+native startup preflight; future allocations can still be refused. Supported
+action bits are 1 for list, 2 for pin/unpin, 4 for remove and 8 for clear.
+They describe implemented controls, not permission to read history while blocked.
+
+A page reports its configured slot range and the next offset. On success, the
+next offset advances through the requested range, including empty slots.
+Each returned item has an exact epoch/item/generation reference, representation,
+encoded byte count, native deadline and pin state. Native deadlines are
+monotonic milliseconds, not Unix timestamps. Pages are observations rather than
+payload leases or transactions: capture and expiry can change history between
+requests. A refused or blocked page contains no item descriptors.
+
+== HISTORY AND LOCKS
+
+The selected history policy is session-only and persistence is off. Capture
+uses CLIPBOARD; PRIMARY is not synchronized. Advertised password-manager
+hints exclude an item. An absent hint does not prove that copied data is
+nonsensitive. The current native subset accepts the advertised UTF8_STRING
+target as original format-8 bytes; this metadata command does not validate or
+show those bytes.
+
+The selected defaults for text history are 32 items, 1 MiB of encoded text
+payload in total, 32 KiB per text item and a maximum lifetime of 10 minutes.
+These limits are to be configurable in the completed integration. This command
+does not configure them or enable capture. Image limits are separate.
+
+Native allocations are page-rounded and include guard pages. Locked-memory
+charges and the owner process's resident memory are separate from the encoded
+payload budget. Configured budgets do not guarantee that the operating system
+will grant the required memory locks.
+
+Unknown or locked state blocks capture and history access. Existing history is
+retained while blocked, subject to its original expiry. A locker start or exit
+alone does not prove that the desktop is locked or unlocked, and does not
+resume capture. The configured retention lifetime is an upper bound for a
+window of items: an item captured later in that window can expire sooner.
+
+The native owner requires protected storage and refuses a capture when it
+cannot obtain the required protection. One incoming Xlib reply of at most
+32 KiB is allowed; accessible reply bytes are wiped before release. That does
+not guarantee that the reply never reached swap. Other X11 clients on the same
+display can access the clipboard under X11 rules.
+
+Logout requests native cleanup. The session reports whether child exit and
+cleanup were confirmed. Forced termination or an unconfirmed wait does not
+establish that cleanup completed.
+
+== EXAMPLES
+
+From an owned FVWM-X session, inspect availability and the first page:
+
+----
+fvwm-clipboard status
+fvwm-clipboard list --offset 0 --limit 16
+----
+
+To pin an item, use the epoch, item and generation from a current list result.
+The numbers below are illustrative; replace them with the returned reference:
+
+----
+fvwm-clipboard pin --epoch 19 --item 4 --generation 2
+----
+
+If the reference is stale, list the history again before selecting an item.
+This command does not provide a text preview, search, restore or export action.
+
+== EXIT STATUS
+
+*0*::
+  A status observation succeeded, or the requested action was applied. Status
+  can successfully report that capture is disabled or unavailable.
+*1*::
+  The endpoint or owner was unavailable, access was blocked, the reference
+  was stale, transport failed or the requested action was refused.
+*2*::
+  The command syntax or an argument was invalid.
+
+== ENVIRONMENT
+
+*FVWM_SESSION_CONTROL_SOCKET*::
+  Private session control endpoint inherited from the owned session.
+*FVWM_SESSION_CONTROL_CAPABILITY*::
+  Private capability inherited with that endpoint. Treat it as session-private
+  data and do not place it in configuration files or command examples.
+
+== SEE ALSO
+
+*fvwm-session*(1), *fvwm-file-browser*(1), *FvwmDesktop*(1), *fvwm3*(1)

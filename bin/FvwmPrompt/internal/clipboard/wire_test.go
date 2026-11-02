@@ -41,3 +41,22 @@ func TestExactReferenceControls(t *testing.T) {
 		}
 	}
 }
+
+func TestRepliesBindToTheirOperationShape(t *testing.T) {
+	row := Reply{Sequence: 1, Ref: Ref{19, 7, 2}, Representation: 1, Length: 5, Deadline: 10000, Mode: Unlocked}
+	if row.ValidateFor(Request{Verb: List, Ref: Ref{Epoch: 19}}) != nil {
+		t.Fatal("valid list refused")
+	}
+	for _, request := range []Request{{Verb: Status, Ref: Ref{Epoch: 19}}, {Verb: Pin, Ref: Ref{19, 7, 2}, Value: 1}, {Verb: List, Ref: Ref{Epoch: 20}}} {
+		if row.ValidateFor(request) == nil {
+			t.Fatalf("unsolicited item accepted for %+v", request)
+		}
+	}
+	reply := Reply{Sequence: 1, Ref: Ref{Epoch: 19}, Mode: Unlocked}
+	if reply.ValidateFor(Request{Verb: State, Ref: Ref{Epoch: 19}, Value: Locked}) == nil {
+		t.Fatal("wrong state acknowledgment accepted")
+	}
+	if reply.ValidateFor(Request{Verb: List, Ref: Ref{Epoch: 19}}) == nil {
+		t.Fatal("successful empty list item accepted")
+	}
+}

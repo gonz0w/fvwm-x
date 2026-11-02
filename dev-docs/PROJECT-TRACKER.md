@@ -35,6 +35,73 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: C2 bounded #62 consumer metadata handoff, coordinated with
+#63/#71/#74. Owner Cam; branch `codex/r1-clipboard-consumer-handoff`, base
+merged PR344 `4d43383ed1a414c5ab912a03c79ec6ce652f82fe`; PR343 runtime source and
+C2 affected code/build inputs are preserved through the docs-only rebase.
+Select four related stories before implementation:
+
+1. Typed discovery of the current native owner epoch, configured limits,
+   required protection/copy contract, state and unavailable/refused outcomes.
+   Configured budgets are not promises that an OS will grant future locking.
+2. Bounded pages of exact numeric item descriptors and current pin/remove/clear
+   actions over existing private session control. Keep CAS/source epochs and
+   stale-ref checks; no generic command, payload/preview/label/hash extension.
+3. An installed stdlib/vendored Go metadata CLI and primary AsciiDoc reference,
+   with finite syntax/capability/result examples reusable by a config consumer.
+   Do not call this the full text/image manager, enable capture or expose STATE.
+4. Meaningful configured-session start/pause-to-locker/logout fixture source,
+   exact metadata client/session protocol cases and docs/architecture/upkeep.
+   Source-reviewed C1 orchestration remains runtime-pending until this fixture
+   executes at the named combined clipboard consumer checkpoint.
+
+Use affected Go compilation and source/static/separate review in this batch;
+author tests alongside it. Reuse C1's unchanged native child and primitive
+qualification. Queue runtime for the C2–C5 clipboard consumer shared checkpoint
+(normally four to six related PRs), with focused regressions sooner only for a
+new reproduced failure. No per-CLI/full-WM/install/all-OS repeat. Add themes and
+screenshots when drawn UI is actually introduced; metadata CLI adds none.
+
+The owner selected configurable text defaults on 2026-11-02: 32 items, 1MiB
+encoded text payload total, 32KiB per item and a10-minute maximum lifetime.
+Physical page/guard charges remain explicit and separate; no OS locking grant
+or automatic service enablement follows. The canonical clipboard decision is
+updated. Existing capture, sensitivity, persistence and lock policy stays fixed. Qualified actual locker
+observations, remaining image/format limits and preview/restore/export copy
+contracts stay explicit dependencies for their owning later work, not inferred
+permissions. No mandatory GUI toolkit/package, core-loop work, new database,
+config migration or claim of broader issue completion. Lead implementation
+fallback remains in force; implementer unavailable until Nov4, no route retry.
+
+C2 four-story implementation is authored and [source/build evidence](verification/VERIFICATION-2026-11-02-CLIPBOARD-METADATA.md)
+records five final offline host Go compile/link passes, including the installed
+CLI. Zero tests, CLI examples or native labs ran. Separate source review covers
+capabilities/pages, operation-bound replies, current-state error facts, CLI,
+synthetic configured-Run fixture and frontend-independent read cancellation.
+New unexecuted oracles cover mid-page/final-fence locks, held/refused pause,
+core exec, logout EOF/Wait and late observation replies. Mutating/State
+cancellation remains terminal; Stop rejects new submissions. C1's unchanged C
+qualification is retained without extending it to these changed Go paths.
+Current step is final static/evidence/signed-delivery review and one coherent
+PR. Observe the authored lifecycle at C2–C5 before claiming it passed; broader
+issue criteria remain open. No new UI, package, whole-WM build or matrix.
+
+C1 PR343 is merged after separate source/evidence/signed-head review. Head
+`910de1f93cd61c868c39eb0d300eabc1a246f8b0`, exact tree
+`f0eb4cce8b89a88dbc96e1f39553de0875376667`, canonical valid signature/Cam DCO;
+main synced and owned refs retired. Project PR Done and #62 Backlog / #63/#71/#74
+In progress verified; all four issues remain open for wider criteria. R1 has
+50 open issues. The [combined C1 evidence](verification/VERIFICATION-2026-11-02-CLIPBOARD-CAPTURE.md)
+passes42 compile/link and8 runtime jobs in50.62s,109 exports verified, owned
+labs stopped. Actual child/client and session policy are observed; configured
+Run/locker/logout remains explicitly pending. Installed capture stays off;
+full platform/install/default-X/physical-lock/UI acceptance remains queued.
+Performance cadence is1/5 after PR343; no redundant benchmark ran. Keep current
+builds/SDKs/caches and compact review/failure evidence, not obsolete duplicates.
+
+<details>
+<summary>C1 selected stories and retained scope</summary>
+
 Current work: C1 clipboard capture/retention delivery under CONTENT-01 #63,
 RETENTION-01 #71 and STORE-01 #74, preparing #62. Owner Cam; branch
 `codex/r1-session-clipboard-capture`, base merged PR341
@@ -89,6 +156,8 @@ quota-unavailable until 2026-11-04; no retry/model-hop. Workflow/analyst/reviewe
 roles were available; requested backend model metadata remains unverified.
 Performance was last observed in PR341; this checkpoint will advance cadence
 from 0/5 to 1/5 on delivery, without a redundant benchmark.
+
+</details>
 
 PR341 is merged after separate integrated/signed-delivery review: head
 `454f15631d2e1a4e67975704ec0b79e1df17ad8a`, canonical tree

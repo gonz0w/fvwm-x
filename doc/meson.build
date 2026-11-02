@@ -170,6 +170,8 @@ if get_option('mandoc')
             page_install = {'install_tag': 'pinboard'}
         elif doc_name_attribute == 'fvwm-session'
             page_install = {'install_tag': 'session-startup'}
+        elif doc_name_attribute == 'fvwm-clipboard'
+            page_install = {'install_tag': 'clipboard-client'}
         elif doc_name_attribute == 'FvwmNotify'
             page_install = {'install_tag': 'notifications'}
         elif doc_name_attribute == 'FvwmTray'

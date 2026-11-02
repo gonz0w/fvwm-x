@@ -344,6 +344,8 @@ test('status-serializer-capture', py,
 
 test('content-memory-control', py,
     args: files('test_content_memory_control.py'))
+test('content-payload-control', py,
+    args: files('test_content_payload_control.py'))
 
 window_children_test = executable(
     'test-window-children', 'test_window_children.c',
@@ -4849,6 +4851,19 @@ content_payload_test = executable(
 )
 test('content-payload', content_payload_test, timeout: 30)
 
+# Production variant, explicit supervised public-byte controls only. Expected
+# faults are not registered as passing routine tests and never use ASan traps.
+content_payload_probe = executable(
+    'content-payload-probe',
+    [
+        'content_payload_probe.c',
+        '../libs/content_payload.c',
+        '../libs/content_policy.c',
+    ],
+    include_directories: includedirs,
+    c_args: ['-D_DEFAULT_SOURCE=1'],
+    build_by_default: false,
+)
 
 # Explicit diagnostic only: the equivalent-shutdown mode may reproduce the
 # known Script Fontconfig leak. It must not become a passing routine test.

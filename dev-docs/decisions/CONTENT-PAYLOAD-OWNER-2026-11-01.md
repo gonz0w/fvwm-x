@@ -1,7 +1,8 @@
 # Native content payload owner
 
-Owner Cam; #63 with #71/#74. Status: implementation/source checkpoint;
-runtime qualification queued. The [tracker](../PROJECT-TRACKER.md) owns this
+Owner Cam; #63 with #71/#74. Status: source implementation and
+[shared Linux Q1](../verification/VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md)
+pass; installed capture and broader qualification remain pending. The [tracker](../PROJECT-TRACKER.md) owns this
 finite selection. Reuse the [allocator comparison direction](CONTENT-ALLOCATOR-COMPARISON-2026-11-01.md)
 without adopting an installed service, numeric defaults or capture/UI behavior.
 
@@ -64,6 +65,36 @@ refusal. Empty reads pass NULL/zero without opening the mapping. One process-wid
 C trust boundary remains: a callback contract is not isolation from malicious
 native code. Source, transport, decoder, UI, stack/register and X11 copies still
 need their own audit; the borrowed producer source is outside this owner.
+
+## Comparison, pinning and deduplication
+
+Numeric description returns actual published lengths and the current pin; it
+does not grant a lease or payload access. Pinning retains the shared policy's
+budget and expiry rules. Original-byte comparison first requires compatible
+hint/deadline policy, then the same representation ID set, kinds and encoded
+lengths, independent of representation order. Decoded/derived bytes and UI
+labels cannot establish original identity.
+
+The caller owns a bounded trusted native C cursor, initialized/reset as a whole
+to zero. It carries exact refs, owner epoch/PID and numeric progress; it holds
+no payload pointer or lease between calls. Do not serialize it or accept it as
+an authenticated proof from IPC/Go/Lua. Each step rechecks immutable LIVE
+generations, compares at most 4 KiB directly under two scoped read-only leases,
+then closes/releases both before committing progress. Temporary lease pressure
+preserves progress for retry; failed access/closure invalidates it. Clear,
+replacement and expiry invalidate subsequent work. Empty originals need no
+payload access. The serialized owner still forbids callback reentry.
+
+An explicit commit rechecks completed equality and current compatibility,
+refuses a pinned duplicate and retires only the selected drop. It never extends
+the survivor's lifetime or transfers a pin. Charges remain until actual cleanup;
+a consumed/copied cursor cannot retire a replacement generation. Native callers
+may discard/reset a cursor to cancel without draining a retained lease.
+
+This continuation keeps bounded original comparisons within the existing owner.
+A second hash/index/retention registry would add state and copies without a
+current installed search requirement. No capture/transport or installed history
+behavior is inferred from this source API.
 
 ## Revocation and cleanup
 

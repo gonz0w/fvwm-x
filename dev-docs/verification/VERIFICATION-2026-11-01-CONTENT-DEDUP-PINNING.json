@@ -1,0 +1,909 @@
+{
+  "owner": "Cam",
+  "issues": [
+    63,
+    71,
+    74
+  ],
+  "base": "e44e156e436cbcaf0a40594bab7c37f643dd02da",
+  "scope": "Four dedup/pin source stories and one combined Linux Q1 across PR336 plus this batch; no installed capture, defaults or release acceptance",
+  "source": {
+    "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+    "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b",
+    "libs/content_payload.c": "61ed901129c95c45c4b63a961338a5eead5fb78962937dc860a29821d2676a5b",
+    "libs/content_payload.h": "1c36a8d4e9e80cd12b7fbeaacbb6c216331a62db63e13c821051b4663d20ec3f",
+    "tests/test_content_policy.c": "73f249f3c86438c6d73bf78f1aed6ac7ce8d54adbd15622981af2c04aa9c264e",
+    "tests/test_content_payload.c": "5e4987a1b48228366ad245fba79c086ac0b69ea789b87d15c79a456ff98b88bf",
+    "tests/content_payload_probe.c": "6714b34a1e8ccfe6ca5fb6aa20e22a51b0d91c2059135dae8d3f025e25f86a0e",
+    "tests/content_memory_timeout.c": "da767d8b5319e195f73e1821e69649f67f65df5a65af2166d7a91b7caad8a070",
+    "tests/content_memory_control.py": "00e25bf852ccd88c8c0e2b4ad09c930a0029d56dd2a656a7954ef0ecda756e5b",
+    "tests/content_payload_control.py": "7a9c28684d782757144472da90acadc0b6fbbd890dbda0033cc858c508d865f8",
+    "tests/test_content_payload_control.py": "03e15638a89ab6da07807e4d9420fe1a1c5948a1294a9575c79a22650c89d017",
+    "tests/test_content_memory_control.py": "ab4089e86befa5e4652818c270ecef5ee0b8bc447c60e4c7995fe3bcb5445dde"
+  },
+  "host_compile": {
+    "scope": "final strict affected host compile/link; whitespace wrapped source and corrected fixture prerequisite",
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-c",
+          "libs/content_payload.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/payload.o"
+        ],
+        "exit": 0,
+        "seconds": 0.08580354193691164,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-DCONTENT_PAYLOAD_TEST=1",
+          "-c",
+          "libs/content_payload.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/payload-test.o"
+        ],
+        "exit": 0,
+        "seconds": 0.08429266698658466,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-DCONTENT_PAYLOAD_TEST=1",
+          "tests/test_content_payload.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/payload-test.o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/test-content-payload"
+        ],
+        "exit": 0,
+        "seconds": 0.15820595796685666,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "tests/content_payload_probe.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/payload.o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-dedup-pinning/compile04/content-payload-probe"
+        ],
+        "exit": 0,
+        "seconds": 0.05366762506309897,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "source_before": {
+      "libs/content_payload.c": "61ed901129c95c45c4b63a961338a5eead5fb78962937dc860a29821d2676a5b",
+      "libs/content_payload.h": "1c36a8d4e9e80cd12b7fbeaacbb6c216331a62db63e13c821051b4663d20ec3f",
+      "tests/test_content_payload.c": "5e4987a1b48228366ad245fba79c086ac0b69ea789b87d15c79a456ff98b88bf",
+      "tests/content_payload_probe.c": "6714b34a1e8ccfe6ca5fb6aa20e22a51b0d91c2059135dae8d3f025e25f86a0e"
+    },
+    "source_after": {
+      "libs/content_payload.c": "61ed901129c95c45c4b63a961338a5eead5fb78962937dc860a29821d2676a5b",
+      "libs/content_payload.h": "1c36a8d4e9e80cd12b7fbeaacbb6c216331a62db63e13c821051b4663d20ec3f",
+      "tests/test_content_payload.c": "5e4987a1b48228366ad245fba79c086ac0b69ea789b87d15c79a456ff98b88bf",
+      "tests/content_payload_probe.c": "6714b34a1e8ccfe6ca5fb6aa20e22a51b0d91c2059135dae8d3f025e25f86a0e"
+    },
+    "reused_policy": {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+      "sha256": "f093d4aae18b3e2ac0f72d94c9a3e98d2a0e1811a8adecc0a0cbb0cd86db7557"
+    },
+    "passed": true
+  },
+  "pure_oracle": {
+    "command": [
+      "python3",
+      "-B",
+      "-m",
+      "unittest",
+      "-v",
+      "test_content_payload_control"
+    ],
+    "cwd": "tests",
+    "exit": 0,
+    "tests": 6,
+    "seconds_reported": 0.001,
+    "source_sha256": "03e15638a89ab6da07807e4d9420fe1a1c5948a1294a9575c79a22650c89d017"
+  },
+  "native": {
+    "plan_sha256": "18b530c187b801e331b03502d89fd3e67a3d32c834f686a5492ce0f48470a29d",
+    "plan_artifact": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/plan.json",
+    "inputs": {
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/guest.py": "1b2d14d1731fce19c30872434a7a9811208370381148dfcae28aeac007ca1583",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/holder.py": "878f1cba62cbc4e339cf12686fc05fa7c26cbf4b1949ce332a73f5740b408f3f",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/dispatch.py": "dec4385f140f9ebaad22da4a112b8e37da340cf94a6795d13b208b4b8dc3e8ff",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/source.json": "14374e705dfd4abf56a7b7fe238fc916df244037aabb1f8b460156a3c060eba5",
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-q1/source.tgz": "b3b828e6d000064cd6457f14ba85008fa710b4cc8ac51640991174c9cb2f9aea"
+    },
+    "profile": {
+      "machine": "aarch64",
+      "kernel": "6.18.10-200.fc43.aarch64",
+      "os_release": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+      "uid": 65534,
+      "gid": 65534,
+      "source": {
+        "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+        "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b",
+        "libs/content_payload.c": "61ed901129c95c45c4b63a961338a5eead5fb78962937dc860a29821d2676a5b",
+        "libs/content_payload.h": "1c36a8d4e9e80cd12b7fbeaacbb6c216331a62db63e13c821051b4663d20ec3f",
+        "tests/test_content_policy.c": "73f249f3c86438c6d73bf78f1aed6ac7ce8d54adbd15622981af2c04aa9c264e",
+        "tests/test_content_payload.c": "5e4987a1b48228366ad245fba79c086ac0b69ea789b87d15c79a456ff98b88bf",
+        "tests/content_payload_probe.c": "6714b34a1e8ccfe6ca5fb6aa20e22a51b0d91c2059135dae8d3f025e25f86a0e",
+        "tests/content_memory_timeout.c": "da767d8b5319e195f73e1821e69649f67f65df5a65af2166d7a91b7caad8a070"
+      },
+      "optional_features": false,
+      "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "clang": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: aarch64-unknown-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin\n"
+    },
+    "prepare": {
+      "phase": "prepare",
+      "seconds": 2.1587477950000036,
+      "commands": [
+        {
+          "label": "normal-build0",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-c",
+            "libs/content_policy.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal.o"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "normal-build1",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-normal.o"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "normal-build2",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "tests/test_content_policy.c",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal.o",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "normal-build3",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "tests/test_content_payload.c",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal.o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-normal.o",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-normal"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "sanitizer-build0",
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-fsanitize=address,undefined",
+            "-fno-omit-frame-pointer",
+            "-rtlib=compiler-rt",
+            "-c",
+            "libs/content_policy.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-sanitizer.o"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "sanitizer-build1",
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-fsanitize=address,undefined",
+            "-fno-omit-frame-pointer",
+            "-rtlib=compiler-rt",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-sanitizer.o"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "sanitizer-build2",
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-fsanitize=address,undefined",
+            "-fno-omit-frame-pointer",
+            "-rtlib=compiler-rt",
+            "tests/test_content_policy.c",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-sanitizer.o",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-sanitizer"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "sanitizer-build3",
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-fsanitize=address,undefined",
+            "-fno-omit-frame-pointer",
+            "-rtlib=compiler-rt",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "tests/test_content_payload.c",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-sanitizer.o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-sanitizer.o",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-sanitizer"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "production-build0",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-production.o"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "production-build1",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "tests/content_payload_probe.c",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-production.o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal.o",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/probe"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "production-build2",
+          "argv": [
+            "/usr/bin/gcc",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-g",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/tmp/fvwm-native-content-q1-20261101-attempt01",
+            "tests/content_memory_timeout.c",
+            "-o",
+            "/tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    "runtime": {
+      "phase": "run",
+      "seconds": 0.09764250500000315,
+      "commands": [
+        {
+          "label": "policy-normal",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/policy-normal.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-normal"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "payload-normal",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/payload-normal.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-normal"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "policy-sanitizer",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/policy-sanitizer.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/policy-sanitizer"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "payload-sanitizer",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/payload-sanitizer.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/payload-sanitizer"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "rw-control",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/rw-control.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/probe rw-control"
+          ],
+          "exit": 0
+        },
+        {
+          "label": "noaccess-write",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/noaccess-write.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/probe noaccess-write"
+          ],
+          "exit": 139
+        },
+        {
+          "label": "readonly-write",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/readonly-write.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/probe readonly-write"
+          ],
+          "exit": 139
+        },
+        {
+          "label": "zero-lock-limit",
+          "argv": [
+            "su",
+            "-m",
+            "nobody",
+            "-c",
+            "exec /tmp/fvwm-native-content-q1-20261101-attempt01/bin/supervisor 5 /tmp/fvwm-native-content-q1-20261101-attempt01/native/zero-lock-limit.json /tmp/fvwm-native-content-q1-20261101-attempt01/bin/probe zero-lock-limit"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    "binaries": {
+      "policy-normal.o": "63c7591730ef33780d80987c56df6ffb8ece813f7e92f8cdd264288b87ee7ce3",
+      "payload-normal.o": "f37e6e15b98fcf99247a0d10e7b5eda8b07b5f974657dad5bca6f2cb2f36c2a6",
+      "policy-normal": "17f98d4b7c05d7b23682b43ff0265c347685aebfc0661e2672b823f94e532943",
+      "payload-normal": "3f704d0caaffa8430b2086669e32b0448415649b7b0044f8435fcaece2c92cf1",
+      "policy-sanitizer.o": "17a3b77b4e9949d76ccdd91cdf8ffe542c487503f323c871231933e8c0c6af34",
+      "payload-sanitizer.o": "db2b41dfde1dd2642418f6a4616012af202f7ca49e0583573fd33b306b751e81",
+      "policy-sanitizer": "885315502aa1d1dc32a9a05d3d98a36ea15c154470996ea8c7dee5f6484e81c0",
+      "payload-sanitizer": "5c9e00cf3cc95a6a41cc76ee452205730baaca60dcdda9173d0da1a4f2f20189",
+      "payload-production.o": "8be355c79980e8997a05d36164b87f599aa10f3ba55f83c79817ae6e3ad2f1e1",
+      "probe": "262502f37402d7df780a4ea5edb70e1569a1dee6316f71d20780b7c8be2f1785",
+      "supervisor": "e0bdc62f7056c86e70aec97e6985885f05c87d55c569f6d42ecece99fdda5b1d"
+    },
+    "observations": {
+      "policy-normal": {
+        "outcome": "passed",
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1384923,
+          "poll_ns": 1000000
+        }
+      },
+      "payload-normal": {
+        "outcome": "passed",
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1504049,
+          "poll_ns": 1000000
+        }
+      },
+      "policy-sanitizer": {
+        "outcome": "passed",
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 3527766,
+          "poll_ns": 1000000
+        }
+      },
+      "payload-sanitizer": {
+        "outcome": "passed",
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 5038024,
+          "poll_ns": 1000000
+        }
+      },
+      "rw-control": {
+        "observation": {
+          "outcome": "observed",
+          "control": "rw-control",
+          "os": "Linux",
+          "explicit_cleanup": true,
+          "uid": 65534,
+          "euid": 65534,
+          "eligible": true,
+          "dumpguard": 2,
+          "page": 4096,
+          "memlock_soft": 8388608,
+          "memlock_hard": 8388608
+        },
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1481007,
+          "poll_ns": 1000000
+        }
+      },
+      "noaccess-write": {
+        "observation": {
+          "outcome": "observed",
+          "control": "noaccess-write",
+          "os": "Linux",
+          "explicit_cleanup": false,
+          "uid": 65534,
+          "euid": 65534,
+          "eligible": true,
+          "dumpguard": 2,
+          "page": 4096,
+          "memlock_soft": 8388608,
+          "memlock_hard": 8388608
+        },
+        "metrics": {
+          "child_wait": 139,
+          "wait_confirmed": true,
+          "child_signal": 11,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1542257,
+          "poll_ns": 1000000
+        }
+      },
+      "readonly-write": {
+        "observation": {
+          "outcome": "observed",
+          "control": "readonly-write",
+          "os": "Linux",
+          "explicit_cleanup": false,
+          "uid": 65534,
+          "euid": 65534,
+          "eligible": true,
+          "dumpguard": 2,
+          "page": 4096,
+          "memlock_soft": 8388608,
+          "memlock_hard": 8388608
+        },
+        "metrics": {
+          "child_wait": 139,
+          "wait_confirmed": true,
+          "child_signal": 11,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1184006,
+          "poll_ns": 1000000
+        }
+      },
+      "zero-lock-limit": {
+        "observation": {
+          "outcome": "observed",
+          "control": "zero-lock-limit",
+          "os": "Linux",
+          "explicit_cleanup": true,
+          "uid": 65534,
+          "euid": 65534,
+          "eligible": true,
+          "dumpguard": 2,
+          "page": 4096,
+          "memlock_soft": 0,
+          "memlock_hard": 0
+        },
+        "metrics": {
+          "child_wait": 0,
+          "wait_confirmed": true,
+          "child_signal": 0,
+          "sigsegv": 11,
+          "sigbus": 7,
+          "timed_out": false,
+          "cancel_signal": 0,
+          "supervised_wall_ns": 1293465,
+          "poll_ns": 1000000
+        }
+      }
+    },
+    "exported_files": {
+      "receipts/sanitizer-build3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build2.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/policy-normal.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/run-commands.json": "59ddfadd58ff468e25cd626b731bf3c2274c8d942fd94a09c7593313f764b320",
+      "receipts/normal-build3.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/normal-build1.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/noaccess-write.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build0.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build1.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/noaccess-write.stdout": "83bf86b27b13586bb4854e569daf28b8d3d64a9999eb0b66495a85c629629ce1",
+      "receipts/normal-build1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/normal-build3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build3.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/policy-normal.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/normal-build2.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/payload-sanitizer.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/binaries.json": "0d66f9c66b17663c43360ddc843e629e2169727c1a39a49948c871989460fab7",
+      "receipts/sanitizer-build2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build1.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/policy-sanitizer.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/readonly-write.stdout": "f566879457b9067ce5598160ebbc26f003d47528d639abca354203298b5b3a00",
+      "receipts/normal-build0.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/zero-lock-limit.stdout": "e12d0d0ec8aa709a083a371554d82240ea9f8629d5949b48e3800cfedddccee9",
+      "receipts/payload-normal.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/rw-control.stdout": "b72d14c25b826e5988f7a28d219a42a6c3b3810ee2b3ba1521c512a7eda68798",
+      "receipts/zero-lock-limit.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/readonly-write.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/normal-build0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/payload-normal.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/rw-control.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build0.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/production-build1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/policy-sanitizer.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/environment.json": "ea1e3728e16850812da58fa62a166688aebb623284131a9b738fefbceb3d50c4",
+      "receipts/payload-sanitizer.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/sanitizer-build2.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/normal-build2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts/prepare-commands.json": "e59c00e60eff40f9b3edbbd07e0c0a85865b46102b34c56ef2b9f1770a996b25",
+      "native/payload-sanitizer.json": "775d408af375ac5b890a1cc069d42db032866ebc6345e274fa98ecf19a1992ed",
+      "native/noaccess-write.json": "81fa69c69d52cdfb8b952a36cffc22934677055f741c77de0383af47ddf2fb31",
+      "native/policy-normal.json": "37481c6a49396bd1c186dde1e19cc9fa37fa414ffcf6ae29c29a63654e48e5f3",
+      "native/zero-lock-limit.json": "9d973159926e5abaa577fd6f1567a15a8b01d62b6f54741c7d933ad330b71cf0",
+      "native/policy-sanitizer.json": "5483dafcb1d4bb9efe46b04f55f33288771feae2e1d7af83a46c87e6b453aa15",
+      "native/payload-normal.json": "e44cd233a91d8f1683319ee60ce5670c792ec1475f38b5d69231983d8159c142",
+      "native/readonly-write.json": "94bde0ca8f47ebc9490e846b4ed1f4905e972295b43120e4ebbf71555b9045e3",
+      "native/rw-control.json": "024c01c71fb05c821562109e6d9d36140c6ace6ce029614ad492f9e6567e0081"
+    },
+    "export": {
+      "receipts": {
+        "archive_sha256": "f67755a7ccdd3d068f6d8bd88195fca8850c9639186d488680215e7678d4afab",
+        "members": 43,
+        "bytes": 13824
+      },
+      "native": {
+        "archive_sha256": "901edfbd180f532def4bfd134144da5e2b1ef9a3457bafd650731c2f8892ab9c",
+        "members": 9,
+        "bytes": 1310
+      }
+    },
+    "seconds": 3.610261833993718,
+    "container_quiesced_before_collection": true,
+    "collection_errors": [],
+    "result_sha256": "4bd376fd8bbb7febd7769e7739889927249a24f7e82fbd9a06e7e9486f045f18",
+    "holder_cleanup_sha256": "eb51d9bb84fdc2badb0a09201ea7a9ee040841e201ffb6bf8c96f6bba722004e",
+    "container_shutdown": "confirmed",
+    "machine_shutdown": "confirmed",
+    "new_packages": 0,
+    "unavailable": 0,
+    "skips": 0,
+    "failed": 0
+  },
+  "controls": {
+    "rw-control": [
+      {
+        "probe": "native-content-payload",
+        "ready": true,
+        "control": 1,
+        "uid": 65534,
+        "euid": 65534,
+        "eligible": true,
+        "dumpguard": 2,
+        "page": 4096,
+        "memlock_soft": 8388608,
+        "memlock_hard": 8388608,
+        "closed": true,
+        "leases": 0,
+        "work": 0,
+        "live": true,
+        "produced": 3,
+        "mapped_model": 12288,
+        "locked_model": 4096,
+        "sigsegv": 11,
+        "sigbus": 7
+      },
+      {
+        "probe": "native-content-payload",
+        "done": true,
+        "control": 1,
+        "lock_refused": false,
+        "uid": 65534,
+        "euid": 65534,
+        "eligible": true,
+        "dumpguard": 2,
+        "page": 4096,
+        "memlock_soft": 8388608,
+        "memlock_hard": 8388608,
+        "clean": true,
+        "items": 0,
+        "work": 0,
+        "leases": 0,
+        "mapped_model": 0,
+        "locked_model": 0
+      }
+    ],
+    "noaccess-write": [
+      {
+        "probe": "native-content-payload",
+        "ready": true,
+        "control": 2,
+        "uid": 65534,
+        "euid": 65534,
+        "eligible": true,
+        "dumpguard": 2,
+        "page": 4096,
+        "memlock_soft": 8388608,
+        "memlock_hard": 8388608,
+        "closed": true,
+        "leases": 0,
+        "work": 0,
+        "live": true,
+        "produced": 3,
+        "mapped_model": 12288,
+        "locked_model": 4096,
+        "sigsegv": 11,
+        "sigbus": 7
+      }
+    ],
+    "readonly-write": [
+      {
+        "probe": "native-content-payload",
+        "ready": true,
+        "control": 3,
+        "uid": 65534,
+        "euid": 65534,
+        "eligible": true,
+        "dumpguard": 2,
+        "page": 4096,
+        "memlock_soft": 8388608,
+        "memlock_hard": 8388608,
+        "closed": false,
+        "leases": 1,
+        "work": 0,
+        "live": true,
+        "produced": 3,
+        "mapped_model": 12288,
+        "locked_model": 4096,
+        "sigsegv": 11,
+        "sigbus": 7
+      }
+    ],
+    "zero-lock-limit": [
+      {
+        "probe": "native-content-payload",
+        "negative": true,
+        "operation": 6,
+        "errno": 1,
+        "mapped_before": 12288,
+        "locked_before": 4096,
+        "closed_before": true,
+        "items_before": 1,
+        "work_before": 0,
+        "leases_before": 0,
+        "produced_before": 0
+      },
+      {
+        "probe": "native-content-payload",
+        "done": true,
+        "control": 4,
+        "lock_refused": true,
+        "uid": 65534,
+        "euid": 65534,
+        "eligible": true,
+        "dumpguard": 2,
+        "page": 4096,
+        "memlock_soft": 0,
+        "memlock_hard": 0,
+        "clean": true,
+        "items": 0,
+        "work": 0,
+        "leases": 0,
+        "mapped_model": 0,
+        "locked_model": 0
+      }
+    ]
+  },
+  "review": {
+    "source": "Separate analyst core review and preliminary reviewer; fixture preflight corrected before execution",
+    "dispatch": "Separate analyst reviewed frozen plan18b530c after cancellation/collection/guest-identity corrections; no execution before clear",
+    "integrated": "pending",
+    "signed_delivery": "pending"
+  },
+  "limits": [
+    "Linux ARM64 guest only; no physical hardware or other OS qualification",
+    "ASan mlock interception is not OS enforcement; unsanitized controls separately observed",
+    "Expected access-fault process teardown is not explicit wipe evidence",
+    "No installed owner/capture/transport/UI/default/crypto/persistence adoption",
+    "Full support/install/default-X and real-X feature acceptance remain queued"
+  ]
+}

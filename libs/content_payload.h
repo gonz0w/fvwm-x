@@ -72,6 +72,31 @@ struct content_payload_owner {
 	size_t page, cleanup_cursor;
 	bool busy, fatal;
 };
+enum content_payload_comparison_state {
+	CONTENT_PAYLOAD_COMPARE_EMPTY,
+	CONTENT_PAYLOAD_COMPARE_ACTIVE,
+	CONTENT_PAYLOAD_COMPARE_EQUAL,
+	CONTENT_PAYLOAD_COMPARE_DIFFERENT,
+	CONTENT_PAYLOAD_COMPARE_CONSUMED,
+	CONTENT_PAYLOAD_COMPARE_INVALID
+};
+enum content_payload_comparison_outcome {
+	CONTENT_PAYLOAD_COMPARE_MORE,
+	CONTENT_PAYLOAD_COMPARE_MATCH,
+	CONTENT_PAYLOAD_COMPARE_UNEQUAL
+};
+/* Trusted local C continuation, never a wire proof or mutable IPC input.
+ * Initialize/reset only as a whole; never edit individual fields, including
+ * completed equality. It holds no pointers/leases and may be discarded to
+ * cancel. Each step validates the same immutable LIVE generations before
+ * accessing original encoded bytes. */
+struct content_payload_comparison {
+	struct content_ref keep, drop;
+	uint64_t epoch;
+	pid_t pid;
+	size_t representation, offset;
+	enum content_payload_comparison_state state;
+};
 typedef bool (*content_payload_consumer)(const unsigned char *bytes,
 	size_t length, void *context);
 
@@ -132,6 +157,35 @@ enum content_payload_result content_payload_clear(
 enum content_payload_result content_payload_expire(
 	struct content_payload_owner *owner, uint64_t now_ms,
 	struct content_payload_error *error);
+/* Safe numeric projection only, including actual lengths and current pin.
+ * A descriptor is not a lease. Pinning grants no budget/expiry exemption. */
+enum content_payload_result content_payload_describe(
+	struct content_payload_owner *owner, struct content_ref ref,
+	uint64_t now_ms, struct content_candidate *output, bool *pinned,
+	struct content_payload_error *error);
+enum content_payload_result content_payload_pin(
+	struct content_payload_owner *owner, struct content_ref ref,
+	bool pinned, uint64_t now_ms, struct content_payload_error *error);
+/* Strict compatible hint/deadline policy precedes original-byte equality.
+ * Representation ID sets/kinds/encoded lengths match independently of order;
+ * decoded/derived bytes, previews and labels never establish original identity.
+ * Begin requires an EMPTY cursor. Reentry leaves that cursor untouched. */
+enum content_payload_result content_payload_compare_begin(
+	struct content_payload_owner *owner, struct content_ref keep,
+	struct content_ref drop, struct content_payload_comparison *cursor,
+	uint64_t now_ms, struct content_payload_error *error);
+enum content_payload_result content_payload_compare_step(
+	struct content_payload_owner *owner,
+	struct content_payload_comparison *cursor,
+	enum content_payload_comparison_outcome *outcome,
+	uint64_t now_ms, struct content_payload_error *error);
+/* Completed native equality only; revalidate both refs and compatibility.
+ * Never drop a pinned item, transfer pins or extend the survivor's deadline.
+ * Retire only drop; ordinary incremental cleanup retains its full charges. */
+enum content_payload_result content_payload_dedup_commit(
+	struct content_payload_owner *owner,
+	struct content_payload_comparison *cursor,
+	uint64_t now_ms, struct content_payload_error *error);
 /* At most one CHUNK_MAX wipe and one region release per call. Failed/partial
  * cleanup retains its address, lock/wipe state and full policy charge. A
  * successful unmap also ends any lock obligation. Acknowledge last. Fatal

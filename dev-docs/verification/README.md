@@ -1,6 +1,8 @@
 # Verification reports
 
-- [Native content payload source](VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md): five related owner stories, strict affected compile/link and authored native failure cases; no runtime/protection acceptance yet.
+- [Content deduplication/pinning and shared Linux Q1](VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md): four related owner stories, four normal/scoped-sanitizer executables and four actual production memory controls, with raw waits and explicit source/platform limits.
+
+- [Native content payload source](VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md): historical five-story source receipt; its queued Linux owner gate is now covered by the shared Q1 above.
 
 - [Protected content memory comparison](VERIFICATION-2026-11-01-CONTENT-MEMORY-TARGETS.md): six profiles, matched controls, private allocator/dependency costs and explicit product qualification limits.
 

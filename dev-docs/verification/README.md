@@ -1,6 +1,10 @@
 # Verification reports
 
-- [Directory backend private source](VERIFICATION-2026-11-02-DIRECTORY-BACKEND-SOURCE.md): public metadata oracles, actual Go/snapshot baseline and optional SQLite/FTS5 compile; comparison/runtime/adoption remain queued.
+- [Directory backend combined comparison](VERIFICATION-2026-11-02-DIRECTORY-BACKEND-COMPARISON.md): six target profiles, 42 oracle cases and 192 matched cost invocations; retain Go, defer SQLite/FTS5, preserve unavailable providers and original driver failures.
+
+- [Current property core observation](PERFORMANCE-2026-11-02-PROPERTY-CORE.md): exact baseline control relink, one current object and six paired observations; overlapping timing ranges, explicit text/RSS growth and narrow source scope.
+
+- [Directory backend private source](VERIFICATION-2026-11-02-DIRECTORY-BACKEND-SOURCE.md): historical source/compile checkpoint; runtime and disposition are composed in the combined report above.
 
 - [Ordered selection observer and combined transfer checkpoint](VERIFICATION-2026-11-02-SELECTION-OBSERVER.md): normal/scoped-sanitizer primitive passes, actual same-window/ABA observations and fixed pre-poll queue race; external Xvfb server-absence failure remains unavailable.
 

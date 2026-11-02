@@ -6,10 +6,9 @@ filesystem and memory protection suitable for frequently copied passwords. A
 separate user-directed thread can consume qualified primitives to build the
 configuration/theme in parallel with further runtime work. This records scope;
 no runtime implementation, public syntax, dependency or security qualification
-is selected or claimed. The owner resolved first-release defaults on 2026-11-01: session-only history,
-recognized sensitive/password items excluded, persistence off. Capture and
-synchronization defaults, numeric capacities, lock behavior and protected storage
-adoption remain separate decisions. These defaults do not enable a consumer.
+is selected or claimed. The owner resolved the first-release defaults below on
+2026-11-01/02. Numeric capacities, remaining formats and backend/key adoption
+remain separate decisions. These defaults do not enable a consumer.
 Order and status belong to the
 [project tracker](../PROJECT-TRACKER.md#execution-order).
 
@@ -25,15 +24,22 @@ payloads, keys and image derivatives do not enter Go/Lua managed heaps by
 default. STORE-01 retains protection review and no confidentiality/default
 decision is changed by the language direction.
 
-## First-release defaults — owner decisions, 2026-11-01
+## First-release defaults — owner decisions, 2026-11-01/02
 
 History is session-only; recognized sensitive/password items are excluded and
 persistence is off. Automatic history capture uses CLIPBOARD only, with PRIMARY
 synchronization off. The owner explicitly selected retaining history while the
-desktop is locked; lock does not imply history deletion. Logout ends the session
-and clears its history. Retention across lock does not select capture or payload
-access behavior during lock, key/unlock policy, backend protection guarantees,
-installed capacities or image/format limits; those remain distinct work.
+desktop is locked; lock does not imply history deletion. On 2026-11-02 the owner
+selected pausing capture and blocking history access while locked. Logout ends
+the session and clears its history. Key/unlock policy, backend protection
+guarantees, installed capacities and image/format limits remain distinct work.
+
+For installed capture, the owner also approved one transient Xlib reply of at
+most 32 KiB in the isolated native process. Copy it directly into prepared
+protected storage, then wipe accessible reply bytes before freeing them. This
+is a bounded transit-copy allowance, not a guarantee that Xlib's reply never
+reached swap or that other X11 clients cannot observe selections. Qualify the
+actual transport/retention integration; this decision alone enables no service.
 
 These decisions replace the corresponding open-default questions below. They do
 not enable a manager or qualify a protection/backend by themselves.
@@ -218,25 +224,23 @@ creates no chat, starts no service and changes no default configuration.
 
 ## Open decisions before implementation/adoption
 
-The user approved scope and ordering, not answers to these policy questions:
+The first-release defaults above resolve password exclusion, persistence off,
+CLIPBOARD/PRIMARY selection, desktop-lock behavior and the bounded Xlib reply.
+The remaining choices before installed adoption are:
 
-1. Whether marked passwords bypass history or can enter an explicitly selected
-   hidden, expiring protected-memory history. Secret disk history is not
-   implied.
-2. Whether ordinary text/image persistence is enabled by default or opt-in, plus
-   unlock credentials, lock triggers and behavior while storage is locked.
-3. CLIPBOARD versus PRIMARY defaults, source exclusions, numeric byte/pixel/item
-   limits and deadlines, pin behavior at capacity and supported image/extra
-   target formats.
-4. Crypto backend/feature packaging, OS-specific protection capabilities and
-   conditions requiring refusal. Portable browsing/login must remain available.
-5. Component boundaries, public syntax, sensitive payload delivery and any
-   explicit export/external-action or automatic-paste contract.
+1. Numeric item/logical/mapped/locked/age limits and deadlines, capacity/pinning
+   disposition and remaining source exclusions.
+2. Supported text/image/extra target formats, encoded/decoded image limits and
+   preview/export/action behavior.
+3. Optional persistence credentials, key/unlock/relock/recovery policy, crypto
+   backend/packaging, OS protection capabilities and refusal conditions.
+4. Public syntax, sensitive-payload delivery and explicit export/external-action
+   or automatic-paste contracts. Portable browsing/login remains available.
 
-Recommended starting policy for design review: capture CLIPBOARD only, keep
-PRIMARY synchronization opt-in, exclude marked secrets unless protected-memory
-retention is deliberately selected, and make encrypted persistence opt-in. These
-recommendations are not recorded as adopted defaults.
+Qualified lock/unlock observation is a separate implementation/acceptance
+dependency. Locker request/start/exit alone does not prove state. Unknown or
+lost state must block capture/access; do not reopen the owner's pause/block
+choice or infer automatic resume from a process exit.
 
 ## Acceptance and qualification
 

@@ -7,25 +7,73 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: CONTENT-01 #63 / SELECTION-01 borrowed selection delivery and
-native producer handoff. Owner Cam; branch `codex/r1-selection-content-sink`,
-base merged PR337 `67169fce0f57d92488ecbba223d6b46556be3fee`. Select four
-related source stories: bounded format-8 borrowed property delivery; exact
-direct/INCR sink; source-token/producer fences; and independent transfer/adapter
-fixtures. [Finite scope and copy decision proposal](decisions/CONTENT-SELECTION-SINK-2026-11-01.md)
-retain existing wrappers/caps/deadlines, no core-loop call or new dependency.
-Source implementation is complete; [source/build evidence](verification/VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md)
-records fourteen native GCC/Clang compile/link commands plus a final fixture-only
-strict host compile. Production source identities match; no candidate/X test
-has run. The initial cached-PIE preflight refusal performed zero compiles and is
-preserved; exact reviewed recipe succeeds. All owned labs are confirmed stopped.
-Final integrated/signed review and merge remain pending. This source-only batch
-does not adopt installed capture or claim Xlib buffers protected. Use affected compilation/review/static checks during development and
-one combined real-X transfer checkpoint after ordered source observation and
-capture/retention integration, before first installed capture/consumer
-acceptance. Include these property/selection/adapter cases and warranted scoped
-sanitizers across those related source PRs. Do not repeat unchanged owner Q1
-or the all-OS/install matrix per helper.
+Current work: SELECTION-01 #22 / CONTENT-01 #63 ordered source observation.
+Owner Cam; branch `codex/r1-selection-source-observer`, base merged PR338
+`627ec305f7fb8e23d7b4fed1584725d3179dd0d5`. Select four related stories:
+pure nonrecycling observer lifetime/generation policy; optional native XFixes
+subscription/query barriers; bounded queued-event/current-token integration;
+and independent policy/public-X fixtures. [Finite contract](decisions/SELECTION-SOURCE-OBSERVER-2026-11-02.md)
+preserves unrelated/requestor FIFO, uses one caller-owned observer and unique
+epoch, and refuses uncertain scans. Existing wrappers get no mandatory new
+link dependency, core-loop call, idle poll, service/default or copy-policy change.
+Update the private C source-token epoch and all consumers together; no config
+migration or packet/Perl metadata change is involved.
+
+PR338 merged after separate integrated/signed review: head
+`e473e9b6a3c062df9084e357b42be5f267d8e159`, exact canonical tree
+`9f2788571e882667f33dda5ff7c11f569077f1c1`, valid signature/Cam author DCO.
+Main synced, owned source branch retired, Project Done verified. #22/#63/#71/#74
+mirror the four-story source checkpoint and remain open; R1 has 51 open issues.
+Performance cadence is 3/5. [Source/build evidence](verification/VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md)
+records fourteen native compile/link commands, final fixture-only strict host
+compilation and zero candidate/X tests. Preserve the exact snapshots and initial
+zero-compile PIE preflight refusal. Both owned lab resources are stopped.
+
+Select one early shared Linux primitive-transfer gate across PR338 and this
+transport/observer handoff (eight related stories). Actual same-window XFixes
+notification semantics are essential to the approach, so verify that affected
+target before further capture adoption. Combine authored property/selection/
+observer/adapter and pure normal/scoped-sanitizer cases once; reuse unchanged
+owner Q1, no WM UI/install/all-OS/theme sweep. This replaces the queued primitive
+portion of the later transfer gate; installed capture/retention/actual consumer
+acceptance still joins its own combined feature boundary. Per source PR keep
+separate review/static and affected compilation; do not repeat runtime just for
+PR creation. Public test selections/bytes only; no new UI or installed capture.
+
+The first combined native run compiled/linked all 38 affected commands and
+passed normal pure policy/property/legacy selection, then failed a native
+adapter success assertion. Preserve its exact source/result and stopped-lab
+receipts. Source inspection found a pre-poll queue race: synchronous source
+fences can queue a reply after the transfer scan. The affected correction
+peeks only this attempt's events after the last fence/service, with a
+no-service independent-owner regression that deliberately queues the reply at
+that boundary. Reuse exact prior objects/binaries, rebuild/relink affected
+sources only, and retain the unchanged policy/property passes. Do not extend
+deadlines, add periodic polling or count the failed attempt as passing.
+
+Composed Linux positive primitive qualification now passes: normal/scoped
+ASan+UBSan pure source policy, property, legacy selection, native content and
+enabled observer, plus compiled-disabled refusal. The corrected native suite
+passes the deterministic pre-poll regression and original adapter cases. Actual
+same-window generation2→3 and A→B→A generation4→6 precede clean snapshots.
+[Evidence](verification/VERIFICATION-2026-11-02-SELECTION-OBSERVER.md) preserves
+all original failed results: adapter assertion, then two external Xvfb aborts
+while testing capability absence. **Server-absence runtime remains unavailable**;
+implementation/source integration can proceed under the queued runtime cadence,
+but that acceptance/release case is not a pass. Preserve all #22/#63 remaining
+criteria. No further external-Xserver debugging is selected in this batch.
+
+The correction uses twelve affected compile/link commands; the final sanitizer/
+absence tail reuses exact binaries with zero compilation. Unchanged normal
+pure/property passes are retained. All 90/40/19 exported hashes verify and both
+owned resources are confirmed stopped after each attempt. No whole-WM,
+all-platform, install or UI/theme repeat. Final separate integrated and signed
+review remain; performance cadence stays3/5 until this checkpoint merges.
+
+Installed copying still needs the explicit Xlib transit contract; lock-time
+capture/access is separately pending. Ordered observation itself needs no new
+owner decision. Source tokens must not be presented as server evidence before
+this helper and its independent real-X gate qualify. #257/#258 remain parked.
 
 PR337 merged after separate integrated and signed-delivery review: head
 `83a27c8f9c84fca11bf911bb7cf0cb00d7d85c4e`, exact canonical tree

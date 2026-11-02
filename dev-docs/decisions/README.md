@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Ordered selection source observation](SELECTION-SOURCE-OBSERVER-2026-11-02.md): selected pure lifetime/epoch, optional XFixes and bounded query/drain handoff; real-X and installed acceptance remain required.
+
 - [Bounded selection sink handoff](CONTENT-SELECTION-SINK-2026-11-01.md): borrowed property/direct/INCR producer handoff; installed Xlib-copy and authoritative owner-observation boundaries remain explicit.
 
 - [Native content payload owner](CONTENT-PAYLOAD-OWNER-2026-11-01.md): bounded base-system storage, explicit process preflight, scoped C reads/comparison/pinning and retryable cleanup; shared Linux Q1 passes with installed/other-target limits.

@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Directory backend evaluation](DIRECTORY-BACKEND-EVALUATION-2026-11-02.md): bounded public-metadata Go/snapshot and optional SQLite/FTS5 source comparison; no production adoption.
+
 - [Ordered selection source observation](SELECTION-SOURCE-OBSERVER-2026-11-02.md): selected pure lifetime/epoch, optional XFixes and bounded query/drain handoff; real-X and installed acceptance remain required.
 
 - [Bounded selection sink handoff](CONTENT-SELECTION-SINK-2026-11-01.md): borrowed property/direct/INCR producer handoff; installed Xlib-copy and authoritative owner-observation boundaries remain explicit.

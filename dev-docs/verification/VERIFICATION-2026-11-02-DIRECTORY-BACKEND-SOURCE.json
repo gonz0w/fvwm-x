@@ -1,0 +1,264 @@
+{
+  "owner": "Cam",
+  "issue": 66,
+  "base": "7edc6342603eb25778b53e3324f070d715c19e68",
+  "status": "private source prototype compiled; runtime/evaluation/adoption pending",
+  "source": {
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite_test.go": "3896f43a4ab0dab92409ed0a5c9e292592a2e6d3861300c21f1e0d23cf4ef799",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_controls.go": "cae06d24a81a36d28312fef3fba70de9c97dd205e2c1e1b2ee7a0e0a4274c1a3",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture.go": "0d711222d2067343185c23824cbb6d08933e20a0efc4649b15f6e4901b4e2826",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture_test.go": "f2eb0f78587dcf70fbbe53da9a8fc6754a8617d7635c1425f3eb59bc1ce36cd8",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_unavailable.go": "5c901940b65df5fe5ba0af0fe083e6018265e4e9b7deb63e4b16509bbc7cb4fb",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite.go": "f6490b435b7d1ac3d4fda7216a1f448f9c536e8a72b0d925da3c16838b415a27",
+    "bin/FvwmPrompt/cmd/fvwm-metadata-eval/main.go": "99abd866485a8da7c813d5fa0443118150174113208990e5c161db933f42b107"
+  },
+  "compiles": [
+    {
+      "directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile01",
+      "result_sha256": "67e91671afd5c07d33d7c4a87ecb6129e7fd074943ec0c5890996df848b207e4",
+      "scope": "Affected Go test compile/link only; zero candidate/test runtime",
+      "commands": [
+        {
+          "profile": "baseline",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile01/test-baseline",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 1.98666012508329
+        },
+        {
+          "profile": "sqlite",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval,fvwm_sqlite_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile01/test-sqlite",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 3.6729370000539348
+        }
+      ],
+      "source": {
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture.go": "4bc7e5b3d28121bc837633aa72ee9d3d922f7a2b8a9d44793fd3eff30eaae2c1",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture_test.go": "843427d515817c782fca7b13d002a52be249ef0c7043c56a9cadb55dfd54d9f8",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_unavailable.go": "eef45a51411d0763c523edcac6f42587c83ffccf8f8819e6bec6951dbb677b83",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite.go": "de31adeb3a9c6836ee0d6a5ed1a719a6bee6da3bf9af58610163422fc82b2d7c"
+      }
+    },
+    {
+      "directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile02",
+      "result_sha256": "5c867b571b59bb59ac8e2a5c4f8e473c18815c2980471f6627e2917b8ff42b13",
+      "scope": "Affected test/command compile-link only; no candidate/test execution",
+      "commands": [
+        {
+          "profile": "baseline",
+          "kind": "test-compile",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile02/baseline-test-compile",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 0.24555333307944238
+        },
+        {
+          "profile": "baseline",
+          "kind": "command-build",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "build",
+            "-tags=fvwm_metadata_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile02/baseline-command-build",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 1.5293443750124425
+        },
+        {
+          "profile": "sqlite",
+          "kind": "test-compile",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval,fvwm_sqlite_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile02/sqlite-test-compile",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 1.4620634580496699
+        },
+        {
+          "profile": "sqlite",
+          "kind": "command-build",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "build",
+            "-tags=fvwm_metadata_eval,fvwm_sqlite_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile02/sqlite-command-build",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 0.7595060829771683
+        }
+      ],
+      "source": {
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite_test.go": "22766c3af567de2b32d49da4870e6b6b7c633b92e1f45061b86d993d80822f5a",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_controls.go": "cae06d24a81a36d28312fef3fba70de9c97dd205e2c1e1b2ee7a0e0a4274c1a3",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture.go": "0d711222d2067343185c23824cbb6d08933e20a0efc4649b15f6e4901b4e2826",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture_test.go": "5f525f653e9bd41b5a82514080be4f7ba85b1c6152572be34c80b116e0098306",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_unavailable.go": "5c901940b65df5fe5ba0af0fe083e6018265e4e9b7deb63e4b16509bbc7cb4fb",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite.go": "40f3d699f5bf3bc4959cfa97e84c6d3a2b121fc72cf5998657bcdd9e40bca0b9",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/main.go": "31420b7b000b0138b2103eb0c02aea272cd9d00fd53f915e5d4c8db55cb31e25"
+      }
+    },
+    {
+      "directory": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03",
+      "result_sha256": "ce15c53ef22b59dc7233d0ab1d179c8575dbef4ac0021880fee7e18d8acd7b1e",
+      "scope": "Affected test/command compile-link only; no candidate/test execution",
+      "commands": [
+        {
+          "profile": "baseline",
+          "kind": "test-compile",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/baseline-test-compile",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 0.24824679107405245
+        },
+        {
+          "profile": "baseline",
+          "kind": "command-build",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "build",
+            "-tags=fvwm_metadata_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/baseline-command-build",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 1.48871612502262
+        },
+        {
+          "profile": "sqlite",
+          "kind": "test-compile",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "test",
+            "-c",
+            "-tags=fvwm_metadata_eval,fvwm_sqlite_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/sqlite-test-compile",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 1.4462014590390027
+        },
+        {
+          "profile": "sqlite",
+          "kind": "command-build",
+          "argv": [
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+            "build",
+            "-tags=fvwm_metadata_eval,fvwm_sqlite_eval",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/sqlite-command-build",
+            "./cmd/fvwm-metadata-eval"
+          ],
+          "exit": 0,
+          "seconds": 0.7596720000728965
+        }
+      ],
+      "source": {
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite_test.go": "3896f43a4ab0dab92409ed0a5c9e292592a2e6d3861300c21f1e0d23cf4ef799",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_controls.go": "cae06d24a81a36d28312fef3fba70de9c97dd205e2c1e1b2ee7a0e0a4274c1a3",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture.go": "0d711222d2067343185c23824cbb6d08933e20a0efc4649b15f6e4901b4e2826",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/fixture_test.go": "f2eb0f78587dcf70fbbe53da9a8fc6754a8617d7635c1425f3eb59bc1ce36cd8",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_unavailable.go": "5c901940b65df5fe5ba0af0fe083e6018265e4e9b7deb63e4b16509bbc7cb4fb",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/db_sqlite.go": "f6490b435b7d1ac3d4fda7216a1f448f9c536e8a72b0d925da3c16838b415a27",
+        "bin/FvwmPrompt/cmd/fvwm-metadata-eval/main.go": "99abd866485a8da7c813d5fa0443118150174113208990e5c161db933f42b107"
+      }
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "baseline-test-compile",
+      "bytes": 5670082,
+      "sha256": "e354f581a0df09a27a94c6438b2fb97991460fce43c8707a61fff76ed46d923b",
+      "linked_libraries": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/baseline-test-compile:\n\t/usr/lib/libSystem.B.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libresolv.9.dylib (compatibility version 0.0.0, current version 0.0.0)\n"
+    },
+    {
+      "file": "baseline-command-build",
+      "bytes": 4478578,
+      "sha256": "d3d020c13f3364e052811e9667bb71c51ffa832356b954aa63c20190af729208",
+      "linked_libraries": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/baseline-command-build:\n\t/usr/lib/libSystem.B.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libresolv.9.dylib (compatibility version 0.0.0, current version 0.0.0)\n"
+    },
+    {
+      "file": "sqlite-test-compile",
+      "bytes": 6017794,
+      "sha256": "0e5c0f58e065cd59b0774ff0982397b815ea8e609714af9122fcbdc31ee4d783",
+      "linked_libraries": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/sqlite-test-compile:\n\t/usr/lib/libsqlite3.dylib (compatibility version 9.0.0, current version 401.0.0)\n\t/usr/lib/libresolv.9.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n"
+    },
+    {
+      "file": "sqlite-command-build",
+      "bytes": 4735106,
+      "sha256": "3c677d97b6dfc66d9fe545851bd6c182c3a204323c80f484f10e54085254c1c5",
+      "linked_libraries": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-directory-backend-evaluation/compile03/sqlite-command-build:\n\t/usr/lib/libsqlite3.dylib (compatibility version 9.0.0, current version 401.0.0)\n\t/usr/lib/libresolv.9.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n"
+    }
+  ],
+  "sdk": {
+    "initial": "guard compared archive digest to executable digest and refused before compiler; no SDK mismatch established",
+    "archive_sha256": "76812b213b1b2302c978d28fa52fa92d541704b9e7d9d5db8002c50e4018c4c5",
+    "executable_sha256": "516c1fbb53b5f8f4852f0c3c379d45bcff53a1032e5cd1a9ca1738f03ba07cb1",
+    "archive_member_matches": true,
+    "version": "go1.27.2 darwin/arm64",
+    "candidate_compiles_before_correction": 0
+  },
+  "candidate_executions": 0,
+  "test_executions": 0,
+  "system_provider_discovery": "sqlite3 --version only: Apple3.54.0; not authored probe execution or portable source pin",
+  "runtime_queue": [
+    "independent golden and differential oracles",
+    "actual busy/read-only/full-partial-replacement/corrupt/reopen controls",
+    "matched verify/measure digests and repeated costs",
+    "six fixed SQLite/SDK/build/runtime profiles",
+    "explicit adopt/defer/reject disposition; accepted integration only after it"
+  ],
+  "scope_limits": [
+    "no production target/default/dependency/schema/persistence/search daemon",
+    "no private/sensitive data or live filesystem enumeration",
+    "no WM/UI/install/support-matrix repeat for this source PR",
+    "measure mode needs matching verified source/profile/count/repetitions/result digest",
+    "native runtime and SDK/library/feature availability not established by host link"
+  ],
+  "roles": {
+    "implementation": "lead fallback; recorded implementer quota unavailable",
+    "analysis": "temper_analyst design and four source findings resolved",
+    "workflow": "temper_workflow accepted evidence and compile inventory",
+    "separate_final_review": "pending",
+    "actual_backend_model_metadata": "unverified"
+  }
+}

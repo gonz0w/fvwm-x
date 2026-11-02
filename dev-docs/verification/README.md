@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Directory backend private source](VERIFICATION-2026-11-02-DIRECTORY-BACKEND-SOURCE.md): public metadata oracles, actual Go/snapshot baseline and optional SQLite/FTS5 compile; comparison/runtime/adoption remain queued.
+
 - [Ordered selection observer and combined transfer checkpoint](VERIFICATION-2026-11-02-SELECTION-OBSERVER.md): normal/scoped-sanitizer primitive passes, actual same-window/ABA observations and fixed pre-poll queue race; external Xvfb server-absence failure remains unavailable.
 
 - [Borrowed selection/native producer source](VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md): four related source stories, fourteen native compile/link commands and final fixture-only host compilation; zero candidate/X execution, with shared transfer acceptance queued.

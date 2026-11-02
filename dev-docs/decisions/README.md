@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Protected allocator comparison](CONTENT-ALLOCATOR-COMPARISON-2026-11-01.md): retain the base-system direction, defer sodium guarded-allocation integration and preserve separate payload/crypto/default acceptance.
+
 - [Native file clipboard and drag-and-drop](FILE-TRANSFER-2026-10-31.md): #67/#22 file-only owner/requestor, native Form gestures and confirmed grouped jobs.
 - [Settings preview completion](SETTINGS-PREVIEW-COMPLETION-2026-10-31.md): finite 26-setting registry, eight reversible choices, core-owned roots and exact resource recovery.
 

@@ -12,6 +12,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <time.h>
 #include <unistd.h>
@@ -54,6 +55,16 @@ int main(int argc, char **argv)
 	bool failed = false, timed_out = false, terminated = false;
 	bool killed = false;
 
+	/* Build-phase wall stamps need no child and no external time package. */
+	if (argc == 2 && !strcmp(argv[1], "--stamp"))
+	{
+		uint64_t stamp = now_ns();
+
+		if (!stamp)
+			return 125;
+		return printf("%" PRIu64 "\n", stamp) < 0 ||
+			fflush(stdout) == EOF ? 125 : 0;
+	}
 	if (argc < 4 || argv[1][0] < '0' || argv[1][0] > '9')
 		return 125;
 	errno = 0;

@@ -1,7 +1,8 @@
 # Protected content memory evaluation
 
-Owner: Cam; #74 STORE-01 and #63 CONTENT-01. Status: source/probe preparation,
-not a backend adoption or protection qualification. The owner selected
+Owner: Cam; #74 STORE-01 and #63 CONTENT-01. Status: the selected six-profile component
+comparison is complete; installed backend and broader protection acceptance
+remain open. See the [allocator decision](CONTENT-ALLOCATOR-COMPARISON-2026-11-01.md). The owner selected
 session-only history, recognized sensitive/password exclusion and persistence
 off. No-hint payloads can still contain secrets, so this comparison treats all
 payload buffers as potentially sensitive.
@@ -97,15 +98,23 @@ content policy and use identical public synthetic bytes. Baseline wiping uses
 the recognized Linux/BSD `explicit_bzero`; other base profiles report unavailable.
 No custom wiping/cryptography fallback is introduced.
 
-Before operations the fresh probe process verifies its own zero core-file limits.
-It never changes another process or system-wide setting. A separate explicit
+Before operations the fresh probe verifies its own zero core-file limits.
+Linux additionally requires checked `PR_SET_DUMPABLE=0` and
+`PR_GET_DUMPABLE=0`, since piped core collectors may ignore core-size limits.
+BSD expected-fault execution requires the frozen stock-image profile, successful
+applicable core-policy queries and checked process limits. A process snapshot
+corroborates that profile; it does not prove every external collector is absent.
+No other process or system-wide setting changes. A separate explicit
 `--zero-lock-limit` case lowers only its own inherited lock limit and verifies
 the result. This cannot override privilege exceptions or establish every dump
 mechanism. Each buffer also requires a checked regional no-dump operation, or
-a mapping flag the baseline itself applied. If the library's configured mapping
-path is not attested and no checked regional operation is available, it reports
-dump-unavailable before writing fixture bytes. This intentionally leaves the
-OpenBSD library-path qualification open rather than inferring it from OS macros.
+a mapping flag the baseline itself applied. A private OpenBSD sodium opt-in
+requires the exact utility translation unit's effective mmap, page-size and
+protection macros, utility object/archive identity and explicit static link.
+It records that the configured source path passes `MAP_CONCEAL`, separately from
+a checked regional advice call or the baseline's own mapping flag. Without that
+attestation or a checked regional operation, preparation reports dump-unavailable
+before fixture writes. None of these records observes an actual dump.
 
 Fixture sizes are zero, one, page minus one, page, page plus one and 64 KiB.
 Page size is observed and bounded to 64 KiB; repeat count is 1–20. The explicit
@@ -171,11 +180,20 @@ limits are verified. Each row records whether the real lock call was attempted
 and its errno. Success for this negative oracle requires genuine checked lock
 refusal, no producer bytes/publication/reader access, and completed accounting
 and cleanup, paired with the same candidate's successful read/write control.
+The positive and negative must match their native OS, UID/EUID, artifact,
+regional mechanism and selected execution environment. The ordinary positive
+records its inherited nonzero lock limit and eligibility before any final access
+transition; a root positive cannot qualify a nonroot strict negative.
 Earlier allocation/dump/access refusal is unavailable for the lock claim;
 unexpected locking success fails. No particular errno is required across OSes.
 Unsupported prerequisites return 77, distinct from enforcement success.
 
-The capture-only oracle bounds files/rows, rejects duplicate/nonfinite JSON and
+The supervisor also supplies a no-child `--stamp` mode for native build-phase
+monotonic wall measurements without an extra timing package. Those phase costs
+include command/measurement overhead and do not isolate process startup.
+
+The capture-only oracle requires explicit `--os`, bounds files/rows,
+rejects duplicate/nonfinite JSON and
 requires matching candidate, page, native signals and control order. It never
 executes an exported binary. Exact artifact/source/command hashes and capture
 chronology remain the owning dispatcher's responsibility. Wipe-before-release

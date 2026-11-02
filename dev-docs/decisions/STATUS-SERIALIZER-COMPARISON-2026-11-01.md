@@ -1,8 +1,10 @@
 # Status serializer comparison
 
-Owner: Cam; LIB-06 #48. Status: bounded comparison source in development;
-**no serializer adoption decision**. The tracker owns execution and acceptance.
-The current patched cJSON remains the production dependency and request parser.
+Owner: Cam; LIB-06 #48. **R1 decision: retain patched cJSON and defer yyjson
+integration.** The decision is based on the bounded comparison below; all six
+OS/architecture comparison observations are validated, with execution profiles and limits in the target report. #48 closure remains subject to
+separate final review and integration. This decision changes no production
+dependency, serializer, parser or installed behavior.
 
 ## Frozen inputs and scope
 
@@ -77,10 +79,17 @@ normalize units using that profile's OS contract. The runner separately records
 launch-to-exit wall time, including process startup and orchestration, rather
 than mislabeling the in-process loop as startup latency.
 
-The pinned yyjson writer uses lowercase control escapes and nonfinite-to-null;
-default invalid-UTF-8 refusal is intentionally retained as a candidate difference.
-No candidate string-normalization adapter is supplied by this source prototype.
-Any later adapter must retain this result and count its own code/copies/time.
+The frozen yyjson writer uses lowercase control escapes and nonfinite-to-null;
+its default invalid-UTF-8 refusal is a measured candidate difference. Source
+inspection also identifies an unmeasured option combination:
+`ALLOW_INVALID_UNICODE`, `ESCAPE_UNICODE` and `LOWERCASE_HEX` can replace each
+invalid input byte while also escaping valid Unicode. The current patched
+baseline leaves valid UTF-8 literal. This alternative is not established by the
+frozen measurements, and it is not evidence that a custom normalizer would be
+necessary. A later integration may deliberately change module wire encoding
+under the project's configuration compatibility scope, with consumers, docs
+and behavior qualified together. It must measure and verify that option or any
+adapter on the real inputs and account for its code, copies and time.
 The finite probe exits, so persistent-service idle wakeups are not applicable;
 production process idle costs remain a separate integration observation.
 
@@ -114,30 +123,81 @@ production-consumer or supported-profile pass. Preserve first failures. Freeze
 compiler/linker/config/options, source/dependency closure and binaries around
 execution. No whole WM, install, default-X or theme suite is implied.
 
-## Remaining decision evidence
+## Decision and measured scope
 
-Synthetic shape equivalence does not establish actual production builder or
-independent-client MFL parity. Those remain explicit comparison acceptance.
-Before deciding, bind ordinary/stress/refusal behavior to actual current
-producers, report complete adapters and parser-retention costs, and compare
-like-for-like results across all six supported targets. No library switch or
-adopt/defer/reject is inferred from a baseline pass or upstream benchmark.
+The retained [source observation](../verification/VERIFICATION-2026-11-01-LIB06-SOURCE.md)
+and the [target comparison](../verification/VERIFICATION-2026-11-01-LIB06-TARGETS.md)
+separate source-bound observations, failures, profile results and limits. The
+candidate's native-allocator loops were faster in the observed synthetic cases;
+the copied-string mode had a higher tracked requested-memory peak in the
+ordinary, large-string and nested-record cases. Candidate probe code size was
+also larger in the observed profiles. These are useful comparison results, not
+a measured end-to-end FVWM-X speedup or proof that JSON is a production
+bottleneck. Tracked peaks exclude allocator overhead and input workspace, and
+whole-process RSS has different limits. Borrowing can reduce some synthetic
+peaks but adds an owner-lifetime requirement that these probes do not establish
+for asynchronous production callers.
 
-| Supported target | Current comparison state |
-| --- | --- |
-| Linux AMD64 | Pending source-bound build/observation and execution-mode identity. |
-| Linux ARM64 | Pending source-bound build/observation and execution-mode identity. |
-| FreeBSD AMD64 | Pending source-bound build/observation and execution-mode identity. |
-| FreeBSD ARM64 | Pending source-bound build/observation and execution-mode identity. |
-| OpenBSD AMD64 | Pending source-bound build/observation and execution-mode identity. |
-| OpenBSD ARM64 | Pending source-bound build/observation and execution-mode identity. |
+An isolated run of the unchanged MFL binary compared actual window-name output
+with independent expected bytes and the baseline probe. Ordinary, valid Unicode
+and legacy-byte cases matched; 256 separate records retained their expected
+output, and an unterminated packet was refused before a valid sentinel. Its
+private module process and socket were retired. This was a synthetic packet
+fixture, without a real core or X server; its 256 separate records are not the
+probe's 256-record array wire format. The retained source-bound status builder
+unit and status-stream results are distinct earlier component evidence, not a
+fresh full-core qualification.
 
-Record native/emulated/unavailable execution separately, repeated variability,
-CPU/latency/allocation/RSS, encoded and executable/code sizes, actual installed
-integration delta, full direct/transitive source/build/runtime/license cost,
-offline/bootstrap and maintenance burden. A probe's file size is not an installed
-product saving, and a shared library already present in another process is not
-free. A decision must explain code/policy removed and adapters/ownership paths
-added. Adopt only after its separate integration decision and exact qualification;
-defer/reject retains cJSON and names any finite later follow-up. #48 stays open
-until its frozen criteria are supported.
+The current MFL also parses request, settings and result JSON. Replacing only
+its writer would therefore keep cJSON and add a second implementation, its
+ownership/failure paths and an integration to maintain. The comparison does not
+show enough production benefit or code simplification to justify that addition
+for R1. No candidate production adapter was built, so its actual integration
+code size, installed bytes and performance are unavailable. The decision removes
+no production code or dependency; the incremental installed product size from
+this evaluation is zero.
+
+### Dependency and maintenance costs
+
+The pinned yyjson source is 424,765 bytes of C and 330,896 bytes of headers; its
+MIT notice is 1,084 bytes. The input manifest identifies the exact source, API
+reference and notice hashes. The prototype directly compiles C and uses the
+platform C library and math library where needed; it adds no C++, FFI or Go
+dependency. Per-profile dynamic dependencies and binary sections are recorded
+in the target comparison. Probe executable sizes include the harness and debug
+information and cannot be used as installed product deltas.
+
+An adopted writer would add direct source, license-notice, upgrade, security
+maintenance and integration ownership while the current parser remains. A
+reproducible offline build would need a verified source archive and notice, with
+build and package integration reviewed for every supported profile. Package
+availability and backports across all targets were not established by these
+prototype builds. A library already installed for another component would not
+eliminate per-process linkage and maintenance costs.
+
+### Profile and acceptance limits
+
+The four BSD profiles and Linux ARM64 have completed source-bound capture and
+host-oracle validation. Linux AMD64 is validated on Debian 13.7 under TCG. ARM
+guests use the existing Apple hypervisor environment; AMD64 BSD profiles use
+QEMU TCG. These are guest observations, not native-hardware qualification.
+The Linux AMD64 comparison uses the existing Debian 13 TCG profile; it cannot
+qualify Ubuntu 24.04 or native hardware. The target report records the actual
+OS, compiler, measurements and execution mode for each completed profile.
+
+This pure-library comparison does not qualify the full window manager, install,
+default X server, themes or native Linux sanitizers. Those checks remain with
+their existing milestone or release owners. The first FreeBSD ARM evidence
+export failed and supplied no qualified result; its fresh captured continuation
+is reported separately in the target evidence. A deferral is a decision to
+retain the current implementation, not evidence of candidate integration.
+
+### Finite later follow-up
+
+Reconsider a candidate only if a measured production hot path or a concrete
+reduction in maintained complexity justifies it. Compare full request or
+response work and integration costs, then qualify valid and invalid keys and
+values, duplicate keys, supplementary characters, output expansion and cap
+crossings, ownership and failure/refusal paths. Include shipped consumers,
+license/build metadata, offline inputs and affected supported profiles in any
+adoption plan. This follow-up is not an additional R1 prerequisite.

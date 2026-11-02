@@ -98,6 +98,35 @@ def source_copy_command(profile):
     return setup + 'tar xzpf - -C /root/fvwm-ci/source'
 
 
+def execute_guest_script(ssh, job, seconds, inline_evidence=False, watch=None):
+    """Run one script; an opted-in producer owns stdout archive formatting."""
+    output = job / ('guest-evidence.tgz' if inline_evidence else 'run.log')
+    return command(ssh + ['cd /root/fvwm-ci/source && '
+        'exec sh /root/fvwm-ci/run.sh'], output, seconds, check=False,
+        limit=MAX_EVIDENCE if inline_evidence else MAX_LOG,
+        binary=inline_evidence, watch=watch)
+
+
+def collect_guest_evidence(ssh, job, inline_evidence=False, watch=None):
+    """Keep archive bytes separate from diagnostics; gates validate contents."""
+    if inline_evidence:
+        output = job / 'guest-evidence.tgz'
+        if (output.is_symlink() or not output.is_file() or
+                not 0 < output.stat().st_size < MAX_EVIDENCE):
+            raise RuntimeError('inline evidence archive missing or outside cap')
+        with output.open('rb') as stream:
+            if stream.read(2) != b'\x1f\x8b':
+                raise RuntimeError('inline evidence has no gzip header')
+        return
+    command(ssh + ['cd /root/fvwm-ci/source && '
+        'set --; for p in builddir-bsd builddir-bsd-go; do '
+        'test ! -L "$p" || exit 1; '
+        'test ! -d "$p" || set -- "$@" "$p"; done; '
+        'test "$#" -gt 0 || exit 1; tar czf - "$@"'],
+        job / 'guest-evidence.tgz', 180, limit=MAX_EVIDENCE, binary=True,
+        watch=watch)
+
+
 def stop(process):
     if process.poll() is None:
         process.terminate()
@@ -515,22 +544,18 @@ def run(args):
             result['prepared_boot'] = reboot_prepared_guest(
                 vm, ssh, job, args.boot_timeout)
         write_status(job, result, 'run')
-        code = command(ssh + ['cd /root/fvwm-ci/source && '
-            'exec sh /root/fvwm-ci/run.sh'], job / 'run.log', args.run_timeout,
-            check=False, watch=vm.check)
+        inline_evidence = getattr(args, 'inline_evidence', False)
+        result['evidence_transport'] = ('run-stdout' if inline_evidence else
+                                        'separate-ssh')
+        code = execute_guest_script(ssh, job, args.run_timeout,
+                                    inline_evidence, vm.check)
         result['run_status'] = code
         if code:
             result['failed_phase'] = 'run'
         write_status(job, result, 'collection')
         # Collect only the source job's conventional build artifacts, never
         # guest authentication or unrelated system/user directories.
-        command(ssh + ['cd /root/fvwm-ci/source && '
-            'set --; for p in builddir-bsd builddir-bsd-go; do '
-            'test ! -L "$p" || exit 1; '
-            'test ! -d "$p" || set -- "$@" "$p"; done; '
-            'test "$#" -gt 0 || exit 1; tar czf - "$@"'],
-            job / 'guest-evidence.tgz', 180, limit=MAX_EVIDENCE, binary=True,
-            watch=vm.check)
+        collect_guest_evidence(ssh, job, inline_evidence, vm.check)
         if code:
             raise RuntimeError('guest gate failed; run and collection logs retained')
         result['status'] = 'passed'
@@ -582,6 +607,8 @@ def main():
     parser.add_argument('--source-archive', type=Path, required=True)
     parser.add_argument('--prepare-script', type=Path)
     parser.add_argument('--run-script', type=Path, required=True)
+    parser.add_argument('--inline-evidence', action='store_true',
+        help='Run script emits gzip evidence on stdout; keep stderr separate')
     parser.add_argument('--reboot-after-prepare', action='store_true',
         help='Reboot the owned guest after preparation; require a new boot identity')
     parser.add_argument('--cache', type=Path, required=True)

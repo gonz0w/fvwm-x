@@ -7,36 +7,56 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: STORE-01 #74 memory-enforcement control source, coordinated
+Current work: STORE-01 #74 assembled protected-memory comparison, coordinated
 with CONTENT-01 #63 and RETENTION-01 #71. Owner Cam; branch
-`codex/r1-content-memory-controls`, based on merged PR333
-`5cd95cef80f4425aa0db143a9a7cee279af8f9dd`.
+`codex/r1-content-memory-qualification`, base merged PR334
+`00e8c5799ca37e2f061f073263358f548f825375`. The selected comparison is complete:
+**six profiles, 150 native invocations, 4,320 normal lifecycle rows and 48
+observed access/lock controls**. Both candidates prepare all normal fixtures;
+matched nonroot positives, actual SIGSEGV controls and genuine zero-lock-limit
+refusals pass. [Results and source/profile limits](verification/VERIFICATION-2026-11-01-CONTENT-MEMORY-TARGETS.md)
+retain exact artifacts, timing/CPU/raw RSS, source-derived page models and
+complete private dependency costs. Linux AMD64 is Debian 13.7/TCG, not Ubuntu
+or native-hardware qualification. No full WM/install/default-X/theme sweep.
 
-Select four related private-probe stories before the assembled comparison:
-non-forking read/write, no-access and read-only enforcement modes with exact
-ready/termination observations; reuse the reviewed direct-child timeout helper
-in a separately frozen #74 copy with raw signal metadata; strict unprivileged
-zero-lock-limit refusal with genuine checked-call/errno and no producer bytes;
-bounded native capability/resource observations and a strict host-side control
-oracle. Use only public synthetic bytes. No core collection, system-wide setting,
-credential/privilege change, real clipboard payload or production backend is
-selected. The supervisor owns exactly one unreaped direct child; original #48
-source/results stay frozen. Expected-fault termination is not explicit wiping
-or cleanup acknowledgement. Regional dump exclusion and library allocation
-models remain separate evidence, not inferred from a signal or zero core limit.
+[Decision](decisions/CONTENT-ALLOCATOR-COMPARISON-2026-11-01.md): retain the
+base-system allocator direction for the next bounded payload-owner batch;
+defer libsodium guarded-allocation integration. Exact native utility macros,
+object/archive and explicit static link establish OpenBSD sodium's configured
+MAP_CONCEAL path on both architectures. This is not observed dump exclusion.
+Process dump guards, checked advice/baseline flags, configured source, physical
+models and actual copy boundaries remain distinct evidence. No installed
+backend, dependency, persistence, transport/capture/UI or numeric default is
+adopted. Go/Lua remain metadata-only. #63/#71/#74 and R1 stay open.
 
-The [control source receipt](verification/VERIFICATION-2026-11-01-CONTENT-MEMORY-CONTROLS.md)
-records four strict optimized host compile/link passes and nine cheap pure
-capture-oracle tests. One reviewed host invocation observes only the actual
-eight-record unavailable boundary (77); no protected/fault mode qualifies.
-Source review precedes the assembled protection/refusal/resource/cost checkpoint. Native
-unavailability stays explicit. Existing installed/default and full WM/X/theme/
-release gates do not run for each private helper. The owner selected
-CLIPBOARD-only capture, PRIMARY synchronization off and
-history retained while locked; logout ends session history. Existing sensitive-
-item exclusion and persistence-off remain. Capture/access behavior during lock,
-installed budgets and backend guarantees remain distinct decisions.
-No new UI/screenshots. #257/#258 stay parked.
+All owned VMs/containers are stopped/reaped. Every exported archive file and
+preserved canonical input verified before retiring only stopped owned clones
+and duplicate inputs: 16,845,316,096 allocated BSD bytes plus 21,823,488 Linux
+COW bytes. Current compact evidence/static SDKs, canonical caches and the
+unchanged Linux warm base remain; no disk expansion. The late read-only Linux
+AMD status inspection returned SSH255; its separate comparison and shutdown
+receipts pass, so the inspection supplies no qualification. Prior PR334 host
+unavailable evidence is unchanged. No current candidate/control failure or
+unavailable outcome is hidden. Source-only review fixes remain documented.
+
+Finish separate integrated/source/evidence and signed delivery review, then
+merge this coherent checkpoint under standing R1 authority and reconcile
+GitHub. Next select the finite native payload owner: checked base mapping/
+protection/locking, exact producer/read gates and partial cleanup accounting.
+Keep installed capacities, capture/formats and lock-time policy decisions
+separate; do not infer them from fixture limits or create an allocator registry.
+The existing manager/Script coverage remains accepted; scoped changed policy
+sanitizer and broader product integration retain their actual source boundaries.
+Parked #257/#258 remain untouched. Performance cadence remains 0/5 for private
+comparisons; no production performance improvement is claimed.
+
+Owner defaults: session-only, sensitive items excluded, persistence off,
+CLIPBOARD-only capture, PRIMARY sync off and history retained during lock;
+logout ends the session. Capture/access during lock and installed numeric/key/
+backend guarantees remain separate; the lock-time question is pending.
+PR334 Project status is verified Done. Its source-control/default receipt and
+canonical signature/Cam DCO remain accepted; source refs are retired. R1 has
+51 open issues at the current lookup.
 
 PR333 completed the four-story producer-publication source checkpoint with
 reviewed head `4841bac0a228aaacdabf3eaeb689449ea881bc82`, canonical merged tree

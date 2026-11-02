@@ -34,7 +34,8 @@ def reject_constant(value):
     raise ValueError('nonfinite JSON: ' + value)
 
 
-def read_rows(path, limit):
+def read_rows(path, limit, max_rows=8):
+    require(integer(max_rows, 1, 128), 'invalid row bound')
     require(path.is_file() and not path.is_symlink(),
             'regular capture required')
     descriptor = os.open(path, os.O_RDONLY | os.O_NOFOLLOW |
@@ -57,7 +58,7 @@ def read_rows(path, limit):
                          parse_constant=reject_constant)
         require(isinstance(row, dict), 'object capture required')
         rows.append(row)
-    require(len(rows) <= 8, 'too many records')
+    require(len(rows) <= max_rows, 'too many records')
     return rows
 
 
@@ -79,19 +80,33 @@ def checked_wait(metrics, exit_code):
         require(integer(metrics.get(name), 1, 127), 'native signal unavailable')
 
 
-def preparation(row, candidate, page):
+def region_kinds(candidate, os_name):
+    if os_name == 'Linux':
+        return (1,)
+    if candidate == 'base-os':
+        return (1, 2)
+    return (1, 3) if os_name == 'OpenBSD' else (1,)
+
+
+def preparation(row, candidate, page, os_name):
     require(row.get('candidate') == candidate, 'candidate identity changed')
     require(row.get('page') == page and integer(page, 1, 65536),
             'page identity changed')
     for name in ('run', 'owner_epoch', 'bytes', 'written_bytes',
                  'mapped_model', 'locked_model', 'preparation', 'errno',
-                 'injected', 'lock_attempted', 'lock_errno', 'accessed',
+                 'injected', 'lock_attempted', 'lock_errno', 'region_kind',
+                 'producer_closed', 'reader_acquired', 'accessed',
                  'wipe_observed', 'cleanup', 'accounting', 'prepare_ns',
                  'finish_ns'):
         require(integer(row.get(name)), 'missing numeric observation: ' + name)
+    require(row['region_kind'] <= 3, 'unknown regional mechanism')
+    if row['preparation'] == 0 or row['lock_attempted']:
+        require(row['region_kind'] in region_kinds(candidate, os_name),
+                'regional preparation unavailable/mismatched')
     require(row['preparation'] <= 6 and row['injected'] <= 5,
             'unknown preparation/fault')
-    for name in ('lock_attempted', 'accessed', 'wipe_observed',
+    for name in ('lock_attempted', 'producer_closed', 'reader_acquired',
+                 'accessed', 'wipe_observed',
                  'cleanup', 'accounting'):
         require(row[name] <= 1, 'invalid observation flag')
     require(row['written_bytes'] <= row['bytes'], 'unwritten length published')
@@ -99,8 +114,10 @@ def preparation(row, candidate, page):
             'cleanup/accounting incomplete')
 
 
-def check_enforcement(control, exit_code, metrics, rows):
+def check_enforcement(control, exit_code, metrics, rows, os_name):
     require(control in CONTROLS, 'unknown control')
+    require(os_name in ('Linux', 'FreeBSD', 'OpenBSD'),
+            'unknown native profile')
     checked_wait(metrics, exit_code)
     if exit_code == 77:
         require(metrics['child_signal'] == 0 and
@@ -111,9 +128,11 @@ def check_enforcement(control, exit_code, metrics, rows):
             row = rows[0]
             candidate, page = row.get('candidate'), row.get('page')
             require(candidate in CANDIDATES, 'unknown unavailable candidate')
-            preparation(row, candidate, page)
+            preparation(row, candidate, page, os_name)
             require(row['preparation'] != 0 and row['written_bytes'] == 0 and
-                    row['accessed'] == 0, 'unavailable after producer access')
+                    row['accessed'] == 0 and not row['producer_closed'] and
+                    not row['reader_acquired'],
+                    'unavailable after producer/reader access')
         return {'outcome': 'unavailable', 'control': control}
     expected_count = 2 if control == 'rw-control' else 1
     require(len(rows) == expected_count, 'readiness/observation count')
@@ -124,24 +143,53 @@ def check_enforcement(control, exit_code, metrics, rows):
             ready['control'] == CONTROLS[control], 'wrong readiness')
     require(ready.get('sigsegv') == metrics['sigsegv'] and
             ready.get('sigbus') == metrics['sigbus'], 'native signal mismatch')
+    require(integer(ready.get('dumpguard')) and
+            ready['dumpguard'] == (2 if os_name == 'Linux' else 1),
+            'native process dump guard unavailable/mismatched')
+    require(integer(ready.get('region_kind')) and
+            ready['region_kind'] in region_kinds(candidate, os_name) and
+            integer(ready.get('page'), 1, 65536),
+            'regional readiness/page unavailable')
+    require(integer(ready.get('uid')) and integer(ready.get('euid')) and
+            type(ready.get('unprivileged_lock_profile')) is bool and
+            (not ready['unprivileged_lock_profile'] or
+             (ready['uid'] > 0 and ready['euid'] > 0)),
+            'missing/inconsistent execution profile')
+    require(integer(ready.get('memlock_soft')) and
+            integer(ready.get('memlock_hard')) and
+            ready['memlock_soft'] <= ready['memlock_hard'],
+            'native lock limits unavailable')
     if control == 'rw-control':
         require(exit_code == 0 and metrics['child_signal'] == 0,
                 'positive access control did not complete')
         row = rows[1]
         page = row.get('page')
-        preparation(row, candidate, page)
+        preparation(row, candidate, page, os_name)
         require(row['preparation'] == 0 and row['injected'] == 0 and
+                row['page'] == ready['page'] and
+                row['region_kind'] == ready['region_kind'] and
                 row['bytes'] == page and row['written_bytes'] == page - 1 and
                 row['lock_attempted'] == 1 and row['lock_errno'] == 0 and
+                row['producer_closed'] == 1 and row['reader_acquired'] == 1 and
                 row['accessed'] == 1 and row['wipe_observed'] == 1,
                 'positive preparation/access/wipe incomplete')
         return {'outcome': 'observed', 'control': control,
-                'candidate': candidate, 'page': page, 'explicit_cleanup': True}
+                'candidate': candidate, 'page': page, 'explicit_cleanup': True,
+                'os': os_name, 'dumpguard': ready['dumpguard'],
+                'region_kind': ready['region_kind'],
+                'uid': ready['uid'], 'euid': ready['euid'],
+                'memlock_soft': ready['memlock_soft'],
+                'memlock_hard': ready['memlock_hard'],
+                'unprivileged_lock_profile':
+                    ready['unprivileged_lock_profile']}
     signal = metrics['child_signal']
     require(signal in (metrics['sigsegv'], metrics['sigbus']) and
             exit_code == 128 + signal, 'expected access signal not observed')
     return {'outcome': 'observed', 'control': control, 'candidate': candidate,
-            'explicit_cleanup': False, 'child_signal': signal}
+            'explicit_cleanup': False, 'child_signal': signal, 'os': os_name,
+            'dumpguard': ready['dumpguard'],
+            'region_kind': ready['region_kind'], 'page': ready['page'],
+            'uid': ready['uid'], 'euid': ready['euid']}
 
 
 def lock_header(header, candidate, os_name):
@@ -151,7 +199,9 @@ def lock_header(header, candidate, os_name):
             integer(header.get('uid'), 1) and integer(header.get('euid'), 1) and
             type(header.get('capabilities_checked')) is int and
             header['capabilities_checked'] == int(os_name == 'Linux') and
-            header.get('ipc_lock_capability') is False,
+            header.get('ipc_lock_capability') is False and
+            integer(header.get('dumpguard')) and
+            header['dumpguard'] == (2 if os_name == 'Linux' else 1),
             'unprivileged lock profile not established')
 
 
@@ -162,7 +212,18 @@ def check_lock_refusal(exit_code, metrics, rows, positive, os_name):
     require(positive.get('outcome') == 'observed' and
             positive.get('control') == 'rw-control' and
             positive.get('candidate') in CANDIDATES and
-            integer(positive.get('page'), 1, 65536),
+            integer(positive.get('page'), 1, 65536) and
+            integer(positive.get('uid'), 1) and
+            integer(positive.get('euid'), 1) and
+            positive.get('unprivileged_lock_profile') is True and
+            positive.get('os') == os_name and
+            integer(positive.get('dumpguard')) and
+            positive['dumpguard'] == (2 if os_name == 'Linux' else 1) and
+            integer(positive.get('region_kind')) and
+            positive['region_kind'] in
+                region_kinds(positive['candidate'], os_name) and
+            integer(positive.get('memlock_soft'), positive['page']) and
+            integer(positive.get('memlock_hard'), positive['memlock_soft']),
             'matching positive control required')
     require(metrics['child_signal'] == 0, 'lock control signalled')
     candidate, page = positive['candidate'], positive['page']
@@ -170,6 +231,9 @@ def check_lock_refusal(exit_code, metrics, rows, positive, os_name):
         return {'outcome': 'unavailable', 'control': 'zero-lock-limit'}
     require(len(rows) in (1, 8), 'lock observation count')
     lock_header(rows[0], candidate, os_name)
+    require(rows[0]['uid'] == positive['uid'] and
+            rows[0]['euid'] == positive['euid'],
+            'positive/negative execution profiles differ')
     if exit_code == 77 and len(rows) == 1:
         return {'outcome': 'unavailable', 'control': 'zero-lock-limit'}
     require(exit_code in (0, 77) and len(rows) == 8,
@@ -178,13 +242,15 @@ def check_lock_refusal(exit_code, metrics, rows, positive, os_name):
     sizes = (0, 1, page - 1, page, page + 1, 65536)
     all_refused = True
     for ordinal, (row, size) in enumerate(zip(observations, sizes)):
-        preparation(row, candidate, page)
+        preparation(row, candidate, page, os_name)
         require(row['run'] == 0 and row['owner_epoch'] == ordinal + 1 and
                 row['bytes'] == size and row['written_bytes'] == 0 and
-                row['injected'] == 0 and row['accessed'] == 0,
+                row['injected'] == 0 and row['accessed'] == 0 and
+                row['producer_closed'] == 0 and row['reader_acquired'] == 0,
                 'unexpected lock trial or producer bytes')
         refused = (row['preparation'] == 2 and row['lock_attempted'] == 1 and
-                   row['lock_errno'] != 0 and row['wipe_observed'] == 1)
+                   row['lock_errno'] != 0 and row['wipe_observed'] == 1 and
+                   row['region_kind'] == positive['region_kind'])
         all_refused = all_refused and refused
         if not refused:
             require(exit_code == 77 and row['preparation'] != 0 and
@@ -206,7 +272,8 @@ def main():
     parser.add_argument('--metrics', type=Path, required=True)
     parser.add_argument('--stdout', type=Path, required=True)
     parser.add_argument('--positive', type=Path)
-    parser.add_argument('--os', choices=('Linux', 'FreeBSD', 'OpenBSD'))
+    parser.add_argument('--os', choices=('Linux', 'FreeBSD', 'OpenBSD'),
+                        required=True)
     args = parser.parse_args()
     metrics = read_rows(args.metrics, 4096)
     require(len(metrics) == 1, 'one supervisor receipt required')
@@ -219,7 +286,8 @@ def main():
         result = check_lock_refusal(args.exit, metrics[0], rows,
                                     positive[0], args.os)
     else:
-        result = check_enforcement(args.control, args.exit, metrics[0], rows)
+        result = check_enforcement(args.control, args.exit, metrics[0], rows,
+                                   args.os)
     print(json.dumps(result, sort_keys=True))
 
 

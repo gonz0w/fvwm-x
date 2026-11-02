@@ -14,6 +14,9 @@
 #include <sys/resource.h>
 #include <time.h>
 #include <unistd.h>
+#ifdef __linux__
+#include <sys/prctl.h>
+#endif
 #ifdef CONTENT_PROBE_SODIUM
 #include <sodium.h>
 #define CANDIDATE "sodium-1.0.22"
@@ -23,6 +26,13 @@
 #define CANDIDATE "base-os"
 #define MAPPED_EXTRA 2
 #define LOCKED_EXTRA 0
+#endif
+
+#if defined(CONTENT_PROBE_SODIUM_MMAP_NOCORE) && \
+	(!defined(CONTENT_PROBE_SODIUM) || !defined(__OpenBSD__) || \
+	 !defined(MAP_CONCEAL) || !defined(MAP_ANON) || \
+	 CONTENT_PROBE_SODIUM_MMAP_NOCORE != 1 || MAP_CONCEAL == 0)
+#error Configured sodium mmap attestation requires the exact OpenBSD profile
 #endif
 
 /* Non-installed synthetic comparison, never a production allocator. It emits
@@ -41,6 +51,8 @@ struct trial_options {
 	enum fault fault;
 	enum access_control access;
 	bool zero_lock;
+	int dumpguard;
+	struct rlimit memlock;
 };
 struct trial_result {
 	bool prepared, lock_refused;
@@ -50,7 +62,7 @@ struct buffer {
 	void *mapping;
 	size_t rounded, mapped;
 	bool locked, lock_attempted;
-	int lock_errno;
+	int lock_errno, region_kind;
 };
 
 static uint64_t nanoseconds(void)
@@ -65,13 +77,29 @@ static uint64_t nanoseconds(void)
 	return (uint64_t)value.tv_sec * 1000000000ULL + value.tv_nsec;
 }
 
-static bool no_core(void)
+/* Only this disposable probe changes its own dump policy. Linux core pipes
+ * can ignore RLIMIT_CORE, so they additionally require nondumpability. BSD
+ * limits still need the owning profile's collector preflight. Neither is a
+ * measurement of regional exclusion or protection from privileged inspection.
+ */
+static int prepare_dump_guard(void)
 {
 	struct rlimit limit = {0, 0}, applied;
 
-	return setrlimit(RLIMIT_CORE, &limit) == 0 &&
-		getrlimit(RLIMIT_CORE, &applied) == 0 &&
-		applied.rlim_cur == 0 && applied.rlim_max == 0;
+	if (setrlimit(RLIMIT_CORE, &limit) < 0 ||
+		getrlimit(RLIMIT_CORE, &applied) < 0 ||
+		applied.rlim_cur != 0 || applied.rlim_max != 0)
+		return 0;
+#ifdef __linux__
+	if (prctl(PR_SET_DUMPABLE, 0L, 0L, 0L, 0L) < 0 ||
+		prctl(PR_GET_DUMPABLE, 0L, 0L, 0L, 0L) != 0)
+		return 0;
+	return 2;
+#elif defined(__FreeBSD__) || defined(__OpenBSD__)
+	return 1;
+#else
+	return 0;
+#endif
 }
 
 static int access_mode(struct buffer *buffer, int mode)
@@ -136,12 +164,20 @@ static enum preparation prepare(struct buffer *buffer, size_t bytes,
 #if defined(MADV_DONTDUMP)
 	if (madvise(buffer->data, buffer->rounded, MADV_DONTDUMP) < 0)
 		return DUMP_REFUSED;
+	buffer->region_kind = 1;
 #elif defined(MADV_NOCORE)
 	if (madvise(buffer->data, buffer->rounded, MADV_NOCORE) < 0)
 		return DUMP_REFUSED;
+	buffer->region_kind = 1;
 #elif !defined(CONTENT_PROBE_SODIUM) && \
 	(defined(MAP_CONCEAL) || defined(MAP_NOCORE))
 	/* This probe itself applied the checked mapping flag. */
+	buffer->region_kind = 2;
+#elif defined(CONTENT_PROBE_SODIUM_MMAP_NOCORE)
+	/* The owning build must bind exact effective utility macros/object and
+	 * static link input. This is configured-source evidence, not a dump
+	 * observation or evidence of ignored internal protection-call results. */
+	buffer->region_kind = 3;
 #else
 	/* Do not infer the dependency's configured mmap path from an OS macro.
 	 * Its mapping contract needs exact package attestation. */
@@ -251,39 +287,6 @@ static bool consume(struct content_policy *policy, struct content_ref ref,
 	return access_mode(buffer, PROT_NONE) == 0;
 }
 
-/* Deliberately test OS permissions with public bytes, outside any production
- * writer contract. This process never forks. The separately owned direct-child
- * supervisor records readiness and the actual terminal signal. */
-static bool enforce_access(struct content_policy *policy,
-	struct content_lease lease, struct buffer *buffer,
-	enum access_control control)
-{
-	struct sigaction action = {0};
-	sigset_t signals;
-	int mode = control == CONTROL_RW ? PROT_READ | PROT_WRITE :
-		control == CONTROL_READONLY ? PROT_READ : PROT_NONE;
-
-	action.sa_handler = SIG_DFL;
-	if (sigemptyset(&action.sa_mask) < 0 ||
-		sigemptyset(&signals) < 0 ||
-		sigaddset(&signals, SIGSEGV) < 0 ||
-		sigaddset(&signals, SIGBUS) < 0 ||
-		sigaction(SIGSEGV, &action, NULL) < 0 ||
-		sigaction(SIGBUS, &action, NULL) < 0 ||
-		sigprocmask(SIG_UNBLOCK, &signals, NULL) < 0 ||
-		content_lease_check(policy, lease, 14) != CONTENT_OK ||
-		access_mode(buffer, mode) < 0)
-		return false;
-	if (printf("{\"candidate\":\"%s\",\"ready\":true,"
-		"\"control\":%d,\"sigsegv\":%d,\"sigbus\":%d}\n",
-		CANDIDATE, control, SIGSEGV, SIGBUS) < 0 || fflush(stdout) == EOF)
-		return false;
-	*(volatile unsigned char *)buffer->data = 0x6b;
-	/* A write in either protected mode is a failed control, never success.
-	 * Expected-fault children do not reach cleanup or acknowledge it. */
-	return control == CONTROL_RW && access_mode(buffer, PROT_NONE) == 0;
-}
-
 /* This probe never changes IDs/capabilities. A caller supplies an existing
  * unprivileged profile; root or unavailable Linux capability evidence refuses
  * the strict lock-negative experiment rather than pretending it passed. */
@@ -294,7 +297,8 @@ static bool unprivileged_lock_profile(void)
 #ifdef __linux__
 	FILE *status = fopen("/proc/self/status", "r");
 	char line[256];
-	bool observed = false, allowed = false;
+	bool observed = false, allowed = false, read_failed;
+	int close_status;
 	size_t total = 0;
 
 	if (!status)
@@ -319,8 +323,8 @@ static bool unprivileged_lock_profile(void)
 			break;
 		}
 	}
-	bool read_failed = ferror(status) != 0;
-	int close_status = fclose(status);
+	read_failed = ferror(status) != 0;
+	close_status = fclose(status);
 
 	if (read_failed || close_status == EOF)
 		return false;
@@ -328,6 +332,53 @@ static bool unprivileged_lock_profile(void)
 #else
 	return true;
 #endif
+}
+
+/* Deliberately test OS permissions with public bytes, outside any production
+ * writer contract. This process never forks. The separately owned direct-child
+ * supervisor records readiness and the actual terminal signal. */
+static bool enforce_access(struct content_policy *policy,
+	struct content_lease lease, struct buffer *buffer,
+	const struct trial_options *options)
+{
+	enum access_control control = options->access;
+	struct sigaction action = {0};
+	sigset_t signals;
+	bool unprivileged = unprivileged_lock_profile();
+	uid_t uid = getuid(), euid = geteuid();
+	int mode = control == CONTROL_RW ? PROT_READ | PROT_WRITE :
+		control == CONTROL_READONLY ? PROT_READ : PROT_NONE;
+
+	action.sa_handler = SIG_DFL;
+	if (sigemptyset(&action.sa_mask) < 0 ||
+		sigemptyset(&signals) < 0 ||
+		sigaddset(&signals, SIGSEGV) < 0 ||
+		sigaddset(&signals, SIGBUS) < 0 ||
+		sigaction(SIGSEGV, &action, NULL) < 0 ||
+		sigaction(SIGBUS, &action, NULL) < 0 ||
+		sigprocmask(SIG_UNBLOCK, &signals, NULL) < 0 ||
+		content_lease_check(policy, lease, 14) != CONTENT_OK ||
+		access_mode(buffer, mode) < 0)
+		return false;
+	if (printf("{\"candidate\":\"%s\",\"ready\":true,"
+		"\"control\":%d,\"sigsegv\":%d,\"sigbus\":%d,"
+		"\"dumpguard\":%d,\"region_kind\":%d,\"page\":%zu,"
+		"\"uid\":%llu,\"euid\":%llu,"
+		"\"memlock_soft\":%llu,\"memlock_hard\":%llu,"
+		"\"unprivileged_lock_profile\":%s}\n", CANDIDATE, control,
+		SIGSEGV, SIGBUS, options->dumpguard, buffer->region_kind,
+		buffer->rounded,
+		(unsigned long long)uid,
+		(unsigned long long)euid,
+		(unsigned long long)options->memlock.rlim_cur,
+		(unsigned long long)options->memlock.rlim_max,
+		unprivileged ? "true" : "false") < 0 ||
+		fflush(stdout) == EOF)
+		return false;
+	*(volatile unsigned char *)buffer->data = 0x6b;
+	/* A write in either protected mode is a failed control, never success.
+	 * Expected-fault children do not reach cleanup or acknowledge it. */
+	return control == CONTROL_RW && access_mode(buffer, PROT_NONE) == 0;
 }
 
 static bool measure(size_t bytes, size_t page,
@@ -358,7 +409,7 @@ static bool measure(size_t bytes, size_t page,
 	bool accessed = false, wiped = false, released, okay;
 	bool lifecycle = true, acquired = false, produced = false;
 	size_t written = 0;
-	int saved_errno, lock_errno;
+	int saved_errno, lock_errno, region_kind;
 	bool lock_attempted;
 	enum fault fault = options->fault;
 
@@ -384,6 +435,7 @@ static bool measure(size_t bytes, size_t page,
 	saved_errno = errno;
 	lock_attempted = buffer.lock_attempted;
 	lock_errno = buffer.lock_errno;
+	region_kind = buffer.region_kind;
 	observation->prepared = status == PREPARED;
 	observation->lock_refused = status == LOCK_REFUSED &&
 		lock_attempted && lock_errno != 0;
@@ -418,7 +470,7 @@ static bool measure(size_t bytes, size_t page,
 			accessed = consume(&policy, ref, lease, &buffer, written);
 			if (accessed && options->access != CONTROL_NONE)
 				accessed = enforce_access(&policy, lease, &buffer,
-					options->access);
+					options);
 		}
 		if (content_retire(&policy, ref) != CONTENT_OK)
 			lifecycle = false;
@@ -450,12 +502,13 @@ static bool measure(size_t bytes, size_t page,
 		"\"bytes\":%zu,\"written_bytes\":%zu,"
 		"\"page\":%zu,\"mapped_model\":%zu,\"locked_model\":%zu,"
 		"\"preparation\":%d,\"errno\":%d,\"injected\":%d,"
-		"\"lock_attempted\":%d,\"lock_errno\":%d,"
+		"\"lock_attempted\":%d,\"lock_errno\":%d,\"region_kind\":%d,"
+		"\"producer_closed\":%d,\"reader_acquired\":%d,"
 		"\"accessed\":%d,\"wipe_observed\":%d,\"cleanup\":%d,"
 		"\"accounting\":%d,\"prepare_ns\":%llu,\"finish_ns\":%llu}\n",
 		CANDIDATE, run, row + 1, bytes, written, page, charge.mapped, charge.locked,
-		status, saved_errno, fault, lock_attempted, lock_errno,
-		accessed, wiped, released, okay,
+		status, saved_errno, fault, lock_attempted, lock_errno, region_kind,
+		produced, acquired, accessed, wiped, released, okay,
 		(unsigned long long)(prepared - started),
 		(unsigned long long)(finished - prepared));
 	return okay;
@@ -534,7 +587,11 @@ int main(int argc, char **argv)
 		(options.access != CONTROL_NONE &&
 			(options.zero_lock || fault_options || repeats != 1)))
 		return 2;
-	if (!started || !no_core())
+	if (!started)
+		return 77;
+	options.dumpguard = prepare_dump_guard();
+	if (!options.dumpguard ||
+		getrlimit(RLIMIT_MEMLOCK, &options.memlock) < 0)
 		return 77;
 	if (options.zero_lock)
 	{
@@ -546,6 +603,7 @@ int main(int argc, char **argv)
 			getrlimit(RLIMIT_MEMLOCK, &applied) < 0 ||
 			applied.rlim_cur != 0 || applied.rlim_max != 0)
 			return 77;
+		options.memlock = applied;
 #ifdef __linux__
 		const int capabilities_checked = 1;
 #else
@@ -553,9 +611,11 @@ int main(int argc, char **argv)
 #endif
 		if (printf("{\"candidate\":\"%s\",\"lock_profile\":true,"
 			"\"uid\":%llu,\"euid\":%llu,\"lock_limit_zero\":true,"
-			"\"capabilities_checked\":%d,\"ipc_lock_capability\":false}\n",
+			"\"capabilities_checked\":%d,\"ipc_lock_capability\":false,"
+			"\"dumpguard\":%d}\n",
 			CANDIDATE, (unsigned long long)getuid(),
-			(unsigned long long)geteuid(), capabilities_checked) < 0 ||
+			(unsigned long long)geteuid(), capabilities_checked,
+			options.dumpguard) < 0 ||
 			fflush(stdout) == EOF)
 			return 1;
 	}
@@ -591,12 +651,16 @@ int main(int argc, char **argv)
 	if (getrusage(RUSAGE_SELF, &usage) < 0)
 		return 1;
 	printf("{\"candidate\":\"%s\",\"summary\":true,"
-		"\"initialization_ns\":%llu,\"peak_rss_raw\":%ld,"
-		"\"user_us\":%llu,\"system_us\":%llu}\n", CANDIDATE,
+		"\"dumpguard\":%d,\"initialization_ns\":%llu,\"peak_rss_raw\":%ld,"
+		"\"user_us\":%llu,\"system_us\":%llu,"
+		"\"memlock_soft\":%llu,\"memlock_hard\":%llu}\n", CANDIDATE,
+		options.dumpguard,
 		(unsigned long long)(initialized - started), usage.ru_maxrss,
 		(unsigned long long)usage.ru_utime.tv_sec * 1000000ULL +
 			usage.ru_utime.tv_usec,
 		(unsigned long long)usage.ru_stime.tv_sec * 1000000ULL +
-			usage.ru_stime.tv_usec);
+			usage.ru_stime.tv_usec,
+		(unsigned long long)options.memlock.rlim_cur,
+		(unsigned long long)options.memlock.rlim_max);
 	return options.zero_lock && !lock_observed ? 77 : 0;
 }

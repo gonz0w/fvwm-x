@@ -712,17 +712,503 @@ static void test_partial_preparation_and_chunk_limits(void)
 	test_drain(&fixture);
 }
 
+static struct content_ref test_publish_encoded(struct fixture *fixture,
+	struct content_candidate candidate, const unsigned char *bytes,
+	size_t length)
+{
+	struct content_ref ref = test_reserve(fixture, candidate);
+
+	for (size_t i = 0; i < candidate.count; i++)
+	{
+		if (!candidate.reps[i].bytes.encoded)
+			continue;
+		assert(candidate.reps[i].bytes.encoded == length);
+		for (size_t offset = 0; offset < length;)
+		{
+			size_t amount = length - offset;
+
+			if (amount > CONTENT_PAYLOAD_CHUNK_MAX)
+				amount = CONTENT_PAYLOAD_CHUNK_MAX;
+			assert(content_payload_write(&fixture->owner, ref,
+				candidate.reps[i].id, CONTENT_PAYLOAD_ENCODED,
+				offset, bytes + offset, amount, 100,
+				&fixture->error) == CONTENT_PAYLOAD_OK);
+			offset += amount;
+		}
+	}
+	assert(content_payload_publish(&fixture->owner, ref, candidate.hint,
+		100, &fixture->error) == CONTENT_PAYLOAD_OK);
+	return ref;
+}
+
+static void test_closed_mappings(void)
+{
+	for (size_t i = 0; i < 16; i++)
+		assert(!test_mappings[i].active ||
+			test_mappings[i].access == PROT_NONE);
+}
+
+static enum content_payload_comparison_outcome test_compare_finish(
+	struct fixture *fixture, struct content_payload_comparison *cursor)
+{
+	enum content_payload_comparison_outcome outcome =
+		CONTENT_PAYLOAD_COMPARE_MORE;
+
+	for (size_t i = 0;
+		i < 64 && outcome == CONTENT_PAYLOAD_COMPARE_MORE; i++)
+	{
+		assert(content_payload_compare_step(&fixture->owner, cursor,
+			&outcome, 100, &fixture->error) == CONTENT_PAYLOAD_OK);
+		assert(!fixture->owner.policy.usage.leases);
+		test_closed_mappings();
+	}
+	assert(outcome != CONTENT_PAYLOAD_COMPARE_MORE);
+	return outcome;
+}
+
+static void test_cleanup_retired(struct fixture *fixture)
+{
+	for (size_t i = 0; i < 256; i++)
+	{
+		bool progress;
+
+		assert(content_payload_cleanup_step(&fixture->owner, &progress,
+			&fixture->error) == CONTENT_PAYLOAD_OK);
+		if (!fixture->error.cleanup_pending)
+			return;
+		assert(progress);
+	}
+	assert(false);
+}
+
+static void test_compare_equal_commit(void)
+{
+	struct fixture fixture;
+	struct content_candidate candidate = test_candidate(), described;
+	unsigned char bytes[2 * CONTENT_PAYLOAD_CHUNK_MAX + 1];
+	struct content_payload_comparison cursor = {0};
+	bool pinned;
+
+	for (size_t i = 0; i < sizeof(bytes); i++)
+		bytes[i] = (unsigned char)i;
+	test_init(&fixture, true);
+	candidate.count = 2;
+	candidate.reps[0].bytes.encoded = sizeof(bytes);
+	candidate.reps[1] = (struct content_representation){
+		.id = 22, .kind = CONTENT_IMAGE,
+		.bytes = {.encoded = sizeof(bytes)}
+	};
+	struct content_ref keep = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+	struct content_representation first = candidate.reps[0];
+
+	candidate.reps[0] = candidate.reps[1];
+	candidate.reps[1] = first;
+	struct content_ref drop = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+	size_t charged = fixture.owner.policy.usage.storage.mapped;
+
+	assert(content_payload_pin(&fixture.owner, keep, true, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(content_payload_describe(&fixture.owner, keep, 100,
+		&described, &pinned, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(pinned && described.deadline_ms == candidate.deadline_ms);
+	assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	enum content_payload_comparison_outcome outcome;
+
+	assert(content_payload_compare_step(&fixture.owner, &cursor, &outcome,
+		100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(outcome == CONTENT_PAYLOAD_COMPARE_MORE &&
+		cursor.offset == CONTENT_PAYLOAD_CHUNK_MAX);
+	assert(!fixture.owner.policy.usage.leases);
+	test_closed_mappings();
+	assert(test_compare_finish(&fixture, &cursor) ==
+		CONTENT_PAYLOAD_COMPARE_MATCH);
+	struct content_payload_comparison replay = cursor, reused = cursor;
+
+	assert(content_payload_pin(&fixture.owner, drop, true, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(content_payload_dedup_commit(&fixture.owner, &cursor, 100,
+		&fixture.error) == CONTENT_PAYLOAD_REFUSED);
+	assert(fixture.error.policy == CONTENT_BUSY &&
+		cursor.state == CONTENT_PAYLOAD_COMPARE_EQUAL);
+	assert(content_payload_pin(&fixture.owner, drop, false, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(content_payload_dedup_commit(&fixture.owner, &cursor, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(cursor.state == CONTENT_PAYLOAD_COMPARE_CONSUMED &&
+		fixture.error.cleanup_pending);
+	assert(fixture.owner.policy.usage.storage.mapped == charged);
+	assert(content_payload_dedup_commit(&fixture.owner, &replay, 100,
+		&fixture.error) == CONTENT_PAYLOAD_REFUSED);
+	assert(replay.state == CONTENT_PAYLOAD_COMPARE_INVALID);
+	test_cleanup_retired(&fixture);
+	assert(fixture.owner.policy.usage.items == 1);
+	candidate = test_candidate();
+	candidate.reps[0].bytes.encoded = 1;
+	struct content_ref newer = test_publish_encoded(&fixture, candidate,
+		bytes, 1);
+
+	assert(content_payload_dedup_commit(&fixture.owner, &reused, 100,
+		&fixture.error) == CONTENT_PAYLOAD_REFUSED);
+	assert(content_payload_describe(&fixture.owner, newer, 100,
+		&described, &pinned, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(content_payload_describe(&fixture.owner, keep, 100,
+		&described, &pinned, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(pinned && described.deadline_ms == 1000);
+	assert(content_payload_expire(&fixture.owner, 1000, &fixture.error) ==
+		CONTENT_PAYLOAD_OK);
+	test_drain(&fixture);
+}
+
+static void test_compare_differences(void)
+{
+	unsigned char bytes[2 * CONTENT_PAYLOAD_CHUNK_MAX + 1] = {1};
+
+	for (unsigned scenario = 0; scenario < 5; scenario++)
+	{
+		struct fixture fixture;
+		struct content_candidate candidate = test_candidate();
+		struct content_payload_comparison cursor = {0};
+
+		test_init(&fixture, true);
+		candidate.reps[0].bytes.encoded = sizeof(bytes);
+		struct content_ref keep = test_publish_encoded(&fixture,
+			candidate, bytes, sizeof(bytes));
+
+		if (scenario < 2)
+			bytes[scenario ? sizeof(bytes) - 1 : 0] ^= 0xff;
+		else if (scenario == 2)
+			candidate.reps[0].kind = CONTENT_IMAGE;
+		else if (scenario == 3)
+			candidate.reps[0].id = 33;
+		else
+			candidate.reps[0].bytes.encoded--;
+		struct content_ref drop = test_publish_encoded(&fixture,
+			candidate, bytes, candidate.reps[0].bytes.encoded);
+		unsigned protection = test_calls[TEST_PROTECT];
+
+		assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+			&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+		assert(test_compare_finish(&fixture, &cursor) ==
+			CONTENT_PAYLOAD_COMPARE_UNEQUAL);
+		if (scenario >= 2)
+			assert(protection == test_calls[TEST_PROTECT]);
+		assert(content_payload_dedup_commit(&fixture.owner, &cursor,
+			100, &fixture.error) == CONTENT_PAYLOAD_REFUSED);
+		assert(fixture.owner.policy.usage.items == 2);
+		assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+			CONTENT_PAYLOAD_OK);
+		test_drain(&fixture);
+	}
+}
+
+static void test_compare_empty_and_policy(void)
+{
+	struct fixture fixture;
+	struct content_candidate candidate = test_candidate();
+	struct content_payload_comparison cursor = {0};
+
+	test_init(&fixture, true);
+	candidate.reps[0].bytes.encoded = 0;
+	struct content_ref keep = test_publish_encoded(&fixture, candidate,
+		NULL, 0);
+	struct content_ref drop = test_publish_encoded(&fixture, candidate,
+		NULL, 0);
+	unsigned protection = test_calls[TEST_PROTECT];
+
+	assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(test_compare_finish(&fixture, &cursor) ==
+		CONTENT_PAYLOAD_COMPARE_MATCH);
+	assert(protection == test_calls[TEST_PROTECT]);
+	assert(content_payload_dedup_commit(&fixture.owner, &cursor, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	test_cleanup_retired(&fixture);
+	candidate.deadline_ms--;
+	drop = test_publish_encoded(&fixture, candidate, NULL, 0);
+	cursor = (struct content_payload_comparison){0};
+	assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_REFUSED);
+	assert(fixture.error.policy == CONTENT_EXCLUDED &&
+		cursor.state == CONTENT_PAYLOAD_COMPARE_EMPTY);
+	assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+		CONTENT_PAYLOAD_OK);
+	test_drain(&fixture);
+}
+
+static void test_compare_invalidation(void)
+{
+	unsigned char bytes[CONTENT_PAYLOAD_CHUNK_MAX + 1] = {3};
+
+	for (unsigned scenario = 0; scenario < 4; scenario++)
+	{
+		struct fixture fixture;
+		struct content_candidate candidate = test_candidate();
+		struct content_payload_comparison cursor = {0};
+		enum content_payload_comparison_outcome outcome;
+
+		test_init(&fixture, true);
+		candidate.reps[0].bytes.encoded = sizeof(bytes);
+		struct content_ref keep = test_publish_encoded(&fixture,
+			candidate, bytes, sizeof(bytes));
+		struct content_ref drop = test_publish_encoded(&fixture,
+			candidate, bytes, sizeof(bytes));
+
+		assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+			&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+		assert(content_payload_compare_step(&fixture.owner, &cursor,
+			&outcome, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+		assert(outcome == CONTENT_PAYLOAD_COMPARE_MORE);
+		if (!scenario)
+			assert(content_payload_clear(&fixture.owner,
+				&fixture.error) == CONTENT_PAYLOAD_OK);
+		else if (scenario == 1 || scenario == 3)
+		{
+			if (scenario == 3)
+				assert(test_compare_finish(&fixture, &cursor) ==
+					CONTENT_PAYLOAD_COMPARE_MATCH);
+			assert(content_payload_expire(&fixture.owner, 1000,
+				&fixture.error) == CONTENT_PAYLOAD_OK);
+		}
+		else
+		{
+			struct content_ref replacement;
+
+			assert(content_payload_reserve(&fixture.owner,
+				&candidate, true, &drop, 100, &replacement,
+				&fixture.error) ==
+				CONTENT_PAYLOAD_OK);
+		}
+		assert(content_payload_compare_step(&fixture.owner, &cursor,
+			&outcome, scenario == 1 || scenario == 3 ? 1000 : 100,
+			&fixture.error) ==
+			CONTENT_PAYLOAD_REFUSED);
+		assert(cursor.state == CONTENT_PAYLOAD_COMPARE_INVALID &&
+			!fixture.owner.policy.usage.leases);
+		assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+			CONTENT_PAYLOAD_OK);
+		test_drain(&fixture);
+	}
+}
+
+static void test_compare_capacity_and_open_failure(void)
+{
+	struct fixture fixture;
+	struct content_candidate candidate = test_candidate();
+	struct content_payload_comparison cursor = {0};
+	struct content_lease held[3];
+	enum content_payload_comparison_outcome outcome;
+	const unsigned char bytes[] = {0, 0xff, 7};
+
+	test_init(&fixture, true);
+	candidate.reps[0].bytes.encoded = sizeof(bytes);
+	struct content_ref keep = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+	struct content_ref drop = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+
+	assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	for (size_t i = 0; i < 3; i++)
+		assert(content_acquire(&fixture.owner.policy, keep, 11, 100,
+			&held[i]) == CONTENT_OK);
+	unsigned protection = test_calls[TEST_PROTECT];
+
+	assert(content_payload_compare_step(&fixture.owner, &cursor, &outcome,
+		100, &fixture.error) == CONTENT_PAYLOAD_REFUSED);
+	assert(fixture.error.policy == CONTENT_FULL &&
+		fixture.owner.policy.usage.leases == 3 && !cursor.offset);
+	assert(cursor.state == CONTENT_PAYLOAD_COMPARE_ACTIVE &&
+		protection == test_calls[TEST_PROTECT]);
+	for (size_t i = 0; i < 3; i++)
+		assert(content_release(&fixture.owner.policy, held[i]) ==
+			CONTENT_OK);
+	test_schedule(TEST_PROTECT, 2, 1);
+	assert(content_payload_compare_step(&fixture.owner, &cursor, &outcome,
+		100, &fixture.error) == CONTENT_PAYLOAD_OS_FAILURE);
+	assert(!fixture.owner.policy.usage.leases && !fixture.owner.fatal &&
+		cursor.state == CONTENT_PAYLOAD_COMPARE_INVALID);
+	test_closed_mappings();
+	assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+		CONTENT_PAYLOAD_OK);
+	test_drain(&fixture);
+}
+
+static void test_compare_close_failures(void)
+{
+	const unsigned char bytes[] = {6};
+
+	for (unsigned close = 3; close <= 4; close++)
+	{
+		struct fixture fixture;
+		struct content_candidate candidate = test_candidate();
+		struct content_payload_comparison cursor = {0};
+		enum content_payload_comparison_outcome outcome;
+
+		test_init(&fixture, true);
+		candidate.reps[0].bytes.encoded = sizeof(bytes);
+		struct content_ref keep = test_publish_encoded(&fixture,
+			candidate, bytes, sizeof(bytes));
+		struct content_ref drop = test_publish_encoded(&fixture,
+			candidate, bytes, sizeof(bytes));
+
+		assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+			&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+		test_schedule(TEST_PROTECT, close, 1);
+		assert(content_payload_compare_step(&fixture.owner, &cursor,
+			&outcome, 100, &fixture.error) ==
+				CONTENT_PAYLOAD_FATAL);
+		assert(fixture.owner.fatal &&
+			!fixture.owner.policy.usage.leases);
+		assert(cursor.state == CONTENT_PAYLOAD_COMPARE_INVALID &&
+			fixture.error.cleanup_pending);
+		test_drain(&fixture);
+	}
+}
+
+struct comparison_reentry {
+	struct fixture *fixture;
+	struct content_ref keep, drop;
+	struct content_payload_comparison *cursor;
+};
+
+static bool test_comparison_reentry(const unsigned char *bytes, size_t length,
+	void *context)
+{
+	struct comparison_reentry *read = context;
+	struct content_payload_comparison empty = {0};
+	struct content_candidate descriptor;
+	struct content_payload_error error;
+	enum content_payload_comparison_outcome outcome;
+	size_t offset = read->cursor->offset;
+	bool pinned = true;
+
+	assert(bytes && length == 3);
+	assert(content_payload_describe(&read->fixture->owner, read->keep, 100,
+		&descriptor, &pinned, &error) == CONTENT_PAYLOAD_BUSY);
+	assert(!descriptor.count && !pinned);
+	assert(content_payload_pin(&read->fixture->owner, read->keep, true,
+		100, &error) == CONTENT_PAYLOAD_BUSY);
+	assert(content_payload_compare_begin(&read->fixture->owner, read->keep,
+		read->drop, &empty, 100, &error) == CONTENT_PAYLOAD_BUSY);
+	assert(empty.state == CONTENT_PAYLOAD_COMPARE_EMPTY && !empty.epoch);
+	assert(content_payload_compare_step(&read->fixture->owner, read->cursor,
+		&outcome, 100, &error) == CONTENT_PAYLOAD_BUSY);
+	assert(read->cursor->state == CONTENT_PAYLOAD_COMPARE_ACTIVE &&
+		read->cursor->offset == offset);
+	assert(read->fixture->owner.busy &&
+		read->fixture->owner.policy.usage.leases == 1);
+	return true;
+}
+
+static void test_compare_reentry_and_cursor_bounds(void)
+{
+	struct fixture fixture;
+	struct content_candidate candidate = test_candidate();
+	struct content_payload_comparison cursor = {0};
+	const unsigned char bytes[] = {4, 5, 6};
+
+	test_init(&fixture, true);
+	candidate.reps[0].bytes.encoded = sizeof(bytes);
+	struct content_ref keep = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+	struct content_ref drop = test_publish_encoded(&fixture, candidate,
+		bytes, sizeof(bytes));
+
+	assert(content_payload_compare_begin(&fixture.owner, keep, drop,
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	struct comparison_reentry read = {&fixture, keep, drop, &cursor};
+
+	assert(content_payload_with_read(&fixture.owner, keep, 11,
+		CONTENT_PAYLOAD_ENCODED, 0, sizeof(bytes),
+		test_comparison_reentry, &read, 100,
+		&fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(!fixture.owner.policy.usage.leases);
+	for (unsigned scenario = 0; scenario < 3; scenario++)
+	{
+		struct content_payload_comparison invalid = cursor;
+		enum content_payload_comparison_outcome outcome;
+
+		if (!scenario)
+			invalid.offset = SIZE_MAX;
+		else if (scenario == 1)
+			invalid.representation = SIZE_MAX;
+		else
+			invalid.pid = 0;
+		assert(content_payload_compare_step(&fixture.owner, &invalid,
+			&outcome, 100, &fixture.error) ==
+				CONTENT_PAYLOAD_REFUSED);
+		assert(invalid.state == CONTENT_PAYLOAD_COMPARE_INVALID &&
+			!fixture.owner.policy.usage.leases);
+	}
+	assert(test_compare_finish(&fixture, &cursor) ==
+		CONTENT_PAYLOAD_COMPARE_MATCH);
+	assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+		CONTENT_PAYLOAD_OK);
+	test_drain(&fixture);
+}
+
+static void test_compare_empty_transitions_and_derivatives(void)
+{
+	struct fixture fixture;
+	struct content_candidate candidate = test_candidate();
+	struct content_ref refs[2];
+	struct content_payload_comparison cursor = {0};
+	const unsigned char original[] = {0, 0xff, 9};
+
+	test_init(&fixture, true);
+	candidate.count = 2;
+	candidate.reps[0].bytes = (struct content_bytes){.derived = 1};
+	candidate.reps[1] = (struct content_representation){
+		.id = 22, .kind = CONTENT_IMAGE,
+		.bytes = {.encoded = sizeof(original)}
+	};
+	for (size_t i = 0; i < 2; i++)
+	{
+		const unsigned char derivative = (unsigned char)i;
+
+		refs[i] = test_reserve(&fixture, candidate);
+		assert(content_payload_write(&fixture.owner, refs[i], 11,
+			CONTENT_PAYLOAD_DERIVED, 0, &derivative, 1, 100,
+			&fixture.error) == CONTENT_PAYLOAD_OK);
+		assert(content_payload_write(&fixture.owner, refs[i], 22,
+			CONTENT_PAYLOAD_ENCODED, 0, original, sizeof(original),
+			100, &fixture.error) == CONTENT_PAYLOAD_OK);
+		assert(content_payload_publish(&fixture.owner, refs[i],
+			candidate.hint, 100, &fixture.error) ==
+				CONTENT_PAYLOAD_OK);
+	}
+	assert(content_payload_compare_begin(&fixture.owner, refs[0], refs[1],
+		&cursor, 100, &fixture.error) == CONTENT_PAYLOAD_OK);
+	assert(test_compare_finish(&fixture, &cursor) ==
+		CONTENT_PAYLOAD_COMPARE_MATCH);
+	assert(content_payload_clear(&fixture.owner, &fixture.error) ==
+		CONTENT_PAYLOAD_OK);
+	test_drain(&fixture);
+}
+
 int main(void)
 {
 	struct content_payload_error error;
 	struct rlimit limit;
 	long page = sysconf(_SC_PAGESIZE);
 
-	if (page <= 0 || page > 65536 ||
-		content_payload_process_prepare(&test_guard, &error) !=
+	if (page <= 0 || page > 65536)
+		return 77;
+	/* Four live comparison regions coexist. Earlier fixtures need at most
+	 * eight minimum pages; derive rounding for each supported page size. */
+	size_t compare_bytes = 2 * CONTENT_PAYLOAD_CHUNK_MAX + 1;
+	size_t peak = 4 * ((compare_bytes + (size_t)page - 1) /
+		(size_t)page) * (size_t)page;
+
+	if (peak < 8 * (size_t)page)
+		peak = 8 * (size_t)page;
+	if (content_payload_process_prepare(&test_guard, &error) !=
 			CONTENT_PAYLOAD_OK ||
 		getrlimit(RLIMIT_MEMLOCK, &limit) < 0 ||
-		limit.rlim_cur < (rlim_t)(8 * page))
+		limit.rlim_cur < (rlim_t)peak)
 		return 77;
 	test_page = (size_t)page;
 	test_guard_and_live_cleanup();
@@ -734,6 +1220,14 @@ int main(void)
 	test_cleanup_retries();
 	test_held_lease_and_reader_refusal();
 	test_partial_preparation_and_chunk_limits();
+	test_compare_equal_commit();
+	test_compare_differences();
+	test_compare_empty_and_policy();
+	test_compare_invalidation();
+	test_compare_capacity_and_open_failure();
+	test_compare_reentry_and_cursor_bounds();
+	test_compare_empty_transitions_and_derivatives();
+	test_compare_close_failures();
 	test_fatal_closure();
 	return 0;
 }

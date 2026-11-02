@@ -1,5 +1,10 @@
 # Native content payload owner — source checkpoint
 
+Subsequent [shared Linux Q1](VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md)
+qualifies this owner plus comparison/pinning on its exact Linux ARM64 guest
+source/profile. The source-only observations below remain historical; other
+targets, real-X capture and installed/release acceptance remain separate.
+
 Owner Cam; #63/#71/#74; base merged PR335
 `ef53c100d722dc23dfa015dfab86594c5da01e82`. Five related stories implement
 one base-system native owner: derived physical reservations, initialized producer

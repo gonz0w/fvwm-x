@@ -748,6 +748,408 @@ enum content_payload_result content_payload_expire(
 	return leave(owner, result, error);
 }
 
+enum content_payload_result content_payload_describe(
+	struct content_payload_owner *owner, struct content_ref ref,
+	uint64_t now_ms, struct content_candidate *output, bool *pinned,
+	struct content_payload_error *error)
+{
+	struct content_candidate descriptor;
+	struct content_payload_slot *slot;
+	enum content_payload_result result;
+
+	if (output)
+		*output = (struct content_candidate){0};
+	if (pinned)
+		*pinned = false;
+	if (!error_init(error) || !output || !pinned)
+		return CONTENT_PAYLOAD_INVALID;
+	result = enter(owner, false, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		return result;
+	result = policy_error(error, content_describe(&owner->policy, ref,
+		now_ms, &descriptor));
+	if (result == CONTENT_PAYLOAD_OK)
+	{
+		slot = find_slot(owner, ref);
+		if (!slot)
+			result = policy_error(error, CONTENT_STALE);
+		else
+		{
+			*output = descriptor;
+			*pinned = slot->item->pinned;
+		}
+	}
+	return leave(owner, result, error);
+}
+
+enum content_payload_result content_payload_pin(
+	struct content_payload_owner *owner, struct content_ref ref,
+	bool pinned, uint64_t now_ms, struct content_payload_error *error)
+{
+	enum content_payload_result result;
+
+	if (!error_init(error))
+		return CONTENT_PAYLOAD_INVALID;
+	result = enter(owner, false, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		return result;
+	result = policy_error(error,
+		content_pin(&owner->policy, ref, pinned, now_ms));
+	return leave(owner, result, error);
+}
+
+struct comparison_pair {
+	struct content_candidate descriptors[2];
+	struct content_payload_slot *slots[2];
+};
+
+static enum content_payload_result comparison_describe(
+	struct content_payload_owner *owner, struct content_ref keep,
+	struct content_ref drop, uint64_t now_ms, struct comparison_pair *pair,
+	struct content_payload_error *error)
+{
+	const struct content_ref refs[] = {keep, drop};
+
+	*pair = (struct comparison_pair){0};
+	if (same_ref(keep, drop))
+		return policy_error(error, CONTENT_INVALID);
+	for (size_t i = 0; i < 2; i++)
+	{
+		enum content_result result = content_describe(&owner->policy,
+			refs[i], now_ms, &pair->descriptors[i]);
+
+		if (result != CONTENT_OK)
+			return policy_error(error, result);
+		pair->slots[i] = find_slot(owner, refs[i]);
+		if (!pair->slots[i])
+			return policy_error(error, CONTENT_STALE);
+	}
+	if (!content_dedup_compatible(&pair->descriptors[0],
+		&pair->descriptors[1]))
+		return policy_error(error, CONTENT_EXCLUDED);
+	return CONTENT_PAYLOAD_OK;
+}
+
+static bool original_shape_equal(const struct comparison_pair *pair)
+{
+	const struct content_candidate *first = &pair->descriptors[0];
+	const struct content_candidate *second = &pair->descriptors[1];
+
+	if (first->count != second->count)
+		return false;
+	for (size_t i = 0; i < first->count; i++)
+	{
+		const struct content_representation *rep = &first->reps[i];
+		bool found = false;
+
+		for (size_t j = 0; j < second->count; j++)
+			if (rep->id == second->reps[j].id)
+			{
+				if (rep->kind != second->reps[j].kind ||
+					rep->bytes.encoded !=
+						second->reps[j].bytes.encoded)
+					return false;
+				found = true;
+				break;
+			}
+		if (!found)
+			return false;
+	}
+	return true;
+}
+
+enum content_payload_result content_payload_compare_begin(
+	struct content_payload_owner *owner, struct content_ref keep,
+	struct content_ref drop, struct content_payload_comparison *cursor,
+	uint64_t now_ms, struct content_payload_error *error)
+{
+	struct comparison_pair pair;
+	enum content_payload_result result;
+
+	if (!error_init(error) || !cursor)
+		return CONTENT_PAYLOAD_INVALID;
+	result = enter(owner, false, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		return result;
+	result = observe(owner, now_ms, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		goto out;
+	if (cursor->state != CONTENT_PAYLOAD_COMPARE_EMPTY)
+	{
+		error->policy = CONTENT_BUSY;
+		result = CONTENT_PAYLOAD_BUSY;
+		goto out;
+	}
+	result = comparison_describe(owner, keep, drop, now_ms, &pair, error);
+	if (result == CONTENT_PAYLOAD_OK)
+		*cursor = (struct content_payload_comparison){
+			.keep = keep, .drop = drop,
+			.epoch = owner->policy.epoch,
+			.pid = owner->guard.pid,
+			.state = original_shape_equal(&pair) ?
+				CONTENT_PAYLOAD_COMPARE_ACTIVE :
+				CONTENT_PAYLOAD_COMPARE_DIFFERENT
+		};
+out:
+	return leave(owner, result, error);
+}
+
+static bool comparison_context(const struct content_payload_owner *owner,
+	const struct content_payload_comparison *cursor)
+{
+	return cursor->epoch == owner->policy.epoch &&
+		cursor->pid == owner->guard.pid &&
+		(cursor->state == CONTENT_PAYLOAD_COMPARE_ACTIVE ||
+		 cursor->state == CONTENT_PAYLOAD_COMPARE_EQUAL ||
+		 cursor->state == CONTENT_PAYLOAD_COMPARE_DIFFERENT);
+}
+
+static enum content_payload_result comparison_release(
+	struct content_payload_owner *owner,
+	struct content_payload_region *regions[2],
+	struct content_lease leases[2], enum content_payload_result result,
+	struct content_payload_error *error)
+{
+	for (size_t i = 2; i > 0; i--)
+		if (regions[i - 1] &&
+			close_region(owner, regions[i - 1], error) ==
+				CONTENT_PAYLOAD_FATAL)
+			result = CONTENT_PAYLOAD_FATAL;
+	for (size_t i = 0; i < 2; i++)
+		if (leases[i].id &&
+			content_release(&owner->policy, leases[i]) !=
+				CONTENT_OK)
+		{
+			error->policy = CONTENT_STALE;
+			result = poison(owner, error);
+		}
+	return result;
+}
+
+enum content_payload_result content_payload_compare_step(
+	struct content_payload_owner *owner,
+	struct content_payload_comparison *cursor,
+	enum content_payload_comparison_outcome *outcome,
+	uint64_t now_ms, struct content_payload_error *error)
+{
+	struct comparison_pair pair;
+	struct content_payload_region *regions[2] = {0};
+	struct content_lease leases[2] = {0};
+	struct content_ref refs[2];
+	size_t part, position, amount;
+	bool different = false;
+	enum content_payload_result result;
+
+	if (outcome)
+		*outcome = CONTENT_PAYLOAD_COMPARE_MORE;
+	if (!error_init(error) || !cursor || !outcome)
+		return CONTENT_PAYLOAD_INVALID;
+	result = enter(owner, false, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		return result;
+	result = observe(owner, now_ms, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		goto out;
+	if (!comparison_context(owner, cursor))
+	{
+		result = policy_error(error, CONTENT_STALE);
+		goto invalidate;
+	}
+	result = comparison_describe(owner, cursor->keep, cursor->drop,
+		now_ms, &pair, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		goto invalidate;
+	part = cursor->representation;
+	position = cursor->offset;
+	if (part > pair.descriptors[0].count ||
+		(part == pair.descriptors[0].count && position) ||
+		(part < pair.descriptors[0].count && position >
+		 pair.descriptors[0].reps[part].bytes.encoded) ||
+		(cursor->state == CONTENT_PAYLOAD_COMPARE_ACTIVE &&
+		 part == pair.descriptors[0].count) ||
+		(cursor->state == CONTENT_PAYLOAD_COMPARE_EQUAL &&
+		 (part != pair.descriptors[0].count || position)))
+	{
+		result = policy_error(error, CONTENT_INVALID);
+		goto invalidate;
+	}
+	if (cursor->state != CONTENT_PAYLOAD_COMPARE_DIFFERENT &&
+		!original_shape_equal(&pair))
+	{
+		result = policy_error(error, CONTENT_INVALID);
+		goto invalidate;
+	}
+	if (cursor->state != CONTENT_PAYLOAD_COMPARE_ACTIVE)
+	{
+		*outcome = cursor->state == CONTENT_PAYLOAD_COMPARE_EQUAL ?
+			CONTENT_PAYLOAD_COMPARE_MATCH :
+			CONTENT_PAYLOAD_COMPARE_UNEQUAL;
+		goto out;
+	}
+	while (part < pair.descriptors[0].count &&
+		!pair.descriptors[0].reps[part].bytes.encoded)
+	{
+		if (position)
+		{
+			result = policy_error(error, CONTENT_INVALID);
+			goto invalidate;
+		}
+		part++;
+	}
+	if (part == pair.descriptors[0].count)
+	{
+		cursor->representation = part;
+		cursor->offset = 0;
+		cursor->state = CONTENT_PAYLOAD_COMPARE_EQUAL;
+		*outcome = CONTENT_PAYLOAD_COMPARE_MATCH;
+		goto out;
+	}
+	size_t length = pair.descriptors[0].reps[part].bytes.encoded;
+	uint32_t representation = pair.descriptors[0].reps[part].id;
+
+	if (position >= length)
+	{
+		result = policy_error(error, CONTENT_INVALID);
+		goto invalidate;
+	}
+	amount = length - position;
+	if (amount > CONTENT_PAYLOAD_CHUNK_MAX)
+		amount = CONTENT_PAYLOAD_CHUNK_MAX;
+	refs[0] = cursor->keep;
+	refs[1] = cursor->drop;
+	for (size_t i = 0; i < 2; i++)
+	{
+		regions[i] = find_region(pair.slots[i], representation);
+		if (!regions[i] || regions[i]->written.encoded != length ||
+			length > regions[i]->capacity.encoded)
+		{
+			result = policy_error(error, CONTENT_INVALID);
+			goto release;
+		}
+		result = policy_error(error, content_acquire(&owner->policy,
+			refs[i], representation, now_ms, &leases[i]));
+		if (result != CONTENT_PAYLOAD_OK)
+			goto release;
+	}
+	result = process_access(owner, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		goto release;
+	for (size_t i = 0; i < 2; i++)
+	{
+		if (!regions[i]->closed)
+		{
+			error->operation = CONTENT_PAYLOAD_PROTECT;
+			result = poison(owner, error);
+			goto release;
+		}
+		regions[i]->closed = false;
+		if (region_protect(regions[i]->data, regions[i]->rounded,
+			PROT_READ) < 0)
+		{
+			os_error(error, CONTENT_PAYLOAD_PROTECT);
+			result = access_failure(owner, pair.slots[i],
+				regions[i], error);
+			goto release;
+		}
+	}
+	for (size_t i = 0; i < 2; i++)
+	{
+		result = policy_error(error,
+			content_lease_check(&owner->policy, leases[i], now_ms));
+		if (result != CONTENT_PAYLOAD_OK)
+			goto release;
+	}
+	different = memcmp(regions[0]->data + position,
+		regions[1]->data + position, amount) != 0;
+release:
+	result = comparison_release(owner, regions, leases, result, error);
+	if (result != CONTENT_PAYLOAD_OK)
+	{
+		/* Capacity pressure is retryable; no lease/mapping remains open
+		 * and no cursor progress has been committed. */
+		if (result == CONTENT_PAYLOAD_REFUSED &&
+			error->policy == CONTENT_FULL)
+			goto out;
+		goto invalidate;
+	}
+	if (different)
+		cursor->state = CONTENT_PAYLOAD_COMPARE_DIFFERENT;
+	else
+	{
+		position += amount;
+		if (position == length)
+		{
+			part++;
+			position = 0;
+		}
+		while (part < pair.descriptors[0].count &&
+			!pair.descriptors[0].reps[part].bytes.encoded)
+			part++;
+		cursor->representation = part;
+		cursor->offset = position;
+		if (part == pair.descriptors[0].count)
+			cursor->state = CONTENT_PAYLOAD_COMPARE_EQUAL;
+	}
+	*outcome = cursor->state == CONTENT_PAYLOAD_COMPARE_EQUAL ?
+		CONTENT_PAYLOAD_COMPARE_MATCH :
+		cursor->state == CONTENT_PAYLOAD_COMPARE_DIFFERENT ?
+		CONTENT_PAYLOAD_COMPARE_UNEQUAL : CONTENT_PAYLOAD_COMPARE_MORE;
+	goto out;
+invalidate:
+	cursor->state = CONTENT_PAYLOAD_COMPARE_INVALID;
+out:
+	return leave(owner, result, error);
+}
+
+enum content_payload_result content_payload_dedup_commit(
+	struct content_payload_owner *owner,
+	struct content_payload_comparison *cursor,
+	uint64_t now_ms, struct content_payload_error *error)
+{
+	struct comparison_pair pair;
+	enum content_payload_result result;
+
+	if (!error_init(error) || !cursor)
+		return CONTENT_PAYLOAD_INVALID;
+	result = enter(owner, false, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		return result;
+	result = observe(owner, now_ms, error);
+	if (result != CONTENT_PAYLOAD_OK)
+		goto out;
+	if (!comparison_context(owner, cursor) ||
+		cursor->state != CONTENT_PAYLOAD_COMPARE_EQUAL)
+	{
+		result = policy_error(error, CONTENT_STALE);
+		goto out;
+	}
+	result = comparison_describe(owner, cursor->keep, cursor->drop,
+		now_ms, &pair, error);
+	if (result != CONTENT_PAYLOAD_OK)
+	{
+		cursor->state = CONTENT_PAYLOAD_COMPARE_INVALID;
+		goto out;
+	}
+	if (cursor->representation != pair.descriptors[0].count ||
+		cursor->offset || !original_shape_equal(&pair))
+	{
+		cursor->state = CONTENT_PAYLOAD_COMPARE_INVALID;
+		result = policy_error(error, CONTENT_INVALID);
+		goto out;
+	}
+	if (pair.slots[1]->item->pinned)
+	{
+		result = policy_error(error, CONTENT_BUSY);
+		goto out;
+	}
+	result = policy_error(error,
+		content_retire(&owner->policy, cursor->drop));
+	if (result == CONTENT_PAYLOAD_OK)
+		cursor->state = CONTENT_PAYLOAD_COMPARE_CONSUMED;
+out:
+	return leave(owner, result, error);
+}
+
 static enum content_payload_result clean_region(
 	struct content_payload_owner *owner,
 	struct content_payload_region *region,

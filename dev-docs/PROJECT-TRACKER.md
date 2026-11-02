@@ -7,54 +7,62 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: CONTENT-01 #63 native payload owner, coordinated with #71/#74.
-Owner Cam; branch `codex/r1-native-content-payload`, base merged PR335
-`ef53c100d722dc23dfa015dfab86594c5da01e82`. Select five related stories in one
-source checkpoint: caller-bounded native storage with derived physical charges;
-owned contiguous producer prefixes and atomic publication; scoped C-only reads;
-immediate retirement with incremental partial-cleanup retry and final accounting;
-explicit protection/fatal-owner errors with authored focused fault coverage.
-Use one base-system implementation, one mapping per representation with bounded
-encoded/decoded/derived partitions and two guard pages. No allocator registry,
-installed service/defaults, real-X capture, transport, UI, crypto or persistence.
+Current work: CONTENT-01 #63 / RETENTION-01 #71 original-byte comparison,
+deduplication, pinning and safe numeric projection. Owner Cam; branch
+`codex/r1-content-dedup-pinning`, base merged PR336
+`e44e156e436cbcaf0a40594bab7c37f643dd02da`. Select four related stories:
+guarded descriptor/pin access; bounded original-encoded-byte comparison by exact
+representation ID/kind/length; explicit compatible dedup commit; and native
+cursor/failure/replay coverage. Reuse the existing owner and policy, not a new
+registry, index/hash cache, allocator framework or retention ledger.
 
-Acceptance: reserve the complete derived mapped/locked model before allocation;
-prepare every region before accepting bytes; reject holes, duplicate nonempty
-writes, stale refs and lengths outside the reserved domain. Derive publication
-lengths from actual successful writes. Scoped reads acquire/recheck exact leases,
-close access and release leases on every return; a synchronous native consumer
-must neither retain pointers nor block/pump events. Reject owner reentry. Retire
-on protection failure, retain remaining cleanup state and full charges, and
-acknowledge only after mappings and work/leases are gone. A failed closure is a
-fatal owner condition, not proof that access was revoked. Never copy potentially
-sensitive payloads into Go/Lua or add a blocking core caller.
+Use a caller-bounded, trusted C-only comparison cursor with exact refs, owner
+identity and numeric progress, no payload pointer or retained lease. A step
+compares at most 4 KiB directly under two scoped leases/read-only mappings,
+then closes/releases both before committing progress. Clear, replacement,
+expiry or fatal ownership invalidates later work. Validate cursor state/bounds;
+do not serialize it or treat it as an authenticated proof from IPC/Go/Lua.
+Dedup commit requires completed equality and current LIVE compatibility; retain
+the strict hint/deadline contract, refuse a pinned drop, never extend expiry or
+transfer pins, and retain all drop charges until actual cleanup. Numeric
+projection and pinning cannot acquire payload access or bypass budgets/expiry.
 
-Process dump preparation must be an explicit isolated-service preflight, not a
-side effect of linking or ordinary owner initialization in the WM. Resource limits
-remain caller-supplied, not installed defaults. The lock-time capture/access
-question is pending but does not block this API. Zero-capacity representations
-still reserve the minimum page and publish zero length without exposing padding.
-Review/static checks and cheap affected compilation precede the source PR.
-Author meaningful lifetime/protection/cleanup cases now; run them together at the
-next major payload/capture checkpoint, with affected normal/scoped-sanitizer and
-actual OS controls. Preserve valid comparison inputs instead of rerunning six
-profiles for each helper. No UI/screenshots for this source-only slice.
+Per source PR: separate review/static checks and affected compilation. The
+selected finite shared Linux Q1 now passes across PR336 plus this batch:
+four normal/scoped-ASan+UBSan policy/owner executables and four unsanitized
+production memory controls. Actual no-access/read-only SIGSEGV and matched
+nonroot zero-lock refusal are observed; explicit successful cleanup is separate
+from expected fault-process teardown. [Results and limits](verification/VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md)
+retain exact source/profile/commands, raw waits and all 50 exported file hashes.
+Native build/run/quiesce/collection took 3.610 seconds after lab readiness; this
+is qualification timing, not a WM performance claim. The owned container and
+machine are confirmed stopped. No packages/storage expansion/shared build edits.
+This substantial nine-story boundary is complete for Linux ARM64 guest C only;
+full support/install/default-X/hardware and actual capture/UI acceptance remain
+separate. Meson registration is inspected, not a full configured WM build. No
+new UI/screenshots or installed defaults. Final integrated/signed review and
+merge remain pending for this four-story checkpoint.
 
-The five-story implementation and native fault fixture are authored. Three
-initial strict optimized host object compiles and four final affected compile/
-link commands pass, reusing the unchanged policy object. A terminal-publication
-review correction passes three final affected compile/link commands; the unchanged
-policy unit is retained by exact inputs. Zero runtime invocations;
-[the source receipt](verification/VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md)
-keeps native, configured Meson, sanitizer, protection and product acceptance
-queued. Complex source review fixed missing explicit admission control and
-untruthful retired-cleanup reporting; authored cases cover those and aliased
-replacement/initialization inputs. Terminal paused/expired and late completion
-now reaches the shared finish/drain contract, with source cases authored. A narrow
-clock observer delegates locally
-refused timestamps to the shared policy. Finish separate integrated source/
-fixture/docs and signed-delivery review; then merge the source checkpoint and
-continue the next accepted payload/capture stories under the faster cadence.
+PR336 source is merged after separate integrated and signed-delivery review:
+head `07ce6a9ddb66e5a538584e2bed2f91fc174fb8ff`, canonical exact tree
+`3981926a5b58364ffea59c9305ea02e4f8797632`, valid signature and Cam DCO.
+Main synced, source refs retired, PR336 milestone R1/Project Done; #63/#71/#74
+mirror its five-story native owner and remain open. Strict affected compile/link
+passes; zero runtime invocations. The [source receipt](verification/VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md)
+retains review fixes and the explicit native/sanitizer/OS queue. Performance
+cadence is 1/5 after this implementation checkpoint; private PR335 comparison
+measurement is separate. Implementer roles remain unavailable, with recorded
+lead fallback and separate analyst/reviewer; actual routing metadata unverified.
+
+A bounded source handoff inventory confirms FSelection returns a complete
+ordinary-memory aggregate (32 KiB cap), with ordinary Xlib/property copies and
+no producer chunk sink. Script text negotiation is not binary original-byte
+capture; WM_Sn control replies are not clipboard payload transfer. Future
+capture must bind exact owner/generation, cancellation and native producer
+storage and audit transport copies under #74. Existing requestors are not
+claimed protected or adopted by inference. No new transfer/capture work is
+selected in this native comparison/pin batch. Lock-time capture/access remains
+pending, independently of retaining history while locked.
 
 PR335 is merged after separate integrated and signed-delivery review: reviewed
 head `7c6b11a0d3d9b0a0b6d6387dbb8c17efbd805c3b`, exact canonical tree
@@ -6299,9 +6307,9 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | DESKTOP-ICONS-01 | Done / #64 closed by merged PR291; finite support closeout qualified | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |
 | FILE-INTEGRATION-01 | Done / #67 closed by merged PR330 | All four frozen criteria have source-bound component evidence, including 55/55 installed-service groups after Q67 D1/D2. [Q67 report](verification/VERIFICATION-2026-11-01-Q67-NOBUS.md). Final release integration remains separately owned; no later core/content or protected clipboard qualification inferred. |
 | FILE-ADVANCED-01 | P2 / deferred candidates | Thumbnails/previews, tabs/dual panes, search, bulk rename, archives, devices, remote locations and undo require individually bounded adoption decisions and prerequisite gates. Reuse qualified collection/jobs/image/process contracts and optional providers; no autorun, mandatory desktop stack or aggregate rewrite. Not a prerequisite for the initial primitive/config handoff or earlier file-manager checkpoints. See file-manager scope. |
-| CONTENT-01 | P2 / queued, primitives-first scope approved | Reusable bounded content items with stable IDs/generations, original bytes and multiple text/image/URI representations separate from labels/previews. Explicit leases, sensitivity/lifetime propagation and stale-reference refusal; deduplication/pinning preserve budgets and policy. Stage 6 with SELECTION-01 and shared collection/action contracts; no filesystem-path impersonation or arbitrary database framework. See [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |
-| RETENTION-01 | P2 / queued, scope approved; defaults pending | CFG-01-controlled capture/pause, formats, source exclusions, expiry/pinning/clear/lock and separate current-selection/history/persistence states. Honor supported secret hints before retention/previews/actions; remove derivatives and pending work on expiry without clearing newer clipboard data. Password-history and persistence defaults remain open decisions. Stage 6 with CONTENT-01/STORE-01; native policy and real-X lifecycle/failure gates. See clipboard scope. |
-| STORE-01 | P2 / queued, scope approved; backend/protection policy pending | Protected content memory first: minimize copies, checked locking/wiping/dump restrictions and explicit refusal when required protection is unavailable. Then optional authenticated encrypted persistence, private safe files, protected previews/indexes, key/unlock/recovery/migration contracts and honest deletion limits. Bound encoded/decoded image resources and audit transport/UI/decoder copies. Stage 6; no custom crypto, mandatory keyring or plaintext fallback. Native six-target protection/failure/storage and security-review gates. See clipboard scope. |
+| CONTENT-01 | P2 / active, owner/dedup Linux Q1 passes; real-X transfer pending | Reusable bounded content items with stable IDs/generations, original bytes and multiple text/image/URI representations separate from labels/previews. Explicit leases, sensitivity/lifetime propagation and stale-reference refusal; deduplication/pinning preserve budgets and policy. Stage 6 with SELECTION-01 and shared collection/action contracts; no filesystem-path impersonation or arbitrary database framework. See [clipboard scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md). |
+| RETENTION-01 | P2 / active, initial defaults decided; capture/retention adoption pending | CFG-01-controlled capture/pause, formats, source exclusions, expiry/pinning/clear/lock and separate current-selection/history/persistence states. Honor supported secret hints before retention/previews/actions; remove derivatives and pending work on expiry without clearing newer clipboard data. Owner defaults above are fixed; lock-time capture/access and installed budgets remain explicit. Stage 6 with CONTENT-01/STORE-01; native policy and real-X lifecycle/failure gates. See clipboard scope. |
+| STORE-01 | P2 / active, allocator comparison and owner Linux Q1 pass; copy/crypto/release gates pending | Protected content memory first: minimize copies, checked locking/wiping/dump restrictions and explicit refusal when required protection is unavailable. Then optional authenticated encrypted persistence, private safe files, protected previews/indexes, key/unlock/recovery/migration contracts and honest deletion limits. Bound encoded/decoded image resources and audit transport/UI/decoder copies. Stage 6; no custom crypto, mandatory keyring or plaintext fallback. Native six-target protection/failure/storage and security-review gates. See clipboard scope. |
 | CLIPBOARD-01 | P2 / queued, consumer/handoff scope approved | Text/image clipboard consumer over CONTENT/RETENTION/STORE, SELECTION-01, FILE-VIEW-01 and typed IPC/actions. First qualify an in-memory example plus installed syntax/contracts/capabilities/manuals; a separate user-directed config/theme thread then builds the full UI while runtime work continues. Encrypted persistence follows as a separate checkpoint; optional secret history requires a policy decision. Independent-client/real-X, image privacy, ownership, six-target/install and native sanitizer gates; no claim of confidentiality against hostile X11 clients. See clipboard scope. |
 | DESKTOP-EXPLORE-01 | Deferred exploration / after existing stages 1–8 | Explore additional desktop consumers, display/input controls, network/Bluetooth, full audio/media, devices/power, search/advanced files, choosers/portals, credentials, printing/calendar/capture and richer native layouts after current work. Reuse FILE-ADVANCED/SESSION and other existing owners; no feature implementation, dependency/default selection or release blocker implied. Cross-functional contracts are scoped now under existing CFG/IPC/SESSION/FILE owners; see [shared scope and candidate inventory](decisions/DESKTOP-EXPLORATION-2026-10-06.md). |
 | STANDARDS-01 | P1 / fixed protocol inventory complete; wider audit open | A first-icon WM_STATE zero-XID defect is reproduced and corrected in the atom/expose batch; real first/reused title XID checks and combined 1291-file qualification pass. Maintain requirement-level specification/revision/owner/test/profile/evidence coverage using [STANDARDS.md](STANDARDS.md). The [forty-row protocol register](verification/STANDARDS-2026-10-21-PROTOCOL-REQUIREMENTS.md) completes root/window/selection requirement inventory and owner handoffs, retaining historical evidence boundaries; other standards areas remain queued. Continue bounded inventories in stage 2; map independent fixtures and CI with VERIFY/COMPAT, reuse passing scoped evidence and assign real gaps to their owners. Required adopted clauses and accurate advertised capabilities are release gates; no blanket compliance badge or endless audit restart. See acceptance below. |

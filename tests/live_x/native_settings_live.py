@@ -37,6 +37,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+from settings_snapshot import expanded_settings
 import re
 import select
 import shlex
@@ -827,6 +828,16 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
         evidence['mfl'] = mfl
         serial = 0
 
+        def expand_reply(value):
+            keys = ('readiness', 'resource_state', 'native_run',
+                'native_sequence', 'xserial', 'failure_reason')
+            shared = value.get('application_defaults', {})
+            if all(key in shared for key in keys):
+                for row in value.get('settings', {}).values():
+                    if row.get('group') == 'application':
+                        assert all(key not in row for key in keys), row
+            return expanded_settings(value)
+
         def request(method='query', success=True, **fields):
             nonlocal serial
             serial += 1
@@ -839,7 +850,7 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
             evidence.setdefault('requests', []).append(dict(request=json.loads(
                 raw.decode().removeprefix('request ')), reply=result))
             assert len(evidence['requests']) <= 256
-            return result['result'] if success else result['error']['code']
+            return expand_reply(result['result']) if success else result['error']['code']
 
         def query():
             return request(scope='group:application')
@@ -851,7 +862,7 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
             peer.send(frame(token, resource='settings', scope='group:application'))
             result = peer.record()['reply']
             assert result['id'] == token
-            return result.get('result') if result['status'] == 'ok' else None
+            return expand_reply(result['result']) if result['status'] == 'ok' else None
         snapshot = wait_for_predicate('actual settings provider', ready_query,
             time.monotonic() + 15, process=core)
 
@@ -867,7 +878,7 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
                 assert key in shared, (key, shared)
             for item in fields.values():
                 assert item['group'] == 'application'
-                assert all(key not in item for key in keys), item
+                assert all(key in item for key in keys), item
             # Public IPC inherits shared metadata; standalone native text
             # records remain self-contained. Explicit row metadata wins.
             state = {key: value[key] for key in ('owner', 'generation',

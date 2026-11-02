@@ -772,6 +772,31 @@ def run(options):
             time.monotonic() + 5, process=native.process)
         wait_state(native, first, a, lambda s: s['map'] == 2,
             'stored Visible Off does not undo runtime Show on Refresh')
+        native.command('SendToModule FvwmTray Reload')
+        explicit_hidden = wait_for_predicate('explicit Reload applies stored Off',
+            lambda: (lambda value: value if value and value.map_state == 0
+                else None)(native.attrs(host)), time.monotonic() + 5,
+            process=native.process)
+        overlap = []
+        for padding, order in [(19, ('Refresh', 'Reload')),
+                (21, ('Reload', 'Refresh'))]:
+            before = native.attrs(host)
+            native.command('SendToModule FvwmTray Show')
+            wait_state(native, first, a, lambda value: value['map'] == 2,
+                'runtime Show before overlapping configuration requests')
+            native.command('*FvwmTray Padding %d' % padding)
+            native.command('\n'.join('SendToModule FvwmTray ' + message
+                for message in order))
+            applied = wait_for_predicate('overlapping Reload retains precedence',
+                lambda: (lambda value: dict(width=value.width,
+                    height=value.height, map_state=value.map_state)
+                    if value and value.map_state == 0 and value.width >
+                    before.width else None)(native.attrs(host)),
+                time.monotonic() + 5, process=native.process)
+            overlap.append(dict(order=order, padding=padding, actual=applied))
+        native.command('SendToModule FvwmTray Show')
+        wait_state(native, first, a, lambda value: value['map'] == 2,
+            'runtime Show restored after Reload precedence cases')
         native.command('*FvwmTray Visible On')
         native.command('*FvwmTray Padding 4')
         native.command('SendToModule FvwmTray Refresh')
@@ -781,6 +806,7 @@ def run(options):
             time.monotonic() + 5, process=native.process)
         evidence['cases']['refresh_preserves_runtime_visibility'] = dict(
             hidden=hidden_refresh, shown=shown_refresh,
+            explicit_reload_map=explicit_hidden.map_state, overlap=overlap,
             barrier='actual changed padding geometry; not an old Status record')
 
         evidence['cases']['mapping_resize_and_visibility'] = dict(

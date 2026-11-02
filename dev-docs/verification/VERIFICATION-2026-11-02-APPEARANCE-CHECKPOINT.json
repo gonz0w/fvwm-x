@@ -1,0 +1,3960 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "checkpoint": "A4 shared appearance acceptance",
+  "base": "765191d7b3ba8e6d2f6936cb205f3a853ef83445",
+  "branch": "codex/r1-appearance-checkpoint",
+  "source": {
+    "bin/FvwmPrompt/internal/desktopcontroller/desktop_icons_test.go": "692af07ea12232b0eb235bae027f4a7ec2ad34695863f24c1ea5f78e60d0959c",
+    "bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "a8835cb217649aead2f279030f7f545702aeb7d495a3454752a98227e3f06e66",
+    "bin/FvwmPrompt/internal/desktopcontroller/metrics_test.go": "b820b070b8ea70b45c3f59459f803740e55d137a39e589173b7986550efa9ebd",
+    "bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "e16cac5a03bfe2e4dd9921210f2aa401f89cec58eb69534a2405166851b7cde3",
+    "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "9b890fbb661ade642eba5a753369608eace1758205be035485afb1feef47a1e6",
+    "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "1958c836f4b89b4cf6bc3eb9b8dcfc88e4eb593cf187c22873215dd39241305b",
+    "doc/FvwmDesktop.adoc": "a0ec792acdf6efcead282c1c78c9e78ffd0f00c13643b7db999b7755e0a17dc3",
+    "doc/FvwmMFL.adoc": "f1738c4bf7d8f554138cb3f5d400a3dc323845f079c076510d3ff866c90ad65b",
+    "doc/FvwmTray.adoc": "dfaa7a9eacb657d1914848ba66d3bc3dd0af208ae08fea5b3eb1ed22caf5e5b1",
+    "modules/FvwmTray/tray.c": "0835b78145eb5eab71c9b237b35acf9a151637caa94811a6ee1b90fca8775587",
+    "tests/live_x/desktop_session_live.py": "5ff685ab9fca334154273587c598f79b3e25fb17aea8729d42fb790ce66697b9",
+    "tests/live_x/inspector_live.py": "169dd6bfa3c5806c07d7c3a1318d1ddd8885083bdeea78d2283b0b083caba8b9",
+    "tests/live_x/mfl_settings_live.py": "ec1120d02a992fb423a77171a71710fed73c1051e101322c87ec5a2b4a7e3f31",
+    "tests/live_x/native_settings_live.py": "02c220badf19023b6a1d20434b22d54ccb1b944d69f206ee4d3c66af447c51ff",
+    "tests/live_x/session_services_live.py": "fe88a95e2de8e865ed42b162d02fb7c3eb21949a66b941e72511d659bd810681",
+    "tests/live_x/settings_snapshot.py": "942f79cf18effc4d5eb356d90b0b24b8bec5e67e1bee0e00a3585734bdb44e22",
+    "tests/live_x/theme_composition_live.py": "9952d96f168c6afb88c81293aa72c6e1a5616efd583153d6b39b054aff0733b0",
+    "tests/live_x/tray_live.py": "9f0e5f731ba9ed684bceaabba297ad9c885d84fe566834f0b9fae17f273f29c4",
+    "tests/live_x/tray_modern_live.py": "2ef4276fc179ea081da256abf6e2e2c909b94b2fdc3e364798a7c1d43ee856a3",
+    "tests/meson.build": "c15fcf9cacfe0e9d4d3a5ba8f24aa9f1f1c4ecb0a4c8ba98d1a203785b16e0e3",
+    "tests/live_x/desktop_component_cases.py": "2209cc203a30c6f72a72525de8be079d8c000e958d4bf19bd8abb38437ffb680",
+    "tests/test_settings_snapshot.py": "aeab482c6750df71783fed72dfa8963b81ad394e84be730fad928ec78a355ea5"
+  },
+  "profile": {
+    "os": "Linux Ubuntu24.04",
+    "architecture": "ARM64 native CPU via AppleHV",
+    "compiler": "GCC13.3.0",
+    "go": "1.27.2",
+    "meson": "1.7.0",
+    "png": true,
+    "svg": true,
+    "session_dbus": true,
+    "nls": false,
+    "docs": false,
+    "native_c_sanitizers": false,
+    "installs": 0,
+    "new_packages": 0
+  },
+  "unit_composition": {
+    "jobs": [
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopsettings-normal",
+        "prepared_test_binary": {
+          "bytes": 5947242,
+          "path": "go-tests/desktopsettings-normal.test",
+          "sha256": "6023453e64867b96c325610c7479e6ebac81e46909a13852f68bffdf4283abd0"
+        },
+        "stdout_sha256": "e7e893606faef6b377efbbf58734fa90129918d54387fa82456007b2e10d313a",
+        "go_top_level_pass_line_count": 43,
+        "go_pass_lines_including_subtests": 70
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopsettings-race",
+        "prepared_test_binary": {
+          "bytes": 7413175,
+          "path": "go-tests/desktopsettings-race.test",
+          "sha256": "6a9ac63978669fb08bf5956cf3d88e4ba5ee56a22a38fef6ecd730a996a485f1"
+        },
+        "stdout_sha256": "bd74aa7958f524ce7e774c33cb261b6a35b2abb7efb65959a185608a40e64cea",
+        "go_top_level_pass_line_count": 43,
+        "go_pass_lines_including_subtests": 70
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopcheck-normal",
+        "prepared_test_binary": {
+          "bytes": 5627293,
+          "path": "go-tests/desktopcheck-normal.test",
+          "sha256": "51c2228d0f0c5c61ce1b66db66b2efe195c2e8fa2bad76cca7855e357aeb5b53"
+        },
+        "stdout_sha256": "4da9621f1ba2644a79247e06b2f44debe06a1556a4f69f72c558cc60a139f51e",
+        "go_top_level_pass_line_count": 12,
+        "go_pass_lines_including_subtests": 19
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopcheck-race",
+        "prepared_test_binary": {
+          "bytes": 6956149,
+          "path": "go-tests/desktopcheck-race.test",
+          "sha256": "c0e9f584d6b75798c3f4e591b3b5a2e5dfce0ce9a0c16c20fdff8568246440ee"
+        },
+        "stdout_sha256": "4da9621f1ba2644a79247e06b2f44debe06a1556a4f69f72c558cc60a139f51e",
+        "go_top_level_pass_line_count": 12,
+        "go_pass_lines_including_subtests": 19
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopworker-normal",
+        "prepared_test_binary": {
+          "bytes": 6940216,
+          "path": "go-tests/desktopworker-normal.test",
+          "sha256": "7cd384ee0a1a80c974b99f100c6dbe07890028f328004c287b265e10c5ec40f1"
+        },
+        "stdout_sha256": "c0b9c2cd7515b9583a915347b0d8be94f9976006e4e41b919296a3b50628e24b",
+        "go_top_level_pass_line_count": 26,
+        "go_pass_lines_including_subtests": 37
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopworker-race",
+        "prepared_test_binary": {
+          "bytes": 8547297,
+          "path": "go-tests/desktopworker-race.test",
+          "sha256": "421319a65c6f67b204e79436414906100c80baeb68f3388533fc780da3265c8f"
+        },
+        "stdout_sha256": "913622f6797635bc71d1ded36b2180e57e05b8ac74cf57c727952cad0f97f367",
+        "go_top_level_pass_line_count": 26,
+        "go_pass_lines_including_subtests": 37
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-xdgmenu-normal",
+        "prepared_test_binary": {
+          "bytes": 6311613,
+          "path": "go-tests/xdgmenu-normal.test",
+          "sha256": "21720188e8ec579f26f68ab335413c9d92dd43f969b8b8622bb6f9263b987631"
+        },
+        "stdout_sha256": "e7896e3b4dac5324e235339cc3d58486e9c900362b1d25f45bdda73210410402",
+        "go_top_level_pass_line_count": 66,
+        "go_pass_lines_including_subtests": 474
+      },
+      {
+        "capture": "native03",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-xdgmenu-race",
+        "prepared_test_binary": {
+          "bytes": 7847322,
+          "path": "go-tests/xdgmenu-race.test",
+          "sha256": "ccf1c93ea23c0764bc400c536dc5bb9cd78d78b61c7c81aacc4f31eb32c23569"
+        },
+        "stdout_sha256": "a63f5ec7f8ce40c0cdf7e9366bf90ec6c937725cfc5b2e55c206efcea8f443a4",
+        "go_top_level_pass_line_count": 66,
+        "go_pass_lines_including_subtests": 474
+      },
+      {
+        "capture": "native04",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopcontroller-normal",
+        "prepared_test_binary": {
+          "bytes": 8468370,
+          "path": "go-tests/desktopcontroller-normal.test",
+          "sha256": "65652daeabde9d181e5cf17f2c421148573d834b64aa7b0b49abddcb5376a4d8"
+        },
+        "stdout_sha256": "37b07859209864124e482ee669de8570d4efd5d1acbb25a295078c063ad74be1",
+        "go_top_level_pass_line_count": 175,
+        "go_pass_lines_including_subtests": 341
+      },
+      {
+        "capture": "native04",
+        "exit": 0,
+        "go_fail_line_count": 0,
+        "label": "unit-desktopcontroller-race",
+        "prepared_test_binary": {
+          "bytes": 10564270,
+          "path": "go-tests/desktopcontroller-race.test",
+          "sha256": "c7271ef979af42fd5c0f130b8e8651b2f889c35cace65b7a15ab11559383786e"
+        },
+        "stdout_sha256": "b771a73b89e03ecc1711914bb2581b88fd1a14b87546a3e5bfb2ff7aeaa30834",
+        "go_top_level_pass_line_count": 175,
+        "go_pass_lines_including_subtests": 341
+      }
+    ],
+    "native04_settings_wire_decoder": {
+      "exit": 0,
+      "result": "OK",
+      "tests_run": 5
+    },
+    "prepare_and_run_receipt_sha256": {
+      "native03_prepare_receipt_sha256": "3419a591caca96566bb7fc8f71e8f9003c6b7ce2031725cc6916930f921426ea",
+      "native03_run_receipt_sha256": "0409bab2d1a135f8d6dac1dcfc1e8a84e9b5651264f8559f2aa6514086abf6ff",
+      "native04_prepare_receipt_sha256": "7af3a316f24ac7f263ffc0dcce456671ac99e8c127390ecfd789db5572ed9a86",
+      "native04_run_receipt_sha256": "ce54ff739de5913bf8611ee7f2fd527dc574ba1f5e90f1065d17d377ab592617"
+    },
+    "schema": "fvwm-x-composed-unit-receipts-verified-v1",
+    "scope": "latest accepted jobs only: eight noncontroller native03 normal/race Go jobs and two native04 controller normal/race Go jobs",
+    "scope_gaps": [
+      "native04 UI/live-X jobs are failed and excluded from this accepted unit-job total",
+      "native05 is separate and not inspected",
+      "actual backend/model identity remains unverified"
+    ],
+    "terminology": "644 unindented Go PASS lines count top-level tests; 1882 PASS lines include indented subtests. Neither is an assertion count.",
+    "totals": {
+      "by_capture": {
+        "native03": {
+          "go_fail_lines": 0,
+          "job_exit_nonzero": 0,
+          "job_exit_zero": 8,
+          "jobs": 8,
+          "go_top_level_pass_lines": 294
+        },
+        "native04": {
+          "go_fail_lines": 0,
+          "job_exit_nonzero": 0,
+          "job_exit_zero": 2,
+          "jobs": 2,
+          "go_top_level_pass_lines": 350
+        }
+      },
+      "go_fail_lines": 0,
+      "job_exit_nonzero": 0,
+      "job_exit_zero": 10,
+      "jobs": 10,
+      "go_top_level_pass_lines": 644,
+      "go_pass_lines_including_subtests": 1882
+    }
+  },
+  "python_decoder": {
+    "tests": 5,
+    "status": "passed native04"
+  },
+  "accepted_ui_jobs": [
+    {
+      "attempt": "native05",
+      "label": "ordinary-tray",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/tray_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/artifacts05/tray",
+        "--execution-profile",
+        "native-cpu"
+      ],
+      "exit": 0,
+      "seconds": 5.031040080000025,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "native05",
+      "label": "acquisition-positive",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/tray_modern_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/artifacts05/acquisition-positive",
+        "--execution-profile",
+        "native-cpu",
+        "--phase",
+        "modern",
+        "--case-group",
+        "acquisition",
+        "--tray",
+        "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmTray/FvwmTrayIconProbe",
+        "--acquisition-probe",
+        "positive"
+      ],
+      "exit": 0,
+      "seconds": 2.8570162640000376,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "native05",
+      "label": "acquisition-control",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/tray_modern_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/artifacts05/acquisition-control",
+        "--execution-profile",
+        "native-cpu",
+        "--phase",
+        "modern",
+        "--case-group",
+        "acquisition",
+        "--tray",
+        "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmTray/FvwmTrayIconControl",
+        "--acquisition-probe",
+        "control"
+      ],
+      "exit": 0,
+      "seconds": 2.8417453069999965,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "native05",
+      "label": "modern-appearance",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/tray_modern_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/artifacts05/modern-appearance",
+        "--execution-profile",
+        "native-cpu",
+        "--phase",
+        "modern",
+        "--case-group",
+        "appearance"
+      ],
+      "exit": 0,
+      "seconds": 4.371518696999999,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "attempt": "native06",
+      "label": "component-metrics-three-profiles",
+      "argv": [
+        "/usr/bin/python3",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/theme_composition_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/artifacts06/components",
+        "--execution-profile",
+        "native-cpu",
+        "--component-metrics"
+      ],
+      "exit": 0,
+      "seconds": 27.947791892,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "component_profiles": {
+    "slate-dark": {
+      "receipt_sha256": "b765361af63dd3ee04b5b96e5a95aa994dc00b3d7704ba369a1d088fa83ef564",
+      "configuration_sha256": "9e60f58a308d59bbbb2833984d21547efdfcc4f528f12b036d55b3d9d035b38e",
+      "case": {
+        "profile": "slate-dark",
+        "status": "passed",
+        "observations": {
+          "inherited": {
+            "form": {
+              "width": 643,
+              "height": 316,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 201,
+                  "y": 136,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 228,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 312,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 414,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 541,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 145,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 229,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 298,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 187,
+                  "y": 226,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 283,
+                  "width": 61,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 194,
+                  "y": 283,
+                  "width": 102,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 419,
+                  "y": 283,
+                  "width": 83,
+                  "height": 28,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 220,
+              "height": 136
+            }
+          },
+          "compact": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "spacious": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 184
+            }
+          },
+          "bordered": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 240,
+              "height": 188
+            }
+          },
+          "enlarged": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "recovery-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "recovered": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "restored": {
+            "form": {
+              "width": 643,
+              "height": 316,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 201,
+                  "y": 136,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 228,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 312,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 414,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 541,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 145,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 229,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 298,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 187,
+                  "y": 226,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 283,
+                  "width": 61,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 194,
+                  "y": 283,
+                  "width": 102,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 419,
+                  "y": 283,
+                  "width": 83,
+                  "height": 28,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 220,
+              "height": 136
+            }
+          },
+          "conflict-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          }
+        },
+        "oracle": "actual X menu/Form/control geometry; independent IPC metadata",
+        "schedule_metrics": {
+          "old": {
+            "width": 280,
+            "height": 127,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 10,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 50,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 90,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 90,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "reopened": {
+            "width": 280,
+            "height": 129,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 11,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 52,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 92,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 92,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "stale_editor_retired": true
+        },
+        "product_launcher": {
+          "width": 408,
+          "height": 599
+        },
+        "existing_form_unchanged": true,
+        "reopened_form_adopted": true,
+        "inherited_geometry_restored": true,
+        "cleanup": "editor/menu closed; private menu retired",
+        "recovery": {
+          "terminal_consumer": {
+            "time": 26.464464451,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+            "continuation": 1,
+            "notice_text": "Resource preview abandoned; previous resources restored.",
+            "chunks": [
+              {
+                "time": 26.464464451,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 26.464464451
+          },
+          "publication_rows": [
+            {
+              "time": 26.464502287,
+              "direction": "out",
+              "kind": null,
+              "text": "MenuStyle SlateLauncherStyle Font \"xft:Sans:size=18\", VerticalItemSpacing 12 12, VerticalTitleSpacing 14 14, BorderWidth 3",
+              "continuation": 1
+            },
+            {
+              "time": 26.464529371,
+              "direction": "out",
+              "kind": null,
+              "text": "AddToFunc SlateTrayConfigure I *SlateTray IconTheme probe-resumed",
+              "continuation": 1
+            }
+          ],
+          "retained_old_tuple": false,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-submitted",
+            "desktop_density": "next-owned-form-start; launcher-submitted",
+            "desktop_font": "next-owned-form-start; launcher-submitted",
+            "desktop_icon_theme": "tray-configuration-submitted"
+          }
+        },
+        "conflict": {
+          "terminal_consumer": {
+            "time": 28.831211097,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+            "continuation": 1,
+            "notice_text": "Appearance changed elsewhere; automatic restore refused. Theme updates are paused until controller restart.",
+            "chunks": [
+              {
+                "time": 28.831211097,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+                "continuation": 1
+              },
+              {
+                "time": 28.831218347,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x72652070617573656420756e74696c20636f6e74726f6c6c657220726573746172742e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 28.831218347
+          },
+          "publication_rows": [],
+          "retained_old_tuple": true,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-not-submitted",
+            "desktop_density": "next-owned-form-start; launcher-not-submitted",
+            "desktop_font": "next-owned-form-start; launcher-not-submitted",
+            "desktop_icon_theme": "not-submitted"
+          }
+        }
+      },
+      "captures": [
+        {
+          "file": "component-enlarged-form.png",
+          "sha256": "d85585287b622fcf8e47cca3a7e7fb56826c2b2b60b7535f0396a797c83b56db",
+          "bytes": 92851
+        },
+        {
+          "file": "component-enlarged-menu.png",
+          "sha256": "f347645d869dfbbae470026a23d4794adb283958b7ec13c846a5f86feae96382",
+          "bytes": 29493
+        },
+        {
+          "file": "component-product-menu.png",
+          "sha256": "2c656c726f177f8f408c9bca7fefe5398dfaf2c1cb391e272f935f91a3f0a55f",
+          "bytes": 49285
+        },
+        {
+          "file": "component-conflict-retained-form.png",
+          "sha256": "ed572cdcf701680cc6823fdfdac9b3d08a58425bca31ffb251a069c358f3eefa",
+          "bytes": 69185
+        }
+      ]
+    },
+    "dune-light": {
+      "receipt_sha256": "6ac2f83dffe2773168af1dba514f19f4160c980ccd80dc9415ed9e3b2cf68a36",
+      "configuration_sha256": "d1596ecddef3572d917073dae6bfe24ff0877518b2372ad73159384002463e3c",
+      "case": {
+        "profile": "dune-light",
+        "status": "passed",
+        "observations": {
+          "inherited": {
+            "form": {
+              "width": 643,
+              "height": 316,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 201,
+                  "y": 136,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 228,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 312,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 414,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 541,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 145,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 229,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 298,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 187,
+                  "y": 226,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 283,
+                  "width": 61,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 194,
+                  "y": 283,
+                  "width": 102,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 419,
+                  "y": 283,
+                  "width": 83,
+                  "height": 28,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 220,
+              "height": 136
+            }
+          },
+          "compact": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "spacious": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 184
+            }
+          },
+          "bordered": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 240,
+              "height": 188
+            }
+          },
+          "enlarged": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "recovery-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "recovered": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "restored": {
+            "form": {
+              "width": 643,
+              "height": 316,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 201,
+                  "y": 136,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 228,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 312,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 414,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 541,
+                  "y": 172,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 145,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 229,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 298,
+                  "y": 199,
+                  "width": 22,
+                  "height": 22,
+                  "border": 0
+                },
+                {
+                  "x": 187,
+                  "y": 226,
+                  "width": 204,
+                  "height": 31,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 283,
+                  "width": 61,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 194,
+                  "y": 283,
+                  "width": 102,
+                  "height": 28,
+                  "border": 0
+                },
+                {
+                  "x": 419,
+                  "y": 283,
+                  "width": 83,
+                  "height": 28,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 220,
+              "height": 136
+            }
+          },
+          "conflict-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          }
+        },
+        "oracle": "actual X menu/Form/control geometry; independent IPC metadata",
+        "schedule_metrics": {
+          "old": {
+            "width": 280,
+            "height": 127,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 10,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 50,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 90,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 90,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "reopened": {
+            "width": 280,
+            "height": 129,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 11,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 52,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 92,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 92,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "stale_editor_retired": true
+        },
+        "product_launcher": {
+          "width": 408,
+          "height": 599
+        },
+        "existing_form_unchanged": true,
+        "reopened_form_adopted": true,
+        "inherited_geometry_restored": true,
+        "cleanup": "editor/menu closed; private menu retired",
+        "recovery": {
+          "terminal_consumer": {
+            "time": 35.70278561,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+            "continuation": 1,
+            "notice_text": "Resource preview abandoned; previous resources restored.",
+            "chunks": [
+              {
+                "time": 35.70278561,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 35.70278561
+          },
+          "publication_rows": [
+            {
+              "time": 35.70282011,
+              "direction": "out",
+              "kind": null,
+              "text": "MenuStyle SlateLauncherStyle Font \"xft:Sans:size=18\", VerticalItemSpacing 12 12, VerticalTitleSpacing 14 14, BorderWidth 3",
+              "continuation": 1
+            },
+            {
+              "time": 35.702851568,
+              "direction": "out",
+              "kind": null,
+              "text": "AddToFunc SlateTrayConfigure I *SlateTray IconTheme probe-resumed",
+              "continuation": 1
+            }
+          ],
+          "retained_old_tuple": false,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-submitted",
+            "desktop_density": "next-owned-form-start; launcher-submitted",
+            "desktop_font": "next-owned-form-start; launcher-submitted",
+            "desktop_icon_theme": "tray-configuration-submitted"
+          }
+        },
+        "conflict": {
+          "terminal_consumer": {
+            "time": 38.159457283,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+            "continuation": 1,
+            "notice_text": "Appearance changed elsewhere; automatic restore refused. Theme updates are paused until controller restart.",
+            "chunks": [
+              {
+                "time": 38.159457283,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+                "continuation": 1
+              },
+              {
+                "time": 38.159469033,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x72652070617573656420756e74696c20636f6e74726f6c6c657220726573746172742e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 38.159469033
+          },
+          "publication_rows": [],
+          "retained_old_tuple": true,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-not-submitted",
+            "desktop_density": "next-owned-form-start; launcher-not-submitted",
+            "desktop_font": "next-owned-form-start; launcher-not-submitted",
+            "desktop_icon_theme": "not-submitted"
+          }
+        }
+      },
+      "captures": [
+        {
+          "file": "component-enlarged-form.png",
+          "sha256": "cdb74b2ff546d3e19a8865aa4e3391f8d2ddef6491910e6b4e02bcf639abe2bc",
+          "bytes": 92729
+        },
+        {
+          "file": "component-enlarged-menu.png",
+          "sha256": "6fc353da32937134d3cda170342e04cb2c4ce51c3025cb6a296e8cdb0e422f39",
+          "bytes": 30300
+        },
+        {
+          "file": "component-product-menu.png",
+          "sha256": "f9ba67d38f344fee9dafdf2818943fda2e241651825929d09dd7b528c3235304",
+          "bytes": 49806
+        },
+        {
+          "file": "component-conflict-retained-form.png",
+          "sha256": "5309c9762a322aedcfb59e9f13706377a7f2f25083f3adf23d2a58cc515d13f9",
+          "bytes": 69930
+        }
+      ]
+    },
+    "classic-large": {
+      "receipt_sha256": "aa8618cb4bb62b37038abf46bcfca677e0db7fbdf5a0bf48b4615c4d3164366c",
+      "configuration_sha256": "83014bf99121791e9d2994110e3a15bb5185b7c07e051df79f5d861da839fcb3",
+      "case": {
+        "profile": "classic-large",
+        "status": "passed",
+        "observations": {
+          "inherited": {
+            "form": {
+              "width": 1100,
+              "height": 472,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 356,
+                  "y": 214,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 401,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 557,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 713,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 929,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 251,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 407,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 518,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 356,
+                  "y": 343,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 426,
+                  "width": 102,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 426,
+                  "width": 207,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 721,
+                  "y": 426,
+                  "width": 162,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 310,
+              "height": 188
+            }
+          },
+          "compact": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "spacious": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 184
+            }
+          },
+          "bordered": {
+            "form": {
+              "width": 749,
+              "height": 498,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 257,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 303,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 344,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 380,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 461,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 461,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 461,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 240,
+              "height": 188
+            }
+          },
+          "enlarged": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "recovery-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          },
+          "recovered": {
+            "form": {
+              "width": 1043,
+              "height": 606,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 335,
+                  "y": 311,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 382,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 514,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 676,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 880,
+                  "y": 366,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 232,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 364,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 469,
+                  "y": 416,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 461,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 560,
+                  "width": 96,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 308,
+                  "y": 560,
+                  "width": 174,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 684,
+                  "y": 560,
+                  "width": 141,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 291,
+              "height": 224
+            }
+          },
+          "restored": {
+            "form": {
+              "width": 1100,
+              "height": 472,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 356,
+                  "y": 214,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 401,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 557,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 713,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 929,
+                  "y": 263,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 251,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 407,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 518,
+                  "y": 303,
+                  "width": 35,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 356,
+                  "y": 343,
+                  "width": 360,
+                  "height": 44,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 426,
+                  "width": 102,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 313,
+                  "y": 426,
+                  "width": 207,
+                  "height": 41,
+                  "border": 0
+                },
+                {
+                  "x": 721,
+                  "y": 426,
+                  "width": 162,
+                  "height": 41,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 310,
+              "height": 188
+            }
+          },
+          "conflict-baseline": {
+            "form": {
+              "width": 749,
+              "height": 406,
+              "contained": true,
+              "controls": [
+                {
+                  "x": 236,
+                  "y": 196,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 268,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 366,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 484,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 631,
+                  "y": 236,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 165,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 263,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 342,
+                  "y": 267,
+                  "width": 26,
+                  "height": 26,
+                  "border": 0
+                },
+                {
+                  "x": 220,
+                  "y": 298,
+                  "width": 252,
+                  "height": 35,
+                  "border": 0
+                },
+                {
+                  "x": 10,
+                  "y": 369,
+                  "width": 69,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 222,
+                  "y": 369,
+                  "width": 123,
+                  "height": 32,
+                  "border": 0
+                },
+                {
+                  "x": 488,
+                  "y": 369,
+                  "width": 101,
+                  "height": 32,
+                  "border": 0
+                }
+              ]
+            },
+            "menu": {
+              "width": 236,
+              "height": 120
+            }
+          }
+        },
+        "oracle": "actual X menu/Form/control geometry; independent IPC metadata",
+        "schedule_metrics": {
+          "old": {
+            "width": 280,
+            "height": 127,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 10,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 50,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 90,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 90,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "reopened": {
+            "width": 280,
+            "height": 129,
+            "contained": true,
+            "controls": [
+              {
+                "x": 194,
+                "y": 11,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 208,
+                "y": 52,
+                "width": 62,
+                "height": 35,
+                "border": 0
+              },
+              {
+                "x": 10,
+                "y": 92,
+                "width": 53,
+                "height": 32,
+                "border": 0
+              },
+              {
+                "x": 201,
+                "y": 92,
+                "width": 69,
+                "height": 32,
+                "border": 0
+              }
+            ]
+          },
+          "stale_editor_retired": true
+        },
+        "product_launcher": {
+          "width": 408,
+          "height": 599
+        },
+        "existing_form_unchanged": true,
+        "reopened_form_adopted": true,
+        "inherited_geometry_restored": true,
+        "cleanup": "editor/menu closed; private menu retired",
+        "recovery": {
+          "terminal_consumer": {
+            "time": 44.99324771,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+            "continuation": 1,
+            "notice_text": "Resource preview abandoned; previous resources restored.",
+            "chunks": [
+              {
+                "time": 44.99324771,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x5265736f757263652070726576696577206162616e646f6e65643b2070726576696f7573207265736f757263657320726573746f7265642e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 44.99324771
+          },
+          "publication_rows": [
+            {
+              "time": 44.993285127,
+              "direction": "out",
+              "kind": null,
+              "text": "MenuStyle SlateLauncherStyle Font \"xft:Sans:size=18\", VerticalItemSpacing 12 12, VerticalTitleSpacing 14 14, BorderWidth 3",
+              "continuation": 1
+            },
+            {
+              "time": 44.993312293,
+              "direction": "out",
+              "kind": null,
+              "text": "AddToFunc SlateTrayConfigure I *SlateTray IconTheme probe-resumed",
+              "continuation": 1
+            }
+          ],
+          "retained_old_tuple": false,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-submitted",
+            "desktop_density": "next-owned-form-start; launcher-submitted",
+            "desktop_font": "next-owned-form-start; launcher-submitted",
+            "desktop_icon_theme": "tray-configuration-submitted"
+          }
+        },
+        "conflict": {
+          "terminal_consumer": {
+            "time": 47.425909024,
+            "direction": "out",
+            "kind": null,
+            "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+            "continuation": 1,
+            "notice_text": "Appearance changed elsewhere; automatic restore refused. Theme updates are paused until controller restart.",
+            "chunks": [
+              {
+                "time": 47.425909024,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x417070656172616e6365206368616e67656420656c736577686572653b206175746f6d6174696320726573746f726520726566757365642e205468656d6520757064617465732061",
+                "continuation": 1
+              },
+              {
+                "time": 47.425915899,
+                "direction": "out",
+                "kind": null,
+                "text": "*SlateNoticeForm: TextHex x72652070617573656420756e74696c20636f6e74726f6c6c657220726573746172742e",
+                "continuation": 1
+              }
+            ],
+            "completed_time": 47.425915899
+          },
+          "publication_rows": [],
+          "retained_old_tuple": true,
+          "final_application": {
+            "desktop_border": "next-owned-form-start; launcher-not-submitted",
+            "desktop_density": "next-owned-form-start; launcher-not-submitted",
+            "desktop_font": "next-owned-form-start; launcher-not-submitted",
+            "desktop_icon_theme": "not-submitted"
+          }
+        }
+      },
+      "captures": [
+        {
+          "file": "component-enlarged-form.png",
+          "sha256": "950b07b785a6fdf08f9c000f461a610877db0d91b020e334c80743bc8ad4df86",
+          "bytes": 101952
+        },
+        {
+          "file": "component-enlarged-menu.png",
+          "sha256": "9ceeccb0d0baa5b3753ec933e0dcc21e383d8ef47841b91618a811164848b0ff",
+          "bytes": 36066
+        },
+        {
+          "file": "component-product-menu.png",
+          "sha256": "599b7c44f7dcc73717bb9ad0bc696be281ed9e2eac6ca7184804666b13d36edc",
+          "bytes": 55739
+        },
+        {
+          "file": "component-conflict-retained-form.png",
+          "sha256": "9254e2d41c6ddf5cb71b2ae530ee4879739c3d31f39962e767df12d314518365",
+          "bytes": 77250
+        }
+      ]
+    }
+  },
+  "icon_acquisition": {
+    "positive": {
+      "mode": "positive",
+      "instrumentation_cost_excluded": true,
+      "oracle": "exact-path loader attempts; not visible stale pixels",
+      "held": {
+        "phase": 2,
+        "old": 1,
+        "loads": 0,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 31,
+        "menu": 32,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 31,
+        "held_menu": 32
+      },
+      "changed": {
+        "phase": 2,
+        "old": 1,
+        "loads": 0,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 31,
+        "menu": 32,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 31,
+        "held_menu": 32
+      },
+      "final": {
+        "phase": 3,
+        "old": 1,
+        "loads": 1,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 31,
+        "menu": 32,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 31,
+        "held_menu": 32
+      },
+      "old_paths": [
+        "/tmp/fvwm-tray-icons-qUSMKr/.fvwm-xdg-c09e4a2e1244adce22c83bf04549b85e9eb764124140bd2b3777ae563cd0de79.png"
+      ],
+      "loaded_paths": [
+        "/tmp/fvwm-tray-icons-1RgAeW/.fvwm-xdg-258fb7ed02cf311e6b250be74d11a7284eb972a2508c86490cec4e9cada2cd8e.png"
+      ],
+      "old_load_rejected": true,
+      "status": "passed expected positive",
+      "cleanup": [
+        "gate released and disarmed",
+        "fixture profile restored"
+      ]
+    },
+    "control": {
+      "mode": "control",
+      "instrumentation_cost_excluded": true,
+      "oracle": "exact-path loader attempts; not visible stale pixels",
+      "held": {
+        "phase": 2,
+        "old": 1,
+        "loads": 0,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 42,
+        "menu": 43,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 42,
+        "held_menu": 43
+      },
+      "changed": {
+        "phase": 2,
+        "old": 1,
+        "loads": 0,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 42,
+        "menu": 43,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 42,
+        "held_menu": 43
+      },
+      "final": {
+        "phase": 3,
+        "old": 1,
+        "loads": 2,
+        "synced": 1,
+        "overflow": 0,
+        "errors": 0,
+        "item": 11,
+        "item_generation": 42,
+        "menu": 43,
+        "open": 1,
+        "ready": 1,
+        "stale": 0,
+        "held_item": 11,
+        "held_item_generation": 42,
+        "held_menu": 43
+      },
+      "old_paths": [
+        "/tmp/fvwm-tray-icons-Aj82LN/.fvwm-xdg-c09e4a2e1244adce22c83bf04549b85e9eb764124140bd2b3777ae563cd0de79.png"
+      ],
+      "loaded_paths": [
+        "/tmp/fvwm-tray-icons-Aj82LN/.fvwm-xdg-c09e4a2e1244adce22c83bf04549b85e9eb764124140bd2b3777ae563cd0de79.png",
+        "/tmp/fvwm-tray-icons-ncNFtc/.fvwm-xdg-258fb7ed02cf311e6b250be74d11a7284eb972a2508c86490cec4e9cada2cd8e.png"
+      ],
+      "old_load_rejected": false,
+      "status": "passed expected control",
+      "cleanup": [
+        "gate released and disarmed",
+        "fixture profile restored"
+      ]
+    }
+  },
+  "tray_visibility": {
+    "hidden": {
+      "width": 196,
+      "height": 50,
+      "map_state": 0
+    },
+    "shown": {
+      "x": 996,
+      "y": 707,
+      "width": 204,
+      "height": 93,
+      "border": 0
+    },
+    "explicit_reload_map": 0,
+    "overlap": [
+      {
+        "order": [
+          "Refresh",
+          "Reload"
+        ],
+        "padding": 19,
+        "actual": {
+          "width": 208,
+          "height": 62,
+          "map_state": 0
+        }
+      },
+      {
+        "order": [
+          "Reload",
+          "Refresh"
+        ],
+        "padding": 21,
+        "actual": {
+          "width": 212,
+          "height": 66,
+          "map_state": 0
+        }
+      }
+    ],
+    "barrier": "actual changed padding geometry; not an old Status record"
+  },
+  "binary_inputs": {
+    "build/fvwm3": {
+      "sha256": "b551bd16bbd7461ecb410c1026f3daba4023b8caeeb3d1aab2d3f273b067de80",
+      "bytes": 5865928
+    },
+    "build/bin/FvwmPrompt/FvwmDesktop": {
+      "sha256": "79cd5b183d46feb401b7b0bd1b3d63b331a993db532178ec3473b9405a39f2dd",
+      "bytes": 6756160
+    },
+    "build/bin/FvwmPrompt/fvwm-desktop-worker": {
+      "sha256": "e9a26a7c897bb2e83420af6661028874e5b413bdb7f41683598f0ed1ad8ac81e",
+      "bytes": 6478988
+    },
+    "build/bin/FvwmPrompt/fvwm-session": {
+      "sha256": "1ee6a8cc1222bbdcff17b6445ed22ddee5179b3e38fd2670e79d78e362fb21a2",
+      "bytes": 5402860
+    },
+    "build/bin/fvwm-image-svg-worker": {
+      "sha256": "d90a5e24ef3d0034cf76a22e915e4751571a42fbc7f357e62098dd4926b15d21",
+      "bytes": 177552
+    },
+    "build/bin/fvwm-desktop-capture": {
+      "sha256": "cd875291428a8771737a6d750867c143a71d461282167f4cb2b37ce0e84bf5cd",
+      "bytes": 98592
+    },
+    "build/bin/fvwm-session-bus": {
+      "sha256": "cf86970a8c16646fd08c2b3759855a967231a7fbb05651feb12274b9bd6e19cc",
+      "bytes": 257624
+    },
+    "build/tests/tray-client": {
+      "sha256": "46d5cd2701906ade6cae2434f10045273e8b5415a6b0ea4a42524899338be00f",
+      "bytes": 192000
+    },
+    "build/tests/tray-sni-client": {
+      "sha256": "ec6800a63b01ca61a4b167420098fb46d18ff77d68fd75f1eb05cdfdf18745cf",
+      "bytes": 213496
+    },
+    "build/tests/image-owner-probe": {
+      "sha256": "4b4e7aa267186c7121b7ed3f6ff0bc7e14e84139cf96b570ceac3bbf32622290",
+      "bytes": 164256
+    },
+    "build/modules/FvwmMFL/FvwmMFL": {
+      "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba",
+      "bytes": 463696
+    },
+    "build/modules/FvwmForm/FvwmForm": {
+      "sha256": "b2ffbd474c058abb0c0140e93c081c23b1050430763ca9745fc99f6320ea60a1",
+      "bytes": 1921672
+    },
+    "build/modules/FvwmButtons/FvwmButtons": {
+      "sha256": "978954123e13eb8f0fe63741f77fb0dbe9b579713ae49b3fce5edc897998a0de",
+      "bytes": 1791192
+    },
+    "build/modules/FvwmBacker/FvwmBacker": {
+      "sha256": "da56d05589184a817799d9e58d749ddc2979a7ef982f6c9b05e09e5aa2dfde01",
+      "bytes": 1113608
+    },
+    "build/modules/FvwmPager/FvwmPager": {
+      "sha256": "86c9bcc7d79e8eb8c784727cf60955a15360bc73964f3f3b19028e65312056b4",
+      "bytes": 1637480
+    },
+    "build/modules/FvwmIconMan/FvwmIconMan": {
+      "sha256": "9d408d527ab91783e9d486692944247b7e9569ddbbf05284051bd8108e124159",
+      "bytes": 1780696
+    },
+    "build/modules/FvwmEvent/FvwmEvent": {
+      "sha256": "a6805d69f1495835f9e03186c4901dc3f092a27c5e25bfea9d11c27d660f8257",
+      "bytes": 170736
+    },
+    "build/modules/FvwmTray/FvwmTray": {
+      "sha256": "5eabca576c555616cc77803765ec1bd6b698c17e25b91e1490959d565f02ea52",
+      "bytes": 1918848
+    },
+    "build/modules/FvwmNotify/FvwmNotify": {
+      "sha256": "c8b9cbd89f6c3d57ecfe5348ca32c8018c83f3255d7973164a651423d76ae8ad",
+      "bytes": 1455984
+    },
+    "build/modules/FvwmTray/FvwmTrayIconProbe": {
+      "sha256": "14ca10da2bbcf3283a82c9e2e41afc5ce701662ca9a46a576a1590bdea0b803a",
+      "bytes": 2089304
+    },
+    "build/modules/FvwmTray/FvwmTrayIconControl": {
+      "sha256": "b9e04472746e722b35ea4cbe9be5565193b1773977ca90b6dc1c695f1100fda8",
+      "bytes": 2089080
+    },
+    "go-tests/desktopsettings-normal.test": {
+      "sha256": "6023453e64867b96c325610c7479e6ebac81e46909a13852f68bffdf4283abd0",
+      "bytes": 5947242
+    },
+    "go-tests/desktopsettings-race.test": {
+      "sha256": "6a9ac63978669fb08bf5956cf3d88e4ba5ee56a22a38fef6ecd730a996a485f1",
+      "bytes": 7413175
+    },
+    "go-tests/desktopcontroller-normal.test": {
+      "sha256": "65652daeabde9d181e5cf17f2c421148573d834b64aa7b0b49abddcb5376a4d8",
+      "bytes": 8468370
+    },
+    "go-tests/desktopcontroller-race.test": {
+      "sha256": "c7271ef979af42fd5c0f130b8e8651b2f889c35cace65b7a15ab11559383786e",
+      "bytes": 10564270
+    },
+    "go-tests/desktopcheck-normal.test": {
+      "sha256": "51c2228d0f0c5c61ce1b66db66b2efe195c2e8fa2bad76cca7855e357aeb5b53",
+      "bytes": 5627293
+    },
+    "go-tests/desktopcheck-race.test": {
+      "sha256": "c0e9f584d6b75798c3f4e591b3b5a2e5dfce0ce9a0c16c20fdff8568246440ee",
+      "bytes": 6956149
+    },
+    "go-tests/desktopworker-normal.test": {
+      "sha256": "7cd384ee0a1a80c974b99f100c6dbe07890028f328004c287b265e10c5ec40f1",
+      "bytes": 6940216
+    },
+    "go-tests/desktopworker-race.test": {
+      "sha256": "421319a65c6f67b204e79436414906100c80baeb68f3388533fc780da3265c8f",
+      "bytes": 8547297
+    },
+    "go-tests/xdgmenu-normal.test": {
+      "sha256": "21720188e8ec579f26f68ab335413c9d92dd43f969b8b8622bb6f9263b987631",
+      "bytes": 6311613
+    },
+    "go-tests/xdgmenu-race.test": {
+      "sha256": "ccf1c93ea23c0764bc400c536dc5bb9cd78d78b61c7c81aacc4f31eb32c23569",
+      "bytes": 7847322
+    }
+  },
+  "attempts": {
+    "native01": {
+      "result_sha256": "8202de1cb3d085522d37653bf10b77426fc2f6a95ff637f11b8bab7f261e47de",
+      "status": "failed; retained",
+      "error": "AssertionError(\"AssertionError('prepare')\")",
+      "plan_sha256": "b7c186a42206a75856fb8cbe3ab37ec555a1cb64d56568ecb41c8e72190c5af6"
+    },
+    "native02": {
+      "result_sha256": "ced1f683209282924352ba9f6928db0b1c01c2bc0914ecbd52fb4d02dd5a144d",
+      "status": "failed; retained",
+      "error": "AssertionError(\"AssertionError('runtime')\")",
+      "plan_sha256": "2ffca022ef3f1ed3269b2d7f497b1e5784b1b92eedbb367f7c6393d1b1f67aff"
+    },
+    "native03": {
+      "result_sha256": "b7e82dc14c5051b3cdf85515703c50b70a0782b9277bfe68af77df0a5ec97c9b",
+      "status": "failed; retained",
+      "error": "AssertionError(\"AssertionError('runtime')\")",
+      "plan_sha256": "1904e9aeae19ed3c16c280644509a40f7b73dad897cbfb020c94354c6676b181"
+    },
+    "native04": {
+      "result_sha256": "972a1534f8aeac4538c855618757c75f6bc8f80edf807185ba319ed41580641e",
+      "status": "failed; retained",
+      "error": "AssertionError(\"AssertionError('runtime')\")",
+      "plan_sha256": "b7e9426ed572903e2f062f60e4d59df4a412dbbb80765fbb99c12140cc2418f7"
+    },
+    "native05": {
+      "result_sha256": "8747d4c15f5c2267a63d61298234089cb1ede080887f2536773e384ae5cd385a",
+      "status": "failed; retained",
+      "error": "AssertionError(\"AssertionError('runtime')\")",
+      "plan_sha256": "349e73d26e98878434bb2156c53a10d823741b4635ebc12da78848c0d303109b"
+    },
+    "native06": {
+      "result_sha256": "0059e6adcf115ff17b62826c5e207ec6e835d6d734832a9c42c19a60a740e904",
+      "status": "focused Linux shared appearance checkpoint passed",
+      "error": null,
+      "plan_sha256": "951f620132529ede08a1abf24b174675d2d0158640967da523c90426b408aa29"
+    }
+  },
+  "cleanup": {
+    "native01": {
+      "receipt_sha256": "5a026320f760cc1977d4e933d400cc4a5bcbd8629a01b6a78ca1b09632d40510",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    },
+    "native02": {
+      "receipt_sha256": "e4619c328a3803b8df96529e11250b7ec5be5093b0d42d6df4802d574e5189e2",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    },
+    "native03": {
+      "receipt_sha256": "bf9514d2d03dd6c7439acf55e08c9e3802f596ed9c8d3c7f7ffc4ee77f0b5eb3",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    },
+    "native04": {
+      "receipt_sha256": "74f690d389e84cd15a3b4a987edf2dffd819208c22293f1f8e05799e954b18ca",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    },
+    "native05": {
+      "receipt_sha256": "0dfa03a5d415ad93246b22be9534c9d2b15c7208afcb1342cff6dc4f3b24c78f",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    },
+    "native06": {
+      "receipt_sha256": "e072e767016acf6a74c9f792f0f65bff52488edf8683e8956607fc63cfe48a33",
+      "container": "confirmed stopped",
+      "machine": "confirmed stopped"
+    }
+  },
+  "wire_budget": {
+    "cap_bytes": 8192,
+    "pre_fix_complete_bytes": 8211,
+    "pre_fix_max_tested_bytes": 10668,
+    "current_min_tested_bytes": 6292,
+    "current_max_tested_bytes": 7935,
+    "cases": 64,
+    "roundtrip": "exact standalone records; query and validate; null/distinct values preserved"
+  },
+  "binary_file_size": {
+    "before": {
+      "sha256": "333ba80f9bccc2df972b1fa063fc2ffce53eb2b468bd9a50bae07706a53a9df7",
+      "bytes": 6753568
+    },
+    "after": {
+      "sha256": "79cd5b183d46feb401b7b0bd1b3d63b331a993db532178ec3473b9405a39f2dd",
+      "bytes": 6756160
+    },
+    "delta_bytes": 2592,
+    "scope": "same-profile FvwmDesktop debug executable; not RSS or timing"
+  },
+  "performance": {
+    "counter_after_merge": "5/5; due",
+    "status": "unavailable: quiet preflight found foreign QEMU; preserved",
+    "benchmark_invocations": 0,
+    "reference": "PERFORMANCE-2026-11-02-PROPERTY-CORE.json",
+    "claim": "no speed or RSS improvement asserted"
+  },
+  "limits": [
+    "Focused Linux PNG/SVG/session-D-Bus profile only; not a six-target/install/release or native C sanitizer pass",
+    "Four accepted tray jobs native05 compose one corrected component job native06; failed attempts retained separately",
+    "C2-C5 clipboard acceptance separate; capture remains off pending qualified lock source",
+    "Asset choice, shared disk-cache retirement, file-change invalidation and broader panel roles remain open under #214/#215",
+    "Manual source reviewed; current Asciidoctor rendering unavailable",
+    "Agent backend/model identities unverified"
+  ]
+}

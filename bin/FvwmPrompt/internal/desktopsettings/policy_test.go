@@ -108,7 +108,7 @@ func TestStoredSchemaStrictnessAndDuplicateRejection(t *testing.T) {
 		delete(d, key)
 	}
 	for key := range Registry() {
-		if ApplicationKey(key) {
+		if ApplicationKey(key) || DesktopKey(key) {
 			delete(d, key)
 		}
 	}

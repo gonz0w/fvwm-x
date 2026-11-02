@@ -506,7 +506,8 @@ def run(args, profile):
                 serial += 1
                 token = 'inspector-' + str(serial)
                 rpc.send(frame(token, resource=resource, **fields))
-                return reply(rpc, token)
+                result = reply(rpc, token)
+                return expanded_settings(result) if resource == 'settings' else result
 
             def settings_ready():
                 nonlocal serial

@@ -86,12 +86,14 @@ func publicSettings(settings values, commonError string) values {
 	return result
 }
 
-// Public IPC additionally inherits repeated metadata from two explicit maps.
-// Saved/effective values, descriptions and choices/bounds stay per row.
-// Application rows retain their group explicitly to select application defaults.
-// Shared type/default and observation metadata have explicit inheritance maps.
-// Standalone query/inspector records remain self-contained.
-func compactPublicSettings(settings values, commonError string) (values, values, values) {
+type publicSettingProjection struct {
+	rows, defaults, applicationDefaults, groupDefaults, metricDefaults values
+}
+
+// Public IPC inherits repeated metadata from explicitly scoped maps. Distinct
+// values, descriptions and choices/bounds stay per row; group and metric version select
+// only defaults that were present on every eligible standalone record.
+func compactPublicSettings(settings values, commonError string) publicSettingProjection {
 	rows := publicSettings(settings, commonError)
 	defaults := sharedSettingMetadata(rows, false, []string{
 		"native_preview", "runtime_constraint", "source", "application", "type", "default", "group"})
@@ -108,13 +110,61 @@ func compactPublicSettings(settings values, commonError string) (values, values,
 			delete(application, field)
 		}
 	}
+	// Group defaults apply only to the group selected by the ordinary metadata
+	// merge. A candidate field must exist on every row in that group, so a
+	// default cannot manufacture an absent observation or capability.
+	groupFields := []string{"available", "capability", "native_mapping", "native_preview",
+		"runtime_constraint", "source", "application", "readiness", "resource_state",
+		"native_run", "native_sequence", "xserial", "failure_reason", "type", "default",
+		"requested_source", "composition_version", "resolution", "minimum", "maximum"}
+	groups := values{}
+	metrics := values{}
+	for key, raw := range rows {
+		row := raw.(map[string]any)
+		group := stringAt(row, "group")
+		if groups[group] == nil {
+			groups[group] = values{}
+		}
+		groups[group].(map[string]any)[key] = row
+		if group == "desktop" && row["component_version"] != nil {
+			metrics[key] = row
+		}
+	}
+	groupDefaults := values{}
+	for group, raw := range groups {
+		if group == "application" {
+			continue // Preserve the existing application discriminator and map.
+		}
+		common := sharedSettingMetadata(raw.(map[string]any), false, groupFields)
+		for field, value := range common {
+			if inherited, ok := defaults[field]; ok && reflect.DeepEqual(inherited, value) {
+				delete(common, field)
+			}
+		}
+		if len(common) != 0 {
+			groupDefaults[group] = common
+		}
+	}
+	metricDefaults := sharedSettingMetadata(metrics, false,
+		[]string{"component_version", "component_roles"})
 	for key, raw := range rows {
 		row := raw.(map[string]any)
 		inherited := merged(defaults, nil)
 		if row["group"] == "application" {
 			inherited = merged(inherited, application)
 		}
+		if common, ok := groupDefaults[stringAt(row, "group")].(map[string]any); ok {
+			inherited = merged(inherited, common)
+		}
+		metric := row["group"] == "desktop" && row["component_version"] != nil &&
+			reflect.DeepEqual(row["component_version"], metricDefaults["component_version"])
+		if metric {
+			inherited = merged(inherited, metricDefaults)
+		}
 		for field, value := range inherited {
+			if metric && field == "component_version" {
+				continue // This explicit version selects the metric defaults.
+			}
 			if field == "group" && row["group"] == "application" {
 				continue
 			}
@@ -127,6 +177,34 @@ func compactPublicSettings(settings values, commonError string) (values, values,
 		// distinct explicit error; eight held rows must fit the public cap even
 		// with maximum JSON-escaped application preference strings.
 		full := settings[key].(map[string]any)
+		// Value inheritance has a separate wire version. These pairs are
+		// mandatory together in the typed query model; compare presence as well
+		// as value so an explicit null or unequal observation stays explicit.
+		if saved, ok := full["saved"]; ok {
+			if baseline, present := full["default"]; present && reflect.DeepEqual(saved, baseline) {
+				delete(row, "saved")
+			}
+		}
+		effective, hasEffective := full["effective"]
+		if saved, ok := full["saved"]; ok && hasEffective && reflect.DeepEqual(saved, effective) {
+			delete(row, "effective")
+		}
+		if _, resolution := full["resolution"]; resolution && hasEffective {
+			if resolved, ok := full["resolved"]; ok && reflect.DeepEqual(resolved, effective) {
+				delete(row, "resolved")
+			}
+		}
+		if requested, ok := full["requested"]; ok {
+			if full["capability"] == "optional-tray-preference" {
+				if hasEffective && reflect.DeepEqual(requested, effective) {
+					delete(row, "requested")
+				}
+			} else if _, session := full["requested_source"]; session {
+				if saved, present := full["saved"]; present && reflect.DeepEqual(requested, saved) {
+					delete(row, "requested")
+				}
+			}
+		}
 		if full["source"] == "runtime-kept-preference-unsaved" {
 			if full["persistence_error"] == "Runtime unsaved." {
 				delete(row, "persistence_error")
@@ -137,7 +215,8 @@ func compactPublicSettings(settings values, commonError string) (values, values,
 			}
 		}
 	}
-	return rows, defaults, application
+	return publicSettingProjection{rows: rows, defaults: defaults, applicationDefaults: application,
+		groupDefaults: groupDefaults, metricDefaults: metricDefaults}
 }
 
 func sharedSettingMetadata(rows values, application bool, fields []string) values {
@@ -157,7 +236,7 @@ func sharedSettingMetadata(rows values, application bool, fields []string) value
 				continue
 			}
 			present++
-			encoded, _ := json.Marshal(value) // Fixed scalar metadata only.
+			encoded, _ := json.Marshal(value) // Fixed bounded policy metadata only.
 			key := string(encoded)
 			counts[key]++
 			original[key] = value
@@ -300,9 +379,9 @@ func (d *Controller) settingsRequest(r values) values {
 		if err != nil {
 			return failure("invalid_value")
 		}
-		rows, defaults, applicationDefaults := compactPublicSettings(settings, d.persistenceError)
+		projection := compactPublicSettings(settings, d.persistenceError)
 		return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "state": "validated",
-			"generation": d.generation, "saved_revision": d.revision, "settings": rows, "setting_defaults": defaults, "application_defaults": applicationDefaults, "persistence": "not-attempted", "persistence_error": persistence,
+			"generation": d.generation, "saved_revision": d.revision, "settings": projection.rows, "setting_defaults": projection.defaults, "application_defaults": projection.applicationDefaults, "group_defaults": projection.groupDefaults, "desktop_metric_defaults": projection.metricDefaults, "value_inheritance_version": 1, "persistence": "not-attempted", "persistence_error": persistence,
 			"application": "not-submitted", "asynchronous_completion": "not-started", "preview": false,
 			"available": true, "capability": "owned-desktop-preference"})
 	}
@@ -356,9 +435,9 @@ func (d *Controller) settingsRequest(r values) values {
 	if d.persistenceError != "" {
 		persistence = d.persistenceError
 	}
-	rows, defaults, applicationDefaults := compactPublicSettings(settings, d.persistenceError)
+	projection := compactPublicSettings(settings, d.persistenceError)
 	return success(values{"owner": "FvwmDesktop", "provider": d.instance, "schema_version": 1, "operation": op, "generation": d.generation,
-		"state": state, "settings": rows, "setting_defaults": defaults, "application_defaults": applicationDefaults, "saved_revision": d.revision, "application": application, "persistence_error": persistence,
+		"state": state, "settings": projection.rows, "setting_defaults": projection.defaults, "application_defaults": projection.applicationDefaults, "group_defaults": projection.groupDefaults, "desktop_metric_defaults": projection.metricDefaults, "value_inheritance_version": 1, "saved_revision": d.revision, "application": application, "persistence_error": persistence,
 		"asynchronous_completion": "unknown", "preview": false,
 		"available": true, "capability": "owned-desktop-preference"})
 }

@@ -134,8 +134,8 @@ SendToModule FvwmTray Reload
 ----
 
 Colorset changes and published monitor, scale and work-area changes also
-refresh the running host. Automatic topology/work-area refresh preserves the
-current runtime visibility; an initial or explicitly reloaded configuration
+refresh the running host. Automatic topology/work-area refresh and snapshots triggered by unsolicited
+stored directives preserve the current runtime visibility; an initial or explicitly reloaded configuration
 applies its stored *Visible* value. A reload does not start the module or
 replace a different tray owner.
 

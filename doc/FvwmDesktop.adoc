@@ -445,14 +445,23 @@ the current saved-file revision check. It is available to read-only IPC clients.
 Public settings rows inherit the envelope's owner, generation, generic-preview
 flag, common persistence error, availability and capability. A distinct
 per-setting value overrides the envelope's value and remains in that row.
-Merge the envelope, setting_defaults, application_defaults for application rows,
-and the explicit row in that order. After merging, a source of
+Merge the envelope, setting_defaults, and application_defaults for application
+rows. Resolve the group from the row or inherited metadata, then merge that
+entry from group_defaults. A desktop row with an explicit component_version
+matching desktop_metric_defaults inherits that map next. Apply explicit row
+fields last. Missing maps are empty; metric roles do not apply to icon rows.
+With value_inheritance_version 1, a missing saved value inherits default,
+then a missing effective value inherits saved;
+a missing resolved value inherits effective only when resolution is present.
+A missing tray requested value inherits effective; a missing requested value
+with requested_source inherits saved. Explicit unequal or null values remain
+explicit. Reject unsupported versions; see FvwmMFL for exact merge order. After merging, a source of
 `runtime-kept-preference-unsaved` implies persistence_error `Runtime unsaved.`
 when the explicit row omits that field. An explicit row error takes precedence.
 Standalone query-settings/inspector records remain self-contained. This avoids
 repeated diagnostics inside the bounded IPC reply;
-typed values, choices, limits and requested/unobserved tray status remain per
-row. Each tray row reports its effective value as `requested` and readiness as
+expanded typed values, choices, limits and requested/unobserved tray status
+remain complete. Each tray row reports its effective value as `requested` and readiness as
 `unobserved`; a submitted request is not proof of tray ownership.
 See *FvwmMFL*(1) for the exact versioned request syntax and lifecycle rules.
 Cancelling an IPC wait does not cancel this helper's submitted action; query

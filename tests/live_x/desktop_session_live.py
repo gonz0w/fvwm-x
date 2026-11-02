@@ -11,6 +11,7 @@ from contextlib import ExitStack, contextmanager
 import json
 import os
 from pathlib import Path
+from settings_snapshot import expanded_settings
 import shutil
 import signal
 import sys
@@ -269,7 +270,7 @@ def run(options):
                 value = connection.record()['reply']
                 assert value['id'] == 'ready', value
                 if value['status'] == 'ok':
-                    return value['result']
+                    return expanded_settings(value['result'])
                 assert value['error']['code'] == 'provider_not_ready', value
                 return None
             initial = wait_for_predicate('installed desktop ready', ready,

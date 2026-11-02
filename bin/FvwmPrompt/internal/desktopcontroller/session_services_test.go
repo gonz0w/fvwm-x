@@ -187,6 +187,19 @@ func TestSessionDNDAndPublicProviderAreFinite(t *testing.T) {
 		t.Fatal("untyped public lifecycle mutation")
 	}
 }
+func requireRegistrySettings(t *testing.T, rows map[string]any) {
+	t.Helper()
+	registry := desktopsettings.Registry()
+	if len(rows) != len(registry) {
+		t.Fatalf("settings count: got %d want %d", len(rows), len(registry))
+	}
+	for key := range registry {
+		if _, exists := rows[key]; !exists {
+			t.Fatal("missing registered preference", key)
+		}
+	}
+}
+
 func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	// The initial executed 19-setting projection was 9447 bytes. Shared
 	// envelope metadata must restore this existing cap without dropping rows.
@@ -205,11 +218,9 @@ func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 		t.Fatal(err)
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
-	if len(settings) != 26 {
-		t.Fatal("missing typed service preferences")
-	}
+	requireRegistrySettings(t, settings)
 	if len(bytes) > 8192 {
-		t.Fatalf("26-key bounded public snapshot needs reviewed reply cap: %d", len(bytes))
+		t.Fatalf("Complete bounded public snapshot needs reviewed reply cap: %d", len(bytes))
 	}
 }
 
@@ -262,9 +273,7 @@ func TestPublicSettingsInheritEnvelopeIdentityAndKeepStandaloneMetadata(t *testi
 			t.Fatal("public consumer lost envelope identity", reply)
 		}
 		settings := result["settings"].(map[string]any)
-		if len(settings) != 26 {
-			t.Fatal("public projection lost a preference", settings)
-		}
+		requireRegistrySettings(t, settings)
 		for key, raw := range settings {
 			item := raw.(map[string]any)
 			if _, exists := item["owner"]; exists {
@@ -538,7 +547,40 @@ func reconstructedPublicSetting(result, row values) values {
 	if row["group"] == "application" {
 		reconstructed = merged(reconstructed, result["application_defaults"].(map[string]any))
 	}
+	group := row["group"]
+	if group == nil {
+		group = reconstructed["group"]
+	}
+	if groups, ok := result["group_defaults"].(map[string]any); ok {
+		if defaults, ok := groups[group.(string)].(map[string]any); ok {
+			reconstructed = merged(reconstructed, defaults)
+		}
+	}
+	if defaults, ok := result["desktop_metric_defaults"].(map[string]any); ok &&
+		group == "desktop" && row["component_version"] != nil && reflect.DeepEqual(row["component_version"], defaults["component_version"]) {
+		reconstructed = merged(reconstructed, defaults)
+	}
 	reconstructed = merged(reconstructed, row)
+	if result["value_inheritance_version"] == 1 {
+		if _, present := row["saved"]; !present {
+			reconstructed["saved"] = reconstructed["default"]
+		}
+		if _, present := row["effective"]; !present {
+			reconstructed["effective"] = reconstructed["saved"]
+		}
+		if _, resolution := reconstructed["resolution"]; resolution {
+			if _, present := row["resolved"]; !present {
+				reconstructed["resolved"] = reconstructed["effective"]
+			}
+		}
+		if _, present := row["requested"]; !present {
+			if reconstructed["capability"] == "optional-tray-preference" {
+				reconstructed["requested"] = reconstructed["effective"]
+			} else if _, session := reconstructed["requested_source"]; session {
+				reconstructed["requested"] = reconstructed["saved"]
+			}
+		}
+	}
 	if reconstructed["source"] == "runtime-kept-preference-unsaved" {
 		if _, explicit := row["persistence_error"]; !explicit {
 			reconstructed["persistence_error"] = "Runtime unsaved."
@@ -550,50 +592,101 @@ func reconstructedPublicSetting(result, row values) values {
 func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
 	for _, font := range []string{strings.Repeat("<", 128), strings.Repeat("&", 128), strings.Repeat(`"\`, 64), strings.Repeat("é", 64)} {
 		for _, override := range []bool{false, true} {
-			d, _ := fixture(t)
-			for key, value := range (values{"application_font": font, "icon_theme": strings.Repeat("I", 128), "cursor_theme": strings.Repeat("C", 128)}) {
-				d.saved[key], d.effective[key] = value, value
-			}
-			if override {
-				for key := range desktopsettings.Registry() {
-					d.overrides[key] = d.effective[key]
+			for _, explicit := range []bool{false, true} {
+				for _, submitted := range []bool{false, true} {
+					d, _ := fixture(t)
+					for key, value := range (values{"day": "23:59", "night": "00:00", "appearance": "light",
+						"session_bus": "reuse", "session_notifications": "external", "cursor_size": 128,
+						"tray_gap": 64, "tray_padding": 64, "tray_icon_size": 128, "launcher_opacity": 100}) {
+						d.saved[key], d.effective[key] = value, value
+					}
+					stringValues := values{"application_font": font, "icon_theme": strings.Repeat("I", 128), "cursor_theme": strings.Repeat("C", 128)}
+					if explicit {
+						stringValues["desktop_font"], stringValues["desktop_icon_theme"] = strings.Repeat("W", 128), strings.Repeat("N", 128)
+					}
+					for key, value := range stringValues {
+						if _, err := desktopsettings.Value(key, value, false); err != nil {
+							t.Fatal("invalid maximum-string fixture", key, err)
+						}
+						d.saved[key], d.effective[key] = value, value
+					}
+					if override {
+						runes := []rune(font)
+						replacement := rune('>')
+						switch runes[len(runes)-1] {
+						case '\\':
+							replacement = '"'
+						case 'é':
+							replacement = 'ß'
+						}
+						runes[len(runes)-1] = replacement
+						for key, value := range (values{"application_font": string(runes), "icon_theme": strings.Repeat("J", 128), "cursor_theme": strings.Repeat("D", 128)}) {
+							d.effective[key] = value
+						}
+						if explicit {
+							d.effective["desktop_font"], d.effective["desktop_icon_theme"] = strings.Repeat("V", 128), strings.Repeat("O", 128)
+						}
+						for key := range desktopsettings.Registry() {
+							d.overrides[key] = d.effective[key]
+						}
+					}
+					revision := strings.Repeat("f", 64)
+					d.revision, d.lastTheme = &revision, []any{"published"}
+					if submitted {
+						metrics, err := desktopsettings.ResolveDesktopMetrics(d.effective)
+						if err != nil {
+							t.Fatal(err)
+						}
+						d.lastDesktop = &metrics
+						d.lastDesktopIconTheme, _ = desktopsettings.DesktopIconTheme(d.effective)
+					}
+					d.persistenceError = "Cannot read private settings; repair the file then reload"
+					d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink"), "appearance": heldTestValue(t, "appearance", "light"), "contrast": heldTestValue(t, "contrast", "high")}
+					for key, value := range (values{"transparency": false, "keep_wallpaper": true, "wallpaper_palette": "dune", "wallpaper_appearance": "light", "launcher_opacity": 61}) {
+						d.runtimeHeld[key] = heldTestValue(t, key, value)
+					}
+					for key, value := range d.runtimeHeld {
+						d.effective[key] = value.Value()
+					}
+					d.native.observation = desktopsettings.NativeObservation{Readiness: "stop-unknown", ResourceState: "unavailable", Reason: "cleanup-unconfirmed", Run: strings.Repeat("f", 32), Sequence: ^uint64(0), XSerial: ^uint32(0)}
+					for _, operation := range []string{"query", "validate"} {
+						request := values{"operation": operation, "scope": "all"}
+						var candidate, effective values
+						if operation == "validate" {
+							request = values{"operation": operation, "provider": d.instance, "generation": d.generation, "values": values{"motion": true}}
+							var err error
+							candidate, effective, err = d.prepare(request["values"].(map[string]any))
+							if err != nil {
+								t.Fatal(err)
+							}
+						}
+						standalone, err := d.query("all", candidate, effective)
+						if err != nil {
+							t.Fatal(err)
+						}
+						response := d.settingsRequest(request)
+						result := response["result"].(map[string]any)
+						rows := result["settings"].(map[string]any)
+						requireRegistrySettings(t, rows)
+						for key, raw := range rows {
+							got := reconstructedPublicSetting(result, raw.(map[string]any))
+							wantJSON, _ := json.Marshal(standalone[key])
+							gotJSON, _ := json.Marshal(got)
+							if string(wantJSON) != string(gotJSON) {
+								t.Fatal("metadata roundtrip", key, got, standalone[key])
+							}
+						}
+						encoded, err := encodeProviderReply(response)
+						if err != nil {
+							t.Fatal(err)
+						}
+						if len(encoded) > 8192 {
+							t.Errorf("settings budget: operation=%s override=%t explicit=%t submitted=%t font-leading=%q bytes=%d", operation, override, explicit, submitted, font[:1], len(encoded))
+						}
+						t.Logf("complete %d-row settings: %s override=%t explicit=%t submitted=%t bytes=%d", len(rows), operation, override, explicit, submitted, len(encoded))
+					}
 				}
 			}
-			revision := strings.Repeat("f", 64)
-			d.revision = &revision
-			d.lastTheme = []any{"published"}
-			d.persistenceError = "Cannot read private settings; repair the file then reload"
-			d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink"), "appearance": heldTestValue(t, "appearance", "light"), "contrast": heldTestValue(t, "contrast", "high")}
-			for key, value := range (values{"transparency": false, "keep_wallpaper": true, "wallpaper_palette": "dune", "wallpaper_appearance": "light", "launcher_opacity": 61}) {
-				d.runtimeHeld[key] = heldTestValue(t, key, value)
-			}
-			for key, value := range d.runtimeHeld {
-				d.effective[key] = value.Value()
-			}
-			d.native.observation = desktopsettings.NativeObservation{Readiness: "stop-unknown", ResourceState: "unavailable", Reason: "cleanup-unconfirmed", Run: strings.Repeat("f", 32), Sequence: ^uint64(0), XSerial: ^uint32(0)}
-			standalone, err := d.query("all", nil, nil)
-			if err != nil {
-				t.Fatal(err)
-			}
-			response := d.settingsRequest(values{"operation": "query", "scope": "all"})
-			result := response["result"].(map[string]any)
-			rows := result["settings"].(map[string]any)
-			if len(rows) != 26 {
-				t.Fatal("compaction lost preference", rows)
-			}
-			for key, raw := range rows {
-				got := reconstructedPublicSetting(result, raw.(map[string]any))
-				wantJSON, _ := json.Marshal(standalone[key])
-				gotJSON, _ := json.Marshal(got)
-				if string(wantJSON) != string(gotJSON) {
-					t.Fatal("metadata roundtrip", key, got, standalone[key])
-				}
-			}
-			encoded, err := encodeProviderReply(response)
-			if err != nil || len(encoded) > 8192 {
-				t.Fatalf("worst-case settings budget: override=%t bytes=%d err=%v", override, len(encoded), err)
-			}
-			t.Logf("complete 26-row settings encoding: font-leading=%q override=%t bytes=%d", font[:1], override, len(encoded))
 		}
 	}
 }
@@ -625,10 +718,12 @@ func TestCompactSettingsSourceImpliedErrorPreservesDistinctExplicitErrors(t *tes
 		row := standalone[key].(map[string]any)
 		row["source"], row["persistence_error"] = "runtime-kept-preference-unsaved", message
 	}
-	rows, defaults, applications := compactPublicSettings(standalone, d.persistenceError)
+	projection := compactPublicSettings(standalone, d.persistenceError)
+	rows := projection.rows
 	result := values{"owner": "FvwmDesktop", "generation": d.generation, "preview": false,
 		"available": true, "capability": "owned-desktop-preference", "persistence_error": d.persistenceError,
-		"setting_defaults": defaults, "application_defaults": applications}
+		"setting_defaults": projection.defaults, "application_defaults": projection.applicationDefaults,
+		"group_defaults": projection.groupDefaults, "desktop_metric_defaults": projection.metricDefaults, "value_inheritance_version": 1}
 	if _, present := rows["palette"].(map[string]any)["persistence_error"]; present {
 		t.Fatal("fixed error repeated")
 	}

@@ -910,7 +910,7 @@ request {"version":1,"id":"schedule-1","method":"query","resource":"settings","s
 
 Optional `scope` defaults to `all`. It accepts one registered key or
 `group:appearance`, `group:wallpaper`, `group:schedule`, `group:effects`,
-`group:session`, `group:tray` and `group:application`, matching FvwmDesktop's
+`group:session`, `group:tray`, `group:application` and `group:desktop`, matching FvwmDesktop's
 existing settings scopes. The result identifies `owner: "FvwmDesktop"`,
 `schema_version: 1`, opaque `provider` and `generation` tokens, `saved_revision`
 and a `settings`
@@ -919,16 +919,29 @@ range, description, saved/effective values, override source and capability.
 The result-level `owner`, `generation`, `preview`, `persistence_error`,
 `available` and `capability` apply when the corresponding field is absent from
 a setting row. Apply `setting_defaults` next; for rows in the application group,
-apply `application_defaults` after that. Finally apply the row's explicit fields.
+apply `application_defaults` after that. Resolve the group from the explicit row
+or the inherited `group`, then apply that group's entry in `group_defaults`.
+For a desktop row whose explicit `component_version` matches the version in
+`desktop_metric_defaults`, apply that map next. Finally apply the row's explicit
+fields. Metric version remains explicit, so metric roles never appear on icon
+preferences or a different component version. Missing defaults maps are empty.
 After merging, source `runtime-kept-preference-unsaved` implies
 `persistence_error: "Runtime unsaved."` when the explicit row omits that field.
 An explicit row error takes precedence, including a null value.
-Both defaults maps contain only shared scalar metadata. This precedence preserves
-each complete record while avoiding repeated values in the fixed 8 KiB reply.
-Saved/effective values, choices/bounds, descriptions and per-setting metadata
-differences remain on their rows. Types, defaults, source/application and native
-publication observations can be inherited from the two maps. Non-application
-groups may inherit `group`; application rows always name their group explicitly.
+These scoped maps contain only shared policy metadata. A group default must be
+present on every setting in that group; component roles require the matching
+explicit version. This precedence preserves each complete record within the
+fixed 8 KiB reply. Choices, descriptions, distinct bounds and distinct values remain on their
+rows; identical group bounds can be inherited. Application rows always name
+their group explicitly.
+A result with `value_inheritance_version: 1` can omit equal values. After
+metadata and explicit row fields have merged, restore a missing `saved` from
+`default`, then a missing `effective` from `saved`. If `resolution` is present, restore a missing `resolved` from
+`effective`. For capability `optional-tray-preference`, restore a missing
+`requested` from `effective`; otherwise, when `requested_source` is present,
+restore a missing `requested` from `saved`. An explicit value always wins,
+including null. Without the version marker, values are explicit. Reject an
+unsupported inheritance version rather than guessing its meaning.
 Standalone
 FvwmDesktop `query-settings` records and native inspector metadata retain their
 own per-item owner/generation fields.

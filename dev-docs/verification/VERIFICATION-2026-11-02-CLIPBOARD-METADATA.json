@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "checkpoint": "C2 versioned clipboard metadata consumer handoff",
+  "base": "4d43383ed1a414c5ab912a03c79ec6ce652f82fe",
+  "branch": "codex/r1-clipboard-consumer-handoff",
+  "source": {
+    "bin/FvwmPrompt/cmd/fvwmclipboard/main.go": "8fb28256107adc8e2dedcc65ab12e349179f044ab333630863b9fd54feb970a5",
+    "bin/FvwmPrompt/cmd/fvwmclipboard/main_test.go": "4e737b5c2a3024e33490b415e1211dfc9e923e921851b7289b96da9217f8a914",
+    "bin/FvwmPrompt/internal/clipboard/capabilities.go": "4977fb748f14beea3aab04f46ec72826c05293ec3f760ff378139c2fdac66ae0",
+    "bin/FvwmPrompt/internal/clipboard/capabilities_test.go": "09cc8d1a83208bc4099d421b48945fc757b981fe88f06aebd22c2aa32064e597",
+    "bin/FvwmPrompt/internal/clipboard/owner.go": "466352f921c8cfd71beae9de2ba7bc1604545b9af64f74f3cbac13220b823975",
+    "bin/FvwmPrompt/internal/clipboard/owner_test.go": "01488550dcf0a03ce1e229496126c74ca590d920d5a3a5a0503bbf420995f4fb",
+    "bin/FvwmPrompt/internal/clipboard/wire.go": "20a0b4f22372af8c006137320ee7daf45551e5b0bdd0a44580c7ce2e68c4ea40",
+    "bin/FvwmPrompt/internal/clipboard/wire_test.go": "3302e147c1445a2a77fe521658f7f714508d72053d7994906db40d36ba62f023",
+    "bin/FvwmPrompt/internal/sessionowner/clipboard.go": "2270a8d17c82a073c2c3b691b22b1cee618c2dfa7c909df69c9379a55f0a404a",
+    "bin/FvwmPrompt/internal/sessionowner/clipboard_lifecycle_test.go": "e5f6dfd01e4def8f37f95498150e1107b67d1681a8e72e60c8a5c93ad8b829d5",
+    "bin/FvwmPrompt/internal/sessionowner/clipboard_test.go": "da31dedfe5d7fa0ec2485f8e01da2bba14052e25dfd501ecbc5be06283ff930f",
+    "bin/FvwmPrompt/internal/sessionowner/service_control.go": "f709b123aa98aebe3b1a8dde5ad367f90f945bc3af7c39a94bf952b016ecae1a",
+    "bin/FvwmPrompt/internal/sessionowner/services.go": "13e9db5372239d5a1309dc3c51a280d5ac59e5cfc556fd88c25e9aa67b73818f",
+    "bin/FvwmPrompt/internal/sessionservice/clipboard_test.go": "3be562b2f7fb24513cdd8ff15e266e57c446c0157a2b8c73ab7a3baf01fb2597",
+    "bin/FvwmPrompt/internal/sessionservice/types.go": "5626c59c5be18f5e969a4010c96394c82741ab990385d51367f97c1da13be3ae",
+    "bin/FvwmPrompt/internal/sessionservice/wire.go": "1dd27396c3ae9b2b761a9ca00084ddccd771a1dd3cf757bd8e86e8e031985a60",
+    "bin/FvwmPrompt/meson.build": "f341557182fba51290b36f7ebbfc576c35b042c721f4334b9baf84124664c400",
+    "tools/maintenance/manuals.json": "168a7ea481803d1cdb791b1a3a8cc81ff3f09c2fe24674fa16c9809b1996fcfd"
+  },
+  "owner_text_defaults": {
+    "items": 32,
+    "encoded_total_bytes": 1048576,
+    "encoded_per_item_bytes": 32768,
+    "maximum_window_lifetime_ms": 600000,
+    "configurable": true,
+    "images": "separate decision",
+    "physical_charges": "checked native page rounding plus two guard pages per representation; distinct from logical payload and total RSS"
+  },
+  "host_build": {
+    "scope": "C2 final affected compile/link only; ZERO test or CLI invocations",
+    "commands": [
+      {
+        "argv": [
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-clipboard-consumer-handoff/compile03/clipboard.test",
+          "./internal/clipboard"
+        ],
+        "exit": 0,
+        "seconds": 0.5210661659948528,
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-clipboard-consumer-handoff/compile03/sessionservice.test",
+          "./internal/sessionservice"
+        ],
+        "exit": 0,
+        "seconds": 0.2544626669259742,
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-clipboard-consumer-handoff/compile03/sessionowner.test",
+          "./internal/sessionowner"
+        ],
+        "exit": 0,
+        "seconds": 0.36446654109749943,
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+          "test",
+          "-mod=vendor",
+          "-c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-clipboard-consumer-handoff/compile03/fvwmclipboard.test",
+          "./cmd/fvwmclipboard"
+        ],
+        "exit": 0,
+        "seconds": 0.18732929194811732,
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+          "build",
+          "-mod=vendor",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-clipboard-consumer-handoff/compile03/fvwm-clipboard",
+          "./cmd/fvwmclipboard"
+        ],
+        "exit": 0,
+        "seconds": 0.17627791699487716,
+        "stderr": ""
+      }
+    ],
+    "outputs": {
+      "sessionowner.test": {
+        "sha256": "2a94f4f6fb2239640a369f1ca110b184f7dc2fa27eec5bcef5060fafa9927305",
+        "bytes": 7395394
+      },
+      "clipboard.test": {
+        "sha256": "0c8bb25a130632587ea5f63d3abee7580bd0f13a382957d4e92ce862b91a76dd",
+        "bytes": 4633074
+      },
+      "sessionservice.test": {
+        "sha256": "fd220e1842cfbe5c88605063713b9c5058dfe3f4a481a2a80f7dedcc203d354d",
+        "bytes": 5688658
+      },
+      "fvwmclipboard.test": {
+        "sha256": "c5c8b827e43dfd3a3af65c5a16cabcb40121b29be5b19b2d68509fb476897f83",
+        "bytes": 5741746
+      },
+      "fvwm-clipboard": {
+        "sha256": "0f286be7b52d854d17fabaa0765d5e47936bc797013ca9136bf9707795d0d251",
+        "bytes": 4890770
+      }
+    }
+  },
+  "source_review": {
+    "reviewer": "/root/transfer_final_review",
+    "scope": "metadata limits/capabilities/pages, operation-bound replies, session integration, CLI/manual, synthetic lifecycle fixture, read-cancellation and stop guards",
+    "findings": "status error no longer claims process exit without terminal facts; final-page lock fence test added; abandoned observations drain privately rather than retiring session history; mutation/barrier cancellation stays fail-closed",
+    "execution": "none by reviewer"
+  },
+  "runtime": {
+    "invocations": 0,
+    "cli_examples_executed": false,
+    "fixture_status": "authored/compiled, unexecuted",
+    "checkpoint": "C2-C5 combined clipboard consumer checkpoint, normally four to six related PRs",
+    "required": [
+      "capability disabled/blocked/unavailable and canceled/busy live observations",
+      "bounded pages, stale refs, row-time/final-status lock transitions and operation-shaped replies",
+      "CLI parsing/correlation/typed JSON/result codes and no endpoint/token output",
+      "configured Run synthetic peer: startup UNKNOWN, core exec, held/refused pause, locker exit not unlock, logout EOF/Wait",
+      "entered observation cancellation keeps owner; mutating/State cancellation remains terminal; no new work after Close",
+      "native real-X consumer integration and relevant scoped sanitizer/race coverage once accumulated"
+    ]
+  },
+  "retained": {
+    "c1_report": "VERIFICATION-2026-11-02-CLIPBOARD-CAPTURE.md",
+    "scope": "unchanged C native owner/transport only; C1 execution does not qualify changed Go clients or new lifecycle fixture",
+    "new_native_c_changes": 0,
+    "native_lab_starts": 0,
+    "whole_wm_builds": 0,
+    "new_packages": 0
+  },
+  "documentation": {
+    "primary_manual": "doc/fvwm-clipboard.adoc",
+    "manifest": "tools/maintenance/manuals.json",
+    "install_tag": "clipboard-client",
+    "asciidoctor": "unavailable on host; source/registration checked, render/install queued",
+    "screenshots": "not applicable: metadata CLI only, no drawn UI"
+  },
+  "limits": [
+    "Installed capture remains off; no new qualified locker source or STATE/QUIT public control.",
+    "No clipboard payload/preview/label/hash/source title enters Go, CLI JSON or generic collection indexes. No content search/display/restore/export/images/crypto/persistence is implemented by this slice.",
+    "Capabilities distinguish configured ceilings/startup preflight from a future OS locking grant; unavailable status is not a claim that a process exited.",
+    "Page descriptors are observations, not payload leases or a transaction. Exact refs/actions still revalidate.",
+    "Numeric defaults select policy, not activation or full native/storage/consumer qualification.",
+    "All new runtime/CLI/lifecycle test outcomes remain pending; source-found defects were not represented as executed red/green tests under the approved grouped cadence.",
+    "No full Meson/compiler/features/six-target/install/default-X/hardware/security/physical-lock qualification repeated; no owner issue closed."
+  ],
+  "runtime_source_base": "8637cc7ad89701ed4c084d469869245eae58ae1e",
+  "base_integration": "PR344 documentation-only Temper refresh; affected code/build inputs unchanged; compile receipts retained"
+}

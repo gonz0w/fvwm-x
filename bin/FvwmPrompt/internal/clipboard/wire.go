@@ -79,10 +79,10 @@ type Config struct {
 }
 
 func (c Config) Validate() error {
-	if !filepath.IsAbs(c.Path) || filepath.Clean(c.Path) != c.Path || c.Epoch == 0 || c.Items == 0 || c.Items > 4096 || c.Bytes == 0 || c.Bytes > 32768 || c.Total < c.Bytes || c.Total > c.Items*c.Bytes || c.Mapped == 0 || c.Locked == 0 || c.Locked > c.Mapped || c.LifetimeMilliseconds == 0 {
-		return errors.New("clipboard needs an absolute helper and explicit bounded limits")
+	if !filepath.IsAbs(c.Path) || filepath.Clean(c.Path) != c.Path || c.Epoch == 0 {
+		return errors.New("clipboard needs an absolute helper and fresh epoch")
 	}
-	return nil
+	return c.limits().Validate()
 }
 
 func (c Config) arguments() []string {
@@ -140,8 +140,40 @@ func parseReply(line []byte) (Reply, error) {
 		return result, errors.New("invalid clipboard metadata")
 	}
 	result = Reply{Sequence: values[1], Result: values[2], Ref: Ref{values[3], values[4], values[5]}, Representation: values[6], Length: values[7], Deadline: values[8], Pinned: values[9], Mode: values[10], Items: values[11], Mapped: values[12], Locked: values[13]}
-	if (result.Ref.Item == 0) != (result.Ref.Generation == 0) || result.Ref.Item == 0 && (result.Representation != 0 || result.Length != 0 || result.Deadline != 0 || result.Pinned != 0) || result.Ref.Item != 0 && (result.Representation != 1 || result.Deadline == 0 || result.Result != OK || result.Mode != Unlocked) || result.Mode != Unlocked && (result.Ref.Item != 0 || result.Items != 0 || result.Mapped != 0 || result.Locked != 0) {
-		return Reply{}, errors.New("inconsistent clipboard projection")
+	if err := result.Validate(); err != nil {
+		return Reply{}, err
 	}
 	return result, nil
+}
+
+func (r Reply) Validate() error {
+	if r.Sequence == 0 || r.Result > Empty || r.Ref.Epoch == 0 || r.Representation > 1 || r.Length > 32768 || r.Pinned > 1 || r.Mode > Locked || r.Items > 4096 || r.Locked > r.Mapped {
+		return errors.New("invalid clipboard metadata")
+	}
+	if (r.Ref.Item == 0) != (r.Ref.Generation == 0) || r.Ref.Item == 0 && (r.Representation != 0 || r.Length != 0 || r.Deadline != 0 || r.Pinned != 0) || r.Ref.Item != 0 && (r.Representation != 1 || r.Deadline == 0 || r.Result != OK || r.Mode != Unlocked) || r.Mode != Unlocked && (r.Ref.Item != 0 || r.Items != 0 || r.Mapped != 0 || r.Locked != 0) {
+		return errors.New("inconsistent clipboard projection")
+	}
+	return nil
+}
+
+// ValidateFor binds descriptor/state shape to the one correlated operation.
+// An action acknowledgment cannot masquerade as a newly selected item.
+func (r Reply) ValidateFor(request Request) error {
+	if err := r.Validate(); err != nil {
+		return err
+	}
+	if r.Ref.Epoch != request.Ref.Epoch {
+		return errors.New("clipboard reply has another owner epoch")
+	}
+	if request.Verb == List {
+		if (r.Result == OK) != (r.Ref.Item != 0) || r.Ref.Item != 0 && r.Mode != Unlocked {
+			return errors.New("invalid clipboard list acknowledgment")
+		}
+	} else if r.Ref.Item != 0 {
+		return errors.New("clipboard control returned an unsolicited item")
+	}
+	if request.Verb == State && r.Result == OK && r.Mode != request.Value {
+		return errors.New("clipboard state acknowledgment differs from request")
+	}
+	return nil
 }

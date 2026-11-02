@@ -7,8 +7,9 @@ separate user-directed thread can consume qualified primitives to build the
 configuration/theme in parallel with further runtime work. This records scope;
 no runtime implementation, public syntax, dependency or security qualification
 is selected or claimed. The owner resolved the first-release defaults below on
-2026-11-01/02. Numeric capacities, remaining formats and backend/key adoption
-remain separate decisions. These defaults do not enable a consumer.
+2026-11-01/02. Text defaults now include 32 items, 1 MiB total payload, 32 KiB per item
+and a 10-minute maximum lifetime. Remaining image/format and backend/key
+choices remain separate decisions. These defaults do not enable a consumer.
 Order and status belong to the
 [project tracker](../PROJECT-TRACKER.md#execution-order).
 
@@ -32,7 +33,7 @@ synchronization off. The owner explicitly selected retaining history while the
 desktop is locked; lock does not imply history deletion. On 2026-11-02 the owner
 selected pausing capture and blocking history access while locked. Logout ends
 the session and clears its history. Key/unlock policy, backend protection
-guarantees, installed capacities and image/format limits remain distinct work.
+guarantees and remaining image/format limits remain distinct work.
 
 For installed capture, the owner also approved one transient Xlib reply of at
 most 32 KiB in the isolated native process. Copy it directly into prepared
@@ -40,6 +41,20 @@ protected storage, then wipe accessible reply bytes before freeing them. This
 is a bounded transit-copy allowance, not a guarantee that Xlib's reply never
 reached swap or that other X11 clients cannot observe selections. Qualify the
 actual transport/retention integration; this decision alone enables no service.
+
+On 2026-11-02 the owner selected the first installed text-history limits:
+**32 items, 1 MiB total encoded text payload, 32 KiB per text item and a
+10-minute maximum lifetime**, all configurable. This replaces the open numeric
+text-default question; image limits remain separate. Under the current C1
+retention-window contract the lifetime is an upper bound, and a later item can
+expire sooner. Pinning does not extend expiry or evade capacity.
+
+The payload budget is separate from physical page/guard and metadata/process
+cost. Derive mapped/locked ceilings with the native owner's page rounding and
+two guard pages per representation; expose those configured charges honestly.
+A budget never promises that the OS will grant locking. No plaintext fallback
+or implicit service enablement follows. Qualified lock observations and the
+remaining installed-consumer qualification are still required.
 
 These decisions replace the corresponding open-default questions below. They do
 not enable a manager or qualify a protection/backend by themselves.
@@ -225,11 +240,13 @@ creates no chat, starts no service and changes no default configuration.
 ## Open decisions before implementation/adoption
 
 The first-release defaults above resolve password exclusion, persistence off,
-CLIPBOARD/PRIMARY selection, desktop-lock behavior and the bounded Xlib reply.
+CLIPBOARD/PRIMARY selection, desktop-lock behavior, the bounded Xlib reply and
+the text item/payload/lifetime limits.
 The remaining choices before installed adoption are:
 
-1. Numeric item/logical/mapped/locked/age limits and deadlines, capacity/pinning
-   disposition and remaining source exclusions.
+1. Image/remaining-format budgets and any further capacity/source policies.
+   Text defaults are fixed above; physical charges derive from page size and
+   required guards, with explicit refusal when protection cannot be granted.
 2. Supported text/image/extra target formats, encoded/decoded image limits and
    preview/export/action behavior.
 3. Optional persistence credentials, key/unlock/relock/recovery policy, crypto

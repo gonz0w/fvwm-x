@@ -131,6 +131,8 @@ func (state *serviceState) complete(job serviceJob) sessionservice.Reply {
 		}
 		reply := state.reply(job.outcome, message, 0)
 		reply.Clipboard = job.clipboard
+		reply.ClipboardCapabilities = job.clipboardCapabilities
+		reply.ClipboardPage = job.clipboardPage
 		return reply
 	}
 	state.fenceBusLoss()

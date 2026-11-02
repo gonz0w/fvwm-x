@@ -8,13 +8,37 @@ package sessionowner
 import (
 	"context"
 	"errors"
+
 	"github.com/fvwmorg/FvwmPrompt/internal/clipboard"
 )
 
 func runClipboardJob(request controlRequest, owner *clipboard.Client) serviceJob {
 	job := serviceJob{request: request, outcome: "unavailable"}
+	if request.message.Verb == "clipboard-status" {
+		capabilities := clipboard.DisabledCapabilities()
+		if owner != nil {
+			capabilities = owner.Capabilities(request.ctx)
+		}
+		job.clipboardCapabilities = &capabilities
+		job.outcome = capabilities.State
+		return job
+	}
 	if owner == nil {
 		job.err = errors.New("clipboard owner is disabled; explicit limits and qualified lock state remain required")
+		return job
+	}
+	if request.message.Verb == "clipboard-list" {
+		page, err := owner.Page(request.ctx, *request.message.ClipboardPage)
+		job.err = err
+		if err != nil {
+			job.outcome = "failed"
+			return job
+		}
+		job.clipboardPage = &page
+		job.outcome = "ready"
+		if page.Result != clipboard.OK {
+			job.outcome = "rejected"
+		}
 		return job
 	}
 	reply, err := owner.Call(request.ctx, *request.message.Clipboard)

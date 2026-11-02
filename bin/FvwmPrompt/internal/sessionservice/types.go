@@ -67,27 +67,30 @@ type Snapshot struct {
 }
 
 type RequestMessage struct {
-	Version            int                `json:"version"`
-	Generation         string             `json:"generation,omitempty"`
-	Operation          string             `json:"operation,omitempty"`
-	Verb               string             `json:"verb"`
-	Config             *Config            `json:"config,omitempty"`
-	Summary            string             `json:"summary,omitempty"`
-	Body               string             `json:"body,omitempty"`
-	NotificationID     uint32             `json:"notification_id,omitempty"`
-	ProviderGeneration string             `json:"provider_generation,omitempty"`
-	Clipboard          *clipboard.Request `json:"clipboard,omitempty"`
+	Version            int                    `json:"version"`
+	Generation         string                 `json:"generation,omitempty"`
+	Operation          string                 `json:"operation,omitempty"`
+	Verb               string                 `json:"verb"`
+	Config             *Config                `json:"config,omitempty"`
+	Summary            string                 `json:"summary,omitempty"`
+	Body               string                 `json:"body,omitempty"`
+	NotificationID     uint32                 `json:"notification_id,omitempty"`
+	ProviderGeneration string                 `json:"provider_generation,omitempty"`
+	Clipboard          *clipboard.Request     `json:"clipboard,omitempty"`
+	ClipboardPage      *clipboard.PageRequest `json:"clipboard_page,omitempty"`
 }
 
 type Reply struct {
-	Version        int              `json:"version"`
-	Generation     string           `json:"generation,omitempty"`
-	Operation      string           `json:"operation,omitempty"`
-	Outcome        string           `json:"outcome"`
-	Error          string           `json:"error,omitempty"`
-	NotificationID uint32           `json:"notification_id,omitempty"`
-	Status         Snapshot         `json:"status"`
-	Clipboard      *clipboard.Reply `json:"clipboard,omitempty"`
+	Version               int                     `json:"version"`
+	Generation            string                  `json:"generation,omitempty"`
+	Operation             string                  `json:"operation,omitempty"`
+	Outcome               string                  `json:"outcome"`
+	Error                 string                  `json:"error,omitempty"`
+	NotificationID        uint32                  `json:"notification_id,omitempty"`
+	Status                Snapshot                `json:"status"`
+	Clipboard             *clipboard.Reply        `json:"clipboard,omitempty"`
+	ClipboardCapabilities *clipboard.Capabilities `json:"clipboard_capabilities,omitempty"`
+	ClipboardPage         *clipboard.Page         `json:"clipboard_page,omitempty"`
 }
 
 func Identity(value string) bool {
@@ -110,7 +113,9 @@ func Plain(value string, max int) bool {
 	return true
 }
 
-func IsClipboardVerb(verb string) bool { return verb == "clipboard" }
+func IsClipboardVerb(verb string) bool {
+	return verb == "clipboard" || verb == "clipboard-status" || verb == "clipboard-list"
+}
 
 func (r RequestMessage) Validate() error {
 	if r.Version != Version {
@@ -132,10 +137,16 @@ func (r RequestMessage) Validate() error {
 	} else if r.ProviderGeneration != "" {
 		return errors.New("provider generation does not belong to session verb")
 	}
-	if !IsClipboardVerb(r.Verb) && r.Clipboard != nil {
+	if r.Verb != "clipboard" && r.Clipboard != nil || r.Verb != "clipboard-list" && r.ClipboardPage != nil {
 		return errors.New("clipboard fields do not belong to session verb")
 	}
 	switch r.Verb {
+	case "clipboard-status":
+	case "clipboard-list":
+		if r.ClipboardPage == nil {
+			return errors.New("missing clipboard page request")
+		}
+		return r.ClipboardPage.Validate()
 	case "clipboard":
 		if r.Clipboard == nil {
 			return errors.New("missing clipboard metadata control")

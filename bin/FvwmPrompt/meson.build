@@ -68,6 +68,7 @@ fvwmprompt_test_binaries = custom_target(
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
         'startuplaunch.test', 'sessionowner.test', 'fvwmsession.test',
         'sessionservice.test', 'sessionprovider.test', 'clipboard.test',
+        'fvwmclipboard.test',
     ],
     input: fvwmprompt_files,
     command: [
@@ -92,6 +93,23 @@ test('prompt-transport', golang,
 test('prompt-client', py,
     args: [files('../../tests/test_prompt_client.py'), '--prompt', fvwmprompt],
     timeout: 60,
+)
+
+# Numeric-only clipboard control, using the existing private session endpoint.
+# This client never enables capture or reads a payload representation.
+fvwm_clipboard = custom_target(
+    'fvwm-clipboard',
+    output: 'fvwm-clipboard',
+    input: fvwmprompt_files,
+    command: [
+        'env', 'GOCACHE=' + fvwmprompt_go_cache,
+        'GOTOOLCHAIN=local', 'GOPROXY=off', 'GOSUMDB=off',
+        golang, 'build', '-C', fvwmprompt_build, '-mod=vendor',
+        '-o', meson.current_build_dir() / 'fvwm-clipboard', './cmd/fvwmclipboard',
+    ],
+    install: true,
+    install_dir: bindir,
+    install_tag: 'clipboard-client',
 )
 
 # The command client shares the standard-library transport; no readline or

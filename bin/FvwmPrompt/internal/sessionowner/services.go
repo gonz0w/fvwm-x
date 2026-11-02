@@ -379,15 +379,17 @@ func (state *serviceState) refreshNotifications() {
 }
 
 type serviceJob struct {
-	request   controlRequest
-	probe     busReply
-	result    busReply
-	err       error
-	outcome   string
-	power     sessionservice.PowerObservation
-	plans     providerPlans
-	locker    *ownedLocker
-	clipboard *clipboard.Reply
+	request               controlRequest
+	probe                 busReply
+	result                busReply
+	err                   error
+	outcome               string
+	power                 sessionservice.PowerObservation
+	plans                 providerPlans
+	locker                *ownedLocker
+	clipboard             *clipboard.Reply
+	clipboardCapabilities *clipboard.Capabilities
+	clipboardPage         *clipboard.Page
 }
 
 func runServiceJob(request controlRequest, cfg Config, identity busReply, ownedIDs int) serviceJob {

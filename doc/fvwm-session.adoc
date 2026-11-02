@@ -369,4 +369,4 @@ the appearance edit-all form retains eleven.
 
 == SEE ALSO
 
-*fvwm3*(1), *FvwmDesktop*(1), *FvwmMFL*(1)
+*fvwm3*(1), *FvwmDesktop*(1), *FvwmMFL*(1), *fvwm-clipboard*(1)

@@ -52,3 +52,11 @@ func TestClipboardCleanupSurvivesDiagnosticLimit(t *testing.T) {
 		t.Fatalf("lost/unbounded terminal report: %q", output.String())
 	}
 }
+
+func TestDisabledClipboardDiscoveryIsExplicitAndCarriesNoHistory(t *testing.T) {
+	request := controlRequest{ctx: context.Background(), message: sessionservice.RequestMessage{Verb: "clipboard-status"}}
+	job := runClipboardJob(request, nil)
+	if job.err != nil || job.outcome != "disabled" || job.clipboardCapabilities == nil || job.clipboardCapabilities.Validate() != nil || job.clipboard != nil || job.clipboardPage != nil {
+		t.Fatalf("discovery %+v", job)
+	}
+}

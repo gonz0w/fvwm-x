@@ -27,3 +27,30 @@ func TestClipboardControlCannotSetLockOrLifetime(t *testing.T) {
 		t.Fatal("clipboard fields attached to unrelated status")
 	}
 }
+
+func TestClipboardDiscoveryAndPagingFieldsAreVerbScoped(t *testing.T) {
+	request := RequestMessage{Version: Version, Generation: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", Operation: "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", Verb: "clipboard-status"}
+	if err := request.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	request.Clipboard = &clipboard.Request{Verb: clipboard.State, Ref: clipboard.Ref{Epoch: 19}, Value: clipboard.Unlocked}
+	if request.Validate() == nil {
+		t.Fatal("discovery accepted a hidden unlock")
+	}
+	request.Clipboard = nil
+	request.Verb = "clipboard-list"
+	request.ClipboardPage = &clipboard.PageRequest{Epoch: 19, Limit: 16}
+	if err := request.Validate(); err != nil {
+		t.Fatal(err)
+	}
+	request.ClipboardPage.Limit = 17
+	if request.Validate() == nil {
+		t.Fatal("unbounded page admitted")
+	}
+	request.ClipboardPage.Limit = 16
+	request.Verb = "configure"
+	request.Config = &Config{Bus: "off", Notifications: "off", Power: "portable"}
+	if request.Validate() == nil {
+		t.Fatal("configuration accepted hidden clipboard paging")
+	}
+}

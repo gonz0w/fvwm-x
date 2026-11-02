@@ -41,7 +41,7 @@ Dune: 4096-entry grid.
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and current limits](doc/development-preview.md).
-[Clipboard](doc/fvwm-session.adoc#_clipboard_integration_status), file-manager and release qualification remain open.
+[Clipboard](doc/fvwm-clipboard.adoc), file-manager and release qualification remain open.
 OpenBSD baseline: 8.0.
 
 [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)

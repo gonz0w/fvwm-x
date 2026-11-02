@@ -1150,6 +1150,14 @@ def run(options):
         options.session_address = address
         options.session_bus = 'reuse'
         options.session_extra_env = {'FVWM_DESKTOP_WORKER': str(options.worker)}
+        if getattr(options, 'acquisition_probe', None):
+            probe_root = runtime.root / 'icon-probe'
+            probe_root.mkdir(mode=0o700)
+            options.icon_probe_socket = probe_root / 'native.sock'
+            options.session_extra_env['FVWM_TRAY_ICON_PROBE'] = str(
+                options.icon_probe_socket)
+            evidence['limits'].append(
+                'Private loader observation active; its wakeups/cost are excluded from product performance.')
         watcher = BusPeer(options.sni_client, address,
             runtime.environment({'DISPLAY': options.display}), out, 'incumbent-watcher')
         peers.append(watcher)
@@ -1183,6 +1191,10 @@ def run(options):
                     out, 'tooltip-lifetime-producer')
                 peers.append(tooltip_peer)
                 tooltip_cases(session, evidence, tooltip_peer)
+            if group == 'acquisition':
+                from tray_icon_acquisition_cases import run as acquisition_cases
+                acquisition_cases(session, evidence, peers[1], first,
+                    options.acquisition_probe, png)
             if group in ('full', 'menu'):
                 menu_cases(session, evidence, peers[1], first)
             if group in ('full', 'lifecycle'):
@@ -1255,13 +1267,19 @@ def main():
     parser.add_argument('--toolkit-env', type=Path)
     parser.add_argument('--phase', choices=('modern', 'container', 'full'), default='full')
     parser.add_argument('--case-group', default='full',
-        choices=('full', 'menu', 'lifecycle', 'appearance', 'toolkit', 'container', 'bus', 'tooltip'),
+        choices=('full', 'menu', 'lifecycle', 'appearance', 'toolkit', 'container', 'bus', 'tooltip', 'acquisition'),
         help='Select an affected live case group; only full combines acceptance.')
+    parser.add_argument('--acquisition-probe', choices=('positive', 'control'))
     parser.add_argument('--expect-modern-unavailable', action='store_true')
     parser.add_argument('--expect-no-container', action='store_true')
     parser.add_argument('--execution-profile', default='unspecified',
         choices=('unspecified', 'native-cpu', 'emulated-cpu'))
     options = parser.parse_args()
+    if (options.case_group == 'acquisition') != bool(options.acquisition_probe):
+        parser.error('acquisition group requires its private positive/control probe mode')
+    if options.acquisition_probe and (options.expect_modern_unavailable or
+            options.phase != 'modern'):
+        parser.error('acquisition probe requires the enabled modern-only phase')
     options.build = options.build.resolve()
     source = Path(__file__).resolve().parents[2]
     defaults = dict(fvwm=options.build / 'fvwm3',

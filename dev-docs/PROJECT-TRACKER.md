@@ -35,6 +35,59 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: A3 deterministic tray icon acquisition observation under #214/
+#215, branch `codex/r1-tray-icon-observer`, base merged PR347
+`04e4e31a97ccad3e5306623b0cbc9daeb13116b0`. Owner Cam; lead implementation
+fallback remains selected. Select four related qualification-support stories:
+
+1. A non-installed test-only native observation object with bounded nonblocking
+   private control, completed-menu-batch hold/release and exact-path image-load
+   records. Hold ready=false and busy=true together; bound wakeups/records and
+   always permit cleanup release. No production test hook or new supervisor.
+2. Optional private normal/control Tray build targets using the same sources.
+   The generated negative-control source disables only the acquisition-mismatch
+   predicate and preserves liveness/identity guards; no cross-layer C inclusion.
+3. An independent private-bus/native-X fixture extension verifies unchanged menu
+   identities across a held batch and changed icon tuple, zero old-path loads,
+   a fresh positive load and the failing control. Keep pixel/theme checks separate;
+   never infer admission from an eventual screenshot. Preserve ordinary fixtures.
+4. Document exact fixture syntax, bounds, cleanup and remaining shared appearance
+   qualification. Author meaningful protocol/fixture syntax checks, affected
+   compilation and separate review; runtime remains at A1–A4. No product source
+   behavior, dependency/default, icon asset or cache-retirement change is selected.
+
+Keep the fixture Linux-specific where linker wrapping is required; ordinary
+six-target native acceptance retains its existing scope. Freeze and review any
+native build/execution plan before dispatch. Test-only compiler/source work is
+not a per-PR runtime campaign. The next periodic performance comparison remains
+4/5 implementation checkpoints; this observation-only batch adds no resident
+product feature. C2–C5 clipboard qualification stays queued and capture stays off.
+
+A3 source/plan and build-driver repair reviews have no blocking findings.
+Repository/whitespace, three Python syntax and three generator checks pass.
+Ten fresh Linux ARM64 objects and two private links pass; 54 exports verify.
+The first driver stopped before compilation on cached profile selection; its
+failure remains preserved. Both build-only labs are confirmed stopped. Native
+Meson import/configuration is unavailable/pending. No candidate/native-X fixture
+was invoked. Integrated/signed delivery and A1–A4 runtime/theme captures remain
+pending; source/build evidence closes neither owner. See the
+[A3 report](verification/VERIFICATION-2026-11-02-TRAY-ICON-OBSERVER.md).
+
+A2 PR347 is merged after separate source/evidence/signed-delivery review.
+Head `179d365400c9a50573f5b6e815390b978ac6a204`, tree
+`6e9589f6a4f3734e0bdea508c66cf0388d60c36b`, canonical merge
+`04e4e31a97ccad3e5306623b0cbc9daeb13116b0`; Cam signature/DCO and parent
+PR346 verified. Main synced and owned refs retired. PR Project Done and #214/
+#215 In progress verified; R1 retains 50 open issues. Performance is 4/5. Three
+P2 source/fixture findings are corrected; two corrected C objects, five composed
+Go builds, syntax checks and both stopped build-only labs are recorded. No
+runtime/test/fixture outcome or screenshot was claimed. Seven superseded host
+compile-only binaries were retired (49,584,974 bytes); latest artifacts,
+comparison executables, SDKs/caches and all compact receipts remain.
+
+<details>
+<summary>A2 delivered icon preference and retained acceptance</summary>
+
 Current work: A2 desktop icon-choice adoption under THEME-02 #214 and
 ICON-01 #215, branch `codex/r1-desktop-icons`, base merged PR346
 `825f3d0156e06709570011e5bf1094522f73d68b`. Owner Cam; lead implementation
@@ -85,6 +138,8 @@ pending signed delivery and A1–A4 qualification. The independent
 [load-attempt design](verification/TEST-DESIGN-2026-11-02-TRAY-ICON-ACQUISITION.md)
 still needs its interposition fixture and negative control; no visible stale
 pixel or runtime pass is inferred. No broader owner criterion closes.
+
+</details>
 
 A1 PR346 is merged after separate source/evidence and signed-delivery review.
 Reviewed head `c7ebbe42cf2db283a95bb8a4835945c9ab1d076a`, tree

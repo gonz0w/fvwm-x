@@ -74,8 +74,12 @@ their existing scope. The owner changes required policy through the existing pro
   retention and protected-storage primitives first, then a text/image consumer
   handoff for a separate configuration/theme thread while runtime work continues.
   Reuse the file-manager collection/action contracts. Protected memory precedes
-  optional encrypted persistence; password retention and defaults remain open.
-  X11 display clients remain outside the confidentiality guarantee. See the
+  optional encrypted persistence.
+  First-release owner defaults are session-only history, recognized sensitive
+  items excluded, persistence off, CLIPBOARD-only capture and PRIMARY sync off.
+  History survives desktop lock; logout ends session history. Remaining lock-time
+  capture/access, resource limits and backend/key policies stay explicit in the
+  clipboard scope. X11 display clients remain outside the confidentiality guarantee. See the
   [clipboard scope](../decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md).
 - Approved desktop exploration direction: additional consumers and hardware,
   application and richer-layout capabilities wait until the existing program is

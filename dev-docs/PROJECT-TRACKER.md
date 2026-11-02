@@ -7,29 +7,48 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: CONTENT-01 #63 / STORE-01 #74 producer publication, with
-RETENTION-01 #71 cancellation. Owner Cam; branch
-`codex/r1-content-producer-publication`, base merged PR332
-`8a144fc9615e192517b1f59466a296a4fd343c53`.
+Current work: STORE-01 #74 memory-enforcement control source, coordinated
+with CONTENT-01 #63 and RETENTION-01 #71. Owner Cam; branch
+`codex/r1-content-memory-controls`, based on merged PR333
+`5cd95cef80f4425aa0db143a9a7cee279af8f9dd`.
 
-Select four related source stories: exact reserved-generation producer access
-checks before each bounded write; successful completion with actual initialized
-representation lengths; both private memory candidates write and close access
-before publication; cancellation and malformed/late/duplicate completion preserve
-resource/work cleanup and never revive data. All successful internal callers
-migrate together; there is no unsized successful fallback. No production backend,
-capture service, persistence, dependency or installed numeric default is adopted.
-The [source receipt](verification/VERIFICATION-2026-11-01-CONTENT-PUBLICATION.md)
-records five strict host compile/link passes and one 0.189-second pure policy
-pass; neither memory candidate executed. Native changed-source qualification
-and the protection comparison remain pending. Numeric fixtures remain explicit.
-Fixed session-only/sensitive-exclusion/
-persistence-off defaults remain; the capture/PRIMARY/lock/logout owner question
-is pending. Author pure policy cases with source, use affected strict compile/
-link and separate review now, then one assembled memory comparison checkpoint.
-Regional enforcement, real lock refusal, exact dependency cost/adoption and
-native target execution remain pending; do not repeat WM/X/install/themes for
-private source preparation. No new UI/screenshots. Parked #257/#258 stay untouched.
+Select four related private-probe stories before the assembled comparison:
+non-forking read/write, no-access and read-only enforcement modes with exact
+ready/termination observations; reuse the reviewed direct-child timeout helper
+in a separately frozen #74 copy with raw signal metadata; strict unprivileged
+zero-lock-limit refusal with genuine checked-call/errno and no producer bytes;
+bounded native capability/resource observations and a strict host-side control
+oracle. Use only public synthetic bytes. No core collection, system-wide setting,
+credential/privilege change, real clipboard payload or production backend is
+selected. The supervisor owns exactly one unreaped direct child; original #48
+source/results stay frozen. Expected-fault termination is not explicit wiping
+or cleanup acknowledgement. Regional dump exclusion and library allocation
+models remain separate evidence, not inferred from a signal or zero core limit.
+
+The [control source receipt](verification/VERIFICATION-2026-11-01-CONTENT-MEMORY-CONTROLS.md)
+records four strict optimized host compile/link passes and nine cheap pure
+capture-oracle tests. One reviewed host invocation observes only the actual
+eight-record unavailable boundary (77); no protected/fault mode qualifies.
+Source review precedes the assembled protection/refusal/resource/cost checkpoint. Native
+unavailability stays explicit. Existing installed/default and full WM/X/theme/
+release gates do not run for each private helper. The owner selected
+CLIPBOARD-only capture, PRIMARY synchronization off and
+history retained while locked; logout ends session history. Existing sensitive-
+item exclusion and persistence-off remain. Capture/access behavior during lock,
+installed budgets and backend guarantees remain distinct decisions.
+No new UI/screenshots. #257/#258 stay parked.
+
+PR333 completed the four-story producer-publication source checkpoint with
+reviewed head `4841bac0a228aaacdabf3eaeb689449ea881bc82`, canonical merged tree
+`0f7521e1486583de4a1d4834a77a78654ca11b0c`, valid signature and Cam DCO.
+Exact reserved writes, atomic actual lengths, write-close-publish/read ordering
+and cancellation are merged; source refs retired locally and GitHub already
+removed the remote. The [receipt](verification/VERIFICATION-2026-11-01-CONTENT-PUBLICATION.md)
+retains five host compile/link passes and a 0.189-second pure policy pass.
+Neither memory candidate executed. Changed native target/protection/cost gates
+remain pending; no backend/capture/persistence/default/dependency was adopted.
+Issues #63/#71/#74 remain open and mirror this component; PR333 Project
+status is verified Done. The owner defaults are mirrored in #71/#74. R1 has 51 open issues at the current lookup.
 
 PR332 completes LIB-06 #48: reviewed head `93b20ddc8a536448fa2f31b6060d2386a3e02643`,
 merged tree `0c8b16f7798b178941688a68f5919befc9a4209d`, valid canonical signature

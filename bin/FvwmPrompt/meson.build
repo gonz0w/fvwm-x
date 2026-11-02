@@ -67,7 +67,7 @@ fvwmprompt_test_binaries = custom_target(
         'fvwmpinboard.test', 'pinboard.test',
         'commandmeta.test', 'desktopinspect.test', 'viewbinding.test', 'actionpalette.test',
         'startuplaunch.test', 'sessionowner.test', 'fvwmsession.test',
-        'sessionservice.test', 'sessionprovider.test',
+        'sessionservice.test', 'sessionprovider.test', 'clipboard.test',
     ],
     input: fvwmprompt_files,
     command: [

@@ -14,6 +14,8 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/fvwmorg/FvwmPrompt/internal/clipboard"
 )
 
 const (
@@ -65,25 +67,27 @@ type Snapshot struct {
 }
 
 type RequestMessage struct {
-	Version            int     `json:"version"`
-	Generation         string  `json:"generation,omitempty"`
-	Operation          string  `json:"operation,omitempty"`
-	Verb               string  `json:"verb"`
-	Config             *Config `json:"config,omitempty"`
-	Summary            string  `json:"summary,omitempty"`
-	Body               string  `json:"body,omitempty"`
-	NotificationID     uint32  `json:"notification_id,omitempty"`
-	ProviderGeneration string  `json:"provider_generation,omitempty"`
+	Version            int                `json:"version"`
+	Generation         string             `json:"generation,omitempty"`
+	Operation          string             `json:"operation,omitempty"`
+	Verb               string             `json:"verb"`
+	Config             *Config            `json:"config,omitempty"`
+	Summary            string             `json:"summary,omitempty"`
+	Body               string             `json:"body,omitempty"`
+	NotificationID     uint32             `json:"notification_id,omitempty"`
+	ProviderGeneration string             `json:"provider_generation,omitempty"`
+	Clipboard          *clipboard.Request `json:"clipboard,omitempty"`
 }
 
 type Reply struct {
-	Version        int      `json:"version"`
-	Generation     string   `json:"generation,omitempty"`
-	Operation      string   `json:"operation,omitempty"`
-	Outcome        string   `json:"outcome"`
-	Error          string   `json:"error,omitempty"`
-	NotificationID uint32   `json:"notification_id,omitempty"`
-	Status         Snapshot `json:"status"`
+	Version        int              `json:"version"`
+	Generation     string           `json:"generation,omitempty"`
+	Operation      string           `json:"operation,omitempty"`
+	Outcome        string           `json:"outcome"`
+	Error          string           `json:"error,omitempty"`
+	NotificationID uint32           `json:"notification_id,omitempty"`
+	Status         Snapshot         `json:"status"`
+	Clipboard      *clipboard.Reply `json:"clipboard,omitempty"`
 }
 
 func Identity(value string) bool {
@@ -106,6 +110,8 @@ func Plain(value string, max int) bool {
 	return true
 }
 
+func IsClipboardVerb(verb string) bool { return verb == "clipboard" }
+
 func (r RequestMessage) Validate() error {
 	if r.Version != Version {
 		return errors.New("unsupported session request version")
@@ -126,7 +132,18 @@ func (r RequestMessage) Validate() error {
 	} else if r.ProviderGeneration != "" {
 		return errors.New("provider generation does not belong to session verb")
 	}
+	if !IsClipboardVerb(r.Verb) && r.Clipboard != nil {
+		return errors.New("clipboard fields do not belong to session verb")
+	}
 	switch r.Verb {
+	case "clipboard":
+		if r.Clipboard == nil {
+			return errors.New("missing clipboard metadata control")
+		}
+		if r.Clipboard.Verb == clipboard.State || r.Clipboard.Verb == clipboard.Quit {
+			return errors.New("clipboard lifetime and lock state are session-owned")
+		}
+		return r.Clipboard.Validate(r.Clipboard.Ref.Epoch)
 	case "status", "reprobe", "power-probe", "poweroff", "reboot", "suspend", "lock":
 	case "configure":
 		if r.Config == nil {

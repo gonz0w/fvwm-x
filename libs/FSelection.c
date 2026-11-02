@@ -183,7 +183,7 @@ selection_fence(const selection_operation *operation)
 {
 	FSelectionStatus status = selection_deadline(operation);
 
-	if (status != FSELECTION_OK || !operation->sink.consume)
+	if (status != FSELECTION_OK || !operation->sink.current)
 		return status;
 	if (XGetSelectionOwner(operation->display, operation->selection) !=
 		operation->sink.source.owner ||
@@ -789,4 +789,32 @@ FSelectionRequestTextNegotiated(Display *display, Atom selection, Atom property,
 {
 	return selection_request_typed(display, selection, None, property,
 	    time, timeout_ms, service, context, result, true);
+}
+
+FSelectionStatus FSelectionRequestTargets(Display *display, Atom selection,
+    Atom property, Time time, int timeout_ms, FSelectionSource source,
+    FSelectionSourceCurrent current, FSelectionService service, void *context,
+    FSelectionResult *result)
+{
+	int64_t start = monotonic_ms();
+	selection_operation operation = {.display = display,
+		.selection = selection, .service = service, .context = context,
+		.sink = {.source = source, .current = current, .context = context}};
+
+	if (!result)
+		return FSELECTION_INVALID;
+	*result = (FSelectionResult){0};
+	if (!display || selection == None || property == None || !current ||
+		!source.owner || !source.epoch || !source.generation ||
+		timeout_ms <= 0 || timeout_ms > FSELECTION_TIMEOUT_MS)
+		return FSELECTION_INVALID;
+	if (start < 0)
+		return FSELECTION_X_ERROR;
+	operation.deadline = start + timeout_ms;
+	operation.targets = XInternAtom(display, "TARGETS", False);
+	operation.incr = XInternAtom(display, "INCR", False);
+	if (!operation.targets || !operation.incr)
+		return FSELECTION_X_ERROR;
+	return selection_convert(&operation, selection, operation.targets,
+		property, time, true, result);
 }

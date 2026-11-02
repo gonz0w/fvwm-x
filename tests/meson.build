@@ -438,6 +438,47 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         is_parallel: false,
         timeout: 60,
     )
+    if xfixes.found()
+        clipboard_capture_probe = executable(
+            'test-clipboard-capture-x',
+            ['test_clipboard_capture_x.c', '../bin/clipboard_policy.c'],
+            include_directories: includedirs,
+            dependencies: [summary_depvals['x11']],
+            c_args: ['-UNDEBUG', '-D_DEFAULT_SOURCE=1'],
+        )
+        clipboard_failure_capture = executable(
+            'test-clipboard-cleanup-failure',
+            clipboard_capture_sources + files(
+                '../libs/content_payload.c', 'clipboard_payload_fault.c'),
+            include_directories: includedirs,
+            link_with: libfvwm3,
+            dependencies: all_compile_deps + clipboard_runtime_deps,
+            c_args: ['-D_DEFAULT_SOURCE=1', '-DCONTENT_PAYLOAD_TEST=1'],
+        )
+        clipboard_deadline_capture = executable(
+            'test-clipboard-deadline',
+            clipboard_capture_sources + files(
+                '../libs/content_payload.c', 'clipboard_payload_fault.c'),
+            include_directories: includedirs,
+            link_with: libfvwm3,
+            dependencies: all_compile_deps + clipboard_runtime_deps,
+            c_args: ['-D_DEFAULT_SOURCE=1', '-DCONTENT_PAYLOAD_TEST=1',
+                '-DCLIPBOARD_TEST_DELAY=1'],
+        )
+        test(
+            'clipboard-capture-xvfb', py,
+            args: [files('live_x/clipboard_capture_live.py'),
+                '--probe', clipboard_capture_probe.full_path(),
+                '--capture', fvwm_clipboard_capture.full_path(),
+                '--failure-capture', clipboard_failure_capture.full_path(),
+                '--deadline-capture', clipboard_deadline_capture.full_path(),
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'clipboard-capture'],
+            depends: [clipboard_capture_probe, fvwm_clipboard_capture,
+                clipboard_failure_capture, clipboard_deadline_capture],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 75,
+        )
+    endif
     selection_probe = executable(
         'test-selection-x', 'test_selection_x.c',
         include_directories: includedirs,
@@ -4918,3 +4959,11 @@ content_memory_timeout = executable(
     include_directories: includedirs,
     build_by_default: false,
 )
+
+clipboard_policy_test = executable(
+    'test-clipboard-policy',
+    ['test_clipboard_policy.c', '../bin/clipboard_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('clipboard-policy', clipboard_policy_test)

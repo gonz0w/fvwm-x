@@ -339,6 +339,9 @@ status_serializer_probe = executable(
     install: false,
 )
 
+test('status-serializer-capture', py,
+    args: files('test_status_serializer_capture.py'))
+
 window_children_test = executable(
     'test-window-children', 'test_window_children.c',
     include_directories: includedirs,

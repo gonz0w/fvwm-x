@@ -82,6 +82,19 @@ python3 tools/maintenance/qemu_bsd.py --profile freebsd-arm64 \
     --cache builddir/ci-assets/cache --png-bootstrap --output builddir/ci-job
 ```
 
+For a gate that produces its own evidence archive, `--inline-evidence` receives
+that gzip stream on the authenticated run connection. Its script must reserve
+stdout for the archive, put diagnostics on stderr or inside the artifact tree,
+and preserve its original exit status when exporting failure evidence. This
+avoids an extra evidence-transfer handshake. Ordinary scripts keep the existing
+separate-collection behavior unless explicitly selected.
+
+The inline stream retains the 2 GiB archive cap and separate 64 MiB stderr cap.
+The runner checks a nonempty bounded gzip header; the owning gate must validate
+complete archive structure, source/artifact identity and actual results before
+qualification. A transferred archive or runner exit 0 alone is not acceptance.
+Use a private fresh job/output and the existing authentication/cleanup rules.
+
 The runner has affected local qualification on six targets, actual failure and
 cancellation controls, and authenticated default-X startup probes on all four
 provider setups. These are not installed core/client build gates.

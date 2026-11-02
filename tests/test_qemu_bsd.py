@@ -54,6 +54,61 @@ class QemuTests(unittest.TestCase):
         path.chmod(0o755)
         return str(path)
 
+    def evidence_sender(self, status=0, valid=True):
+        archive = io.BytesIO()
+        with tarfile.open(fileobj=archive, mode='w:gz') as stream:
+            item = tarfile.TarInfo('builddir-bsd/result.json')
+            item.size = 3
+            stream.addfile(item, io.BytesIO(b'{}\n'))
+        raw = archive.getvalue() if valid else b'not an archive\n'
+        counter = self.root / 'connections'
+        program = self.stub('ssh', f'''import pathlib,sys
+p=pathlib.Path({str(counter)!r})
+n=int(p.read_text())+1 if p.exists() else 1
+p.write_text(str(n))
+if n>1: sys.exit(88)
+sys.stdout.buffer.write({raw!r})
+sys.stderr.write('separate diagnostic\\n')
+sys.exit({status})''')
+        return [program], counter, raw
+
+    def test_inline_evidence_needs_only_the_authenticated_run_connection(self):
+        ssh, counter, raw = self.evidence_sender()
+        code = qemu.execute_guest_script(ssh, self.root, 10,
+                                          inline_evidence=True)
+        qemu.collect_guest_evidence(ssh, self.root, inline_evidence=True)
+        self.assertEqual(code, 0)
+        self.assertEqual(counter.read_text(), '1')
+        self.assertEqual((self.root / 'guest-evidence.tgz').read_bytes(), raw)
+        self.assertEqual((self.root / 'guest-evidence.tgz.stderr').read_text(),
+                         'separate diagnostic\n')
+        with tarfile.open(self.root / 'guest-evidence.tgz') as archive:
+            self.assertEqual(archive.extractfile(
+                'builddir-bsd/result.json').read(), b'{}\n')
+
+    def test_legacy_evidence_still_uses_separate_connection(self):
+        ssh, counter, _ = self.evidence_sender()
+        self.assertEqual(qemu.execute_guest_script(ssh, self.root, 10), 0)
+        with self.assertRaises(RuntimeError):
+            qemu.collect_guest_evidence(ssh, self.root)
+        self.assertEqual(counter.read_text(), '2')
+
+    def test_inline_archive_keeps_failed_script_status(self):
+        ssh, counter, raw = self.evidence_sender(status=23)
+        code = qemu.execute_guest_script(ssh, self.root, 10,
+                                          inline_evidence=True)
+        qemu.collect_guest_evidence(ssh, self.root, inline_evidence=True)
+        self.assertEqual(code, 23)
+        self.assertEqual(counter.read_text(), '1')
+        self.assertEqual((self.root / 'guest-evidence.tgz').read_bytes(), raw)
+
+    def test_inline_non_archive_output_refuses(self):
+        ssh, _, _ = self.evidence_sender(valid=False)
+        self.assertEqual(qemu.execute_guest_script(ssh, self.root, 10,
+                                                  inline_evidence=True), 0)
+        with self.assertRaisesRegex(RuntimeError, 'gzip header'):
+            qemu.collect_guest_evidence(ssh, self.root, inline_evidence=True)
+
     def test_boot_identity_accepts_native_formats_and_refuses_diagnostics(self):
         path = self.root / 'identity'
         for text, expected in [

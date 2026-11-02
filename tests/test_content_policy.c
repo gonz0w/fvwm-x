@@ -41,9 +41,20 @@ static struct content_ref reserve(void)
 	return ref;
 }
 
+static enum content_result finish(struct content_ref ref,
+	enum content_hint hint, bool success, uint64_t now_ms)
+{
+	struct content_bytes actual[CONTENT_REPRESENTATIONS_MAX];
+
+	for (size_t i = 0; i < candidate.count; i++)
+		actual[i] = candidate.reps[i].bytes;
+	return content_finish(&policy, ref, hint, success, actual,
+		candidate.count, now_ms);
+}
+
 static void publish(struct content_ref ref)
 {
-	assert(content_finish(&policy, ref, candidate.hint, true,
+	assert(finish(ref, candidate.hint, true,
 		policy.last_ms + 1)
 		== CONTENT_OK);
 }
@@ -83,7 +94,7 @@ static void admission(void)
 	ref = reserve();
 	candidate.reps[0].id = 99;
 	assert(items[0].descriptor.reps[0].id == 1);
-	assert(content_finish(&policy, ref, CONTENT_HINT_SENSITIVE, true, 11)
+	assert(finish(ref, CONTENT_HINT_SENSITIVE, true, 11)
 		== CONTENT_EXCLUDED);
 	assert(items[0].phase == CONTENT_RETIRED && policy.usage.work == 0);
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
@@ -103,16 +114,16 @@ static void cancellation(void)
 	assert(content_reserve(&policy, &candidate, true, NULL, 10, &other)
 		== CONTENT_FULL);
 	assert(policy.usage.items == 2 && policy.usage.bytes.encoded == 80);
-	assert(content_finish(&policy, ref, CONTENT_HINT_ABSENT, true, 11)
+	assert(finish(ref, CONTENT_HINT_ABSENT, true, 11)
 		== CONTENT_STALE);
-	assert(content_finish(&policy, ref, CONTENT_HINT_ABSENT, true, 11)
+	assert(finish(ref, CONTENT_HINT_ABSENT, true, 11)
 		== CONTENT_STALE && policy.usage.work == 1);
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_STALE);
 	/* Reuse the array slot, never its item identity. */
 	other = reserve();
 	assert(other.item != ref.item);
-	assert(content_finish(&policy, ref, CONTENT_HINT_ABSENT, false, 11)
+	assert(finish(ref, CONTENT_HINT_ABSENT, false, 11)
 		== CONTENT_STALE && policy.usage.work == 2);
 	publish(other);
 	assert(content_acquire(&policy, other, 1, 12, &lease) == CONTENT_OK);
@@ -148,7 +159,7 @@ static void replacement(void)
 	assert(content_release(&policy, lease) == CONTENT_OK);
 	assert(content_cleanup_ack(&policy, first) == CONTENT_OK);
 	assert(content_clear(&policy) == CONTENT_OK);
-	assert(content_finish(&policy, second, CONTENT_HINT_ABSENT, true, 14)
+	assert(finish(second, CONTENT_HINT_ABSENT, true, 14)
 		== CONTENT_STALE);
 	assert(content_cleanup_ack(&policy, second) == CONTENT_OK);
 	assert(policy.usage.items == 0 && policy.usage.bytes.encoded == 0);
@@ -200,14 +211,14 @@ static void publication_and_bounds(void)
 
 	setup();
 	ref = reserve();
-	assert(content_finish(&policy, ref, CONTENT_HINT_ABSENT, true, 500)
+	assert(finish(ref, CONTENT_HINT_ABSENT, true, 500)
 		== CONTENT_EXPIRED);
 	assert(policy.usage.work == 0 && policy.usage.items == 1);
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
 	setup();
 	ref = reserve();
 	policy.paused = true;
-	assert(content_finish(&policy, ref, CONTENT_HINT_ABSENT, true, 11)
+	assert(finish(ref, CONTENT_HINT_ABSENT, true, 11)
 		== CONTENT_EXCLUDED);
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
 	setup();
@@ -282,6 +293,141 @@ static void physical_and_access(void)
 	assert(policy.usage.storage.mapped == 0);
 }
 
+static void producer_access(void)
+{
+	struct content_ref ref, bad;
+	struct content_usage before;
+	struct content_candidate view;
+	struct content_lease lease;
+	struct content_bytes zero = {0};
+
+	assert(content_producer_check(NULL, (struct content_ref){0}, 1,
+		zero, zero, 10) == CONTENT_UNCONFIGURED);
+	setup();
+	ref = reserve();
+	before = policy.usage;
+	assert(content_describe(&policy, ref, 10, &view) == CONTENT_STALE);
+	assert(content_acquire(&policy, ref, 1, 10, &lease) == CONTENT_STALE);
+	assert(lease.id == 0);
+	assert(content_producer_check(&policy, ref, 1, zero,
+		candidate.reps[0].bytes, 10) == CONTENT_OK);
+	assert(content_producer_check(&policy, ref, 1,
+		candidate.reps[0].bytes, zero, 10) == CONTENT_OK);
+	assert(content_producer_check(&policy, ref, 1,
+		(struct content_bytes){40, 80, 20},
+		(struct content_bytes){1, 0, 0}, 10) == CONTENT_INVALID);
+	assert(content_producer_check(&policy, ref, 1,
+		(struct content_bytes){0, SIZE_MAX, 0},
+		(struct content_bytes){0, 1, 0}, 10) == CONTENT_INVALID);
+	assert(content_producer_check(&policy, ref, 1,
+		(struct content_bytes){0, 0, 21}, zero, 10)
+		== CONTENT_INVALID);
+	assert(content_producer_check(&policy, ref, 99, zero, zero, 10)
+		== CONTENT_INVALID);
+	bad = ref;
+	bad.generation++;
+	assert(content_producer_check(&policy, bad, 1, zero, zero, 10)
+		== CONTENT_STALE);
+	bad = ref;
+	bad.epoch++;
+	assert(content_producer_check(&policy, bad, 1, zero, zero, 10)
+		== CONTENT_STALE);
+	policy.paused = true;
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 10)
+		== CONTENT_EXCLUDED);
+	policy.paused = false;
+	policy.enabled = false;
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 10)
+		== CONTENT_EXCLUDED);
+	policy.enabled = true;
+	assert(memcmp(&before, &policy.usage, sizeof(before)) == 0);
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 500)
+		== CONTENT_EXPIRED);
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 499)
+		== CONTENT_INVALID);
+	assert(items[0].phase == CONTENT_RESERVED && items[0].work);
+	assert(content_retire(&policy, ref) == CONTENT_OK);
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 500)
+		== CONTENT_STALE);
+	assert(finish(ref, candidate.hint, true, 500) == CONTENT_STALE);
+	assert(policy.usage.work == 0 && policy.usage.bytes.encoded == 40);
+	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
+	setup();
+	ref = reserve();
+	publish(ref);
+	assert(content_producer_check(&policy, ref, 1, zero, zero, 11)
+		== CONTENT_STALE);
+}
+
+static void sized_publication(void)
+{
+	struct content_bytes actual[2] = {{7, 0, 2}, {0, 0, 0}};
+	struct content_ref ref;
+	struct content_candidate view;
+	struct content_usage before;
+	struct content_lease lease;
+
+	setup();
+	candidate.count = 2;
+	candidate.reps[1] = (struct content_representation){
+		2, CONTENT_IMAGE, {10, 20, 5}};
+	ref = reserve();
+	before = policy.usage;
+	assert(content_finish(&policy, ref, candidate.hint, true, actual, 2,
+		11) == CONTENT_OK);
+	assert(content_describe(&policy, ref, 11, &view) == CONTENT_OK);
+	assert(view.count == 2 && view.reps[0].bytes.encoded == 7 &&
+		view.reps[0].bytes.decoded == 0 &&
+		view.reps[0].bytes.derived == 2 &&
+		view.reps[1].bytes.encoded == 0 &&
+		view.reps[1].kind == CONTENT_IMAGE && view.reps[1].id == 2);
+	assert(policy.usage.bytes.encoded == before.bytes.encoded &&
+		policy.usage.bytes.decoded == before.bytes.decoded &&
+		policy.usage.bytes.derived == before.bytes.derived);
+	assert(content_finish(&policy, ref, candidate.hint, true, actual, 2,
+		11) == CONTENT_STALE);
+	assert(content_acquire(&policy, ref, 2, 11, &lease) == CONTENT_OK);
+	assert(content_retire(&policy, ref) == CONTENT_OK);
+	assert(content_cleanup_ack(&policy, ref) == CONTENT_BUSY);
+	assert(policy.usage.bytes.encoded == 50);
+	assert(content_release(&policy, lease) == CONTENT_OK);
+	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
+	assert(policy.usage.bytes.encoded == 0);
+
+	/* A bad later representation cannot partially publish the first. */
+	for (size_t field = 0; field < 5; field++)
+	{
+		setup();
+		candidate.count = 2;
+		candidate.reps[1] = (struct content_representation){
+			2, CONTENT_IMAGE, {10, 20, 5}};
+		ref = reserve();
+		actual[0] = (struct content_bytes){7, 0, 2};
+		actual[1] = (struct content_bytes){10, 20, 5};
+		if (field == 0)
+			actual[1].encoded++;
+		else if (field == 1)
+			actual[1].decoded = SIZE_MAX;
+		else if (field == 2)
+			actual[1].derived++;
+		assert(content_finish(&policy, ref, candidate.hint, true,
+			field == 3 ? NULL : actual, field == 4 ? 1 : 2, 11)
+			== CONTENT_INVALID);
+		assert(items[0].descriptor.reps[0].bytes.encoded == 40 &&
+			items[0].descriptor.reps[1].bytes.encoded == 10);
+		assert(items[0].phase == CONTENT_RETIRED && !items[0].work);
+		assert(policy.usage.bytes.encoded == 50);
+		assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
+	}
+	setup();
+	ref = reserve();
+	assert(content_finish(&policy, ref, candidate.hint, true, actual, 1,
+		9) == CONTENT_INVALID && policy.usage.work == 1);
+	assert(content_finish(&policy, ref, candidate.hint, false, NULL,
+		SIZE_MAX, 10) == CONTENT_OK);
+	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
+}
+
 int main(void)
 {
 	admission();
@@ -290,5 +436,7 @@ int main(void)
 	expiry_and_identity();
 	publication_and_bounds();
 	physical_and_access();
+	producer_access();
+	sized_publication();
 	return 0;
 }

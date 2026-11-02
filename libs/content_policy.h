@@ -93,10 +93,22 @@ enum content_result content_reserve(struct content_policy *policy,
 	const struct content_candidate *candidate, bool source_allowed,
 	const struct content_ref *replace, uint64_t now_ms,
 	struct content_ref *output);
+/* Check immediately before each native write while the exact producer token
+ * is reserved. This is metadata permission, not a payload pointer or an OS
+ * access-protection change. Refusal retains work and all resource charges. */
+enum content_result content_producer_check(struct content_policy *policy,
+	struct content_ref ref, uint32_t representation,
+	struct content_bytes offset, struct content_bytes length,
+	uint64_t now_ms);
 /* The exact ref is also the single producer-work token. Finish consumes it
- * once, including after retirement. A changed hint refuses publication. */
+ * once, including after retirement. A changed hint refuses publication.
+ * Successful producers attest initialized prefixes in reservation order and
+ * close writable access before this call. Actual lengths cannot exceed the
+ * reservation; malformed success retires the item. Failed completion ignores
+ * actual/count. Full reservation charges survive until backend cleanup. */
 enum content_result content_finish(struct content_policy *policy,
 	struct content_ref ref, enum content_hint hint, bool success,
+	const struct content_bytes *actual, size_t count,
 	uint64_t now_ms);
 enum content_result content_retire(struct content_policy *policy,
 	struct content_ref ref);

@@ -1,5 +1,7 @@
 # Proposals and decisions
 
+- [Native content payload owner](CONTENT-PAYLOAD-OWNER-2026-11-01.md): bounded base-system storage, explicit process preflight, scoped C access and retryable cleanup; source implementation with runtime acceptance queued.
+
 - [Protected allocator comparison](CONTENT-ALLOCATOR-COMPARISON-2026-11-01.md): retain the base-system direction, defer sodium guarded-allocation integration and preserve separate payload/crypto/default acceptance.
 
 - [Native file clipboard and drag-and-drop](FILE-TRANSFER-2026-10-31.md): #67/#22 file-only owner/requestor, native Form gestures and confirmed grouped jobs.

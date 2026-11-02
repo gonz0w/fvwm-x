@@ -1,0 +1,365 @@
+{
+  "owner": "Cam",
+  "issues": [
+    63,
+    71,
+    74
+  ],
+  "base": "ef53c100d722dc23dfa015dfab86594c5da01e82",
+  "source": {
+    "libs/content_payload.c": "e640e7f947bb8ce1a4eeeeb14a66db08f9ae56acd579aacabd9039ffe6948614",
+    "libs/content_payload.h": "dd068f3925da9be8bfc29b977f1f3b544c7fdacdcf1eca226e2b64164c473f92",
+    "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+    "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b",
+    "tests/test_content_payload.c": "f8a60dfacd2a7c4ed1a56990bf1603b3f685331d43fc0bebc332465ca3f9a6f5",
+    "tests/test_content_policy.c": "73f249f3c86438c6d73bf78f1aed6ac7ce8d54adbd15622981af2c04aa9c264e",
+    "tests/meson.build": "9b79b9112c9a006b73b3811f4814dfe06dcb44dc7717473bfe38b8aa5472d130"
+  },
+  "scope": "five-story native payload owner source checkpoint; no installed service/core caller, capture/transport, UI, Go/Lua payload, crypto/persistence or numeric defaults",
+  "checks": {
+    "compile01": {
+      "scope": "strict macOS ARM64 C11 compile only; no payload/guard/runtime execution",
+      "source_before": {
+        "libs/content_payload.c": "063afb97a158347d8d7f77c1ae7c2d315d99bcba49f1ea10269ddbdb91f3850d",
+        "libs/content_payload.h": "078d36a36c1e500544d61d83d47e6f9cb23e8a686f72f61d71bfe28e12ef5089",
+        "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+        "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b"
+      },
+      "commands": [
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-c",
+            "libs/content_policy.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o"
+          ],
+          "exit": 0,
+          "seconds": 0.2152314999839291,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/payload.o"
+          ],
+          "exit": 0,
+          "seconds": 0.05833037500269711,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/payload-test.o"
+          ],
+          "exit": 0,
+          "seconds": 0.04778970801271498,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "source_after": {
+        "libs/content_payload.c": "063afb97a158347d8d7f77c1ae7c2d315d99bcba49f1ea10269ddbdb91f3850d",
+        "libs/content_payload.h": "078d36a36c1e500544d61d83d47e6f9cb23e8a686f72f61d71bfe28e12ef5089",
+        "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+        "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b"
+      },
+      "pass": true
+    },
+    "compile02": {
+      "scope": "strict macOS ARM64 optimized compile/link only; no unit/native payload/process-guard/runtime invocation",
+      "source_before": {
+        "libs/content_payload.c": "ed6b36bcdcd3eedf14b51fdc1f22c0bd8438352975a532d7c81b05c8917c8be7",
+        "libs/content_payload.h": "38b70259c4f9bac379d26de4890ae6c860ca9d75629d0557cc0c00bfa03ce44f",
+        "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+        "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b",
+        "tests/test_content_payload.c": "95ccbcd265070fc8b5327fb247b35c5f23057ba3b344b4f819602679aaf20289",
+        "tests/test_content_policy.c": "73f249f3c86438c6d73bf78f1aed6ac7ce8d54adbd15622981af2c04aa9c264e"
+      },
+      "reused_policy_object": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+        "sha256": "f093d4aae18b3e2ac0f72d94c9a3e98d2a0e1811a8adecc0a0cbb0cd86db7557",
+        "receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/result.json"
+      },
+      "commands": [
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/payload.o"
+          ],
+          "exit": 0,
+          "seconds": 0.20979054109193385,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/payload-test.o"
+          ],
+          "exit": 0,
+          "seconds": 0.05806295794900507,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-UNDEBUG",
+            "tests/test_content_payload.c",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/payload-test.o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/test-content-payload"
+          ],
+          "exit": 0,
+          "seconds": 0.17822829191572964,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-UNDEBUG",
+            "tests/test_content_policy.c",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/test-content-policy"
+          ],
+          "exit": 0,
+          "seconds": 0.11744683398865163,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "source_after": {
+        "libs/content_payload.c": "ed6b36bcdcd3eedf14b51fdc1f22c0bd8438352975a532d7c81b05c8917c8be7",
+        "libs/content_payload.h": "38b70259c4f9bac379d26de4890ae6c860ca9d75629d0557cc0c00bfa03ce44f",
+        "libs/content_policy.c": "eb0061a85df416a91d3d6c237228c66fba50c6fcf80d6c83e4db86ab88d5c28e",
+        "libs/content_policy.h": "d0e05acd222f7d09edf9cfc0894b27cd011fb5de46889e50bedd45fb1213a57b",
+        "tests/test_content_payload.c": "95ccbcd265070fc8b5327fb247b35c5f23057ba3b344b4f819602679aaf20289",
+        "tests/test_content_policy.c": "73f249f3c86438c6d73bf78f1aed6ac7ce8d54adbd15622981af2c04aa9c264e"
+      },
+      "pass": true,
+      "artifacts": {
+        "payload.o": {
+          "sha256": "44142c883db85b77560f081d3fe2590c994aab30ab19a62e8db51fa8d068979a",
+          "bytes": 7392
+        },
+        "payload-test.o": {
+          "sha256": "be9b24077f4203b368fddebb7234a164055b4c36b201fa61b73aa8f00395150c",
+          "bytes": 7448
+        },
+        "test-content-payload": {
+          "sha256": "3e27c96615e596d2b2f00be9dbd1c0694fa8abf670f3434541746ba473f6b8ab",
+          "bytes": 92120
+        },
+        "test-content-policy": {
+          "sha256": "c757a5ff10865f2f1be4351f4f244da6dc39066a911198bb8098a4653e82c555",
+          "bytes": 74320
+        }
+      }
+    },
+    "compile03": {
+      "scope": "affected host optimized compile/link after terminal-publication correction and local formatting; zero runtime invocations",
+      "source_before": {
+        "libs/content_payload.c": "e640e7f947bb8ce1a4eeeeb14a66db08f9ae56acd579aacabd9039ffe6948614",
+        "libs/content_payload.h": "dd068f3925da9be8bfc29b977f1f3b544c7fdacdcf1eca226e2b64164c473f92",
+        "tests/test_content_payload.c": "f8a60dfacd2a7c4ed1a56990bf1603b3f685331d43fc0bebc332465ca3f9a6f5"
+      },
+      "reused_policy": {
+        "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+        "sha256": "f093d4aae18b3e2ac0f72d94c9a3e98d2a0e1811a8adecc0a0cbb0cd86db7557",
+        "receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/result.json"
+      },
+      "unchanged_policy_unit": {
+        "receipt": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile02/result.json",
+        "sha256": "c757a5ff10865f2f1be4351f4f244da6dc39066a911198bb8098a4653e82c555"
+      },
+      "commands": [
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile03/payload.o"
+          ],
+          "exit": 0,
+          "seconds": 0.05809587496332824,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-DCONTENT_PAYLOAD_TEST=1",
+            "-c",
+            "libs/content_payload.c",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile03/payload-test.o"
+          ],
+          "exit": 0,
+          "seconds": 0.059992333059199154,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "argv": [
+            "/usr/bin/clang",
+            "-std=c11",
+            "-D_DEFAULT_SOURCE=1",
+            "-O2",
+            "-Wall",
+            "-Wextra",
+            "-Werror",
+            "-pedantic",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01",
+            "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+            "-UNDEBUG",
+            "tests/test_content_payload.c",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile03/payload-test.o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile01/policy.o",
+            "-o",
+            "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-native-content-payload/compile03/test-content-payload"
+          ],
+          "exit": 0,
+          "seconds": 0.10876862506847829,
+          "stdout": "",
+          "stderr": ""
+        }
+      ],
+      "source_after": {
+        "libs/content_payload.c": "e640e7f947bb8ce1a4eeeeb14a66db08f9ae56acd579aacabd9039ffe6948614",
+        "libs/content_payload.h": "dd068f3925da9be8bfc29b977f1f3b544c7fdacdcf1eca226e2b64164c473f92",
+        "tests/test_content_payload.c": "f8a60dfacd2a7c4ed1a56990bf1603b3f685331d43fc0bebc332465ca3f9a6f5"
+      },
+      "pass": true,
+      "artifacts": {
+        "payload.o": {
+          "sha256": "44142c883db85b77560f081d3fe2590c994aab30ab19a62e8db51fa8d068979a",
+          "bytes": 7392
+        },
+        "payload-test.o": {
+          "sha256": "be9b24077f4203b368fddebb7234a164055b4c36b201fa61b73aa8f00395150c",
+          "bytes": 7448
+        },
+        "test-content-payload": {
+          "sha256": "76b7982a2bf9eddf07a94958002d73c5ddf3291922c0dec65115ceb4c2fbccac",
+          "bytes": 92376
+        }
+      }
+    }
+  },
+  "runtime_invocations": 0,
+  "queued": [
+    "combined native normal/scoped sanitizer policy and payload fixture",
+    "production-variant protection/closure/partial-cleanup controls",
+    "actual native payload/capture integration at next major checkpoint",
+    "relevant milestone/release platform/install/default-X/hardware acceptance"
+  ],
+  "review_fixes": [
+    "explicit caller-selected admission setter, init remains disabled",
+    "truthful retired-cleanup status after rejected publication/retire/clear/expiry",
+    "snapshot replacement ref before clearing aliased output",
+    "snapshot guard/limit inputs before clearing fresh owner",
+    "terminal paused/disabled/expired publication reaches content_finish; late retired completion drains without inspecting unprepared regions"
+  ]
+}

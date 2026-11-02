@@ -7,10 +7,65 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: STORE-01 #74 assembled protected-memory comparison, coordinated
-with CONTENT-01 #63 and RETENTION-01 #71. Owner Cam; branch
-`codex/r1-content-memory-qualification`, base merged PR334
-`00e8c5799ca37e2f061f073263358f548f825375`. The selected comparison is complete:
+Current work: CONTENT-01 #63 native payload owner, coordinated with #71/#74.
+Owner Cam; branch `codex/r1-native-content-payload`, base merged PR335
+`ef53c100d722dc23dfa015dfab86594c5da01e82`. Select five related stories in one
+source checkpoint: caller-bounded native storage with derived physical charges;
+owned contiguous producer prefixes and atomic publication; scoped C-only reads;
+immediate retirement with incremental partial-cleanup retry and final accounting;
+explicit protection/fatal-owner errors with authored focused fault coverage.
+Use one base-system implementation, one mapping per representation with bounded
+encoded/decoded/derived partitions and two guard pages. No allocator registry,
+installed service/defaults, real-X capture, transport, UI, crypto or persistence.
+
+Acceptance: reserve the complete derived mapped/locked model before allocation;
+prepare every region before accepting bytes; reject holes, duplicate nonempty
+writes, stale refs and lengths outside the reserved domain. Derive publication
+lengths from actual successful writes. Scoped reads acquire/recheck exact leases,
+close access and release leases on every return; a synchronous native consumer
+must neither retain pointers nor block/pump events. Reject owner reentry. Retire
+on protection failure, retain remaining cleanup state and full charges, and
+acknowledge only after mappings and work/leases are gone. A failed closure is a
+fatal owner condition, not proof that access was revoked. Never copy potentially
+sensitive payloads into Go/Lua or add a blocking core caller.
+
+Process dump preparation must be an explicit isolated-service preflight, not a
+side effect of linking or ordinary owner initialization in the WM. Resource limits
+remain caller-supplied, not installed defaults. The lock-time capture/access
+question is pending but does not block this API. Zero-capacity representations
+still reserve the minimum page and publish zero length without exposing padding.
+Review/static checks and cheap affected compilation precede the source PR.
+Author meaningful lifetime/protection/cleanup cases now; run them together at the
+next major payload/capture checkpoint, with affected normal/scoped-sanitizer and
+actual OS controls. Preserve valid comparison inputs instead of rerunning six
+profiles for each helper. No UI/screenshots for this source-only slice.
+
+The five-story implementation and native fault fixture are authored. Three
+initial strict optimized host object compiles and four final affected compile/
+link commands pass, reusing the unchanged policy object. A terminal-publication
+review correction passes three final affected compile/link commands; the unchanged
+policy unit is retained by exact inputs. Zero runtime invocations;
+[the source receipt](verification/VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md)
+keeps native, configured Meson, sanitizer, protection and product acceptance
+queued. Complex source review fixed missing explicit admission control and
+untruthful retired-cleanup reporting; authored cases cover those and aliased
+replacement/initialization inputs. Terminal paused/expired and late completion
+now reaches the shared finish/drain contract, with source cases authored. A narrow
+clock observer delegates locally
+refused timestamps to the shared policy. Finish separate integrated source/
+fixture/docs and signed-delivery review; then merge the source checkpoint and
+continue the next accepted payload/capture stories under the faster cadence.
+
+PR335 is merged after separate integrated and signed-delivery review: reviewed
+head `7c6b11a0d3d9b0a0b6d6387dbb8c17efbd805c3b`, exact canonical tree
+`fb28ff6bb811407a62bdfb0eaacc31a72ac2b1c7`, valid signature and Cam DCO.
+Main is synced; local/remote source refs are retired. GitHub #63/#71/#74 mirror
+the comparison and remain open; PR335 is in R1 and Project Done. The R1 issue
+count remains 51. Two implementer roles remain quota unavailable; lead fallback
+is adequate, with bounded analyst design and separate reviewer. Actual backend
+model/effort routing remains unverified.
+
+The selected comparison is complete:
 **six profiles, 150 native invocations, 4,320 normal lifecycle rows and 48
 observed access/lock controls**. Both candidates prepare all normal fixtures;
 matched nonroot positives, actual SIGSEGV controls and genuine zero-lock-limit
@@ -39,9 +94,8 @@ receipts pass, so the inspection supplies no qualification. Prior PR334 host
 unavailable evidence is unchanged. No current candidate/control failure or
 unavailable outcome is hidden. Source-only review fixes remain documented.
 
-Finish separate integrated/source/evidence and signed delivery review, then
-merge this coherent checkpoint under standing R1 authority and reconcile
-GitHub. Next select the finite native payload owner: checked base mapping/
+Integrated/source/evidence and signed delivery reviews passed; PR335 is merged.
+The selected next native payload owner uses: checked base mapping/
 protection/locking, exact producer/read gates and partial cleanup accounting.
 Keep installed capacities, capture/formats and lock-time policy decisions
 separate; do not infer them from fixture limits or create an allocator registry.

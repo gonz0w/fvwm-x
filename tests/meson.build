@@ -4835,6 +4835,21 @@ content_policy_test = executable(
 )
 test('content-policy', content_policy_test)
 
+# This fresh native child explicitly prepares its own process dump policy.
+# Injected syscall refusals test lifecycle/retry state, not OS enforcement.
+content_payload_test = executable(
+    'test-content-payload',
+    [
+        'test_content_payload.c',
+        '../libs/content_payload.c',
+        '../libs/content_policy.c',
+    ],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG', '-D_DEFAULT_SOURCE=1', '-DCONTENT_PAYLOAD_TEST=1'],
+)
+test('content-payload', content_payload_test, timeout: 30)
+
+
 # Explicit diagnostic only: the equivalent-shutdown mode may reproduce the
 # known Script Fontconfig leak. It must not become a passing routine test.
 font_lifetime_probe = executable(

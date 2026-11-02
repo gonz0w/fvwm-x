@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native content payload source](VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md): five related owner stories, strict affected compile/link and authored native failure cases; no runtime/protection acceptance yet.
+
 - [Protected content memory comparison](VERIFICATION-2026-11-01-CONTENT-MEMORY-TARGETS.md): six profiles, matched controls, private allocator/dependency costs and explicit product qualification limits.
 
 - [Settings default-X acceptance tail](VERIFICATION-2026-10-31-SETTINGS-DEFAULT-X-TAIL.md): completed focused OpenBSD AMD64 checks for the three #60 scenarios; original failures and source-bound evidence remain explicit.

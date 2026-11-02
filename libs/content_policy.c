@@ -107,6 +107,12 @@ static enum content_result clock_check(struct content_policy *policy,
 	return CONTENT_OK;
 }
 
+enum content_result content_observe_time(struct content_policy *policy,
+	uint64_t now_ms)
+{
+	return clock_check(policy, now_ms);
+}
+
 static void retire_item(struct content_item *item)
 {
 	item->phase = CONTENT_RETIRED;

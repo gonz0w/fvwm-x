@@ -13,7 +13,7 @@ import (
 )
 
 func TestSessionRegistryAndHistoricalReads(t *testing.T) {
-	if StateVersion != 9 || len(Registry()) != 26 {
+	if StateVersion != 10 || len(Registry()) != 29 {
 		t.Fatal("registry scope")
 	}
 	keys, _ := Scope("group:session")

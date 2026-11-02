@@ -72,7 +72,7 @@ func Editor(s Snapshot,
 	if scope == "all" {
 		appearance := keys[:0]
 		for _, key := range keys {
-			if !SessionKey(key) && !TrayKey(key) && !ApplicationKey(key) {
+			if !SessionKey(key) && !TrayKey(key) && !ApplicationKey(key) && !DesktopKey(key) {
 				appearance = append(appearance, key)
 			}
 		}
@@ -135,6 +135,12 @@ func Editor(s Snapshot,
 			`Button continue "Retry native publication" F4`,
 			"Command SendToModule FvwmDesktop retry-native-settings")
 	}
+	if len(keys) > 0 && DesktopKey(keys[0]) {
+		lines[0] = `Title "Desktop component settings"`
+		lines = append(lines, "Line left", `Text "Launcher changes apply after preview recovery."`,
+			"Line left", `Text "Forms use these choices at their next start."`,
+			"Line left", `Text "Empty font and Inherit use the configured profile baseline."`)
+	}
 	previous := ""
 	for _, key := range plan.Keys {
 		item, _ := find(key)
@@ -152,7 +158,7 @@ func Editor(s Snapshot,
 			previous = item.Group
 		}
 		lines = append(lines, "Line left", "Text "+quote(item.Description))
-		if item.Type == "font" || item.Type == "theme" {
+		if item.Type == "font" || item.Type == "desktop-font" || item.Type == "theme" {
 			lines = append(lines, "InputHex "+key+" 24 x"+hex.EncodeToString([]byte(value.(string))))
 		} else if item.Type == "time" || item.Type == "integer" {
 			width := 5
@@ -198,7 +204,7 @@ func Editor(s Snapshot,
 	fields := []string{}
 	for _, key := range plan.Keys {
 		item, _ := find(key)
-		if item.Type == "font" || item.Type == "theme" {
+		if item.Type == "font" || item.Type == "desktop-font" || item.Type == "theme" {
 			fields = append(fields, "x$("+key+":Base64)")
 		} else {
 			fields = append(fields, "$("+key+")")
@@ -222,6 +228,7 @@ func Editor(s Snapshot,
 		lines = append(lines, "Line left")
 		lines = append(lines, `Button continue "Session settings..." F8`, "Command "+action+"edit-settings group:session")
 		lines = append(lines, `Button continue "Tray settings..." F9`, "Command "+action+"edit-settings group:tray")
+		lines = append(lines, `Button continue "Desktop components..." F11`, "Command "+action+"edit-settings group:desktop")
 		lines = append(lines, `Button continue "Application preferences..." F10`, "Command "+action+"edit-settings group:application")
 	}
 	for _, key := range plan.Keys {
@@ -277,7 +284,7 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 					Row{text(value),
 						"SendToModule FvwmDesktop set " + key + " " + text(value)})
 			}
-		} else if setting.Type == "integer" || setting.Type == "font" || setting.Type == "theme" {
+		} else if setting.Type == "integer" || setting.Type == "font" || setting.Type == "desktop-font" || setting.Type == "theme" {
 			options = append(options,
 				Row{"Edit saved value...",
 					"SendToModule FvwmDesktop edit-settings " + key})
@@ -324,6 +331,7 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 	} else {
 		rows = append(rows, Row{"High contrast is already active", "Greyed"})
 	}
+	rows = append(rows, Row{"Desktop components...", "SendToModule FvwmDesktop edit-settings group:desktop"})
 	rows = append(rows, Row{"Application preferences...", "SendToModule FvwmDesktop edit-settings group:application"},
 		Row{"Native: " + s.Native.Readiness + "; cursor resources: " + s.Native.ResourceState, "Greyed"},
 		Row{"Retry native publication", "SendToModule FvwmDesktop retry-native-settings"})
@@ -396,6 +404,7 @@ func AppearanceMenu(settings Values) Menu {
 			"SendToModule FvwmDesktop settings"},
 		Row{"Edit saved preferences...",
 			"SendToModule FvwmDesktop edit-settings"})
+	rows = append(rows, Row{"Desktop components...", "SendToModule FvwmDesktop edit-settings group:desktop"})
 	rows = append(rows, Row{"Application preferences...", "SendToModule FvwmDesktop edit-settings group:application"})
 	rows = append(rows, Row{"Tray settings...", "SendToModule FvwmDesktop edit-settings group:tray"})
 	rows = append(rows, Row{"", "Nop"})

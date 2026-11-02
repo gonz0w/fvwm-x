@@ -166,8 +166,8 @@ are not forcibly replaced. See
 inputs, observations and qualification limits.
 
 New preferences load from older state schemas with off/inherit defaults. Loading
-does not rewrite the file; the next successful save uses schema 9. Existing personal
-FVWM configuration does not need a migration. For an explicit module override:
+does not rewrite the file; the next successful save uses schema 10. Existing
+personal FVWM configuration does not need a migration. For an explicit module override:
 
 ....
 *FvwmDesktop: native_settings_enabled on
@@ -269,6 +269,11 @@ configuration-center covers these registered preferences:
 * *notification_dnd*, session group: boolean, false.
 * *session_power*, session group: portable; choices portable, login1. Live owner
   handshake, followed by an explicit power-provider probe.
+* *desktop_font*, desktop group: desktop-font, empty by default. Empty inherits
+  the configured `infostore.slate_font`.
+* *desktop_density*, desktop group: inherit; choices inherit, compact,
+  comfortable, spacious.
+* *desktop_border*, desktop group: inherit; choices inherit, thin, strong.
 * *tray_enabled*, tray group: boolean, false.
 * *tray_gap* and *tray_padding*, tray group: logical units, 0 through 64,
   default 4.
@@ -282,6 +287,27 @@ the times command to change both together. Boolean set commands accept
 true/false, on/off, yes/no or 1/0. Toggle changes the saved boolean choice.
 Setting IDs and values map to fixed helper actions; they cannot contain FVWM
 commands or resource paths. No focus or application settings are registered in this checkpoint.
+
+The desktop font accepts at most 128 bytes of valid, printable UTF-8, without
+leading or trailing space, backslash, double quote, dollar, percent, ampersand,
+controls, U+2028 or U+2029. This restriction permits a native command literal
+without silently removing characters. Use the scoped editor for font names with
+spaces.
+
+Desktop density selects menu item/title vertical spacing and owned-form text
+padding: inherit and comfortable use 8/10/12, compact uses 4/6/6, and spacious
+uses 12/14/16. Desktop border selects launcher menu border width: inherit and
+thin use 1, strong uses 3. These are profile values; existing scaling applies.
+The version 1 desktop-metrics projection is separate from color composition
+version 2, preference-file version 10 and IPC schema version 1.
+
+These settings apply to `SlateLauncherStyle` after the existing style copy and
+to future controller-owned Slate forms through their font, input font, button
+font and vertical text padding. Existing forms retain their resources until
+reopened. They do not override panel, tray, global decorations or the default
+font. Initial inherit submits no new override. Returning an explicit choice to
+inherit restores only the named shipped-profile baseline, not arbitrary live
+commands from outside the helper.
 
 Each setting submenu shows its saved value, helper-effective value and source.
 Saved means the helper's last successfully loaded or written snapshot; use
@@ -308,6 +334,9 @@ fields still describe the requested preferences and module overrides. In normal
 mode, resolution requested uses the requested value; disabled transparency masks
 launcher opacity with resolution/runtime_constraint transparency-disabled. These
 fields describe the owner's submitted policy rather than an observed final paint.
+Desktop metric metadata likewise reports requested, effective, source and
+resolution information, whether launcher commands were submitted, and the
+future owned-form start policy. Submission is not a rendering acknowledgement.
 
 
 Choose Edit saved preferences from Appearance or Desktop settings to open the
@@ -341,13 +370,15 @@ The all-settings editor retains its eleven appearance fields. Its Session settin
 button (F8), or *edit-settings group:session*, opens a compact editor for the
 four session preferences. The Session panel also opens this scoped editor.
 Its Tray settings button (F9), or *edit-settings group:tray*, opens the compact
-six-field tray editor. The settings menu also offers Tray settings. Existing
-saved schemas 1 through 8 load without rewriting the file; the next
-successful save writes schema 9.
+six-field tray editor. The settings menu also offers Tray settings. Desktop
+settings offers a compact three-field editor with *edit-settings group:desktop*.
+The three metrics are save/apply only and are not native PreviewKey choices.
+Publication waits for any existing resource-preview recovery; a conflict blocks
+publication.
 
 Reset accepts one setting ID, group:appearance, group:wallpaper, group:schedule,
-group:effects, group:session, group:tray or all. It changes only those saved preferences to registered defaults. It
-retains explicit module overrides and the current wallpaper when the effective
+group:effects, group:session, group:tray, group:desktop or all. It changes only
+those saved preferences to registered defaults. It retains explicit module overrides and the current wallpaper when the effective
 keep_wallpaper choice requests it. A reset that would make day and night equal
 is refused; reset group:schedule to restore both times. Reload rereads the saved
 file, validates the combined configuration and reapplies the theme.
@@ -362,6 +393,14 @@ SendToModule FvwmDesktop set tray_icon_size 24
 SendToModule FvwmDesktop settings group:tray
 SendToModule FvwmDesktop edit-settings group:tray
 SendToModule FvwmDesktop query-settings tray-query group:tray
+....
+
+For desktop metrics:
+
+....
+SendToModule FvwmDesktop edit-settings group:desktop
+SendToModule FvwmDesktop set desktop_density spacious
+SendToModule FvwmDesktop set desktop_border strong
 ....
 
 The desktop controls only its reserved *FvwmTray SlateTray* instance. Enabling
@@ -424,12 +463,13 @@ Complete versions 1 through 5 gain session_power portable. Complete versions 1
 through 6 gain the four default tray preferences. No file is rewritten on read.
 Complete versions 1 through 7 gain tray_modern off and tray_icon_size 24.
 Complete versions 1 through 8 gain native_settings_enabled off, inherited
-application font/icon/cursor choices and cursor_size 0. The next successful
-save writes schema_version 9 with all twenty-six preferences and the retained
-wallpaper. Versions 1 through 8 require their exact historical fields;
-incomplete or unknown fields are refused. Older helpers cannot read version 9. Unknown versions, duplicate
-fields, oversized or invalid files are preserved. Startup uses defaults and reports a persistence
-error; repair the data file or move it aside, then use reload-settings. The
+application font/icon/cursor choices and cursor_size 0. Complete versions 1
+through 9 gain the three inherited desktop metrics. The next successful save
+writes schema_version 10 with all twenty-nine preferences and
+the retained wallpaper. Versions 1 through 9 require their exact historical
+fields; incomplete or unknown fields are refused. Older helpers cannot read
+version 10. Unknown versions, duplicate fields, oversized or invalid files are
+preserved. Startup uses defaults and reports a persistence error; repair the data file or move it aside, then use reload-settings. The
 helper does not silently overwrite unreadable or future-version state.
 
 Transparency is enabled by default: the bar uses a retained root wallpaper
@@ -987,7 +1027,7 @@ toggle notification_dnd
 set wallpaper_palette follow|slate|dune|grove|ink
 set contrast normal|high
 set wallpaper_appearance follow|light|dark
-settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects|group:session|group:tray]
+settings [all|setting-ID|group:appearance|group:wallpaper|group:schedule|group:effects|group:session|group:tray|group:desktop]
 preview-setting helper-instance opacity-percent
 edit-settings [scope]
 check-config

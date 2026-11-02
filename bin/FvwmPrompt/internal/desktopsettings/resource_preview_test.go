@@ -125,7 +125,7 @@ func TestPreviewTypedAllowlistAndSaveOnlyReasons(t *testing.T) {
 			t.Fatal("unowned overlay admitted", key)
 		}
 	}
-	if len(Registry()) != 26 || StateVersion != 9 {
+	if len(Registry()) != 29 || StateVersion != 10 {
 		t.Fatal("preview changed persistence registry")
 	}
 }

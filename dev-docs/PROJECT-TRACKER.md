@@ -35,6 +35,67 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: THEME-02 #214 desktop component metrics on
+`codex/r1-theme-metrics`, base merged PR345
+`ea6098d692fc459afa7e2d661dc00296d6198175`. Owner Cam; lead implements under
+the recorded unavailable-implementer fallback. Select four related stories:
+
+1. Three bounded preferences in the existing store: desktop_font (empty inherits
+   configured slate_font), desktop_density and desktop_border (inherit by default).
+   Exact old schemas load without rewrite; module overrides retain precedence.
+2. A pure versioned role projection with command-safe literal font validation,
+   finite menu spacing/border and owned-form text padding. No DPI multiplier.
+3. Apply to the named SlateLauncherStyle and future controller-owned Slate forms.
+   Initial inherit publishes no new override. Explicit-to-inherit restores only
+   documented shipped-profile baselines; never claim arbitrary live-style restore.
+   Existing forms and panel/font/strut lifecycle are outside this slice.
+4. Compact group:desktop editor/menu and truthful source/resolution/application
+   metadata, primary man-page examples and meaningful authored migration,
+   projection, serialization, override, unchanged-state and preview-order fixtures.
+
+Keep publication behind the existing resource-preview recovery gate. New keys
+are save/apply only, never native PreviewKey; preserve the eight-position color
+preview key. No global decoration/font changes, second store, new toolkit,
+clipboard enablement or broader owner closure. Affected compilation/static and
+separate review serve this source batch. Queue new native behavior and three
+materially different theme/enlarged-text captures for the combined appearance
+checkpoint (normally four to six related implementation PRs). Do not start a
+runtime campaign or claim new screenshots before that checkpoint.
+
+A1 implementation is authored: registry/schema10, pure metrics version1,
+command-safe font literals, named launcher/future-form consumers, independent
+submitted state, scoped editor/metadata and manuals. Four final offline affected
+Go compile/link commands pass (two unchanged artifacts retained, two affected
+rebuilds after source review); one initial fixture-method compile failure and
+its correction remain recorded. Zero tests, runtime examples or labs ran.
+[Source/build evidence and queued gates](verification/VERIFICATION-2026-11-02-DESKTOP-METRICS.md)
+record clear separate source/evidence review after the scope correction and
+pending signed-delivery review plus A1–A4 shared appearance runtime/race/native-X,
+preview conflict/recovery and three-theme/enlarged-text screenshots. No broader
+#214 or milestone completion follows from this source checkpoint.
+
+C2 PR345 is merged with exact reviewed head
+`23089e841e23957f21855e8ce1900d4bc8cd937e`, tree
+`380d44ab9603cd1e9fc37120b8de809e3181097f`, canonical merge
+`ea6098d692fc459afa7e2d661dc00296d6198175`; Cam signature/DCO and parent
+PR344 verified. The docs-only Temper refresh remains intact; all affected code,
+build inputs and compiled artifacts retain their reviewed identities. Main
+synced and completed branch retired. GitHub PR is Done; #62/#63/#71/#74 are
+In progress, remain open and mirror the fixed text defaults and pending C2–C5
+runtime checkpoint. R1 still has 50 open issues. Performance cadence is 2/5;
+no redundant benchmark or runtime suite ran for integration.
+
+The bounded #225 source analysis found version-dependent provider hooks:
+released slock1.7 has a post-lock command, current upstream removed it;
+xlock start/end hooks also run under nonlocking configurations. No initial,
+external or general unlocked observation is established. Clipboard capture stays
+off while that dependency is unresolved; ordinary Start/Wait does not qualify
+readiness. Provider qualification remains #225-owned. Parked #257/#258 work
+was not inspected or retried. Continue independent R1 shared contracts.
+
+<details>
+<summary>C2 delivered source/build checkpoint and retained scope</summary>
+
 Current work: C2 bounded #62 consumer metadata handoff, coordinated with
 #63/#71/#74. Owner Cam; branch `codex/r1-clipboard-consumer-handoff`, base
 merged PR344 `4d43383ed1a414c5ab912a03c79ec6ce652f82fe`; PR343 runtime source and
@@ -85,6 +146,8 @@ qualification is retained without extending it to these changed Go paths.
 Current step is final static/evidence/signed-delivery review and one coherent
 PR. Observe the authored lifecycle at C2–C5 before claiming it passed; broader
 issue criteria remain open. No new UI, package, whole-WM build or matrix.
+
+</details>
 
 C1 PR343 is merged after separate source/evidence/signed-head review. Head
 `910de1f93cd61c868c39eb0d300eabc1a246f8b0`, exact tree

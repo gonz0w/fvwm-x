@@ -67,6 +67,7 @@ type Controller struct {
 	lastThemeAppearance                      string
 	report                                   *report
 	palettes                                 map[string]map[string]map[string]string
+	lastDesktop                              *desktopsettings.DesktopMetrics
 	lastTheme                                []any
 	lastWallpaper                            [2]string
 	apps                                     []desktopworker.Application
@@ -208,7 +209,7 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
 		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
-		RuntimeHeld: held, Native: d.nativeObservation(), SessionAvailable: d.sessionObserved()}
+		RuntimeHeld: held, Native: d.nativeObservation(), SessionAvailable: d.sessionObserved(), DesktopSubmitted: d.desktopSubmitted()}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {
@@ -309,6 +310,12 @@ func (d *Controller) changeSettings(changes values) error {
 	if hasSessionChange(changes) {
 		d.applySessionPolicy()
 	}
+	if onlyDesktop(changes) {
+		if err := d.theme(false); err != nil {
+			return err
+		}
+		return d.settingsMenu("all")
+	}
 	if err := d.theme(true); err != nil {
 		return err
 	}
@@ -400,7 +407,7 @@ func (d *Controller) editorValues(argument string) (*editor, values, error) {
 	for i, key := range e.keys {
 		text := words[i+1]
 		item := desktopsettings.Registry()[key]
-		if item.Type == "font" || item.Type == "theme" {
+		if item.Type == "font" || item.Type == "desktop-font" || item.Type == "theme" {
 			if len(text) > 173 || len(text) < 1 || text[0] != 'x' {
 				return nil, nil, errors.New("Invalid encoded application preference")
 			}

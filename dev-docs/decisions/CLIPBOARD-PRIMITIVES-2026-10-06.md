@@ -25,6 +25,19 @@ payloads, keys and image derivatives do not enter Go/Lua managed heaps by
 default. STORE-01 retains protection review and no confidentiality/default
 decision is changed by the language direction.
 
+## First-release defaults — owner decisions, 2026-11-01
+
+History is session-only; recognized sensitive/password items are excluded and
+persistence is off. Automatic history capture uses CLIPBOARD only, with PRIMARY
+synchronization off. The owner explicitly selected retaining history while the
+desktop is locked; lock does not imply history deletion. Logout ends the session
+and clears its history. Retention across lock does not select capture or payload
+access behavior during lock, key/unlock policy, backend protection guarantees,
+installed capacities or image/format limits; those remain distinct work.
+
+These decisions replace the corresponding open-default questions below. They do
+not enable a manager or qualify a protection/backend by themselves.
+
 ## Product direction and existing foundation
 
 Users assemble the manager from FVWM configuration, bindings, menus and native

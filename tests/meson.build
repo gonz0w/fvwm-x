@@ -342,6 +342,9 @@ status_serializer_probe = executable(
 test('status-serializer-capture', py,
     args: files('test_status_serializer_capture.py'))
 
+test('content-memory-control', py,
+    args: files('test_content_memory_control.py'))
+
 window_children_test = executable(
     'test-window-children', 'test_window_children.c',
     include_directories: includedirs,
@@ -4840,5 +4843,12 @@ font_lifetime_probe = executable(
     dependencies: all_found_deps,
     link_with: libfvwm3,
     c_args: ['-UNDEBUG'],
+    build_by_default: false,
+)
+
+# Manual direct-child observation only, never a passing routine fault test.
+content_memory_timeout = executable(
+    'content-memory-timeout', 'content_memory_timeout.c',
+    include_directories: includedirs,
     build_by_default: false,
 )

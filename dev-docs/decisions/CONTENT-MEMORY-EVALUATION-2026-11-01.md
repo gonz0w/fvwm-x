@@ -138,6 +138,51 @@ means process/library/page prerequisites unavailable, 2 invalid CLI, 1 a lifecyc
 access, cleanup, clock or observation failure. Compare only matching successfully
 prepared rows; refusals remain explicit, never zero-cost benchmark samples.
 
+## Isolated enforcement and strict negative controls
+
+The probe remains non-forking. Manual `--enforce rw-control`, `noaccess-write`
+and `readonly-write` invocations allocate their own fresh one-page fixture after
+exec. They prepare protection, perform checked producer writes, publish actual
+lengths and validate a reader before the terminal access experiment. Default,
+unblocked SIGSEGV/SIGBUS dispositions are restored. A fixed numeric readiness
+record is flushed only after the checked final protection transition. One
+volatile write then either succeeds in the positive control or must produce
+an actual SIGSEGV/SIGBUS in the protected controls. The deliberate write is an
+OS-permission experiment with public bytes, not a production reader operation.
+
+`tests/content_memory_timeout.c` supervises exactly one unreaped direct child.
+It retains the earlier reviewed private polling/cancellation algorithm, adds raw
+child-signal and native signal constants, and does not modify the frozen LIB-06
+helper or its receipts. Select five seconds, one-second TERM grace and five
+seconds for confirmed reap; use the owning job's outer 30-second bound and stop
+that owned lab on an unconfirmed wait. Expected-fault exit codes alone cannot
+pass: `tests/content_memory_control.py` requires exact readiness, confirmed raw
+signal, wrapper agreement, no timeout/cancel and wall time below five seconds.
+Expected-fault children never acknowledge explicit wipe or cleanup; the normal
+control supplies that separate observation. Do not use sanitizer builds that
+intercept the expected signals. Record the profile's external crash-collector
+prerequisites; per-process core limits do not establish every collector's policy.
+No core collection or system setting changes are selected.
+
+`--zero-lock-limit` requires an existing non-root real/effective UID profile.
+Linux also requires bounded `/proc/self/status` evidence that CAP_IPC_LOCK is
+absent. The probe never changes IDs/capabilities. Its own zero soft/hard lock
+limits are verified. Each row records whether the real lock call was attempted
+and its errno. Success for this negative oracle requires genuine checked lock
+refusal, no producer bytes/publication/reader access, and completed accounting
+and cleanup, paired with the same candidate's successful read/write control.
+Earlier allocation/dump/access refusal is unavailable for the lock claim;
+unexpected locking success fails. No particular errno is required across OSes.
+Unsupported prerequisites return 77, distinct from enforcement success.
+
+The capture-only oracle bounds files/rows, rejects duplicate/nonfinite JSON and
+requires matching candidate, page, native signals and control order. It never
+executes an exported binary. Exact artifact/source/command hashes and capture
+chronology remain the owning dispatcher's responsibility. Wipe-before-release
+is observed in valid memory in an optimized build. Regional mapped/locked/dump
+observations and exact sodium allocation configuration remain pending; neither
+OS faults nor source-derived page models prove universal dump exclusion.
+
 ## Compile and shared execution
 
 From the source root, use an owner-controlled output directory and a configured

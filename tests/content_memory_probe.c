@@ -6,6 +6,7 @@
 #include "config.h"
 #include "libs/content_policy.h"
 #include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,11 +34,23 @@ enum preparation {
 };
 enum fault { FAULT_NONE, FAULT_ALLOCATION, FAULT_LOCK, FAULT_DUMP,
 	FAULT_ACCESS, FAULT_CANCEL };
+enum access_control {
+	CONTROL_NONE, CONTROL_RW, CONTROL_NOACCESS, CONTROL_READONLY
+};
+struct trial_options {
+	enum fault fault;
+	enum access_control access;
+	bool zero_lock;
+};
+struct trial_result {
+	bool prepared, lock_refused;
+};
 struct buffer {
 	unsigned char *data;
 	void *mapping;
 	size_t rounded, mapped;
-	bool locked;
+	bool locked, lock_attempted;
+	int lock_errno;
 };
 
 static uint64_t nanoseconds(void)
@@ -136,12 +149,17 @@ static enum preparation prepare(struct buffer *buffer, size_t bytes,
 #endif
 	if (fault == FAULT_LOCK)
 		return LOCK_REFUSED;
+	buffer->lock_attempted = true;
+	errno = 0;
 #ifdef CONTENT_PROBE_SODIUM
 	if (sodium_mlock(buffer->data, buffer->rounded) < 0)
 #else
 	if (mlock(buffer->data, buffer->rounded) < 0)
 #endif
+	{
+		buffer->lock_errno = errno;
 		return LOCK_REFUSED;
+	}
 	buffer->locked = true;
 	if (access_mode(buffer, PROT_NONE) < 0)
 		return ACCESS_REFUSED;
@@ -233,8 +251,88 @@ static bool consume(struct content_policy *policy, struct content_ref ref,
 	return access_mode(buffer, PROT_NONE) == 0;
 }
 
-static bool measure(size_t bytes, size_t page, enum fault fault,
-	unsigned run, unsigned row)
+/* Deliberately test OS permissions with public bytes, outside any production
+ * writer contract. This process never forks. The separately owned direct-child
+ * supervisor records readiness and the actual terminal signal. */
+static bool enforce_access(struct content_policy *policy,
+	struct content_lease lease, struct buffer *buffer,
+	enum access_control control)
+{
+	struct sigaction action = {0};
+	sigset_t signals;
+	int mode = control == CONTROL_RW ? PROT_READ | PROT_WRITE :
+		control == CONTROL_READONLY ? PROT_READ : PROT_NONE;
+
+	action.sa_handler = SIG_DFL;
+	if (sigemptyset(&action.sa_mask) < 0 ||
+		sigemptyset(&signals) < 0 ||
+		sigaddset(&signals, SIGSEGV) < 0 ||
+		sigaddset(&signals, SIGBUS) < 0 ||
+		sigaction(SIGSEGV, &action, NULL) < 0 ||
+		sigaction(SIGBUS, &action, NULL) < 0 ||
+		sigprocmask(SIG_UNBLOCK, &signals, NULL) < 0 ||
+		content_lease_check(policy, lease, 14) != CONTENT_OK ||
+		access_mode(buffer, mode) < 0)
+		return false;
+	if (printf("{\"candidate\":\"%s\",\"ready\":true,"
+		"\"control\":%d,\"sigsegv\":%d,\"sigbus\":%d}\n",
+		CANDIDATE, control, SIGSEGV, SIGBUS) < 0 || fflush(stdout) == EOF)
+		return false;
+	*(volatile unsigned char *)buffer->data = 0x6b;
+	/* A write in either protected mode is a failed control, never success.
+	 * Expected-fault children do not reach cleanup or acknowledge it. */
+	return control == CONTROL_RW && access_mode(buffer, PROT_NONE) == 0;
+}
+
+/* This probe never changes IDs/capabilities. A caller supplies an existing
+ * unprivileged profile; root or unavailable Linux capability evidence refuses
+ * the strict lock-negative experiment rather than pretending it passed. */
+static bool unprivileged_lock_profile(void)
+{
+	if (getuid() == 0 || geteuid() == 0)
+		return false;
+#ifdef __linux__
+	FILE *status = fopen("/proc/self/status", "r");
+	char line[256];
+	bool observed = false, allowed = false;
+	size_t total = 0;
+
+	if (!status)
+		return false;
+	while (fgets(line, sizeof(line), status))
+	{
+		total += strlen(line);
+		if (total > 65536)
+			break;
+		if (!strncmp(line, "CapEff:", 7))
+		{
+			char *end;
+			unsigned long long value;
+
+			errno = 0;
+			value = strtoull(line + 7, &end, 16);
+			while (*end == ' ' || *end == '\t')
+				end++;
+			observed = !errno && end != line + 7 &&
+				(*end == '\n' || *end == '\0');
+			allowed = observed && !(value & (1ULL << 14));
+			break;
+		}
+	}
+	bool read_failed = ferror(status) != 0;
+	int close_status = fclose(status);
+
+	if (read_failed || close_status == EOF)
+		return false;
+	return observed && allowed;
+#else
+	return true;
+#endif
+}
+
+static bool measure(size_t bytes, size_t page,
+	const struct trial_options *options, unsigned run, unsigned row,
+	struct trial_result *observation)
 {
 	struct content_policy policy;
 	struct content_item items[2];
@@ -260,7 +358,11 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 	bool accessed = false, wiped = false, released, okay;
 	bool lifecycle = true, acquired = false, produced = false;
 	size_t written = 0;
-	int saved_errno;
+	int saved_errno, lock_errno;
+	bool lock_attempted;
+	enum fault fault = options->fault;
+
+	*observation = (struct trial_result){0};
 
 	if (!started || !content_storage_charge(bytes, page, MAPPED_EXTRA,
 		LOCKED_EXTRA, &charge))
@@ -280,8 +382,13 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 	errno = 0;
 	status = prepare(&buffer, bytes, page, fault);
 	saved_errno = errno;
+	lock_attempted = buffer.lock_attempted;
+	lock_errno = buffer.lock_errno;
+	observation->prepared = status == PREPARED;
+	observation->lock_refused = status == LOCK_REFUSED &&
+		lock_attempted && lock_errno != 0;
 	prepared = nanoseconds();
-	if (status == PREPARED)
+	if (status == PREPARED && !options->zero_lock)
 	{
 		struct content_bytes actual;
 		enum content_result completed;
@@ -307,7 +414,12 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 			acquired = content_acquire(&policy, ref, 1, 13, &lease)
 				== CONTENT_OK;
 		if (acquired)
+		{
 			accessed = consume(&policy, ref, lease, &buffer, written);
+			if (accessed && options->access != CONTROL_NONE)
+				accessed = enforce_access(&policy, lease, &buffer,
+					options->access);
+		}
 		if (content_retire(&policy, ref) != CONTENT_OK)
 			lifecycle = false;
 		if (acquired)
@@ -338,10 +450,12 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 		"\"bytes\":%zu,\"written_bytes\":%zu,"
 		"\"page\":%zu,\"mapped_model\":%zu,\"locked_model\":%zu,"
 		"\"preparation\":%d,\"errno\":%d,\"injected\":%d,"
+		"\"lock_attempted\":%d,\"lock_errno\":%d,"
 		"\"accessed\":%d,\"wipe_observed\":%d,\"cleanup\":%d,"
 		"\"accounting\":%d,\"prepare_ns\":%llu,\"finish_ns\":%llu}\n",
 		CANDIDATE, run, row + 1, bytes, written, page, charge.mapped, charge.locked,
-		status, saved_errno, fault, accessed, wiped, released, okay,
+		status, saved_errno, fault, lock_attempted, lock_errno,
+		accessed, wiped, released, okay,
 		(unsigned long long)(prepared - started),
 		(unsigned long long)(finished - prepared));
 	return okay;
@@ -350,8 +464,9 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 int main(int argc, char **argv)
 {
 	unsigned repeats = 1;
-	enum fault fault = FAULT_NONE;
-	bool zero_lock = false;
+	struct trial_options options = {0};
+	unsigned fault_options = 0;
+	bool lock_observed = true;
 	long native_page;
 	struct rusage usage;
 	uint64_t started = nanoseconds(), initialized;
@@ -359,7 +474,21 @@ int main(int argc, char **argv)
 	for (int i = 1; i < argc; i++)
 	{
 		if (!strcmp(argv[i], "--zero-lock-limit"))
-			zero_lock = true;
+			options.zero_lock = true;
+		else if (!strcmp(argv[i], "--enforce") && i + 1 < argc)
+		{
+			if (options.access != CONTROL_NONE)
+				return 2;
+			i++;
+			if (!strcmp(argv[i], "rw-control"))
+				options.access = CONTROL_RW;
+			else if (!strcmp(argv[i], "noaccess-write"))
+				options.access = CONTROL_NOACCESS;
+			else if (!strcmp(argv[i], "readonly-write"))
+				options.access = CONTROL_READONLY;
+			else
+				return 2;
+		}
 		else if (!strcmp(argv[i], "--repeat") && i + 1 < argc)
 		{
 			char *end;
@@ -373,28 +502,62 @@ int main(int argc, char **argv)
 			repeats = (unsigned)value;
 		}
 		else if (!strcmp(argv[i], "--fail-allocation"))
-			fault = FAULT_ALLOCATION;
+		{
+			options.fault = FAULT_ALLOCATION;
+			fault_options++;
+		}
 		else if (!strcmp(argv[i], "--fail-lock"))
-			fault = FAULT_LOCK;
+		{
+			options.fault = FAULT_LOCK;
+			fault_options++;
+		}
 		else if (!strcmp(argv[i], "--fail-dump"))
-			fault = FAULT_DUMP;
+		{
+			options.fault = FAULT_DUMP;
+			fault_options++;
+		}
 		else if (!strcmp(argv[i], "--cancel-producer"))
-			fault = FAULT_CANCEL;
+		{
+			options.fault = FAULT_CANCEL;
+			fault_options++;
+		}
 		else if (!strcmp(argv[i], "--fail-access"))
-			fault = FAULT_ACCESS;
+		{
+			options.fault = FAULT_ACCESS;
+			fault_options++;
+		}
 		else
 			return 2;
 	}
+	if (fault_options > 1 ||
+		(options.zero_lock && options.fault != FAULT_NONE) ||
+		(options.access != CONTROL_NONE &&
+			(options.zero_lock || fault_options || repeats != 1)))
+		return 2;
 	if (!started || !no_core())
 		return 77;
-	if (zero_lock)
+	if (options.zero_lock)
 	{
 		struct rlimit limit = {0, 0}, applied;
 
+		if (!unprivileged_lock_profile())
+			return 77;
 		if (setrlimit(RLIMIT_MEMLOCK, &limit) < 0 ||
 			getrlimit(RLIMIT_MEMLOCK, &applied) < 0 ||
 			applied.rlim_cur != 0 || applied.rlim_max != 0)
 			return 77;
+#ifdef __linux__
+		const int capabilities_checked = 1;
+#else
+		const int capabilities_checked = 0;
+#endif
+		if (printf("{\"candidate\":\"%s\",\"lock_profile\":true,"
+			"\"uid\":%llu,\"euid\":%llu,\"lock_limit_zero\":true,"
+			"\"capabilities_checked\":%d,\"ipc_lock_capability\":false}\n",
+			CANDIDATE, (unsigned long long)getuid(),
+			(unsigned long long)geteuid(), capabilities_checked) < 0 ||
+			fflush(stdout) == EOF)
+			return 1;
 	}
 #ifdef CONTENT_PROBE_SODIUM
 	if (strcmp(sodium_version_string(), "1.0.22") || sodium_init() < 0)
@@ -408,11 +571,23 @@ int main(int argc, char **argv)
 	size_t page = (size_t)native_page;
 	size_t sizes[] = {0, 1, page - 1, page, page + 1, 65536};
 	unsigned row = 0;
+	struct trial_result observation;
+
+	if (options.access != CONTROL_NONE)
+	{
+		if (!measure(page, page, &options, 0, 0, &observation))
+			return 1;
+		return observation.prepared ? 0 : 77;
+	}
 
 	for (unsigned run = 0; run < repeats; run++)
 		for (size_t i = 0; i < sizeof(sizes) / sizeof(sizes[0]); i++)
-			if (!measure(sizes[i], page, fault, run, row++))
+		{
+			if (!measure(sizes[i], page, &options, run, row++,
+				&observation))
 				return 1;
+			lock_observed = lock_observed && observation.lock_refused;
+		}
 	if (getrusage(RUSAGE_SELF, &usage) < 0)
 		return 1;
 	printf("{\"candidate\":\"%s\",\"summary\":true,"
@@ -423,5 +598,5 @@ int main(int argc, char **argv)
 			usage.ru_utime.tv_usec,
 		(unsigned long long)usage.ru_stime.tv_sec * 1000000ULL +
 			usage.ru_stime.tv_usec);
-	return 0;
+	return options.zero_lock && !lock_observed ? 77 : 0;
 }

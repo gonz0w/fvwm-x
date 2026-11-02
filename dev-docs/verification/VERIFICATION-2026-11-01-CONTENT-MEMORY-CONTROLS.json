@@ -1,0 +1,191 @@
+{
+  "base": "5cd95cef80f4425aa0db143a9a7cee279af8f9dd",
+  "compile": {
+    "profile": "macOS ARM64 strict O2 compile/link only, no candidate/control execution or supported-target qualification",
+    "source_pre": {
+      "libs/content_policy.c": "a3be3d9e82145548725787a5e191cfe9e426a94dfbb8f7a5a2306bdae2d464d6",
+      "libs/content_policy.h": "0fd3615405664e362d3fd71075b364592b81955d34d7647e17fbd2529363f5da",
+      "tests/content_memory_probe.c": "07a54b3e0c3f70c9793855f6d4a96ddda54dcce920e88b3baa49dd300bb18d5d",
+      "tests/content_memory_timeout.c": "d333fae2082446df4bdb8d61d324cba3ffce304d5b3808002fbcc0b41979086a"
+    },
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.20.102)\nTarget: arm64-apple-darwin27.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "pkg_config": {
+      "version": "1.0.22",
+      "flags": [
+        "-I/opt/homebrew/Cellar/libsodium/1.0.22/include",
+        "-L/opt/homebrew/Cellar/libsodium/1.0.22/lib",
+        "-lsodium"
+      ]
+    },
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-c",
+          "libs/content_policy.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content_policy.o"
+        ],
+        "exit": 0,
+        "seconds": 0.14086441695690155,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "tests/content_memory_probe.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content_policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content-memory-base"
+        ],
+        "exit": 0,
+        "seconds": 0.0786544579314068,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-DCONTENT_PROBE_SODIUM=1",
+          "tests/content_memory_probe.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content_policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content-memory-sodium",
+          "-I/opt/homebrew/Cellar/libsodium/1.0.22/include",
+          "-L/opt/homebrew/Cellar/libsodium/1.0.22/lib",
+          "-lsodium"
+        ],
+        "exit": 0,
+        "seconds": 0.07724958297330886,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-O2",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "tests/content_memory_timeout.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile03/content-memory-timeout"
+        ],
+        "exit": 0,
+        "seconds": 0.05118808301631361,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "runtime_executed": 0,
+    "source_post": {
+      "libs/content_policy.c": "a3be3d9e82145548725787a5e191cfe9e426a94dfbb8f7a5a2306bdae2d464d6",
+      "libs/content_policy.h": "0fd3615405664e362d3fd71075b364592b81955d34d7647e17fbd2529363f5da",
+      "tests/content_memory_probe.c": "07a54b3e0c3f70c9793855f6d4a96ddda54dcce920e88b3baa49dd300bb18d5d",
+      "tests/content_memory_timeout.c": "d333fae2082446df4bdb8d61d324cba3ffce304d5b3808002fbcc0b41979086a"
+    },
+    "pass": true,
+    "artifacts": {
+      "content-memory-base": {
+        "sha256": "90ab1184e2f626e741b9d62911f32317a372a30ebda0aa5e34b0e1827962c5a3",
+        "bytes": 35184
+      },
+      "content-memory-sodium": {
+        "sha256": "98ed7f95041d28a223219fcee7185033cd31735aa0de64d1278f88a7f91ce2ad",
+        "bytes": 35608
+      },
+      "content-memory-timeout": {
+        "sha256": "296984426d9107918ba91c1ae3728a0b26b0ab76fa60f10a0a896271457e6102",
+        "bytes": 34216
+      }
+    }
+  },
+  "oracle_tests": {
+    "scope": "lead-observed functions tool output; no separately saved raw log",
+    "command": [
+      "python3",
+      "tests/test_content_memory_control.py"
+    ],
+    "tests": 9,
+    "seconds": 0.002,
+    "outcome": "OK",
+    "sources": {
+      "tests/content_memory_control.py": "f3ac33682eb378774346d505027b052c68aec7bdef7131187496ea82e396709b",
+      "tests/test_content_memory_control.py": "0a0905d42c93aa6b9baaab12301eba3781df6a8b591e3cae9d6bd2ea96d092bd"
+    },
+    "formatting": "Unit line wrapping after observed pass; AST unchanged, no runtime rerun for formatting"
+  },
+  "regional_protection": "pending supported-target observations; models and checked API calls are not proof of every mechanism",
+  "pre_execution_review_fixes": [
+    "Emit summary before unavailable lock return so real early-refusal protocol matches the oracle",
+    "Bound reads through the checked regular descriptor, reject symlinks, and read at most limit+1"
+  ],
+  "execution": {
+    "supported_target_memory_controls": 0,
+    "expected_fault_modes": 0,
+    "host_unavailable_boundary": {
+      "scope": "host unavailable producer-shape boundary only; no positive protection control, no lock qualification",
+      "argv": [
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile02/content-memory-timeout",
+        "5",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/unavailable-boundary01/metrics.json",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-memory-controls/compile02/content-memory-base",
+        "--zero-lock-limit"
+      ],
+      "exit": 77,
+      "outcome": "unavailable producer shape observed; strict negative remains unqualified",
+      "rows": 8,
+      "metrics": {
+        "child_wait": 77,
+        "wait_confirmed": true,
+        "child_signal": 0,
+        "sigsegv": 11,
+        "sigbus": 10,
+        "timed_out": false,
+        "cancel_signal": 0,
+        "supervised_wall_ns": 78764000,
+        "poll_ns": 1000000
+      },
+      "stdout_sha256": "46a26c51deb5eabb566ed4c325fd1482430a60077991fed25cbe153d23ce3abc",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "sources_post": "matched",
+      "seconds": 0.24348066607490182
+    },
+    "host_raw_stdout": "{\"candidate\":\"base-os\",\"lock_profile\":true,\"uid\":501,\"euid\":501,\"lock_limit_zero\":true,\"capabilities_checked\":0,\"ipc_lock_capability\":false}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":1,\"bytes\":0,\"written_bytes\":0,\"page\":16384,\"mapped_model\":49152,\"locked_model\":16384,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":1000,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":2,\"bytes\":1,\"written_bytes\":0,\"page\":16384,\"mapped_model\":49152,\"locked_model\":16384,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":0,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":3,\"bytes\":16383,\"written_bytes\":0,\"page\":16384,\"mapped_model\":49152,\"locked_model\":16384,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":0,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":4,\"bytes\":16384,\"written_bytes\":0,\"page\":16384,\"mapped_model\":49152,\"locked_model\":16384,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":0,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":5,\"bytes\":16385,\"written_bytes\":0,\"page\":16384,\"mapped_model\":65536,\"locked_model\":32768,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":0,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"run\":0,\"owner_epoch\":6,\"bytes\":65536,\"written_bytes\":0,\"page\":16384,\"mapped_model\":98304,\"locked_model\":65536,\"preparation\":6,\"errno\":0,\"injected\":0,\"lock_attempted\":0,\"lock_errno\":0,\"accessed\":0,\"wipe_observed\":0,\"cleanup\":1,\"accounting\":1,\"prepare_ns\":0,\"finish_ns\":0}\n{\"candidate\":\"base-os\",\"summary\":true,\"initialization_ns\":91000,\"peak_rss_raw\":1916928,\"user_us\":949,\"system_us\":1950}\n",
+    "qualification": "unavailable only; no matching protected positive control on macOS, so strict lock-negative remains unqualified"
+  },
+  "final_formatting": "supervisor comment and unit line wrapping only; compiled binaries unchanged from host boundary"
+}

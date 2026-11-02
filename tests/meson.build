@@ -445,16 +445,31 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         link_with: libfvwm3,
         c_args: ['-UNDEBUG'],
     )
+    content_selection_probe = executable(
+        'test-content-selection-x',
+        [
+            'test_content_selection_x.c',
+            '../libs/content_selection.c',
+            '../libs/content_payload.c',
+            '../libs/content_policy.c',
+        ],
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        c_args: ['-UNDEBUG', '-D_DEFAULT_SOURCE=1'],
+    )
     test(
         'module-selection-xvfb', py,
         args: [
             files('live_x/selection_live.py'),
             '--probe', selection_probe.full_path(),
+            '--content-probe', content_selection_probe.full_path(),
             '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
             '--script', fvwm_script.full_path(), '--form', fvwm_form.full_path(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-selection',
         ],
-        depends: [selection_probe, fvwm3, fvwm_mfl, fvwm_script, fvwm_form],
+        depends: [selection_probe, content_selection_probe,
+            fvwm3, fvwm_mfl, fvwm_script, fvwm_form],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
         timeout: 60,

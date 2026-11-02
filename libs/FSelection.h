@@ -4,6 +4,7 @@
 #include <X11/Xlib.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include <stdint.h>
 
 #define FSELECTION_TEXT_MAX_BYTES (32U * 1024U)
 #define FSELECTION_TIMEOUT_MS 1000
@@ -31,7 +32,9 @@ typedef enum {
 	FSELECTION_TOO_LARGE,
 	FSELECTION_TIMED_OUT,
 	FSELECTION_CANCELLED,
-	FSELECTION_X_ERROR
+	FSELECTION_X_ERROR,
+	FSELECTION_STALE_SOURCE,
+	FSELECTION_CONSUMER_FAILED
 } FSelectionStatus;
 
 typedef struct {
@@ -63,6 +66,47 @@ typedef struct {
 FSelectionStatus FSelectionRequestExact(Display *display, Atom selection,
     Atom target, Atom property, Time time, int timeout_ms,
     FSelectionService service, void *context, FSelectionResult *result);
+
+typedef struct {
+	Window owner;
+	uint64_t generation;
+} FSelectionSource;
+typedef bool (*FSelectionSourceCurrent)(FSelectionSource source, void *context);
+typedef bool (*FSelectionConsumer)(const unsigned char *data, size_t offset,
+    size_t length, void *context);
+typedef struct {
+	FSelectionSource source;
+	size_t maximum;
+	FSelectionSourceCurrent current;
+	FSelectionConsumer consume;
+	void *context;
+} FSelectionSink;
+typedef struct {
+	size_t length;
+	Atom type;
+} FSelectionReceipt;
+
+/* Exact format-8 direct/INCR transport without a project-owned aggregate.
+ * The sink is snapshotted once. Every slice is at most 4 KiB, with an exact
+ * operation-relative offset; empty properties invoke NULL/offset/0. No pointer
+ * may survive a callback. Only OK fills the reset receipt; partial
+ * successful consumption cannot be rolled back and must not be published.
+ *
+ * Source owner/generation must come from qualified ordered observation; current
+ * validates that token before/after callbacks, servicing and final completion.
+ * XGetSelectionOwner checks the window but cannot detect same-window
+ * reacquisition. A token/callback is not server evidence by itself. Service and
+ * consumer must bound work, avoid reader reentry and leave protocol events
+ * queued; consumer must not pump events, retain data or block. Current may only
+ * advance its own bounded source observer, never general/requestor events,
+ * reader reentry or blocking work. No core-loop use or implied protection
+ * of Xlib's transient reply; FPropertyConsume8 documents that copy boundary.
+ * maximum is a pre-admitted byte cap in 0..32 KiB; zero permits empty only.
+ * The other caps/deadline/requestor retirement remain unchanged. */
+FSelectionStatus FSelectionRequestExactTo(Display *display, Atom selection,
+    Atom target, Atom property, Time time, int timeout_ms,
+    FSelectionService service, void *service_context,
+    const FSelectionSink *sink, FSelectionReceipt *receipt);
 FSelectionStatus FSelectionRequestTextNegotiated(Display *display,
     Atom selection, Atom property, Time time, int timeout_ms,
     FSelectionService service, void *context, FSelectionResult *result);

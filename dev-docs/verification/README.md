@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Borrowed selection/native producer source](VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md): four related source stories, fourteen native compile/link commands and final fixture-only host compilation; zero candidate/X execution, with shared transfer acceptance queued.
+
 - [Content deduplication/pinning and shared Linux Q1](VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md): four related owner stories, four normal/scoped-sanitizer executables and four actual production memory controls, with raw waits and explicit source/platform limits.
 
 - [Native content payload source](VERIFICATION-2026-11-01-CONTENT-PAYLOAD-SOURCE.md): historical five-story source receipt; its queued Linux owner gate is now covered by the shared Q1 above.

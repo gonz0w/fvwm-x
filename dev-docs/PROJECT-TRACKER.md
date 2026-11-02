@@ -1,5 +1,33 @@
 # FVWM-X project tracker
 
+## TEMPER-07 — Economical Temper guidance refresh
+
+Owner: Temper rollout coordinator under Cam's selected existing-adopter update.
+GitHub mirror: [issue 342](https://github.com/gonz0w/fvwm-x/issues/342); parent:
+[Temper 38](https://github.com/gonz0w/agent-temper/issues/38).
+
+Outcome: adopt reviewed `5222ac45c9edaa23c188816c7727fc70780a95a8`, tree
+`7c5b4f351046333be115cc819efe768afea681c1`, for the retained nine-file bundle,
+provenance and current pin. The agent entry route already reaches the workflow
+and verification reference; these now supply economical context, finite check
+selection and independent evaluation-input preflight. Optional experiments stay
+backlog. TEMPER-06's canonical delivery is historical and is not reopened.
+
+This is a bounded method-source batch. Preserve existing product ownership,
+FILE-DATA-01 and other active acceptance, dirty work, branches/index, roles,
+checkers, hooks, CI and all native and merge gates. A source draft is not
+canonical integration or dirty-primary qualification. No runtime campaign,
+installation, release, deployment or permission change is selected.
+
+Acceptance: exact source/inventory/manifest and offline links; unchanged local
+contracts; applicable documentation checks and separate final source review;
+current per-PR authority before merge and canonical identity verification after.
+Attempt: one source refresh and relevant checks; stop on drift, a missing required
+gate or repeated unexplained failure. Discoveries return to milestone selection.
+State: isolated canonical candidate prepared; checks, review and merge pending.
+Current product work retains its owner; this record owns only the selected
+method refresh and does not start a second product lane.
+
 Updated: 2026-11-02. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.

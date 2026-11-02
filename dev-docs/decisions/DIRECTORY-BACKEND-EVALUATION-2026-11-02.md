@@ -1,8 +1,8 @@
 # Directory metadata backend evaluation
 
-Owner Cam; FILE-DATA-01 #66; base merged PR339
-`7edc6342603eb25778b53e3324f070d715c19e68`. Status: selected non-installed
-source checkpoint. The tracker owns execution; the frozen release contract and
+Owner Cam; FILE-DATA-01 #66; evaluated source merged PR340
+`649bf8591163324942737a839bddd84aadb675a2`. Status: combined comparison complete,
+retain Go and defer SQLite after separate integrated review. The tracker and
 [library rubric](LIBRARY-EVALUATIONS-2026-10-25.md) own acceptance.
 
 ## Outcome and simpler baseline
@@ -96,10 +96,43 @@ records affected compilation without executing the authored oracles. Separate
 verify, measure and control invocations prevent reference/fault work contaminating
 backend cost samples; a measured result needs its matching verified digest.
 FTS index construction/query scans and incremental storage stay separate from
-literal browsing. Comparison runtime, target pins and adoption remain queued.
+literal browsing. The combined comparison and disposition follow below; the
+source receipt remains historical compile-only evidence.
 
 
 The probe returns complete bounded ordered ID projections, not pages. It does
 not measure pagination, rendering or product query round trips; those retain
 the existing file-view/consumer and release scope. No additional paging workload
 is selected by this source checkpoint.
+
+## R1 disposition after the combined comparison
+
+**Retain the existing Go directory pipeline. Defer SQLite/FTS5 integration.**
+Do not adopt the experimental JSON file cache either. Current browsing stays
+database-independent; domain IDs/generations remain independent of row keys.
+No production schema, migration, daemon or new dependency is introduced.
+
+The [six-target result](../verification/VERIFICATION-2026-11-02-DIRECTORY-BACKEND-COMPARISON.md)
+records 42 native oracle cases, 64 verification invocations, 192 matched cost
+invocations and isolated failure controls. SQLite/FTS5 is available in four
+profiles and unavailable in both frozen FreeBSD profiles. No package was added
+to change that result. Existing provider/watch component acceptance is retained.
+
+The actual Go pipeline wins the current literal-query and memory comparison in
+all four available SQLite profiles. FTS has token-prefix wins and SQLite has
+different reopen work, but neither replaces current literal filtering or removes
+existing identity/normalization/selection/fallback code. Binding, schema,
+transaction, failure, lifecycle and cross-platform packaging work would be added.
+The JSON cache adds persistence/codec work to an already functional live model.
+These costs do not justify integration for the bounded directory workload.
+
+Required process-file closure, SDK/header/compiler identities, repeated phase
+costs and limitations are published. Full distribution-package payload sizes,
+isolated cold startup, power-loss recovery and a hypothetical adopted backend's
+install qualification are not claimed. These limits prevent broader performance
+or support claims; they do not adopt or narrow a production dependency.
+
+There is no new backend to migrate, invalidate or roll back. A future indexed
+search pickup needs its own accepted product workload, portability/packaging,
+schema/recovery and installed-consumer evidence. It is not unfinished R1 browser
+integration. Protected clipboard data remains outside ordinary metadata indexes.

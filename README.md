@@ -5,7 +5,7 @@ and OpenBSD Xenocara on AMD64 and ARM64.
 
 Preserves FVWM configurations. No compositor or Wayland.
 
-**Status:** in development toward R1: a configurable, fast, low-memory desktop
+**Status:** R1 development: a configurable, fast, low-memory desktop
 lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 
 - Session controls, logout, services and scaling.
@@ -20,6 +20,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   palette and startup activity.
 - Optional browser: list/grid, watching, Files-menu handoff, application choosers
   and live updates; [opt-in FileManager1](doc/fvwm-file-browser.adoc#filemanager1-service).
+  [SQLite/FTS5 deferred](dev-docs/decisions/DIRECTORY-BACKEND-EVALUATION-2026-11-02.md).
 - Script selection metadata and bounded INCR paste;
   [preview](doc/development-preview.md#script-selection-and-paste-in-progress).
 - Opt-in file Copy/Cut/Paste and XDND;

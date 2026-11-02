@@ -77,8 +77,12 @@ their existing scope. The owner changes required policy through the existing pro
   optional encrypted persistence.
   First-release owner defaults are session-only history, recognized sensitive
   items excluded, persistence off, CLIPBOARD-only capture and PRIMARY sync off.
-  History survives desktop lock; logout ends session history. Remaining lock-time
-  capture/access, resource limits and backend/key policies stay explicit in the
+  History survives desktop lock; capture pauses and history access is blocked
+  while locked. Logout ends session history. The owner permits one transient
+  Xlib reply up to 32 KiB in the isolated native process, copied directly into
+  prepared protected storage and wiped before free; swap exclusion is not
+  guaranteed for that reply. Resource limits and backend/key policies stay
+  explicit in the
   clipboard scope. X11 display clients remain outside the confidentiality guarantee. See the
   [clipboard scope](../decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md).
 - Approved desktop exploration direction: additional consumers and hardware,

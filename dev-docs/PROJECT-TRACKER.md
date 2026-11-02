@@ -7,42 +7,64 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: FILE-DATA-01 #66 finite backend-evaluation source checkpoint.
-Owner Cam; branch `codex/r1-directory-backend-evaluation`, base merged PR339
-`7edc6342603eb25778b53e3324f070d715c19e68`. The first two frozen directory/watch
-criteria have existing accepted foundation/provider-cycle evidence; reconcile
-those exact profiles without rerunning them. The remaining accepted evaluation
-compares bounded in-memory/file-snapshot baselines with optional SQLite/FTS5 on
-public non-sensitive metadata. Select three related source stories: a finite
-common dataset/query/update/failure oracle; no-new-dependency baseline probes;
-and the optional database probe with explicit capability/failure/cost receipts.
-Freeze the simpler approach, candidate identities and exact workload before
-implementation. No installed database/default/schema/search daemon, live
-browser dependency, sensitive indexing or production backend adoption is selected.
-The analyst narrows the routine implementation choice; lead owns scope and code
-under the recorded implementer-quota fallback, with separate final review.
+Current work: FILE-DATA-01 #66 completed comparison and closing candidate.
+Owner Cam; branch `codex/r1-directory-backend-comparison`, source base merged
+PR340 `649bf8591163324942737a839bddd84aadb675a2`. Separate integrated review
+passed; signed delivery and manual issue/Project reconciliation remain before
+closure.
+R1 still has 51 open issues at the last verified lookup; no premature closure.
 
-Complete affected source/static compilation during development, then run one
-combined comparison at its named substantial handoff. Preserve current browser
-and clipboard passes; do not repeat WM/install/UI/all-OS suites per helper.
-The six-target comparison/cost table is #66 acceptance, not permission to claim
-missing target results. Keep prototype-only/source-merged distinct from actual
-comparison and adoption. Installed clipboard copy and lock-time capture/access
-questions stay pending; independent file-data work can proceed.
+The [combined comparison](verification/VERIFICATION-2026-11-02-DIRECTORY-BACKEND-COMPARISON.md)
+passes 42 native oracle cases, 64 verification invocations and 192 matched cost
+invocations across six profiles. SQLite/FTS5 passes in its four available
+Linux/OpenBSD profiles; both frozen FreeBSD profiles report it unavailable.
+Retain the existing database-independent Go pipeline for R1; defer SQLite/FTS5
+and the experimental JSON cache. No new schema, service or dependency is adopted.
+Existing directory/watch component acceptance and its source/filesystem limits
+remain accepted. The three remaining #66 backend criteria are ready for final
+review against the published metrics, caveats and finite disposition.
 
-The three-story private source prototype is implemented and its two build-tag
-profiles compile/link with the approved existing host Go1.27.2 SDK. Final command
-and test binaries build for CGO0 baseline and CGO1 optional SQLite; zero authored
-test/comparison executables run. [Source receipt](verification/VERIFICATION-2026-11-02-DIRECTORY-BACKEND-SOURCE.md)
-retains exact source/SDK/artifacts, early guard correction and measurement-review
-fixes. Independent sort/update/token goldens, full metadata readback, bounded
-partial-replacement refusal/recovery and matched verify/measure digests are
-prepared, not passed. Controls are separate invocations; main storage precedes
-FTS. No normal install/build dependency or UI changes. Complete separate review
-before source integration, then freeze six actual profiles for the single
-substantial comparison/disposition checkpoint. Source checkpoint merge advances
-the due performance observation to5/5; reuse the comparison's shared session.
+The [due core observation](verification/PERFORMANCE-2026-11-02-PROPERTY-CORE.md)
+is complete: exact control relink reproduces the accepted PR327 binary, then one
+current FProperty object is compiled/relinked for six alternating observations.
+Timing ranges overlap; no causal speedup/regression is established. Text+890
+bytes, full debug executable+3,232 bytes, observed RSS+8 KiB. This is a
+current-property core observation, not a full current build/clipboard result.
+Performance cadence resets to 0/5 at delivery; retain the candidate as the next
+relevant reference. No full WM/install/UI/theme or new sanitizer matrix was run.
 
+Every exported hash verifies; all owned labs are stopped/reaped. Original failed
+FreeBSD driver and Debian preflight attempts remain preserved, as do unsuitable
+Python-floor RSS samples and their corrected cost-only tail. Twelve obsolete
+owned image files were retired after evidence/duplicate verification: allocated
+21,090,004,992 bytes, observed host free-space increase 20,480,000,000 bytes.
+Current last builds, reference binaries, SDKs and canonical caches remain.
+
+Owner clipboard decisions 2026-11-02 are recorded in the
+[scope](decisions/CLIPBOARD-PRIMITIVES-2026-10-06.md) and mirrored in #71/#74:
+retain history during lock, pause capture and block history access; allow one
+isolated native Xlib reply up to 32 KiB, direct to prepared protected storage,
+accessible reply bytes wiped before free, without a swap-exclusion guarantee.
+These choices enable the next finite source integration, not an installed pass.
+
+After delivery, select the related #63/#71/#74 capture/retention integration:
+session-owned native child and bounded metadata-only pipes; ordered CLIPBOARD
+capture with recognized hint/admission checks; actual protected retention/
+dedup/pinning/cleanup; and session control/lock barriers. Use explicit caller
+limits and a bounded text subset before choosing installed defaults or adding
+preview/export/images/persistence. The current session locker reports readiness
+unconfirmed: a request/start/exit is not a qualified locked/unlocked signal.
+Unknown/lost state must block capture/access; do not resume on locker exit or
+claim external-lock coverage. This is an implementation dependency, not another
+owner lock-policy question. Scope/acceptance and shared runtime checkpoint must
+be selected before coding. Keep #62's consumer and broader issue criteria open.
+#257/#258 and the external-Xvfb server-absence gap retain their separate owners.
+
+PR340 merged after separate integrated/signed review: head
+`aee51084c3a136c05edf6ae0912efcca521d051f`, canonical tree
+`c697e42bcff495cffdcf2280a28471bf53423774`, valid signature/Cam DCO. Main was
+synced, source branch retired and Project Done verified. Its source/compile-only
+receipt remains historical; current native comparison is linked above.
 
 PR339 merged after separate integrated and signed-delivery review: head
 `9c984c50b8aa07c6d61fa5048c9a66775223dacf`, exact canonical tree
@@ -6404,7 +6426,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | NOTIFY-01 | Done / #76 closed by merged PR311; frozen component acceptance complete | Native process-isolated notifications with the freedesktop interface, bounded popups/history/actions, do-not-disturb and live palette/settings updates. Reuse shared primitives/CFG-01/IPC-02; define optional D-Bus feature/dependency policy before adoption, preserve the minimal baseline and respect existing servers. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | TRAY-01 | P2 / Done; completion merged in PR314 | Native tray host: XEmbed checkpoint followed by StatusNotifier/application-menu checkpoint; dynamic icon/layout/visibility settings and adaptive bar integration. Bound foreign-client data/lifetimes and respect existing owners. Follow NOTIFY-01 and shared desktop primitives; modern D-Bus support retains its dependency gate. Native/real-X six-target and manual/install gates. See [service scope](decisions/NATIVE-DESKTOP-SERVICES-2026-10-06.md). |
 | FILE-VIEW-01 | P2 / In progress; focused scale, input and pointer/paste continuity qualified; broader acceptance open | Reusable structured collection view: scrollable list first, shared icon-grid model next, stable IDs, multiple selection, keyboard focus/actions, visible-entry rendering and bounded incremental updates. Stage 6 after shared button/text/image/scale contracts; qualify with FILE-DATA-01/FILE-ACTION-01 as the first browser handoff. Native policy/real-X large-collection, refresh/focus/lifetime/scale gates. See [file-manager scope](decisions/FILE-MANAGER-PRIMITIVES-2026-10-06.md). |
-| FILE-DATA-01 | P2 / directory/watch component acceptance retained; backend evaluation active | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
+| FILE-DATA-01 | Closing candidate / directory-watch acceptance retained; six-target backend comparison complete, retain Go/defer SQLite | Isolated cancellable local directory enumeration/metadata, generations, Home/Up/Back/path entry, sorting/hidden files, manual refresh and honest unavailable/stale results. Preserve filename bytes separately from display text; bounded native watching/fallback follows platform review. Stage 6 with FILE-VIEW-01; slow filesystem work must not stall WM input. See file-manager scope. |
 | FILE-ACTION-01 | Done / #65 closed by merged PR271; all five finite criteria qualified | Typed selected-item/path/URI action data and explicit correlated results using IPC-02/PROC-01/XDG-01; no label-derived FVWM/shell evaluation. Define request/view generations, cancellation and stale-target refusal; navigation/open/terminal/context actions form the first browser checkpoint. Stage 6 with FILE-VIEW-01/FILE-DATA-01; documented working consumer example is the config/theme handoff. See file-manager scope. |
 | FILE-JOBS-01 | Done / #68 closed by merged PR290; finite job/UI and support coverage qualified | Second file-manager checkpoint: owned create-folder/rename/copy/move/link/trash/restore and explicit permanent-delete jobs, progress/cancel/conflict decisions and per-item/final outcomes. Define cross-filesystem, symlink, partial failure/cleanup and metadata guarantees; no silent trash-to-delete fallback or implied undo. Stage 6 after browser/action and process/ownership contracts; native filesystem plus real-X responsiveness/teardown and six-target gates. See file-manager scope. |
 | DESKTOP-ICONS-01 | Done / #64 closed by merged PR291; finite support closeout qualified | Third checkpoint: optional persistent pinboard using the qualified collection/actions, keyboard access, movable references and monitor/work-area/scale-aware placement. Removing a pin preserves its target; actual Desktop-directory mutation waits for FILE-JOBS-01. Preserve root menus, wallpaper ownership, stacking/workspaces and other desktop managers. Stage 6 after browser primitives; native real-X restart/hotplug/mixed-scale/input gates. See file-manager scope. |

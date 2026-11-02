@@ -1,6 +1,6 @@
 # Proposals and decisions
 
-- [Directory backend evaluation](DIRECTORY-BACKEND-EVALUATION-2026-11-02.md): bounded public-metadata Go/snapshot and optional SQLite/FTS5 source comparison; no production adoption.
+- [Directory backend evaluation](DIRECTORY-BACKEND-EVALUATION-2026-11-02.md): completed six-target comparison; retain current Go browsing and defer SQLite/FTS5 and JSON cache production adoption.
 
 - [Ordered selection source observation](SELECTION-SOURCE-OBSERVER-2026-11-02.md): selected pure lifetime/epoch, optional XFixes and bounded query/drain handoff; real-X and installed acceptance remain required.
 

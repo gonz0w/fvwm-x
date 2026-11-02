@@ -187,7 +187,8 @@ selection_fence(const selection_operation *operation)
 		return status;
 	if (XGetSelectionOwner(operation->display, operation->selection) !=
 		operation->sink.source.owner ||
-		!operation->sink.current(operation->sink.source,
+		!operation->sink.current(operation->display,
+			operation->selection, operation->sink.source,
 			operation->sink.context))
 		return FSELECTION_STALE_SOURCE;
 	return selection_deadline(operation);
@@ -491,7 +492,12 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 		{
 			goto out;
 		}
-		if (work == SELECTION_EVENT_BATCH)
+		/* A service or synchronous source fence can read our reply into
+		 * Xlib while leaving the socket empty. Check only this attempt's
+		 * events after the last X request; unrelated input must not spin. */
+		if (work == SELECTION_EVENT_BATCH ||
+		    FCheckPeekIfEvent(operation->display, &event,
+			selection_transfer_matches, (XPointer)&attempt))
 		{
 			continue;
 		}
@@ -748,7 +754,8 @@ FSelectionRequestExactTo(Display *display, Atom selection, Atom target,
 		*receipt = (FSelectionReceipt){0};
 	if (!receipt || !sink || !sink->consume || !sink->current ||
 		sink->maximum > FSELECTION_TEXT_MAX_BYTES ||
-		sink->source.owner == None || !sink->source.generation ||
+		sink->source.owner == None || !sink->source.epoch ||
+		!sink->source.generation ||
 		!display || selection == None || target == None ||
 		property == None || timeout_ms <= 0 ||
 		timeout_ms > FSELECTION_TIMEOUT_MS)

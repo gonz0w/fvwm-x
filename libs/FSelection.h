@@ -69,9 +69,10 @@ FSelectionStatus FSelectionRequestExact(Display *display, Atom selection,
 
 typedef struct {
 	Window owner;
-	uint64_t generation;
+	uint64_t epoch, generation;
 } FSelectionSource;
-typedef bool (*FSelectionSourceCurrent)(FSelectionSource source, void *context);
+typedef bool (*FSelectionSourceCurrent)(Display *display, Atom selection,
+    FSelectionSource source, void *context);
 typedef bool (*FSelectionConsumer)(const unsigned char *data, size_t offset,
     size_t length, void *context);
 typedef struct {
@@ -92,8 +93,10 @@ typedef struct {
  * may survive a callback. Only OK fills the reset receipt; partial
  * successful consumption cannot be rolled back and must not be published.
  *
- * Source owner/generation must come from qualified ordered observation; current
- * validates that token before/after callbacks, servicing and final completion.
+ * Source epoch is nonzero/unique across observer lifetimes; owner/generation
+ * must come from qualified ordered observation. current
+ * validates that token and the actual display/selection binding before/after
+ * callbacks, servicing and final completion.
  * XGetSelectionOwner checks the window but cannot detect same-window
  * reacquisition. A token/callback is not server evidence by itself. Service and
  * consumer must bound work, avoid reader reentry and leave protocol events

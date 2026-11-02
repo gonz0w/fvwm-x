@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Ordered selection observer and combined transfer checkpoint](VERIFICATION-2026-11-02-SELECTION-OBSERVER.md): normal/scoped-sanitizer primitive passes, actual same-window/ABA observations and fixed pre-poll queue race; external Xvfb server-absence failure remains unavailable.
+
 - [Borrowed selection/native producer source](VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md): four related source stories, fourteen native compile/link commands and final fixture-only host compilation; zero candidate/X execution, with shared transfer acceptance queued.
 
 - [Content deduplication/pinning and shared Linux Q1](VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md): four related owner stories, four normal/scoped-sanitizer executables and four actual production memory controls, with raw waits and explicit source/platform limits.

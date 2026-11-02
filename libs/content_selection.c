@@ -16,11 +16,13 @@ struct content_selection_transfer {
 	size_t offset;
 };
 
-static bool source_current(FSelectionSource source, void *context)
+static bool source_current(Display *display, Atom selection,
+	FSelectionSource source, void *context)
 {
 	struct content_selection_transfer *transfer = context;
 
-	return transfer->options.current(source, transfer->options.context);
+	return transfer->options.current(display, selection, source,
+		transfer->options.context);
 }
 
 static bool service(void *context)
@@ -116,7 +118,8 @@ enum content_selection_status content_selection_receive(
 	if (!owner || !options || !representation || !request.display ||
 		request.selection == None || request.target == None ||
 		request.property == None || request.source.owner == None ||
-		!request.source.generation || !request.current ||
+		!request.source.epoch || !request.source.generation ||
+		!request.current ||
 		!request.clock ||
 		request.timeout_ms <= 0 ||
 		request.timeout_ms > FSELECTION_TIMEOUT_MS)
@@ -157,8 +160,8 @@ enum content_selection_status content_selection_receive(
 		goto retire;
 	}
 	if (XGetSelectionOwner(request.display, request.selection) !=
-		request.source.owner || !request.current(request.source,
-			request.context))
+		request.source.owner || !request.current(request.display,
+			request.selection, request.source, request.context))
 	{
 		result->transfer = FSELECTION_STALE_SOURCE;
 		transfer.status = CONTENT_SELECTION_TRANSFER;

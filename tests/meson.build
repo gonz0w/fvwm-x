@@ -458,17 +458,30 @@ if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 
         link_with: libfvwm3,
         c_args: ['-UNDEBUG', '-D_DEFAULT_SOURCE=1'],
     )
+    selection_observer_probe = executable(
+        'test-selection-observer-x',
+        [
+            'test_selection_observer_x.c',
+            '../libs/selection_observer.c',
+            '../libs/selection_source_policy.c',
+        ],
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        c_args: ['-UNDEBUG', '-D_DEFAULT_SOURCE=1'],
+    )
     test(
         'module-selection-xvfb', py,
         args: [
             files('live_x/selection_live.py'),
             '--probe', selection_probe.full_path(),
             '--content-probe', content_selection_probe.full_path(),
+            '--observer-probe', selection_observer_probe.full_path(),
             '--fvwm', fvwm3.full_path(), '--mfl', fvwm_mfl.full_path(),
             '--script', fvwm_script.full_path(), '--form', fvwm_form.full_path(),
             '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'module-selection',
         ],
-        depends: [selection_probe, content_selection_probe,
+        depends: [selection_probe, content_selection_probe, selection_observer_probe,
             fvwm3, fvwm_mfl, fvwm_script, fvwm_form],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false,
@@ -4851,6 +4864,14 @@ content_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('content-policy', content_policy_test)
+
+selection_source_policy_test = executable(
+    'test-selection-source-policy',
+    ['test_selection_source_policy.c', '../libs/selection_source_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('selection-source-policy', selection_source_policy_test)
 
 # This fresh native child explicitly prepares its own process dump policy.
 # Injected syscall refusals test lifecycle/retry state, not OS enforcement.

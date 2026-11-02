@@ -26,11 +26,12 @@ enum stream_mode {
 };
 struct stream_owner { pid_t pid; int release; };
 struct stream_context {
-	Display *display;
+	Display *display, *reply_owner;
 	Atom selection;
 	Window replacement;
-	uint64_t generation, now;
+	uint64_t epoch, generation, now;
 	size_t seen, calls, refuse, clocks, observations_after_write;
+	size_t observations;
 	bool stale, cancel, replace, fail_clock, expire_observer;
 	struct content_payload_owner *clear;
 };
@@ -267,11 +268,29 @@ static void finish_stream_owner(struct stream_owner owner)
 	assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
 }
 
-static bool stream_current(FSelectionSource source, void *context)
+static bool stream_current(Display *display, Atom selection,
+	FSelectionSource source, void *context)
 {
 	struct stream_context *state = context;
 
 	assert(source.owner != None);
+	assert(display == state->display && selection == state->selection);
+	if (state->reply_owner && ++state->observations == 4)
+	{
+		XEvent event;
+
+		/* No service callback: withhold the reply until the first empty
+		 * transfer scan, then queue it in the pre-poll source fence. */
+		assert(!state->calls);
+		XSync(state->reply_owner, False);
+		assert(XCheckTypedEvent(state->reply_owner, SelectionRequest,
+			&event));
+		owner_reply(state->reply_owner, event.xselectionrequest,
+			STREAM_DIRECT, -1);
+		XSync(state->reply_owner, False);
+		XSync(display, False);
+	}
+
 	/* One direct native write samples clock twice (preflight and write).
 	 * Three observer calls remain: post-consume, requestor-retired
 	 * completion, and adapter publication. Advance only the last observer,
@@ -279,7 +298,8 @@ static bool stream_current(FSelectionSource source, void *context)
 	if (state->expire_observer && state->clocks >= 2 &&
 		++state->observations_after_write == 3)
 		state->now = 1000;
-	return source.generation == state->generation;
+	return source.epoch == state->epoch &&
+		source.generation == state->generation;
 }
 
 static bool stream_consume(const unsigned char *bytes, size_t offset,
@@ -335,7 +355,7 @@ static bool stream_clock(void *context, uint64_t *now_ms)
 static void sink_tests(Display *display, Atom selection, Atom property,
 	Window replacement)
 {
-	for (unsigned scenario = 0; scenario < 15; scenario++)
+	for (unsigned scenario = 0; scenario < 16; scenario++)
 	{
 		enum stream_mode mode = scenario == 1 ? STREAM_INCR :
 			scenario == 2 ? STREAM_EMPTY :
@@ -352,17 +372,22 @@ static void sink_tests(Display *display, Atom selection, Atom property,
 			mode);
 		struct stream_context state = {.display = display,
 			.selection = selection, .replacement = replacement,
-			.generation = 17, .refuse = scenario == 6 ? 1 : 0,
+			.epoch = 100 + scenario, .generation = 17,
+			.refuse = scenario == 6 ? 1 : 0,
 			.stale = scenario == 7, .cancel = scenario == 9,
 			.replace = scenario == 10};
 		FSelectionSink sink = {
-			.source = {XGetSelectionOwner(display, selection), 17},
+			.source = {.owner = XGetSelectionOwner(display,
+				selection),
+				.epoch = state.epoch, .generation = 17},
 			.maximum = mode == STREAM_EMPTY ? 0 : 32768,
 			.current = stream_current, .consume = stream_consume,
 			.context = &state};
 		FSelectionReceipt receipt = {.length = 99, .type = XA_ATOM};
 		if (scenario == 8)
 			state.generation++;
+		if (scenario == 15)
+			state.epoch++;
 		FSelectionStatus status = FSelectionRequestExactTo(display,
 			selection, XA_STRING, property, CurrentTime,
 			scenario == 13 ? 200 : 1000,
@@ -383,14 +408,15 @@ static void sink_tests(Display *display, Atom selection, Atom property,
 		{
 			assert(status != FSELECTION_OK && !receipt.length &&
 				receipt.type == None);
-			if (scenario == 4 || scenario == 8)
+			if (scenario == 4 || scenario == 8 || scenario == 15)
 				assert(!state.calls);
 			if (scenario == 5)
 				assert(state.seen == 3 &&
 					status == FSELECTION_INVALID);
 			if (scenario == 6)
 				assert(status == FSELECTION_CONSUMER_FAILED);
-			if (scenario == 7 || scenario == 8 || scenario == 10)
+			if (scenario == 7 || scenario == 8 || scenario == 10 ||
+				scenario == 15)
 				assert(status == FSELECTION_STALE_SOURCE);
 			if (scenario == 9)
 				assert(status == FSELECTION_CANCELLED);
@@ -418,6 +444,31 @@ static bool verify_original(const unsigned char *bytes, size_t length,
 		assert(bytes[i] == (unsigned char)(*offset + i));
 	*offset += length;
 	return true;
+}
+
+static void queued_reply_test(Display *display, Atom selection, Atom property)
+{
+	Display *owner = XOpenDisplay(NULL);
+
+	assert(owner);
+	Window window = XCreateSimpleWindow(owner, DefaultRootWindow(owner),
+		0, 0, 1, 1, 0, 0, 0);
+
+	XSetSelectionOwner(owner, selection, window, CurrentTime);
+	XSync(owner, False);
+	struct stream_context state = {.display = display, .reply_owner = owner,
+		.selection = selection, .epoch = 91, .generation = 19};
+	FSelectionSink sink = {.source = {.owner = window, .epoch = 91,
+		.generation = 19}, .maximum = 5, .current = stream_current,
+		.consume = stream_consume, .context = &state};
+	FSelectionReceipt receipt;
+
+	assert(FSelectionRequestExactTo(display, selection, XA_STRING, property,
+		CurrentTime, 1000, NULL, NULL, &sink, &receipt) == FSELECTION_OK);
+	assert(state.observations >= 4 && state.calls == 1 && state.seen == 5);
+	assert(receipt.length == 5 && receipt.type == XA_STRING);
+	XDestroyWindow(owner, window);
+	XCloseDisplay(owner);
 }
 
 static void adapter_tests(Display *display, Atom selection, Atom property)
@@ -458,14 +509,19 @@ static void adapter_tests(Display *display, Atom selection, Atom property)
 		struct stream_owner owner = start_stream_owner(display,
 			selection,
 			mode);
-		struct stream_context state = {.now = 995, .generation = 29,
+		struct stream_context state = {.display = display,
+			.selection = selection, .now = 995,
+			.epoch = 2000 + scenario,
+			.generation = 29,
 			.fail_clock = scenario == 4,
 			.expire_observer = scenario == 5,
 			.clear = scenario == 7 ? &payload : NULL};
 		struct content_selection_options options = {.display = display,
 			.selection = selection, .target = XA_STRING,
 			.property = property, .timeout_ms = 1000,
-			.source = {XGetSelectionOwner(display, selection), 29},
+			.source = {.owner = XGetSelectionOwner(display,
+				selection),
+				.epoch = state.epoch, .generation = 29},
 			.current = stream_current, .clock = stream_clock,
 			.context = &state};
 		if (scenario == 7)
@@ -484,6 +540,21 @@ static void adapter_tests(Display *display, Atom selection, Atom property)
 				scenario == 2 ? 0 : 5;
 			size_t offset = 0;
 
+			if (status != CONTENT_SELECTION_OK ||
+				result.length != expected ||
+				result.type != XA_STRING)
+				fprintf(stderr, "adapter scenario=%u status=%u "
+					"transfer=%u payload=%u "
+					"policy=%u op=%u "
+					"errno=%d length=%zu "
+					"type=%lu clocks=%zu\n",
+					scenario, status, result.transfer,
+					result.payload,
+					result.error.policy,
+					result.error.operation,
+					result.error.number, result.length,
+					result.type,
+					state.clocks);
 			assert(status == CONTENT_SELECTION_OK &&
 				result.length == expected &&
 				result.type == XA_STRING);
@@ -584,6 +655,7 @@ int main(void)
 			FSELECTION_INVALID);
 	assert(!invalid.length && invalid.type == None);
 
+	queued_reply_test(display, selection, property);
 	sink_tests(display, selection, property, replacement);
 	adapter_tests(display, selection, property);
 	assert(XCheckTypedEvent(display, Expose, &marker) &&

@@ -539,6 +539,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--probe', required=True)
     parser.add_argument('--content-probe', type=Path)
+    parser.add_argument('--observer-probe', type=Path)
     parser.add_argument('--display')
     for name in ('fvwm', 'mfl', 'script', 'form'):
         parser.add_argument('--' + name, type=Path)
@@ -564,6 +565,13 @@ def main():
                 if content.wait_until_exit(time.monotonic() + 15) != 0:
                     raise HarnessError('Content selection probe failed')
                 print(content.log_path.read_text())
+            if args.observer_probe:
+                observer = runtime.start('selection-observer',
+                    [str(args.observer_probe)], 'observer-probe.log',
+                    runtime.environment({'DISPLAY': display}))
+                if observer.wait_until_exit(time.monotonic() + 15) != 0:
+                    raise HarnessError('Selection observer probe failed')
+                print(observer.log_path.read_text())
             if args.fvwm:
                 widgets(runtime, display, args)
         finally:

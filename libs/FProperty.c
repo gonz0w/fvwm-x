@@ -107,6 +107,95 @@ out:
 	return result;
 }
 
+/* Xlib expands format-32 items to longs. Bound the accessible allocation by
+ * this request's rounded wire ceiling, even when the required format/type was
+ * refused. The X server/Xlib allocation contract remains a trusted boundary. */
+static void
+property_wipe_reply(unsigned char *reply, unsigned long items, int format,
+    size_t maximum)
+{
+#if defined(__linux__) || defined(__FreeBSD__) || defined(__OpenBSD__)
+	size_t wire_unit, native_unit, ceiling = (maximum + 3) / 4 * 4;
+
+	if (!reply || (format != 8 && format != 16 && format != 32))
+		return;
+	wire_unit = (size_t)format / 8;
+	native_unit = format == 32 ? sizeof(unsigned long) : wire_unit;
+	if (items <= ceiling / wire_unit && items <= SIZE_MAX / native_unit)
+		explicit_bzero(reply, (size_t)items * native_unit);
+#else
+	(void)reply;
+	(void)items;
+	(void)format;
+	(void)maximum;
+#endif
+}
+
+FPropertyResult
+FPropertyConsume8(Display *display, Window window, Atom property, Atom type,
+    FPropertyLimits limits, FPropertyConsumer8 consumer, void *context,
+    size_t *bytes)
+{
+	unsigned char *reply = NULL;
+	Atom actual_type = None;
+	int actual_format = 0;
+	unsigned long items = 0, after = 0;
+	size_t length = 0;
+	FPropertyResult result = FPROPERTY_INVALID;
+
+	if (bytes)
+		*bytes = 0;
+	if (!bytes || !consumer || !display || window == None ||
+		property == None || limits.format != 8 ||
+		limits.min_bytes > limits.max_bytes ||
+		limits.max_bytes > FPROPERTY_TEXT_MAX_BYTES)
+		return result;
+#if !defined(__linux__) && !defined(__FreeBSD__) && !defined(__OpenBSD__)
+	return FPROPERTY_UNSUPPORTED;
+#endif
+	long units = (long)(limits.max_bytes / 4 + (limits.max_bytes % 4 != 0));
+	int status = XGetWindowProperty(display, window, property, 0, units,
+		False, type, &actual_type, &actual_format,
+		&items, &after, &reply);
+
+	if (status != Success)
+		result = FPROPERTY_X_ERROR;
+	else if (actual_type == None)
+		result = FPROPERTY_MISSING;
+	else if ((type != AnyPropertyType && actual_type != type) ||
+		actual_format != 8)
+		result = FPROPERTY_INVALID;
+	else if (after)
+		result = FPROPERTY_TOO_LARGE;
+	else if (reply && FPropertySizeIsSafe(items, actual_format, 0,
+		limits, &length))
+	{
+		result = FPROPERTY_OK;
+		for (size_t offset = 0; offset < length || !length;)
+		{
+			size_t amount = length - offset;
+
+			if (amount > FPROPERTY_CONSUME_CHUNK_MAX)
+				amount = FPROPERTY_CONSUME_CHUNK_MAX;
+			if (!consumer(length ? reply + offset : NULL,
+				offset, amount, context))
+			{
+				result = FPROPERTY_CONSUMER_FAILED;
+				break;
+			}
+			if (!length)
+				break;
+			offset += amount;
+		}
+		if (result == FPROPERTY_OK)
+			*bytes = length;
+	}
+	property_wipe_reply(reply, items, actual_format, limits.max_bytes);
+	if (reply)
+		XFree(reply);
+	return result;
+}
+
 Status
 FGetTextProperty(Display *display, Window window, XTextProperty *text,
     Atom property)

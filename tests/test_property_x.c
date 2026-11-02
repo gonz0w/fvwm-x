@@ -13,6 +13,103 @@
 #include <stdlib.h>
 #include <string.h>
 
+struct property_consumer {
+	const unsigned char *expected;
+	size_t length, seen, calls, refuse;
+};
+
+static bool
+consume_property(const unsigned char *data, size_t offset, size_t length,
+    void *context)
+{
+	struct property_consumer *consumer = context;
+
+	assert(offset == consumer->seen && offset <= consumer->length);
+	assert(length <= consumer->length - offset &&
+		length <= FPROPERTY_CONSUME_CHUNK_MAX);
+	if (length)
+		assert(data &&
+			!memcmp(data, consumer->expected + offset, length));
+	else
+		assert(!data && !consumer->length);
+	consumer->calls++;
+	if (consumer->calls == consumer->refuse)
+		return false;
+	consumer->seen += length;
+	return true;
+}
+
+static void
+test_property_consumer(Display *display, Window window, Atom property)
+{
+	unsigned char original[2 * FPROPERTY_CONSUME_CHUNK_MAX + 1];
+	FPropertyLimits limits = {0, sizeof(original), 8};
+	size_t bytes;
+	struct property_consumer consumer;
+
+	for (size_t i = 0; i < sizeof(original); i++)
+		original[i] = (unsigned char)i;
+	for (unsigned scenario = 0; scenario < 3; scenario++)
+	{
+		size_t length = scenario == 1 ? 0 : sizeof(original);
+
+		consumer = (struct property_consumer){
+			.expected = original, .length = length,
+			.refuse = scenario == 2 ? 2 : 0
+		};
+		XChangeProperty(display, window, property, XA_STRING, 8,
+			PropModeReplace, original, (int)length);
+		bytes = 99;
+		FPropertyResult status = FPropertyConsume8(display, window,
+			property, XA_STRING, limits, consume_property,
+			&consumer, &bytes);
+
+		if (scenario == 2)
+		{
+			assert(status == FPROPERTY_CONSUMER_FAILED && !bytes);
+			assert(consumer.calls == 2 &&
+				consumer.seen == FPROPERTY_CONSUME_CHUNK_MAX);
+		}
+		else
+		{
+			assert(status == FPROPERTY_OK && bytes == length);
+			assert(consumer.seen == length && consumer.calls ==
+				(length ? 3 : 1));
+		}
+	}
+	consumer = (struct property_consumer){0};
+	for (unsigned scenario = 0; scenario < 4; scenario++)
+	{
+		limits = (FPropertyLimits){0, sizeof(original), 8};
+		XChangeProperty(display, window, property, XA_STRING, 8,
+			PropModeReplace, original, sizeof(original));
+		if (!scenario)
+			limits.max_bytes--;
+		else if (scenario == 1)
+			XChangeProperty(display, window, property, XA_ATOM, 8,
+				PropModeReplace, original, 1);
+		else if (scenario == 2)
+		{
+			unsigned long word = 1;
+
+			XChangeProperty(display, window, property,
+				XA_STRING, 32,
+				PropModeReplace, (unsigned char *)&word, 1);
+		}
+		else
+			XDeleteProperty(display, window, property);
+		bytes = 99;
+		assert(FPropertyConsume8(display, window, property, XA_STRING,
+			limits, consume_property, &consumer, &bytes) !=
+				FPROPERTY_OK);
+		assert(!bytes && !consumer.calls);
+	}
+	bytes = 99;
+	assert(FPropertyConsume8(NULL, window, property, XA_STRING, limits,
+		consume_property, &consumer, &bytes) == FPROPERTY_INVALID);
+	assert(!bytes);
+}
+
 int
 main(void)
 {
@@ -21,6 +118,8 @@ main(void)
 	Window window = XCreateSimpleWindow(display, DefaultRootWindow(display),
 	    0, 0, 10, 10, 0, 0, 0);
 	Atom property = XInternAtom(display, "FVWM_PROPERTY_TEST", False);
+	test_property_consumer(display, window, property);
+	XDeleteProperty(display, window, property);
 	FPropertyLimits limits = {.min_bytes = 4, .max_bytes = 16, .format = 32};
 	unsigned char *data = (void *)1;
 	size_t bytes = 99;

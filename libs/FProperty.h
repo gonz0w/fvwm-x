@@ -17,7 +17,9 @@ typedef enum {
 	FPROPERTY_MISSING,
 	FPROPERTY_INVALID,
 	FPROPERTY_TOO_LARGE,
-	FPROPERTY_X_ERROR
+	FPROPERTY_X_ERROR,
+	FPROPERTY_CONSUMER_FAILED,
+	FPROPERTY_UNSUPPORTED
 } FPropertyResult;
 
 /* Limits apply to packed wire bytes, including on LP64 Xlib implementations.
@@ -26,6 +28,23 @@ bool FPropertySizeIsSafe(unsigned long items, int format,
     unsigned long bytes_after, FPropertyLimits limits, size_t *bytes);
 FPropertyResult FPropertyRead(Display *display, Window window, Atom property,
     Atom type, FPropertyLimits limits, unsigned char **data, size_t *bytes);
+
+#define FPROPERTY_CONSUME_CHUNK_MAX 4096U
+/* Module-only format-8 borrowed delivery, with a complete bounded reply before
+ * any callback. Slices preserve wire NULs and have property-relative offsets;
+ * empty data invokes the consumer once with NULL/0/0. No extra project-owned
+ * copy is allocated. bytes is zero unless every callback succeeds; a refused
+ * prefix cannot be rolled back. Accessible bounded reply bytes are wiped before
+ * XFree, including refused input. This does not protect Xlib's allocation
+ * before receipt, its internal copies or the server/source client. Policy must
+ * approve that boundary before sensitive use. No retention, event pumping,
+ * reentry or blocking in the consumer; never run in the WM event loop. */
+typedef bool (*FPropertyConsumer8)(const unsigned char *data, size_t offset,
+    size_t length, void *context);
+FPropertyResult FPropertyConsume8(Display *display, Window window,
+    Atom property,
+    Atom type, FPropertyLimits limits, FPropertyConsumer8 consumer,
+    void *context, size_t *bytes);
 
 /* Successful data is malloc-owned, with format-32 values packed as uint32_t
  * and an extra terminating zero byte. Free it with free(), not XFree(). */

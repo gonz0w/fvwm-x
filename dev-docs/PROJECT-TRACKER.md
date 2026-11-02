@@ -1,47 +1,60 @@
 # FVWM-X project tracker
 
-Updated: 2026-11-01. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-02. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: CONTENT-01 #63 / RETENTION-01 #71 original-byte comparison,
-deduplication, pinning and safe numeric projection. Owner Cam; branch
-`codex/r1-content-dedup-pinning`, base merged PR336
-`e44e156e436cbcaf0a40594bab7c37f643dd02da`. Select four related stories:
-guarded descriptor/pin access; bounded original-encoded-byte comparison by exact
-representation ID/kind/length; explicit compatible dedup commit; and native
-cursor/failure/replay coverage. Reuse the existing owner and policy, not a new
-registry, index/hash cache, allocator framework or retention ledger.
+Current work: CONTENT-01 #63 / SELECTION-01 borrowed selection delivery and
+native producer handoff. Owner Cam; branch `codex/r1-selection-content-sink`,
+base merged PR337 `67169fce0f57d92488ecbba223d6b46556be3fee`. Select four
+related source stories: bounded format-8 borrowed property delivery; exact
+direct/INCR sink; source-token/producer fences; and independent transfer/adapter
+fixtures. [Finite scope and copy decision proposal](decisions/CONTENT-SELECTION-SINK-2026-11-01.md)
+retain existing wrappers/caps/deadlines, no core-loop call or new dependency.
+Source implementation is complete; [source/build evidence](verification/VERIFICATION-2026-11-02-CONTENT-SELECTION-SOURCE.md)
+records fourteen native GCC/Clang compile/link commands plus a final fixture-only
+strict host compile. Production source identities match; no candidate/X test
+has run. The initial cached-PIE preflight refusal performed zero compiles and is
+preserved; exact reviewed recipe succeeds. All owned labs are confirmed stopped.
+Final integrated/signed review and merge remain pending. This source-only batch
+does not adopt installed capture or claim Xlib buffers protected. Use affected compilation/review/static checks during development and
+one combined real-X transfer checkpoint after ordered source observation and
+capture/retention integration, before first installed capture/consumer
+acceptance. Include these property/selection/adapter cases and warranted scoped
+sanitizers across those related source PRs. Do not repeat unchanged owner Q1
+or the all-OS/install matrix per helper.
 
-Use a caller-bounded, trusted C-only comparison cursor with exact refs, owner
-identity and numeric progress, no payload pointer or retained lease. A step
-compares at most 4 KiB directly under two scoped leases/read-only mappings,
-then closes/releases both before committing progress. Clear, replacement,
-expiry or fatal ownership invalidates later work. Validate cursor state/bounds;
-do not serialize it or treat it as an authenticated proof from IPC/Go/Lua.
-Dedup commit requires completed equality and current LIVE compatibility; retain
-the strict hint/deadline contract, refuse a pinned drop, never extend expiry or
-transfer pins, and retain all drop charges until actual cleanup. Numeric
-projection and pinning cannot acquire payload access or bypass budgets/expiry.
+PR337 merged after separate integrated and signed-delivery review: head
+`83a27c8f9c84fca11bf911bb7cf0cb00d7d85c4e`, exact canonical tree
+`0a04cde815be45aafd540fe78be24b784655c6ef`, valid signature and Cam author DCO.
+Main synced, owned source branch retired and PR337 Project status verified Done.
+#63 criteria 1 and 3 are checked
+as completed native-component results; transfer/actions/callback propagation
+and independent real-X criteria 2/4 remain open. #71/#74 mirror the checkpoint
+and remain open. Performance cadence advances to 2/5; no new WM speed claim.
 
-Per source PR: separate review/static checks and affected compilation. The
-selected finite shared Linux Q1 now passes across PR336 plus this batch:
-four normal/scoped-ASan+UBSan policy/owner executables and four unsanitized
-production memory controls. Actual no-access/read-only SIGSEGV and matched
-nonroot zero-lock refusal are observed; explicit successful cleanup is separate
-from expected fault-process teardown. [Results and limits](verification/VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md)
-retain exact source/profile/commands, raw waits and all 50 exported file hashes.
-Native build/run/quiesce/collection took 3.610 seconds after lab readiness; this
-is qualification timing, not a WM performance claim. The owned container and
-machine are confirmed stopped. No packages/storage expansion/shared build edits.
-This substantial nine-story boundary is complete for Linux ARM64 guest C only;
-full support/install/default-X/hardware and actual capture/UI acceptance remain
-separate. Meson registration is inspected, not a full configured WM build. No
-new UI/screenshots or installed defaults. Final integrated/signed review and
-merge remain pending for this four-story checkpoint.
+The [shared Linux Q1](verification/VERIFICATION-2026-11-01-CONTENT-DEDUP-PINNING.md)
+passes across PR336 plus PR337: four normal/scoped-ASan+UBSan policy/owner
+executables and four unsanitized production memory controls. Actual no-access/
+read-only SIGSEGV and matched nonroot zero-lock refusal are observed. Exact
+source/binary identities, raw waits and all 50 export hashes are retained.
+Native build/run/quiesce/collection took 3.610 seconds after lab readiness;
+this is qualification timing, not a WM benchmark. Owned container and machine
+are confirmed stopped; no packages, storage expansion or shared-build edits.
+Linux ARM64 guest C scope only: BSD/other-architecture actual owner, full
+support/install/default-X/hardware and installed real-X capture remain separate.
+No new UI/screenshots or installed defaults in PR337. Its full owner/dedup/pin
+acceptance boundary remains explicit; #257/#258 stay parked.
+
+Before installed capture, freeze allowed transient copies and qualify ordered
+X-server owner/generation observation. Existing Xlib/property/INCR heap copies
+are not protected by inference; the native source-token seam cannot itself
+prove server generation or same-window reacquisition. The copy alternatives are
+prepared for an owner decision; lock-time capture/access is separately pending.
+Continue this transport-only source work independently of both choices.
 
 PR336 source is merged after separate integrated and signed-delivery review:
 head `07ce6a9ddb66e5a538584e2bed2f91fc174fb8ff`, canonical exact tree

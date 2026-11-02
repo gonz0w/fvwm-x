@@ -152,6 +152,8 @@ typedef struct {
 	Atom incr;
 	FSelectionService service;
 	void *context;
+	Atom selection;
+	FSelectionSink sink;
 } selection_operation;
 
 typedef struct {
@@ -177,9 +179,24 @@ selection_deadline(const selection_operation *operation)
 }
 
 static FSelectionStatus
-selection_service(const selection_operation *operation)
+selection_fence(const selection_operation *operation)
 {
 	FSelectionStatus status = selection_deadline(operation);
+
+	if (status != FSELECTION_OK || !operation->sink.consume)
+		return status;
+	if (XGetSelectionOwner(operation->display, operation->selection) !=
+		operation->sink.source.owner ||
+		!operation->sink.current(operation->sink.source,
+			operation->sink.context))
+		return FSELECTION_STALE_SOURCE;
+	return selection_deadline(operation);
+}
+
+static FSelectionStatus
+selection_service(const selection_operation *operation)
+{
+	FSelectionStatus status = selection_fence(operation);
 	bool keep = true;
 
 	if (status != FSELECTION_OK)
@@ -190,7 +207,7 @@ selection_service(const selection_operation *operation)
 	{
 		keep = operation->service(operation->context);
 	}
-	status = selection_deadline(operation);
+	status = selection_fence(operation);
 	return status != FSELECTION_OK ? status :
 	    (keep ? FSELECTION_OK : FSELECTION_CANCELLED);
 }
@@ -230,9 +247,63 @@ selection_property_status(FPropertyResult result)
 		return FSELECTION_TOO_LARGE;
 	case FPROPERTY_X_ERROR:
 		return FSELECTION_X_ERROR;
+	case FPROPERTY_CONSUMER_FAILED:
+		return FSELECTION_CONSUMER_FAILED;
 	default:
 		return FSELECTION_INVALID;
 	}
+}
+
+typedef struct {
+	selection_operation *operation;
+	size_t base;
+	FSelectionStatus status;
+} selection_delivery;
+
+static bool
+selection_consume(const unsigned char *data, size_t offset, size_t length,
+    void *context)
+{
+	selection_delivery *delivery = context;
+	selection_operation *operation = delivery->operation;
+	size_t maximum = operation->sink.maximum;
+
+	delivery->status = selection_fence(operation);
+	if (delivery->status != FSELECTION_OK)
+		return false;
+	if (delivery->base > maximum || offset > maximum - delivery->base ||
+		length > maximum - delivery->base - offset)
+	{
+		delivery->status = FSELECTION_TOO_LARGE;
+		return false;
+	}
+	bool consumed = operation->sink.consume(data, delivery->base + offset,
+		length, operation->sink.context);
+
+	delivery->status = selection_fence(operation);
+	if (delivery->status == FSELECTION_OK && !consumed)
+		delivery->status = FSELECTION_CONSUMER_FAILED;
+	return delivery->status == FSELECTION_OK;
+}
+
+static FSelectionStatus
+selection_read_chunk(selection_operation *operation,
+    selection_attempt *attempt, Atom expected_type, FPropertyLimits limits,
+    size_t base, unsigned char **data, size_t *length)
+{
+	if (!operation->sink.consume)
+		return selection_property_status(FPropertyRead(
+			operation->display,
+			attempt->request.requestor, attempt->request.property,
+			expected_type, limits, data, length));
+	selection_delivery delivery = {.operation = operation, .base = base,
+		.status = FSELECTION_OK};
+	FPropertyResult result = FPropertyConsume8(operation->display,
+		attempt->request.requestor, attempt->request.property,
+		expected_type, limits, selection_consume, &delivery, length);
+
+	return delivery.status != FSELECTION_OK ? delivery.status :
+		selection_property_status(result);
 }
 
 /* Probe only metadata, then let FPropertyRead enforce complete bounded reads
@@ -283,21 +354,21 @@ selection_read_data(selection_operation *operation, selection_attempt *attempt,
 		*incremental = status == FSELECTION_OK;
 		return status;
 	}
-	return selection_property_status(FPropertyRead(operation->display,
-	    request->requestor, request->property, expected_type,
-	    limits, data, length));
+	return selection_read_chunk(operation, attempt, expected_type, limits,
+		0, data, length);
 }
 
 static FSelectionStatus
 selection_convert(selection_operation *operation, Atom selection, Atom target,
     Atom property, Time time, bool targets, FSelectionResult *result)
 {
-	FSelectionStatus status = selection_deadline(operation);
+	FSelectionStatus status = selection_fence(operation);
 	unsigned char *data = NULL;
 	size_t length = 0;
 	Atom expected_type = targets ? XA_ATOM : target;
 	int format = targets ? 32 : 8;
 	size_t maximum = targets ? SELECTION_TARGETS_MAX_BYTES :
+	    operation->sink.consume ? operation->sink.maximum :
 	    FSELECTION_TEXT_MAX_BYTES;
 	unsigned int chunks = 0, work = 0;
 	XEvent event;
@@ -324,7 +395,7 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 		work = 0;
 		while (work < SELECTION_EVENT_BATCH)
 		{
-			status = selection_deadline(operation);
+			status = selection_fence(operation);
 			if (status != FSELECTION_OK)
 			{
 				goto out;
@@ -369,7 +440,8 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 				if (status == FSELECTION_OK && incremental)
 				{
 					/* Fixed role cap, not owner hint. */
-					data = fxmalloc(maximum + 1);
+					if (!operation->sink.consume)
+						data = fxmalloc(maximum + 1);
 					attempt.phase = SELECTION_HEADER_DRAIN;
 					continue;
 				}
@@ -379,9 +451,13 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 			size_t bytes = 0;
 			FPropertyLimits limits = {
 			    0, maximum - length, format};
-			status = selection_property_status(FPropertyRead(
-			    operation->display, attempt.request.requestor,
-			    property, expected_type, limits, &chunk, &bytes));
+			/* Allow an empty terminal property at the chunk cap,
+			 * never a 4097th nonempty delivery. */
+			if (operation->sink.consume &&
+				chunks == SELECTION_MAX_CHUNKS)
+				limits.max_bytes = 0;
+			status = selection_read_chunk(operation, &attempt,
+				expected_type, limits, length, &chunk, &bytes);
 			if (status != FSELECTION_OK)
 			{
 				free(chunk);
@@ -390,7 +466,8 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 			if (bytes == 0)
 			{
 				free(chunk);
-				data[length] = '\0';
+				if (data)
+					data[length] = '\0';
 				goto out;
 			}
 			if (++chunks > SELECTION_MAX_CHUNKS)
@@ -401,7 +478,8 @@ selection_convert(selection_operation *operation, Atom selection, Atom target,
 			}
 			/* FPropertyRead packs format-32 chunks into aligned
 			 * byte lengths; metadata stays in whole atoms. */
-			memcpy(data + length, chunk, bytes);
+			if (!operation->sink.consume)
+				memcpy(data + length, chunk, bytes);
 			length += bytes;
 			free(chunk);
 			XDeleteProperty(operation->display,
@@ -458,7 +536,7 @@ out:
 	}
 	if (status == FSELECTION_OK || status == FSELECTION_REFUSED)
 	{
-		FSelectionStatus deadline = selection_deadline(operation);
+		FSelectionStatus deadline = selection_fence(operation);
 
 		if (deadline != FSELECTION_OK)
 		{
@@ -652,6 +730,49 @@ FSelectionRequestExact(Display *display, Atom selection, Atom target,
 {
 	return selection_request_typed(display, selection, target, property,
 	    time, timeout_ms, service, context, result, false);
+}
+
+FSelectionStatus
+FSelectionRequestExactTo(Display *display, Atom selection, Atom target,
+    Atom property, Time time, int timeout_ms, FSelectionService service,
+    void *service_context, const FSelectionSink *sink,
+    FSelectionReceipt *receipt)
+{
+	int64_t start = monotonic_ms();
+	FSelectionResult result = {0};
+	selection_operation operation = {.display = display,
+		.service = service, .context = service_context,
+		.selection = selection};
+
+	if (receipt)
+		*receipt = (FSelectionReceipt){0};
+	if (!receipt || !sink || !sink->consume || !sink->current ||
+		sink->maximum > FSELECTION_TEXT_MAX_BYTES ||
+		sink->source.owner == None || !sink->source.generation ||
+		!display || selection == None || target == None ||
+		property == None || timeout_ms <= 0 ||
+		timeout_ms > FSELECTION_TIMEOUT_MS)
+		return FSELECTION_INVALID;
+	operation.sink = *sink;
+	if (start < 0)
+		return FSELECTION_X_ERROR;
+	operation.deadline = start + timeout_ms;
+	FSelectionStatus status = selection_fence(&operation);
+
+	if (status != FSELECTION_OK)
+		return status;
+	operation.incr = XInternAtom(display, "INCR", False);
+	if (operation.incr == None)
+		return FSELECTION_X_ERROR;
+	status = selection_convert(&operation, selection, target, property,
+		time, false, &result);
+	if (status == FSELECTION_OK)
+		*receipt = (FSelectionReceipt){
+			.length = result.length, .type = result.type
+		};
+	/* The streaming branch never owns an aggregate, even on failure. */
+	FSelectionResultFree(&result);
+	return status;
 }
 
 FSelectionStatus

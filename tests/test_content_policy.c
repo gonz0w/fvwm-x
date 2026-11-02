@@ -428,8 +428,24 @@ static void sized_publication(void)
 	assert(content_cleanup_ack(&policy, ref) == CONTENT_OK);
 }
 
+static void observed_time(void)
+{
+	struct content_policy policy = {0};
+
+	assert(content_observe_time(NULL, 10) == CONTENT_UNCONFIGURED);
+	assert(content_observe_time(&policy, 10) == CONTENT_UNCONFIGURED);
+	policy.configured = true;
+	policy.last_ms = 10;
+	assert(content_observe_time(&policy, 20) == CONTENT_OK);
+	assert(policy.last_ms == 20);
+	assert(content_observe_time(&policy, 19) == CONTENT_INVALID);
+	assert(policy.last_ms == 20);
+	assert(content_observe_time(&policy, 20) == CONTENT_OK);
+}
+
 int main(void)
 {
+	observed_time();
 	admission();
 	cancellation();
 	replacement();

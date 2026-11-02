@@ -87,6 +87,10 @@ enum content_result content_policy_init(struct content_policy *policy,
 	uint64_t epoch, const struct content_limits *limits,
 	struct content_item *items, struct content_lease *leases,
 	uint64_t now_ms);
+/* Observe an owner operation's clock even when its local arguments are later
+ * refused. This grants no item/lease/payload access and retires nothing. */
+enum content_result content_observe_time(struct content_policy *policy,
+	uint64_t now_ms);
 /* Replacement revokes the old generation at reservation, not publication.
  * Failure does not roll back to old content. Both generations stay charged. */
 enum content_result content_reserve(struct content_policy *policy,

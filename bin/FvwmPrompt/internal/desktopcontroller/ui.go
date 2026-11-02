@@ -55,6 +55,10 @@ func (d *Controller) menu(menu desktopsettings.Menu) {
 	}
 }
 func (d *Controller) form(alias string, lines []string, retire bool) {
+	if strings.HasPrefix(alias, "Slate") && d.lastDesktop != nil {
+		// Use the submitted tuple, never newer intent waiting for recovery.
+		lines = append(desktopFormMetrics(*d.lastDesktop), lines...)
+	}
 	if retire {
 		d.emit("KillModule FvwmForm " + alias)
 	}
@@ -135,6 +139,11 @@ func (d *Controller) theme(force bool) error {
 	if err != nil {
 		return err
 	}
+	metrics, err := desktopsettings.ResolveDesktopMetrics(d.effective)
+	if err != nil {
+		return err
+	}
+	metricsChanged := d.lastDesktop == nil || *d.lastDesktop != metrics
 	if d.preview.blocked {
 		return nil
 	}
@@ -142,7 +151,7 @@ func (d *Controller) theme(force bool) error {
 		resource := d.preview.control.resource
 		// Compare the candidate too: Auto may cross a phase even while the
 		// effective baseline remains fixed to Light or Dark.
-		if force || !reflect.DeepEqual(key, resource.baseline) || d.preview.recovering || d.checkResource(d.preview.control) != nil {
+		if force || metricsChanged || !reflect.DeepEqual(key, resource.baseline) || d.preview.recovering || d.checkResource(d.preview.control) != nil {
 			d.preview.replay = true
 			if !d.preview.recovering {
 				d.preview.finish("Theme changed; resource preview recovery requested.", true, false)
@@ -150,7 +159,14 @@ func (d *Controller) theme(force bool) error {
 		}
 		return nil
 	}
-	if !force && reflect.DeepEqual(key, d.lastTheme) {
+	// A metrics-only change (including recovery replay's force=true) owns no
+	// color, panel, tray or global style publication. The named launcher already
+	// exists; edit its finite axes without recopying unrelated menu policy.
+	if metricsChanged && reflect.DeepEqual(key, d.lastTheme) {
+		d.applyDesktopMetrics(metrics)
+		return d.settingsMenu("all")
+	}
+	if !force && !metricsChanged && reflect.DeepEqual(key, d.lastTheme) {
 		return nil
 	}
 	presentation, err := desktopsettings.ResolvePresentation(d.effective)
@@ -187,6 +203,7 @@ func (d *Controller) theme(force bool) error {
 		d.emit("MenuStyle SlateLauncherStyle Translucent " + strconv.Itoa(presentation.LauncherOpacity))
 	}
 	d.emit(`MenuStyle SlateLauncherStyle ItemFormat "%24p%l%80p%>%24p"`)
+	d.applyDesktopMetrics(metrics)
 	d.emit("Style * WindowShadeSteps " + steps)
 	d.button("appearance", title(key[0].(string)))
 	if !reflect.DeepEqual(d.lastTheme, key) {

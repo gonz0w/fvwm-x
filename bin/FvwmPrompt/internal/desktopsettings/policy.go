@@ -21,7 +21,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 9
+const StateVersion = 10
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -150,6 +150,14 @@ var registry = []Setting{
 	{Key: "cursor_size", Type: "integer", Default: 0,
 		Minimum: 0, Maximum: 128, Group: "application",
 		Description: "Cursor size"},
+	{Key: "desktop_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Desktop component font"},
+	{Key: "desktop_density", Type: "enum", Default: "inherit",
+		Choices: []string{"inherit", "compact", "comfortable", "spacious"},
+		Group:   "desktop", Description: "Desktop component spacing"},
+	{Key: "desktop_border", Type: "enum", Default: "inherit",
+		Choices: []string{"inherit", "thin", "strong"},
+		Group:   "desktop", Description: "Launcher border"},
 }
 
 // ApplicationKey identifies the separate application editor and helper lifecycle.
@@ -276,6 +284,12 @@ func Value(key string, value any, text bool) (any, error) {
 	case "enum":
 		s, ok := value.(string)
 		valid = ok && has(item.Choices, s)
+	case "desktop-font":
+		s, ok := value.(string)
+		valid = ok && utf8.ValidString(s) && FontCommandSafe(s)
+		for _, c := range s {
+			valid = valid && unicode.IsPrint(c) && c != '\u2028' && c != '\u2029'
+		}
 	case "font":
 		s, ok := value.(string)
 		valid = ok && len(s) <= 128 && utf8.ValidString(s)
@@ -485,7 +499,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27, 10: 30}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -513,6 +527,9 @@ func DecodeState(data []byte) (Values, error) {
 		{"icon_theme", 9, ""},
 		{"cursor_theme", 9, ""},
 		{"cursor_size", 9, 0},
+		{"desktop_font", 10, ""},
+		{"desktop_density", 10, "inherit"},
+		{"desktop_border", 10, "inherit"},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

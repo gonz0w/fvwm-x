@@ -18,6 +18,7 @@ type Snapshot struct {
 	RuntimeHeld                 PreviewValues
 	Native                      NativeObservation
 	SessionAvailable            bool
+	DesktopSubmitted            bool
 }
 
 // NativeObservation is immutable controller-loop state, independent of saved intent.
@@ -128,6 +129,27 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		if item.Minimum != nil {
 			v["minimum"], v["maximum"] = item.Minimum, item.Maximum
 		}
+		if DesktopKey(key) {
+			metrics, err := ResolveDesktopMetrics(s.Effective)
+			if err != nil {
+				return nil, err
+			}
+			v["component_version"] = metrics.Version
+			v["resolved"] = s.Effective[key]
+			v["component_roles"] = Values{"menu_item_padding": metrics.MenuItemPad,
+				"menu_title_padding": metrics.MenuTitlePad, "form_text_padding": metrics.FormPad,
+				"menu_border": metrics.MenuBorder}
+			v["resolution"] = "explicit"
+			if s.Effective[key] == "" || s.Effective[key] == "inherit" {
+				v["resolution"] = "profile-baseline"
+				v["resolved"] = "configured-profile"
+			}
+			v["application"] = "next-owned-form-start; launcher-not-submitted"
+			if observed && s.DesktopSubmitted {
+				v["application"] = "next-owned-form-start; launcher-submitted"
+			}
+			v["runtime_constraint"] = "save-apply-only; existing-forms-unchanged"
+		}
 		if key == "wallpaper_palette" || key == "wallpaper_appearance" {
 			if _, err := Checked(s.Effective); err != nil {
 				return nil, err
@@ -173,7 +195,7 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 			v["source"] = "runtime-kept-preference-unsaved"
 			v["persistence_error"] = "Runtime unsaved."
 		}
-		if observed && s.Submitted {
+		if observed && s.Submitted && !DesktopKey(key) {
 			v["application"] = "submitted-to-fvwm"
 		}
 		if NativeKey(key) {

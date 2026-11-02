@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "checkpoint": "A1 scoped desktop component metrics",
+  "base": "ea6098d692fc459afa7e2d661dc00296d6198175",
+  "branch": "codex/r1-theme-metrics",
+  "source": {
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "2f074e46a22e5231857a88d01f112def619fcb54d444a7edc79677f4df3bee9e",
+    "bin/FvwmPrompt/internal/desktopcontroller/metrics.go": "53b270298f240a7dbec9e227ba625c8de3ae72b5d637aa2f21c6d36070f4bccf",
+    "bin/FvwmPrompt/internal/desktopcontroller/metrics_test.go": "acc6ff4e1002e1bc8177b2bf4222567a3be9e24fec057d0ec7695d19ff3ca58f",
+    "bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "3ea856295e3c4139ebce4e957b681aadd061a8319268fc020142b432e64110ba",
+    "bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "530b5fa4636ba5114fa0699f5c8959ac403de47fad3dcb95c14c4c9599f1223e",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "72b2e44735ec38c1070dac9f750d391cfc07c5a83020e8ef904ab96932d0d5fe",
+    "bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "a2807c978188f4db8b14bd1bcc8405d15704cda328c82e1ea1c8db0cbe6e89aa",
+    "bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "2718de34aa69080c648c84f9f2eb876ddea3cd96b7d02198556a3ed0568a8650",
+    "bin/FvwmPrompt/internal/desktopsettings/metrics.go": "43b67ed25881e5d0a720466f0901da98009b597164fcf68fc72a9b19d2e7def0",
+    "bin/FvwmPrompt/internal/desktopsettings/metrics_test.go": "f9444cef4d94cb77705c1b73fad894d3a4e7bc02e0f63657c3c939ae9e952ee8",
+    "bin/FvwmPrompt/internal/desktopsettings/policy.go": "612e9b0f6e83d4bc803397435e6f138864df6c48856205ee5194c96c6d4c1256",
+    "bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "f7dc35c493d137efffdebc0bb9686c2012c2f10b8b76ae1df28a021a90c20cbd",
+    "bin/FvwmPrompt/internal/desktopsettings/request.go": "fa49092a5e8cd760f0af5ca163735001fbed3a25ebb68e414a0533456b8a0d56",
+    "bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "f6a96c3b7c026fc79a5014812ea29c8e306675723b56b5d00dbbb45bc74779ea",
+    "bin/FvwmPrompt/internal/desktopsettings/session_test.go": "301fc4f00a5543630c79758826083f27b55b5a7c270450b604f9b9fa786c5568",
+    "bin/FvwmPrompt/internal/desktopsettings/ui.go": "9a828e48e256649c35c40da84fe09c8317f985266bff5fa62e6748c5b8d85b3e"
+  },
+  "compile_only": [
+    {
+      "argv": [
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-o",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-theme-metrics/compile03/desktopsettings.test",
+        "./internal/desktopsettings"
+      ],
+      "exit": 0,
+      "seconds": 0.1428056670119986,
+      "stdout": "",
+      "stderr": "",
+      "artifact": {
+        "sha256": "ae91775d0f72244d80f96439d5237efc43e36c3b9c48188db42d3a6823cb0150",
+        "bytes": 5988130
+      }
+    },
+    {
+      "argv": [
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-o",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-theme-metrics/compile03/desktopcheck.test",
+        "./internal/desktopcheck"
+      ],
+      "exit": 0,
+      "seconds": 0.18304720800369978,
+      "stdout": "",
+      "stderr": "",
+      "artifact": {
+        "sha256": "a17fb185f53deb4888c4d9e2feb5d40a74f32697b635a533c4e44c7ce90357f0",
+        "bytes": 5646962
+      }
+    },
+    {
+      "argv": [
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-o",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-theme-metrics/compile04/desktopcontroller.test",
+        "./internal/desktopcontroller"
+      ],
+      "exit": 0,
+      "seconds": 0.8633497499395162,
+      "stdout": "",
+      "stderr": "",
+      "artifact": {
+        "sha256": "164b6ded4bed4bdb287a85ea938b0595d6498f779ad5ec363d166e146ff8036a",
+        "bytes": 8407762
+      }
+    },
+    {
+      "argv": [
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-14/go-baseline/host-sdk/go/bin/go",
+        "build",
+        "-mod=vendor",
+        "-o",
+        "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-02/r1-theme-metrics/compile04/FvwmDesktop",
+        "./cmd/fvwmdesktop"
+      ],
+      "exit": 0,
+      "seconds": 0.3615398328984156,
+      "stdout": "",
+      "stderr": "",
+      "artifact": {
+        "sha256": "0122b6d431563556b7b10532ee8d0a8389b2086feb5a2c16276a933fbcf5f640",
+        "bytes": 6703554
+      }
+    }
+  ],
+  "runtime_invocations": 0,
+  "lab_starts": 0,
+  "initial_compile_failure": "compile01 desktopsettings passed; desktopcontroller failed: fixture called nonexistent d.edit; corrected to existing editSettings. Preserved in owner evidence. No test execution or runtime failure claimed.",
+  "checks": [
+    "make check passed",
+    "git diff --check passed",
+    "gofmt applied"
+  ],
+  "pending": [
+    "A1-A4 shared appearance checkpoint: desktopsettings/controller/check/runtime/race and actual native-X launcher/form, three themes including enlarged fonts, source override/reset and preview recovery/conflict",
+    "C2-C5 clipboard runtime queue remains distinct",
+    "full support/compiler/install/default-X/release qualification",
+    "manual rendering: host Asciidoctor unavailable"
+  ],
+  "scope": "SlateLauncherStyle and future controller-owned Slate forms; panel/tray/global decorations/default fonts unchanged; no clipboard enablement",
+  "source_review": "Separate source/evidence review clear after P2 scope correction; four composed artifact hashes verified. Signed-delivery review follows.",
+  "performance": "2/5 before merge; no due comparison",
+  "compile_composition": "2 unchanged settings/check binaries retained from compile03; 2 affected controller/executable builds fresh at compile04 after source-review scope correction"
+}

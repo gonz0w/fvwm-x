@@ -32,7 +32,7 @@ enum preparation {
 	DUMP_REFUSED, ACCESS_REFUSED, WIPE_UNAVAILABLE
 };
 enum fault { FAULT_NONE, FAULT_ALLOCATION, FAULT_LOCK, FAULT_DUMP,
-	FAULT_ACCESS };
+	FAULT_ACCESS, FAULT_CANCEL };
 struct buffer {
 	unsigned char *data;
 	void *mapping;
@@ -182,19 +182,52 @@ static bool cleanup(struct buffer *buffer, bool *wipe_observed)
 	return okay;
 }
 
-static bool exercise_access(struct content_policy *policy,
-	struct content_lease lease, struct buffer *buffer, size_t bytes)
+static bool produce(struct content_policy *policy, struct content_ref ref,
+	struct buffer *buffer, size_t capacity, bool cancel, size_t *written)
 {
-	if (content_lease_check(policy, lease, 13) != CONTENT_OK ||
-		access_mode(buffer, PROT_READ | PROT_WRITE) < 0)
+	size_t wanted = capacity ? capacity - 1 : 0;
+
+	*written = 0;
+	if (access_mode(buffer, PROT_READ | PROT_WRITE) < 0)
 		return false;
-	/* Public synthetic fixture, never real clipboard input. */
-	memset(buffer->data, 0x5a, bytes);
-	if (access_mode(buffer, PROT_NONE) < 0 ||
-		content_lease_check(policy, lease, 14) != CONTENT_OK ||
+	do
+	{
+		size_t chunk = wanted - *written;
+
+		if (chunk > 4096)
+			chunk = 4096;
+		if (content_producer_check(policy, ref, 1,
+			(struct content_bytes){*written, 0, 0},
+			(struct content_bytes){chunk, 0, 0}, 11) != CONTENT_OK)
+			return false;
+		/* Public synthetic bytes, with a contiguous initialized prefix. */
+		memset(buffer->data + *written, 0x5a, chunk);
+		*written += chunk;
+		if (cancel)
+		{
+			if (content_retire(policy, ref) != CONTENT_OK ||
+				content_producer_check(policy, ref, 1,
+					(struct content_bytes){*written, 0, 0},
+					(struct content_bytes){0}, 11) != CONTENT_STALE)
+				return false;
+			break;
+		}
+	} while (*written < wanted);
+	/* Publication never overlaps this probe's writable access. */
+	return access_mode(buffer, PROT_NONE) == 0;
+}
+
+static bool consume(struct content_policy *policy, struct content_ref ref,
+	struct content_lease lease, struct buffer *buffer, size_t written)
+{
+	struct content_candidate view;
+
+	if (content_lease_check(policy, lease, 14) != CONTENT_OK ||
+		content_describe(policy, ref, 14, &view) != CONTENT_OK ||
+		view.count != 1 || view.reps[0].bytes.encoded != written ||
 		access_mode(buffer, PROT_READ) < 0)
 		return false;
-	for (size_t i = 0; i < bytes; i++)
+	for (size_t i = 0; i < view.reps[0].bytes.encoded; i++)
 		if (((volatile unsigned char *)buffer->data)[i] != 0x5a)
 			return false;
 	return access_mode(buffer, PROT_NONE) == 0;
@@ -225,7 +258,8 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 	uint64_t started = nanoseconds(), prepared, finished;
 	enum preparation status;
 	bool accessed = false, wiped = false, released, okay;
-	bool lifecycle = true, acquired = false;
+	bool lifecycle = true, acquired = false, produced = false;
+	size_t written = 0;
 	int saved_errno;
 
 	if (!started || !content_storage_charge(bytes, page, MAPPED_EXTRA,
@@ -240,36 +274,54 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 	if (content_reserve(&policy, &candidate, true, NULL, 10, &ref)
 		!= CONTENT_OK)
 		return false;
+	if (content_acquire(&policy, ref, 1, 10, &lease) != CONTENT_STALE ||
+		lease.id != 0)
+		return false;
 	errno = 0;
 	status = prepare(&buffer, bytes, page, fault);
 	saved_errno = errno;
 	prepared = nanoseconds();
 	if (status == PREPARED)
 	{
-		if (content_finish(&policy, ref, candidate.hint, true, 11)
-			!= CONTENT_OK)
+		struct content_bytes actual;
+		enum content_result completed;
+
+		produced = produce(&policy, ref, &buffer, bytes,
+			fault == FAULT_CANCEL, &written);
+		actual = (struct content_bytes){written, 0, 0};
+		completed = content_finish(&policy, ref, candidate.hint,
+			produced, &actual, 1, 12);
+		if (fault == FAULT_CANCEL)
+		{
+			if (completed != CONTENT_STALE ||
+				content_acquire(&policy, ref, 1, 13, &lease)
+					!= CONTENT_STALE ||
+				content_finish(&policy, ref, candidate.hint,
+					true, &actual, 1, 13) != CONTENT_STALE)
+				lifecycle = false;
+			accessed = produced;
+		}
+		else if (!produced || completed != CONTENT_OK)
 			lifecycle = false;
 		else
-			acquired = content_acquire(&policy, ref, 1, 12, &lease)
+			acquired = content_acquire(&policy, ref, 1, 13, &lease)
 				== CONTENT_OK;
 		if (acquired)
-			accessed = exercise_access(
-				&policy, lease, &buffer, bytes);
+			accessed = consume(&policy, ref, lease, &buffer, written);
 		if (content_retire(&policy, ref) != CONTENT_OK)
 			lifecycle = false;
 		if (acquired)
 		{
 			if (content_lease_check(&policy, lease, 15)
 				!= CONTENT_STALE ||
-				content_cleanup_ack(&policy, ref) !=
-				CONTENT_BUSY)
+				content_cleanup_ack(&policy, ref) != CONTENT_BUSY)
 				lifecycle = false;
 			if (content_release(&policy, lease) != CONTENT_OK)
 				lifecycle = false;
 		}
 	}
-	else if (content_finish(&policy, ref, candidate.hint, false, 11)
-		!= CONTENT_OK)
+	else if (content_finish(&policy, ref, candidate.hint, false,
+		NULL, 0, 11) != CONTENT_OK)
 		lifecycle = false;
 	released = cleanup(&buffer, &wiped);
 	okay = lifecycle && released && (status != PREPARED || accessed);
@@ -283,12 +335,12 @@ static bool measure(size_t bytes, size_t page, enum fault fault,
 	if (!prepared || !finished || prepared < started || finished < prepared)
 		return false;
 	printf("{\"candidate\":\"%s\",\"run\":%u,\"owner_epoch\":%u,"
-		"\"bytes\":%zu,"
+		"\"bytes\":%zu,\"written_bytes\":%zu,"
 		"\"page\":%zu,\"mapped_model\":%zu,\"locked_model\":%zu,"
 		"\"preparation\":%d,\"errno\":%d,\"injected\":%d,"
 		"\"accessed\":%d,\"wipe_observed\":%d,\"cleanup\":%d,"
 		"\"accounting\":%d,\"prepare_ns\":%llu,\"finish_ns\":%llu}\n",
-		CANDIDATE, run, row + 1, bytes, page, charge.mapped, charge.locked,
+		CANDIDATE, run, row + 1, bytes, written, page, charge.mapped, charge.locked,
 		status, saved_errno, fault, accessed, wiped, released, okay,
 		(unsigned long long)(prepared - started),
 		(unsigned long long)(finished - prepared));
@@ -326,6 +378,8 @@ int main(int argc, char **argv)
 			fault = FAULT_LOCK;
 		else if (!strcmp(argv[i], "--fail-dump"))
 			fault = FAULT_DUMP;
+		else if (!strcmp(argv[i], "--cancel-producer"))
+			fault = FAULT_CANCEL;
 		else if (!strcmp(argv[i], "--fail-access"))
 			fault = FAULT_ACCESS;
 		else

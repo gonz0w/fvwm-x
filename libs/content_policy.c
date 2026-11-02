@@ -285,11 +285,38 @@ enum content_result content_reserve(struct content_policy *policy,
 	return CONTENT_OK;
 }
 
-enum content_result content_finish(struct content_policy *policy,
-	struct content_ref ref, enum content_hint hint, bool success,
+enum content_result content_producer_check(struct content_policy *policy,
+	struct content_ref ref, uint32_t representation,
+	struct content_bytes offset, struct content_bytes length,
 	uint64_t now_ms)
 {
 	struct content_item *item;
+	enum content_result result = clock_check(policy, now_ms);
+
+	if (result != CONTENT_OK)
+		return result;
+	item = find_item(policy, ref);
+	if (!item || item->phase != CONTENT_RESERVED || !item->work)
+		return CONTENT_STALE;
+	if (now_ms >= item->descriptor.deadline_ms)
+		return CONTENT_EXPIRED;
+	if (!policy->enabled || policy->paused)
+		return CONTENT_EXCLUDED;
+	for (size_t i = 0; i < item->descriptor.count; i++)
+		if (item->descriptor.reps[i].id == representation)
+			return bytes_room(offset, length,
+				item->descriptor.reps[i].bytes)
+				? CONTENT_OK : CONTENT_INVALID;
+	return CONTENT_INVALID;
+}
+
+enum content_result content_finish(struct content_policy *policy,
+	struct content_ref ref, enum content_hint hint, bool success,
+	const struct content_bytes *actual, size_t count,
+	uint64_t now_ms)
+{
+	struct content_item *item;
+	struct content_bytes written[CONTENT_REPRESENTATIONS_MAX];
 	enum content_result result = clock_check(policy, now_ms);
 
 	if (result != CONTENT_OK)
@@ -312,10 +339,29 @@ enum content_result content_finish(struct content_policy *policy,
 	else if (!policy->enabled || policy->paused ||
 		hint != item->descriptor.hint)
 		result = CONTENT_EXCLUDED;
+	if (result == CONTENT_OK)
+	{
+		if (!actual || count != item->descriptor.count)
+			result = CONTENT_INVALID;
+		else
+		{
+			/* Snapshot and validate every length before changing any
+			 * published descriptor, including overlapping caller input. */
+			memcpy(written, actual, count * sizeof(*written));
+			for (size_t i = 0; i < count; i++)
+				if (!bytes_room((struct content_bytes){0},
+					written[i], item->descriptor.reps[i].bytes))
+					result = CONTENT_INVALID;
+		}
+	}
 	if (result != CONTENT_OK)
 		retire_item(item);
 	else
+	{
+		for (size_t i = 0; i < count; i++)
+			item->descriptor.reps[i].bytes = written[i];
 		item->phase = CONTENT_LIVE;
+	}
 	return result;
 }
 

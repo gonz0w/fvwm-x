@@ -7,49 +7,53 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: LIB-06 #48 comparison closeout over merged PR331; owner Cam,
-branch `codex/r1-status-serializer-qualification`, base `dc88d52`. Six OS/architecture
-observations are validated, 307 native captures each, with actual MFL byte parity
-and unchanged source-bound status evidence. Retain patched cJSON for R1; defer
-yyjson integration because the synthetic CPU gains do not establish a production
-benefit sufficient to add a second implementation while current parsers remain.
-The [decision](decisions/STATUS-SERIALIZER-COMPARISON-2026-11-01.md) and
-[target report](verification/VERIFICATION-2026-11-01-LIB06-TARGETS.md) retain
-copied/borrowed memory, CPU/variability/RSS/bytes, dependency/maintenance costs,
-legacy refusals and unavailable actual-integration metrics. Linux AMD64 uses
-Debian 13.7/TCG, not Ubuntu/native-host qualification; other execution modes and
-full WM/install/X/theme/native/release limits remain explicit. Separate final
-review and signed delivery remain before #48 closure.
+Current work: CONTENT-01 #63 / STORE-01 #74 producer publication, with
+RETENTION-01 #71 cancellation. Owner Cam; branch
+`codex/r1-content-producer-publication`, base merged PR332
+`8a144fc9615e192517b1f59466a296a4fd343c53`.
 
-The finite CI-01 #17 prerequisite adds optional same-authenticated-connection
-`--inline-evidence`, preserving default collection, original exit status, strict
-SSH trust and byte/deadline/content gates. Four focused controls and all 41 runner
-tests pass; the capture oracle's eight tests pass. Retain FreeBSD ARM's failed
-separate-export boundary and fresh run02 success; missing descriptive Linux
-utilities are explicitly unavailable, without installing packages or weakening
-native expectations. Six private supervisor controls pass before the assembled
-comparison; no timeout/cancel or unconfirmed wait qualifies a target result.
-No broad WM matrix was repeated. All owned VMs/containers are stopped/reaped;
-13 disposable BSD clones/duplicate inputs retired after complete export/cache/
-PID/handle proof, reclaiming 20,910,567,424 allocated bytes. The two stopped Linux AMD64 COW children were
-also retired after PID/handle checks; exact bytes are in the receipt. Current evidence,
-canonical images and reusable builds remain. No disk expansion.
+Select four related source stories: exact reserved-generation producer access
+checks before each bounded write; successful completion with actual initialized
+representation lengths; both private memory candidates write and close access
+before publication; cancellation and malformed/late/duplicate completion preserve
+resource/work cleanup and never revive data. All successful internal callers
+migrate together; there is no unsized successful fallback. No production backend,
+capture service, persistence, dependency or installed numeric default is adopted.
+The [source receipt](verification/VERIFICATION-2026-11-01-CONTENT-PUBLICATION.md)
+records five strict host compile/link passes and one 0.189-second pure policy
+pass; neither memory candidate executed. Native changed-source qualification
+and the protection comparison remain pending. Numeric fixtures remain explicit.
+Fixed session-only/sensitive-exclusion/
+persistence-off defaults remain; the capture/PRIMARY/lock/logout owner question
+is pending. Author pure policy cases with source, use affected strict compile/
+link and separate review now, then one assembled memory comparison checkpoint.
+Regional enforcement, real lock refusal, exact dependency cost/adoption and
+native target execution remain pending; do not repeat WM/X/install/themes for
+private source preparation. No new UI/screenshots. Parked #257/#258 stay untouched.
 
-Next selected coherent source batch after reviewed #48 integration:
-CONTENT-01 #63 / STORE-01 #74 producer publication and protection comparison,
-with RETENTION-01 #71 cancellation. Add exact reserved-generation producer access
-checks before publication, require writes before live publication in both private
-memory candidates, and author finite protection/refusal controls and cost receipts.
-Keep numeric fixtures explicit, not installed defaults. No production backend,
-capture service, persistence or new dependency is adopted by this selection.
-The owner question on CLIPBOARD/PRIMARY and lock/logout defaults remains pending;
-fixed session-only/sensitive-exclusion/persistence-off defaults still apply.
-Author policy coverage with source changes; use affected compilation and separate
-review, then one assembled memory comparison checkpoint. Do not repeat WM/X/
-install/theme qualification for the private probes. #257/#258 remain parked.
-Two implementers remain quota unavailable; lead fallback remains adequate,
-with read-only analyst/workflow support and separate review. Backend routing
-metadata remains unverified. Performance counter stays 0/5 for private comparison.
+PR332 completes LIB-06 #48: reviewed head `93b20ddc8a536448fa2f31b6060d2386a3e02643`,
+merged tree `0c8b16f7798b178941688a68f5919befc9a4209d`, valid canonical signature
+and Cam DCO, source refs retired (GitHub already removed the remote branch).
+#48 is closed/Done; six OS/architecture comparison profiles validate 1,842 native
+captures, actual isolated MFL parity and eight unchanged status-source bindings.
+Retain patched cJSON for R1; defer yyjson integration. The
+[decision](decisions/STATUS-SERIALIZER-COMPARISON-2026-11-01.md) and
+[target report](verification/VERIFICATION-2026-11-01-LIB06-TARGETS.md) retain CPU,
+memory/bytes/costs, original failures and unavailable integration metrics.
+Linux AMD64 is Debian 13.7/TCG, not Ubuntu/native-host qualification. The finite
+CI-01 #17 same-connection evidence prerequisite is complete; the whole issue is
+open. Eight capture and 41 runner tests pass; no broad matrix repeated.
+Owned VMs/containers stopped; verified disposable BSD data reclaimed
+20,910,567,424 allocated bytes and two Linux COW children another 40,370,176.
+Canonical caches, reusable builds and current compact evidence remain; no disk
+expansion. Performance cadence remains 0/5 for private comparisons.
+
+Two implementer roles remain quota unavailable. Lead fallback is adequate, with
+bounded analyst/workflow support and separate review; backend routing metadata
+remains unverified. A five-issue closure audit confirms #51/#54/#57/#66/#69 still
+have finite uncovered acceptance. Preserve qualified slices without relabeling
+those issues or the R1 milestone complete. Continue accepted R1 work under
+standing reviewed-merge authority.
 
 Previous source selection (completed by PR331):
 
@@ -6173,7 +6177,7 @@ COMPAT-01, not evidence supplied by the local QEMU checkpoint.
 | LIB-05 | Done / PR207 | PR144 removes unused xkbcommon. M3.4 completes actual target/dependency/interpreter-floor inventory, separating declared/exercised minima and unqualified legacy guards. Xt/Xtrans headers and real Xlib/libevent/Xft remain. #47 closed completed; M4/M6/M7 retirements remain separate. [Floors](verification/DEPENDENCY-FLOORS-2026-10-25.md), [combined report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
 | LINK-01 | Done / PR207 | Production ownership merged in PR204–206. M3.4 validates default/reduced on six targets, both Linux Clang profiles and cairo-svg, full offline installs/staged identities, affected X and static archive/transitive/package-license-size records. No all-static ELF, package removal or speed claim. #184/#49 closed completed. [Report](verification/VERIFICATION-2026-10-25-M3-CLOSURE.md). |
 | LIB-04 | P2 / consolidation acceptance passed; review | Child #183 removes obsolete options/API branches and initializer-only dependency edges with seven affected profile passes, exact M3 worker comparisons and updated package/manual/license-size records. #183 closes on merge. The later LunaSVG comparison remains open under #46; no replacement adopted. [M4 report](verification/VERIFICATION-2026-10-25-M4-SVG.md). |
-| LIB-06 | P2 / comparison complete; reviewed delivery pending | Retain patched cJSON for R1; defer yyjson integration with finite later conditions. Six comparison profiles and actual MFL/status component evidence are retained. Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md) and the [shared six-target comparison](decisions/LIBRARY-EVALUATIONS-2026-10-25.md). |
+| LIB-06 | Done; retain cJSON/defer integration, PR332 | Retain patched cJSON for R1; defer yyjson integration with finite later conditions. Six comparison profiles and actual MFL/status component evidence are retained. Compare cJSON and yyjson on actual bounded serialization, numeric/UTF-8/failure behavior, memory, latency, maintenance and pinned/transitive licenses. Record adopt/defer/reject; no automatic replacement. See [dependency decision](decisions/DEPENDENCY-SIMPLIFICATION-2026-10-23.md) and the [shared six-target comparison](decisions/LIBRARY-EVALUATIONS-2026-10-25.md). |
 | COMPAT-02 | P2 / full Perl retirement approved; Later #180 and #179/#50 handoffs; implementation queued | User explicitly requests Perl out of the future runtime install, superseding optional default-preserving packaging. Inventory and retire FvwmPerl/perllib/Perl-only tooling with precise compatibility/migration notices, updated install/manifests/references and qualified Go utility/Lua selected-use-case handoffs. No transparent translation of arbitrary Perl or deletion of user configs; preserve unrelated FVWM/Script configuration and update native producers/consumers together. Stage 5 retirement gate; see [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | UTIL-01 | P2 / utility-family port milestone locally qualified | [Xlock checkpoint](verification/VERIFICATION-2026-10-12-XLOCK-PORT.md), [directory checkpoint](verification/VERIFICATION-2026-10-12-DIRECTORY-PORT.md) and [converter checkpoint](verification/VERIFICATION-2026-10-12-CONVERTER-PORT.md) install Go when enabled and retain disabled-Go Perl. The converter preserves ordinary heuristic bytes with finite input/reference work and atomic private outputs. [Consumer classification](verification/RECONCILIATION-2026-10-12-UTILITY-CONSUMERS.md) separates the installed Script FIFO example, development cursor generator, optional status recipes and full XDG provider/frontend. The [Script example checkpoint](verification/VERIFICATION-2026-10-12-SCRIPT-COM-PORT.md) qualifies stdlib Go/paired selection, bounded owned FIFOs, staged and actual native widget checks. Copied explicit Perl invocations remain usable. The [full XDG provider/frontend fixture checkpoint](verification/VERIFICATION-2026-10-12-XDG-FIXTURES.md) now passes across six targets; its [inactive input-policy foundation](verification/VERIFICATION-2026-10-12-XDG-POLICY.md) is qualified at `d33f`, with [discovery/preference policy](verification/VERIFICATION-2026-10-12-XDG-DISCOVERY.md) qualified at `9337` and [ordered allocation](verification/VERIFICATION-2026-10-12-XDG-ALLOCATION.md) at `be8e`; the [full coordinated Go provider/native Form port](verification/VERIFICATION-2026-10-12-XDG-PORT.md) is now locally qualified and adopted at `04c1`. COMPAT-02 retirement remains a separate stage5 gate. This supersedes earlier Python port recommendations. Preserve applicable configured behavior. See [runtime scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |
 | RUNTIME-GO-01 | P2 / M2 handoff accepted; broader release gates separate | M2.1–M2.10 merged through PR203; Cam explicitly accepts the accumulated M2 session evidence and documented limits on 2026-10-25 and authorizes M3. M2.8 refreshes current interpreter-free installed execution, adds identity/all-thread/PSS startup sampling and complete private kernel CPU/charged-peak/wakeup observations for one Linux profile. Higher Go wakeups and overlapping CPU ranges remain visible; no tuning follows. M2.9 adds eight fixed discovery/search/files rounds and observes eight natural resident GC cycles (largest first+final clock sum 2.7 ms in TCG); no worst-case/worker/native-CPU pause claim. M2.10 adds selected native ARM64 instruction execution proof and three installed session passes on AppleHV Linux; owner acceptance is now complete and broader native/hardware/release gates stay separate. GitHub #23 retains its closure. [Native acceptance subset](verification/VERIFICATION-2026-10-25-M2-NATIVE-ACCEPTANCE.md), [acceptance handoff](verification/VERIFICATION-2026-10-24-M2-SESSION-WORKLOAD.md), [session observations](verification/VERIFICATION-2026-10-24-M2-SESSION-ACCEPTANCE.md), [platform handoff](verification/VERIFICATION-2026-10-24-M2-PLATFORM-HANDOFF.md), [utility baseline](verification/VERIFICATION-2026-10-23-M1-RUNTIME-BASELINE.md), [scope](decisions/RUNTIME-GO-LUA-2026-10-06.md). |

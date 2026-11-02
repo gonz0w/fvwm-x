@@ -1,0 +1,168 @@
+{
+  "base": "8a144fc9615e192517b1f59466a296a4fd343c53",
+  "compile": {
+    "profile": "macOS ARM64 strict compile/link only, no runtime or supported-target qualification",
+    "source_pre": {
+      "libs/content_policy.c": "a3be3d9e82145548725787a5e191cfe9e426a94dfbb8f7a5a2306bdae2d464d6",
+      "libs/content_policy.h": "0fd3615405664e362d3fd71075b364592b81955d34d7647e17fbd2529363f5da",
+      "tests/test_content_policy.c": "ce3c63767a989f489f20450d4d4d54bc92b3ffe7c4f2b0997d5089251095d925",
+      "tests/content_memory_probe.c": "56eea8500d70d7ce07f2ef6181e9d124b091e6d720edfc24ccc927570bb16675"
+    },
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.20.102)\nTarget: arm64-apple-darwin27.2.0\nThread model: posix\nInstalledDir: /Applications/Xcode-beta.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "pkg_config": {
+      "version": "1.0.22",
+      "flags": [
+        "-I/opt/homebrew/Cellar/libsodium/1.0.22/include",
+        "-L/opt/homebrew/Cellar/libsodium/1.0.22/lib",
+        "-lsodium"
+      ]
+    },
+    "commands": [
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-c",
+          "libs/content_policy.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content_policy.o"
+        ],
+        "exit": 0,
+        "seconds": 0.09003425005357713,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-UNDEBUG",
+          "-c",
+          "tests/test_content_policy.c",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/test_content_policy.o"
+        ],
+        "exit": 0,
+        "seconds": 0.03220316593069583,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content_policy.o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/test_content_policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/test-content-policy"
+        ],
+        "exit": 0,
+        "seconds": 0.027145792031660676,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "tests/content_memory_probe.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content_policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content-memory-base"
+        ],
+        "exit": 0,
+        "seconds": 0.05902820802293718,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "argv": [
+          "/usr/bin/clang",
+          "-std=c11",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-pedantic",
+          "-D_DEFAULT_SOURCE=1",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01",
+          "-I/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish",
+          "-DCONTENT_PROBE_SODIUM=1",
+          "tests/content_memory_probe.c",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content_policy.o",
+          "-o",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/content-memory-sodium",
+          "-I/opt/homebrew/Cellar/libsodium/1.0.22/include",
+          "-L/opt/homebrew/Cellar/libsodium/1.0.22/lib",
+          "-lsodium"
+        ],
+        "exit": 0,
+        "seconds": 0.06015049992129207,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "runtime_executed": 0,
+    "source_post": {
+      "libs/content_policy.c": "a3be3d9e82145548725787a5e191cfe9e426a94dfbb8f7a5a2306bdae2d464d6",
+      "libs/content_policy.h": "0fd3615405664e362d3fd71075b364592b81955d34d7647e17fbd2529363f5da",
+      "tests/test_content_policy.c": "ce3c63767a989f489f20450d4d4d54bc92b3ffe7c4f2b0997d5089251095d925",
+      "tests/content_memory_probe.c": "56eea8500d70d7ce07f2ef6181e9d124b091e6d720edfc24ccc927570bb16675"
+    },
+    "pass": true,
+    "artifacts": {
+      "test-content-policy": {
+        "sha256": "f7e3a119dc33476e33bcf9915ea82a2db9560325a64720cfe924fe4187ff24a4",
+        "bytes": 68560
+      },
+      "content-memory-base": {
+        "sha256": "5c3d424df9da0e2a955584bf18c09fd54938d2e0911e3559194649bc8b24c2f1",
+        "bytes": 35648
+      },
+      "content-memory-sodium": {
+        "sha256": "86bd4314b1e3a0ffdb3402e8d8dd531c28f7d42ba5266aa4936c79e1e229650a",
+        "bytes": 52648
+      }
+    }
+  },
+  "policy_unit": {
+    "scope": "pure policy unit on macOS ARM64 only; no memory-protection candidate or supported Linux/BSD runtime qualification",
+    "binary_sha256": "f7e3a119dc33476e33bcf9915ea82a2db9560325a64720cfe924fe4187ff24a4",
+    "argv": [
+      "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-01/r1-content-publication/compile01/test-content-policy"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "seconds": 0.1889549579937011
+  },
+  "memory_candidate_execution": "not run; shared protected-memory comparison checkpoint remains pending",
+  "native_linux_bsd": "pending changed source; old unchanged-policy receipts do not qualify this source"
+}

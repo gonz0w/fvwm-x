@@ -26,7 +26,9 @@ No default Meson/dependency/feature changes or new packages are selected.
 
 Before accepting original bytes, a future isolated native owner must reserve
 logical and physical costs, successfully prepare required locking and dump
-restrictions, and hold an exact live access lease. Required protection failure
+restrictions, and check its exact reserved producer token immediately before
+each bounded write. Close writable access before publishing initialized
+lengths. Readers then need an exact live access lease. Required protection failure
 refuses preparation; no ordinary-heap fallback. Region access is closed between
 bounded operations. Retired/expired leases keep cleanup obligations but cannot
 authorize access. Wipe before unlock/release and preserve resource charges until
@@ -39,6 +41,22 @@ per-item and aggregate physical caps before mutation/allocation. Replacement
 charges both generations. `content_lease_check` validates exact ticket, owner,
 item, generation, representation, live state and deadline immediately before
 access. `content_describe` alone grants no payload access.
+
+`content_producer_check` admits only the exact reserved generation with its
+outstanding work token, an enabled/unpaused owner, an unexpired deadline and
+representation-specific encoded/decoded/derived ranges. Subtraction-based
+bounds permit an empty range at the exact end and reject overflow or an offset
+past the reservation. Refusal retains the cleanup/work obligation and charges;
+it grants no operating-system access or payload pointer.
+
+`content_finish` requires successful producers to attest actual initialized
+prefix lengths for every representation in reservation order. It validates all
+lengths before publishing any descriptor. Malformed success consumes work once
+and retires the item; retired late completion drains work without reviving it.
+Only published lengths become visible; full logical/physical reservations remain
+charged until backend cleanup. This metadata attestation cannot prove writes
+occurred or detect holes. The native producer owns contiguous write progress,
+protection transitions and its checked byte copies.
 
 `content_storage_charge` calculates an explicit allocator model using supplied
 page size, at least one rounded data byte and at most eight overhead pages.
@@ -98,8 +116,13 @@ separate monotonic measurements report real elapsed time. Wiping is inspected
 while the allocation remains valid, never by reading freed memory.
 
 Allocation/lock/dump/access injection options test cleanup control flow, not
-real OS exhaustion or enforcement. Successful preparation alone permits fixture
-access. The lifecycle then retires during an outstanding lease, refuses access
+real OS exhaustion or enforcement. Successful preparation permits checked producer writes while still reserved.
+The probe fills a contiguous prefix (one byte below capacity when nonzero),
+closes writable access, publishes its actual length, then reads that published
+prefix through a live lease. `--cancel-producer` retires after its first bounded
+chunk (including zero-length input), refuses further producer access and both
+late and duplicate publication. It never grants a reader lease. The normal
+lifecycle then retires during an outstanding lease, refuses access
 and early cleanup acknowledgement, releases the exact lease and observes wiping
 before backend release. Sodium's void free exposes no individual unmap/unlock
 result; its row records wipe-and-return, not independent physical reclamation.
@@ -109,7 +132,7 @@ JSON lines contain numeric budgets/timing/errno, fixed candidate identity and
 preparation status only. No addresses, payloads, paths, labels or secrets.
 Preparation enum: 0 prepared, 1 allocation refused, 2 lock refused, 3 dump
 unavailable, 4 dump refused, 5 access refused, 6 wipe unavailable. Injected enum:
-0 none, 1 allocation, 2 lock, 3 dump, 4 access. Exit 0 means the observations and
+0 none, 1 allocation, 2 lock, 3 dump, 4 access, 5 producer cancellation. Exit 0 means the observations and
 accounting completed; it does **not** mean all preparations succeeded. Exit 77
 means process/library/page prerequisites unavailable, 2 invalid CLI, 1 a lifecycle,
 access, cleanup, clock or observation failure. Compare only matching successfully

@@ -19,6 +19,7 @@ type Snapshot struct {
 	Native                      NativeObservation
 	SessionAvailable            bool
 	DesktopSubmitted            bool
+	DesktopIconSubmitted        bool
 }
 
 // NativeObservation is immutable controller-loop state, independent of saved intent.
@@ -129,7 +130,7 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 		if item.Minimum != nil {
 			v["minimum"], v["maximum"] = item.Minimum, item.Maximum
 		}
-		if DesktopKey(key) {
+		if DesktopKey(key) && key != "desktop_icon_theme" {
 			metrics, err := ResolveDesktopMetrics(s.Effective)
 			if err != nil {
 				return nil, err
@@ -149,6 +150,22 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 				v["application"] = "next-owned-form-start; launcher-submitted"
 			}
 			v["runtime_constraint"] = "save-apply-only; existing-forms-unchanged"
+		}
+		if key == "desktop_icon_theme" {
+			theme, err := DesktopIconTheme(s.Effective)
+			if err != nil {
+				return nil, err
+			}
+			v["resolved"], v["resolution"] = theme, "explicit"
+			if s.Effective[key] == "" {
+				v["resolution"] = "profile-baseline"
+			}
+			v["capability"] = "owned-tray-icon-profile"
+			v["application"] = "not-submitted"
+			if observed && s.DesktopIconSubmitted {
+				v["application"] = "tray-configuration-submitted"
+			}
+			v["runtime_constraint"] = "save-apply-only; named-native-icons"
 		}
 		if key == "wallpaper_palette" || key == "wallpaper_appearance" {
 			if _, err := Checked(s.Effective); err != nil {

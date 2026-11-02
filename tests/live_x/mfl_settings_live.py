@@ -278,7 +278,7 @@ def run(args):
 
             numeric = action('set', changed['generation'], values={'launcher_opacity': 73})
             assert numeric['settings']['launcher_opacity']['saved'] == 73
-            assert json.loads(state.read_text())['schema_version'] == 9
+            assert json.loads(state.read_text())['schema_version'] == 11
             before_numeric = state.read_bytes()
             for invalid in [True, 73.5, -1, 101, '73']:
                 action('set', numeric['generation'], values={'launcher_opacity': invalid},
@@ -286,7 +286,7 @@ def run(args):
                 assert state.read_bytes() == before_numeric
             action('reset', numeric['generation'], scope='launcher_opacity')
             changed = query(provider=snapshot['provider'])
-            evidence['typed_integer_setting'] = dict(saved=73, schema=9,
+            evidence['typed_integer_setting'] = dict(saved=73, schema=11,
                 malformed_refused=True, reset=94)
             saved = state.read_bytes()
             assert json.loads(saved)['palette'] == 'grove'

@@ -952,7 +952,7 @@ def controller_cases(args, profile, runtime, env, out, evidence, observer, nativ
         first_cursor = fresh_xcursor(env, out, evidence, 'xcursor-before',
             'Adwaita', 24)
         gtk_before = wait_gtk(existing, SETTINGS)
-        assert json.loads(state_path.read_text())['schema_version'] == 9
+        assert json.loads(state_path.read_text())['schema_version'] == 11
         evidence['cases']['actual_controller_admission_publication'] = dict(
             committed=committed, ready=ready, helper=helper, publication=published,
             xrm=observer.lookup(), xcursor=first_cursor, gtk=gtk_before)

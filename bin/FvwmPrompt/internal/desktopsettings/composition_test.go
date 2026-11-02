@@ -199,6 +199,9 @@ func versionedFixture(version int) Values {
 	settings["palette"], settings["appearance"] = "dune", "light"
 	settings["keep_wallpaper"] = true
 	settings["wallpaper"] = Values{"palette": "ink", "appearance": "dark"}
+	if version < 11 {
+		delete(settings, "desktop_icon_theme")
+	}
 	if version < 10 {
 		for key := range Registry() {
 			if DesktopKey(key) {
@@ -246,12 +249,12 @@ func versionedFixture(version int) Values {
 }
 
 func TestExactStoredSchemasAndMigration(t *testing.T) {
-	if StateVersion != 10 {
+	if StateVersion != 11 {
 		t.Fatal(StateVersion)
 	}
-	for _, version := range []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10} {
+	for _, version := range []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11} {
 		settings := versionedFixture(version)
-		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16, 6: 17, 7: 21, 8: 23, 9: 28, 10: 31}[version] {
+		if len(settings) != map[int]int{1: 9, 2: 10, 3: 12, 4: 13, 5: 16, 6: 17, 7: 21, 8: 23, 9: 28, 10: 31, 11: 32}[version] {
 			t.Fatal(settings)
 		}
 		data, _ := json.Marshal(settings)
@@ -296,7 +299,7 @@ func TestExactStoredSchemasAndMigration(t *testing.T) {
 	if err != nil || got["wallpaper_palette"] != "grove" || got["wallpaper_appearance"] != "light" {
 		t.Fatal(got, err)
 	}
-	for _, version := range []any{0, 11, -1, true, "4", 4.5, nil} {
+	for _, version := range []any{0, 12, -1, true, "4", 4.5, nil} {
 		bad := versionedFixture(3)
 		bad["schema_version"] = version
 		data, _ := json.Marshal(bad)

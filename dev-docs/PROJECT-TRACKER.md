@@ -35,6 +35,71 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: A2 desktop icon-choice adoption under THEME-02 #214 and
+ICON-01 #215, branch `codex/r1-desktop-icons`, base merged PR346
+`825f3d0156e06709570011e5bf1094522f73d68b`. Owner Cam; lead implementation
+fallback remains selected while temper_implementer is unavailable. Select four
+related stories before implementation:
+
+1. Add independent desktop_icon_theme to the existing private registry/store,
+   compact desktop editor and typed metadata. Empty inherits the reserved tray's
+   existing hicolor baseline. Keep application icon_theme and explicit CLI/menu
+   profiles independent. Exact old schemas load without rewriting; overrides win.
+2. Project the selected theme into the existing atomic SlateTray configuration
+   before Reload. Changed native icon choice refreshes the owned alias; an
+   unchanged effective choice does not reload or replay global appearance.
+3. Fence pending item/menu icon results by the current local acquisition
+   generation as well as existing item/menu identities. Theme/size/scale changes
+   invalidate old results before publication; retain bounded worker and picture
+   release ownership. No shared disk-cache unlinking without reference proof.
+4. Author coherent preference/default/reset/override/no-reload and delayed-result
+   acceptance, update primary manuals and shipped schema assertions, and preserve
+   missing/disabled-format fallback. Fix stale schema9 assertions in the MFL and
+   native-settings fixtures as part of this store-schema handoff.
+
+Reuse the existing native resolver/worker, no new discovery engine/store/toolkit
+or icon-package adoption. Existing XEmbed client pixels, unrelated tray aliases
+and independent installed-menu profiles retain ownership. Asset evaluation,
+shared disk-generation retirement, file-change invalidation and wider #215
+criteria remain open. Freeze exact native effects/build inputs before any lab
+start: only affected incremental C/Go compilation is selected for this batch,
+not tests/install/default-X. The C generation gate warrants one reused Linux
+native compile; use a separately reviewed finite build-only plan. Runtime/race,
+actual-X stale-result/theme/fallback and three-theme/enlarged-text screenshots
+join A1–A4 shared appearance qualification; C2–C5 clipboard remains pending.
+
+A2 implementation is authored. Five composed offline Go build results and two
+corrected Linux ARM64 C objects pass; the missing host Intrinsic.h remains
+unavailable. Separate source review corrected two P2 paths: icon-only Reload
+reset visibility, and icon result admission could precede tuple invalidation.
+Native Refresh now preserves visibility and tuple synchronization precedes
+admission even without bus dirtiness. The authored visibility fixture uses
+committed padding geometry and raw hidden-window attributes as its barrier.
+The final reviewed build-only plan imports327 exact bindings, takes1.84s build/
+export after readiness and confirms container/machine stopped; the earlier
+pre-correction object build remains historical. Zero runtime/test/fixture runs
+or installs occurred. Three unchanged Go artifacts are retained, two affected
+ones rebuilt. [Source/build evidence](verification/VERIFICATION-2026-11-02-DESKTOP-ICONS.md)
+records clear separate source/evidence review after three corrected P2s,
+pending signed delivery and A1–A4 qualification. The independent
+[load-attempt design](verification/TEST-DESIGN-2026-11-02-TRAY-ICON-ACQUISITION.md)
+still needs its interposition fixture and negative control; no visible stale
+pixel or runtime pass is inferred. No broader owner criterion closes.
+
+A1 PR346 is merged after separate source/evidence and signed-delivery review.
+Reviewed head `c7ebbe42cf2db283a95bb8a4835945c9ab1d076a`, tree
+`198e5a6766798ab9a99793e86aff7427a6cbe5e6`, canonical merge
+`825f3d0156e06709570011e5bf1094522f73d68b`; Cam signature/DCO and parent
+PR345 verified. Main synced and completed refs retired. Project PR Done / #214
+In progress verified; R1 still has 50 open issues. Performance is 3/5 after merge.
+Four composed builds pass; no runtime or new screenshots were claimed. Keep
+current artifacts/SDKs/caches and compact failure/review receipts. Thirteen
+obsolete owned host compile-only binaries were retired (82,292,346 bytes),
+with current artifacts and all receipts preserved.
+
+<details>
+<summary>A1 delivered component-metrics scope and queued qualification</summary>
+
 Current work: THEME-02 #214 desktop component metrics on
 `codex/r1-theme-metrics`, base merged PR345
 `ea6098d692fc459afa7e2d661dc00296d6198175`. Owner Cam; lead implements under
@@ -73,6 +138,8 @@ record clear separate source/evidence review after the scope correction and
 pending signed-delivery review plus A1–A4 shared appearance runtime/race/native-X,
 preview conflict/recovery and three-theme/enlarged-text screenshots. No broader
 #214 or milestone completion follows from this source checkpoint.
+
+</details>
 
 C2 PR345 is merged with exact reviewed head
 `23089e841e23957f21855e8ce1900d4bc8cd937e`, tree

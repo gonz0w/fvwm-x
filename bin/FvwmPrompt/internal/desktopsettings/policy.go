@@ -21,7 +21,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 10
+const StateVersion = 11
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -158,6 +158,8 @@ var registry = []Setting{
 	{Key: "desktop_border", Type: "enum", Default: "inherit",
 		Choices: []string{"inherit", "thin", "strong"},
 		Group:   "desktop", Description: "Launcher border"},
+	{Key: "desktop_icon_theme", Type: "theme", Default: "",
+		Group: "desktop", Description: "Native tray icon theme"},
 }
 
 // ApplicationKey identifies the separate application editor and helper lifecycle.
@@ -499,7 +501,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27, 10: 30}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27, 10: 30, 11: 31}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -530,6 +532,7 @@ func DecodeState(data []byte) (Values, error) {
 		{"desktop_font", 10, ""},
 		{"desktop_density", 10, "inherit"},
 		{"desktop_border", 10, "inherit"},
+		{"desktop_icon_theme", 11, ""},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

@@ -119,8 +119,8 @@ func TestDesktopMetricsEditorLiteralAndIndependentAliases(t *testing.T) {
 		t.Fatal(err)
 	}
 	font := "xft:Sans:size=13"
-	_, changes, err := d.editorValues(d.editor.token + " x" + base64.RawURLEncoding.EncodeToString([]byte(font)) + " compact strong")
-	if err != nil || !reflect.DeepEqual(changes, values{"desktop_font": font, "desktop_density": "compact", "desktop_border": "strong"}) {
+	_, changes, err := d.editorValues(d.editor.token + " x" + base64.RawURLEncoding.EncodeToString([]byte(font)) + " compact strong x")
+	if err != nil || !reflect.DeepEqual(changes, values{"desktop_font": font, "desktop_density": "compact", "desktop_border": "strong", "desktop_icon_theme": ""}) {
 		t.Fatal(changes, err)
 	}
 	*commands = nil

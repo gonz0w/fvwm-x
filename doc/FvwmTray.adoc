@@ -139,6 +139,19 @@ current runtime visibility; an initial or explicitly reloaded configuration
 applies its stored *Visible* value. A reload does not start the module or
 replace a different tray owner.
 
+Use *Refresh* to load the complete stored option set while preserving current
+runtime visibility from Show, Hide or ToggleAt:
+
+----
+SendToModule FvwmTray Refresh
+----
+
+Unlike Reload, Refresh preserves runtime visibility after initial configuration.
+An initial snapshot still applies its stored Visible value. If requests overlap,
+an explicit Reload retains precedence for applying stored visibility. Neither
+message starts the module or changes a different alias. The desktop uses Refresh
+for its scoped icon-theme updates.
+
 == Controls
 
 Docking an application or changing appearance does not take keyboard focus.

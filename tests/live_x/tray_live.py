@@ -744,8 +744,45 @@ def run(options):
             'hidden first client not viewable')
         wait_state(native, second, b, lambda s: s['map'] != 2,
             'hidden second client not viewable')
+        hidden_refresh_before = native.attrs(host)
+        native.command('*FvwmTray Padding 13')
+        native.command('SendToModule FvwmTray Refresh')
+        hidden_refresh = wait_for_predicate(
+            'Refresh commits changed padding while preserving Hide',
+            lambda: (lambda a: dict(width=a.width, height=a.height,
+                map_state=a.map_state) if a and a.map_state == 0 and
+                a.width > hidden_refresh_before.width else None)(
+                    native.attrs(host)),
+            time.monotonic() + 5, process=native.process)
+        assert native.attrs(host).map_state == 0
+        wait_state(native, first, a, lambda s: s['map'] != 2,
+            'stored Visible On does not undo runtime Hide on Refresh')
         native.command('SendToModule FvwmTray Show')
         wait_state(native, first, a, lambda s: s['map'] == 2, 'shown tray client')
+        # Conversely, Refresh must not apply a stored Visible Off to a shown
+        # host. An explicit Reload keeps that existing applying behavior.
+        shown_refresh_before = native.rect(host)
+        native.command('*FvwmTray Visible Off')
+        native.command('*FvwmTray Padding 17')
+        native.command('SendToModule FvwmTray Refresh')
+        shown_refresh = wait_for_predicate(
+            'Refresh commits changed padding while preserving Show',
+            lambda: (lambda r: r if r and r['width'] >
+                shown_refresh_before['width'] else None)(native.rect(host)),
+            time.monotonic() + 5, process=native.process)
+        wait_state(native, first, a, lambda s: s['map'] == 2,
+            'stored Visible Off does not undo runtime Show on Refresh')
+        native.command('*FvwmTray Visible On')
+        native.command('*FvwmTray Padding 4')
+        native.command('SendToModule FvwmTray Refresh')
+        wait_for_predicate('Refresh restores the default padding',
+            lambda: (lambda r: r if r and r['width'] <
+                shown_refresh['width'] else None)(native.rect(host)),
+            time.monotonic() + 5, process=native.process)
+        evidence['cases']['refresh_preserves_runtime_visibility'] = dict(
+            hidden=hidden_refresh, shown=shown_refresh,
+            barrier='actual changed padding geometry; not an old Status record')
+
         evidence['cases']['mapping_resize_and_visibility'] = dict(
             actual_resized=resized, hidden_mapped_flags=hidden_status['mapped'],
             actual_hidden_host_map=hidden_host.map_state,

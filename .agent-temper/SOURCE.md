@@ -2,12 +2,12 @@
 
 Repository: https://github.com/gonz0w/agent-temper
 
-Revision: `cf928f4120b687f34f1b1f974603a4979b5b874c`
+Revision: `5222ac45c9edaa23c188816c7727fc70780a95a8`
 
-Source: https://github.com/gonz0w/agent-temper/tree/cf928f4120b687f34f1b1f974603a4979b5b874c
+Source: https://github.com/gonz0w/agent-temper/tree/5222ac45c9edaa23c188816c7727fc70780a95a8
 
 Local selection: [project policy](../dev-docs/PROJECT.md); only Codex is selected.
-Update work: https://github.com/gonz0w/fvwm-x/issues/272
+Historical routing update: https://github.com/gonz0w/fvwm-x/issues/272
 
 Nine upstream files retain their original bytes and complete BSD-3-Clause
 [license](LICENSE). Existing project licensing and external-source terms remain.
@@ -28,3 +28,7 @@ and existing local authority remain unchanged.
 Current modular-policy adoption: https://github.com/gonz0w/fvwm-x/issues/282. The selected local modules and manual
 checker are outside this immutable bundle. This adoption preserves existing local
 requirements, historical decisions and all five role files. CI is unchanged.
+
+Tree: `7c5b4f351046333be115cc819efe768afea681c1`
+
+Current guidance refresh: https://github.com/gonz0w/fvwm-x/issues/342

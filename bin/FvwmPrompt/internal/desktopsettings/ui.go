@@ -139,7 +139,8 @@ func Editor(s Snapshot,
 		lines[0] = `Title "Desktop component settings"`
 		lines = append(lines, "Line left", `Text "Launcher changes apply after preview recovery."`,
 			"Line left", `Text "Forms use these choices at their next start."`,
-			"Line left", `Text "Empty font and Inherit use the configured profile baseline."`)
+			"Line left", `Text "Empty font and Inherit use the configured profile baseline."`,
+			"Line left", `Text "The icon theme applies to native tray icons; empty uses hicolor."`)
 	}
 	previous := ""
 	for _, key := range plan.Keys {

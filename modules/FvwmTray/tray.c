@@ -643,6 +643,8 @@ static void native_message(tray_ui *ui, char *text)
 		*--end = 0;
 	if (!strcasecmp(text, "Reload"))
 		tray_request_config(ui);
+	else if (!strcasecmp(text, "Refresh"))
+		request_config(ui, false);
 	else if (!strcasecmp(text, "Show") || !strcasecmp(text, "Hide"))
 	{
 		ui->visible = !strcasecmp(text, "Show");

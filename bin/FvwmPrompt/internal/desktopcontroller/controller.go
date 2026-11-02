@@ -68,6 +68,7 @@ type Controller struct {
 	report                                   *report
 	palettes                                 map[string]map[string]map[string]string
 	lastDesktop                              *desktopsettings.DesktopMetrics
+	lastDesktopIconTheme                     string
 	lastTheme                                []any
 	lastWallpaper                            [2]string
 	apps                                     []desktopworker.Application
@@ -209,7 +210,7 @@ func (d *Controller) snapshot(saved, effective values) desktopsettings.Snapshot 
 	}
 	return desktopsettings.Snapshot{Saved: saved, Effective: effective, Overrides: d.overrides,
 		Generation: d.generation, Instance: d.instance, PersistenceError: persistence, Submitted: d.lastTheme != nil,
-		RuntimeHeld: held, Native: d.nativeObservation(), SessionAvailable: d.sessionObserved(), DesktopSubmitted: d.desktopSubmitted()}
+		RuntimeHeld: held, Native: d.nativeObservation(), SessionAvailable: d.sessionObserved(), DesktopSubmitted: d.desktopSubmitted(), DesktopIconSubmitted: d.desktopIconsSubmitted()}
 }
 func (d *Controller) retireEditor() {
 	if d.editor != nil {

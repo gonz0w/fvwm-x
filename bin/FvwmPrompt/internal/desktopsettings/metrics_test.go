@@ -63,7 +63,7 @@ func TestDesktopMetricsOldSchemasAndSeparateEditor(t *testing.T) {
 	}
 	s := snapshotFixture()
 	plan, err := Editor(s, "group:desktop", false, nil, strings.Repeat("c", 32))
-	if err != nil || !reflect.DeepEqual(plan.Keys, []string{"desktop_font", "desktop_density", "desktop_border"}) {
+	if err != nil || !reflect.DeepEqual(plan.Keys, []string{"desktop_font", "desktop_density", "desktop_border", "desktop_icon_theme"}) {
 		t.Fatal(plan, err)
 	}
 	text := strings.Join(plan.Lines, "\n")

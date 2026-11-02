@@ -144,6 +144,8 @@ func (d *Controller) theme(force bool) error {
 		return err
 	}
 	metricsChanged := d.lastDesktop == nil || *d.lastDesktop != metrics
+	iconsChanged := !d.desktopIconsSubmitted()
+	componentsChanged := metricsChanged || iconsChanged
 	if d.preview.blocked {
 		return nil
 	}
@@ -151,7 +153,7 @@ func (d *Controller) theme(force bool) error {
 		resource := d.preview.control.resource
 		// Compare the candidate too: Auto may cross a phase even while the
 		// effective baseline remains fixed to Light or Dark.
-		if force || metricsChanged || !reflect.DeepEqual(key, resource.baseline) || d.preview.recovering || d.checkResource(d.preview.control) != nil {
+		if force || componentsChanged || !reflect.DeepEqual(key, resource.baseline) || d.preview.recovering || d.checkResource(d.preview.control) != nil {
 			d.preview.replay = true
 			if !d.preview.recovering {
 				d.preview.finish("Theme changed; resource preview recovery requested.", true, false)
@@ -162,11 +164,14 @@ func (d *Controller) theme(force bool) error {
 	// A metrics-only change (including recovery replay's force=true) owns no
 	// color, panel, tray or global style publication. The named launcher already
 	// exists; edit its finite axes without recopying unrelated menu policy.
-	if metricsChanged && reflect.DeepEqual(key, d.lastTheme) {
-		d.applyDesktopMetrics(metrics)
+	if componentsChanged && reflect.DeepEqual(key, d.lastTheme) {
+		if metricsChanged {
+			d.applyDesktopMetrics(metrics)
+		}
+		d.applyDesktopIcons()
 		return d.settingsMenu("all")
 	}
-	if !force && !metricsChanged && reflect.DeepEqual(key, d.lastTheme) {
+	if !force && !componentsChanged && reflect.DeepEqual(key, d.lastTheme) {
 		return nil
 	}
 	presentation, err := desktopsettings.ResolvePresentation(d.effective)

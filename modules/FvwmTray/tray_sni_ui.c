@@ -43,9 +43,10 @@ struct tray_sni_ui
 	uint64_t upload_id, upload_generation;
 	bool upload_overlay, upload_canceled;
 	size_t picture_bytes, upload_bytes;
-	uint64_t next_view, next_request;
+	uint64_t next_view, next_request, icon_acquisition;
+	bool icon_acquisition_exhausted;
 	struct {
-		uint64_t token, id, generation, view;
+		uint64_t token, id, generation, view, acquisition;
 		unsigned int role, node;
 		bool attention;
 	} icon_batch[TRAY_ICON_BATCH_MAX];
@@ -295,6 +296,13 @@ static void identify(tray_ui *ui, native_cell *record,
 	    PropModeReplace, (const unsigned char *)name, strlen(name));
 }
 
+static bool icon_profile_changed(const tray_ui *ui)
+{
+	return ui->sni->scale != ui->quarters ||
+	    ui->sni->size != ui->icon_size ||
+	    strcmp(ui->sni->theme, ui->icon_theme);
+}
+
 void tray_sni_sync(tray_ui *ui)
 {
 	if (!ui->sni)
@@ -339,14 +347,25 @@ void tray_sni_sync(tray_ui *ui)
 	int extent = scaled(ui, ui->icon_size > 24 ? ui->icon_size : 24);
 	if (extent < 1 || extent > 4096)
 		return;
-	bool changed = ui->sni->scale != ui->quarters ||
-	    ui->sni->size != ui->icon_size ||
-	    strcmp(ui->sni->theme, ui->icon_theme);
+	bool changed = icon_profile_changed(ui);
 	ui->sni->scale = ui->quarters;
 	ui->sni->size = ui->icon_size;
 	strcpy(ui->sni->theme, ui->icon_theme);
 	if (changed)
+	{
 		ui->sni->menu_icon_generation = 0;
+		/* Menu identity alone does not fence a result for an older
+		 * theme/size/scale, including an ABA return to the same tuple. */
+		if (ui->sni->icon_acquisition == UINT64_MAX)
+		{
+			ui->sni->icon_acquisition_exhausted = true;
+			ui->sni->helper_failed = true;
+			if (ui->sni->icons)
+				tray_icons_cancel(ui->sni->icons);
+		}
+		else if (!ui->sni->icon_acquisition_exhausted)
+			ui->sni->icon_acquisition++;
+	}
 	for (unsigned int i = 0; i < model->count; i++)
 	{
 		const tray_sni_item *value = &model->items[i];
@@ -598,7 +617,9 @@ static bool add_icon_request(tray_ui *ui, tray_icon_request *requests,
 	unsigned int node)
 {
 	tray_sni_ui *state = ui->sni;
-	if (*count == TRAY_ICON_BATCH_MAX || !name[0] ||
+	if (state->icon_acquisition_exhausted ||
+	    state->icon_acquisition == 0 ||
+	    *count == TRAY_ICON_BATCH_MAX || !name[0] ||
 	    strlen(name) > TRAY_ICON_NAME_MAX ||
 	        state->next_request == UINT64_MAX)
 		return false;
@@ -615,6 +636,7 @@ static bool add_icon_request(tray_ui *ui, tray_icon_request *requests,
 	state->icon_batch[index].id = id;
 	state->icon_batch[index].generation = generation;
 	state->icon_batch[index].view = view;
+	state->icon_batch[index].acquisition = state->icon_acquisition;
 	state->icon_batch[index].role = role;
 	state->icon_batch[index].node = node;
 	state->icon_batch[index].attention = false;
@@ -650,6 +672,9 @@ static void acquire_icons(tray_ui *ui, double stamp)
 			    state->icon_batch[request].token != result->id)
 				request++;
 			if (request == state->icon_batch_count ||
+			    state->icon_acquisition_exhausted ||
+			    state->icon_batch[request].acquisition !=
+			    state->icon_acquisition ||
 			    state->icon_batch[request].view !=
 			    result->generation)
 				continue;
@@ -662,7 +687,12 @@ static void acquire_icons(tray_ui *ui, double stamp)
 			    state->icon_batch[request].generation ||
 			    record->view_generation != result->generation))
 				continue;
-			if (role == 2 && (!model || model->menu.generation !=
+			if (role == 2 && (!model || !model->menu.open ||
+			    !model->menu.ready || model->menu.stale ||
+			    model->menu.item_id != state->icon_batch[request].id ||
+			    model->menu.item_generation !=
+			    state->icon_batch[request].generation ||
+			    model->menu.generation !=
 			    result->generation ||
 			        state->icon_batch[request].node >=
 			    model->menu.count))
@@ -735,7 +765,7 @@ static void acquire_icons(tray_ui *ui, double stamp)
 		tray_icons_release(state->icons);
 		return;
 	}
-	if (state->helper_failed)
+	if (state->helper_failed || state->icon_acquisition_exhausted)
 		return;
 	tray_icon_request requests[TRAY_ICON_BATCH_MAX];
 	unsigned int count = 0;
@@ -1396,7 +1426,10 @@ void tray_sni_service(tray_ui *ui, double stamp)
 	tray_bus_set_icon_budget(state->bus, retained < SNI_UI_IMAGE_MAX
 	    ? SNI_UI_IMAGE_MAX - retained : 0);
 	(void)tray_bus_service(state->bus, stamp);
-	if (tray_bus_take_dirty(state->bus))
+	/* Configuration packets precede this service turn. Synchronize a changed
+	 * local icon tuple before a completed helper batch can be admitted, even
+	 * when the bus model itself has not changed. */
+	if (tray_bus_take_dirty(state->bus) || icon_profile_changed(ui))
 	{
 		tray_sni_sync(ui);
 		const tray_sni_model *model = tray_bus_model(state->bus);

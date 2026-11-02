@@ -17,7 +17,7 @@ type DesktopMetrics struct {
 }
 
 func DesktopKey(key string) bool {
-	return key == "desktop_font" || key == "desktop_density" || key == "desktop_border"
+	return key == "desktop_font" || key == "desktop_density" || key == "desktop_border" || key == "desktop_icon_theme"
 }
 
 // FontCommandSafe guarantees that native command serialization preserves every
@@ -54,4 +54,17 @@ func ResolveDesktopMetrics(settings Values) (DesktopMetrics, error) {
 		result.MenuBorder = 3
 	}
 	return result, nil
+}
+
+// DesktopIconTheme selects only the reserved native tray's resolver profile.
+// Application publication and explicit installed-menu profiles are independent.
+func DesktopIconTheme(settings Values) (string, error) {
+	value, err := Value("desktop_icon_theme", settings["desktop_icon_theme"], false)
+	if err != nil {
+		return "", err
+	}
+	if value == "" {
+		return "hicolor", nil
+	}
+	return value.(string), nil
 }

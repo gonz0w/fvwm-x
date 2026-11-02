@@ -331,6 +331,28 @@ missing required executable and owner failures are reported on standard error.
 A refused autostart scan leaves the WM running. No automatic package installation,
 privilege escalation or lock-provider readiness is implied.
 
+== CLIPBOARD INTEGRATION STATUS
+
+Clipboard history remains in development. The session owner has a private
+native capture/storage integration with explicit resource limits. Normal
+installed startup does not enable it: a qualified lock-state source and
+installed limits are still required. There is no clipboard settings option or
+history UI in this checkpoint.
+
+The native process captures only the explicitly supported UTF8_STRING target
+from CLIPBOARD. It leaves PRIMARY alone. Advertised password-manager hints,
+missing format discovery and malformed format replies exclude capture. A
+missing hint does not establish that an application copied nonsensitive text.
+History stays in protected native session storage; no payload, preview, label
+or source title travels through the session control socket. Persistence is off.
+
+Unknown lock state blocks capture and history access. An admitted session lock
+request pauses the native process before the locker is started. A locker start
+or exit does not establish a secure lock or an unlock, and never resumes
+capture. History is retained while blocked, subject to its original expiry.
+Logout requests native cleanup and records whether child exit and cleanup were
+confirmed. Forced termination cannot establish that a native wipe completed.
+
 == FILES
 
 *$XDG_CONFIG_HOME/autostart*::

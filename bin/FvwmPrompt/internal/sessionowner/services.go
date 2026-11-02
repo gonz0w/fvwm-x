@@ -23,6 +23,7 @@ import (
 	"unicode"
 	"unicode/utf8"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/clipboard"
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
 	"github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgsource"
@@ -247,13 +248,14 @@ func busEnvironment(environment []string, address string) []string {
 }
 
 type serviceState struct {
-	snapshot sessionservice.Snapshot
-	bus      *ownedBus
-	busLost  bool
-	identity busReply
-	ids      map[uint32]bool
-	plans    providerPlans
-	locker   *ownedLocker
+	snapshot  sessionservice.Snapshot
+	bus       *ownedBus
+	busLost   bool
+	identity  busReply
+	ids       map[uint32]bool
+	plans     providerPlans
+	locker    *ownedLocker
+	clipboard *clipboard.Client
 }
 
 func newServices(cfg *Config, report *reporter) (*serviceState, error) {
@@ -377,14 +379,15 @@ func (state *serviceState) refreshNotifications() {
 }
 
 type serviceJob struct {
-	request controlRequest
-	probe   busReply
-	result  busReply
-	err     error
-	outcome string
-	power   sessionservice.PowerObservation
-	plans   providerPlans
-	locker  *ownedLocker
+	request   controlRequest
+	probe     busReply
+	result    busReply
+	err       error
+	outcome   string
+	power     sessionservice.PowerObservation
+	plans     providerPlans
+	locker    *ownedLocker
+	clipboard *clipboard.Reply
 }
 
 func runServiceJob(request controlRequest, cfg Config, identity busReply, ownedIDs int) serviceJob {

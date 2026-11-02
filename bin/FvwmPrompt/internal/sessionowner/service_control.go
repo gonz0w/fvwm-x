@@ -96,6 +96,9 @@ func (state *serviceState) admit(request controlRequest, cfg Config, busy bool) 
 	if (message.Verb == "notify" || message.Verb == "close") && state.snapshot.Config.Notifications != "external" {
 		return false, state.reply("unavailable", "external notifications are disabled", 0)
 	}
+	if sessionservice.IsClipboardVerb(message.Verb) {
+		return true, sessionservice.Reply{}
+	}
 	if message.Verb == "power-probe" || sessionservice.IsPowerVerb(message.Verb) || message.Verb == "lock" {
 		if message.Verb == "power-probe" {
 			// Status remains available during the probe. Its intermediate tokens
@@ -121,6 +124,15 @@ func (state *serviceState) admit(request controlRequest, cfg Config, busy bool) 
 }
 
 func (state *serviceState) complete(job serviceJob) sessionservice.Reply {
+	if sessionservice.IsClipboardVerb(job.request.message.Verb) {
+		message := ""
+		if job.err != nil {
+			message = job.err.Error()
+		}
+		reply := state.reply(job.outcome, message, 0)
+		reply.Clipboard = job.clipboard
+		return reply
+	}
 	state.fenceBusLoss()
 	if job.request.message.Verb == "power-probe" || sessionservice.IsPowerVerb(job.request.message.Verb) || job.request.message.Verb == "lock" {
 		return state.completeProvider(job)

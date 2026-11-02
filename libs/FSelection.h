@@ -115,4 +115,13 @@ FSelectionStatus FSelectionRequestTextNegotiated(Display *display,
     FSelectionService service, void *context, FSelectionResult *result);
 void FSelectionResultFree(FSelectionResult *result);
 
+/* Metadata-only TARGETS query with the same direct/INCR cap (256 packed
+ * ATOM/32 values), deadline and ordered source fences as ExactTo. No guessed
+ * targets on refusal. Result is initialized and malloc-owned, as above.
+ * This does not fetch any advertised representation's payload. */
+FSelectionStatus FSelectionRequestTargets(Display *display, Atom selection,
+    Atom property, Time time, int timeout_ms, FSelectionSource source,
+    FSelectionSourceCurrent current, FSelectionService service, void *context,
+    FSelectionResult *result);
+
 #endif

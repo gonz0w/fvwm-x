@@ -21,6 +21,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/fvwmorg/FvwmPrompt/internal/clipboard"
 	"github.com/fvwmorg/FvwmPrompt/internal/sessionservice"
 	"github.com/fvwmorg/FvwmPrompt/internal/xdgmenu"
 	"golang.org/x/sys/unix"
@@ -53,6 +54,7 @@ type Config struct {
 	ReadyTimeout, ScanTimeout time.Duration
 	StopGrace, StopWait       time.Duration
 	BusHelperPath             string
+	Clipboard                 *clipboard.Config
 	DisableServices           bool
 	serviceSlot               chan struct{}
 	readyPipe                 func() (*os.File, *os.File, error)
@@ -92,16 +94,21 @@ func Environment(input []string) []string {
 }
 
 type reporter struct {
-	output              io.Writer
-	count               int
-	final               bool
-	busTerminalReserved bool
-	busFinal            bool
+	output                    io.Writer
+	count                     int
+	final                     bool
+	busTerminalReserved       bool
+	busFinal                  bool
+	clipboardTerminalReserved bool
+	clipboardFinal            bool
 }
 
 func (r *reporter) write(format string, args ...any) {
 	reserved := 1
 	if r.busTerminalReserved {
+		reserved++
+	}
+	if r.clipboardTerminalReserved {
 		reserved++
 	}
 	if r.count >= maxDiagnostics-reserved {
@@ -128,6 +135,16 @@ func (r *reporter) busTerminal(format string, args ...any) {
 		return
 	}
 	r.busFinal = true
+	r.line(format, args...)
+}
+
+// Clipboard cleanup has a reserved terminal slot independent of both the WM
+// and bus result, even when ordinary application diagnostics exhaust the cap.
+func (r *reporter) clipboardTerminal(format string, args ...any) {
+	if r.clipboardFinal {
+		return
+	}
+	r.clipboardFinal = true
 	r.line(format, args...)
 }
 
@@ -274,7 +291,7 @@ func awaitWMExit(done <-chan error, timeout time.Duration) (error, bool) {
 // adoption. On logout it neither waits indefinitely for nor signals apps.
 func Run(input Config) int {
 	cfg := defaults(input)
-	report := reporter{output: cfg.Diagnostics}
+	report := reporter{output: cfg.Diagnostics, clipboardTerminalReserved: cfg.Clipboard != nil}
 	plainExec := func() int {
 		if err := cfg.Exec(cfg.WMPath, append([]string{cfg.WMPath}, cfg.Args...), cfg.Environment); err != nil {
 			report.write("WM exec failed: %v", err)
@@ -303,6 +320,16 @@ func Run(input Config) int {
 	// shared with a live core, defeating parent-loss recovery.
 	defer lock.Close()
 	lease, hasLease := lock.(*os.File)
+	var clipboardOwner *clipboard.Client
+	defer func() {
+		if clipboardOwner != nil {
+			clipboardOwner.Close()
+			cleanup, stopCleanup := context.WithTimeout(context.Background(), 4500*time.Millisecond)
+			defer stopCleanup()
+			facts, waitErr := clipboardOwner.Wait(cleanup)
+			report.clipboardTerminal("clipboard owner cleanup: started=%t reaped=%t clean=%t wait-confirmed=%t", facts.Started, facts.Reaped, facts.Clean, waitErr == nil)
+		}
+	}()
 	var services *serviceState
 	var controls <-chan controlRequest
 	var busDone <-chan struct{}
@@ -440,6 +467,9 @@ func Run(input Config) int {
 			return
 		}
 		shuttingDown = true
+		if clipboardOwner != nil {
+			clipboardOwner.Close()
+		}
 		ready = nil
 		cancel()
 		if reader != nil {
@@ -462,7 +492,18 @@ func Run(input Config) int {
 		request.ctx = jobCtx
 		identity, count := services.identity, len(services.ids)
 		power, plans := services.snapshot.Power, services.plans
+		clip := services.clipboard
 		go func() {
+			if sessionservice.IsClipboardVerb(request.message.Verb) {
+				result <- runClipboardJob(request, clip)
+				return
+			}
+			if request.message.Verb == "lock" && clip != nil {
+				if err := pauseClipboard(request.ctx, clip, cfg.Clipboard.Epoch); err != nil {
+					result <- serviceJob{request: request, outcome: "failed", err: err}
+					return
+				}
+			}
 			if request.message.Verb == "power-probe" || sessionservice.IsPowerVerb(request.message.Verb) || request.message.Verb == "lock" {
 				result <- runProviderJob(request, cfg, power, plans)
 			} else {
@@ -554,6 +595,14 @@ func Run(input Config) int {
 			}
 			setState(0, "ready", "core startup acknowledged; modules/apps have separate readiness")
 			report.write("core startup acknowledged")
+			if cfg.Clipboard != nil && services != nil {
+				clipboardOwner, err = clipboard.Start(*cfg.Clipboard, cfg.Environment)
+				if err != nil {
+					report.write("clipboard owner unavailable: %v", err)
+				} else {
+					services.clipboard = clipboardOwner
+				}
+			}
 			if services != nil {
 				pendingProviderProbe = true
 			}

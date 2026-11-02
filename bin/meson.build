@@ -99,6 +99,29 @@ fvwm_native_settings = executable(
     install_tag: 'desktop-controller',
 )
 
+# Session-owned protected clipboard storage. No payload crosses its private
+# numeric control pipe; installed startup stays off until qualified lock-state
+# integration and explicit resource limits are selected.
+clipboard_runtime_deps = [summary_depvals['x11']]
+if xfixes.found()
+    clipboard_runtime_deps += xfixes
+endif
+clipboard_capture_sources = files(
+    'clipboard_capture.c', 'clipboard_policy.c',
+    '../libs/content_policy.c', '../libs/content_selection.c',
+    '../libs/selection_source_policy.c', '../libs/selection_observer.c',
+)
+fvwm_clipboard_capture = executable(
+    'fvwm-clipboard-capture',
+    clipboard_capture_sources + files('../libs/content_payload.c'),
+    include_directories: includedirs,
+    link_with: libfvwm3,
+    dependencies: all_compile_deps + clipboard_runtime_deps,
+    install: true,
+    install_dir: fvwm_moduledir,
+    install_tag: 'session-startup',
+)
+
 # Explicit opt-in: an installed descriptor can be selected by a portal
 # frontend's wildcard/legacy rules, so default builds install no descriptor.
 settings_portal_sources = ['settings_portal_disabled.c']

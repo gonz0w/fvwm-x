@@ -1,0 +1,418 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "status": "evaluation complete; asset adoption awaiting explicit owner choice",
+  "base": "85bef183253e1ec175b1762c4934e09b987acd75",
+  "upstream_inventory_sha256": "2f209b0d3465ab3aa6690e31bd2273ee5ef56164139c970340d4ede15ea4161b",
+  "upstream": {
+    "schema": "icon-asset-upstream-inventory-v1",
+    "collection_limits": {
+      "repository_collections": "one bounded collection per repository",
+      "full_theme_downloaded": false,
+      "runtime_or_install_checks": false,
+      "production_adoption": false,
+      "repository_size_used_as_installed_size": false
+    },
+    "lucide": {
+      "repository": "lucide-icons/lucide",
+      "repository_url": "https://github.com/lucide-icons/lucide",
+      "upstream_commit": "4b203ec9b6002fd74fd5dadc8612220e64289305",
+      "commit_url": "https://github.com/lucide-icons/lucide/commit/4b203ec9b6002fd74fd5dadc8612220e64289305",
+      "commit_date": "2026-11-02T19:58:02Z",
+      "tree_sha": "ee3ff6d38563f8c3dbec1101514ea2edf4839dc2",
+      "commit_signature_verified": true,
+      "head_basis": "first item returned by the repository default-branch commits endpoint at collection time",
+      "license": {
+        "path": "LICENSE",
+        "bytes": 3208,
+        "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+        "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/LICENSE",
+        "observed_licenses": "ISC generally; pinned license separately says listed Feather-derived icons are MIT and requires the associated copyright/license notices."
+      },
+      "requested_icons": [
+        {
+          "requested_name": "folder",
+          "path": "icons/folder.svg",
+          "status": "collected",
+          "bytes": 342,
+          "sha256": "f0d92b94b797a8ab7d4c4ae33c3236c47f64068351b4e14bdb5014ee42898a39",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "folder-open",
+          "path": "icons/folder-open.svg",
+          "status": "collected",
+          "bytes": 401,
+          "sha256": "ee57452b40e71df310214091dd9da1941a397c83197b8ff8d7ae66dd4242578b",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder-open.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "file",
+          "path": "icons/file.svg",
+          "status": "collected",
+          "bytes": 373,
+          "sha256": "499039795d7412d67664ff79d2eb6b7412e746b24c18c8fd8aba383c24ddada0",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "file-text",
+          "path": "icons/file-text.svg",
+          "status": "collected",
+          "bytes": 444,
+          "sha256": "52ca55846c202335fb870c8aa23e9345630ec10489303756d62e750f7109605c",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file-text.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "image",
+          "path": "icons/image.svg",
+          "status": "collected",
+          "bytes": 358,
+          "sha256": "619c9db58c879dce6250376ba67d9c9102ca6dbb3b1efb9294c9f180e22273a5",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/image.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "clipboard",
+          "path": "icons/clipboard.svg",
+          "status": "collected",
+          "bytes": 354,
+          "sha256": "d9b433e6a571d96a035ddb83d2ff52c4f85925ffcba9e584cf371d0dfa90875d",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        },
+        {
+          "requested_name": "copy",
+          "path": "icons/copy.svg",
+          "status": "collected",
+          "bytes": 339,
+          "sha256": "ea80e566c7a12628a447cb53179b19aea4f60b9143e2becd0d0f20bf260e5718",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/copy.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "scissors",
+          "path": "icons/scissors.svg",
+          "status": "collected",
+          "bytes": 371,
+          "sha256": "4c831fc2c903825f68565c28ffab945c34b2c60b6c564e2ae54250e1099fa550",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/scissors.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "clipboard-paste",
+          "path": "icons/clipboard-paste.svg",
+          "status": "collected",
+          "bytes": 435,
+          "sha256": "d2e4e6df0b2fecf97a95ef244f9031fb7c1deae0c9401df2a11d93379e8d361f",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard-paste.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "search",
+          "path": "icons/search.svg",
+          "status": "collected",
+          "bytes": 275,
+          "sha256": "283d371c2e433817bb9c0c8310caa6c77fa4177c0f4f1168d9c83b97af7389dc",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/search.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        },
+        {
+          "requested_name": "refresh-cw",
+          "path": "icons/refresh-cw.svg",
+          "status": "collected",
+          "bytes": 392,
+          "sha256": "2e10dd403c85a24f163d59fc6151aa21147fe9402e1305dfc8979208caee8944",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/refresh-cw.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "arrow-left",
+          "path": "icons/arrow-left.svg",
+          "status": "collected",
+          "bytes": 262,
+          "sha256": "c5f4b88076108eb1a0d95336e1aa7e7bb1419a3a92af96f6247d88cd3456f933",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-left.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        },
+        {
+          "requested_name": "arrow-right",
+          "path": "icons/arrow-right.svg",
+          "status": "collected",
+          "bytes": 261,
+          "sha256": "288397fdb73bb4f783cf9eabb726ff47357df1d4e3f1201dd748090579f108b9",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-right.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        },
+        {
+          "requested_name": "arrow-up",
+          "path": "icons/arrow-up.svg",
+          "status": "collected",
+          "bytes": 261,
+          "sha256": "8c22c25874c80bb062bef985d207d8f1d4a4d7847237d0a8cf720a3235968518",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-up.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        },
+        {
+          "requested_name": "settings",
+          "path": "icons/settings.svg",
+          "status": "collected",
+          "bytes": 586,
+          "sha256": "0ae27fd0f81999229e3127ac96c5b32edfea448e291d509e76212b917551d66b",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/settings.svg",
+          "license_basis": "ISC per pinned LICENSE"
+        },
+        {
+          "requested_name": "trash-2",
+          "path": "icons/trash-2.svg",
+          "status": "unavailable at pinned revision",
+          "http_status": 404,
+          "tree_observation": "the pinned tree lists icons/trash.svg and icons/trash-off.svg, not icons/trash-2.svg"
+        },
+        {
+          "requested_name": "trash-2",
+          "alternate_path": "ALTERNATE-trash-not-trash-2/icons/trash.svg",
+          "actual_upstream_name": "trash",
+          "status": "collected separately; not a substitution/adoption decision",
+          "bytes": 389,
+          "sha256": "27299f69ad7c6272be64b1b8e2d48cbd6dcf0ef0d4f92827a1affa945c91700e",
+          "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/trash.svg",
+          "license_basis": "MIT, Feather-derived per pinned LICENSE"
+        }
+      ],
+      "collected_requested_asset_bytes": 5454,
+      "svg_conventions": {
+        "source_url": "https://github.com/lucide-icons/lucide/blob/4b203ec9b6002fd74fd5dadc8612220e64289305/docs/contribute/icons/code-conventions.md",
+        "source_lines": "11\u201323, 47\u201351, 83\u201388",
+        "observed": "The pinned guide sets root width/height 24, viewBox 0 0 24 24, fill none, stroke currentColor, stroke-width 2, round linecap/join; disallows explicit stroke colors and references such as <use>. All 15 collected requested SVGs and the separately saved trash.svg alternate match the root defaults. CurrentColor therefore must resolve through the consuming renderer/style or an authorized generation-time explicit color adaptation; static inspection alone does not prove renderer compatibility."
+      },
+      "primary_source_doc": {
+        "url": "https://github.com/lucide-icons/lucide/blob/4b203ec9b6002fd74fd5dadc8612220e64289305/docs/contribute/icons/specification.md",
+        "observed": "Pinned specification states icon strokes are 2 pixels wide and centered on paths (lines 24\u201331)."
+      }
+    },
+    "papirus": {
+      "repository": "PapirusDevelopmentTeam/papirus-icon-theme",
+      "repository_url": "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme",
+      "upstream_commit": "072a55a432f075acd4932bb4aab6a154746b784d",
+      "commit_url": "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commit/072a55a432f075acd4932bb4aab6a154746b784d",
+      "commit_date": "2026-11-01T20:31:29Z",
+      "tree_sha": "c2ef48f2226af4093671991c41a8e8b0f38ef803",
+      "commit_signature_verified": false,
+      "head_basis": "first item returned by repository default-branch commits endpoint at collection time; GitHub reports commit unsigned",
+      "license": {
+        "path": "LICENSE",
+        "bytes": 35149,
+        "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+        "source_url": "https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-icon-theme/072a55a432f075acd4932bb4aab6a154746b784d/LICENSE",
+        "observed": "GPL-3.0 text."
+      },
+      "readme": {
+        "path": "README.md",
+        "bytes": 17609,
+        "sha256": "8941da7d50326632872f48c8c8b0f4803e1cf293a899fb288b096105550327cc",
+        "source_url": "https://raw.githubusercontent.com/PapirusDevelopmentTeam/papirus-icon-theme/072a55a432f075acd4932bb4aab6a154746b784d/README.md",
+        "observed": "README calls the theme available in five variants but enumerates only Papirus, Papirus Dark and Papirus Light in that list; the mismatch is unresolved in the inspected text. It describes installing base plus Dark/Light via papirus-icon-theme packages or its installer. Recommendations say Breeze is expected for users of Plasma and/or KDE apps; several GTK themes are recommended, not stated as runtime requirements. No build dependency list was found in this README."
+      },
+      "collection_limit": "Only LICENSE and README were read. No theme tree/assets/package archive was downloaded; installed byte size and complete variant count are not measured."
+    },
+    "read_limits": [
+      "Lucide trash-2.svg was requested but returns 404 at the pinned commit; no silent substitution. The pinned tree lists trash.svg and trash-off.svg.",
+      "Papirus README variant count conflicts with its enumerated list; no inference added.",
+      "Exact raw bytes/SHA values are for the individually fetched Lucide source text decoded as UTF-8; all candidate SVGs and Lucide LICENSE are ASCII and byte-count verified locally. Papirus README/LICENSE hashes are computed from pinned raw.githubusercontent.com text as UTF-8.",
+      "No renderer/native tests, installation, full-theme download, or asset adoption occurred.",
+      "Actual backend model/tool execution identity remains unverified."
+    ]
+  },
+  "proposed_lucide_subset": [
+    {
+      "name": "folder",
+      "path": "icons/folder.svg",
+      "bytes": 342,
+      "sha256": "f0d92b94b797a8ab7d4c4ae33c3236c47f64068351b4e14bdb5014ee42898a39",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "folder-open",
+      "path": "icons/folder-open.svg",
+      "bytes": 401,
+      "sha256": "ee57452b40e71df310214091dd9da1941a397c83197b8ff8d7ae66dd4242578b",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder-open.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "file",
+      "path": "icons/file.svg",
+      "bytes": 373,
+      "sha256": "499039795d7412d67664ff79d2eb6b7412e746b24c18c8fd8aba383c24ddada0",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "file-text",
+      "path": "icons/file-text.svg",
+      "bytes": 444,
+      "sha256": "52ca55846c202335fb870c8aa23e9345630ec10489303756d62e750f7109605c",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file-text.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "image",
+      "path": "icons/image.svg",
+      "bytes": 358,
+      "sha256": "619c9db58c879dce6250376ba67d9c9102ca6dbb3b1efb9294c9f180e22273a5",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/image.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "clipboard",
+      "path": "icons/clipboard.svg",
+      "bytes": 354,
+      "sha256": "d9b433e6a571d96a035ddb83d2ff52c4f85925ffcba9e584cf371d0dfa90875d",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE"
+    },
+    {
+      "name": "copy",
+      "path": "icons/copy.svg",
+      "bytes": 339,
+      "sha256": "ea80e566c7a12628a447cb53179b19aea4f60b9143e2becd0d0f20bf260e5718",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/copy.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "scissors",
+      "path": "icons/scissors.svg",
+      "bytes": 371,
+      "sha256": "4c831fc2c903825f68565c28ffab945c34b2c60b6c564e2ae54250e1099fa550",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/scissors.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "clipboard-paste",
+      "path": "icons/clipboard-paste.svg",
+      "bytes": 435,
+      "sha256": "d2e4e6df0b2fecf97a95ef244f9031fb7c1deae0c9401df2a11d93379e8d361f",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard-paste.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "search",
+      "path": "icons/search.svg",
+      "bytes": 275,
+      "sha256": "283d371c2e433817bb9c0c8310caa6c77fa4177c0f4f1168d9c83b97af7389dc",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/search.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE"
+    },
+    {
+      "name": "refresh-cw",
+      "path": "icons/refresh-cw.svg",
+      "bytes": 392,
+      "sha256": "2e10dd403c85a24f163d59fc6151aa21147fe9402e1305dfc8979208caee8944",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/refresh-cw.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "arrow-left",
+      "path": "icons/arrow-left.svg",
+      "bytes": 262,
+      "sha256": "c5f4b88076108eb1a0d95336e1aa7e7bb1419a3a92af96f6247d88cd3456f933",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-left.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE"
+    },
+    {
+      "name": "arrow-right",
+      "path": "icons/arrow-right.svg",
+      "bytes": 261,
+      "sha256": "288397fdb73bb4f783cf9eabb726ff47357df1d4e3f1201dd748090579f108b9",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-right.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE"
+    },
+    {
+      "name": "arrow-up",
+      "path": "icons/arrow-up.svg",
+      "bytes": 261,
+      "sha256": "8c22c25874c80bb062bef985d207d8f1d4a4d7847237d0a8cf720a3235968518",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-up.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE"
+    },
+    {
+      "name": "settings",
+      "path": "icons/settings.svg",
+      "bytes": 586,
+      "sha256": "0ae27fd0f81999229e3127ac96c5b32edfea448e291d509e76212b917551d66b",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/settings.svg",
+      "license_basis": "ISC per pinned LICENSE"
+    },
+    {
+      "name": "trash",
+      "path": "icons/trash.svg",
+      "bytes": 389,
+      "sha256": "27299f69ad7c6272be64b1b8e2d48cbd6dcf0ef0d4f92827a1affa945c91700e",
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/trash.svg",
+      "license_basis": "MIT, Feather-derived per pinned LICENSE",
+      "selection": "proposed explicitly; not a silent trash-2 alias"
+    }
+  ],
+  "proposed_source_bytes": 5843,
+  "complete_upstream_notice_bytes": 3208,
+  "proposed_source_plus_notice_bytes": 9051,
+  "installed_size": "not measured; no installation selected",
+  "runtime_cost": "unmeasured; no renderer or runtime changed",
+  "product_adoption": false,
+  "new_dependencies": false,
+  "new_residents": false,
+  "recommendation": "Explicitly adopt a tiny optional menu glyph theme using the 16 named Lucide sources with complete ISC/MIT notice; use existing per-state Colorset IconTint for owned generic directory/menu roles. Keep current defaults/native Vector controls and unrelated full-color application/tray/pinboard icons. Leave Papirus as an optional user-installed theme, not bundled.",
+  "alternative": "Keep current assets/text and installed themes for R1; retain this evaluated Lucide subset without adoption.",
+  "render_source_evidence": [
+    {
+      "path": "fvwm/menuitem.c",
+      "line": 958,
+      "observation": "Native menu pictures receive normal/selected Colorset render attributes",
+      "sha256": "dc67dde065ab7c9ad36797230df40abb933350a627cad33755c4c2cead982722"
+    },
+    {
+      "path": "libs/PictureGraphics.c",
+      "line": 989,
+      "observation": "Existing IconTint/IconAlpha are applied from render Colorset",
+      "sha256": "2014bc2cfbd86b463fdedee037a70ead4eda93d80c66eb292fa72c290db43453"
+    },
+    {
+      "path": "libs/image_svg.c",
+      "line": 443,
+      "observation": "SVG worker receives bytes/geometry/transforms without a native foreground stylesheet",
+      "sha256": "982fb9bbd19f7c2155d8bc3222a778a7482181987a2bfc72fd81d5e05ee3c966"
+    },
+    {
+      "path": "modules/FvwmTray/tray_sni_ui.c",
+      "line": 492,
+      "observation": "Tray picture draw passes NULL render attributes; no symbolic foreground inheritance",
+      "sha256": "3214d88cba958ee15f463fbcd57f9fd8af0d20d6d25d3287f1b4f44a97b5be3f"
+    },
+    {
+      "path": "modules/FvwmPinboard/pinboard.c",
+      "line": 212,
+      "observation": "Pinboard picture copy preserves colors; label foreground is separate",
+      "sha256": "ac19c01a8ffd3cd1362539899e3d7a6fa61344d86b31d128cc3c6f9edd3a6c29"
+    }
+  ],
+  "required_adoption_gates": [
+    "Explicit owner asset choice; no automatic Lucide/Papirus adoption",
+    "Complete pinned ISC/MIT copyright/license notices; upstream/source/derived/install parity and modification record",
+    "At most 32 KiB installed file contents for optional subset/notice/index/provenance; actual filesystem/package bytes and runtime costs measured separately",
+    "Use existing SVG profile and bounded resolver; no mandatory PNG variant/font/toolkit/service",
+    "Scope IconTint to menus containing only owned generic role glyphs; preserve unrelated full-color artwork",
+    "Three actual native configurations including enlarged text; normal/selected/disabled/focus, alpha/antialiased edges, quarter-scale behavior and glyph/text contrast",
+    "Disabled/missing-format fallback preserves labels/actions/keyboard access; wider six-target/install/release gates remain open"
+  ],
+  "limits": [
+    "Source-only evaluation; no render/contrast/accessibility/install/profile pass",
+    "Papirus assets/full tree/package not downloaded; installed cost and complete variant inventory unavailable",
+    "Pinned Papirus README count/list inconsistency retained without inferred missing variants",
+    "No shared exported-image garbage collector or new symbolic protocol selected"
+  ]
+}

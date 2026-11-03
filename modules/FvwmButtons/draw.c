@@ -726,7 +726,6 @@ void DrawTitle(button_info *b,Window win,GC gc, XEvent *pev)
 	int just=justify&b_TitleHoriz; /* Left, center, right */
 	XGCValues gcv;
 	XRectangle clip;
-	Region region = None;
 	FvwmPicture *pic;
 	unsigned short bIconFlagSet;
 
@@ -860,24 +859,8 @@ void DrawTitle(button_info *b,Window win,GC gc, XEvent *pev)
 				return;
 			}
 		}
-		XSetClipRectangles(
-			Dpy, FwinString.gc, 0, 0, &clip, 1, Unsorted);
-		region = XCreateRegion();
-		XUnionRectWithRegion (&clip, region, region);
-		FwinString.flags.has_clip_region = True;
-		FwinString.clip_region = region;
-		if (0)
-		{
-			XClearArea(
-				Dpy, win,
-				clip.x, clip.y, clip.width, clip.height,
-				False);
-		}
-		FlocaleDrawString(Dpy, Ffont, &FwinString, 0);
-		XSetClipMask(Dpy, FwinString.gc, None);
-		if (region)
-		{
-			XDestroyRegion(region);
-		}
+		if (!flocale_draw_string_clipped(
+			Dpy, Ffont, &FwinString, 0, clip))
+			fvwm_debug(__func__, "could not prepare title clip");
 	}
 }

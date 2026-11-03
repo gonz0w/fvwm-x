@@ -1,0 +1,36 @@
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License, version 2 or later.
+# Optional example, never read by the shipped default. After Read, run
+# FVWMXLucideSetup, then Popup FVWMXLucideExamples. Rerun setup after palette
+# changes. These private Colorsets 240-243 and names belong to this example;
+# change them together if your configuration already uses those identifiers.
+# Glyph labels demonstrate artwork only; they do not enable product actions.
+InfoStoreAdd fvwmx_lucide_root "@FVWM_LUCIDE_ICONDIR@"
+DestroyFunc FVWMXLucideSetup
+AddToFunc FVWMXLucideSetup
++ I Colorset 240 fg $[fg.cs5], bg $[bg.cs5], hi $[bg.cs5], sh $[bg.cs5], IconTint $[fg.cs5] 100, IconAlpha 100
++ I Colorset 241 fg $[fg.cs6], bg $[bg.cs6], hi $[bg.cs6], sh $[bg.cs6], IconTint $[fg.cs6] 100, IconAlpha 100
++ I Colorset 242 fg $[fg.cs7], bg $[bg.cs7], hi $[bg.cs7], sh $[bg.cs7], IconTint $[fg.cs7] 100, IconAlpha 100
++ I Colorset 243 fg $[fg.cs8], bg $[bg.cs8], hi $[bg.cs8], sh $[bg.cs8], IconTint $[fg.cs8] 100, IconAlpha 100
++ I CopyMenuStyle * FVWMXLucideStyle
++ I MenuStyle FVWMXLucideStyle MenuColorset 240, ActiveColorset 241, GreyedColorset 242, TitleColorset 243, ItemFormat "%|%i%8p%l%8p%|"
++ I DestroyMenu recreate FVWMXLucideExamples
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/folder-open.svg%Lucide glyphs" Title
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/folder.svg%Closed folder" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/folder-open.svg%Open folder" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/file.svg%File" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/file-text.svg%Document" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/image.svg%Image" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/clipboard.svg%Clipboard" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/copy.svg%Copy" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/scissors.svg%Cut" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/clipboard-paste.svg%Paste" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/search.svg%Search" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/refresh-cw.svg%Refresh" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/arrow-left.svg%Back" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/arrow-right.svg%Forward" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/arrow-up.svg%Parent folder" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/settings.svg%Settings" Nop
++ I AddToMenu FVWMXLucideExamples "%$[infostore.fvwmx_lucide_root]/trash.svg%Remove" Nop
++ I AddToMenu FVWMXLucideExamples Greyed "%$[infostore.fvwmx_lucide_root]/clipboard.svg%Unavailable example"
++ I ChangeMenuStyle FVWMXLucideStyle FVWMXLucideExamples

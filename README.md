@@ -5,7 +5,7 @@ and OpenBSD Xenocara on AMD64 and ARM64.
 
 Preserves FVWM configurations. No compositor or Wayland.
 
-**Status:** R1 development: a configurable, fast, low-memory desktop
+**Status:** R1 development: configurable, fast, low-memory desktop
 lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 
 - Session controls, logout, services and scaling.
@@ -27,8 +27,9 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   [preview](doc/development-preview.md#file-clipboard-and-drag-work-in-progress).
 - File jobs: folders, rename, copy/move, links, trash/restore, delete;
   progress, conflicts and cancellation.
-- In-progress native tray: XEmbed, opt-in StatusNotifier, bar popup and optional
+- Native tray: XEmbed, opt-in StatusNotifier, bar popup and optional
   Buttons slot; [usage](doc/FvwmTray.adoc) and [current captures](doc/development-preview.md#native-tray-completion-work-in-progress).
+- Optional Lucide menu glyphs; [theme examples](doc/development-preview.md#optional-lucide-menu-glyphs-in-progress).
 - Optional pinboard: saved references, shaped cells and management;
   unpin preserves targets.
 
@@ -52,5 +53,5 @@ and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 - [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
 - [Contribute and validate locally](CONTRIBUTING.md)
 
-Validation runs locally; GitHub Actions is disabled.
-FVWM-X retains FVWM's GPL license and upstream attribution; see [COPYING](COPYING).
+Local validation; GitHub Actions disabled.
+GPL and upstream attribution: see [COPYING](COPYING).

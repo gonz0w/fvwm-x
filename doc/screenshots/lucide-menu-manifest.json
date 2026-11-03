@@ -1,0 +1,297 @@
+{
+  "schema": "fvwm-x-lucide-captures-v1",
+  "status": "final raw native captures inspected; all16 glyphs visible",
+  "base": "aa4792c665622bb222b3939f7354f485b54bf05e",
+  "source_manifest_sha256": "cb0e8f19834b27e9606d145a7ea4fa2382abb38cf9bdce155b083982758457c5",
+  "fixture_sha256": "8f9312e96f482cc9b7873f056bdadd10c733140351eb617a0759cdce98f2997a",
+  "capture_job": "ready07/lucide-three-profiles",
+  "profile_scope": "isolated native popup, scale1; enlarged Classic font; Nop demonstration actions",
+  "earlier_partial_captures": "observe06 retained privately and excluded",
+  "profiles": [
+    {
+      "name": "slate-dark",
+      "png": "screenshots/lucide-menu-slate-dark.png",
+      "sha256": "74216e578f71d7068f4a52dae3613ee6122aff88bb6c2932a07e712b844e71c6",
+      "bytes": 37514,
+      "recipe": "screenshots/lucide-menu-slate-dark.config",
+      "recipe_sha256": "1c67023693b232f3472847fb3d57caefd0799d8af60c3d13492a8f46ff569712",
+      "recipe_kind": "source-derived equivalent, not recorded wire",
+      "geometry": [
+        248,
+        86,
+        204,
+        455
+      ],
+      "all_glyphs_witnessed": 16,
+      "role_pixel_witnesses": {
+        "0": {
+          "foreground": 15068656,
+          "background": 2107953,
+          "edge": 9213081,
+          "foreground_point": [
+            7,
+            30
+          ],
+          "background_point": [
+            3,
+            28
+          ],
+          "edge_point": [
+            5,
+            30
+          ],
+          "blend_fraction": 0.5482233502538071,
+          "measured_contrast": 12.320203839524467
+        },
+        "2": {
+          "foreground": 11056830,
+          "background": 2107953,
+          "edge": 4739930,
+          "foreground_point": [
+            12,
+            428
+          ],
+          "background_point": [
+            8,
+            426
+          ],
+          "edge_point": [
+            10,
+            428
+          ],
+          "blend_fraction": 0.2907801418439716,
+          "measured_contrast": 7.028552400017397
+        },
+        "3": {
+          "foreground": 6535099,
+          "background": 2107953,
+          "edge": 4552315,
+          "foreground_point": [
+            7,
+            4
+          ],
+          "background_point": [
+            3,
+            2
+          ],
+          "edge_point": [
+            5,
+            4
+          ],
+          "blend_fraction": 0.5390070921985816,
+          "measured_contrast": 6.278219903965391
+        },
+        "1": {
+          "foreground": 1188136,
+          "background": 6535099,
+          "edge": 3630443,
+          "foreground_point": [
+            7,
+            30
+          ],
+          "background_point": [
+            3,
+            28
+          ],
+          "edge_point": [
+            5,
+            30
+          ],
+          "blend_fraction": 0.5466666666666666,
+          "measured_contrast": 7.081778770840406
+        }
+      },
+      "source_capture_sha256": "74216e578f71d7068f4a52dae3613ee6122aff88bb6c2932a07e712b844e71c6"
+    },
+    {
+      "name": "dune-light",
+      "png": "screenshots/lucide-menu-dune-light.png",
+      "sha256": "e8cf85bc0f83f54e3bf582183a336243a456c01bfbaddd1e158c833bd1038aa5",
+      "bytes": 37177,
+      "recipe": "screenshots/lucide-menu-dune-light.config",
+      "recipe_sha256": "8463bda9cb8cd02e9bd3fc7b5f04dc6d05210113cdf4bf25dc681ef4cfc062ec",
+      "recipe_kind": "source-derived equivalent, not recorded wire",
+      "geometry": [
+        248,
+        86,
+        204,
+        455
+      ],
+      "all_glyphs_witnessed": 16,
+      "role_pixel_witnesses": {
+        "0": {
+          "foreground": 3682347,
+          "background": 16447214,
+          "edge": 16117992,
+          "foreground_point": [
+            5,
+            31
+          ],
+          "background_point": [
+            2,
+            28
+          ],
+          "edge_point": [
+            4,
+            30
+          ],
+          "blend_fraction": 0.030303030303030304,
+          "measured_contrast": 11.98273654623892
+        },
+        "2": {
+          "foreground": 7497307,
+          "background": 16447214,
+          "edge": 13815235,
+          "foreground_point": [
+            12,
+            428
+          ],
+          "background_point": [
+            8,
+            426
+          ],
+          "edge_point": [
+            10,
+            428
+          ],
+          "blend_fraction": 0.2925170068027211,
+          "measured_contrast": 5.171547007955308
+        },
+        "3": {
+          "foreground": 8869950,
+          "background": 16447214,
+          "edge": 12362127,
+          "foreground_point": [
+            7,
+            4
+          ],
+          "background_point": [
+            3,
+            2
+          ],
+          "edge_point": [
+            5,
+            4
+          ],
+          "blend_fraction": 0.5397727272727273,
+          "measured_contrast": 5.573164564722328
+        },
+        "1": {
+          "foreground": 16777215,
+          "background": 8869950,
+          "edge": 13153191,
+          "foreground_point": [
+            7,
+            30
+          ],
+          "background_point": [
+            3,
+            28
+          ],
+          "edge_point": [
+            5,
+            30
+          ],
+          "blend_fraction": 0.5440414507772021,
+          "measured_contrast": 6.00750275229465
+        }
+      },
+      "source_capture_sha256": "e8cf85bc0f83f54e3bf582183a336243a456c01bfbaddd1e158c833bd1038aa5"
+    },
+    {
+      "name": "classic-large",
+      "png": "screenshots/lucide-menu-classic-large.png",
+      "sha256": "c651b6f557e06f89202a51065929abec20a9bf095dfdf0130836d8bd5c14222d",
+      "bytes": 55119,
+      "recipe": "screenshots/lucide-menu-classic-large.config",
+      "recipe_sha256": "9d37e915856373d786e78edec678c1e2ee0d50b211c1549e627ac9d1b8e9d561",
+      "recipe_kind": "source-derived equivalent, not recorded wire",
+      "geometry": [
+        185,
+        81,
+        331,
+        600
+      ],
+      "all_glyphs_witnessed": 16,
+      "role_pixel_witnesses": {
+        "0": {
+          "foreground": 128,
+          "background": 16113331,
+          "edge": 7300503,
+          "foreground_point": [
+            7,
+            43
+          ],
+          "background_point": [
+            3,
+            41
+          ],
+          "edge_point": [
+            5,
+            43
+          ],
+          "blend_fraction": 0.5469387755102041,
+          "measured_contrast": 12.184119346175754
+        },
+        "2": {
+          "foreground": 4210752,
+          "background": 16113331,
+          "edge": 12693906,
+          "foreground_point": [
+            12,
+            569
+          ],
+          "background_point": [
+            8,
+            567
+          ],
+          "edge_point": [
+            10,
+            569
+          ],
+          "blend_fraction": 0.287292817679558,
+          "measured_contrast": 7.890799862415785
+        },
+        "3": {
+          "foreground": 8388608,
+          "background": 16113331,
+          "edge": 11888210,
+          "foreground_point": [
+            7,
+            9
+          ],
+          "background_point": [
+            3,
+            7
+          ],
+          "edge_point": [
+            5,
+            9
+          ],
+          "blend_fraction": 0.5405405405405406,
+          "measured_contrast": 8.33330735447029
+        },
+        "1": {
+          "foreground": 16777215,
+          "background": 8388608,
+          "edge": 12946315,
+          "foreground_point": [
+            7,
+            43
+          ],
+          "background_point": [
+            3,
+            41
+          ],
+          "edge_point": [
+            5,
+            43
+          ],
+          "blend_fraction": 0.5450980392156862,
+          "measured_contrast": 10.949825131812458
+        }
+      },
+      "source_capture_sha256": "c651b6f557e06f89202a51065929abec20a9bf095dfdf0130836d8bd5c14222d"
+    }
+  ]
+}

@@ -1,10 +1,28 @@
 # R1 icon asset choice
 
-Status: evaluation complete; **proposed asset choice, awaiting Cam**.
-Owner: ICON-01 #215, coordinated with THEME-02 #214. This document selects no
-artwork for installation and changes no runtime/default/dependency. Base is
+Status: **accepted by Cam on 2026-11-02**; A7 implementation and shared
+qualification remain separate. Owner: ICON-01 #215, coordinated with THEME-02
+#214. Base for the evaluation is
 PR350 `85bef183253e1ec175b1762c4934e09b987acd75`.
 [Exact inventory and source evidence](../verification/EVALUATION-2026-11-02-ICON-ASSETS.json).
+
+## Accepted scope
+
+Cam chose “Adopt small optional Lucide set” on 2026-11-02. A7 installs exactly
+the 16 glyphs below, derived from the pinned sources with explicit stroke color,
+with the full ISC/MIT notice, index and provenance. The default-disabled
+`-Dlucide-menu-icons=true` option installs the theme under
+`${datadir}/icons/FVWM-X-Lucide` and a separate opt-in menu example. It does not
+enable SVG or change defaults. The example snapshots the default desktop palette
+into private Colorsets and uses a private menu style; it must be reapplied after
+palette changes. Its labeled `Nop` entries demonstrate glyphs without claiming
+product actions. Application logos, tray, pinboard and Vector controls are outside
+this scope. Nonstandard runtime prefixes require the installed datadir in
+`XDG_DATA_DIRS` for named theme resolution.
+
+Installation, source parity and resolver checks belong to A7. Actual rendering,
+contrast and screenshot observations remain queued at the shared A5–A8 checkpoint;
+this decision does not claim those results or release qualification.
 
 ## Recommendation
 
@@ -100,7 +118,7 @@ semantics to their third-party icons or overlays. Their existing text and
 other-enabled-format fallback remains. The existing optional SVG feature uses
 librsvg/Cairo; it is not enabled or made mandatory by this choice.
 
-If Cam accepts the subset, select one bounded adoption batch:
+The accepted bounded adoption batch is:
 
 1. Add only these pinned source/derived glyphs, notice/provenance and a private
    optional theme index through the existing asset/install pipeline. Keep default

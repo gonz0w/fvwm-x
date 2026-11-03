@@ -1,0 +1,109 @@
+{
+  "schema": "fvwm-x-lucide-v1",
+  "upstream_commit": "4b203ec9b6002fd74fd5dadc8612220e64289305",
+  "upstream_tree": "ee3ff6d38563f8c3dbec1101514ea2edf4839dc2",
+  "derivation": "Replace the single stroke=\"currentColor\" with stroke=\"#000000\"; all other bytes unchanged. Native menu Colorsets apply role tint.",
+  "license": {
+    "file": "LICENSE",
+    "sha256": "b495047bd93a9b06913511076f504daba17d5bbeb3e0650f3bb53a4220329c57",
+    "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/LICENSE"
+  },
+  "icons": {
+    "folder": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder.svg",
+      "upstream_sha256": "f0d92b94b797a8ab7d4c4ae33c3236c47f64068351b4e14bdb5014ee42898a39",
+      "derived_sha256": "f14551ba1f6de150cb5935634d852f7be092c33c958aa9d77b1bdae1b34174c8",
+      "license": "ISC per pinned LICENSE"
+    },
+    "folder-open": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/folder-open.svg",
+      "upstream_sha256": "ee57452b40e71df310214091dd9da1941a397c83197b8ff8d7ae66dd4242578b",
+      "derived_sha256": "0e3824746e7aa8c822965fe3db59fbeefa16c4f6d317eafd3761683eb8fae306",
+      "license": "ISC per pinned LICENSE"
+    },
+    "file": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file.svg",
+      "upstream_sha256": "499039795d7412d67664ff79d2eb6b7412e746b24c18c8fd8aba383c24ddada0",
+      "derived_sha256": "49bf5c3d894851b37ed255ebf0a1e640f83a4e2e1e61c1b0a38c3e3353a25ea4",
+      "license": "ISC per pinned LICENSE"
+    },
+    "file-text": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/file-text.svg",
+      "upstream_sha256": "52ca55846c202335fb870c8aa23e9345630ec10489303756d62e750f7109605c",
+      "derived_sha256": "0cf5e0cff7fb56351bc3a65a1fb9a64555e0a366b32eb8cab0a13896e7eaa8bd",
+      "license": "ISC per pinned LICENSE"
+    },
+    "image": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/image.svg",
+      "upstream_sha256": "619c9db58c879dce6250376ba67d9c9102ca6dbb3b1efb9294c9f180e22273a5",
+      "derived_sha256": "51bb8cefcbc7d61997f5509f7e9df225fba27ef08fc46c74ee0f759b261ec36e",
+      "license": "ISC per pinned LICENSE"
+    },
+    "clipboard": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard.svg",
+      "upstream_sha256": "d9b433e6a571d96a035ddb83d2ff52c4f85925ffcba9e584cf371d0dfa90875d",
+      "derived_sha256": "84871f7abbc0662e6012996137021a8f28b27256064f0e601ed33858d2d2f114",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    },
+    "copy": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/copy.svg",
+      "upstream_sha256": "ea80e566c7a12628a447cb53179b19aea4f60b9143e2becd0d0f20bf260e5718",
+      "derived_sha256": "99bcba143635ae7973c22a64e26643a6002bb284654a3938d6f4f2097115ced8",
+      "license": "ISC per pinned LICENSE"
+    },
+    "scissors": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/scissors.svg",
+      "upstream_sha256": "4c831fc2c903825f68565c28ffab945c34b2c60b6c564e2ae54250e1099fa550",
+      "derived_sha256": "2bfe62a69216a0bb9cdb51e2d2af41d193b7156ecdf37fda76f8ba12fef0c52a",
+      "license": "ISC per pinned LICENSE"
+    },
+    "clipboard-paste": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/clipboard-paste.svg",
+      "upstream_sha256": "d2e4e6df0b2fecf97a95ef244f9031fb7c1deae0c9401df2a11d93379e8d361f",
+      "derived_sha256": "c5f5dc8712fd2745e911aada10d87d44191cb2879c41a403c6bdfc2f2322622f",
+      "license": "ISC per pinned LICENSE"
+    },
+    "search": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/search.svg",
+      "upstream_sha256": "283d371c2e433817bb9c0c8310caa6c77fa4177c0f4f1168d9c83b97af7389dc",
+      "derived_sha256": "5391ba1d20cb76946ad3b4fc3991c4d5e7980062754cb6258088fb9772ab19e3",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    },
+    "refresh-cw": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/refresh-cw.svg",
+      "upstream_sha256": "2e10dd403c85a24f163d59fc6151aa21147fe9402e1305dfc8979208caee8944",
+      "derived_sha256": "1923e056b4c2498485cbbf79d533f6a3a389378115d637cace4be77ea512a300",
+      "license": "ISC per pinned LICENSE"
+    },
+    "arrow-left": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-left.svg",
+      "upstream_sha256": "c5f4b88076108eb1a0d95336e1aa7e7bb1419a3a92af96f6247d88cd3456f933",
+      "derived_sha256": "c5a77346f5f34824f33b090cb504d62d3ece1565d8b68ca546a5aafa264781bf",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    },
+    "arrow-right": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-right.svg",
+      "upstream_sha256": "288397fdb73bb4f783cf9eabb726ff47357df1d4e3f1201dd748090579f108b9",
+      "derived_sha256": "8e87ded2914f0cba17290416ad2f5cba31e39204daa9cdfcb8c172bc42ab6c4c",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    },
+    "arrow-up": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/arrow-up.svg",
+      "upstream_sha256": "8c22c25874c80bb062bef985d207d8f1d4a4d7847237d0a8cf720a3235968518",
+      "derived_sha256": "d6e9c0f8b624a1cae13beff8d7a573fdab17290f87f7fbf6d34ba16df2e52104",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    },
+    "settings": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/settings.svg",
+      "upstream_sha256": "0ae27fd0f81999229e3127ac96c5b32edfea448e291d509e76212b917551d66b",
+      "derived_sha256": "e9d54e0b27a17fc93ceb8ad60cc26dc7d7952061238ff29b07bcc9cec01e96f8",
+      "license": "ISC per pinned LICENSE"
+    },
+    "trash": {
+      "source_url": "https://raw.githubusercontent.com/lucide-icons/lucide/4b203ec9b6002fd74fd5dadc8612220e64289305/icons/trash.svg",
+      "upstream_sha256": "27299f69ad7c6272be64b1b8e2d48cbd6dcf0ef0d4f92827a1affa945c91700e",
+      "derived_sha256": "733c4e33f13800464bad103c2462a34c0fb7cdf1b049d92a2dc2c3348119ffe5",
+      "license": "MIT, Feather-derived per pinned LICENSE"
+    }
+  }
+}

@@ -2253,7 +2253,6 @@ void RedrawText(Item *item)
 {
   char *p;
   char display[FORM_LABEL_BYTES + 4];
-  Region region = NULL;
 
   CheckAlloc(item,item->header.dt_ptr); /* alloc colors and fonts needed */
   item->header.dt_ptr->dt_Fstr->len = item->text.n;
@@ -2290,25 +2289,14 @@ void RedrawText(Item *item)
     XRectangle clip = {item->header.pos_x, item->header.pos_y,
       item->header.size_x, item->header.size_y};
     XClearArea(dpy, CF.frame, clip.x, clip.y, clip.width, clip.height, False);
-    region = XCreateRegion();
-    XUnionRectWithRegion(&clip, region, region);
-    /* Core/fontset drawing uses the GC clip; Xft uses the string region.
-     * Form draw-table GCs have no persistent clip outside this paint. */
-    XSetRegion(dpy, item->header.dt_ptr->dt_GC, region);
-    item->header.dt_ptr->dt_Fstr->flags.has_clip_region = True;
-    item->header.dt_ptr->dt_Fstr->clip_region = region;
-  }
-  FlocaleDrawString(dpy,
-		    item->header.dt_ptr->dt_Ffont,
-		    item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
-  if (region != NULL)
-  {
-    XSetClipMask(dpy, item->header.dt_ptr->dt_GC, None);
-    item->header.dt_ptr->dt_Fstr->flags.has_clip_region = False;
-    item->header.dt_ptr->dt_Fstr->clip_region = NULL;
+    if (!flocale_draw_string_clipped(dpy, item->header.dt_ptr->dt_Ffont,
+        item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH, clip))
+      fvwm_debug(__func__, "could not prepare fixed label clip");
     item->header.dt_ptr->dt_Fstr->str = NULL;
-    XDestroyRegion(region);
   }
+  else
+    FlocaleDrawString(dpy, item->header.dt_ptr->dt_Ffont,
+      item->header.dt_ptr->dt_Fstr, FWS_HAVE_LENGTH);
   return;
 }
 

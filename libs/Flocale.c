@@ -1949,6 +1949,36 @@ Bool FlocaleGetShadowTextPosition(
 	return True;
 }
 
+Bool flocale_draw_string_clipped(
+	Display *dpy, FlocaleFont *font, FlocaleWinString *string,
+	unsigned long flags, XRectangle clip)
+{
+	Region region, previous;
+	Bool had_clip;
+
+	if (!dpy || !font || !string || !string->gc)
+		return False;
+	if (!clip.width || !clip.height)
+		return True;
+	region = XCreateRegion();
+	if (!region)
+		return False;
+	XUnionRectWithRegion(&clip, region, region);
+	previous = string->clip_region;
+	had_clip = string->flags.has_clip_region;
+	/* Core/fontset and Xft drawing need the same paired clip lifetime. The
+	 * caller owns intersection/placement and supplies a GC without a clip. */
+	XSetClipRectangles(dpy, string->gc, 0, 0, &clip, 1, Unsorted);
+	string->clip_region = region;
+	string->flags.has_clip_region = True;
+	FlocaleDrawString(dpy, font, string, flags);
+	XSetClipMask(dpy, string->gc, None);
+	string->clip_region = previous;
+	string->flags.has_clip_region = had_clip;
+	XDestroyRegion(region);
+	return True;
+}
+
 void FlocaleDrawString(
 	Display *dpy, FlocaleFont *flf, FlocaleWinString *fws,
 	unsigned long flags)

@@ -5,3 +5,31 @@
 fvwm3menus - fvwm menus
 
 include::fvwm3_menus.ad[]
+
+== OPTIONAL LUCIDE MENU GLYPHS
+
+A build configured with `-Dlucide-menu-icons=true` installs a small optional
+`FVWM-X-Lucide` theme and an example. SVG support must also be enabled in the
+build to render the glyphs. Without SVG support, the example retains its labels
+and actions. The option does not change the default menus.
+
+To load the example, add this line to your `local.config`:
+
+....
+Read "$[FVWM_DATADIR]/default-config/lucide-menus.fvwm"
+....
+
+Run `FVWMXLucideSetup` after loading it, then use `Popup FVWMXLucideExamples`
+to display the examples. The setup snapshots default desktop Colorsets 5, 6, 7
+and 8 into private Colorsets 240–243 and a private menu style. Run it again
+after changing the palette. All 16 entries are labeled `Nop` demonstrations,
+not product actions. The extra heading and unavailable row demonstrate title
+and disabled styles. Reserve Colorsets 240–243 for this example or change those
+IDs together if your configuration already uses them.
+
+For `fvwm-menu-directory`, select the theme with
+`--icon-theme FVWM-X-Lucide --icon-file file --icon-app 0` to keep the
+requested names within this set. For a
+nonstandard installation prefix, include the installed data directory in
+`XDG_DATA_DIRS` for named theme lookup. A `DESTDIR` staging directory is not
+the runtime prefix.

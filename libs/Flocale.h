@@ -269,6 +269,16 @@ void FlocaleDrawString(
 	Display *dpy, FlocaleFont *ff, FlocaleWinString *fstring,
 	unsigned long flags);
 
+/* Draw within a prepared rectangle, borrowing font/string/GC synchronously.
+ * The GC must have no persistent clip on entry; it has no clip on return.
+ * The string's previous clip fields are restored. No font/region is retained.
+ * Empty rectangles are no-ops. False reports invalid resources or Region
+ * creation failure without changing caller state. True is submission/no-op
+ * status, not an X-server acknowledgement; existing X error barriers apply. */
+Bool flocale_draw_string_clipped(
+	Display *dpy, FlocaleFont *font, FlocaleWinString *string,
+	unsigned long flags, XRectangle clip);
+
 /*
  * Underline a character in a string (pete@tecc.co.uk) at coffest position
  */

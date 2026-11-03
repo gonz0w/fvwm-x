@@ -231,6 +231,11 @@ remove them from saved build invocations. Use a new build directory when an old
 Meson cache retains them. FVWM configuration and SVG rendering options do not
 change. There is no renderer download or additional desktop toolkit.
 
+The optional `-Dlucide-menu-icons=true` installs a small Lucide-derived menu
+glyph theme and an example configuration. It is disabled by default and does
+not enable SVG support; rendering the glyphs requires an SVG-enabled build.
+See `fvwm3menus(1)` for opt-in setup and palette handling.
+
 SVG decoding uses the installed private `fvwm-image-svg-worker` executable.
 The default total deadline is 5 seconds and the worker memory limit is 1024
 MiB. Set `-Dimage-svg-timeout=N` (1–60 seconds) and

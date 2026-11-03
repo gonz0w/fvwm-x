@@ -35,6 +35,61 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: A6 finite icon-asset evaluation under ICON-01 #215 / THEME-02
+#214, branch `codex/r1-icon-asset-evaluation`, base merged PR350
+`85bef183253e1ec175b1762c4934e09b987acd75`. Owner Cam. Select three related
+source-only evaluation stories before any asset/runtime adoption:
+
+1. Pin primary Lucide license/source and a small concrete UI-role subset;
+   measure exact selected source/license bytes and record attribution, source
+   identities and install implications. Compare keeping existing assets/text.
+2. Pin primary Papirus license/documentation and assess optional installed-theme
+   use through the existing resolver. Distinguish upstream repository/package
+   size from measured installed bytes; no full theme download or mandatory
+   system package is selected. Record unavailable profile costs honestly.
+3. Trace existing SVG/color/state/fallback presentation in the current native
+   consumers. State which candidate forms work with current primitives, which
+   require bounded adaptation and which adoption choices need an explicit owner
+   decision. Deliver one concrete reviewable recommendation with finite scope,
+   costs, unresolved checks and a fixed acceptance checkpoint.
+
+One bounded primary-source collection per candidate plus source analysis. No
+artwork import into shipped paths, new decoder/toolkit/service, rendering/backend
+change, native execution or automatic Lucide/Papirus adoption. No release gate
+or asset choice is waived by documentation. Evaluation may finish independently
+of adoption; accepted choices then enter a bounded implementation batch. Other
+R1 work can proceed while a required asset decision is pending.
+
+A6 evaluation is complete. Primary sources pin Lucide and Papirus; local
+hash/byte verification covers 15 requested SVGs plus separately proposed trash
+(the requested trash-2 is absent). Sixteen proposed glyphs total 5843 raw bytes,
+plus 3208 bytes for the complete ISC/MIT notice. Papirus remains optional;
+installed package cost is unmeasured. Existing menu IconTint supplies a scoped
+recoloring route; currentColor does not inherit native text foreground in the
+SVG worker, tray or pinboard. No artwork/runtime/default was adopted.
+
+[Concrete owner choice](decisions/ICON-ASSET-CHOICE-2026-11-02.md): recommend a
+tiny optional Lucide menu glyph set with complete notices and existing scoped
+tint/fallback, keeping Papirus user-installed and defaults/full-color clients
+unchanged; or retain current assets/text for R1. Separate source/evidence review
+and signed delivery come before requesting the explicit asset choice. Adoption
+would join A5–A8 acceptance. Independent R1 selection can continue while waiting.
+
+PR350 is merged after source/build-plan/integrated/exact signed-delivery reviews.
+Head `de6f32296b5e54f0432e459597e86d2a8ef461f2`, tree
+`9d9b45f4976980c993d4b0862dbe0eddc45ad275`, canonical merge
+`85bef183253e1ec175b1762c4934e09b987acd75`; Cam signature, actual-author DCO,
+reviewed parent/tree, clean synchronized main and matching completed refs verify.
+Project PR Done and #214/#215 In progress verify; R1 retains 50 open issues.
+A5 seven ELFs compile, its runtime remains queued for A5–A8. Six supplemental
+host settings-projection benchmark processes pass with stopped groups, exposing
+higher temporary query costs and smaller wire output; #29/#226 mirrors updated.
+All owned labs are stopped. General performance is 6/5/due, not reset by the
+supplemental observation. [A5 report](verification/VERIFICATION-2026-11-02-ICON-LIFECYCLE.md).
+
+<details>
+<summary>A5 delivered scope and retained acceptance</summary>
+
 Current work: A5 named-icon lifecycle under ICON-01 #215, branch
 `codex/r1-icon-lifecycle`, base merged PR349
 `d2624fb79d0e7634054a6c134a1f31602a76a8c1`. Owner Cam; selected lead
@@ -140,6 +195,8 @@ UI jobs, with original failures and three-profile raw screenshots retained in
 [the checkpoint report](verification/VERIFICATION-2026-11-02-APPEARANCE-CHECKPOINT.md).
 Every owned lab is stopped. Performance is 5/5/due; foreign QEMU prevents the
 quiet comparison and is preserved. Broader issue/release coverage remains open.
+
+</details>
 
 <details>
 <summary>A4 delivered scope and shared acceptance</summary>

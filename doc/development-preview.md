@@ -63,9 +63,13 @@ The [capture manifest](screenshots/desktop-components-manifest.json) pairs raw
 PNGs with their [Slate](screenshots/desktop-components-slate-dark.fvwm),
 [Dune](screenshots/desktop-components-dune-light.fvwm) and
 [Classic](screenshots/desktop-components-classic-large.fvwm) configuration recipes
-and runtime preferences. The recipes contain temporary lab paths; adapt those
-paths before reuse and choose the listed preferences in the component editor.
-The images show development snapshots, not accessibility or release acceptance.
+and runtime preferences. These files record the live-X harness setup, including
+its temporary module directory, ConfigFvwmDefaults source and default-config
+root. Reproduce that setup with the [component fixture](../tests/live_x/theme_composition_live.py).
+For normal customization, start the shipped FVWM-X configuration and choose the
+listed preferences in the component editor; keep the installation's module and
+configuration paths. The images show development snapshots, not accessibility
+or release acceptance.
 
 ## Settings preview (in progress)
 

@@ -35,6 +35,115 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: A5 named-icon lifecycle under ICON-01 #215, branch
+`codex/r1-icon-lifecycle`, base merged PR349
+`d2624fb79d0e7634054a6c134a1f31602a76a8c1`. Owner Cam; selected lead
+implementation fallback continues (implementer role remains unavailable).
+
+Select one bounded lifecycle assessment before affected implementation: trace
+current Source/finder/request cache generations, immutable disk copies and every
+shipped consumer's retained references. Establish explicit source-change refresh
+and last-reference retirement oracles, distinguishing exported menu files from
+private native consumers. Reuse the current resolver and process boundaries.
+Return one finite design with three related implementation stories if ownership
+can be proved; otherwise name the exact blocker and continue independent R1 work.
+One source-analysis attempt; no native execution, new watcher/service, asset
+package, decoder, shared-cache deletion or broad rewrite is selected by this
+assessment. Missing reference proof is not permission to unlink. Lead records
+its disposition and finite acceptance before implementation. Future asset choice
+and broader panel roles retain their owner scope.
+
+A5 assessment disposition: shared application/directory export assets have no
+last-reference acknowledgement, and retained native menu pictures can load again
+at another scale. Their worker's exit or initial load is not a retirement proof.
+Do not add a collector or unlink exported assets. Tray batches and pinboard
+acknowledged generations already have bounded private retirement; preserve them.
+A fresh Source/finder/renderer already observes changed bytes and missing/index
+results. The remaining concrete gap is explicit same-profile tray refresh.
+
+Select three related stories for this checkpoint:
+
+1. Explicit tray Refresh/Reload requests a fresh named-icon acquisition with the
+   same theme/size/scale. Reuse the existing nonwrapping acquisition fence and
+   native cell/menu reset, preserving live identity, visibility and retry policy.
+   Incidental topology/unsolicited snapshots do not create source refreshes.
+2. Author focused fresh-acquisition regression cases for same-path replacement,
+   missing→present and changed inheritance/index, retaining old-generation
+   stability/content identity. Extend the existing held-batch native oracle to
+   refuse old-path loads after same-profile refresh. Compile affected products
+   during development; queue runtime/race/theme acceptance at A5–A8 shared
+   checkpoint under the faster cadence. No per-PR runtime or matrix VM run; an affected build-only lab may be
+   used when host headers are unavailable.
+3. Reconcile the existing private tray/pinboard retirement boundaries and document
+   exported application/directory assets as persistent referenced artifacts.
+   Add focused authored coverage for actual last-reference/failed-ack retention;
+   no age/mtime/generation-only shared deletion. Clarify the published A4 harness
+   configuration recipes so their private module/source setup is not presented
+   as an installed launch preset.
+
+A5 implementation choice: retain one coalescing explicit-refresh bit through
+pending/queued config snapshots. Refuse old completed loads and new requests
+while it is pending; consume it only with a valid model/extent after the final
+snapshot. Reuse the existing acquisition fence and cell/menu reset before result
+admission. Refresh keeps failed-helper retry policy; Reload remains the recovery
+operation. Neither clears exhausted acquisition or retirement failure. The held
+batch/source-refresh and generation/retention tests were authored before this
+production change; execution remains queued by cadence.
+
+Integration acceptance: bounded source changes, affected incremental compilation,
+new fixture/policy cases authored before affected implementation, primary manuals
+and architecture/decision updates, exact source/evidence and separate review.
+Runtime qualification stays explicitly queued, not passed. No new service,
+watcher, package, decoder, cache engine or config migration. Whole #215 remains
+open for exported-reference lifetime, asset choice and remaining profile gates.
+Analyst source review finds no further production ordering/lifetime blocker.
+Two authored oracle corrections retain the same acceptance: the private sync
+witness now waits for final config completion, and source-refresh requires a
+changed content-derived basename (a new private directory alone is insufficient).
+The witness does not claim an exact acquisition-generation receipt.
+
+A5 affected build-only plan passes: three tray variants plus iconrender and
+pinboard-owner ordinary/race test ELFs compile/link in 3.96 seconds; zero product,
+unit or native-X executions. Prior tray ELFs are preserved for the next combined
+checkpoint. All source pins and owned lab shutdown verify.
+
+The foreign VM has stopped. The previously frozen supplemental settings-codec
+observation now reaches its fixture precondition and stops before timing because
+the synthetic Controller omitted ready=true. Preserve that failed baseline and
+stopped process group. Select one fixture-only correction, identical on both
+immutable source snapshots through a Go overlay; retain exact reconstruction and
+8 KiB preconditions, three alternating pairs/500 operations/one CPU and quiet
+preflight. No VM/X startup or product change. A successful micro-observation will
+not substitute for the still-due general WM/session comparison.
+
+The corrected supplemental host observation completes all six processes with
+stopped groups. Median four-setting projection is 33.756→49.001 µs, temporary
+allocation 24522→30635 B/op and wire size 1933→1606 bytes. Source inspection
+finds the extra scoped metadata passes/merge maps consistent with the allocation
+cost. Retain the necessary fixed-cap correctness repair and record this cost
+under #29/#226; no tuning is selected. [Samples and limits](verification/PERFORMANCE-2026-11-02-SETTINGS-PROJECTION.md).
+The general WM/session comparison remains due and is not reset. A5 source/build
+and queued-runtime evidence is [recorded](verification/VERIFICATION-2026-11-02-ICON-LIFECYCLE.md);
+separate integrated/signed-delivery review is next.
+
+One implementation attempt with one focused compilation/review repair if needed;
+new unrelated findings return to owner selection.
+
+PR349 is merged after separate source/plan/integrated/signed-delivery reviews.
+Head `5f92c534fda4cdad2399c809c1fa18013c16492f`, tree
+`3222f6e2e9b36b16920df77c5b437c810e692982`, canonical merge
+`d2624fb79d0e7634054a6c134a1f31602a76a8c1`; Cam signature, actual-author
+DCO, reviewed parent/tree, clean synchronized main and completed branch cleanup
+verify. Project PR Done and #214/#215 In progress verify; R1 retains 50 open
+issues. A4 passes its ten Go ordinary/race jobs, decoder cases and five native-X
+UI jobs, with original failures and three-profile raw screenshots retained in
+[the checkpoint report](verification/VERIFICATION-2026-11-02-APPEARANCE-CHECKPOINT.md).
+Every owned lab is stopped. Performance is 5/5/due; foreign QEMU prevents the
+quiet comparison and is preserved. Broader issue/release coverage remains open.
+
+<details>
+<summary>A4 delivered scope and shared acceptance</summary>
+
 Current work: A4 shared appearance acceptance under #214/#215, branch
 `codex/r1-appearance-checkpoint`, base merged PR348
 `765191d7b3ba8e6d2f6936cb205f3a853ef83445`. Owner Cam; selected lead
@@ -157,6 +266,8 @@ The publication DNS failure recovered without rebuilding. PR Project Done and
 #214/#215 In progress verify; R1 retains 50 open issues. Ten fresh objects and
 two private links pass, 54 exports verify and both build-only labs are stopped.
 Actual Meson configuration/runtime traces remain A4 acceptance, not A3 passes.
+
+</details>
 
 <details>
 <summary>A3 delivered source/build scope and retained acceptance</summary>

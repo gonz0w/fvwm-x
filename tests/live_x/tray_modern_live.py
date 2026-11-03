@@ -1224,7 +1224,8 @@ def run(options):
             if group == 'acquisition':
                 from tray_icon_acquisition_cases import run as acquisition_cases
                 acquisition_cases(session, evidence, peers[1], first,
-                    options.acquisition_probe, png)
+                    options.acquisition_probe, png,
+                    source_refresh=options.acquisition_case == 'source-refresh')
             if group in ('full', 'menu'):
                 menu_cases(session, evidence, peers[1], first)
             if group in ('full', 'lifecycle'):
@@ -1300,6 +1301,8 @@ def main():
         choices=('full', 'menu', 'lifecycle', 'appearance', 'toolkit', 'container', 'bus', 'tooltip', 'acquisition'),
         help='Select an affected live case group; only full combines acceptance.')
     parser.add_argument('--acquisition-probe', choices=('positive', 'control'))
+    parser.add_argument('--acquisition-case', default='profile-change',
+        choices=('profile-change', 'source-refresh'))
     parser.add_argument('--expect-modern-unavailable', action='store_true')
     parser.add_argument('--expect-no-container', action='store_true')
     parser.add_argument('--execution-profile', default='unspecified',
@@ -1307,6 +1310,8 @@ def main():
     options = parser.parse_args()
     if (options.case_group == 'acquisition') != bool(options.acquisition_probe):
         parser.error('acquisition group requires its private positive/control probe mode')
+    if options.acquisition_case != 'profile-change' and not options.acquisition_probe:
+        parser.error('source refresh requires the private acquisition probe')
     if options.acquisition_probe and (options.expect_modern_unavailable or
             options.phase != 'modern'):
         parser.error('acquisition probe requires the enabled modern-only phase')

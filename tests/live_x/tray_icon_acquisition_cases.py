@@ -2,6 +2,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License, version 2 or later.
 """Optional Linux load-attempt observation; never use pixels as its oracle."""
+import hashlib
 import os
 from pathlib import Path
 import socket
@@ -118,12 +119,13 @@ def install_theme(session, name, rgba, png):
     png(target / 'tray-fixture.png', rgba)
 
 
-def run(session, evidence, peer, cell, mode, png):
+def run(session, evidence, peer, cell, mode, png, source_refresh=False):
     assert mode in ('positive', 'control')
     path = session.options.icon_probe_socket
     probe = None
     failure = None
-    case = dict(mode=mode, instrumentation_cost_excluded=True,
+    case = dict(mode=mode, source_refresh=source_refresh,
+        instrumentation_cost_excluded=True,
         oracle='exact-path loader attempts; not visible stale pixels')
     try:
         probe = Probe(path, session)
@@ -153,38 +155,62 @@ def run(session, evidence, peer, cell, mode, png):
         held = probe.wait('completed menu icon batch held',
             lambda s: s['phase'] == 2 and s['old'] > 0, session)
         old = probe.paths('old', held['old'])
+        old_files = {name: hashlib.sha256(Path(name).read_bytes()).hexdigest()
+            for name in old}
         assert held['open'] and held['ready'] and not held['stale']
         assert (held['held_item'] and held['held_item_generation']
             and held['held_menu'])
-        assert probe.fields(probe.request('expect probe-new')) == {
+        theme = 'probe-old' if source_refresh else 'probe-new'
+        assert probe.fields(probe.request('expect ' + theme)) == {
             'expected': 1}
-        session.command('*SlateTray IconTheme probe-new\n'
-            'SendToModule SlateTray Refresh\n')
-        changed = probe.wait('new profile synchronized before release',
+        if source_refresh:
+            # Same path and tuple: only an explicit source refresh can cause a
+            # new acquisition. The held private content copy must stay intact.
+            source = session.home / 'data/icons/probe-old/24x24/apps/tray-fixture.png'
+            png(source, [20, 50, 230, 255])
+            session.command('SendToModule SlateTray Refresh\n'
+                'SendToModule SlateTray Refresh\n')
+            committed = session.fence(lambda s: not s['pending'])
+            case['configuration_commit'] = committed
+        else:
+            session.command('*SlateTray IconTheme probe-new\n'
+                'SendToModule SlateTray Refresh\n')
+        changed = probe.wait('native sync after configuration completion',
             lambda s: s['synced'], session)
         assert changed['phase'] == 2 and changed['open'] and changed['ready']
         assert not changed['stale']
         identity = ('item', 'item_generation', 'menu')
         assert tuple(changed[key] for key in identity) == tuple(
             held['held_' + key] for key in identity), (held, changed)
+        assert all(hashlib.sha256(Path(name).read_bytes()).hexdigest() == pin
+            for name, pin in old_files.items()), old_files
         assert probe.fields(probe.request('release')) == {'released': 1}
         fresh = probe.wait('fresh profile image load after release',
             lambda s: s['loads'] > 0, session)
         # A control can load the old path first. Continue until a distinct fresh
         # path is observed, otherwise a stuck old batch could pass the control.
         deadline = time.monotonic() + 6
+        old_basenames = {Path(name).name for name in old}
         while True:
             loaded = probe.paths('load', fresh['loads'])
-            if any(name not in old for name in loaded):
+            distinct = [name for name in loaded if name not in old]
+            changed_content = any(Path(name).name not in old_basenames
+                for name in distinct)
+            if distinct and (not source_refresh or changed_content):
                 break
             assert time.monotonic() < deadline, 'fresh icon load deadline'
             time.sleep(.02)
             fresh = probe.state()
         rejected = not any(name in old for name in loaded)
         assert rejected == (mode == 'positive'), (mode, old, loaded)
+        wait_for_predicate('consumed private batch copies retired',
+            lambda: all(not Path(name).exists() for name in old),
+            time.monotonic() + 6, process=session.process)
         probe.owned.sample()  # Preserve the same executable/birth identity.
         case.update(held=held, changed=changed, final=fresh,
             old_paths=old, loaded_paths=loaded, old_load_rejected=rejected,
+            held_files_sha256=old_files, old_private_files_retired=True,
+            fresh_content_basename_changed=changed_content,
             records=probe.records.copy(), status='passed expected ' + mode)
     except BaseException as error:
         failure = error
@@ -216,6 +242,7 @@ def run(session, evidence, peer, cell, mode, png):
         if probe is not None:
             case['records'] = probe.records.copy()
         case['cleanup'] = cleanup
-        evidence['cases']['icon_acquisition_' + mode] = case
+        suffix = '_source_refresh' if source_refresh else ''
+        evidence['cases']['icon_acquisition_' + mode + suffix] = case
         if failure is None and cleanup_error is not None:
             raise cleanup_error

@@ -157,3 +157,8 @@ option(
     value: 4096,
     description: 'Maximum displayed desks per Pager instance',
 )
+
+option(
+    'lucide-menu-icons', type: 'boolean', value: false,
+    description: 'Install the optional FVWM-X Lucide menu glyph subset and example',
+)

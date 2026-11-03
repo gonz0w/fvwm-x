@@ -7,6 +7,38 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Optional Lucide menu glyphs (in progress)
+
+The optional 16-glyph menu theme uses existing native picture rendering and
+Colorset tint. Build with `-Dlucide-menu-icons=true` and SVG support, then follow
+[fvwm3menus(1)](fvwm3menus.adoc#_optional_lucide_menu_glyphs) to read the installed
+example and run `FVWMXLucideSetup`. Default menus and application artwork retain
+their existing settings. The catalog demonstrates glyphs with labeled Nop rows;
+it does not enable clipboard or file actions. Reapply setup after palette changes.
+
+These raw native-X popups show Slate dark, Dune light and enlarged Classic.
+All sixteen glyphs were ready before capture. The highlighted row, heading and
+unavailable row demonstrate private palette roles. The [checkpoint report](../dev-docs/verification/VERIFICATION-2026-11-03-DRAWING-GLYPHS.md)
+records measured state/edge pixels, keyboard continuity and remaining support,
+quarter-scale and optical/accessibility qualification.
+
+![Slate dark optional Lucide menu glyphs](screenshots/lucide-menu-slate-dark.png)
+
+![Dune light optional Lucide menu glyphs](screenshots/lucide-menu-dune-light.png)
+
+![Enlarged Classic optional Lucide menu glyphs](screenshots/lucide-menu-classic-large.png)
+
+The [manifest](screenshots/lucide-menu-manifest.json) binds raw images and source.
+The [Slate](screenshots/lucide-menu-slate-dark.config),
+[Dune](screenshots/lucide-menu-dune-light.config) and
+[Classic](screenshots/lucide-menu-classic-large.config) files are standalone
+nested-X test recipes derived from the frozen fixture. Their bootstrap palette
+and font commands affect shared desktop roles; normal local.config customization
+uses the installed example alone. The fixture supplies the shipped Home binding
+and a private asset root because its install prefix is staged. The actual install
+contains 20 files / 19,201 file-content bytes at the measured prefix; allocated
+filesystem/package size and runtime memory are separate measurements.
+
 ## Script selection and paste (in progress)
 
 Script TextFields now negotiate external PRIMARY/CLIPBOARD text and accept

@@ -28,12 +28,204 @@ State: isolated canonical candidate prepared; checks, review and merge pending.
 Current product work retains its owner; this record owns only the selected
 method refresh and does not start a second product lane.
 
-Updated: 2026-11-02. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-03. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
+
+Current work: combined G1/A7 appearance checkpoint under #210/#214/#215,
+branch `codex/r1-shared-drawing`, base PR351
+`aa4792c665622bb222b3939f7354f485b54bf05e`. Implementation and scoped composed
+Linux acceptance are complete; final integrated/signed review and delivery are
+next. Cam approved exactly the small optional Lucide set on 2026-11-02.
+Lead implementation fallback remains recorded; actual backend model routing is
+unverified. Preserve the independent TEMPER-07 owner above.
+
+Delivered candidate: one paired GC/Xft clip helper adopted by Form/Buttons,
+focused real-X failure/state coverage, sixteen optional pinned Lucide glyphs and
+full notices/provenance, default-off tagged installation, private palette-tinted
+menu example, resolver/parity tests and inspected three-profile captures.
+The private install stage has 20 files / 19,201 content bytes; default-off is empty.
+[Composed results and retained failures](verification/VERIFICATION-2026-11-03-DRAWING-GLYPHS.md)
+record fontset/Xft/Render-off clips, matched three-profile layout, Go ordinary/race,
+A5 source-refresh positive/control and final all-16 glyph readiness/state/contrast.
+All owned labs are stopped. The [periodic core comparison](verification/PERFORMANCE-2026-11-02-DRAWING-CORE.md)
+is complete with unchanged measured ELF inputs through fixture repairs; overlapping
+bands establish no causal speed gain. Reset its 6/5 due ledger at this delivery.
+The separate settings-query cost remains recorded under #29/#226.
+
+Do not close #210/#214/#215: actual quarter-scale/mixed-monitor, full optical and
+SVG-disabled native behavior, support/install/compiler/default-server, C sanitizer
+and remaining resource acceptance stay under their frozen owners. No Cairo/Clay,
+Papirus package, renderer/default activation or Daybreak work is adopted. Complete
+final review and canonical delivery, then select the next finite R1 batch from
+the execution order without waiting for a per-PR human merge.
+
+<details>
+<summary>G1/A7 selection and checkpoint history</summary>
+
+Current work: G1 shared native drawing under GRAPHICS-01 #210, branch
+`codex/r1-shared-drawing`, base merged PR351
+`aa4792c665622bb222b3939f7354f485b54bf05e`. Owner Cam; lead implementation
+fallback remains selected. This is independent accepted R1 shared-contract work
+after the A6 evaluation. Cam explicitly selected the small optional Lucide set
+in chat on 2026-11-02. Finish G1 first; the following A7 batch will implement the
+reviewed menu-only set, complete notices and optional installation. Papirus stays
+user-installed. The accepted choice does not change the remaining qualification.
+
+Select one bounded source assessment before implementation: trace Form and
+Buttons clipping, alpha/picture/resource ownership and scale/cache generations.
+Use a different existing pair only if the source demonstrates stronger actual
+reuse. Identify at most two named common operations not already shared and the
+smallest two-consumer adoption, or record that no extraction is justified. Keep
+current drawing order, asynchronous-X policy, leases, deferred teardown and
+XRender-disabled fallback. Accepted #209 handoff/#183 image-linkage subset supply
+actual prerequisites; no blanket owner closure is required.
+
+Return a finite source/design/verification plan for #210, with the matching
+baseline workload needed later by #211 and #212. No core renderer rewrite,
+mandatory Cairo/Clay/toolkit/GPU/compositor, new backend or native execution is
+selected by this assessment. Cairo and Clay remain separate bounded comparisons
+with their full frozen acceptance; source inspection alone cannot close them.
+One analysis attempt; discoveries need a recorded disposition before coding.
+A5–A8 remains the named accumulated appearance runtime checkpoint.
+
+G1 assessment disposition: one extraction is justified. Form fixed labels and
+Buttons titles repeat the same temporary Region / GC and Xft clipping lifetime.
+Relief, alpha/picture rendering and backing leases already have shared owners;
+no second graphics abstraction is selected.
+
+Select three related source stories:
+
+1. Add flocale_draw_string_clipped beside the existing text renderer: borrow the
+   font/string/GC and a prepared rectangle, own one temporary Region, apply both
+   clipping paths, draw synchronously, clear the GC clip, restore descriptor clip
+   fields and retire the Region. Empty rectangles do nothing; client allocation
+   failure returns explicit False without modifying caller state. The GC has no
+   persistent clip on entry; no query/roundtrip discovers or restores one.
+   True is submission/no-op status, not server acknowledgement.
+2. Adopt only Form RedrawText's fixed-label branch and Buttons DrawTitle's
+   prepared title branch. Keep viewport measurement, background clearing,
+   temporary-string cleanup, layout/Expose intersections, font generations and
+   all pending image/death-row ownership in their current callers. No input/caret
+   or frame-wide clipping scope is absorbed.
+3. Author the focused real-X core/Xft clipping/state/failure fixture before the
+   helper, and freeze the existing two-consumer native-layout/browser workload
+   plus relevant pre-change Form/Buttons binaries. Join the next accumulated
+   A5–A8 drawing/appearance checkpoint for runtime, partial Expose, long/enlarged
+   text, resize/unmap/destroy, Form resource/scale changes and Buttons pending
+   icon/colorset changes. Retain XRender-on/off coverage and exact performance
+   metric gaps; this extraction is maintainability, not a speed claim.
+
+Integration acceptance: affected incremental compile/link, syntax/whitespace and
+source contract checks, docs/evidence and separate integrated/signed review.
+Runtime is queued, not passed. No new dependency, clipping policy, idle repaint,
+font/cache owner or X error barrier. No #210 closure: two-consumer metrics,
+remaining support/scale/resource qualification and later #211/#212 comparisons
+retain their actual acceptance. One implementation attempt with one focused
+compile/review repair if needed. The first build holder expired safely during a
+user pause before dispatch; no source transfer or compiler/runtime job ran. A
+separately reviewed restart ties readiness to immediate dispatch and retains the
+failed connection receipts. Other discoveries return to owner selection.
+
+G1 affected compilation is complete: four native targets linked after one
+focused Meson metadata refresh; the first real dispatch stopped before compiler
+work because the new target was absent from cached introspection. Accepted build
+work took 8.91 seconds, including 7.17 seconds compile/link. Zero product/runtime
+jobs ran; owned container and machine shutdown verify. Previous core/Form/Buttons
+ELFs and source-bound workload remain preserved for the combined checkpoint.
+This is compilation evidence, not #210 runtime/performance or release acceptance.
+
+The first combined checkpoint completed: default-off install map is empty;
+optional tagged private staging contains exactly 20 files / 19,201 content bytes.
+All 15 jobs executed once; eight independent jobs passed, seven failed. Retain
+raw failures and all shutdown proofs. Passing work includes source parity,
+iconrender/pinboard ordinary/race, both A5 source-refresh positive/control cases
+and the due six-run core comparison; do not repeat these for fixture-only repairs.
+
+One focused repair is selected after source/evidence diagnosis: the Go boundary
+case needs a logical file over 128 MiB while the harness imposed 16 MiB; both new
+optional-theme tests already pass. Raise only those two child soft limits for
+that exact failed test, retaining bounded output and other jobs' limit. The font
+fixture incorrectly required an XFontStruct although the loader returns XFontSet;
+report actual core-font/fontset/Xft and retain all pixel/clip/failure assertions.
+The old layout fixture queried 10 of the current 11 leaves; derive the shipped
+count while keeping adjacency, positive size and full-width assertions. The new
+example placed Greyed as an action; use the supported Greyed label syntax.
+Only the seven failed jobs rerun; production drawing and all other ELF inputs
+remain unchanged. No XFontStruct-only, whole-desktop or release claim follows
+from a fontset pass. Source/plan review precedes this single focused repair.
+
+Repair05 passes six of seven selected jobs: the two sparse-file cases, all
+fontset/Xft/Render-off clip checks and both three-profile layout workloads.
+The remaining Home selection fixture precondition was diagnosed from source:
+Home is supplied by ConfigFvwmDefaults, unlike built-in arrows/Return, and the
+minimal build-tree harness did not load it. An exact private Home binding plus
+before/after/failure diagnostics produced passing role/contrast observations in
+all three profiles. Every other accepted job remained unrerun.
+
+Visual review then found partial asynchronous glyph populations in those first
+captures: role-color witnesses alone did not prove all 16 images were ready.
+Select one fixture-only readiness correction and one three-profile observation,
+retaining every prior non-menu pass. Each approved exact-path glyph must render
+in an owned one-entry probe sharing the catalog's retained image before capture;
+closing the probe supplies the existing deferred-image commit boundary. Keep
+all state/contrast/alpha gates, inspected screenshots and unrelated-color control.
+No renderer, async-image ordering or idle repaint change is selected. Stop on
+an unexplained repeated failure; do not publish partial captures as complete.
+
+Delivery boundary update after Cam's explicit asset choice: combine G1 and the
+following A7 asset integration in one appearance PR to reduce per-PR overhead.
+This is owner-requested batching of accepted related work, not automatic expansion
+from the drawing audit. G1's source/plan reviews remain source-bound; final review
+covers the whole combined result. Existing defaults and unrelated artwork stay.
+
+A7 selected finite stories, owner Cam, lead implementation fallback:
+
+1. Import exactly the approved 16 pinned Lucide glyphs, full ISC/MIT notice and
+   source/derived provenance. Deterministically replace only currentColor with an
+   explicit source stroke; structural parity rejects other geometry/alpha edits.
+2. Add default-disabled optional installation with explicit file ownership and a
+   named XDG theme index. Enabling artwork does not enable SVG, acquire a package
+   or change renderer/default settings. Measure installed file-content overhead
+   against the 32 KiB planning cap; filesystem/package/RSS costs are separate.
+3. Supply a separate opt-in, labeled menu example using private menu styles and
+   Colorsets for normal/selected/disabled/heading glyph tint. Never tint shared
+   application menus, logos, tray, pinboard or native Vector window controls.
+   Document palette snapshot/reapplication and nonstandard XDG prefixes.
+4. Add source/install/resolver acceptance for the exact theme and bounded file
+   mapping, unavailable SVG/assets and installation-off behavior. Queue actual
+   normal/selected/disabled/focus/alpha/quarter-scale observations and inspected
+   Slate/Dune/enlarged screenshots at A5–A8 alongside G1 and A5 runtime cases.
+   No unsupported product action is added merely because its glyph is displayed.
+
+Non-goals: automatic activation, automatic live-palette controller integration,
+new icon names/aliases, renderer/resolver rewrite, mandatory toolkit or icon font,
+Papirus vendoring and tray/pinboard glyph adoption. Preserve #214/#215 remaining
+support/state/provenance acceptance; merge or source parity cannot close them.
+One source implementation plus one focused build/review repair; final separate
+integrated and exact signed-delivery review. No fresh full OS/install matrix.
+
+PR351 evaluation is merged after separate source/evidence and exact signed
+review. Head `4c8aaf9849ff918a46dc5eeaa54e2cd78660a574`, tree
+`9a3a2114225c0866d27407a6faf4d3a88ff46e8c`, canonical merge
+`aa4792c665622bb222b3939f7354f485b54bf05e`; signature, author DCO, reviewed
+parent/tree, synchronized clean main and matching completed refs verify.
+Project PR Done and #214/#215 In progress verify; R1 retains 50 open issues.
+Source-only evaluation adds no runtime/dependency/artwork and no performance
+counter advance. Cam's explicit glyph choice was requested with the concrete
+[reviewed proposal](decisions/ICON-ASSET-CHOICE-2026-11-02.md). Keep current
+assets until that answer; independent work continues here. All owned labs are
+stopped. General performance stays 6/5/due; supplemental query costs retain
+#29/#226 ownership.
+
+
+</details>
+
+<details>
+<summary>A6 delivered evaluation and pending adoption choice</summary>
 
 Current work: A6 finite icon-asset evaluation under ICON-01 #215 / THEME-02
 #214, branch `codex/r1-icon-asset-evaluation`, base merged PR350
@@ -86,6 +278,8 @@ host settings-projection benchmark processes pass with stopped groups, exposing
 higher temporary query costs and smaller wire output; #29/#226 mirrors updated.
 All owned labs are stopped. General performance is 6/5/due, not reset by the
 supplemental observation. [A5 report](verification/VERIFICATION-2026-11-02-ICON-LIFECYCLE.md).
+
+</details>
 
 <details>
 <summary>A5 delivered scope and retained acceptance</summary>

@@ -1,6 +1,9 @@
 test('command-catalog-contract', py, args: [files('test_command_catalog.py')],
     timeout: 30)
 
+test('lucide-asset-contract', py, args: [files('test_lucide_assets.py')],
+    timeout: 30)
+
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test('script-com-example-xvfb', py,
         args: [files('live_x/script_com_example_live.py'),
@@ -138,6 +141,19 @@ if get_option('live-x-tests') and libpng.found() and librsvg.found() and host_ma
             fvwm_svg_worker, fvwm_desktop_capture],
         suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
         is_parallel: false, timeout: 120)
+    if get_option('lucide-menu-icons')
+        test('lucide-menu-icons-xvfb', py,
+            args: [files('live_x/named_menu_icons_live.py'),
+                '--fvwm', fvwm3, '--mfl', fvwm_mfl,
+                '--desktop', fvwm_menu_desktop, '--directory', fvwm_menu_directory,
+                '--worker', fvwm_svg_worker, '--capture', fvwm_desktop_capture,
+                '--lucide-example', lucide_menu_example,
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'lucide-menu-icons'],
+            depends: [fvwm3, fvwm_mfl, fvwm_menu_desktop, fvwm_menu_directory,
+                fvwm_svg_worker, fvwm_desktop_capture],
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            is_parallel: false, timeout: 120)
+    endif
 endif
 
 test('xlib-requirement-contract', py,
@@ -3555,6 +3571,30 @@ font_geometry_x_test = executable(
     link_args: ['-Wl,--wrap=XftTextExtents32', '-Wl,--wrap=XwcTextEscapement'],
     c_args: ['-UNDEBUG'],
 )
+
+if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
+    flocale_clip_probe = executable(
+        'test-flocale-clip-x', 'test_flocale_clip_x.c',
+        include_directories: includedirs,
+        dependencies: all_found_deps,
+        link_with: libfvwm3,
+        link_args: ['-Wl,--wrap=XCreateRegion'],
+        c_args: ['-UNDEBUG'],
+    )
+    foreach core_only : [false, true]
+        test(
+            core_only ? 'flocale-clip-fallback-xvfb' : 'flocale-clip-xvfb', py,
+            args: [
+                files('live_x/flocale_clip_live.py'),
+                '--probe', flocale_clip_probe.full_path(),
+                '--artifacts-dir', meson.current_build_dir() / 'live-x-artifacts' / 'flocale-clip',
+            ] + (core_only ? ['--core-only', '--no-render'] : []),
+            depends: flocale_clip_probe,
+            suite: host_machine.system() == 'linux' ? 'live-x' : 'bsd-x',
+            timeout: 60, is_parallel: false,
+        )
+    endforeach
+endif
 
 if get_option('live-x-tests') and host_machine.system() in ['linux', 'freebsd', 'openbsd']
     test(

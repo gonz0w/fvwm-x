@@ -31,7 +31,7 @@ def run(args):
         connection = client = errors = None
         try:
             _, display = start_display_server(runtime, 'Xvfb',
-                ['Xvfb', '-screen', '0', '900x600x24', '-noreset'],
+                ['Xvfb', '-screen', '0', '1280x1200x24' if args.lucide_example else '900x600x24', '-noreset'],
                 'xserver.log', time.monotonic() + 10)
             data, config_home = runtime.root / 'data', runtime.root / 'xdg'
             apps, menus = data / 'applications', config_home / 'menus'
@@ -194,33 +194,39 @@ def run(args):
                 dismiss()
                 return text
 
-            for name in args.themes:
-                if name == 'classic-large':
-                    fg, bg, hi, font = 'navy', 'wheat', 'ivory', 'xft:DejaVu Sans Mono:size=18'
-                else:
-                    palette, variant = name.split('-')
-                    colors = palettes[palette][variant]
-                    fg, bg, hi, font = colors['text'], colors['surface'], colors['accent'], 'xft:Sans:size=11'
-                settings = ('Colorset 0 fg ' + fg + ', bg ' + bg + '\n'
-                    'Colorset 1 fg ' + fg + ', bg ' + hi + '\n'
-                    'MenuStyle * Font "' + font + '", MenuColorset 0, ActiveColorset 1\n')
-                command(settings.rstrip())
-                evidence['themes'][name] = settings
-                (args.artifacts_dir / (name + '.config')).write_text(settings)
-                menu('application', name + '-application', 0x00ff00)
-                menu('directory', name + '-directory', 0x00ff00)
-            menu('application', 'quarter-scale', 0xff0000, scale='1.25')
-            before = menu('application', 'before-refresh', 0x00ff00, capture=False)
-            (theme / 'two/fixture.svg').write_text(artwork('#0000ff'))
-            after = menu('application', 'after-refresh', 0x0000ff)
-            assert before != after, 'same-name overwrite reused presentation identity'
-            app.write_text(app.read_text().replace('Icon=fixture', 'Icon=missing'))
-            (theme / 'two/fixture.svg').unlink()
-            (theme / 'one/fixture.svg').unlink()
-            missing = menu('application', 'text-fallback', None)
-            assert 'Named icon application' in missing and '%' not in missing
-            evidence['refreshed_content_identity'] = True
-            evidence['missing_icon_retains_label'] = True
+            if args.lucide_example:
+                from lucide_menu_cases import run as run_lucide
+                run_lucide(args, source=source, data=data, env=env, palettes=palettes,
+                    core=core, client=client, pointer=pointer, connection=connection,
+                    command=command, mapped=mapped, dismiss=dismiss, evidence=evidence)
+            else:
+                for name in args.themes:
+                    if name == 'classic-large':
+                        fg, bg, hi, font = 'navy', 'wheat', 'ivory', 'xft:DejaVu Sans Mono:size=18'
+                    else:
+                        palette, variant = name.split('-')
+                        colors = palettes[palette][variant]
+                        fg, bg, hi, font = colors['text'], colors['surface'], colors['accent'], 'xft:Sans:size=11'
+                    settings = ('Colorset 0 fg ' + fg + ', bg ' + bg + '\n'
+                        'Colorset 1 fg ' + fg + ', bg ' + hi + '\n'
+                        'MenuStyle * Font "' + font + '", MenuColorset 0, ActiveColorset 1\n')
+                    command(settings.rstrip())
+                    evidence['themes'][name] = settings
+                    (args.artifacts_dir / (name + '.config')).write_text(settings)
+                    menu('application', name + '-application', 0x00ff00)
+                    menu('directory', name + '-directory', 0x00ff00)
+                menu('application', 'quarter-scale', 0xff0000, scale='1.25')
+                before = menu('application', 'before-refresh', 0x00ff00, capture=False)
+                (theme / 'two/fixture.svg').write_text(artwork('#0000ff'))
+                after = menu('application', 'after-refresh', 0x0000ff)
+                assert before != after, 'same-name overwrite reused presentation identity'
+                app.write_text(app.read_text().replace('Icon=fixture', 'Icon=missing'))
+                (theme / 'two/fixture.svg').unlink()
+                (theme / 'one/fixture.svg').unlink()
+                missing = menu('application', 'text-fallback', None)
+                assert 'Named icon application' in missing and '%' not in missing
+                evidence['refreshed_content_identity'] = True
+                evidence['missing_icon_retains_label'] = True
             evidence['source_hashes'] = {str(path.relative_to(source)):
                 hashlib.sha256(path.read_bytes()).hexdigest() for path in
                 [source/'default-config/palettes.json', Path(__file__)]}
@@ -244,4 +250,6 @@ if __name__ == '__main__':
     parser.add_argument('--themes', nargs='+',
         choices=('slate-dark', 'dune-light', 'classic-large'),
         default=['slate-dark', 'dune-light', 'classic-large'])
+    parser.add_argument('--lucide-example', type=Path,
+        help='Run the optional installed menu example cases instead of synthetic themes')
     run(parser.parse_args())

@@ -247,15 +247,20 @@ def run(args, profile):
             bar = view.wait('SlateBar')
             bar_pid = sample('buttons', 'FvwmButtons', 'SlateBar')
 
+            leaf_count = sum(line.startswith('+ I *SlateBar: (')
+                for line in desktop.splitlines())
+            assert 1 <= leaf_count <= 256, leaf_count
+            evidence['bar_configured_leaf_count'] = leaf_count
+
             def read_rectangles():
                 nonlocal serial
                 serial += 1
                 tag = 'LAYOUT_RECT_%d_' % serial
-                for i in range(10):
+                for i in range(leaf_count):
                     connection.send(('SendToModule SlateBar ExpandButtonVars %d Echo %s%d '
                         '$left $top $width $height\n' % (i, tag, i)).encode())
                 result = []
-                for i in range(10):
+                for i in range(leaf_count):
                     text = receipt(tag + str(i) + ' ')
                     result.append(list(map(int, text.split()[1:])))
                 evidence['bar_last_observation'] = dict(rectangles=result, window=geometry(bar))
@@ -269,7 +274,8 @@ def run(args, profile):
                 def prepared():
                     try:
                         return read_rectangles()
-                    except AssertionError:
+                    except AssertionError as error:
+                        evidence['bar_last_query_error'] = repr(error)
                         return None  # ConfigureNotify can race the pipe query.
                 return wait_for_predicate('prepared bar rectangles', prepared,
                     time.monotonic() + 3, process=core)

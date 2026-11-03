@@ -79,7 +79,10 @@ Refresh (F5), Reload (F6), Previous/Next (F9/F10), Cancel work (Alt-X) and
 Close pinboard (Alt-Q). Label and icon edits save separately. Its work label
 distinguishes pending work, an owned active worker and fully idle/reaped state.
 
-Refresh reobserves target availability. Reload reads externally committed state.
+Refresh reobserves target availability and starts a fresh named-icon generation.
+Obsolete private icon copies retire after the native boundary acknowledges the
+replacement; unconfirmed cleanup retains them. Reload reads externally committed
+state. There is no automatic icon filesystem watch.
 An unsuccessful load, save or conflicting revision leaves the last committed
 data intact and reports recovery guidance. A malformed state file is not
 silently overwritten. Close retires the owned surface; saved references remain

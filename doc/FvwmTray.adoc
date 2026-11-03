@@ -152,6 +152,16 @@ an explicit Reload retains precedence for applying stored visibility. Neither
 message starts the module or changes a different alias. The desktop uses Refresh
 for its scoped icon-theme updates.
 
+Explicit Refresh or Reload also requests fresh named icons, even when theme,
+size and scale are unchanged. The tray waits until all pending configuration
+snapshots finish before acquiring them. Existing painted images may remain until
+that commit; completed results from before the refresh request are refused.
+Automatic topology or unsolicited configuration snapshots do not refresh
+unchanged sources, and the tray does not watch icon files for changes. Use
+Reload to retry a failed helper; Refresh preserves the existing retry policy.
+Neither request clears a retirement failure or exhausted generation.
+Private tray batch copies are retired after consumption.
+
 == Controls
 
 Docking an application or changing appearance does not take keyboard focus.

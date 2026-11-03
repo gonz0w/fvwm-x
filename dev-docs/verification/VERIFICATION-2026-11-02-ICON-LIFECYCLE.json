@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "checkpoint": "A5 explicit named-icon source refresh and lifetime boundaries",
+  "base": "d2624fb79d0e7634054a6c134a1f31602a76a8c1",
+  "branch": "codex/r1-icon-lifecycle",
+  "source": {
+    "dev-docs/ARCHITECTURE.md": "2513d81c79dc49dceede1a64b35fb505f414506c4a751cd15d2962346e6cd994",
+    "dev-docs/decisions/NAMED-MENU-ICONS-2026-10-26.md": "5ed9cc237e08f5ece91180325aa7cffdc0c327c944dffe95061c104a43463c3b",
+    "doc/FvwmTray.adoc": "8fb61e82cd309e2709e97bd497f4e846dc2127989a990a023e2eb53f40dc3b38",
+    "doc/development-preview.md": "8f3877ae66034a434b0d0f2516c0bd97b35d0443bb12570e498f5d110ab05948",
+    "doc/fvwm-menu-desktop.adoc": "288f3d3dc78bd375d1e3565707b1bee8b69eff2d0a6f75ab125c5d9c579c579a",
+    "doc/fvwm-menu-directory.adoc": "750a2003dc673252c2f3e87153edb27c49fe40ab9d9c59a0802467c84ee995e2",
+    "doc/fvwm-pinboard.adoc": "1c35ed975faa6ad86cea291490b7697791fe93d4710a5d577d5f2f21ab4bab54",
+    "modules/FvwmTray/tray.c": "8ffbf0f2584e17913ec3033dab930b3a77897abd551b107e7bb37b69ea69ac52",
+    "modules/FvwmTray/tray_sni_ui.c": "3214d88cba958ee15f463fbcd57f9fd8af0d20d6d25d3287f1b4f44a97b5be3f",
+    "modules/FvwmTray/tray_sni_ui.h": "62ede5a3e674f0ceb3aca202b611f74792274e2cd26992ca2904968d941ad4d2",
+    "tests/live_x/tray_icon_acquisition_cases.py": "73735a961900d8a9dea76a90d4f69f47949c17e8f5487f8c0a3ed4aef28e8033",
+    "tests/live_x/tray_modern_live.py": "6138c3e27814d15c73c67faaba1b4aabc8e2a6f20e1b34f205c0daad5fc6b18d",
+    "tests/tray_icon_probe.c": "d9781644f40edb687376e947b3e3e516c7760386d6fe1f5e7d012517c3813191",
+    "bin/FvwmPrompt/cmd/fvwmpinboard/image_lifetime_test.go": "795011312bd076ebb629222ce435b645ad5fa36ccc56f39fb8698f6e706e94f4",
+    "bin/FvwmPrompt/internal/iconrender/generation_test.go": "9247157f3c241425644949a928a9d792f40d5c5fce6de9bc8c763c5f8f98e9b0"
+  },
+  "build_plan_sha256": "720525287ebf32988fdac8117116f14d573dff05cb75afce73974346f2d18b86",
+  "native_source_manifest_sha256": "a704c84fe9c777d6404d67bff94999e4b3ee314a9b03bf3ede3497eeef4c9f72",
+  "native_source_files": 2454,
+  "overlay_files": 14,
+  "build_receipt_sha256": "57a1c640633be0280924e5065699cf5389b5855cd773a6b17f63862158835736",
+  "dispatch_receipt_sha256": "289a4c2cfd735152034473b8fbb719f9e2487d2842eed2ebb6656fe84c28597b",
+  "cleanup_receipt_sha256": "6b5e72d08cbc071f3be16e3c323593432c8556bf00e3cad15c0fd1d0f4cafb7e",
+  "cleanup": "container and machine independently confirmed stopped; holder/dispatch consumed",
+  "commands": [
+    {
+      "label": "build-tray",
+      "argv": [
+        "/workspace/meson-env/bin/meson",
+        "compile",
+        "-C",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "-j",
+        "2",
+        "FvwmTray",
+        "FvwmTrayIconProbe",
+        "FvwmTrayIconControl"
+      ],
+      "exit": 0,
+      "seconds": 1.6295786710000009
+    },
+    {
+      "label": "go-version",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "version"
+      ],
+      "exit": 0,
+      "seconds": 0.018693943999998908
+    },
+    {
+      "label": "compile-iconrender-normal",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/go-tests/iconrender-normal.test",
+        "./internal/iconrender"
+      ],
+      "exit": 0,
+      "seconds": 0.46689545799999976
+    },
+    {
+      "label": "compile-iconrender-race",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-race",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/go-tests/iconrender-race.test",
+        "./internal/iconrender"
+      ],
+      "exit": 0,
+      "seconds": 0.46581291500000077
+    },
+    {
+      "label": "compile-pinboard-owner-normal",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/go-tests/pinboard-owner-normal.test",
+        "./cmd/fvwmpinboard"
+      ],
+      "exit": 0,
+      "seconds": 0.36673964100000234
+    },
+    {
+      "label": "compile-pinboard-owner-race",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "-c",
+        "-race",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/go-tests/pinboard-owner-race.test",
+        "./cmd/fvwmpinboard"
+      ],
+      "exit": 0,
+      "seconds": 0.5339033029999989
+    }
+  ],
+  "seconds": 3.959606824999998,
+  "compiled_binaries": {
+    "build/modules/FvwmTray/FvwmTray": {
+      "sha256": "dd35ca5247d1a4aae15be2b80be09bda13062920a761f4db72c8b8783a6ad0d3",
+      "bytes": 1917968
+    },
+    "build/modules/FvwmTray/FvwmTrayIconProbe": {
+      "sha256": "3534059922b5e30c98c6afb68b1e05af5965d20f2090b956df943a4946d0bab5",
+      "bytes": 2088424
+    },
+    "build/modules/FvwmTray/FvwmTrayIconControl": {
+      "sha256": "80b5bc3ee73bfe1575818b5f1c57f9fc28cb6f1a4ff794bdb89c8ba6d7347b2c",
+      "bytes": 2088264
+    },
+    "go-tests/iconrender-normal.test": {
+      "sha256": "4fd9caefd7d947b08ba2c57a85cc2d8d256fbd2d00fc5c967e4dd144d1473866",
+      "bytes": 5004704
+    },
+    "go-tests/iconrender-race.test": {
+      "sha256": "9863878c42d30dce9ab8cf26d29d050de07b994a743cbb19edc641c2e28648a9",
+      "bytes": 6133608
+    },
+    "go-tests/pinboard-owner-normal.test": {
+      "sha256": "87d4e00464542d3f891444b5ce62dc66413f20615d353cc37eea751f4fcdcc50",
+      "bytes": 6730443
+    },
+    "go-tests/pinboard-owner-race.test": {
+      "sha256": "ece2ed7e26b9a7f05d493f402a52387bc6ed012652a7c3833779130b61438691",
+      "bytes": 8271997
+    }
+  },
+  "reference_binaries": {
+    "FvwmTray": {
+      "sha256": "5eabca576c555616cc77803765ec1bd6b698c17e25b91e1490959d565f02ea52",
+      "bytes": 1918848
+    },
+    "FvwmTrayIconProbe": {
+      "sha256": "14ca10da2bbcf3283a82c9e2e41afc5ce701662ca9a46a576a1590bdea0b803a",
+      "bytes": 2089304
+    },
+    "FvwmTrayIconControl": {
+      "sha256": "b9e04472746e722b35ea4cbe9be5565193b1773977ca90b6dc1c695f1100fda8",
+      "bytes": 2089080
+    }
+  },
+  "reference_location": "/tmp/fvwm-appearance-a4-20261102-01/references-a5",
+  "installs": 0,
+  "new_packages": 0,
+  "profile": "Linux native ARM64 AppleHV/container Ubuntu24.04 GCC13.3.0 Go1.27.2 Meson1.7.0; PNG/SVG/session D-Bus enabled; NLS/docs disabled; C uninstrumented",
+  "source_review": "Separate source/build-plan review clear; analyst ordering check clear after authored sync/basename oracle corrections; final integrated/signed-delivery review follows",
+  "performance": "Supplemental settings-projection observation is separate; see PERFORMANCE-2026-11-02-SETTINGS-PROJECTION. General comparison remains due; 5 checkpoints before A5, 6 on merge.",
+  "queued": [
+    "A5\u2013A8 shared native Linux: same-profile source-refresh positive/control loader cases, original profile-change positive/control, ordinary tray visibility/reload and modern appearance; existing3theme captures refreshed only for changedUI",
+    "iconrender existing/new generation cases and pinboard owner ordinary/race execution including unacknowledged image retention; internal pinboard existing lifetime policy composes",
+    "Support/compiler/install/default-server/native-C-sanitizer and release gates remain their separate scope",
+    "Exported menu last-reference contract, explicit asset choice and wider #214/#215 remain open"
+  ],
+  "native_runtime_jobs": 0,
+  "supplemental_host_benchmark_processes": 6,
+  "initial_authored_test_manifest_sha256": "c3378507c4479c6d4ca1bf94b24194fad1b79bbe9963b922d3c61a0c078b9d13"
+}

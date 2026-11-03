@@ -1,0 +1,56 @@
+// This program is free software; you can redistribute it and/or modify
+// it under the GNU General Public License, version 2 or later.
+package desktopcontroller
+
+import (
+	"encoding/json"
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopsettings"
+	"strings"
+	"testing"
+)
+
+var settingsPerformanceSink []byte
+
+func BenchmarkSettingsProjection(b *testing.B) {
+	settings := desktopsettings.Defaults()
+	d := &Controller{ready: true, saved: settings, effective: merged(settings, nil),
+		instance: strings.Repeat("a", 32), generation: strings.Repeat("b", 32)}
+	request := values{"operation": "query", "scope": "group:desktop"}
+	expected, err := d.query("group:desktop", nil, nil)
+	if err != nil {
+		b.Fatal(err)
+	}
+	response := d.settingsRequest(request)
+	result, ok := response["result"].(map[string]any)
+	if !ok {
+		b.Fatal(response)
+	}
+	rows := result["settings"].(map[string]any)
+	if len(rows) != len(expected) {
+		b.Fatal("incomplete snapshot")
+	}
+	for key, raw := range rows {
+		expanded := reconstructedPublicSetting(result, raw.(map[string]any))
+		want, _ := json.Marshal(expected[key])
+		got, _ := json.Marshal(expanded)
+		if string(want) != string(got) {
+			b.Fatal("different snapshot", key)
+		}
+	}
+	raw, err := encodeProviderReply(response)
+	if err != nil || len(raw) > 8192 {
+		b.Fatal("invalid benchmark contract", err, len(raw))
+	}
+	wireBytes := len(raw)
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		encoded, err := encodeProviderReply(d.settingsRequest(request))
+		if err != nil || len(encoded) != wireBytes {
+			b.Fatal("reply changed during observation")
+		}
+		settingsPerformanceSink = encoded
+	}
+	b.StopTimer()
+	b.ReportMetric(float64(wireBytes), "wire-B/op")
+}

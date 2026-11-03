@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-02",
+  "scope": "Ready but unsubmitted four-setting desktop query projection/encoding microbenchmark; no WM/X/whole-session measurements",
+  "baseline": "765191d7b3ba8e6d2f6936cb205f3a853ef83445",
+  "candidate": "d2624fb79d0e7634054a6c134a1f31602a76a8c1 Go source; 788 non-injected candidate snapshot files match current checkout",
+  "profile": {
+    "os": "Darwin",
+    "architecture": "ARM64",
+    "cpu": "Apple M5 Max",
+    "go": "1.27.2",
+    "GOMAXPROCS": 1,
+    "operations_per_process": 500,
+    "processes": 6,
+    "order": [
+      "baseline",
+      "candidate",
+      "candidate",
+      "baseline",
+      "baseline",
+      "candidate"
+    ],
+    "vm_preflight": "no QEMU/vfkit processes; all owned labs confirmed stopped"
+  },
+  "plan_sha256": "86580dc08ff73d5762e79fa48192362436c8237e70ace60689d0a8f3407006cd",
+  "source_manifest_sha256": "4f2d94c5cbc8400bfd231c7855b7bafb205a411c154bd77f6b58565b92be4548",
+  "benchmark_source_sha256": "3c3698d1f9bcddc9d67e236d438a6ce5c2547f0d2a4d3e067b173c1d313c5dd2",
+  "overlay_sha256": "ddecf25f77f3f6623a101c57b6bace93831da993132f1e82aed2857d41afdc95",
+  "result_sha256": "96afc23c74c6f751b049f342f68b97e8155c25b5654e7eec827f3af7a1623121",
+  "samples": [
+    {
+      "label": "0-baseline",
+      "side": "baseline",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 1.5793853340437636,
+      "stdout_sha256": "086b87cb0fae2ece415a107c7921e0652edc80e85b31f6f3ecef1c9dfea175b5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 38220,
+      "wire_bytes": 1933,
+      "allocated_bytes_per_op": 24522,
+      "allocations_per_op": 215,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     38220 ns/op\t      1933 wire-B/op\t   24522 B/op\t     215 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.253s\n"
+    },
+    {
+      "label": "1-candidate",
+      "side": "candidate",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 2.645197332953103,
+      "stdout_sha256": "dc754ccd74f752e13ad604f4832a8ed275975902331f39a545498fa7e8cfa698",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 49001,
+      "wire_bytes": 1606,
+      "allocated_bytes_per_op": 30635,
+      "allocations_per_op": 395,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     49001 ns/op\t      1606 wire-B/op\t   30635 B/op\t     395 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.167s\n"
+    },
+    {
+      "label": "2-candidate",
+      "side": "candidate",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 0.4094527499983087,
+      "stdout_sha256": "1f0674853f4002ac5754b26500e677158b954c11f6af4b0206bcc2092c31e5a4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 50178,
+      "wire_bytes": 1606,
+      "allocated_bytes_per_op": 30635,
+      "allocations_per_op": 395,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     50178 ns/op\t      1606 wire-B/op\t   30635 B/op\t     395 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.140s\n"
+    },
+    {
+      "label": "3-baseline",
+      "side": "baseline",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 0.3667048750212416,
+      "stdout_sha256": "c1d6142e5a801fb16c60ba40114eb5cc5ea55235605d102d40b27e331efef00c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 33756,
+      "wire_bytes": 1933,
+      "allocated_bytes_per_op": 24522,
+      "allocations_per_op": 215,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     33756 ns/op\t      1933 wire-B/op\t   24522 B/op\t     215 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.132s\n"
+    },
+    {
+      "label": "4-baseline",
+      "side": "baseline",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 0.3611220419406891,
+      "stdout_sha256": "72464a21618db970721f18de79160c838265f94e0bb7370eb313d824d7dfec4f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 33678,
+      "wire_bytes": 1933,
+      "allocated_bytes_per_op": 24522,
+      "allocations_per_op": 215,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     33678 ns/op\t      1933 wire-B/op\t   24522 B/op\t     215 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.130s\n"
+    },
+    {
+      "label": "5-candidate",
+      "side": "candidate",
+      "exit": 0,
+      "timed_out": false,
+      "process_group_stopped": true,
+      "seconds": 0.37205495801754296,
+      "stdout_sha256": "b42f1aba66fbffb3cc9cfa3ba121586285824f4948c09335b890a616e2666ef2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "ns_per_op": 47176,
+      "wire_bytes": 1606,
+      "allocated_bytes_per_op": 30635,
+      "allocations_per_op": 395,
+      "stdout": "goos: darwin\ngoarch: arm64\npkg: github.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\ncpu: Apple M5 Max\nBenchmarkSettingsProjection \t     500\t     47176 ns/op\t      1606 wire-B/op\t   30635 B/op\t     395 allocs/op\nPASS\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopcontroller\t0.133s\n"
+    }
+  ],
+  "medians": {
+    "baseline": {
+      "ns_per_op": 33756,
+      "wire_bytes": 1933,
+      "allocated_bytes_per_op": 24522,
+      "allocations_per_op": 215
+    },
+    "candidate": {
+      "ns_per_op": 49001,
+      "wire_bytes": 1606,
+      "allocated_bytes_per_op": 30635,
+      "allocations_per_op": 395
+    }
+  },
+  "ratios": {
+    "ns_per_op": 1.4516234150965754,
+    "wire_bytes": 0.8308329022245214,
+    "allocated_bytes_per_op": 1.2492863551096973,
+    "allocations_per_op": 1.8372093023255813
+  },
+  "prior_failure": {
+    "path": "r1-appearance-checkpoint/performance01",
+    "result_sha256": "298ea5c9640dbb66a91b6009c198fec636cd524eedf60ce4b76792b8a4cad80d",
+    "outcome": "provider_not_ready before timing; failed process group confirmed stopped",
+    "repair": "identical ready=true fixture through Go source overlay; reconstruction and reply-budget guards unchanged"
+  },
+  "investigation": "Production delta is scoped metadata/value projection in ipc.go; additional group/metric metadata passes and merge maps are consistent with extra temporary allocations. No WM/core event path changed. Small query scope and sample do not establish whole-desktop or universal causal performance.",
+  "disposition": "Retain necessary fixed-cap correctness repair; record cost for PERF-01 #29 / BUILD-PROFILES-01 #226. No tuning selected. General WM/session comparison remains due; this supplemental micro-observation does not reset its counter.",
+  "limits": [
+    "Three pairs on one host, small fixed-operation samples; no confidence interval or universal speed claim",
+    "B/op is temporary allocation accounting, not resident memory",
+    "Initial executable compilation/cache costs are outside ns/op; whole-process wall time is separate",
+    "No X painting, startup/idle/title/resize/session, Linux timing, native C sanitizer, BSD or release qualification"
+  ]
+}

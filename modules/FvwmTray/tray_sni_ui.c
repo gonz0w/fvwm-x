@@ -44,7 +44,7 @@ struct tray_sni_ui
 	bool upload_overlay, upload_canceled;
 	size_t picture_bytes, upload_bytes;
 	uint64_t next_view, next_request, icon_acquisition;
-	bool icon_acquisition_exhausted;
+	bool icon_acquisition_exhausted, icon_refresh_pending;
 	struct {
 		uint64_t token, id, generation, view, acquisition;
 		unsigned int role, node;
@@ -256,6 +256,22 @@ void tray_sni_configure(tray_ui *ui, bool retry)
 	}
 }
 
+void tray_sni_refresh_icons(tray_ui *ui)
+{
+	/* Coalesce explicit requests; automatic configuration snapshots do not
+	 * invalidate source acquisition. Missing state acquires its first tuple. */
+	if (ui->sni)
+		ui->sni->icon_refresh_pending = true;
+}
+
+static bool icon_refresh_ready(const tray_ui *ui)
+{
+	/* Keep the intent until the last queued authoritative snapshot commits.
+	 * Admission and new work are blocked meanwhile, even for the same tuple. */
+	return ui->sni->icon_refresh_pending && !ui->config_pending &&
+	    !ui->config_refresh;
+}
+
 void tray_sni_retired(tray_ui *ui, Window window)
 {
 	if (!ui->sni)
@@ -347,15 +363,18 @@ void tray_sni_sync(tray_ui *ui)
 	int extent = scaled(ui, ui->icon_size > 24 ? ui->icon_size : 24);
 	if (extent < 1 || extent > 4096)
 		return;
-	bool changed = icon_profile_changed(ui);
+	bool refresh = icon_refresh_ready(ui);
+	bool changed = icon_profile_changed(ui) || refresh;
+	if (refresh)
+		ui->sni->icon_refresh_pending = false;
 	ui->sni->scale = ui->quarters;
 	ui->sni->size = ui->icon_size;
 	strcpy(ui->sni->theme, ui->icon_theme);
 	if (changed)
 	{
 		ui->sni->menu_icon_generation = 0;
-		/* Menu identity alone does not fence a result for an older
-		 * theme/size/scale, including an ABA return to the same tuple. */
+		/* Menu identity alone does not fence an older source acquisition,
+		 * including an explicit refresh or ABA return to the same tuple. */
 		if (ui->sni->icon_acquisition == UINT64_MAX)
 		{
 			ui->sni->icon_acquisition_exhausted = true;
@@ -672,6 +691,7 @@ static void acquire_icons(tray_ui *ui, double stamp)
 			    state->icon_batch[request].token != result->id)
 				request++;
 			if (request == state->icon_batch_count ||
+			    state->icon_refresh_pending ||
 			    state->icon_acquisition_exhausted ||
 			    state->icon_batch[request].acquisition !=
 			    state->icon_acquisition ||
@@ -765,7 +785,8 @@ static void acquire_icons(tray_ui *ui, double stamp)
 		tray_icons_release(state->icons);
 		return;
 	}
-	if (state->helper_failed || state->icon_acquisition_exhausted)
+	if (state->helper_failed || state->icon_acquisition_exhausted ||
+	    state->icon_refresh_pending)
 		return;
 	tray_icon_request requests[TRAY_ICON_BATCH_MAX];
 	unsigned int count = 0;
@@ -1427,9 +1448,10 @@ void tray_sni_service(tray_ui *ui, double stamp)
 	    ? SNI_UI_IMAGE_MAX - retained : 0);
 	(void)tray_bus_service(state->bus, stamp);
 	/* Configuration packets precede this service turn. Synchronize a changed
-	 * local icon tuple before a completed helper batch can be admitted, even
-	 * when the bus model itself has not changed. */
-	if (tray_bus_take_dirty(state->bus) || icon_profile_changed(ui))
+	 * tuple or committed source refresh before admitting completed results,
+	 * even when the bus model itself has not changed. */
+	if (tray_bus_take_dirty(state->bus) || icon_profile_changed(ui) ||
+	    icon_refresh_ready(ui))
 	{
 		tray_sni_sync(ui);
 		const tray_sni_model *model = tray_bus_model(state->bus);

@@ -285,7 +285,8 @@ void __wrap_tray_sni_sync(tray_ui *ui)
 {
 	probe_service();
 	__real_tray_sni_sync(ui);
-	if (probe.fd >= 0 && ui && probe.expected[0] &&
+	if (probe.fd >= 0 && ui && !ui->config_pending &&
+	    !ui->config_refresh && probe.expected[0] &&
 	    !strcmp(ui->icon_theme, probe.expected))
 		probe.synced = true;
 }

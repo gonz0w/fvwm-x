@@ -134,8 +134,12 @@ Example: `+--title '%*-40p\tDate, Type\tSize' --item '%*40n\t%d %t\t%s'+`
   fallback share the application-menu resolver. A separate fixed-role worker
   has a five-second parent deadline; failed acquisition emits a diagnostic and
   retains labeled menus. Enabled build formats control lookup. Earlier disk
-  copies remain available for preceding menu generations; automatic disk-cache
-  retirement is not implemented.
+  copies remain available for preceding menu generations. Regenerate the menu
+  after changing an icon or theme metadata to use a fresh source, finder and
+  renderer; changed bytes receive a new content path. Exported menu commands or
+  files can retain absolute paths after the worker exits, and FVWM can read them
+  later or reload them at another scale. Preserve copies while any menu refers
+  to them. There is no automatic filesystem watch or shared copy cleanup.
 *--wm-icons*::
   Define icon names suitable for use with wm-icons package. Currently this
   is equivalent to: `+--icon-title menu/folder-open.xpm --icon-item

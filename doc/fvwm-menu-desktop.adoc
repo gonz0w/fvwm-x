@@ -143,7 +143,13 @@ All enabled formats use private content-based copies in the configured icon
 directory, so a changed image in a new acquisition does not reuse an old core
 cache entry. Earlier generations keep their immutable copies. The resolver and
 request cache live for one bounded acquisition; regeneration reads fresh theme
-metadata and assets. Automatic retirement of older disk copies is not provided.
+metadata and assets. Automatic retirement of older disk copies is not provided. Regenerate the menu
+after changing an icon or theme metadata to create a fresh source, finder and
+renderer; changed bytes receive a new content path. Exported menu commands or
+files can retain absolute paths after the worker exits, and FVWM can read those
+paths later or reload them at another scale. Preserve the copies for as long as
+any menu references them. There is no automatic filesystem watch or shared
+copy cleanup.
 Optional localized application, action and .directory icons use this same
 resolver. A localized icon requires a base Icon value; an action icon falls
 back to its parent application's icon.

@@ -10,6 +10,7 @@ typedef struct tray_sni_ui tray_sni_ui;
 
 void tray_sni_init(tray_ui *ui);
 void tray_sni_configure(tray_ui *ui, bool retry);
+void tray_sni_refresh_icons(tray_ui *ui);
 void tray_sni_service(tray_ui *ui, double now);
 void tray_sni_sync(tray_ui *ui);
 unsigned int tray_sni_pollfds(tray_ui *ui, struct pollfd *fds);

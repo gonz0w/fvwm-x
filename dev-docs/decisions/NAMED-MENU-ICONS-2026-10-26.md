@@ -46,3 +46,29 @@ silently accepted or made a blanket veto on unrelated shared contracts.
 record the Linux focused checkpoint, theme captures, source review and explicit
 remaining #215/profile acceptance. The directory executable grows by 2,235,073
 bytes; complete release cost disposition remains with #29/#226.
+
+## A5 explicit refresh and artifact ownership — 2026-11-02
+
+An explicit native tray Refresh or Reload selects a fresh source acquisition
+when the last pending configuration snapshot finishes, including an unchanged
+icon tuple. Requests coalesce in one pending bit; old results and new work are
+refused while it is pending. The existing nonwrapping acquisition fence and
+cell/menu invalidation run before later result admission. Automatic snapshots
+do not refresh unchanged sources. Refresh preserves helper-retry policy; Reload
+remains the existing recovery operation. Exhaustion and retirement failure stay
+blocking. There is no new watcher, process, package or renderer.
+
+Source/finder/request caches remain acquisition-local. Regenerating an exported
+application/directory menu refreshes source lookup; changed bytes produce new
+content identities, leaving preceding exported paths intact. Worker exit is not
+reference release: retained core menu pictures can load again at another scale,
+and exported files can be read later or copied. No age-, mtime- or generation-only
+sweep is selected. Whole #215 export lifetime acceptance remains open pending an
+owned acknowledged menu mode or an explicit exported-artifact lifetime contract.
+
+Private consumers already have narrower ownership: tray batch files survive
+through result consumption and retire afterwards; pinboard replacements retire
+obsolete generations at acknowledged native boundaries, retaining files when
+shutdown cannot confirm release. Preserve these mechanisms rather than adding a
+shared collector. The A5 source/compile checkpoint queues its new generation,
+held-batch refresh and retention cases for A5–A8 combined runtime acceptance.

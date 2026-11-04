@@ -22,7 +22,7 @@ import time
 
 from desktop_live import connect_client
 from graphics_eval_records import (MAX_LOG_BYTES, TraceError, parse_records,
-    qualify_lifecycle, require)
+    qualify_lifecycle, require, parse_layout_record, layout_metadata)
 from inspector_live import NativeView
 from live_x_harness import HarnessRuntime, start_display_server, wait_for_predicate
 from mfl_stream_live import Connection
@@ -31,7 +31,8 @@ from native_layout_live import PROFILES, owned_module_pid, process_sample
 from session_x_errors import SessionXErrors
 
 CONTROLS = ('FVWM_GRAPHICS_EVAL_TRACE', 'FVWM_GRAPHICS_EVAL_MOTION',
-    'FVWM_GRAPHICS_EVAL_REFUSE')
+    'FVWM_GRAPHICS_EVAL_REFUSE', 'FVWM_LAYOUT_EVAL_TRACE',
+    'FVWM_LAYOUT_EVAL_REFUSE')
 SCENARIOS = ('positive', 'choice-only', 'equal', 'replace', 'press', 'move',
     'resize', 'palette', 'unmap', 'destroy')
 SOURCE_INPUTS = ('libs/graphics_eval.c', 'libs/graphics_eval.h',
@@ -78,15 +79,31 @@ def _run(args, evidence, out):
     source = Path(__file__).resolve().parents[2]
     build = args.build.resolve()
     record = input_record(args.input_record)
+    layout = getattr(args, 'layout', None)
+    layout_case = getattr(args, 'layout_case', 'fit')
+    layout_refuse = getattr(args, 'layout_refuse', False)
+    layout_observed = args.mode == 'correctness' and layout is not None
     observed = args.mode == 'correctness' and args.variant != 'ordinary'
     evidence.update(dict(status='running', variant=args.variant, profile=args.profile,
         scenario=args.scenario, mode=args.mode, observed=observed,
         motion=args.motion, injected_refusal=args.refuse, screenshots=[],
+        layout=layout, layout_case=layout_case, layout_observed=layout_observed,
+        layout_refuse=layout_refuse,
+        layout_policy='independent Clay equalization; native weighted surplus retained',
         input_record=dict(sha256=digest(args.input_record), value=record),
         source_sha256={name: digest(source / name) for name in SOURCE_INPUTS},
         generated_config_sha256=None, binaries={}, startup={}, action_latency_ms=[],
         latency_scope='semantic command receipt; includes harness/query overhead',
         implicit_roundtrips=None, process_observations={}, declared_idle_seconds=.4))
+    if layout:
+        names = ('libs/clay_layout_eval.c', 'libs/clay_layout_eval.h',
+            'libs/ui_layout.c', 'libs/ui_layout.h',
+            'modules/FvwmButtons/button.c',
+            'modules/FvwmButtons/buttons_layout_eval.c',
+            'modules/FvwmButtons/buttons_layout_eval.h',
+            'tests/third_party/clay/clay.h', 'tests/third_party/clay/LICENSE.md',
+            'tests/third_party/clay/SOURCE.md')
+        evidence['source_sha256'].update({name: digest(source / name) for name in names})
     started = time.monotonic()
     core = connection = client = errors = view = None
     with HarnessRuntime(prefix='fvwm-g3-') as runtime:
@@ -113,8 +130,10 @@ def _run(args, evidence, out):
             suffix = '' if args.variant == 'ordinary' else '-' + args.variant + '-eval'
             selected = {}
             for module in ('FvwmForm', 'FvwmButtons', 'FvwmMFL'):
-                binary = build / 'modules' / module / (module +
-                    (suffix if module != 'FvwmMFL' else ''))
+                name = module + (suffix if module != 'FvwmMFL' else '')
+                if layout and module == 'FvwmButtons':
+                    name = module + '-' + layout + '-layout-eval'
+                binary = build / 'modules' / module / name
                 evidence['binaries'][module] = dict(path=str(binary), sha256=digest(binary))
                 (modules / module).symlink_to(binary)
                 selected[module] = binary
@@ -154,6 +173,8 @@ def _run(args, evidence, out):
             if args.motion == 'full': env['FVWM_GRAPHICS_EVAL_MOTION'] = 'full'
             if args.refuse: env['FVWM_GRAPHICS_EVAL_REFUSE'] = '1'
             if observed: env['FVWM_GRAPHICS_EVAL_TRACE'] = '1'
+            if layout_observed: env['FVWM_LAYOUT_EVAL_TRACE'] = '1'
+            if layout_refuse: env['FVWM_LAYOUT_EVAL_REFUSE'] = '1'
             core_started = time.monotonic()
             core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
                 '-f', str(config)], 'core.log', env)
@@ -234,11 +255,13 @@ def _run(args, evidence, out):
                 evidence['binaries'][module]['pid'] = pid
                 return pid
 
-            row_lines = ['Geometry 800x64+20+30', 'Rows 1', 'Layout content',
+            row_width = 200 if layout and layout_case == 'compressed' else 800
+            beta_weight = 2 if layout and layout_case == 'weighted' else 1
+            row_lines = [f'Geometry {row_width}x64+20+30', 'Rows 1', 'Layout content',
                 'Frame 1', 'Padding 8 3', f'Font "{font}"', 'Colorset 201',
                 'FocusColorset 202', 'KeyboardNavigation 1',
                 '(1x1, Id alpha, Title "First action", Action "Echo G3_BUTTON_alpha")',
-                '(1x1, Id beta, Title "Second action", Action "Echo G3_BUTTON_beta")',
+                f'({beta_weight}x1, Id beta, Title "Second action", Action "Echo G3_BUTTON_beta")',
                 '(1x1, Id gamma, Title "Third action", Action "Echo G3_BUTTON_gamma")']
             form_lines = ['Title "G3 native collection"', f'Font "{font}"',
                 'Colorset 200', 'ItemColorset 203', 'Line left',
@@ -313,6 +336,13 @@ def _run(args, evidence, out):
                 finally: x.XDestroyImage(image)
 
             evidence['prepared_rectangles'] = rectangles()
+            if layout and layout_case == 'update':
+                command('SendToModule DrawingRow ChangeButtons '
+                    '(alpha Title "Open café", ActiveTitle "Long translated action") '
+                    '(gamma Title "Third changed action")')
+                evidence['layout_after_update'] = rectangles()
+                # Clay may keep equalized widths; semantic identity and a
+                # later reflow witness matter, not a forced pixel difference.
             initial_list = list_state() if args.scenario != 'choice-only' else None
             if initial_list is not None:
                 evidence['initial_list_status'] = initial_list.hex()
@@ -327,6 +357,19 @@ def _run(args, evidence, out):
             positive_bounds['buttons'].append(stamp())
             view.key('Return')
             require(receipt('G3_BUTTON_') == 'G3_BUTTON_beta', 'positive focus/action identity')
+            if layout:
+                target = rectangles()[2]
+                view.pointer.motion(target[0] + target[2] // 2,
+                    target[1] + target[3] // 2)
+                before_pointer = time.monotonic()
+                view.pointer.button(True)
+                time.sleep(.03)
+                view.pointer.button(False)
+                x.XSync(d, 0)
+                require(receipt('G3_BUTTON_') == 'G3_BUTTON_gamma',
+                    'private prepared rectangle pointer/action identity')
+                evidence['layout_pointer_action_ms'] = (
+                    time.monotonic() - before_pointer) * 1000
             focus_window(form)
             positive_bounds['form'] = [stamp()]
             click(choice)
@@ -476,6 +519,14 @@ def _run(args, evidence, out):
             expected = {row_pid: ('buttons', args.variant), form_pid: ('form', args.variant)} if observed else {}
             streams = parse_records(raw, expected)
             evidence['observer_streams'] = streams
+            evidence['layout_record'] = parse_layout_record(raw,
+                row_pid if layout_observed else None,
+                layout if layout_observed else None,
+                'refuse' if layout_refuse else layout_case,
+                layout_metadata([('Open café', 'Long translated action', None),
+                    ('Second action', None, None),
+                    ('Third changed action', None, None)])
+                if layout and layout_case == 'update' else None)
             evidence['stimulus_clock'] = 'CLOCK_MONOTONIC floor milliseconds'
             evidence['positive_bounds_ms'] = positive_bounds
             evidence['stimulus_bounds_ms'] = stimulus_bounds
@@ -575,8 +626,23 @@ if __name__ == '__main__':
     parser.add_argument('--refuse', action='store_true')
     parser.add_argument('--capture', action='store_true')
     parser.add_argument('--shape-probe', action='store_true')
+    parser.add_argument('--layout', choices=('native', 'clay'))
+    parser.add_argument('--layout-case',
+        choices=('fit', 'weighted', 'compressed', 'update'), default='fit')
+    parser.add_argument('--layout-refuse', action='store_true')
     parser.add_argument('--samples', type=int, choices=range(1, 33), default=12)
     args = parser.parse_args()
+    if args.layout and (args.variant != 'ordinary' or args.shape_probe or args.refuse):
+        parser.error('layout comparison uses ordinary drawing without graphics injection')
+    if not args.layout and (args.layout_case != 'fit' or args.layout_refuse):
+        parser.error('layout controls require a private layout variant')
+    if args.layout and args.scenario not in ('positive', 'resize', 'move'):
+        parser.error('layout comparison uses stable action/update or live geometry cases')
+    if args.layout and args.mode == 'performance' and (
+            args.layout_case != 'fit' or args.layout_refuse):
+        parser.error('layout performance uses fitted uninjected controls')
+    if args.layout_refuse and args.layout_case not in ('fit', 'weighted', 'compressed'):
+        parser.error('keep update and explicit refusal evidence separate')
     if args.shape_probe and (args.mode != 'correctness' or args.variant != 'cairo' or
             args.scenario != 'positive'):
         parser.error('shape probe belongs to one Cairo positive correctness case')

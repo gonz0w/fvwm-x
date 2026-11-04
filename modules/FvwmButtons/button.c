@@ -35,6 +35,7 @@
 #include "button.h"
 #include "keyboard.h"
 #include "buttons_graphics_eval.h"
+#include "buttons_layout_eval.h"
 
 
 
@@ -194,11 +195,12 @@ Bool buttons_layout_reflow(button_info *root)
 		minimum[count] = buttons_content_width(b);
 		weights[count++] = b->BWidth;
 	}
+	buttons_layout_eval_metadata(buttons, count);
 	/* Positive nonoverlapping rectangles require at least one pixel per
 	 * button. WM hints advertise this lower bound. A forced invalid size
 	 * keeps the last complete layout until a usable configure arrives. */
 	if (c->height < 1 || c->height > 32767 ||
-		!ui_layout_row(c->width, minimum, weights, count,
+		!buttons_layout_eval_row(c->width, c->height, minimum, weights, count,
 			widths, &clipped))
 	{
 		if (!c->layout_warning)

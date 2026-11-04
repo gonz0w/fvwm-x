@@ -545,6 +545,12 @@ int main(void)
     image_renderer_deps += [librsvg, svg_cairo]
 endif
 
+# The private pinned layout experiment adds no ordinary/install dependency.
+layout_eval_enabled = not get_option('layout-eval').disabled()
+if layout_eval_enabled
+    layout_eval_math = cc.find_library('m', required: true)
+endif
+
 # Private evaluation linkage is independent of the isolated SVG worker. Do not
 # add this dependency to the shared archive or the ordinary module targets.
 graphics_eval_enabled = false

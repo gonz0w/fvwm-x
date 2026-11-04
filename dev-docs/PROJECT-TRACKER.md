@@ -35,6 +35,102 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: G2 private drawing prototype for GRAPHICS-02 #211, with #210's
+accepted native baseline and #212's later layout comparison coordinated.
+Branch `codex/r1-drawing-evaluation`, base merged PR352
+`0e6fd93ccf55d795392beb1ad722f7c2cbfd6298`. Owner Cam. The finite assessment selected the source boundary below; no renderer/backend/
+dependency adoption follows.
+
+Trace the two qualified Form/Buttons workloads and existing Cairo/SVG linkage,
+text/resource/clip ownership and fallback. Return one bounded optional comparison
+prototype design, exact observable acceptance and source/profile/cost inputs, or
+record a concrete unmet prerequisite. Reuse accepted drawing/lifetime primitives;
+no direct core rewrite, mandatory Cairo/Clay/toolkit/GPU, new package installation
+or native execution is selected. Keep #211's frozen evaluation/decision and six-
+target cost requirements. Source inspection alone cannot close the issue.
+One analyst assessment, with routine contract/dependency inventory from workflow;
+lead records a finite disposition before coding. Clay #212 is coordinated context,
+not an automatic second implementation lane. Continue the batched compile/check
+cadence; next runtime belongs to a named combined evaluation checkpoint, not PR
+creation. Source-derived costs and actual executed results remain distinct.
+
+G2 assessment disposition: no blanket prerequisite blocks an evaluation-only
+prototype. Select one four-story implementation boundary before coding:
+
+1. Add explicitly default-disabled, non-installed native/Cairo evaluation targets
+   from the existing Form/Buttons source lists. Check the direct Cairo Xlib API
+   independently; optional SVG linkage alone proves neither that API nor adoption.
+   Keep Cairo out of shared compile/runtime dependency owners and normal targets.
+2. Add a small evaluation-only prepared shape painter: lines/rectangles/arcs and
+   one bounded linear gradient. Borrow Display/drawable/visual, actual-pixel
+   rectangle/clip and caller colors synchronously; retain no font/item/picture.
+   Initial candidate accepts the recorded root TrueColor depth24 RGB8 visual;
+   unsupported visual/geometry or client preparation failure takes native fallback.
+   Cap each side at 2048 pixels and scratch area at 262144 pixels; use one scratch
+   pixmap/GC/surface, preserve needed destination pixels, finish/status-check Cairo
+   before ordered copy, then retire resources. Count all copies/allocations; client
+   status is not asynchronous server acknowledgement. No general renderer vtable,
+   cache, text/layout engine, core renderer or compositor is selected.
+3. Wire only the named Form list/choice outlines and Buttons focus/indicator
+   shapes into private evaluation variants. Keep Flocale text, picture leases,
+   draw/hit rectangles and font/scale/resource publication with current owners.
+   Prototype one local focus/pressed-color transition per module, at most eight
+   frames over120ms, only visible changing content, immediate reduced-motion
+   completion, no retained item/font pointer and no idle timer. Cancel/replace on
+   interruption, unmap/destroy and incompatible geometry/palette/resource change.
+   Service due work before the final FPending check and only shorten poll timeouts;
+   preserve existing command/dispatch ordering and Form countdown ownership.
+4. Author pure budget/transition coverage and matching real-X/fallback/lifecycle
+   oracles, with the existing three-profile workload plus a small shape supplement.
+   Freeze source/ELF/profile and six-target cost inventories and comparison recipes.
+   NextRequest supplies issued-request deltas only. Complete implicit roundtrip
+   observation remains an explicit measurement prerequisite, not an invented
+   count. Reuse accepted font/clip/image owners and native geometry assertions.
+
+This is source implementation and affected compile/check selection. No candidate
+runtime, package installation, production renderer integration or new mandatory
+dependency is authorized by this disposition. Runtime comparison joins the named
+G2–G5 evaluation checkpoint after the related prototype work is complete. Early
+platform-sensitive compile/API checks remain applicable. Preserve #211's repeated
+cost/latency/startup/CPU/RSS/idle, all-six-target and real-X acceptance; no adopted
+choice or issue closure follows from source/compile success. One implementation
+attempt with one diagnosed source/build repair; an unexplained repeat returns to
+analysis. Retire unnecessary experimental hooks when the final decision rejects
+them; do not keep an unbounded alternative renderer by inference.
+
+G2 source and affected native Linux ARM64 compilation are complete; integrated
+and signed delivery review are next. Default-off target isolation, direct Cairo
+Xlib API linkage and all four private variants compile; ordinary modules gain no
+Cairo linkage. A reviewed actual-dimension correction rebuilds only the two
+private Buttons variants; other successful results are retained. No runtime/
+install/package jobs ran. Current PR352 ELF controls
+are preserved and the owned container/machine are stopped. [Scoped receipts,
+ELF costs and queued lifecycle oracles](verification/VERIFICATION-2026-11-03-DRAWING-EVALUATION.md)
+keep G2–G5 runtime and all-six-target acceptance pending. The historical host
+pure-policy pass predates whitespace/comment reflow; current exact policy was
+compiled, not rerun. Lead fallback handles the unavailable implementer role;
+actual backend model routing remains unverified. #211 stays open. Periodic
+production-performance ledger remains 0/5 after PR352. The final staged check
+caught one indentation error in the new Form adapter. One bounded whitespace
+correction removes only a leading tab, verified against the compiled overlay;
+its failure and exact-source qualification limit are retained in the report.
+No native attempt budget is renewed and no build/runtime campaign is repeated.
+
+PR352 is merged after separate integrated and exact signed review. Head
+`e142469f782fd1274dd3aeba28ffa105e123710c`, tree
+`8c605bcb93043970533adc53330eb17e8f87b8b6`, canonical merge
+`0e6fd93ccf55d795392beb1ad722f7c2cbfd6298`; author DCO, verified signatures,
+reviewed parent/tree, clean synchronized main and matching completed refs verify.
+Project PR Done and #210/#214/#215 In progress verify; R1 has 50 open issues.
+[Composed drawing/glyph results](verification/VERIFICATION-2026-11-03-DRAWING-GLYPHS.md)
+and [complete three-profile captures](../doc/screenshots/lucide-menu-manifest.json)
+retain remaining support/scale/sanitizer/optical criteria. The due core comparison
+is delivered: periodic ledger resets to 0/5. All owned labs are stopped. The
+separate settings-query cost remains recorded; parked Daybreak work is untouched.
+
+<details>
+<summary>PR352 completed candidate and acceptance scope</summary>
+
 Current work: combined G1/A7 appearance checkpoint under #210/#214/#215,
 branch `codex/r1-shared-drawing`, base PR351
 `aa4792c665622bb222b3939f7354f485b54bf05e`. Implementation and scoped composed
@@ -62,6 +158,9 @@ and remaining resource acceptance stay under their frozen owners. No Cairo/Clay,
 Papirus package, renderer/default activation or Daybreak work is adopted. Complete
 final review and canonical delivery, then select the next finite R1 batch from
 the execution order without waiting for a per-PR human merge.
+
+
+</details>
 
 <details>
 <summary>G1/A7 selection and checkpoint history</summary>

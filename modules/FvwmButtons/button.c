@@ -34,6 +34,7 @@
 #include "FvwmButtons.h"
 #include "button.h"
 #include "keyboard.h"
+#include "buttons_graphics_eval.h"
 
 
 
@@ -166,6 +167,7 @@ static int buttons_content_width(button_info *b)
 
 Bool buttons_layout_reflow(button_info *root)
 {
+	buttons_eval_cancel(False);
 	button_info *buttons[256];
 	int minimum[256], widths[256];
 	unsigned weights[256];

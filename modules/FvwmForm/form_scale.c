@@ -11,6 +11,7 @@
 #include "libs/wm_ui_metrics.h"
 #include "libs/ui_layout.h"
 #include "FvwmForm.h"
+#include "form_graphics_eval.h"
 #include "form_workarea.h"
 
 #include <inttypes.h>
@@ -117,6 +118,7 @@ void form_scale_end_config(void)
 
 void form_scale_cleanup(void)
 {
+	form_eval_cancel(False);
 	for (unsigned int i = 0; i < scale.fonts; i++)
 	{
 		free(scale.tables[i].name);
@@ -538,6 +540,7 @@ void form_scale_retry(void)
 		rect.height - fixed - 2 * metrics.box, cell, row_height,
 		1, list->list.viewport_columns, 32, &grid))
 		goto refused;
+	form_eval_cancel(False);
 	/* Admission is complete. Fonts, metrics and children publish together.
 	 * Input bytes/cursors, focus and list generation stay untouched. */
 	for (unsigned int i = 0; i < scale.fonts; i++)

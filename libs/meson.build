@@ -118,3 +118,19 @@ libfvwm3 = static_library(
     dependencies: all_compile_deps,
     install: false,
 )
+
+if graphics_eval_enabled
+    graphics_eval_libraries = {}
+    foreach backend : ['native', 'cairo']
+        graphics_eval_libraries += {backend: static_library(
+            'graphics-eval-' + backend,
+            ['graphics_eval.c', 'graphics_eval_policy.c'],
+            include_directories: includedirs,
+            dependencies: [summary_depvals['x11']] +
+                (backend == 'cairo' ? [graphics_eval_cairo] : []),
+            c_args: ['-DFVWM_GRAPHICS_EVAL_CAIRO=' +
+                (backend == 'cairo' ? '1' : '0')],
+            install: false,
+        )}
+    endforeach
+endif

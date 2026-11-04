@@ -1,3 +1,22 @@
+graphics_eval_policy_test = executable(
+    'test-graphics-eval-policy',
+    ['test_graphics_eval_policy.c', '../libs/graphics_eval_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('graphics-eval-policy', graphics_eval_policy_test)
+
+if graphics_eval_enabled
+    graphics_eval_x_probe = executable(
+        'test-graphics-eval-x', 'test_graphics_eval_x.c',
+        include_directories: includedirs,
+        dependencies: [summary_depvals['x11'], graphics_eval_cairo],
+        link_with: graphics_eval_libraries['cairo'],
+        c_args: ['-UNDEBUG'],
+        install: false,
+    )
+endif
+
 test('command-catalog-contract', py, args: [files('test_command_catalog.py')],
     timeout: 30)
 

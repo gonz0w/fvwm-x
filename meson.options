@@ -162,3 +162,8 @@ option(
     'lucide-menu-icons', type: 'boolean', value: false,
     description: 'Install the optional FVWM-X Lucide menu glyph subset and example',
 )
+
+option(
+    'graphics-eval', type: 'feature', value: 'disabled',
+    description: 'Build non-installed native/Cairo drawing comparison targets',
+)

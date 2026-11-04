@@ -28,12 +28,121 @@ State: isolated canonical candidate prepared; checks, review and merge pending.
 Current product work retains its owner; this record owns only the selected
 method refresh and does not start a second product lane.
 
-Updated: 2026-11-03. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-04. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
+
+Current work: G3 comparison-observer input assessment for GRAPHICS-02 #211,
+coordinated with #210's native drawing baseline and #212's later layout decision.
+Owner Cam; branch `codex/r1-drawing-observers`, base merged PR353
+`658869663e091c39fcef02f1221c057817dbf0ee`. The G2 delivery is complete; select
+one bounded assessment before further source implementation.
+
+Outcome: identify the smallest private observer and matching native workload
+needed to compare the ordinary, native-evaluation and Cairo-evaluation variants.
+Trace existing native-layout/keyboard/collection fixture owners, private module
+transition/painter counters and source/profile/binary binding. Return a finite
+three-to-five-story implementation disposition and observable acceptance, or
+name a concrete unavailable prerequisite. One complex observer/measurement
+assessment and one routine harness/contract inventory; no nested delegation.
+Lead records the disposition before coding. Preserve one active delivery batch.
+
+The intended boundary is private, bounded observation plus reused real-X workload
+recipes: prove transition activity/cancellation/idle without retaining a widget
+pointer, admit the existing three themes and semantic interruption controls, and
+freeze repeated latency/CPU/RSS/startup/source/dependency inputs. A wire proxy,
+new general trace framework, public module protocol, production renderer/layout
+adoption, package installation or new runtime lane is excluded. Do not describe
+NextRequest as implicit roundtrips; establish an actually supported observation
+method or retain that specific metric prerequisite. No native execution is
+selected by assessment. Existing required support, cost, adoption and runtime
+gates remain open; G2–G5 is the combined evaluation checkpoint, not a per-PR test.
+G4 layout/Clay assessment and G5 runtime are future refinement within the existing
+owner contracts, not additional active implementation batches.
+
+Acceptance for this assessment: exact producer/consumer ownership, finite inputs,
+expected positive/refusal/lifetime observations and selected check scope. Stop
+on a missing required decision or an unexplained repeated failure; preserve the
+result and replan under current authority. Do not renew G2's completed attempt
+budget. Actual backend model routing remains unverified.
+
+G3 assessment disposition: source and primary Xlib/RECORD documentation support
+one private observation route; no existing qualified collector establishes complete
+implicit synchronous roundtrips. That metric stays a named prerequisite and does
+not block the independent source boundary. Select four related stories:
+
+1. Add a private fixed-cap observer (256 value records per module, saturating
+   counters and explicit overflow/truncation failure). Collect lifecycle/timeline
+   facts without pointers, dynamic growth, per-frame I/O or observation timers.
+   Export copied values once on orderly exit to existing owned stderr logs. Cover
+   choice-only Form startup despite its conditional existing native cleanup;
+   export performs no X/widget access or borrowed-resource cleanup.
+2. Bracket the complete named draw operation through native fallback with
+   operation-local NextRequest snapshots. Keep paint-only issued-request deltas,
+   synchronous initial redraws, delivered service frames and own Cairo scratch/
+   copy counters distinct. No new XSync and no zero-valued substitute for missing
+   ordinary-binary counters. NativeEval/CairoEval share observation overhead;
+   ordinary binaries remain the external behavioral/cost baseline.
+3. Reuse the native-layout/input/capture owners in a private matching fixture:
+   ordinary/native/Cairo module symlink views, controlled toggleable Form choice
+   and distinct Buttons focus foregrounds, three existing themes and semantic
+   action/geometry barriers. Author full-motion positive, reduced/equal, refusal,
+   replacement/press, resize/resource, live move and unmap/destroy controls. Parse
+   records only after owned exit; interruption needs active-before-cancel evidence,
+   otherwise it is inconclusive. Missing/overflowed/partial records fail evidence.
+4. Freeze exact source/generated config/ELF/fixture/tool/server/profile inputs,
+   repeated order and metric endpoints in the existing evidence shape. Separate
+   instrumented correctness from observer-disabled performance, retain samples
+   and variability, and label action/query latency and Linux proc metrics honestly.
+   Complete implicit-roundtrip and all-six-target cost/support remain pending.
+
+Lead owns integration, Meson, fixture/evidence and tracker; the implementer owns
+accepted private C observer/adapters/hooks and C policy tests with nonoverlapping
+write scope. One implementation attempt plus one diagnosed affected repair;
+repeat unexplained failure returns to analysis rather than a renewed budget.
+Author meaningful pure/pixel/lifecycle oracles before affected implementation;
+perform source/static checks and one affected incremental compile when complete.
+No product/runtime/install/package campaign is selected here. Runtime and three-
+theme captures join G2–G5 after related preparation, as already required. A new
+framework, public protocol or renderer adoption is outside this boundary.
+
+G3 source, reviewed correction, offline contract unit and affected compilation
+are complete; final integrated/signed review is next. Fourteen host Python tests
+pass (fake cleanup/no display); ordinary/private consumers, C tests and shape probe
+compile on the reused native Linux ARM64 profile. C/GUI runtime remains queued.
+The core and ordinary module text/data/BSS remain unchanged; the measured fixed
+observer storage belongs only to private variants. All owned build resources are
+confirmed stopped. [Source/unit/build evidence and remaining gates](verification/VERIFICATION-2026-11-04-DRAWING-OBSERVERS.md)
+keep G2–G5 runtime, three-theme captures, six-target costs and #211's decision open.
+No issue closure or production performance gain follows. Periodic ledger 1/5.
+
+G3 first source review found two acceptance defects before execution: lifecycle
+qualification could combine unrelated tokens or warmup cancellations, and a later
+HarnessRuntime cleanup failure could leave an early passed receipt. One diagnosed
+source correction binds samples to admitted token/identity/revision/RGB and the
+owned stimulus interval/control, and publishes final status only after outer
+runtime cleanup. Negative synthetic admission/stimulus and simulated cleanup-
+failure oracles accompany the correction. No candidate/runtime test has run and
+no native attempt budget is renewed. The C observer/adapter subset had no source
+lifetime/isolation finding. The narrow source and execution-input reviews cleared
+before the single successful host-unit/affected-compile dispatch.
+
+PR353 is merged after separate integrated and exact signed-head review. Head
+`38e2e0fe28d3e684ef39453e56684aafd0220b82`, tree
+`73571027e37480bf8996b81a7d6dcfc7bd2ce78e`, canonical merge
+`658869663e091c39fcef02f1221c057817dbf0ee`; canonical signatures, actual-author
+DCO and reviewed tree/parent verify. Main was clean and synchronized; matching
+owned local/remote refs are retired. Project PR Done and #211 In progress verify;
+R1 remains 50 open issues. The [source/build report](verification/VERIFICATION-2026-11-03-DRAWING-EVALUATION.md)
+retains the two-private-Buttons repair, final indentation-only reconciliation,
+historical unit limits and pending runtime/six-target/adoption acceptance. Owned
+build resources were confirmed stopped. Periodic ledger is 1/5 after PR353.
+
+<details>
+<summary>G2 completed source checkpoint and its historical acceptance record</summary>
 
 Current work: G2 private drawing prototype for GRAPHICS-02 #211, with #210's
 accepted native baseline and #212's later layout comparison coordinated.
@@ -115,6 +224,9 @@ caught one indentation error in the new Form adapter. One bounded whitespace
 correction removes only a leading tab, verified against the compiled overlay;
 its failure and exact-source qualification limit are retained in the report.
 No native attempt budget is renewed and no build/runtime campaign is repeated.
+
+
+</details>
 
 PR352 is merged after separate integrated and exact signed review. Head
 `e142469f782fd1274dd3aeba28ffa105e123710c`, tree

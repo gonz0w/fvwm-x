@@ -2671,8 +2671,12 @@ void RedrawItem (Item *item, int click, XEvent *pev)
       }
     } else
       XClearWindow(dpy, item->header.win);
+    form_eval_draw_begin(choice_scope, GRAPHICS_OPERATION_FORM_CHOICE);
     if (form_eval_choice_outline(item))
+    {
+      form_eval_draw_end(choice_scope, False);
       break;
+    }
     if (item->choice.on)
       XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
 		     item->header.dt_ptr->dt_colors[c_itemlo]);
@@ -2705,6 +2709,7 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     xsegs[3].x2 = dx - 1, xsegs[3].y2 = dy;
     XDrawSegments(dpy, item->header.win, item->header.dt_ptr->dt_item_GC,
 		  xsegs, 4);
+    form_eval_draw_end(choice_scope, True);
     break;
   case I_BUTTON:
     if (!text_inter)
@@ -3732,6 +3737,7 @@ int main (int argc, char **argv)
     exit(1);
   }
 
+  form_eval_observer_init();
   xasprintf(&mname, "*%s", module->name);
 
   {

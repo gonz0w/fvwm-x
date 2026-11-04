@@ -124,7 +124,8 @@ if graphics_eval_enabled
     foreach backend : ['native', 'cairo']
         graphics_eval_libraries += {backend: static_library(
             'graphics-eval-' + backend,
-            ['graphics_eval.c', 'graphics_eval_policy.c'],
+            ['graphics_eval.c', 'graphics_eval_policy.c',
+                'graphics_eval_observer.c'],
             include_directories: includedirs,
             dependencies: [summary_depvals['x11']] +
                 (backend == 'cairo' ? [graphics_eval_cairo] : []),

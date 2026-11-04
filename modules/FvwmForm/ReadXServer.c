@@ -52,6 +52,7 @@
 #include <ctype.h>
 
 #include "FvwmForm.h"
+#include "form_graphics_eval.h"
 #include "file_transfer_form.h"
 #include "form_input.h"
 #include "libs/flocale_font_types.h"
@@ -183,6 +184,7 @@ void ReadXServer (void)
       FEventsQueued(dpy, QueuedAfterReading)) {
     FNextEvent(dpy, &event);
     serviced++;
+    form_eval_event(&event);
     if (event.xany.window == CF.frame &&
         (event.type == UnmapNotify || event.type == DestroyNotify))
       form_button_cancel(True);
@@ -745,10 +747,12 @@ static void ToggleChoice (Item *item)
 	}
       }
       item->choice.on = 1;
+      form_eval_choice_begin(item);
       RedrawItem(item, 0, NULL);
     }
   } else {  /* IS_MULTIPLE */
     item->choice.on = !item->choice.on;
+    form_eval_choice_begin(item);
     RedrawItem(item, 0, NULL);
   }
 }

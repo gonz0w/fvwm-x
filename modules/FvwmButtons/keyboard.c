@@ -10,6 +10,7 @@
 #include "buttons_navigation.h"
 #include "draw.h"
 #include "keyboard.h"
+#include "buttons_graphics_eval.h"
 #include "libs/Module.h"
 #include "tray_container.h"
 
@@ -65,6 +66,7 @@ void buttons_keyboard_init(void)
 
 void buttons_keyboard_cleanup(void)
 {
+	buttons_eval_cancel(False);
 	if (focus_proxy)
 		XDestroyWindow(Dpy, focus_proxy);
 	focus_proxy = None;
@@ -145,6 +147,10 @@ static void set_focus_button(button_info *b)
 	{
 		return;
 	}
+#ifdef FVWM_GRAPHICS_EVAL
+	unsigned long previous_foreground = buttons_eval_foreground(b);
+#endif
+	buttons_eval_cancel(False);
 	cancel_press();
 	focus_button = b;
 	if (old)
@@ -153,6 +159,7 @@ static void set_focus_button(button_info *b)
 	}
 	if (b)
 	{
+		buttons_eval_focus_begin(b, previous_foreground);
 		RedrawButton(b, DRAW_FORCE, NULL);
 	}
 }
@@ -412,6 +419,7 @@ Bool buttons_keyboard_event(XEvent *event)
 		{
 			act = GetButtonAction(focus_button, 0);
 		}
+		buttons_eval_cancel(False);
 		pressed_button = focus_button;
 		pressed_key = event->xkey.keycode;
 		activated_on_press = focus_button->flags.b_ActionOnPress ||

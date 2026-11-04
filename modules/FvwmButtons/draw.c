@@ -41,6 +41,7 @@
 #include "libs/Graphics.h"
 #include "FvwmButtons.h"
 #include "keyboard.h"
+#include "buttons_graphics_eval.h"
 #include "tray_container.h"
 #include "misc.h" /* ConstrainSize() */
 #include "icons.h" /* ConfigureIconWindow() */
@@ -699,12 +700,16 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 	if (buttons_is_focused(b) && BW > 2*f + 5 && BH > 2*f + 5)
 	{
 		XSetForeground(Dpy, NormalGC, fc);
-		XDrawRectangle(Dpy, MyWindow, NormalGC, x+f+1, y+f+1,
-			BW-2*f-3, BH-2*f-3);
+		if (!buttons_eval_focus(b, x+f+1, y+f+1,
+		    BW-2*f-3, BH-2*f-3, fc))
+			XDrawRectangle(Dpy, MyWindow, NormalGC, x+f+1, y+f+1,
+				BW-2*f-3, BH-2*f-3);
 	}
 	if (b->flags.b_Disabled && BW > 2*f + 9 && BH > 2*f + 9)
 	{
 		XSetForeground(Dpy, NormalGC, fc);
+		if (buttons_eval_indicator(x+BW-f-8, y+BH-f-8, fc))
+			return;
 		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-8,
 			x+BW-f-3, y+BH-f-3);
 		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-3,

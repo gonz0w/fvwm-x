@@ -30,3 +30,18 @@ fvwm_buttons = executable(
 )
 
 install_data('ConfigFvwmButtons', install_dir: fvwm_datadir)
+
+if graphics_eval_enabled
+    foreach backend : ['native', 'cairo']
+        executable(
+            'FvwmButtons-' + backend + '-eval',
+            module_sources + ['buttons_graphics_eval.c'],
+            dependencies: buttons_dependencies +
+                (backend == 'cairo' ? [graphics_eval_cairo] : []),
+            include_directories: includedirs,
+            c_args: ['-DFVWM_GRAPHICS_EVAL=1'],
+            install: false,
+            link_with: [libfvwm3, graphics_eval_libraries[backend]],
+        )
+    endforeach
+endif

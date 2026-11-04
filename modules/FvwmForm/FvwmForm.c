@@ -56,6 +56,7 @@
 #include "libs/Rectangles.h"
 
 #include "FvwmForm.h"
+#include "form_graphics_eval.h"
 #include "file_transfer_form.h"
 #include "libs/ui_layout.h"
 #include "form_input.h"			/* common FvwmForm stuff */
@@ -1260,6 +1261,7 @@ static void form_list_abort(Item *p)
 
 static void form_native_cleanup(void)
 {
+  form_eval_cancel(False);
   Item *p;
 
   form_transfer_cleanup();
@@ -1958,6 +1960,7 @@ static bool form_viewport_reflow(int width, int height, int cell,
 
 void form_viewport_resize(int width, int height)
 {
+	form_eval_cancel(False);
 	Item *list = CF.viewport;
 
 	if (list != NULL)
@@ -2053,6 +2056,7 @@ Bool form_set_input_value(Item *item, const char *value)
 /* reset all the values (also done on first display) */
 static void Restart(void)
 {
+  form_eval_cancel(False);
   Item *item;
 
   form_transfer_reset();
@@ -2647,6 +2651,9 @@ void RedrawItem (Item *item, int click, XEvent *pev)
     myfprintf((stderr,"Just drew input field. click %d\n",(int)click));
     break;
   case I_CHOICE:
+#ifdef FVWM_GRAPHICS_EVAL
+    XClearWindow(dpy, item->header.win);
+#endif
     dx = dy = item->header.size_y - 1;
     if (item->choice.on) {
 	XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
@@ -2664,6 +2671,8 @@ void RedrawItem (Item *item, int click, XEvent *pev)
       }
     } else
       XClearWindow(dpy, item->header.win);
+    if (form_eval_choice_outline(item))
+      break;
     if (item->choice.on)
       XSetForeground(dpy, item->header.dt_ptr->dt_item_GC,
 		     item->header.dt_ptr->dt_colors[c_itemlo]);
@@ -2802,6 +2811,7 @@ static GC form_background_gc(void)
 /* window has moved redraw the background if it is transparent */
 void UpdateRootTransapency(Bool pr_only, Bool do_draw)
 {
+	form_eval_cancel(False);
 	Item *item;
 
 	if (CSET_IS_TRANSPARENT(colorset))
@@ -3224,7 +3234,11 @@ static void OpenWindows(void)
 			    item->header.size_y, item->header.size_y,
 			    0, CF.screen_background,
 			    item->header.dt_ptr->dt_colors[c_item_bg]);
-      XSelectInput(dpy, item->header.win, ButtonPressMask | ExposureMask);
+      XSelectInput(dpy, item->header.win, ButtonPressMask | ExposureMask
+#ifdef FVWM_GRAPHICS_EVAL
+        | StructureNotifyMask
+#endif
+      );
       xswa.cursor = CF.pointer[button_pointer];
       XChangeWindowAttributes(dpy, item->header.win, CWCursor, &xswa);
       if (itemcolorset >= 0)
@@ -3327,6 +3341,7 @@ static void ReadFvwm(void)
 }
 static void process_message(unsigned long type, unsigned long *body)
 {
+  form_eval_cancel(True);
   if (type == M_STRING && form_native_message((char *)&body[3]))
     return;
   switch (type) {
@@ -3548,6 +3563,7 @@ static void am_Map(char *cp)
 }
 static void am_UnMap(char *cp)
 {
+  form_eval_cancel(False);
   form_button_cancel(False);
   XUnmapWindow(dpy, CF.frame);
   myfprintf((stderr, "UnMap: got it\n"));
@@ -3581,9 +3597,13 @@ static void MainLoop(void)
       fvwm_debug(__func__, "Unable to service Form timer");
       break;
     }
+    form_eval_service();
     int timeout_ms = form_readiness_timeout(FPending(dpy) != 0,
       (pev != NULL && event_pending(pev, EV_TIMEOUT, NULL)) ||
       form_transfer_waiting());
+    int graphics_wait = form_eval_timeout();
+    if (graphics_wait >= 0 && (timeout_ms < 0 || graphics_wait < timeout_ms))
+      timeout_ms = graphics_wait;
     ready[0] = (struct pollfd){ Channel[1], POLLIN, 0 };
     ready[1] = (struct pollfd){ fd_x, POLLIN, 0 };
     ready[2] = (struct pollfd){ form_transfer_fd(),

@@ -72,6 +72,7 @@
 #include "draw.h"
 #include "dynamic.h"
 #include "keyboard.h"
+#include "buttons_graphics_eval.h"
 #include "libs/flocale_font_types.h"
 #include "libs/picture_types.h"
 #define MW_EVENTS ( \
@@ -321,6 +322,7 @@ static void button_release_pictures(button_info *b)
 **/
 static void DeadPipeCleanup(void)
 {
+	buttons_eval_cancel(False);
 	button_info *b, *ub = UberButton;
 	int button = -1;
 	Window swin;
@@ -418,6 +420,7 @@ static void DeadPipeCleanup(void)
 **/
 void SetButtonSize(button_info *ub, int w, int h)
 {
+	buttons_eval_cancel(False);
 	int i = 0;
 	int dx;
 	int dy;
@@ -1109,6 +1112,7 @@ void Loop(void)
 	{
 		if (My_FNextEvent(Dpy, &Event))
 		{
+			buttons_eval_event(&Event);
 			if (buttons_tray_normalize_focus(&Event))
 				continue;
 			if (buttons_tray_event(&Event))
@@ -1350,6 +1354,7 @@ void Loop(void)
 	  break;
 	}
 
+	buttons_eval_cancel(True);
 	CurrentButton = b = select_button(UberButton, x, y);
 	is_pointer_in_current_button = True;
 
@@ -2455,7 +2460,11 @@ int My_FNextEvent(Display *Dpy, XEvent *event)
 	/* Session descriptors remain borrowed and range-admitted by fsm. */
 	session_count = fsm_pollfds(ready + 2, FD_SETSIZE);
 	buttons_tray_service();
+	buttons_eval_service();
 	int wait_ms = FPending(Dpy) ? 0 : (fsm_pending ? 10 : -1);
+	int graphics_wait = buttons_eval_timeout();
+	if (graphics_wait >= 0 && (wait_ms < 0 || graphics_wait < wait_ms))
+		wait_ms = graphics_wait;
 	int tray_wait = buttons_tray_timeout();
 	if (tray_wait >= 0 && (wait_ms < 0 || tray_wait < wait_ms))
 		wait_ms = tray_wait;
@@ -2646,6 +2655,7 @@ static void send_bg_change_to_module(button_info *b, XEvent *Event)
 
 static void update_root_transparency(XEvent *Event)
 {
+	buttons_eval_cancel(False);
 	button_info *ub, *b;
 	int button;
 	Bool bg_is_transparent = CSET_IS_TRANSPARENT(UberButton->c->colorset);
@@ -2770,6 +2780,7 @@ static void recursive_change_colorset(
 
 static void change_colorset(int colorset, XEvent *Event)
 {
+	buttons_eval_cancel(False);
 	if (UberButton->c->flags.b_Colorset &&
 	    colorset == UberButton->c->colorset)
 	{
@@ -2838,6 +2849,9 @@ void process_message(unsigned long type, unsigned long *body)
 {
 	struct ConfigWinPacket  *cfgpacket;
 
+	if (type == M_CONFIG_INFO || type == M_STRING ||
+	    type == M_RES_NAME || type == M_RES_CLASS || type == M_WINDOW_NAME)
+		buttons_eval_cancel(True);
 	switch (type)
 	{
 	case M_FOCUS_CHANGE:

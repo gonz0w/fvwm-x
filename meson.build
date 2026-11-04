@@ -545,6 +545,37 @@ int main(void)
     image_renderer_deps += [librsvg, svg_cairo]
 endif
 
+# Private evaluation linkage is independent of the isolated SVG worker. Do not
+# add this dependency to the shared archive or the ordinary module targets.
+graphics_eval_enabled = false
+if not get_option('graphics-eval').disabled()
+    graphics_eval_cairo = dependency('cairo', required: get_option('graphics-eval'))
+    if graphics_eval_cairo.found()
+        graphics_eval_api = '''#include <cairo.h>
+#include <cairo-xlib.h>
+int main(void)
+{
+    cairo_surface_t *surface = cairo_xlib_surface_create(0, 0, 0, 1, 1);
+    cairo_t *context = cairo_create(surface);
+    cairo_rectangle(context, 0, 0, 1, 1);
+    cairo_stroke(context);
+    cairo_destroy(context);
+    cairo_surface_flush(surface);
+    cairo_surface_finish(surface);
+    cairo_status_t status = cairo_surface_status(surface);
+    cairo_surface_destroy(surface);
+    return status != CAIRO_STATUS_SUCCESS;
+}
+'''
+        graphics_eval_enabled = cc.links(graphics_eval_api,
+            dependencies: [graphics_eval_cairo, summary_depvals['x11']],
+            name: 'private Cairo Xlib drawing API (link only)')
+    endif
+    if not graphics_eval_enabled and get_option('graphics-eval').enabled()
+        error('Drawing evaluation requires matching Cairo Xlib headers/libraries.')
+    endif
+endif
+
 sm = dependency('sm', required: get_option('sm'))
 if sm.found()
     all_found_deps += sm

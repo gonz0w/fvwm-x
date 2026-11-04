@@ -7,6 +7,7 @@
 #include "libs/fvwmlib.h"
 #include "libs/Colorset.h"
 #include "FvwmForm.h"
+#include "form_graphics_eval.h"
 #include "file_transfer_form.h"
 #include "libs/flocale_font_types.h"
 
@@ -131,6 +132,9 @@ void form_list_draw(Item *item)
 				cell_width, height);
 
 			for (int inset = 0; inset < stroke; inset++)
+				if (!form_eval_rectangle(item, x + inset, y + inset,
+				    cell_width - 1 - 2 * inset, height - 1 - 2 * inset,
+				    dt->dt_colors[selected ? c_item_bg : c_item_fg], &clip))
 				XDrawRectangle(dpy, item->header.win,
 					dt->dt_item_GC, x + inset, y + inset,
 					cell_width - 1 - 2 * inset,
@@ -141,8 +145,10 @@ void form_list_draw(Item *item)
 	}
 	str->str = NULL;
 	XSetForeground(dpy, dt->dt_item_GC, dt->dt_colors[c_item_fg]);
-	XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
-		0, 0, width - 1, item->header.size_y - 1);
+	if (!form_eval_rectangle(item, 0, 0, width - 1,
+	    item->header.size_y - 1, dt->dt_colors[c_item_fg], NULL))
+		XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
+			0, 0, width - 1, item->header.size_y - 1);
 	if (form_list_lines(s) > s->rows)
 	{
 		int top, thumb;

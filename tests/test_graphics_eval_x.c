@@ -5,12 +5,30 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "libs/graphics_eval.h"
+#include <X11/Xproto.h>
 
+/* x_errors counts unexpected errors. Only the explicit retired-destination
+ * probe may classify two matching CopyArea BadDrawable errors separately. */
 static unsigned int x_errors;
+static struct
+{
+	Bool active;
+	Display *display;
+	Drawable destination;
+	unsigned int expected_errors;
+} retirement_probe;
 
 static int error_handler(Display *display, XErrorEvent *error)
 {
-	(void)display;
+	if (retirement_probe.active && display == retirement_probe.display &&
+		error->error_code == BadDrawable &&
+		error->request_code == X_CopyArea && error->minor_code == 0 &&
+		error->resourceid == retirement_probe.destination &&
+		retirement_probe.expected_errors < 2)
+	{
+		retirement_probe.expected_errors++;
+		return 0;
+	}
 	x_errors++;
 	fprintf(stderr, "graphics comparison X error %u request %u\n",
 		error->error_code, error->request_code);
@@ -98,6 +116,42 @@ static unsigned int shape_case(Display *display, Window window, Visual *visual,
 	return changed;
 }
 
+static void retired_destination_case(Display *display, Visual *visual,
+	unsigned int depth)
+{
+	graphics_eval_stats retired = {0};
+	graphics_eval_rect bounds = {10, 10, 20, 20};
+	graphics_eval_operation op = {.kind = GRAPHICS_EVAL_RECTANGLE,
+		.rectangle = {10, 10, 20, 20}, .foreground = 0xff0000};
+	Window destination = XCreateSimpleWindow(display,
+		RootWindow(display, DefaultScreen(display)),
+		0, 0, 96, 64, 0, 0, 0);
+
+	assert(destination != None);
+	XDestroyWindow(display, destination);
+	XSync(display, False);
+	assert(!x_errors);
+	retirement_probe.display = display;
+	retirement_probe.destination = destination;
+	retirement_probe.active = True;
+	/* Client submission succeeds; the two copies alone may report the
+	 * retired destination. Scratch painting and retirement must stay valid. */
+	assert(graphics_eval_paint(display, destination, visual, depth,
+		96, 64, bounds, bounds, &op, 1, False, False, &retired));
+	XSync(display, False);
+	retirement_probe.active = False;
+	retirement_probe.display = NULL;
+	retirement_probe.destination = None;
+	assert(retirement_probe.expected_errors == 2 && !x_errors);
+	assert(retired.attempts == 1 && retired.committed == 1);
+	assert(retired.preserve_copies == 1 && retired.commit_copies == 1);
+	assert(retired.pixmap_requests == 1 && retired.pixmap_retires == 1);
+	assert(retired.gc_requests == 1 && retired.gc_retires == 1);
+	assert(retired.surface_requests == 1 && retired.surface_retires == 1);
+	assert(retired.context_requests == 1 && retired.context_retires == 1);
+	assert(retired.pattern_requests == retired.pattern_retires);
+}
+
 int main(void)
 {
 	Display *display = XOpenDisplay(NULL);
@@ -182,10 +236,13 @@ int main(void)
 	XDestroyWindow(display, window);
 	XSync(display, False);
 	assert(!x_errors);
+	retired_destination_case(display, visual, depth);
 	XCloseDisplay(display);
+	assert(!x_errors);
 	printf("{\"cairo\":true,\"clipped_ink\":%u,"
 		"\"precommit_refusals_unchanged\":true,"
 		"\"native_fallback\":true,\"own_resources_retired\":true,"
-		"\"x_errors\":0}\n", ink);
+		"\"expected_retired_destination_errors\":%u,"
+		"\"x_errors\":0}\n", ink, retirement_probe.expected_errors);
 	return 0;
 }

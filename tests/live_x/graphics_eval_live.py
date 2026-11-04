@@ -74,6 +74,65 @@ def input_record(path):
     return value
 
 
+def form_configuration(font, scenario):
+    lines = ['Title "G3 native collection"', f'Font "{font}"',
+        'Colorset 200', 'ItemColorset 203', 'Line left',
+        'Selection flags multiple', 'Choice flag yes off "Toggle native choice"']
+    if scenario != 'choice-only':
+        lines += ['Line left', 'List picks 28 2', 'ListViewport 12 2',
+            'ListVersioned',
+            *['ListItem off "Native item %02d" file' % n for n in range(16)]]
+    # Direct $(flag) expands the configured value regardless of selection.
+    lines += ['Line left', 'Button continue "Observe (F2)" F2',
+        'Command Echo G3_FORM_ACTION x$(flag?yes)']
+    return lines
+
+
+def require_form_action(evidence, name, actual, selected):
+    expected = 'G3_FORM_ACTION ' + ('xyes' if selected else 'x')
+    evidence[name] = actual
+    evidence[name + '_expected'] = expected
+    require(actual == expected, 'committed choice state/action ' + name)
+
+
+def layout_reflow_endpoint(previous_width, requested_width, client_geometry,
+        root_position, prepared_rectangles):
+    """Pending geometry is false; malformed observations remain hard errors.
+
+    This is the controlled row's endpoint, not a general layout contract. It
+    accepts different width distributions only when every action still occupies
+    a positive adjacent outer rectangle covering the requested client extent.
+    """
+    require(type(previous_width) is int and type(requested_width) is int and
+        previous_width in (800, 880) and requested_width in (800, 880) and
+        previous_width != requested_width, 'layout reflow requires a size change')
+    require(isinstance(client_geometry, (list, tuple)) and
+        len(client_geometry) == 4 and
+        all(type(value) is int for value in client_geometry) and
+        all(1 <= value <= 32767 for value in client_geometry[2:]),
+        'malformed layout client geometry')
+    require(isinstance(root_position, (list, tuple)) and len(root_position) == 2
+        and all(type(value) is int for value in root_position),
+        'malformed layout root position')
+    require(isinstance(prepared_rectangles, (list, tuple)) and
+        len(prepared_rectangles) == 3, 'malformed layout rectangle count')
+    for box in prepared_rectangles:
+        require(isinstance(box, (list, tuple)) and len(box) == 4 and
+            all(type(value) is int for value in box) and
+            all(1 <= value <= 32767 for value in box[2:]),
+            'malformed layout prepared rectangle')
+    root_x, root_y = root_position
+    return (list(client_geometry[2:]) == [requested_width, 64] and
+        all(top == root_y and height == 64
+            for _, top, _, height in prepared_rectangles) and
+        prepared_rectangles[0][0] == root_x and
+        all(left[0] + left[2] == right[0]
+            for left, right in zip(prepared_rectangles, prepared_rectangles[1:])) and
+        sum(box[2] for box in prepared_rectangles) == requested_width and
+        prepared_rectangles[-1][0] + prepared_rectangles[-1][2] ==
+            root_x + requested_width)
+
+
 def _run(args, evidence, out):
     require(sys.platform.startswith('linux'), 'this owned-PID fixture requires Linux')
     source = Path(__file__).resolve().parents[2]
@@ -104,6 +163,14 @@ def _run(args, evidence, out):
             'tests/third_party/clay/clay.h', 'tests/third_party/clay/LICENSE.md',
             'tests/third_party/clay/SOURCE.md')
         evidence['source_sha256'].update({name: digest(source / name) for name in names})
+        if args.mode == 'performance':
+            evidence.update(layout_reflow_latency_ms=[],
+                layout_reflow_scope='XResizeWindow through changed actual client '
+                    'extent plus complete queried outer prepared rectangles; includes '
+                    'server/WM/module, IPC, query and polling overhead; '
+                    'not solver-only or input-to-photon latency',
+                layout_reflow_widths=[800, 880],
+                layout_reflow_content_insets=[0, 0, 0, 0])
     started = time.monotonic()
     core = connection = client = errors = view = None
     with HarnessRuntime(prefix='fvwm-g3-') as runtime:
@@ -197,6 +264,8 @@ def _run(args, evidence, out):
                 ('XUnmapWindow', [C.c_void_p, C.c_ulong])):
                 getattr(x, name).argtypes = arguments
                 getattr(x, name).restype = C.c_int
+            x.XFlush.argtypes = [C.c_void_p]
+            x.XFlush.restype = C.c_int
             serial = 0
 
             def command(text):
@@ -263,14 +332,7 @@ def _run(args, evidence, out):
                 '(1x1, Id alpha, Title "First action", Action "Echo G3_BUTTON_alpha")',
                 f'({beta_weight}x1, Id beta, Title "Second action", Action "Echo G3_BUTTON_beta")',
                 '(1x1, Id gamma, Title "Third action", Action "Echo G3_BUTTON_gamma")']
-            form_lines = ['Title "G3 native collection"', f'Font "{font}"',
-                'Colorset 200', 'ItemColorset 203', 'Line left',
-                'Selection flags multiple', 'Choice flag yes off "Toggle native choice"']
-            if args.scenario != 'choice-only':
-                form_lines += ['Line left', 'List picks 28 2', 'ListViewport 12 2',
-                    'ListVersioned', *['ListItem off "Native item %02d" file' % n for n in range(16)]]
-            form_lines += ['Line left', 'Button continue "Observe (F2)" F2',
-                'Command Echo G3_FORM_ACTION x$(flag)']
+            form_lines = form_configuration(font, args.scenario)
             configure('DrawingRow', row_lines)
             configure('DrawingForm', form_lines)
             for module, alias, title in (('FvwmButtons', 'DrawingRow', 'DrawingRow'),
@@ -290,26 +352,75 @@ def _run(args, evidence, out):
             evidence['initial_geometry'] = dict(buttons=geometry(row), form=geometry(form),
                 choice=geometry(choice), child_ids=sorted(view.children(form)))
 
-            def rectangles():
+            def query_rectangles():
                 nonlocal serial
-                result = []
+                result, queries = [], []
+                latest = dict(window_xid=row, module_pid=row_pid,
+                    client_geometry=None, root_position=None, queries=[],
+                    prepared_rectangles=None)
+                # Replace this bounded snapshot per query, not a polling log.
+                # Save replies before parsing or asserting their geometry.
+                evidence['latest_rectangle_query'] = latest
                 for target in ('alpha', 'beta', 'gamma'):
                     serial += 1
                     tag = 'G3_RECT_%d ' % serial
+                    query = dict(control=target, token=tag.rstrip(),
+                        raw_reply=None, reply_bytes=None)
+                    latest['queries'].append(query)
                     connection.send(('SendToModule DrawingRow ExpandButtonVars ' + target +
                         ' Echo ' + tag + '$left $top $width $height\n').encode())
-                    result.append(list(map(int, receipt(tag).split()[1:])))
-                root_x, root_y = root_position(row)
-                # Root Frame=1 and Padding=8,3 leave content insets 9,4.
-                # Keep these nonzero: they reproduce G2's dimension distinction.
-                require(all(w > 0 and h == 56 and top == root_y + 4
+                    reply = receipt(tag)
+                    encoded = reply.encode('utf-8', 'backslashreplace')
+                    query['raw_reply'] = encoded[:1024].decode('utf-8', 'ignore')
+                    query['reply_bytes'] = len(encoded)
+                    require(len(encoded) <= 1024, 'native rectangle reply byte budget')
+                latest['client_geometry'] = geometry(row)
+                latest['root_position'] = list(root_position(row))
+                for query in latest['queries']:
+                    fields = query['raw_reply'].split()
+                    require(query['raw_reply'].isascii() and len(fields) == 5 and
+                        fields[0] == query['token'], 'malformed native rectangle reply')
+                    result.append(list(map(int, fields[1:])))
+                    queries.append(dict(control=query['control'], token=query['token']))
+                latest['prepared_rectangles'] = result
+                return result, queries
+
+            def rectangles():
+                result, _ = query_rectangles()
+                latest = evidence['latest_rectangle_query']
+                root_x, root_y = latest['root_position']
+                client_geometry = latest['client_geometry']
+                # Global Frame/Padding are child defaults. ExpandButtonVars
+                # reports outer buttons; the unflagged root has no own inset.
+                require(client_geometry[3] == 64 and
+                    all(w > 0 and h == 64 and top == root_y
                     for _, top, w, h in result) and
                     all(a[0] + a[2] == b[0] for a, b in zip(result, result[1:])) and
-                    result[0][0] == root_x + 9 and
-                    result[-1][0] + result[-1][2] == root_x + geometry(row)[2] - 9 and
-                    sum(box[2] for box in result) == geometry(row)[2] - 18,
-                    'native content draw/hit rectangles and root insets')
+                    result[0][0] == root_x and
+                    result[-1][0] + result[-1][2] == root_x + client_geometry[2] and
+                    sum(box[2] for box in result) == client_geometry[2],
+                    'native outer draw/hit rectangles cover the client')
                 return result
+
+            def reflow_snapshot(previous_width, requested_width):
+                before_queries = geometry(row)
+                if before_queries[2:] != [requested_width, 64]:
+                    return False
+                result, queries = query_rectangles()
+                latest = evidence['latest_rectangle_query']
+                position = latest['root_position']
+                after_queries = latest['client_geometry']
+                if not (layout_reflow_endpoint(previous_width, requested_width,
+                        before_queries, position, result) and
+                        layout_reflow_endpoint(previous_width, requested_width,
+                        after_queries, position, result)):
+                    return False
+                return dict(previous_width=previous_width,
+                    requested_width=requested_width, requested_height=64,
+                    client_before_queries=before_queries,
+                    client_after_queries=after_queries, root_position=position,
+                    prepared_rectangles=result, queries=queries,
+                    window_xid=row, module_pid=row_pid)
 
             def list_state():
                 nonlocal serial
@@ -376,9 +487,8 @@ def _run(args, evidence, out):
             time.sleep(.2)
             positive_bounds['form'].append(stamp())
             view.key('F2')
-            evidence['initial_form_action'] = receipt('G3_FORM_ACTION ')
-            require(evidence['initial_form_action'] == 'G3_FORM_ACTION xyes',
-                'choice action must publish committed on state')
+            require_form_action(evidence, 'initial_form_action',
+                receipt('G3_FORM_ACTION '), True)
 
             def interrupt(window, module):
                 if args.scenario == 'replace':
@@ -409,6 +519,22 @@ def _run(args, evidence, out):
                     name: process_sample(pid) for name, pid in
                     (('buttons', row_pid), ('form', form_pid))}
                 for index in range(args.samples):
+                    if layout:
+                        previous_width = geometry(row)[2]
+                        require(previous_width in (800, 880),
+                            'layout reflow left the declared width pair')
+                        requested_width = 880 if previous_width == 800 else 800
+                        require(requested_width != previous_width,
+                            'layout reflow cannot time a no-op resize')
+                        before = time.monotonic()
+                        x.XResizeWindow(d, row, requested_width, 64)
+                        x.XFlush(d)
+                        snapshot = wait_for_predicate('private layout reflow',
+                            lambda: reflow_snapshot(previous_width, requested_width),
+                            time.monotonic() + 3, process=core)
+                        snapshot.update(sample=index,
+                            elapsed=(time.monotonic() - before) * 1000)
+                        evidence['layout_reflow_latency_ms'].append(snapshot)
                     focus_window(row)
                     view.key('Tab')
                     time.sleep(.15)  # Fixed pacing outside the receipt timer.
@@ -476,10 +602,8 @@ def _run(args, evidence, out):
                 final_action = receipt('G3_FORM_ACTION ')
                 expected_on = flag_on if args.mode == 'performance' else args.scenario in (
                     'positive', 'choice-only', 'equal', 'replace')
-                expected_flag = 'xyes' if expected_on else 'x'
-                require(final_action == 'G3_FORM_ACTION ' + expected_flag,
-                    'final committed choice state/action')
-                evidence['final_form_action'] = final_action
+                require_form_action(evidence, 'final_form_action', final_action,
+                    expected_on)
                 evidence['pixels'] = dict(buttons=view.pixels(row), form=view.pixels(form))
             if args.capture:
                 require(args.scenario in ('positive', 'choice-only', 'equal'),

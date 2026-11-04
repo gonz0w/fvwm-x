@@ -106,13 +106,14 @@ bool clay_layout_eval_widths(int available, int height,
 			if (boxes[j].id == box->id)
 				return false;
 		right = box->x + box->width;
-		if (!isfinite(right) || right <= previous ||
-			right > available + CLAY_LAYOUT_EVAL_EPSILON ||
-			(i + 1 == count &&
-			fabsf(right - available) > CLAY_LAYOUT_EVAL_EPSILON))
+		if (!isfinite(right) || right <= 0 || right <= previous ||
+			(double)right >= (double)available + 0.5)
 			return false;
-		pixel = i + 1 == count ? available : (int)(right + 0.5f);
-		if (pixel <= previous_pixel || pixel > available)
+		/* Every shared boundary uses the same pixel rule. Float accumulation
+		 * may drift within its final pixel; do not clamp an invalid endpoint. */
+		pixel = (int)((double)right + 0.5);
+		if (pixel <= previous_pixel || pixel > available ||
+			(i + 1 == count && pixel != available))
 			return false;
 		prepared[i] = pixel - previous_pixel;
 		previous_pixel = pixel;

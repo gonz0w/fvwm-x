@@ -213,11 +213,12 @@ Bool graphics_eval_paint(
 #if FVWM_GRAPHICS_EVAL_CAIRO
 	/* This is an operation-local staging surface, never a retained image
 	 * or backing lease. The owner regenerated this frame's background
-	 * first. */
+	 * first. Supported visuals/depth belong to the default screen; its root
+	 * keeps scratch allocation valid even after the destination retires. */
 	if (stats)
 		count(&stats->pixmap_requests, 1);
-	scratch = XCreatePixmap(display, destination, paint.width, paint.height,
-		depth);
+	scratch = XCreatePixmap(display, RootWindow(display, DefaultScreen(display)),
+		paint.width, paint.height, depth);
 	if (scratch == None)
 		goto cleanup;
 	if (stats)

@@ -54,6 +54,85 @@ static void output_contract(void)
 	assert(widths[0] == -1 && widths[1] == -1 && widths[2] == -1);
 }
 
+static void captured_cumulative_row(void)
+{
+	clay_layout_eval_box boxes[190];
+	int widths[190], sum = 0;
+	float x = 0;
+	const float width = 0x1.58eaa4p+7f;
+
+	/* Reconstruct the observed binary32 accumulation, independently of Clay. */
+	for (size_t i = 0; i < 190; i++)
+	{
+		boxes[i] = (clay_layout_eval_box){(uint32_t)i + 1, true,
+			x, 0, width, 32767};
+		widths[i] = -1;
+		x = (float)(x + width);
+	}
+	assert(boxes[189].x == 0x1.fd4abp+14f);
+	assert(x == 0x1.fffc86p+14f);
+	assert(clay_layout_eval_widths(32767, 32767, boxes, 190, widths));
+	for (size_t i = 0; i < 190; i++)
+	{
+		assert(widths[i] > 0);
+		sum += widths[i];
+	}
+	assert(widths[0] == 172 && widths[189] == 172 && sum == 32767);
+}
+
+static void half_pixel_boundaries(void)
+{
+	const int extents[] = {31, 32767};
+
+	for (size_t i = 0; i < sizeof(extents) / sizeof(extents[0]); i++)
+	{
+		int available = extents[i];
+		float lower = available - 0.5f, upper = available + 0.5f;
+		const struct
+		{
+			float right;
+			bool accepted;
+		} cases[] = {
+			{nextafterf(lower, -INFINITY), false},
+			{lower, true},
+			{nextafterf(lower, INFINITY), true},
+			{nextafterf(upper, -INFINITY), true},
+			{upper, false},
+			{nextafterf(upper, INFINITY), false}
+		};
+
+		for (size_t j = 0; j < sizeof(cases) / sizeof(cases[0]); j++)
+		{
+			clay_layout_eval_box box = {
+				1, true, 0, 0, cases[j].right, 24
+			};
+			int width = -7;
+
+			assert(clay_layout_eval_widths(available, 24, &box, 1,
+				&width) == cases[j].accepted);
+			assert(width == (cases[j].accepted ? available : -7));
+		}
+		for (int offset = -1; offset <= 1; offset++)
+		{
+			float boundary = offset < 0 ?
+				nextafterf(0.5f, -INFINITY) : offset > 0 ?
+				nextafterf(0.5f, INFINITY) : 0.5f;
+			clay_layout_eval_box boxes[] = {
+				{1, true, 0, 0, boundary, 24},
+				{2, true, boundary, 0, available - boundary, 24}
+			};
+			int widths[] = {-7, -8};
+
+			assert(clay_layout_eval_widths(available, 24, boxes, 2,
+				widths) == (offset >= 0));
+			if (offset >= 0)
+				assert(widths[0] == 1 && widths[1] == available - 1);
+			else
+				assert(widths[0] == -7 && widths[1] == -8);
+		}
+	}
+}
+
 static void input_contract(clay_layout_eval *state)
 {
 	int minimum[] = {20, 40};
@@ -135,6 +214,8 @@ int main(void)
 	clay_layout_eval state = {0}, other = {0};
 
 	output_contract();
+	captured_cumulative_row();
+	half_pixel_boundaries();
 	assert(!clay_layout_eval_init(NULL, CLAY_LAYOUT_EVAL_ARENA_LIMIT));
 	assert(!clay_layout_eval_init(&state, 1));
 	assert(!state.arena && !state.context && state.arena_bytes == 0);

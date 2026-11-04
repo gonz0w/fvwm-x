@@ -69,6 +69,16 @@ This is a setup template, not an executed result. Source review identified and
 corrected token/warmup false qualification and a receipt that could precede outer
 cleanup failure. Fourteen offline host contract tests and one affected native
 Linux ARM64 compilation passed; see the [source/unit/build report](../verification/VERIFICATION-2026-11-04-DRAWING-OBSERVERS.md).
-Native C and real-X/UI execution, three-theme captures and the remaining source/
-ELF/server/profile matrix qualification stay queued at G2–G5. All-six-target
-cost/support and Cairo/Clay adoption decisions remain open; #211 remains open.
+The [G5 Linux checkpoint](../verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-CHECKPOINT.md)
+now records composed native C/real-X execution, nine theme captures and repeated
+component observations, with the failed attempts and scoped evidence reuse.
+It also fixes Cairo scratch allocation after destination destruction. All-six-
+target support/cost, complete implicit-roundtrip measurement and the adoption
+decisions remain open; #211 remains open. The setup above is still a template,
+not a substitute for the source/profile-bound receipts.
+
+The controlled flat Buttons row keeps Frame/Padding as child defaults. Its
+queried outer prepared rectangles start at the root origin and fill the client
+width and height; GetInternalSize's child content insets are not query geometry.
+G5 corrects the original source-only inset assumption and retains its ordinary
+real-X assertion failure; the earlier authored fixture was not runtime evidence.

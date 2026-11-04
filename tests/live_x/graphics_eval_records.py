@@ -239,3 +239,80 @@ def qualify_lifecycle(trace, require_positive=False, require_interruption=False,
         draw_operations=len(draws), issued_requests=trace['counters']['issued'],
         request_scope='selected paint operation including native fallback',
         implicit_roundtrips=None, final_timeout=terminal['timeout'])
+
+
+def parse_layout_record(raw, pid, backend, case, metadata_expected=None):
+    """One once-exit private layout witness; absence is required when off."""
+    require(isinstance(raw, bytes) and len(raw) <= MAX_LOG_BYTES,
+        'layout log byte budget')
+    fields = {'layout_eval', 'pid', 'backend', 'calls', 'native', 'clay',
+        'fallback', 'errors', 'arena_bytes', 'refused', 'complete', 'metadata'}
+    rows = []
+    for line in raw.splitlines(keepends=True):
+        if not line.startswith(b'{"layout_eval":'):
+            continue
+        require(line.endswith(b'\n') and len(line) <= 1024,
+            'truncated/oversized layout line')
+        try:
+            row = json.loads(line, object_pairs_hook=unique)
+        except (ValueError, UnicodeError) as error:
+            raise TraceError('malformed layout JSON') from error
+        require(type(row) is dict and set(row) == fields, 'layout schema drift')
+        for key in fields - {'backend'}:
+            integer(row[key])
+        integer(row['layout_eval'], 1, 1)
+        integer(row['complete'], 1, 1)
+        integer(row['pid'], 1, (1 << 31) - 1)
+        require(pid is not None and row['pid'] == pid and
+            row['backend'] == backend and backend in ('native', 'clay'),
+            'unowned layout observation')
+        require(row['calls'] > 0 and row['errors'] == 0 and
+            row['arena_bytes'] <= 2 * 1024 * 1024, 'layout failure/capacity')
+        rows.append(row)
+    if pid is None:
+        require(not rows, 'unexpected layout observation')
+        return None
+    require(len(rows) == 1, 'missing/duplicate layout retirement')
+    row = rows[0]
+    if backend == 'native':
+        require(row['native'] > 0 and row['clay'] == 0 and
+            row['arena_bytes'] == 0, 'native layout control')
+    elif case in ('weighted', 'compressed', 'refuse'):
+        require(row['native'] > 0 and row['fallback'] > 0 and
+            row['clay'] == 0, 'required native layout fallback not observed')
+    else:
+        require(case in ('fit', 'update') and row['clay'] > 0 and
+            row['arena_bytes'] > 0, 'independent Clay layout not committed')
+    integer(row['metadata'], 0, (1 << 32) - 1)
+    if case == 'update':
+        require(type(metadata_expected) is int and
+            row['metadata'] == metadata_expected,
+            'changed metadata was not used by a successful reflow')
+    return row
+
+
+def layout_metadata(titles):
+    """Fixed private test tag, not a security digest or content disclosure."""
+    require(1 <= len(titles) <= 256, 'layout metadata count')
+    value = 2166136261
+
+    def consume(byte):
+        nonlocal value
+        value = ((value ^ byte) * 16777619) & 0xffffffff
+
+    for byte in len(titles).to_bytes(4, 'little'):
+        consume(byte)
+    for row in titles:
+        require(len(row) == 3, 'layout metadata fields')
+        for text in row:
+            if text is None:
+                consume(0)
+                continue
+            require(type(text) is str and '\0' not in text, 'layout metadata text')
+            raw = text.encode('utf-8')
+            require(len(raw) <= 4095, 'layout metadata byte budget')
+            consume(1)
+            for byte in raw:
+                consume(byte)
+            consume(0)
+    return value

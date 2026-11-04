@@ -1,0 +1,998 @@
+{
+  "status": "source/host regression and affected compile complete; native C/GUI and adoption pending",
+  "owner": "LAYOUT-01 #212 G4/G4-C1",
+  "base": "85e4120e3d772b953bd8f6ea00e4e9238b689e04",
+  "branch": "codex/r1-layout-comparison",
+  "plans": {
+    "compile01": {
+      "sha256": "8ff0a3cbe15da96e304a3e8f7d933faf51a445a84b155a77b5d4c8dab0927ce1",
+      "launch": {
+        "status": "failed; retained",
+        "error": "CalledProcessError(1, ['/opt/homebrew/opt/python@3.14/bin/python3.14', '/Users/cam/DEV/fvwm3/builddir/codex-2026-11-04/r1-layout-comparison/compile01/unit_driver.py', '8ff0a3cbe15da96e304a3e8f7d933faf51a445a84b155a77b5d4c8dab0927ce1'])",
+        "dispatch_exit": null,
+        "holder_exit": null
+      }
+    },
+    "compile02": {
+      "sha256": "0b93e8905adbec49f042cbf58bde237f1db6c061dd783ea0210e04fe838bed5f",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    },
+    "compile03": {
+      "sha256": "864afc339d1220d2ca6fc38927bee5e3b4e524bb3794e044ee8a9539cc3e85d8",
+      "launch": {
+        "status": "dispatch and holder passed",
+        "holder_exit": 0,
+        "dispatch_exit": 0
+      }
+    }
+  },
+  "prepared_sources": {
+    "libs/clay_layout_eval.c": "a789022562056557c20eb2e3643f928e1b2a075772b5ddd2145be801bc22d047",
+    "libs/clay_layout_eval.h": "64dddb755aecc27bdd41da691eb496ce3ba93d99b3223404e8d74876108db3f1",
+    "libs/meson.build": "2bdac077fefb9d28373de9ca20bb659f3c4444c62375d6c71c27f1313a75171f",
+    "meson.build": "220e77c67f3e958128a04d4b47725b909a985bac15bc82fb413a248557f4f9cf",
+    "meson.options": "9c41fcf98d9a271286871f8d3fca9a37b301e43f901884df5d7a727984fd19bf",
+    "modules/FvwmButtons/button.c": "ea041343f777b4f4cca4f7e2afb7f63032d2954c7b03be59431090de1c562605",
+    "modules/FvwmButtons/buttons_layout_eval.c": "54ff33750b2c92ccb132e1bdf5953829097ba5c1e1338250673708f263a0c429",
+    "modules/FvwmButtons/buttons_layout_eval.h": "fe3e030e61a86a4c58dc90850abfb4ece9d4ac2ed3e7926df9a1aa8a4ec0e7e1",
+    "modules/FvwmButtons/meson.build": "79e73c7d04de1f59e35d70b031cef71d42010254a58e2f16661190c239f1b5c5",
+    "tests/live_x/graphics_eval_live.py": "dee954ea970e60bed88a682cd17d2650559d057b581861f21e06fc2999ee3cdc",
+    "tests/live_x/graphics_eval_records.py": "0d2cebb42da53cec34439de0417b33bb7229693346403227e3586afb475e3b60",
+    "tests/meson.build": "053fab89d82e6900feeeab363ea4f2986c18da4612da66eaa1542c9044bb00d7",
+    "tests/test_clay_layout_eval.c": "9f05fd03c5d5d6489bd7d4f874a4395d2ccd219c834845fadb5fc176326dab29",
+    "tests/test_layout_eval_records.py": "55d46433002232ea715fb967836dc4bb13f894b42fd96f0b730141ce3dfb7bbb",
+    "tests/third_party/clay/LICENSE.md": "5dd30f9f52093076b7574458f5efb8242fe6cbbd4669d4a2914e7616810d0df8",
+    "tests/third_party/clay/SOURCE.md": "a25a1af6a2538fc44572796d2d3e05a6c5853943f1bb58ca4eeaefa48f7b7b19",
+    "tests/third_party/clay/clay.h": "54aef6d5f96b14e296bebb6db4a755543e98fd7e6c188411afb2f22a4b4f7728"
+  },
+  "source_manifest_sha256": "022cd0ab7922633b7f742c134588cedd00330e7d7b80b39a1a68bfbc997bf736",
+  "source_files": 2505,
+  "unit_failure": {
+    "status": "failed; retained",
+    "scope": "Native host offline private layout JSONL/update-witness contract only; no X/VM/UI/network/install",
+    "error": "AssertionError('offline observation contract unit failed')",
+    "commands": [
+      {
+        "argv": [
+          "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+          "-I",
+          "-S",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests",
+          "-p",
+          "test_layout_eval_records.py",
+          "-v"
+        ],
+        "exit": 1,
+        "group_absent": true,
+        "seconds": 0.07298020800226368
+      }
+    ]
+  },
+  "unit_failure_log": "test_malformed_truncated_and_duplicate_keys_rejected (test_layout_eval_records.LayoutRecords.test_malformed_truncated_and_duplicate_keys_rejected) ... ok\ntest_missing_wrong_owner_route_and_duplicate_rejected (test_layout_eval_records.LayoutRecords.test_missing_wrong_owner_route_and_duplicate_rejected) ... ok\ntest_native_control_and_explicit_fallback (test_layout_eval_records.LayoutRecords.test_native_control_and_explicit_fallback) ... ok\ntest_off_and_ordinary_reject_unexpected_observation (test_layout_eval_records.LayoutRecords.test_off_and_ordinary_reject_unexpected_observation) ... ok\ntest_owned_committed_candidate (test_layout_eval_records.LayoutRecords.test_owned_committed_candidate) ... ok\ntest_update_requires_matching_committed_metadata (test_layout_eval_records.LayoutRecords.test_update_requires_matching_committed_metadata) ... FAIL\n\n======================================================================\nFAIL: test_update_requires_matching_committed_metadata (test_layout_eval_records.LayoutRecords.test_update_requires_matching_committed_metadata)\n----------------------------------------------------------------------\nTraceback (most recent call last):\n  File \"/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests/test_layout_eval_records.py\", line 49, in test_update_requires_matching_committed_metadata\n    self.assertEqual(layout_metadata([(None, None, None)]), 4009669982)\n    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: 299179820 != 4009669982\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nFAILED (failures=1)\n",
+  "fixed_vector_diagnosis": {
+    "reason": "one control encoded as little-endian count1 then three NULL field markers; explicit seven numeric bytes, not escaped source spelling",
+    "bytes": [
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "FNV_1a32_steps": [
+      {
+        "before": 2166136261,
+        "byte": 1,
+        "after": 67918732
+      },
+      {
+        "before": 67918732,
+        "byte": 0,
+        "after": 3950255460
+      },
+      {
+        "before": 3950255460,
+        "byte": 0,
+        "after": 197805164
+      },
+      {
+        "before": 197805164,
+        "byte": 0,
+        "after": 4218009092
+      },
+      {
+        "before": 4218009092,
+        "byte": 0,
+        "after": 3412691020
+      },
+      {
+        "before": 3412691020,
+        "byte": 0,
+        "after": 2200014756
+      },
+      {
+        "before": 2200014756,
+        "byte": 0,
+        "after": 299179820
+      }
+    ],
+    "expected": 299179820,
+    "failed_claim": 4009669982,
+    "candidate_parser_imported": false,
+    "native_lab_started": false
+  },
+  "host_regression": {
+    "status": "passed; offline host unit only",
+    "scope": "Native host offline private layout JSONL/update-witness contract only; no X/VM/UI/network/install",
+    "commands": [
+      {
+        "argv": [
+          "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/bin/python3.14",
+          "-I",
+          "-S",
+          "-B",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-10-13/github-setup/publish/tests",
+          "-p",
+          "test_layout_eval_records.py",
+          "-v"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.07478450000053272
+      }
+    ]
+  },
+  "host_regression_log": "test_malformed_truncated_and_duplicate_keys_rejected (test_layout_eval_records.LayoutRecords.test_malformed_truncated_and_duplicate_keys_rejected) ... ok\ntest_missing_wrong_owner_route_and_duplicate_rejected (test_layout_eval_records.LayoutRecords.test_missing_wrong_owner_route_and_duplicate_rejected) ... ok\ntest_native_control_and_explicit_fallback (test_layout_eval_records.LayoutRecords.test_native_control_and_explicit_fallback) ... ok\ntest_off_and_ordinary_reject_unexpected_observation (test_layout_eval_records.LayoutRecords.test_off_and_ordinary_reject_unexpected_observation) ... ok\ntest_owned_committed_candidate (test_layout_eval_records.LayoutRecords.test_owned_committed_candidate) ... ok\ntest_update_requires_matching_committed_metadata (test_layout_eval_records.LayoutRecords.test_update_requires_matching_committed_metadata) ... ok\n\n----------------------------------------------------------------------\nRan 6 tests in 0.001s\n\nOK\n",
+  "failed_native_compile": {
+    "phase": "prepare",
+    "status": "failed; retained",
+    "runtime_jobs": 0,
+    "installs": 0,
+    "new_packages": 0,
+    "other_targets": 0,
+    "reference_binaries": {
+      "FvwmButtons": {
+        "sha256": "753dfedb0a72de02c0092202fc7ee58ad36f77088daf07420cbc3102753a226a",
+        "bytes": 1857896
+      },
+      "FvwmButtons-native-eval": {
+        "sha256": "99ac446e0df82c53385c1214bd4295dc473068a888b253e6b1580cbf27ddcc11",
+        "bytes": 1912568
+      },
+      "FvwmButtons-cairo-eval": {
+        "sha256": "b2a56fceff54a69fb7f11f579e21044ab23b60c08dee3af5019872e34bba2530",
+        "bytes": 1927352
+      },
+      "baseline-source16.json": {
+        "sha256": "891f62522500384870f131786814ad3a4610a0f6763452c0003214b63c4f2787",
+        "bytes": 290646
+      }
+    },
+    "error": "AssertionError('build-layout')",
+    "commands": [
+      {
+        "label": "compiler-version",
+        "argv": [
+          "cc",
+          "--version"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0059893379999991225
+      },
+      {
+        "label": "configure-layout",
+        "argv": [
+          "/workspace/meson-env/bin/meson",
+          "setup",
+          "--reconfigure",
+          "/tmp/fvwm-appearance-a4-20261102-01/build",
+          "-Dlayout-eval=enabled"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 1.608020839
+      },
+      {
+        "label": "build-layout",
+        "argv": [
+          "/workspace/meson-env/bin/meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-appearance-a4-20261102-01/build",
+          "-j",
+          "2",
+          "FvwmButtons",
+          "FvwmButtons-native-eval",
+          "FvwmButtons-cairo-eval",
+          "FvwmButtons-native-layout-eval",
+          "FvwmButtons-clay-layout-eval",
+          "test-clay-layout-eval"
+        ],
+        "exit": 1,
+        "group_absent": true,
+        "seconds": 2.0811424370000005
+      }
+    ],
+    "seconds": 3.9413228920000005
+  },
+  "focused_native_compile": {
+    "phase": "prepare",
+    "status": "prepared; no product/runtime fixture invocation",
+    "runtime_jobs": 0,
+    "installs": 0,
+    "new_packages": 0,
+    "other_targets": 0,
+    "reference_binaries": {
+      "FvwmButtons": {
+        "sha256": "753dfedb0a72de02c0092202fc7ee58ad36f77088daf07420cbc3102753a226a",
+        "bytes": 1857896
+      },
+      "FvwmButtons-native-eval": {
+        "sha256": "99ac446e0df82c53385c1214bd4295dc473068a888b253e6b1580cbf27ddcc11",
+        "bytes": 1912568
+      },
+      "FvwmButtons-cairo-eval": {
+        "sha256": "b2a56fceff54a69fb7f11f579e21044ab23b60c08dee3af5019872e34bba2530",
+        "bytes": 1927352
+      },
+      "baseline-source16.json": {
+        "sha256": "891f62522500384870f131786814ad3a4610a0f6763452c0003214b63c4f2787",
+        "bytes": 290646
+      }
+    },
+    "partial_controls_before": {
+      "build/modules/FvwmButtons/FvwmButtons": {
+        "sha256": "be7a20154004e969532eea7ce4068aa7e36b22420befdf0892d38482d9bb11f0",
+        "bytes": 1857896
+      },
+      "build/modules/FvwmButtons/FvwmButtons-native-eval": {
+        "sha256": "10d235dd52e0bcda46f384869077dd7ed706d7265da85a01ca5c400cc149304e",
+        "bytes": 1912568
+      },
+      "build/modules/FvwmButtons/FvwmButtons-cairo-eval": {
+        "sha256": "aaff228d12d29af57fbd760e02adeff6ae644df1ad7e441ea0e2c7bb4816d438",
+        "bytes": 1927352
+      }
+    },
+    "partial_control_scope": "owned source17-linked controls; not an original G3 binary claim",
+    "binary_inputs": {
+      "build/fvwm3": {
+        "sha256": "6fc3af38b03eeb311d10f00380b3be14e39c23cf337b9438c7e70eeb9fe64963",
+        "bytes": 5867160
+      },
+      "build/modules/FvwmForm/FvwmForm": {
+        "sha256": "8a7b23a4b684280600d1e88a2715d88baffa531e881c5d0ef4c44667716b6504",
+        "bytes": 1923120
+      },
+      "build/modules/FvwmButtons/FvwmButtons": {
+        "sha256": "be7a20154004e969532eea7ce4068aa7e36b22420befdf0892d38482d9bb11f0",
+        "bytes": 1857896
+      },
+      "build/modules/FvwmForm/FvwmForm-native-eval": {
+        "sha256": "2128faa368907fcd7f78cafed8f1c4e513ce0ed156577facc4b73b4113bb1bba",
+        "bytes": 1978256
+      },
+      "build/modules/FvwmForm/FvwmForm-cairo-eval": {
+        "sha256": "98de4bea2bef9f110bf915de8f0c65380b877619c104722f6ac6ca834f1fe834",
+        "bytes": 1993032
+      },
+      "build/modules/FvwmButtons/FvwmButtons-native-eval": {
+        "sha256": "10d235dd52e0bcda46f384869077dd7ed706d7265da85a01ca5c400cc149304e",
+        "bytes": 1912568
+      },
+      "build/modules/FvwmButtons/FvwmButtons-cairo-eval": {
+        "sha256": "aaff228d12d29af57fbd760e02adeff6ae644df1ad7e441ea0e2c7bb4816d438",
+        "bytes": 1927352
+      },
+      "build/tests/test-graphics-eval-policy": {
+        "sha256": "272113596a7208eee11004bfa4c7c618669e5a77c0d9e4d3192eed1e8e2e923c",
+        "bytes": 91688
+      },
+      "build/tests/test-graphics-eval-x": {
+        "sha256": "e9d9bd379fe10461e4768ef5f8657037095156192e6a1df562769a01828ce3ad",
+        "bytes": 121736
+      },
+      "build/tests/test-graphics-eval-observer": {
+        "sha256": "4967e6c9ea160e87b3873b31cf1b7e0399a0a6b9015388ca58d74f0761c00b57",
+        "bytes": 103720
+      },
+      "build/modules/FvwmButtons/FvwmButtons-native-layout-eval": {
+        "sha256": "dd7718de3ca89a3303c61fd8ed4552f1eb5ba4f99ab783da6ad9416299ab18a3",
+        "bytes": 1802576
+      },
+      "build/modules/FvwmButtons/FvwmButtons-clay-layout-eval": {
+        "sha256": "5fd6c4552afa78f4b1f96a7da88f769f8800270ac1806fdd8073756fd9acc15f",
+        "bytes": 2129576
+      },
+      "build/tests/test-clay-layout-eval": {
+        "sha256": "ccf4044f91a724b6a6f401799427ce91562f5850d07d0842d39aa480aaa54ccb",
+        "bytes": 342008
+      }
+    },
+    "source_files": 2505,
+    "selected_targets": [
+      "FvwmButtons-native-layout-eval",
+      "FvwmButtons-clay-layout-eval",
+      "test-clay-layout-eval"
+    ],
+    "measured_paths": [
+      "build/modules/FvwmButtons/FvwmButtons",
+      "build/modules/FvwmButtons/FvwmButtons-native-eval",
+      "build/modules/FvwmButtons/FvwmButtons-cairo-eval",
+      "build/modules/FvwmButtons/FvwmButtons-native-layout-eval",
+      "build/modules/FvwmButtons/FvwmButtons-clay-layout-eval",
+      "build/tests/test-clay-layout-eval"
+    ],
+    "tool_profile": "native Linux ARM64 GCC existing PNG/SVG/session D-Bus; NLS/docs off",
+    "commands": [
+      {
+        "label": "compiler-version",
+        "argv": [
+          "cc",
+          "--version"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.005984630000000379
+      },
+      {
+        "label": "build-layout",
+        "argv": [
+          "/workspace/meson-env/bin/meson",
+          "compile",
+          "-C",
+          "/tmp/fvwm-appearance-a4-20261102-01/build",
+          "-j",
+          "2",
+          "FvwmButtons-native-layout-eval",
+          "FvwmButtons-clay-layout-eval",
+          "test-clay-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 1.2846876949999988
+      },
+      {
+        "label": "needed-0",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.008510633000000212
+      },
+      {
+        "label": "size-0",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0018809180000012304
+      },
+      {
+        "label": "needed-1",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0014793339999989996
+      },
+      {
+        "label": "size-1",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0013724590000006032
+      },
+      {
+        "label": "needed-2",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-cairo-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.001390875999998542
+      },
+      {
+        "label": "size-2",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-cairo-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0016749180000008579
+      },
+      {
+        "label": "needed-3",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.001582292999998458
+      },
+      {
+        "label": "size-3",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0013158339999996826
+      },
+      {
+        "label": "needed-4",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-clay-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0015405839999989013
+      },
+      {
+        "label": "size-4",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-clay-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0013031679999997436
+      },
+      {
+        "label": "needed-5",
+        "argv": [
+          "readelf",
+          "-d",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-clay-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0015364180000005945
+      },
+      {
+        "label": "size-5",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-clay-layout-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.00151562599999977
+      },
+      {
+        "label": "baseline-size-0",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0014762509999997064
+      },
+      {
+        "label": "baseline-size-1",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons-cairo-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.001433334999999758
+      },
+      {
+        "label": "baseline-size-2",
+        "argv": [
+          "size",
+          "/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons-native-eval"
+        ],
+        "exit": 0,
+        "group_absent": true,
+        "seconds": 0.0013445010000001645
+      }
+    ],
+    "seconds": 1.604266397
+  },
+  "final_dispatch": {
+    "plan_sha256": "864afc339d1220d2ca6fc38927bee5e3b4e524bb3794e044ee8a9539cc3e85d8",
+    "new_packages": 0,
+    "whole_wm_build": false,
+    "commands": [
+      {
+        "label": "continuation-preflight",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "exec",
+          "fvwm-x-linux-arm64-svg",
+          "/usr/bin/python3",
+          "-c",
+          "from pathlib import Path;import hashlib;r=Path('/tmp/fvwm-appearance-a4-20261102-01');assert r.is_dir();assert hashlib.sha256((r/\"source17.json\").read_bytes()).hexdigest()=='6982c373e1e642b957ffd4d60742ffe16ed876f65af863f8fdcef83da20eb191';assert not (r/\"continuation18.py\").exists();assert not (r/\"source18.json\").exists();(r/\"patch18\").mkdir(mode=0o700)"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "copy-continuation18.py",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "cp",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-04/r1-layout-comparison/compile03/continuation18.py",
+          "fvwm-x-linux-arm64-svg:/tmp/fvwm-appearance-a4-20261102-01/continuation18.py"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "copy-source18.json",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "cp",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-04/r1-layout-comparison/compile03/source18.json",
+          "fvwm-x-linux-arm64-svg:/tmp/fvwm-appearance-a4-20261102-01/source18.json"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "copy-overlay-0",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "cp",
+          "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-04/r1-layout-comparison/compile03/overlay-0",
+          "fvwm-x-linux-arm64-svg:/tmp/fvwm-appearance-a4-20261102-01/patch18/overlay-0"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "apply-g1-sources",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "exec",
+          "fvwm-x-linux-arm64-svg",
+          "/usr/bin/python3",
+          "-c",
+          "ROOT='/tmp/fvwm-appearance-a4-20261102-01'\nCONTROL={'continuation18.py': '23df9b79740038c35b57cf36aa694a315fad4e87dec8bcb971beb0ef18db50df', 'source18.json': '022cd0ab7922633b7f742c134588cedd00330e7d7b80b39a1a68bfbc997bf736'}\nOVERLAY={'modules/FvwmButtons/buttons_layout_eval.c': {'input': '/Users/cam/DEV/fvwm3/builddir/codex-2026-11-04/r1-layout-comparison/compile03/overlay-0', 'old_sha256': '7dbdefb297fcc170c724a1a853f820f80b66e3c4b3aba3f8d474ea193dabedb8', 'new_sha256': '54ff33750b2c92ccb132e1bdf5953829097ba5c1e1338250673708f263a0c429'}}\nfrom pathlib import Path\nimport hashlib,os\nr=Path(ROOT)\nfor name,pin in CONTROL.items():assert hashlib.sha256((r/name).read_bytes()).hexdigest()==pin\nfor name,entry in OVERLAY.items():\n target=r/'src'/name;source=r/'patch18'/Path(entry['input']).name\n if entry['old_sha256'] is None:assert not target.exists()\n else:\n  assert target.is_file() and not target.is_symlink() and target.stat().st_uid==0\n  assert hashlib.sha256(target.read_bytes()).hexdigest()==entry['old_sha256']\n raw=source.read_bytes();assert hashlib.sha256(raw).hexdigest()==entry['new_sha256']\n target.parent.mkdir(parents=True,exist_ok=True)\n temporary=target.with_name(target.name+'.g4-c1-next')\n with temporary.open('xb')as file:file.write(raw)\n temporary.chmod(0o644);os.replace(temporary,target)\n"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "uid-preflight",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "exec",
+          "fvwm-x-linux-arm64-svg",
+          "/usr/bin/python3",
+          "-c",
+          "from pathlib import Path;rows=[p.name for p in Path(\"/proc\").iterdir() if p.name.isdecimal() and p.stat().st_uid==65534];assert not rows,rows"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "prepare",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "exec",
+          "-w",
+          "/tmp/fvwm-appearance-a4-20261102-01",
+          "fvwm-x-linux-arm64-svg",
+          "/usr/bin/python3",
+          "continuation18.py",
+          "prepare"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "quiesce",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "stop",
+          "--time",
+          "20",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "quiesce-inspect",
+        "argv": [
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "inspect",
+          "fvwm-x-linux-arm64-svg"
+        ],
+        "exit": 0
+      },
+      {
+        "label": "copy-receipts18",
+        "argv": [
+          "/opt/homebrew/opt/python@3.14/bin/python3.14",
+          "-c",
+          "import os,resource,sys;resource.setrlimit(resource.RLIMIT_FSIZE,(134217728,134217728));os.execvp(sys.argv[1],sys.argv[1:])",
+          "podman",
+          "--connection",
+          "podman-machine-default-root",
+          "cp",
+          "fvwm-x-linux-arm64-svg:/tmp/fvwm-appearance-a4-20261102-01/receipts18",
+          "-"
+        ],
+        "exit": 0
+      }
+    ],
+    "container_quiesced_before_collection": true,
+    "exports": {
+      "receipts18": {
+        "archive_sha256": "53d9b05155aface77631012409ffe20d635d93c8dfa3e5a6ec49b76b4d51be0a",
+        "files": 40,
+        "bytes": 2503490
+      }
+    },
+    "collection_errors": [],
+    "exported_files": {
+      "receipts18/needed-3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-4.stdout": "ad6a4dda5c714c194f515f86da41f270924700aa2efb99b6cf19c6023b419631",
+      "receipts18/meson-log.txt": "952c0895590c0cee5c0fe2d4f478066fed959687c2aac379110b2e1265258a60",
+      "receipts18/size-0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-5.stdout": "243143fd3399d3ac97b7237451bd1956256ddf21b7a57347deb55233b0b24329",
+      "receipts18/needed-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/config.h": "031d348c53c18b5827ce2b585285abd7ced9ecf58d4d8508c8aa3e1cf7da870e",
+      "receipts18/build-layout.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/baseline-size-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-1.stdout": "5962e35d595edba9176bb2cdbf03f773e1add97c8ca36d20821de3aa8a7fa6df",
+      "receipts18/baseline-size-1.stdout": "6595674b457a5be7a86f1261401782f996a23e622ddd72508db9606bd25cea36",
+      "receipts18/build-layout.stdout": "4365e5b29f2b0efb51bbd204d9901a25f57103ac41a65339ef69d88d0d21e4dc",
+      "receipts18/intro-buildoptions.json": "12d2b9a79ffe0856c507593fd04a9f03791a8b06e9760671fed59484811e84d9",
+      "receipts18/needed-5.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-2.stdout": "bf111a6cf0a407d1f84889f91d7e19561960efb4f2fdd799c97d20585242db93",
+      "receipts18/size-0.stdout": "3ae5b1aa723a52b2bea81dbfe3a626800ae91de5e6f88598fa40655d7d9a6dee",
+      "receipts18/size-4.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-3.stdout": "b0e4dda05829cee952d7181d9f825b79ca45135485683b727762e1ad5d2df010",
+      "receipts18/size-1.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/result-prepare.json": "55e7ddc36be0a1ef0b88508c3226b680ed88dbcea386c5b6efbfd3403b7992bd",
+      "receipts18/baseline-size-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-2.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-5.stdout": "c11811b774b258c071b4ddba0b33cafd9334551673bdb0b2427cf05e67fca8a1",
+      "receipts18/baseline-size-0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-0.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-3.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/compiler-version.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-4.stdout": "ca83572843f50de65ccc9e17fecdd14d57d18508dbbb140451d298ce2353604f",
+      "receipts18/compiler-version.stdout": "3e8cc208c40f60832f67377aa1b03c3e7e858f20cd5d365464944700c0bd7ad1",
+      "receipts18/needed-4.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/size-3.stdout": "4be2714a01bc46baaf5317110e6d691ca3d270ba905611ba9ed1c3ffa3b03d86",
+      "receipts18/baseline-size-0.stdout": "b69654d1b318a698203e4ff4c4be1caae9ec5827a98e6c8ad41d7fffd286051f",
+      "receipts18/needed-0.stdout": "ecb1591ea75f5eaf90824ef4420cdf6d636f500aae5324021d5ee771b61c3a0a",
+      "receipts18/baseline-size-2.stdout": "eea5903972e30954e5073d2ad6090900c46c08e16c5bc26495b0ff1aa015e037",
+      "receipts18/size-5.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "receipts18/needed-2.stdout": "63c2edd035d126d6f2fbce5682fbc514dfe351d4c30c931b48a44645da02f438",
+      "receipts18/intro-targets.json": "02125181ec68bdda317b4ae8096fd1685deb84da2dc5535209324bed0a3e0bc8",
+      "receipts18/size-1.stdout": "a526b171e1da61285c25f120a046000a20ddd17bbea60d97f0b92e7225642c43"
+    },
+    "status": "G4 affected compile/link passed; zero product/runtime jobs",
+    "runtime_jobs": 0,
+    "binary_inputs": {
+      "build/fvwm3": {
+        "sha256": "6fc3af38b03eeb311d10f00380b3be14e39c23cf337b9438c7e70eeb9fe64963",
+        "bytes": 5867160
+      },
+      "build/modules/FvwmForm/FvwmForm": {
+        "sha256": "8a7b23a4b684280600d1e88a2715d88baffa531e881c5d0ef4c44667716b6504",
+        "bytes": 1923120
+      },
+      "build/modules/FvwmButtons/FvwmButtons": {
+        "sha256": "be7a20154004e969532eea7ce4068aa7e36b22420befdf0892d38482d9bb11f0",
+        "bytes": 1857896
+      },
+      "build/modules/FvwmForm/FvwmForm-native-eval": {
+        "sha256": "2128faa368907fcd7f78cafed8f1c4e513ce0ed156577facc4b73b4113bb1bba",
+        "bytes": 1978256
+      },
+      "build/modules/FvwmForm/FvwmForm-cairo-eval": {
+        "sha256": "98de4bea2bef9f110bf915de8f0c65380b877619c104722f6ac6ca834f1fe834",
+        "bytes": 1993032
+      },
+      "build/modules/FvwmButtons/FvwmButtons-native-eval": {
+        "sha256": "10d235dd52e0bcda46f384869077dd7ed706d7265da85a01ca5c400cc149304e",
+        "bytes": 1912568
+      },
+      "build/modules/FvwmButtons/FvwmButtons-cairo-eval": {
+        "sha256": "aaff228d12d29af57fbd760e02adeff6ae644df1ad7e441ea0e2c7bb4816d438",
+        "bytes": 1927352
+      },
+      "build/tests/test-graphics-eval-policy": {
+        "sha256": "272113596a7208eee11004bfa4c7c618669e5a77c0d9e4d3192eed1e8e2e923c",
+        "bytes": 91688
+      },
+      "build/tests/test-graphics-eval-x": {
+        "sha256": "e9d9bd379fe10461e4768ef5f8657037095156192e6a1df562769a01828ce3ad",
+        "bytes": 121736
+      },
+      "build/tests/test-graphics-eval-observer": {
+        "sha256": "4967e6c9ea160e87b3873b31cf1b7e0399a0a6b9015388ca58d74f0761c00b57",
+        "bytes": 103720
+      },
+      "build/modules/FvwmButtons/FvwmButtons-native-layout-eval": {
+        "sha256": "dd7718de3ca89a3303c61fd8ed4552f1eb5ba4f99ab783da6ad9416299ab18a3",
+        "bytes": 1802576
+      },
+      "build/modules/FvwmButtons/FvwmButtons-clay-layout-eval": {
+        "sha256": "5fd6c4552afa78f4b1f96a7da88f769f8800270ac1806fdd8073756fd9acc15f",
+        "bytes": 2129576
+      },
+      "build/tests/test-clay-layout-eval": {
+        "sha256": "ccf4044f91a724b6a6f401799427ce91562f5850d07d0842d39aa480aaa54ccb",
+        "bytes": 342008
+      }
+    },
+    "seconds": 2.9751721669963445
+  },
+  "shutdown": {
+    "compile02": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ],
+    "compile03": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "elf_costs": {
+    "build/modules/FvwmButtons/FvwmButtons": {
+      "sha256": "be7a20154004e969532eea7ce4068aa7e36b22420befdf0892d38482d9bb11f0",
+      "bytes": 1857896,
+      "text": 453206,
+      "data": 13872,
+      "bss": 14808,
+      "needed": [
+        "libm.so.6",
+        "libX11.so.6",
+        "libXext.so.6",
+        "libpng16.so.16",
+        "libXcursor.so.1",
+        "libXpm.so.4",
+        "libXrender.so.1",
+        "libXrandr.so.2",
+        "libfontconfig.so.1",
+        "libXft.so.2",
+        "libfribidi.so.0",
+        "libSM.so.6",
+        "libICE.so.6",
+        "libXfixes.so.3",
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    },
+    "build/modules/FvwmButtons/FvwmButtons-native-eval": {
+      "sha256": "10d235dd52e0bcda46f384869077dd7ed706d7265da85a01ca5c400cc149304e",
+      "bytes": 1912568,
+      "text": 470257,
+      "data": 13968,
+      "bss": 44040,
+      "needed": [
+        "libm.so.6",
+        "libX11.so.6",
+        "libXext.so.6",
+        "libpng16.so.16",
+        "libXcursor.so.1",
+        "libXpm.so.4",
+        "libXrender.so.1",
+        "libXrandr.so.2",
+        "libfontconfig.so.1",
+        "libXft.so.2",
+        "libfribidi.so.0",
+        "libSM.so.6",
+        "libICE.so.6",
+        "libXfixes.so.3",
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    },
+    "build/modules/FvwmButtons/FvwmButtons-cairo-eval": {
+      "sha256": "aaff228d12d29af57fbd760e02adeff6ae644df1ad7e441ea0e2c7bb4816d438",
+      "bytes": 1927352,
+      "text": 475261,
+      "data": 14216,
+      "bss": 44040,
+      "needed": [
+        "libm.so.6",
+        "libX11.so.6",
+        "libXext.so.6",
+        "libpng16.so.16",
+        "libXcursor.so.1",
+        "libXpm.so.4",
+        "libXrender.so.1",
+        "libXrandr.so.2",
+        "libfontconfig.so.1",
+        "libXft.so.2",
+        "libfribidi.so.0",
+        "libSM.so.6",
+        "libICE.so.6",
+        "libXfixes.so.3",
+        "libcairo.so.2",
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    },
+    "build/modules/FvwmButtons/FvwmButtons-native-layout-eval": {
+      "sha256": "dd7718de3ca89a3303c61fd8ed4552f1eb5ba4f99ab783da6ad9416299ab18a3",
+      "bytes": 1802576,
+      "text": 450719,
+      "data": 13880,
+      "bss": 14872,
+      "needed": [
+        "libm.so.6",
+        "libX11.so.6",
+        "libXext.so.6",
+        "libpng16.so.16",
+        "libXcursor.so.1",
+        "libXpm.so.4",
+        "libXrender.so.1",
+        "libXrandr.so.2",
+        "libfontconfig.so.1",
+        "libXft.so.2",
+        "libfribidi.so.0",
+        "libSM.so.6",
+        "libICE.so.6",
+        "libXfixes.so.3",
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    },
+    "build/modules/FvwmButtons/FvwmButtons-clay-layout-eval": {
+      "sha256": "5fd6c4552afa78f4b1f96a7da88f769f8800270ac1806fdd8073756fd9acc15f",
+      "bytes": 2129576,
+      "text": 553319,
+      "data": 14336,
+      "bss": 16128,
+      "needed": [
+        "libm.so.6",
+        "libX11.so.6",
+        "libXext.so.6",
+        "libpng16.so.16",
+        "libXcursor.so.1",
+        "libXpm.so.4",
+        "libXrender.so.1",
+        "libXrandr.so.2",
+        "libfontconfig.so.1",
+        "libXft.so.2",
+        "libfribidi.so.0",
+        "libSM.so.6",
+        "libICE.so.6",
+        "libXfixes.so.3",
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    },
+    "build/tests/test-clay-layout-eval": {
+      "sha256": "ccf4044f91a724b6a6f401799427ce91562f5850d07d0842d39aa480aaa54ccb",
+      "bytes": 342008,
+      "text": 110833,
+      "data": 1160,
+      "bss": 1232,
+      "needed": [
+        "libc.so.6",
+        "ld-linux-aarch64.so.1"
+      ]
+    }
+  },
+  "original_G3_controls": {
+    "FvwmButtons": {
+      "sha256": "753dfedb0a72de02c0092202fc7ee58ad36f77088daf07420cbc3102753a226a",
+      "bytes": 1857896
+    },
+    "FvwmButtons-native-eval": {
+      "sha256": "99ac446e0df82c53385c1214bd4295dc473068a888b253e6b1580cbf27ddcc11",
+      "bytes": 1912568
+    },
+    "FvwmButtons-cairo-eval": {
+      "sha256": "b2a56fceff54a69fb7f11f579e21044ab23b60c08dee3af5019872e34bba2530",
+      "bytes": 1927352
+    },
+    "baseline-source16.json": {
+      "sha256": "891f62522500384870f131786814ad3a4610a0f6763452c0003214b63c4f2787",
+      "bytes": 290646
+    }
+  },
+  "partial_source17_controls": {
+    "build/modules/FvwmButtons/FvwmButtons": {
+      "sha256": "be7a20154004e969532eea7ce4068aa7e36b22420befdf0892d38482d9bb11f0",
+      "bytes": 1857896
+    },
+    "build/modules/FvwmButtons/FvwmButtons-native-eval": {
+      "sha256": "10d235dd52e0bcda46f384869077dd7ed706d7265da85a01ca5c400cc149304e",
+      "bytes": 1912568
+    },
+    "build/modules/FvwmButtons/FvwmButtons-cairo-eval": {
+      "sha256": "aaff228d12d29af57fbd760e02adeff6ae644df1ad7e441ea0e2c7bb4816d438",
+      "bytes": 1927352
+    }
+  },
+  "raw": {
+    "failed_first_native/build-layout.stdout": "ninja: Entering directory `/tmp/fvwm-appearance-a4-20261102-01/build'\n[1/42] Compiling C object modules/FvwmButtons/FvwmButtons.p/button.c.o\n[2/42] Linking target modules/FvwmButtons/FvwmButtons\n[3/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-eval.p/button.c.o\n[4/42] Linking target modules/FvwmButtons/FvwmButtons-native-eval\n[5/42] Compiling C object modules/FvwmButtons/FvwmButtons-cairo-eval.p/button.c.o\n[6/42] Linking target modules/FvwmButtons/FvwmButtons-cairo-eval\n[7/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/FvwmButtons.c.o\n../src/modules/FvwmButtons/FvwmButtons.c: In function \u2018GetPanelGeometry\u2019:\n../src/modules/FvwmButtons/FvwmButtons.c:3127:17: warning: this statement may fall through [-Wimplicit-fallthrough=]\n 3127 |                 {\n      |                 ^\n../src/modules/FvwmButtons/FvwmButtons.c:3145:9: note: here\n 3145 |         case SLIDE_CONTEXT_ROOT: /* slide relatively to the root windows */\n      |         ^~~~\n../src/modules/FvwmButtons/FvwmButtons.c: In function \u2018Loop\u2019:\n../src/modules/FvwmButtons/FvwmButtons.c:1320:12: warning: this statement may fall through [-Wimplicit-fallthrough=]\n 1320 |         if (\n      |            ^\n../src/modules/FvwmButtons/FvwmButtons.c:1325:7: note: here\n 1325 |       case ButtonPress:\n      |       ^~~~\n[8/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_packet.c.o\n[9/42] Compiling C object libs/libclay-layout-eval.a.p/clay_layout_eval.c.o\nIn file included from ../src/libs/clay_layout_eval.c:13:\n../src/tests/third_party/clay/clay.h: In function \u2018Clay__CalculateFinalLayout\u2019:\n../src/tests/third_party/clay/clay.h:3141:48: warning: unused variable \u2018childMapItem\u2019 [-Wunused-variable]\n 3141 |                 Clay_LayoutElementHashMapItem* childMapItem = Clay__GetHashMapItem(childElement->id);\n      |                                                ^~~~~~~~~~~~\n../src/tests/third_party/clay/clay.h: In function \u2018Clay__CloneElementsWithExitTransition\u2019:\n../src/tests/third_party/clay/clay.h:4398:41: warning: unused variable \u2018newChildElement\u2019 [-Wunused-variable]\n 4398 |                     Clay_LayoutElement* newChildElement = Clay_LayoutElementArray_Set_DontTouchLength(&context->layoutElements, nextIndex, *childElement);\n      |                                         ^~~~~~~~~~~~~~~\n../src/tests/third_party/clay/clay.h:4381:39: warning: unused variable \u2018config\u2019 [-Wunused-variable]\n 4381 |         Clay_TransitionElementConfig* config = &data->elementThisFrame->config.transition;\n      |                                       ^~~~~~\n../src/tests/third_party/clay/clay.h: In function \u2018Clay_EndLayout\u2019:\n../src/tests/third_party/clay/clay.h:4521:29: warning: missing initializer for field \u2018offset\u2019 of \u2018Clay_ElementId\u2019 [-Wmissing-field-initializers]\n 4521 |                             Clay__AddHashMapItem(CLAY__INIT(Clay_ElementId){ layoutElement->id }, layoutElement);\n      |                             ^~~~~~~~~~~~~~~~~~~~\n../src/tests/third_party/clay/clay.h:247:14: note: \u2018offset\u2019 declared here\n  247 |     uint32_t offset; // A numerical offset applied after computing the hash from stringId.\n      |              ^~~~~~\n[10/42] Linking static target libs/libclay-layout-eval.a\n[11/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_startup.c.o\n[12/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_navigation.c.o\n[13/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/tray_container.c.o\n[14/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_updates.c.o\n[15/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/keyboard.c.o\n[16/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/button.c.o\n[17/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/draw.c.o\n[18/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/icons.c.o\n[19/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/dynamic.c.o\n[20/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/misc.c.o\n[21/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/output.c.o\n[22/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o\nFAILED: modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o \ncc -Imodules/FvwmButtons/FvwmButtons-native-layout-eval.p -Imodules/FvwmButtons -I../src/modules/FvwmButtons -I. -I../src -Ifvwm -I../src/fvwm -I/usr/include/freetype2 -I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16 -I/usr/include/fribidi -I/usr/include/librsvg-2.0 -I/usr/include/glib-2.0 -I/usr/lib/aarch64-linux-gnu/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/aarch64-linux-gnu -I/usr/include/webp -I/usr/include/cairo -I/usr/include/pixman-1 -fdiagnostics-color=always -D_FILE_OFFSET_BITS=64 -Wall -Winvalid-pch -Wextra -std=c11 -O2 -g -fno-common -Wno-sign-compare -Wno-unused-parameter -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -fstack-protector-strong -fstack-clash-protection -D_FORTIFY_SOURCE=3 -fPIE -pthread -D_DEFAULT_SOURCE -D_BSD_SOURCE -DHAS_FCHOWN -DHAS_STICKY_DIR_BIT -DFVWM_LAYOUT_EVAL=1 -MD -MQ modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o -MF modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o.d -o modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o -c ../src/modules/FvwmButtons/buttons_layout_eval.c\n../src/modules/FvwmButtons/buttons_layout_eval.c:31:13: error: conflicting types for \u2018buttons_layout_count\u2019; have \u2018void(uint64_t *)\u2019 {aka \u2018void(long unsigned int *)\u2019}\n   31 | static void buttons_layout_count(uint64_t *counter)\n      |             ^~~~~~~~~~~~~~~~~~~~\nIn file included from ../src/modules/FvwmButtons/FvwmButtons.h:250,\n                 from ../src/modules/FvwmButtons/buttons_layout_eval.c:6:\n../src/modules/FvwmButtons/button.h:63:5: note: previous declaration of \u2018buttons_layout_count\u2019 with type \u2018int(const button_info *)\u2019 {aka \u2018int(const struct button_info_struct *)\u2019}\n   63 | int buttons_layout_count(const button_info *root);\n      |     ^~~~~~~~~~~~~~~~~~~~\n../src/modules/FvwmButtons/FvwmButtons.h:108:14: error: duplicate \u2018unsigned\u2019\n  108 | #define byte unsigned char\n      |              ^~~~~~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:107:72: note: in expansion of macro \u2018byte\u2019\n  107 | static void buttons_layout_metadata_byte(uint32_t *hash, unsigned char byte)\n      |                                                                        ^~~~\n../src/modules/FvwmButtons/FvwmButtons.h:108:23: error: two or more data types in declaration specifiers\n  108 | #define byte unsigned char\n      |                       ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:107:72: note: in expansion of macro \u2018byte\u2019\n  107 | static void buttons_layout_metadata_byte(uint32_t *hash, unsigned char byte)\n      |                                                                        ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c: In function \u2018buttons_layout_metadata_byte\u2019:\n../src/modules/FvwmButtons/FvwmButtons.h:108:14: error: expected expression before \u2018unsigned\u2019\n  108 | #define byte unsigned char\n      |              ^~~~~~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:109:26: note: in expansion of macro \u2018byte\u2019\n  109 |         *hash = (*hash ^ byte) * UINT32_C(16777619);\n      |                          ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c: In function \u2018buttons_layout_metadata_title\u2019:\n../src/modules/FvwmButtons/FvwmButtons.h:108:14: error: duplicate \u2018unsigned\u2019\n  108 | #define byte unsigned char\n      |              ^~~~~~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:122:31: note: in expansion of macro \u2018byte\u2019\n  122 |                 unsigned char byte = (unsigned char)title[i];\n      |                               ^~~~\n../src/modules/FvwmButtons/FvwmButtons.h:108:23: error: two or more data types in declaration specifiers\n  108 | #define byte unsigned char\n      |                       ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:122:31: note: in expansion of macro \u2018byte\u2019\n  122 |                 unsigned char byte = (unsigned char)title[i];\n      |                               ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:122:36: error: expected identifier or \u2018(\u2019 before \u2018=\u2019 token\n  122 |                 unsigned char byte = (unsigned char)title[i];\n      |                                    ^\n../src/modules/FvwmButtons/FvwmButtons.h:108:14: error: expected expression before \u2018unsigned\u2019\n  108 | #define byte unsigned char\n      |              ^~~~~~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:124:52: note: in expansion of macro \u2018byte\u2019\n  124 |                 buttons_layout_metadata_byte(hash, byte);\n      |                                                    ^~~~\n../src/modules/FvwmButtons/FvwmButtons.h:108:14: error: expected expression before \u2018unsigned\u2019\n  108 | #define byte unsigned char\n      |              ^~~~~~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c:125:22: note: in expansion of macro \u2018byte\u2019\n  125 |                 if (!byte)\n      |                      ^~~~\n../src/modules/FvwmButtons/buttons_layout_eval.c: In function \u2018buttons_layout_retire\u2019:\n../src/modules/FvwmButtons/buttons_layout_eval.c:74:23: warning: ignoring return value of \u2018write\u2019 declared with attribute \u2018warn_unused_result\u2019 [-Wunused-result]\n   74 |                 (void)write(STDERR_FILENO, record, (size_t)length);\n      |                       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n[23/42] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/parse.c.o\nninja: build stopped: subcommand failed.\nINFO: autodetecting backend as ninja\nINFO: calculating backend command to run: /usr/bin/ninja -C /tmp/fvwm-appearance-a4-20261102-01/build -j 2 modules/FvwmButtons/FvwmButtons modules/FvwmButtons/FvwmButtons-native-eval modules/FvwmButtons/FvwmButtons-cairo-eval modules/FvwmButtons/FvwmButtons-native-layout-eval modules/FvwmButtons/FvwmButtons-clay-layout-eval tests/test-clay-layout-eval\n",
+    "failed_first_native/compiler-version.stdout": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "failed_first_native/configure-layout.stdout": "Cleaning... 0 files.\nThe Meson build system\nVersion: 1.7.0\nSource dir: /tmp/fvwm-appearance-a4-20261102-01/src\nBuild dir: /tmp/fvwm-appearance-a4-20261102-01/build\nBuild type: native build\nProject name: fvwm3\nProject version: 1.1.6\nC compiler for the host machine: cc (gcc 13.3.0 \"cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\")\nC linker for the host machine: cc ld.bfd 2.42\nHost machine cpu family: aarch64\nHost machine cpu: aarch64\nCompiler for C supports arguments -Werror=implicit-function-declaration: YES (cached)\nCompiler for C supports arguments -Werror=incompatible-pointer-types: YES (cached)\nFetching value of define \"_FORTIFY_SOURCE\" : (undefined) (cached)\nChecking if \"_FORTIFY_SOURCE=3 support\" compiles: YES (cached)\nCompiler for C supports arguments -fstack-protector-strong: YES (cached)\nCompiler for C supports arguments -fstack-clash-protection: YES (cached)\nCompiler for C supports arguments -D_FORTIFY_SOURCE=3: YES (cached)\nCompiler for C supports link arguments -Wl,-z,relro: YES (cached)\nCompiler for C supports link arguments -Wl,-z,now: YES (cached)\nCompiler for C supports link arguments -Wl,-z,noexecstack: YES (cached)\nLibrary m found: YES\nChecking for function \"closefrom\" : YES (cached)\nHas header \"fcntl.h\" : YES (cached)\nHas header \"float.h\" : YES (cached)\nHas header \"getopt.h\" : YES (cached)\nHas header \"inttypes.h\" : YES (cached)\nHas header \"limits.h\" : YES (cached)\nHas header \"malloc.h\" : YES (cached)\nHas header \"memory.h\" : YES (cached)\nHas header \"stdarg.h\" : YES (cached)\nHas header \"stdint.h\" : YES (cached)\nHas header \"stdlib.h\" : YES (cached)\nHas header \"string.h\" : YES (cached)\nHas header \"strings.h\" : YES (cached)\nHas header \"sys/select.h\" : YES (cached)\nHas header \"sys/stat.h\" : YES (cached)\nHas header \"sys/systeminfo.h\" : NO (cached)\nHas header \"sys/time.h\" : YES (cached)\nHas header \"sys/wait.h\" : YES (cached)\nHas header \"unistd.h\" : YES (cached)\nChecking if \"POSIX signal installation\" links: YES (cached)\nChecking for function \"div\" : YES (cached)\nChecking for function \"getpwuid\" : YES (cached)\nChecking for function \"gettimeofday\" : YES (cached)\nChecking for function \"lstat\" : YES (cached)\nChecking for function \"memcpy\" : YES (cached)\nChecking for function \"memmove\" : YES (cached)\nChecking for function \"mkfifo\" : YES (cached)\nChecking for function \"putenv\" : YES (cached)\nChecking for function \"setpgid\" : YES (cached)\nChecking for function \"setpgrp\" : YES (cached)\nChecking for function \"setvbuf\" : YES (cached)\nChecking for function \"socket\" : YES (cached)\nChecking for function \"strchr\" : YES (cached)\nChecking for function \"strdup\" : YES (cached)\nChecking for function \"strstr\" : YES (cached)\nChecking for function \"strtol\" : YES (cached)\nChecking for function \"sysconf\" : YES (cached)\nChecking for function \"intl\" : NO (cached)\nChecking for function \"wait3\" : YES (cached)\nChecking for function \"waitpid\" : YES (cached)\nDependency fontconfig found: YES 2.15.0 (cached)\nDependency ice found: YES 1.0.10 (cached)\nDependency libevent found: YES 2.1.12-stable (cached)\nDependency x11 found: YES 1.8.7 (cached)\nDependency xft found: YES 2.3.6 (cached)\nDependency xrandr found: YES 1.5.2 (cached)\nDependency xt found: YES 1.2.1 (cached)\nDependency xtrans found: YES 1.4.0 (cached)\nDependency xext found: YES 1.3.4 (cached)\nChecking if \"Xlib XKB key translation\" with dependency x11 links: YES (cached)\nProgram python3 found: YES (/workspace/meson-env/bin/python3)\nProgram perl found: YES (/usr/bin/perl)\nProgram go found: YES (/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go)\nProgram sed found: YES (/usr/bin/sed)\nDependency freetype2 found: YES 26.1.20 (cached)\nDependency fribidi found: YES 1.0.13 (cached)\nDependency iconv found: YES unknown (cached)\nChecking if \"iconv header/library match\" with dependency iconv links: YES (cached)\nChecking for function \"nl_langinfo\" : YES (cached)\nChecking if \"libcharset check\" with dependency iconv links: NO (cached)\nHeader \"libcharset.h\" has symbol \"locale_charset\" : NO (cached)\nDependency intl skipped: feature nls disabled\nDependency libpng found: YES 1.6.59 (cached)\nDependency librsvg-2.0 found: YES 2.58.0 (cached)\nDependency cairo found: YES 1.18.0 (cached)\nChecking if \"librsvg 2.52/Cairo renderer API\" with dependencies librsvg-2.0, cairo links: YES (cached)\nLibrary m found: YES\nDependency cairo found: YES 1.18.0 (cached)\nChecking if \"private Cairo Xlib drawing API (link only)\" with dependencies cairo, x11 links: YES (cached)\nDependency sm found: YES 1.2.3 (cached)\nDependency xcursor found: YES 1.2.1 (cached)\nDependency xfixes found: YES 6.0.0 (cached)\nProgram gzip found: YES (/usr/bin/gzip)\nDependency xpm found: YES 3.5.17 (cached)\nDependency xrender found: YES 0.9.10 (cached)\nConfiguring configtemp.h using configuration\nConfiguring config.h with command\nConfiguring lucide-menus.fvwm using configuration\nConfiguring Module.pm using configuration\nDependency dbus-1 found: YES 1.14.10 (cached)\nConfiguring FvwmTalk using configuration\nConfiguring FvwmPerl using configuration\nConfiguring FvwmScript-ComExample using configuration\nCompiler for C supports link arguments -Wl,--wrap=tray_icons_ready: YES (cached)\nCompiler for C supports link arguments -Wl,--wrap=tray_icons_busy: YES (cached)\nCompiler for C supports link arguments -Wl,--wrap=tray_icons_timeout_ms: YES (cached)\nCompiler for C supports link arguments -Wl,--wrap=tray_bus_model: YES (cached)\nCompiler for C supports link arguments -Wl,--wrap=tray_sni_sync: YES (cached)\nCompiler for C supports link arguments -Wl,--wrap=PCacheFvwmPictureAtScale: YES (cached)\nProgram python3 found: YES (/workspace/meson-env/bin/python3)\nConfiguring fvwm-perllib using configuration\nLibrary m found: YES\nProgram readelf found: YES (/usr/bin/readelf)\nLibrary dl found: YES\nConfiguring fvwm3.desktop using configuration\nBuild targets in project: 318\n\nfvwm3 1.1.6\n\n  Directories\n    prefix            : /tmp/fvwm-appearance-a4-20261102-01/unused-install\n    bindir            : bin\n    datadir           : share\n    docdir            : share/doc/fvwm3\n    libdir            : lib/aarch64-linux-gnu\n    libexecdir        : libexec\n    Module dir        : libexec/fvwm3/1.1.6\n\n  Environment\n    Build             : linux\n    Build CPU Family  : aarch64\n    Host CPU Family   : aarch64\n    Cross-compiling   : false\n    Build Endianness  : little\n    Host Endianness   : little\n    Target            : linux\n    VCS Version       : released\n    C Compiler        : gcc\n    C Compiler Version: 13.3.0\n    Go Version        : 1.27.2\n    Linker            : ld.bfd\n    Python Path       : /workspace/meson-env/bin/python3\n    Python Version    : 3.12.3\n    Perl              : /usr/bin/perl\n    Perl Version      : 5.38.2\n\n\n  Documentation\n    HTML pages        : NO\n    Man pages         : NO\n\n  Features\n    BiDi              : YES 1.0.13\n    FreeType          : YES 26.1.20\n    Go Modules        : YES\n    iconv             : YES\n    NLS               : NO\n    PNG support       : YES 1.6.59\n    Session Management: YES 1.2.3\n    SVG support       : YES 2.58.0\n    Xcursor           : YES 1.2.1\n    XFixes            : YES 6.0.0\n    XPM support       : YES 3.5.17\n    XRender           : YES 0.9.10\n\n  Dependencies\n    fontconfig        : YES 2.15.0\n    ice               : YES 1.0.10\n    libevent          : YES 2.1.12-stable\n    x11               : YES 1.8.7\n    xft               : YES 2.3.6\n    xrandr            : YES 1.5.2\n    xt                : YES 1.2.1\n    xtrans            : YES 1.4.0\n    xext              : YES 1.3.4\n    cairo             : YES 1.18.0\n\n  User defined options\n    buildtype         : debugoptimized\n    graphics-eval     : enabled\n    htmldoc           : false\n    layout-eval       : enabled\n    live-x-tests      : true\n    lucide-menu-icons : true\n    mandoc            : false\n    nls               : disabled\n    png               : enabled\n    prefix            : /tmp/fvwm-appearance-a4-20261102-01/unused-install\n    session-dbus      : enabled\n    svg               : enabled\n\nFound ninja-1.11.1 at /usr/bin/ninja\n",
+    "focused_C1/baseline-size-0.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 453206\t  13872\t  14808\t 481886\t  75a5e\t/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons\n",
+    "focused_C1/baseline-size-1.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 475261\t  14216\t  44040\t 533517\t  8240d\t/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons-cairo-eval\n",
+    "focused_C1/baseline-size-2.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 470257\t  13968\t  44040\t 528265\t  80f89\t/tmp/fvwm-appearance-a4-20261102-01/references-g4/FvwmButtons-native-eval\n",
+    "focused_C1/build-layout.stdout": "ninja: Entering directory `/tmp/fvwm-appearance-a4-20261102-01/build'\n[1/20] Compiling C object modules/FvwmButtons/FvwmButtons-native-layout-eval.p/buttons_layout_eval.c.o\n[2/20] Linking target modules/FvwmButtons/FvwmButtons-native-layout-eval\n[3/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/buttons_packet.c.o\n[4/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/tray_container.c.o\n[5/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/buttons_startup.c.o\n[6/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/FvwmButtons.c.o\n../src/modules/FvwmButtons/FvwmButtons.c: In function \u2018GetPanelGeometry\u2019:\n../src/modules/FvwmButtons/FvwmButtons.c:3127:17: warning: this statement may fall through [-Wimplicit-fallthrough=]\n 3127 |                 {\n      |                 ^\n../src/modules/FvwmButtons/FvwmButtons.c:3145:9: note: here\n 3145 |         case SLIDE_CONTEXT_ROOT: /* slide relatively to the root windows */\n      |         ^~~~\n../src/modules/FvwmButtons/FvwmButtons.c: In function \u2018Loop\u2019:\n../src/modules/FvwmButtons/FvwmButtons.c:1320:12: warning: this statement may fall through [-Wimplicit-fallthrough=]\n 1320 |         if (\n      |            ^\n../src/modules/FvwmButtons/FvwmButtons.c:1325:7: note: here\n 1325 |       case ButtonPress:\n      |       ^~~~\n[7/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/buttons_navigation.c.o\n[8/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/buttons_updates.c.o\n[9/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/keyboard.c.o\n[10/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/draw.c.o\n[11/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/button.c.o\n[12/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/icons.c.o\n[13/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/dynamic.c.o\n[14/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/misc.c.o\n[15/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/output.c.o\n[16/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/buttons_layout_eval.c.o\n[17/20] Compiling C object tests/test-clay-layout-eval.p/test_clay_layout_eval.c.o\n[18/20] Linking target tests/test-clay-layout-eval\n[19/20] Compiling C object modules/FvwmButtons/FvwmButtons-clay-layout-eval.p/parse.c.o\n[20/20] Linking target modules/FvwmButtons/FvwmButtons-clay-layout-eval\nINFO: autodetecting backend as ninja\nINFO: calculating backend command to run: /usr/bin/ninja -C /tmp/fvwm-appearance-a4-20261102-01/build -j 2 modules/FvwmButtons/FvwmButtons-native-layout-eval modules/FvwmButtons/FvwmButtons-clay-layout-eval tests/test-clay-layout-eval\n",
+    "focused_C1/compiler-version.stdout": "cc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "focused_C1/needed-0.stdout": "\nDynamic section at offset 0x7ee68 contains 43 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libX11.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXext.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]\n 0x0000000000000001 (NEEDED)             Shared library: [libXcursor.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXpm.so.4]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrender.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrandr.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfontconfig.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXft.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfribidi.so.0]\n 0x0000000000000001 (NEEDED)             Shared library: [libSM.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libICE.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXfixes.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000001d (RUNPATH)            Library runpath: [/tmp/fvwm-deps/libpng-1.6.59/lib]\n 0x000000000000000c (INIT)               0xb9c0\n 0x000000000000000d (FINI)               0x53b7c\n 0x0000000000000019 (INIT_ARRAY)         0x7e910\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x7e918\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x27c8\n 0x0000000000000006 (SYMTAB)             0x2c0\n 0x000000000000000a (STRSZ)              5757 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x7f158\n 0x0000000000000002 (PLTRELSZ)           9192 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x95d8\n 0x0000000000000007 (RELA)               0x4220\n 0x0000000000000008 (RELASZ)             21432 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x4160\n 0x000000006fffffff (VERNEEDNUM)         4\n 0x000000006ffffff0 (VERSYM)             0x3e46\n 0x000000006ffffff9 (RELACOUNT)          878\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/needed-1.stdout": "\nDynamic section at offset 0x7ee58 contains 43 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libX11.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXext.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]\n 0x0000000000000001 (NEEDED)             Shared library: [libXcursor.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXpm.so.4]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrender.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrandr.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfontconfig.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXft.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfribidi.so.0]\n 0x0000000000000001 (NEEDED)             Shared library: [libSM.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libICE.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXfixes.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000001d (RUNPATH)            Library runpath: [/tmp/fvwm-deps/libpng-1.6.59/lib]\n 0x000000000000000c (INIT)               0xbb10\n 0x000000000000000d (FINI)               0x56a0c\n 0x0000000000000019 (INIT_ARRAY)         0x8e8b0\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x8e8b8\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x27f8\n 0x0000000000000006 (SYMTAB)             0x2c0\n 0x000000000000000a (STRSZ)              5780 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x8f148\n 0x0000000000000002 (PLTRELSZ)           9240 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x96f8\n 0x0000000000000007 (RELA)               0x4268\n 0x0000000000000008 (RELASZ)             21648 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x41a8\n 0x000000006fffffff (VERNEEDNUM)         4\n 0x000000006ffffff0 (VERSYM)             0x3e8c\n 0x000000006ffffff9 (RELACOUNT)          887\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/needed-2.stdout": "\nDynamic section at offset 0x7ed68 contains 44 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libX11.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXext.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]\n 0x0000000000000001 (NEEDED)             Shared library: [libXcursor.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXpm.so.4]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrender.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrandr.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfontconfig.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXft.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfribidi.so.0]\n 0x0000000000000001 (NEEDED)             Shared library: [libSM.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libICE.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXfixes.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libcairo.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000001d (RUNPATH)            Library runpath: [/tmp/fvwm-deps/libpng-1.6.59/lib]\n 0x000000000000000c (INIT)               0xc2c8\n 0x000000000000000d (FINI)               0x57c3c\n 0x0000000000000019 (INIT_ARRAY)         0x8e7c0\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x8e7c8\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x2ab0\n 0x0000000000000006 (SYMTAB)             0x2c0\n 0x000000000000000a (STRSZ)              6302 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x8f068\n 0x0000000000000002 (PLTRELSZ)           9936 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x9bf8\n 0x0000000000000007 (RELA)               0x4768\n 0x0000000000000008 (RELASZ)             21648 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x46a8\n 0x000000006fffffff (VERNEEDNUM)         4\n 0x000000006ffffff0 (VERSYM)             0x434e\n 0x000000006ffffff9 (RELACOUNT)          887\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/needed-3.stdout": "\nDynamic section at offset 0x6ee68 contains 43 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libX11.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXext.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]\n 0x0000000000000001 (NEEDED)             Shared library: [libXcursor.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXpm.so.4]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrender.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrandr.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfontconfig.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXft.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfribidi.so.0]\n 0x0000000000000001 (NEEDED)             Shared library: [libSM.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libICE.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXfixes.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000001d (RUNPATH)            Library runpath: [/tmp/fvwm-deps/libpng-1.6.59/lib]\n 0x000000000000000c (INIT)               0xb9f8\n 0x000000000000000d (FINI)               0x52ffc\n 0x0000000000000019 (INIT_ARRAY)         0x7e910\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x7e918\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x27e0\n 0x0000000000000006 (SYMTAB)             0x2c0\n 0x000000000000000a (STRSZ)              5764 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x7f158\n 0x0000000000000002 (PLTRELSZ)           9216 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x95f8\n 0x0000000000000007 (RELA)               0x4240\n 0x0000000000000008 (RELASZ)             21432 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x4180\n 0x000000006fffffff (VERNEEDNUM)         4\n 0x000000006ffffff0 (VERSYM)             0x3e64\n 0x000000006ffffff9 (RELACOUNT)          878\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/needed-4.stdout": "\nDynamic section at offset 0x8ed48 contains 43 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libm.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libX11.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXext.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libpng16.so.16]\n 0x0000000000000001 (NEEDED)             Shared library: [libXcursor.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXpm.so.4]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrender.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXrandr.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfontconfig.so.1]\n 0x0000000000000001 (NEEDED)             Shared library: [libXft.so.2]\n 0x0000000000000001 (NEEDED)             Shared library: [libfribidi.so.0]\n 0x0000000000000001 (NEEDED)             Shared library: [libSM.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libICE.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [libXfixes.so.3]\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000001d (RUNPATH)            Library runpath: [/tmp/fvwm-deps/libpng-1.6.59/lib]\n 0x000000000000000c (INIT)               0xbd70\n 0x000000000000000d (FINI)               0x67aec\n 0x0000000000000019 (INIT_ARRAY)         0x9e7f0\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x9e7f8\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x27e0\n 0x0000000000000006 (SYMTAB)             0x2c0\n 0x000000000000000a (STRSZ)              5764 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x9f038\n 0x0000000000000002 (PLTRELSZ)           9216 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x9970\n 0x0000000000000007 (RELA)               0x4240\n 0x0000000000000008 (RELASZ)             22320 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x4180\n 0x000000006fffffff (VERNEEDNUM)         4\n 0x000000006ffffff0 (VERSYM)             0x3e64\n 0x000000006ffffff9 (RELACOUNT)          915\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/needed-5.stdout": "\nDynamic section at offset 0x1fc40 contains 28 entries:\n  Tag        Type                         Name/Value\n 0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]\n 0x0000000000000001 (NEEDED)             Shared library: [ld-linux-aarch64.so.1]\n 0x000000000000000c (INIT)               0xad8\n 0x000000000000000d (FINI)               0x16144\n 0x0000000000000019 (INIT_ARRAY)         0x2fc30\n 0x000000000000001b (INIT_ARRAYSZ)       8 (bytes)\n 0x000000000000001a (FINI_ARRAY)         0x2fc38\n 0x000000000000001c (FINI_ARRAYSZ)       8 (bytes)\n 0x000000006ffffef5 (GNU_HASH)           0x298\n 0x0000000000000005 (STRTAB)             0x438\n 0x0000000000000006 (SYMTAB)             0x2b8\n 0x000000000000000a (STRSZ)              238 (bytes)\n 0x000000000000000b (SYMENT)             24 (bytes)\n 0x0000000000000015 (DEBUG)              0x0\n 0x0000000000000003 (PLTGOT)             0x2fe40\n 0x0000000000000002 (PLTRELSZ)           240 (bytes)\n 0x0000000000000014 (PLTREL)             RELA\n 0x0000000000000017 (JMPREL)             0x9e8\n 0x0000000000000007 (RELA)               0x598\n 0x0000000000000008 (RELASZ)             1104 (bytes)\n 0x0000000000000009 (RELAENT)            24 (bytes)\n 0x000000000000001e (FLAGS)              BIND_NOW\n 0x000000006ffffffb (FLAGS_1)            Flags: NOW PIE\n 0x000000006ffffffe (VERNEED)            0x548\n 0x000000006fffffff (VERNEEDNUM)         2\n 0x000000006ffffff0 (VERSYM)             0x526\n 0x000000006ffffff9 (RELACOUNT)          41\n 0x0000000000000000 (NULL)               0x0\n",
+    "focused_C1/size-0.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 453206\t  13872\t  14808\t 481886\t  75a5e\t/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons\n",
+    "focused_C1/size-1.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 470257\t  13968\t  44040\t 528265\t  80f89\t/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-eval\n",
+    "focused_C1/size-2.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 475261\t  14216\t  44040\t 533517\t  8240d\t/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-cairo-eval\n",
+    "focused_C1/size-3.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 450719\t  13880\t  14872\t 479471\t  750ef\t/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-native-layout-eval\n",
+    "focused_C1/size-4.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 553319\t  14336\t  16128\t 583783\t  8e867\t/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmButtons/FvwmButtons-clay-layout-eval\n",
+    "focused_C1/size-5.stdout": "   text\t   data\t    bss\t    dec\t    hex\tfilename\n 110833\t   1160\t   1232\t 113225\t  1ba49\t/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-clay-layout-eval\n"
+  },
+  "pending": {
+    "native_C": "compiled, not run",
+    "GUI": "fixture authored, not run",
+    "screenshots": "queued G5 Slate/Dune/enlarged Classic",
+    "performance": "not measured; no speed or memory benefit claim",
+    "arena": "hard cap2MiB, actual Clay_MinMemorySize not executed/measured",
+    "six_targets": "not qualified; support/dependency/install closure remains open",
+    "adoption": "pending; production baseline retained",
+    "periodic": "2/5 after PR354; update only on delivery"
+  }
+}

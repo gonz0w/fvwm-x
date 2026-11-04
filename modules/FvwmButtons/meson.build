@@ -45,3 +45,20 @@ if graphics_eval_enabled
         )
     endforeach
 endif
+
+if layout_eval_enabled
+    foreach backend : ['native', 'clay']
+        executable(
+            'FvwmButtons-' + backend + '-layout-eval',
+            module_sources + ['buttons_layout_eval.c'],
+            dependencies: buttons_dependencies +
+                (backend == 'clay' ? [layout_eval_math] : []),
+            include_directories: includedirs,
+            c_args: ['-DFVWM_LAYOUT_EVAL=1'] +
+                (backend == 'clay' ? ['-DFVWM_LAYOUT_EVAL_CLAY=1'] : []),
+            install: false,
+            link_with: [libfvwm3] +
+                (backend == 'clay' ? [clay_layout_eval_library] : []),
+        )
+    endforeach
+endif

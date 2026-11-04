@@ -167,3 +167,8 @@ option(
     'graphics-eval', type: 'feature', value: 'disabled',
     description: 'Build non-installed native/Cairo drawing comparison targets',
 )
+
+option(
+    'layout-eval', type: 'feature', value: 'disabled',
+    description: 'Build non-installed native/Clay layout comparison targets',
+)

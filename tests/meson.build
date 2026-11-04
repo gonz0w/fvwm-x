@@ -1,3 +1,15 @@
+if layout_eval_enabled
+    clay_layout_eval_test = executable(
+        'test-clay-layout-eval', 'test_clay_layout_eval.c',
+        include_directories: includedirs,
+        link_with: clay_layout_eval_library,
+        dependencies: [layout_eval_math],
+        c_args: ['-UNDEBUG'],
+        install: false,
+    )
+    test('clay-layout-eval', clay_layout_eval_test)
+endif
+
 graphics_eval_policy_test = executable(
     'test-graphics-eval-policy',
     ['test_graphics_eval_policy.c', '../libs/graphics_eval_policy.c'],
@@ -14,6 +26,9 @@ graphics_eval_observer_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('graphics-eval-observer', graphics_eval_observer_test)
+
+test('layout-eval-records', py,
+    args: [files('test_layout_eval_records.py')], timeout: 30)
 
 test('graphics-eval-records', py,
     args: [files('test_graphics_eval_records.py')], timeout: 30)

@@ -35,6 +35,130 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: G4 optional Clay row source checkpoint for LAYOUT-01 #212,
+coordinated with #211's private drawing comparison and #210's native baseline.
+Owner Cam; lead owns integration and tracker; branch `codex/r1-layout-comparison`,
+base merged PR354 `85e4120e3d772b953bd8f6ea00e4e9238b689e04`.
+One active product batch; the independent TEMPER-07 owner above is preserved.
+
+Outcome before implementation: identify the smallest isolated optional Clay
+consumer comparison that preserves the accepted native panel/collection owners.
+Assess one immutable upstream source and license, arena/error/text callback and
+output ownership, C/toolchain/dependency footprint and draw/hit integration.
+Map current responsive Buttons row and Form collection prepared geometry, focus,
+selection, clipping and provider/resize lifetimes. Return a finite disposition
+for one coherent comparison prototype and meaningful positive/failure oracles,
+or a named missing prerequisite; record the disposition before coding.
+
+Selected scope: #212's optional comparison preparation and source/contract mapping,
+with reuse of #211's observation/measurement owners. No production adoption,
+mandatory dependency, toolkit/input/accessibility rewrite, automatic legacy
+geometry migration, package installation, new runtime lane or tracing framework.
+Existing configured geometry and native behavior remain the baseline. G2–G5 is
+the named combined runtime/three-theme checkpoint; full support/cost acceptance
+and adopt/defer/reject remain binding. A source assessment does not close #212.
+
+Acceptance: exact baseline/candidate source identities and license; named data/
+resource owners and failure behavior; bounded arena/element/render-output/input
+limits; integration alternatives and maintenance cost; three-to-five related
+implementation stories with observable checks and a stop rule. Lead records the
+selected scope, acceptance and exclusions before implementation. One complex
+assessment and one routine native-layout/evidence inventory, no nested helpers
+or execution. Missing required inputs or repeated unexplained failure checkpoint
+this attempt; do not renew a completed batch's budget. Actual backend role/model
+routing remains unverified.
+
+G4 assessment disposition: exact Clay commit
+`e6cc36941ab2af5d81107617039d6f527a1c660b`, header blob
+`7d9cf4cc7a918d1bdd766867c180851c949a3310` (303,701 bytes; SHA-256
+`54aef6d5f96b14e296bebb6db4a755543e98fd7e6c188411afb2f22a4b4f7728`),
+and its 891-byte zlib license are retained for a private source experiment.
+The existing small integer policy remains the simpler production baseline.
+Clay has no weighted-grow field and equalizes small controls before distributing
+surplus; native adds weighted surplus to minima. Even equal weights with unequal
+minima can yield different widths. This is an explicit experimental policy
+comparison, never a claim of exact native sizing or production adoption.
+
+Select four related implementation stories under #212, coordinated with #211:
+
+1. Pin the unchanged optional header/license/provenance and default-disabled,
+   non-installed native-control/Clay Buttons targets. No ordinary/shared target
+   or installed consumer acquires Clay. Portable initial C11 profile disables
+   upstream SIMD; no new package or compiler is installed.
+2. Implement a private pure row adapter with copied numeric inputs, one retained
+   arena/context, at most 256 controls/512 Clay elements/512 word slots, extents
+   1..32767 and a 2 MiB hard arena ceiling. Use existing text/icon measurements,
+   no Clay text/image/input/scroll/transition elements. Unequal positive weights,
+   compression, explicit refusal, capacity and invalid input/output fall back
+   to the existing native policy; no native-final widths are fed into Clay.
+3. Copy and validate every candidate child rectangle before existing atomic
+   geometry publication: finite ordered bounds, matching stable IDs, height,
+   positive adjacent integer widths and exact content coverage. Native draw,
+   hit, focus, action, updates and root insets retain their owners. Retain no
+   arena-backed result pointer, clear current context before arena retirement,
+   and export a bounded once-exit comparison witness without widget access.
+4. Author input/output/refusal/ownership oracles and extend the existing layout
+   workload with explicit private variants, committed/fallback witnesses and
+   semantic geometry/action checks. Preserve intentional distribution differences;
+   no false sizing-parity expectation. Source/profile/ELF inputs and repeated
+   costs join G5, including three themes and the Form collection native baseline.
+
+Lead owns Meson, immutable vendor source/provenance, fixture, integration, tracker
+and evidence. The implementer owns the private C adapter/module hooks and pure C
+oracles; product documentation has a separate bounded owner. One implementation
+attempt and one diagnosed source correction; source/static review and one affected
+incremental compile after the coherent set, with no runtime/install campaign in
+this batch. Separate source and frozen execution-input review precede any selected
+check execution. Stop/replan on a missing required input or unexplained repeat;
+no acceptance or attempt budget is renewed by this disposition. G4 removes no
+production code and adds real arena/adapter/upgrade burden to the comparison.
+
+G4 source/oracle attempt checkpoint: six focused offline host regressions pass
+after the retained fixed-vector correction. The first native compile configured
+successfully and linked the ordinary and two graphics Buttons controls, then
+failed compiling the private driver. Including the existing module header exposed
+its `buttons_layout_count` declaration and legacy `byte` macro, colliding with
+new private helper/local names. The bounded build stopped; all groups are absent
+and container/machine shutdown is confirmed. No C/GUI runtime or install ran.
+Do not describe the incomplete six-target build as passed. Original receipts
+remain under the owned layout checkpoint, `compile01` and `compile02`.
+
+Replan the current acceptance as G4-C1, not another prototype cycle: resolve only
+those demonstrated private names and consume the bounded write result. No pure
+adapter, sizing policy, vendor, fixture/parser, public API or ordinary solver
+change is selected. Lead owns integration; implementer owns only the private
+driver. Existing source and six host-test evidence remain valid outside that
+file. After narrow separate source/input review, use one focused incremental
+build for the two unfinished layout modules and their compiled-only C oracle.
+Reuse the already linked controls and original preserved G3 baseline; bind the
+partial owned build state explicitly rather than pretending it is the old ELF.
+This finite repair ends at restored compilation and final integrated review.
+Any unexplained failure or further acceptance defect checkpoints the batch for
+owner-directed continuation; no automatic retry or broader repair is selected.
+
+G4/G4-C1 source, focused host regression and affected compilation are complete;
+final integrated/signed review is next. The six host regressions pass; the first
+native build failure remains retained and the narrow three-target repair passes.
+Ordinary/G3 graphics Buttons text/data/BSS stay unchanged; core/Form are byte-
+identical. Private Clay adds measured executable cost, not a performance gain.
+All build resources are confirmed stopped. [Source/checks/costs and remaining gates](verification/VERIFICATION-2026-11-04-CLAY-LAYOUT.md)
+keep native C/GUI, three themes/screenshots, complete support/cost and adoption
+pending at G5. No issue closure; periodic ledger remains 2/5 until delivery.
+
+PR354 is merged after separate integrated and exact signed-head review. Head
+`756bd1d415397413ee15036ad42281fda78ea151`, tree
+`b15e0c041b5fa5d12a6bc0931db701bf146f24fe`, canonical merge
+`85e4120e3d772b953bd8f6ea00e4e9238b689e04`; canonical signatures, actual-author
+DCO and reviewed tree/parent verify. Main was clean and synchronized; matching
+owned local/remote refs are retired. Project PR Done and #211 In progress verify;
+R1 remains 50 open issues. [G3 source/unit/build evidence](verification/VERIFICATION-2026-11-04-DRAWING-OBSERVERS.md)
+retains 14 offline host tests, one nine-target affected Linux compile, exact source
+and ELF costs and confirmed build-resource shutdown. C/GUI runtime, three-theme
+captures, six-target costs and adoption remain open. Periodic ledger 2/5.
+
+<details>
+<summary>G3 completed source checkpoint and its historical acceptance record</summary>
+
 Current work: G3 comparison-observer input assessment for GRAPHICS-02 #211,
 coordinated with #210's native drawing baseline and #212's later layout decision.
 Owner Cam; branch `codex/r1-drawing-observers`, base merged PR353
@@ -129,6 +253,9 @@ failure oracles accompany the correction. No candidate/runtime test has run and
 no native attempt budget is renewed. The C observer/adapter subset had no source
 lifetime/isolation finding. The narrow source and execution-input reviews cleared
 before the single successful host-unit/affected-compile dispatch.
+
+
+</details>
 
 PR353 is merged after separate integrated and exact signed-head review. Head
 `38e2e0fe28d3e684ef39453e56684aafd0220b82`, tree

@@ -135,3 +135,12 @@ if graphics_eval_enabled
         )}
     endforeach
 endif
+
+if layout_eval_enabled
+    clay_layout_eval_library = static_library(
+        'clay-layout-eval', 'clay_layout_eval.c',
+        include_directories: includedirs,
+        dependencies: [layout_eval_math],
+        install: false,
+    )
+endif

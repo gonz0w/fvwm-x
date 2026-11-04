@@ -118,3 +118,15 @@ and fixture/parser, and a separate reviewer inspected source and execution input
 Product documentation and routine harness inventory used their selected roles.
 Actual backend model routing remains unverified. Final integrated and exact signed
 head review remain delivery gates; source review and compilation do not close R1.
+
+## G5 geometry erratum — 2026-11-04
+
+The first ordinary real-X case disproved the source-only root-inset assumption
+in the queued comparison description above. Top-level Frame/Padding configure
+child defaults; the flat root has zero own insets. ExpandButtonVars reports
+outer prepared button rectangles, which fill the full client width and height.
+The 9,4 inset and 56px height describe each child's internal content in a 64px
+row, not the reported outer geometry. G5 retains that failed assertion, corrects
+the fixture and saves raw query snapshots before validation. Source/unit/build
+results above remain tied to their original inputs; no historical GUI pass is
+inferred. See the [active checkpoint](../PROJECT-TRACKER.md) for continuation.

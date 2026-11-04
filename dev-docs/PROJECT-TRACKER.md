@@ -35,6 +35,318 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work: G5 drawing/layout Linux checkpoint for GRAPHICS-02 #211 and
+LAYOUT-01 #212. Owner Cam; lead owns integration; branch
+`codex/r1-drawing-layout-checkpoint`, base merged PR355
+`aa24c75d26109950b3c0c6d00d9f98a62ce82de5`. One active product batch; preserve
+independent TEMPER-07 ownership. Implementation and scoped qualification are
+complete; separate integrated review and signed-head delivery remain pending.
+
+Four outcomes fix Clay shared-boundary quantization and Cairo scratch allocation
+on destination retirement, repair actual-state/outer-geometry/reflow oracles, and
+collect the composed comparison. Five native C/sanitizer executions, nine Python
+methods and 55 GUI invocations cover all54selected cases plus one affected Cairo
+positive. Nine inspected screenshots span Slate dark, Dune light and enlarged
+Classic, with shared fixture/baseline caption, label-contrast and tile-clipping
+limits recorded for later prioritization rather than added to this batch. Fifteen uninstrumented performance runs retain raw samples; they do not
+show a demonstrated speed gain. Cairo adds about1.3MiB Buttons RSS in this scope;
+Clay has a414400-byte arena and measured reflow slightly slower than native.
+[Report, failures, exact input bindings and screenshots](verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-CHECKPOINT.md).
+
+All prior passes keep their actual source/ELF scope. First-ten direct-value Form
+receipts do not prove selection; later conditional receipts do. Current Cairo
+positive/probe/destroy/themes/performance cover the repaired painter. Only three
+private Cairo targets rebuilt (0.437s); seventeen other inputs stayed unchanged.
+No repeated full matrix/install/package/disk change occurred; all owned groups,
+UID tasks, container and VM are retired/stopped. Daybreak #257/#258 stay parked.
+
+Acceptance before merge: applicable source/link/whitespace checks, separate
+integrated and exact signed-head review, canonical signature/tree/author-DCO
+verification and current R1 merge authority. Default-off/noninstalled prototypes
+remain private. #211/#212 and R1 stay open: complete six-target support/cost,
+implicit-roundtrip measurement and frozen adopt/defer/reject gates remain.
+Periodic whole-WM ledger3/5,4/5 on this implementation merge; no reset from this
+component comparison. No new tool/collector, dependency adoption, full platform
+campaign, release or unrelated feature/cleanup is authorized by these results.
+After integration, select the next finite remaining evaluation-acceptance batch
+from these owners; assess missing inputs before any further native execution.
+Actual backend model routing remains unverified.
+
+<details>
+<summary>G5 selected scope, failed attempts and finite repair dispositions</summary>
+
+Current work: G5 combined drawing/layout comparison input assessment for
+GRAPHICS-02 #211 and LAYOUT-01 #212. Owner Cam; lead owns tracker/integration;
+branch `codex/r1-drawing-layout-checkpoint`, base merged PR355
+`aa24c75d26109950b3c0c6d00d9f98a62ce82de5`. G1–G4 source preparation is delivered;
+select one finite native comparison campaign before execution. Preserve the
+independent TEMPER-07 owner and one active product batch.
+
+Outcome: refine the smallest staged Linux ARM64 policy/real-X comparison using
+current source18, 13 bound ELFs and existing stopped owned lab. Reuse the existing
+ordinary/native/Cairo drawing and native/Clay layout fixtures, semantic geometry/
+input/lifetime controls, three theme captures and repeated process measurements.
+First establish policy/painter/primary-positive evidence; do not spend the broad
+case set after a prerequisite failure. Name positive/negative oracles, comparison
+order/repeats and metric limits before observing results. Return a frozen bounded
+execution disposition, input closure and failure/cleanup plan, or a concrete
+missing prerequisite. One analyst assessment plus one routine harness/binary/
+profile inventory; no nested helpers, candidate execution or source changes by
+assessment. Existing source and focused host checks are reused.
+
+Exclusions: no production adoption, new dependency/tool/proxy/trace framework,
+package/install/default-server/full OS campaign, physical display/compositor
+claims, unrelated bug cleanup or feature expansion. Complete implicit-roundtrip
+measurement still has no qualified collector; NextRequest means issued requests
+only. Preserve that specific unavailable metric without inventing zero or
+blocking independent scoped checks. All-six-target cost/support and the frozen
+adopt/defer/reject gates remain binding; Linux-only results do not close either
+owner or R1. Periodic ledger is 3/5 after PR355; the component comparison is
+required by these owners, not an excuse for another full-WM/per-PR matrix.
+
+Acceptance: exact source/generated config/ELF/server/tool/profile binding;
+finite selected cases/repetitions/capture count and expected failures; bounded
+owned process work, export and confirmed shutdown; staged stop conditions and
+reuse of valid results. Lead records disposition, resource/effect authority and
+separate execution-input review before dispatch. Missing decisions, unavailable
+required executors or unexplained repeated failure checkpoint the campaign;
+do not renew G4's completed attempt. Actual backend model routing remains
+unverified. Do not label authored fixtures or compilation as runtime passes.
+
+G5 assessment disposition: select one coherent Linux comparison campaign with
+four related outcomes, using the delivered G2–G4 code and existing stopped lab:
+
+1. Repair the demonstrated layout-performance gap before execution. Existing
+   samples exercise focus/actions but not row reflow. Only the private layout
+   performance branch alternates actual 800/880px client widths per sample;
+   require a size change and both client geometry and complete queried prepared
+   rectangles at the requested content extent before timing completes. Record
+   reflow latency separately from action latency; old geometry or Echo alone
+   cannot qualify. Author negative endpoint oracles. Drawing performance remains
+   unchanged; private observation stays off during performance.
+2. Run a staged prerequisite set once: three newly authored native C oracles,
+   focused endpoint/publication Python coverage, and scoped native ASan/UBSan
+   Clay/observer policy ownership checks (new arena/context/export boundaries).
+   First ordinary/native/Cairo drawing and native/Clay layout positives must
+   pass before the broader campaign. Embed the shape/preservation/resource probe
+   in the initial Cairo positive. No unchanged broad policy/Go/race suite joins.
+3. Select exactly 39 correctness GUI cases: five Slate primary positives;
+   eighteen representative drawing controls; ten layout update/fallback/live-
+   geometry controls; six Dune/enlarged Classic ordinary/Cairo/Clay positives.
+   Capture only ordinary/Cairo/Clay positives in each theme: nine screenshots.
+   Qualify token/control/stimulus/lifetime/resource/error evidence and existing
+   semantic actions, draw/hit rectangles, Form identities and collection state.
+   Missed active interruption is inconclusive, never retried to force a pass.
+4. Run exactly fifteen observation-off Slate performance cases: three fixed
+   orders of ordinary/native/Cairo drawing and native/Clay layout, twelve samples
+   each. Keep raw per-run startup/action/reflow/CPU/RSS/HWM/idle observations and
+   median/range; no inferential significance or whole-desktop gain claim. Native
+   row resizing is the explicit solver workload, with current-inset/full-coverage
+   endpoint. Metric limitations and all-six-target/adoption gates remain open.
+
+The fixed five-variant orders are ordinary/native/Cairo/native-layout/Clay;
+Clay/native-layout/Cairo/native/ordinary; Cairo/Clay/ordinary/native-layout/native.
+Drawing controls are Cairo reduced/equal/refusal/choice-only/replace/press/move/
+resize/palette/unmap/destroy, native reduced/equal/choice-only/replace/unmap, and
+ordinary unmap/destroy. Layout controls are native+Clay weighted/compressed/update/
+resize plus Clay refusal/move. Negatives stay Slate; no theme-by-OS multiplication.
+A broader native 4096-entry collection pass remains existing baseline evidence,
+not an additional unrelated campaign selected here.
+
+Lead owns execution inputs, existing process/group/export/shutdown integration,
+reports/captures and tracker. Implementer owns only the selected fixture endpoint
+and regression source. One bounded source correction and separate review; then
+one staged campaign with a 30-minute lab ceiling and finite case/command limits.
+Stop dependent stages at first failure, preserve completed evidence, diagnose
+before any narrowly selected current-acceptance repair, and never repeat valid
+stages or broaden the campaign automatically. Resource identities/configuration
+stay unchanged; no package/tool installation, privilege/control/mount changes,
+full matrix or other project effects. Freeze source, 13 compiled ELFs, extra
+helper/server/tool/library/font inputs and scoped sanitizer outputs before their
+candidate execution; require separate frozen-input review. This is one G5 batch,
+not one PR or test campaign per stage. Actual routing remains unverified.
+
+G5 first campaign checkpoint: drawing policy and observer C oracles pass on the
+bound native Linux ARM64 profile. The third Clay oracle aborts at its unchanged
+32767px/1..256-control ready assertion. No Python/sanitizer/shape/GUI case ran,
+no screenshot or performance sample was generated, and dependent stages stopped.
+All three groups retired with no remaining UID tasks; container/machine shutdown
+is confirmed. Preserve the failed campaign receipt rather than label compiled
+Clay as qualified. Select one bounded source/failed-oracle diagnosis before any
+repair or new execution; no tolerance, expectation or support-limit change by
+inference. Existing passed drawing C checks remain valid and must not repeat.
+
+G5 diagnostic disposition: one isolated, observation-only copy of the Clay
+adapter and one execution of its existing unchanged C test. Keep vendor, limits,
+0.125px tolerance, initialization/prelude/count loop/assertions and original
+failed binary unchanged. Record only the first failing row's count, guard/index,
+upstream numeric error/failed flags, first/last box scalars, float/double endpoint,
+double width sum and maximum adjacency error; at most 4 KiB diagnostic output.
+Compile a distinct executable, run unprivileged for at most 30 seconds, preserve
+its original expected failure/abort and reuse all current input bindings. This
+is diagnosis, not a passing regression or a repair. Separate source and frozen-
+input review precede the one observation. No debugger/install/GUI/memory dump or
+repeat of passed drawing checks is selected. After the single result select a
+mechanism-specific current-acceptance repair or checkpoint the remaining unknown;
+no epsilon, positive assertion or advertised range change by inference.
+
+G5 single diagnostic observed the original failure at 190 controls: no upstream
+callback or pre-validation failure, guard 15 at the last box. Binary32 right
+overshoots 32767 by 0.130859375px; the double sum of widths overshoots by
+0.07366943359375px, and float adjacency error is zero. The requested arena is
+414400 bytes, not RSS. The unchanged positive assertion still aborts; this is a
+diagnostic observation, not a passing test. Its distinct ELF and scalar record
+are retained; all groups/UID tasks retired and lab shutdown is confirmed.
+Select a source-only mechanism/repair assessment of consistent shared-boundary
+pixel quantization before changing code. No arbitrary epsilon widening, vendor
+edit, support-limit reduction or positive-assertion weakening is authorized.
+
+G5-R1 repair disposition follows the single scalar observation and analyst
+assessment: use one shared-boundary nearest-pixel rule for every right edge,
+including the last. Keep all identity, finite/positive/monotonic/adjacency/y/
+height/minimum and atomic-output guards, with epsilon still 0.125px for those
+geometric comparisons. Bound a finite positive right strictly below
+`(double)available + 0.5` before conversion; quantize as
+`(int)((double)right + 0.5)` and require every pixel to advance within available,
+with the final pixel exactly equal to available. Remove only the conflicting
+floating final/upper coverage check and unconditional final assignment. This
+is exact pixel-grid validation, not proportional rescaling or arbitrary clamp.
+
+Implementer owns only the private adapter C file and its C oracle. Before the
+adapter change, add the captured190-box binary32 reconstruction, unchanged full
+1..256/max32767 positives, and half-pixel/nextafter boundary plus unchanged-output
+negatives. Preserve existing malformed/identity/one-pixel gap/overlap failures.
+One narrow correction, separate source review, one affected incremental rebuild
+of the Clay oracle/consumer and scoped sanitizer oracle, then focused original+
+new Clay qualification. Reuse passed drawing C checks and unaffected binaries;
+resume only still-unexecuted G5 jobs after the repaired prerequisite passes,
+under refreshed frozen inputs. Another unexplained boundary failure checkpoints
+this repair; it does not renew epsilon/range/acceptance or the campaign.
+
+G5-R1 qualification checkpoint: the repaired full Clay C oracle passes, all
+seven focused endpoint/publication Python checks pass, and both scoped native
+ASan/UBSan Clay/observer oracles pass. Together with the reused drawing policy/
+observer passes, Stage A is complete. The first ordinary GUI case then fails the
+fixture's 9,4 inset/56px height expectation before capture or experimental cases.
+Its mapped client is 800x64, no unexpected observed X errors occur, all UID tasks/
+groups retire and lab shutdown is confirmed. Preserve this baseline failure and
+all six completed top-level prerequisite passes; no valid check should repeat.
+Select one narrow configuration/source/retained-native-baseline diagnosis of
+root defaults versus actual root-container fields before another GUI attempt.
+No renderer/layout change or weakened pixel oracle is selected by this checkpoint.
+
+G5-R2 disposition: source and retained native-layout baseline establish a
+fixture mistake. Top-level Frame/Padding set container defaults for children;
+root-container own flags remain unset, so SetButtonSize keeps the full client.
+ExpandButtonVars uses get_button_root_geometry (outer buttonWidth/Height and
+position), not GetInternalSize (per-child content inset 9,4 and reduced height).
+For the flat 800x64 row, queried outer rectangles start at root origin, have
+height64, are adjacent and cover800. Preserve the same configured child defaults;
+no product/root semantics or renderer change is needed. The earlier source-only
+G3 nonzero-root-inset claim receives an explicit erratum, not passing UI history.
+
+Implementer owns only fixture/endpoint Python and focused regression source:
+correct outer-rectangle coverage, reject child-content/old assumed-root rectangles,
+and retain the latest bounded raw replies/tokens/root/client snapshot before
+assertion. Lead owns current contracts/report errata and refreshed execution inputs.
+One narrow source correction and separate review, then only the affected seven-
+method Python oracle and failed/unrun54GUI cases under a new frozen plan. Reuse
+all five successful C/sanitizer executions and unchanged20compiled/config inputs;
+no compiler, OS/install matrix or passed nativeC rerun. Another unexplained GUI
+failure checkpoints this continuation for diagnosis rather than weakening an
+oracle or retrying a timing window until it passes.
+
+G5-R2 continuation checkpoint: all seven Python methods and ten GUI cases pass
+(five primary variants; Cairo reduced/equal/refusal/choice-only/replacement).
+The next Cairo press case fails its final Form action expectation. Source and
+the published Form contract establish that direct choice `$(flag)` always emits
+its configured value, independent of selection; the fixture incorrectly expected
+an empty value when off. Existing Form command C coverage already distinguishes
+direct and conditional expansion. Preserve those ten functional passes, but their
+direct-value receipts do not establish selected state. No Form product change or
+timing retry is selected. One state-sensitive fixture correction uses
+`$(flag?yes)` and retains actual/expected action evidence before asserting.
+
+The initial image preview displayed incomplete captures. File verification
+corrects that impression: ordinary and Cairo PNGs are byte-identical, and the
+decoded Form-region RGB band is identical in all three captures (156240 nonzero
+bytes). The isolated Cairo preview shows both controls. Preserve all three
+captures; no capture defect or repeat is selected. The lab is stopped; all owned
+groups/UID tasks retired, with no unexpected observed X errors. Reuse the five
+C/sanitizer passes and ten completed GUI cases. After separate source/input
+review, run only the affected Python methods and failed/unrun44GUI cases, with
+six remaining theme captures. No compiler or platform matrix rerun is selected.
+
+G5-R3 qualification checkpoint: nine focused Python methods pass. The corrected
+Cairo press case proves initial on and final off; move, resize, palette and unmap
+also pass. Together with retained results, fifteen GUI cases are complete. Cairo
+destroy then fails because the retired Buttons PID has no observer stream,
+although Form exports a complete stream. Preserve that failure, all prior passes
+and three captures. The lab is stopped and all groups/UID tasks are retired.
+Select one source/log diagnosis of Buttons destruction, normal exit and observer
+export before deciding a repair. Missing stream remains a failure; no timing
+retry, skipped owner or automatic expansion is authorized.
+
+G5 destroy diagnostic disposition: source suggests (but does not establish)
+an asynchronous scratch-allocation failure after destination destruction, followed
+by fatal dependent-resource errors before atexit export. Select exactly one c15
+observation with existing verbose/stderr logging (`-v -o -`) enabled in a frozen
+scratch fixture copy. Keep all binaries, error handlers, timing, assertions and
+stimulus unchanged. No C instrumentation, compile, package/tool or signal-handler
+change is needed. Retain raw logs and classify it as diagnostic development
+evidence, never a product pass. A non-reproduced or unexplained result stops this
+diagnosis without another timing attempt. Separate input review and existing
+owned-lab bounds/shutdown remain required before execution.
+
+The single logged diagnostic reproduces Buttons' fatal BadGC (13), FreeGC
+request60, after destination destruction. Its later observer-sequence error is
+diagnostic-log interleaving, not a new product qualification result. Logging,
+source and all twenty compiled inputs are retained; no product pass is claimed.
+The owned lab shutdown is confirmed. This establishes the dependent scratch
+resource failure predicted by source analysis; no second diagnostic is selected.
+
+G5-R4 repair disposition: allocate private Cairo scratch pixmaps from the stable
+default-screen root at the already validated default visual/depth24, rather than
+from the disappearing destination. Preserve destination copy requests and the
+existing asynchronous lost-window error policy; no new synchronization barrier,
+handler suppression, server grab or mapping-based race check. Implementer owns
+only libs/graphics_eval.c and tests/test_graphics_eval_x.c. Add a deterministic
+destroyed-destination case before the fix: allow only its two destination-copy
+BadDrawable errors, reject all scratch/GC/picture errors, and require all own
+resources retired. Existing valid-window clipping/shape/fallback checks stay.
+Separate source review precedes one affected incremental build of the two Cairo
+modules and X probe. Run that affected X probe once, then failed/unrun39GUI cases;
+reuse all fifteen valid GUI cases, nine Python methods and five C/sanitizer passes.
+Record changed Cairo input identities; no ordinary/native/Clay rebuild, compiler
+profile, full OS/install matrix or performance repetition joins this repair.
+Any further unexplained failure checkpoints the campaign rather than renewing
+the same attempt or weakening lifetime/geometry expectations.
+
+R4 runtime preflight rejected the proposed probe embedding in destroy: the
+existing fixture permits shape-probe only in a Cairo positive. Nothing executed.
+Preserve that rejected plan and use one affected Cairo positive prerequisite
+with the new probe, followed by the same failed/unrun39 cases. This rechecks the
+changed painter on valid and retired destinations without changing CLI oracles
+or repeating a suite. No new captures or Python/C sanitizer reruns join. The
+finite runtime continuation is forty GUI invocations; source and other inputs
+stay unchanged. Separate refreshed input review remains required.
+
+</details>
+
+PR355 is merged after separate integrated and exact signed-head review. Head
+`8a6468aad6a656f0ebd361869eed0e56b41b7df5`, tree
+`711e7b11a7c24d40de542608b99c8336a0ad9972`, canonical merge
+`aa24c75d26109950b3c0c6d00d9f98a62ce82de5`; canonical signatures, author DCO and
+reviewed tree/parent verify. Main was clean and synchronized; matching owned
+refs are retired. Project PR Done and #212 In progress verify; R1 remains 50 open
+issues. [G4 report](verification/VERIFICATION-2026-11-04-CLAY-LAYOUT.md) retains
+six host regressions, the failed build and focused restored compilation, executable
+costs and confirmed lab shutdown. Native C/GUI/themes/full-cost/adoption remain
+open. Periodic ledger 3/5. No production dependency or issue closure follows.
+
+<details>
+<summary>G4 completed source checkpoint and its historical acceptance record</summary>
+
 Current work: G4 optional Clay row source checkpoint for LAYOUT-01 #212,
 coordinated with #211's private drawing comparison and #210's native baseline.
 Owner Cam; lead owns integration and tracker; branch `codex/r1-layout-comparison`,
@@ -144,6 +456,9 @@ identical. Private Clay adds measured executable cost, not a performance gain.
 All build resources are confirmed stopped. [Source/checks/costs and remaining gates](verification/VERIFICATION-2026-11-04-CLAY-LAYOUT.md)
 keep native C/GUI, three themes/screenshots, complete support/cost and adoption
 pending at G5. No issue closure; periodic ledger remains 2/5 until delivery.
+
+
+</details>
 
 PR354 is merged after separate integrated and exact signed-head review. Head
 `756bd1d415397413ee15036ad42281fda78ea151`, tree

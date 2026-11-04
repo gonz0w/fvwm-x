@@ -38,8 +38,8 @@ coverage before publication.
 
 Inputs are copied numeric values; the private adapter retains one arena/context,
 limited to 256 controls, 512 elements and 512 cached words, with extents from 1
-through 32767 and a 2 MiB hard arena ceiling. The actual minimum arena has not yet
-been measured. No arena-backed result pointer is retained, and the current Clay
+through 32767 and a 2 MiB hard arena ceiling. The first G5 numeric diagnostic observed a 414400-byte requested arena on
+Linux ARM64 with the recorded capacities; this is not RSS or a cross-target cost. No arena-backed result pointer is retained, and the current Clay
 context is cleared before arena retirement. Native Flocale measurement, icons,
 drawing, input, hit testing, focus, action and update owners remain in place.
 Form collection remains a second native baseline without a Clay port. The
@@ -53,9 +53,12 @@ experiment controls and records, not user configuration.
 
 ## Evidence and limits
 
-Input/output/refusal/ownership C oracles compile; real-X fixture changes are
-authored. Both remain unexecuted. Six focused offline host JSONL/update-tag tests and
-restored affected compilation are recorded in the [source/check report](../verification/VERIFICATION-2026-11-04-CLAY-LAYOUT.md). The existing
+The [G5 Linux checkpoint](../verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-CHECKPOINT.md)
+records passing native C/ASan/UBSan ownership oracles, real-X updates/fallback/
+geometry/actions, three-profile captures and repeated component observations.
+It retains the maximum-extent failure, correction and precise evidence reuse.
+The earlier six offline JSONL/update-tag tests and restored compilation remain
+historical in the [source/check report](../verification/VERIFICATION-2026-11-04-CLAY-LAYOUT.md). The existing
 [graphics fixture](../../tests/live_x/graphics_eval_live.py) uses ordinary drawing
 with a private native or Clay layout variant, shared row geometry, input and
 capture, and the existing Form normal 16-item collection. The separate
@@ -76,9 +79,10 @@ python3 tests/live_x/graphics_eval_live.py --build /path/to/owned-build \
 
 The fixture also offers `--layout native|clay`, `--layout-case
 fit|weighted|compressed|update`, `--layout-refuse`, and positive, resize or move
-scenarios across the three existing profiles. This recipe has not been executed. UI behavior, runtime, three-theme comparisons,
-source/profile/ELF binding and repeated costs remain queued for G5, with the
-existing support and cost gates. No speed gain or adoption is established. The
+scenarios across the three existing profiles. This is a setup template; G5's
+actual invocations and source/profile/ELF bindings belong to its linked report.
+Complete six-target support/cost and the adoption decision remain open. The
+measured reflow samples do not establish a speed gain or adoption. The
 experiment adds an arena, adapter, provenance and upgrade maintenance burden and
 removes zero production code; those costs belong in the later decision.
 
@@ -89,5 +93,15 @@ The private producer hashes at most 256 controls and 4095 bytes per field,
 stages the tag synchronously without retaining pointers, and commits it only
 with successful row preparation. This FNV-1a32 test tag is not a security digest
 or a promise of collision resistance. Fixed old/new test tags differ; unchanged
-Clay widths remain valid. The negative ignored-update host regression passed; real-X update qualification
-remains queued.
+Clay widths remain valid. The negative ignored-update host regression and G5's
+real-X update qualification pass within their recorded source/profile scope.
+
+G5's original maximum-extent oracle exposed a 190-control floating endpoint
+overshoot. The corrected adapter quantizes every shared right edge by the same
+nearest-pixel rule and requires exact final integer coverage; epsilon remains
+0.125px for adjacency/y/height and malformed/identity/atomic-output guards stay
+in force. The original range tests, captured reconstruction and half-pixel
+regressions pass, including scoped native ASan/UBSan. This does not qualify the
+module GUI or complete adoption. The shared fixture's outer-rectangle oracle
+also follows actual flat-root geometry; child content insets do not inset the
+root. Current results and retained failures belong to the active tracker.

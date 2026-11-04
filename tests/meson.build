@@ -6,6 +6,20 @@ graphics_eval_policy_test = executable(
 )
 test('graphics-eval-policy', graphics_eval_policy_test)
 
+graphics_eval_observer_test = executable(
+    'test-graphics-eval-observer',
+    ['test_graphics_eval_observer.c', '../libs/graphics_eval_observer.c',
+        '../libs/graphics_eval_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('graphics-eval-observer', graphics_eval_observer_test)
+
+test('graphics-eval-records', py,
+    args: [files('test_graphics_eval_records.py')], timeout: 30)
+test('graphics-eval-fixture-receipt', py,
+    args: [files('test_graphics_eval_fixture.py')], timeout: 30)
+
 if graphics_eval_enabled
     graphics_eval_x_probe = executable(
         'test-graphics-eval-x', 'test_graphics_eval_x.c',

@@ -3,6 +3,12 @@
 
 #ifdef FVWM_GRAPHICS_EVAL
 #include "libs/graphics_eval.h"
+#include "libs/graphics_eval_observer.h"
+graphics_eval_draw_scope buttons_eval_draw_start(
+	enum graphics_observer_operation operation);
+void buttons_eval_draw_end(graphics_eval_draw_scope scope, Bool fallback);
+#define buttons_eval_draw_begin(scope, operation) \
+	graphics_eval_draw_scope scope = buttons_eval_draw_start(operation)
 unsigned long buttons_eval_foreground(button_info *button);
 void buttons_eval_focus_begin(button_info *button, unsigned long from);
 void buttons_eval_cancel(Bool repaint);
@@ -13,6 +19,8 @@ Bool buttons_eval_focus(button_info *button, int x, int y, int width,
 	int height, unsigned long foreground);
 Bool buttons_eval_indicator(int x, int y, unsigned long foreground);
 #else
+#define buttons_eval_draw_begin(scope, operation) ((void)0)
+#define buttons_eval_draw_end(scope, fallback) ((void)0)
 #define buttons_eval_focus_begin(button, from) ((void)0)
 #define buttons_eval_cancel(repaint) ((void)0)
 #define buttons_eval_event(event) ((void)0)

@@ -699,21 +699,31 @@ void RedrawButton(button_info *b, int draw, XEvent *pev)
 	 * Keep marks inside the cleaned interior, including frameless buttons. */
 	if (buttons_is_focused(b) && BW > 2*f + 5 && BH > 2*f + 5)
 	{
+		buttons_eval_draw_begin(scope, GRAPHICS_OPERATION_BUTTONS_FOCUS);
 		XSetForeground(Dpy, NormalGC, fc);
-		if (!buttons_eval_focus(b, x+f+1, y+f+1,
-		    BW-2*f-3, BH-2*f-3, fc))
+		Bool painted = buttons_eval_focus(b, x+f+1, y+f+1,
+			BW-2*f-3, BH-2*f-3, fc);
+
+		if (!painted)
 			XDrawRectangle(Dpy, MyWindow, NormalGC, x+f+1, y+f+1,
 				BW-2*f-3, BH-2*f-3);
+		buttons_eval_draw_end(scope, !painted);
 	}
 	if (b->flags.b_Disabled && BW > 2*f + 9 && BH > 2*f + 9)
 	{
+		buttons_eval_draw_begin(scope,
+			GRAPHICS_OPERATION_BUTTONS_INDICATOR);
 		XSetForeground(Dpy, NormalGC, fc);
 		if (buttons_eval_indicator(x+BW-f-8, y+BH-f-8, fc))
+		{
+			buttons_eval_draw_end(scope, False);
 			return;
+		}
 		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-8,
 			x+BW-f-3, y+BH-f-3);
 		XDrawLine(Dpy, MyWindow, NormalGC, x+BW-f-8, y+BH-f-3,
 			x+BW-f-3, y+BH-f-8);
+		buttons_eval_draw_end(scope, True);
 	}
 }
 

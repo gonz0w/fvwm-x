@@ -132,23 +132,37 @@ void form_list_draw(Item *item)
 				cell_width, height);
 
 			for (int inset = 0; inset < stroke; inset++)
-				if (!form_eval_rectangle(item, x + inset, y + inset,
-				    cell_width - 1 - 2 * inset, height - 1 - 2 * inset,
-				    dt->dt_colors[selected ? c_item_bg : c_item_fg], &clip))
-				XDrawRectangle(dpy, item->header.win,
-					dt->dt_item_GC, x + inset, y + inset,
+			{
+				form_eval_draw_begin(scope,
+					GRAPHICS_OPERATION_FORM_LIST);
+				Bool painted = form_eval_rectangle(item,
+					x + inset, y + inset,
 					cell_width - 1 - 2 * inset,
-					height - 1 - 2 * inset);
+					height - 1 - 2 * inset,
+					dt->dt_colors[selected ? c_item_bg : c_item_fg],
+					&clip);
+
+				if (!painted)
+					XDrawRectangle(dpy, item->header.win,
+						dt->dt_item_GC, x + inset, y + inset,
+						cell_width - 1 - 2 * inset,
+						height - 1 - 2 * inset);
+				form_eval_draw_end(scope, !painted);
+			}
 		}
 		str->flags.has_clip_region = False;
 		XDestroyRegion(region);
 	}
 	str->str = NULL;
 	XSetForeground(dpy, dt->dt_item_GC, dt->dt_colors[c_item_fg]);
-	if (!form_eval_rectangle(item, 0, 0, width - 1,
-	    item->header.size_y - 1, dt->dt_colors[c_item_fg], NULL))
+	form_eval_draw_begin(border_scope, GRAPHICS_OPERATION_FORM_LIST);
+	Bool painted = form_eval_rectangle(item, 0, 0, width - 1,
+		item->header.size_y - 1, dt->dt_colors[c_item_fg], NULL);
+
+	if (!painted)
 		XDrawRectangle(dpy, item->header.win, dt->dt_item_GC,
 			0, 0, width - 1, item->header.size_y - 1);
+	form_eval_draw_end(border_scope, !painted);
 	if (form_list_lines(s) > s->rows)
 	{
 		int top, thumb;

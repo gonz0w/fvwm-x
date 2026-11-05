@@ -1,5 +1,9 @@
 # Proposals and decisions
 
+- [R1 Cairo integration](CAIRO-R1-INTEGRATION-DECISION-2026-11-04.md) and
+  [R1 Clay integration](CLAY-R1-INTEGRATION-DECISION-2026-11-04.md): retain native
+  production paths; scoped non-adoption decisions preserve pending evaluation gates.
+
 - [Directory backend evaluation](DIRECTORY-BACKEND-EVALUATION-2026-11-02.md): completed six-target comparison; retain current Go browsing and defer SQLite/FTS5 and JSON cache production adoption.
 
 - [Ordered selection source observation](SELECTION-SOURCE-OBSERVER-2026-11-02.md): selected pure lifetime/epoch, optional XFixes and bounded query/drain handoff; real-X and installed acceptance remain required.

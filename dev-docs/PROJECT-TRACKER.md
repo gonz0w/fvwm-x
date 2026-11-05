@@ -35,12 +35,69 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G5 drawing/layout Linux checkpoint for GRAPHICS-02 #211 and
+Current work: G6 platform costs and adoption decisions for GRAPHICS-02 #211 and
+LAYOUT-01 #212, selected by Cam after PR356. Lead owns integration; branch
+`codex/r1-drawing-layout-decisions`, base
+`5bfed2f08aa0511ccdc2b5e4514ac01136befd44`. Source/evidence and the bounded four
+outcomes are complete: reconcile G5, publish the six-target cost ledger, record
+Cairo/Clay production decisions and map remaining frozen acceptance. Preserve
+independent TEMPER-07 ownership and one active product delivery.
+
+[Costs, failures, exact inputs and remaining gates](verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md)
+and the linked structured receipt record eight outputs per profile: five affected
+current-source builds and unchanged G5 Linux ARM64 reuse. No WM GUI/runtime,
+whole-WM performance or full install/default-server suite repeats. Six host
+metadata-parser oracles pass; the fresh OpenBSD dependency bootstrap separately
+runs its 36 upstream PNG tests and version/ABI probes. That dependency work is not
+WM qualification. Periodic whole-WM ledger remains 4/5 after PR356.
+
+Retain native production drawing and responsive layout. Reject only the evaluated
+private Cairo painter and Clay row solver for R1 production integration; both stay
+default-disabled and excluded from install while evaluation acceptance is open.
+No mandatory dependency, public configuration change, broad source removal or
+new UI is selected. G5's Linux correctness/performance/three-theme evidence is
+reused with its exact bindings and known baseline clipping/contrast limits.
+No demonstrated speed gain or universal native superiority is claimed.
+
+The first FreeBSD configuration failure is diagnosed from installed Meson 1.10.2
+source/cache metadata; one cache-preserving refresh loads the new option names
+before the original full configuration. OpenBSD's first tool-identity guard fails
+before configure; one reviewed trusted-tool hash-bound correction records the
+125,362,240-byte compiler and permits regular build tools up to 256 MiB. Other file,
+output and build bounds remain. Preserve both failures, the resource-admission
+rejection and bounded read-only diagnostics; no blind retry, cache wipe or automatic attempt
+renewal occurred. All owned guests stop, retained parent media stay unchanged;
+Linux AMD64's recorded force-stop fallback remains explicit. Two superseded ARM
+failure images retire after replacement builds pass, freeing 3.55 GiB, with compact
+logs, latest builds, caches and other projects preserved.
+
+#211/#212 remain open: complete implicit-roundtrip collection is unqualified;
+BSD process/runtime/idle comparison is unavailable with the Linux/proc fixture;
+FreeBSD loader-inclusive totals and some package/license/nominal-install data
+remain unavailable. Broader text/mixed-scale/accessibility/native-consumer and
+support/install/release criteria retain their owners. Published unavailable cells
+are not zero or passing evidence. No gate is waived by justified non-adoption.
+
+Applicable source/link/whitespace checks, separate integrated and exact signed-head
+review, canonical signature/tree/parent and Cam actual-author DCO precede delivery.
+The next dependent measurement or qualification work needs its own finite
+selection under these preserved criteria; no optional work joins G6. Daybreak
+#257/#258 remain parked. Actual backend role/model routing remains unverified.
+
+PR356 delivery is complete: reviewed head
+`8e50ddf040e693d78af79c32118ae7d5dcff6e23`, tree
+`e72e0161db5c4a37881a027d9ee1212e6dfa5b54`, canonical merge
+`5bfed2f08aa0511ccdc2b5e4514ac01136befd44`; signature, tree/parent and Cam DCO
+verify. Main synchronized clean; matching owned refs retired; Project PR Done,
+#211/#212 In progress and R1's50open issues verified. Issue bodies now link G5
+evidence while preserving all prior release contracts and results.
+
+Completed G5 drawing/layout Linux checkpoint for GRAPHICS-02 #211 and
 LAYOUT-01 #212. Owner Cam; lead owns integration; branch
 `codex/r1-drawing-layout-checkpoint`, base merged PR355
 `aa24c75d26109950b3c0c6d00d9f98a62ce82de5`. One active product batch; preserve
 independent TEMPER-07 ownership. Implementation and scoped qualification are
-complete; separate integrated review and signed-head delivery remain pending.
+complete; separate integrated review and signed-head delivery completed in PR356.
 
 Four outcomes fix Clay shared-boundary quantization and Cairo scratch allocation
 on destination retirement, repair actual-state/outer-geometry/reflow oracles, and
@@ -7907,8 +7964,8 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | MODERNIZE-01 | P2 / Backlog; Future features | [#208](https://github.com/gonz0w/fvwm-x/issues/208). Track the approved lightweight X11 modernization program without duplicating existing owners. This is an index and sequencing owner, not runtime implementation or a new release prerequisite. |
 | FOUNDATION-READY-01 | P1 / Backlog; O1 Measured optimization | [#209](https://github.com/gonz0w/fvwm-x/issues/209). Turn the user's cleanup/optimization-first priority into a finite, reviewable scheduling gate. Existing qualified components stay accepted; planning does not reopen them. |
 | GRAPHICS-01 | P2 / Backlog; F2 Native UI | [#210](https://github.com/gonz0w/fvwm-x/issues/210). Implement the already approved native graphics baseline using existing X11 drawing/resource owners, before adding another direct renderer. |
-| GRAPHICS-02 | P2 / Backlog; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Compare a bounded direct Cairo module prototype with GRAPHICS-01. Existing SVG/Cairo linkage is not proof of a general UI renderer. |
-| LAYOUT-01 | P2 / Backlog; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Deliver the existing native-layout-first direction for panels and collection consumers; preserve configured legacy geometry. |
+| GRAPHICS-02 | P2 / In progress; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Scoped R1 Cairo non-adoption and six-target costs recorded; frozen measurement/runtime/support acceptance remains open. |
+| LAYOUT-01 | P2 / In progress; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Native layout retained and scoped R1 Clay non-adoption recorded; broader consumer/measurement/support acceptance remains open. |
 | BIND-01 | Done / #213 closed by merged PR269 | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |

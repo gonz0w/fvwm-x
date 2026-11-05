@@ -41,9 +41,10 @@ Dune: 4096-entry grid.
 
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
-[More screenshots, theme/config examples and current limits](doc/development-preview.md).
+[More screenshots, theme/config examples and limits](doc/development-preview.md).
 [Clipboard](doc/fvwm-clipboard.adoc), file-manager and release qualification remain open.
 OpenBSD baseline: 8.0.
+[Native drawing/layout retained](dev-docs/verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md).
 
 [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
 and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
@@ -53,5 +54,5 @@ and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).
 - [Roadmap and review board](https://github.com/users/gonz0w/projects/6)
 - [Contribute and validate locally](CONTRIBUTING.md)
 
-Local validation; GitHub Actions disabled.
+Local validation; Actions disabled.
 GPL and upstream attribution: see [COPYING](COPYING).

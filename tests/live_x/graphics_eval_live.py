@@ -10,6 +10,7 @@ never retries timing. No input-to-photon or implicit-roundtrip claim is made.
 import argparse
 import base64
 import ctypes as C
+from dataclasses import asdict
 import hashlib
 import json
 import os
@@ -21,6 +22,7 @@ import tempfile
 import time
 
 from desktop_live import connect_client
+from graphics_eval_bsd import BsdModuleObserver
 from graphics_eval_records import (MAX_LOG_BYTES, TraceError, parse_records,
     qualify_lifecycle, require, parse_layout_record, layout_metadata)
 from inspector_live import NativeView
@@ -46,6 +48,7 @@ SOURCE_INPUTS = ('libs/graphics_eval.c', 'libs/graphics_eval.h',
     'modules/FvwmButtons/draw.c', 'modules/FvwmButtons/buttons_graphics_eval.c',
     'modules/FvwmButtons/buttons_graphics_eval.h',
     'tests/live_x/graphics_eval_live.py', 'tests/live_x/graphics_eval_records.py',
+    'tests/live_x/graphics_eval_bsd.py',
     'tests/live_x/native_layout_live.py', 'tests/live_x/live_x_harness.py',
     'tests/live_x/inspector_live.py', 'tests/live_x/mfl_stream_live.py',
     'tests/live_x/session_x_errors.py', 'tests/live_x/native_capture.py',
@@ -134,7 +137,9 @@ def layout_reflow_endpoint(previous_width, requested_width, client_geometry,
 
 
 def _run(args, evidence, out):
-    require(sys.platform.startswith('linux'), 'this owned-PID fixture requires Linux')
+    bsd = sys.platform.startswith(('freebsd', 'openbsd'))
+    require(sys.platform.startswith('linux') or bsd,
+        'this owned-PID fixture requires Linux, FreeBSD or OpenBSD')
     source = Path(__file__).resolve().parents[2]
     build = args.build.resolve()
     record = input_record(args.input_record)
@@ -245,6 +250,13 @@ def _run(args, evidence, out):
             core_started = time.monotonic()
             core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
                 '-f', str(config)], 'core.log', env)
+            bsd_observer = BsdModuleObserver(core.process) if bsd else None
+            bsd_identities = {}
+            if bsd:
+                evidence['bsd_ps_sha256'] = digest(Path('/bin/ps'))
+                evidence['process_observation_scope'] = (
+                    'BSD direct child, group, effective UID, start time and invocation; '
+                    'selected file hashed on disk; mapped executable bytes unavailable')
             endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
             wait_for_predicate('drawing MFL endpoint', endpoint.exists,
                 time.monotonic() + 8, process=core)
@@ -314,15 +326,49 @@ def _run(args, evidence, out):
                 view.pointer.button(False)
                 x.XSync(d, 0)
 
+            def verify_bsd_binary(module):
+                private_path = modules / module
+                require(private_path.resolve() == selected[module].resolve() and
+                    digest(private_path) == evidence['binaries'][module]['sha256'],
+                    'selected BSD invocation file changed')
+
             def bind_pid(module, alias):
-                pid = wait_for_predicate('owned drawing module PID',
-                    lambda: owned_module_pid(core.process.pid, module, alias),
-                    time.monotonic() + 3, process=core)
-                actual = Path('/proc') / str(pid) / 'exe'
-                require(digest(actual) == evidence['binaries'][module]['sha256'],
-                    'owned executable identity changed')
+                if bsd_observer is not None:
+                    identity = wait_for_predicate('owned BSD drawing module invocation',
+                        lambda: bsd_observer.bind(modules / module, alias),
+                        time.monotonic() + 3, process=core)
+                    verify_bsd_binary(module)
+                    pid = identity.pid
+                    require(pid not in bsd_identities, 'BSD module PID reused between launches')
+                    bsd_identities[pid] = identity
+                    evidence['binaries'][module]['process_identity'] = asdict(identity)
+                else:
+                    pid = wait_for_predicate('owned drawing module PID',
+                        lambda: owned_module_pid(core.process.pid, module, alias),
+                        time.monotonic() + 3, process=core)
+                    actual = Path('/proc') / str(pid) / 'exe'
+                    require(digest(actual) == evidence['binaries'][module]['sha256'],
+                        'owned executable identity changed')
                 evidence['binaries'][module]['pid'] = pid
                 return pid
+
+            def sample_process(pid):
+                if bsd_observer is None:
+                    return process_sample(pid)
+                started_ns = time.monotonic_ns()
+                observation = bsd_observer.sample(bsd_identities[pid])
+                observation.update(query_started_ns=started_ns,
+                    query_finished_ns=time.monotonic_ns())
+                return observation
+
+            def retired(pid):
+                if bsd_observer is None:
+                    return not (Path('/proc') / str(pid)).exists()
+                try:
+                    os.getpgid(pid)
+                except ProcessLookupError:
+                    return True
+                return False
 
             row_width = 200 if layout and layout_case == 'compressed' else 800
             beta_weight = 2 if layout and layout_case == 'weighted' else 1
@@ -341,10 +387,14 @@ def _run(args, evidence, out):
                 command('Module ' + module + ' ' + alias)
                 window = view.wait(title)
                 pid = bind_pid(module, alias)
-                evidence['startup'][module + '_mapped_owned_elf_ms'] = (time.monotonic() - before) * 1000
+                endpoint_name = '_mapped_owned_invocation_ms' if bsd else '_mapped_owned_elf_ms'
+                evidence['startup'][module + endpoint_name] = (time.monotonic() - before) * 1000
                 if module == 'FvwmButtons': row, row_pid = window, pid
                 else: form, form_pid = window, pid
-            evidence['startup']['scope'] = 'mapped title plus owned ELF; includes harness/IPC/query overhead'
+            evidence['startup']['scope'] = (
+                'mapped title plus BSD owned invocation and selected-file check; '
+                'includes harness/IPC/query overhead' if bsd else
+                'mapped title plus owned ELF; includes harness/IPC/query overhead')
             child_boxes = [(child, geometry(child)) for child in view.children(form)]
             choices = [child for child, box in child_boxes if box[2] == box[3]]
             require(len(choices) == 1, 'one fixed native choice expected')
@@ -516,7 +566,7 @@ def _run(args, evidence, out):
             if args.mode == 'performance':
                 evidence['animation_settle_seconds'] = .15
                 evidence['process_observations']['workload_before'] = {
-                    name: process_sample(pid) for name, pid in
+                    name: sample_process(pid) for name, pid in
                     (('buttons', row_pid), ('form', form_pid))}
                 for index in range(args.samples):
                     if layout:
@@ -553,7 +603,7 @@ def _run(args, evidence, out):
                     evidence['action_latency_ms'].append(dict(module='form',
                         sample=index, elapsed=(time.monotonic() - before) * 1000))
                 evidence['process_observations']['workload_after'] = {
-                    name: process_sample(pid) for name, pid in
+                    name: sample_process(pid) for name, pid in
                     (('buttons', row_pid), ('form', form_pid))}
             elif args.scenario not in ('positive', 'choice-only', 'equal'):
                 focus_window(row)
@@ -619,21 +669,26 @@ def _run(args, evidence, out):
                 finally:
                     if previous is None: os.environ.pop('DISPLAY', None)
                     else: os.environ['DISPLAY'] = previous
-            before = {name: process_sample(pid) for name, pid in
+            before = {name: sample_process(pid) for name, pid in
                 (('buttons', row_pid), ('form', form_pid))}
             time.sleep(.4)
-            after = {name: process_sample(pid) for name, pid in
+            after = {name: sample_process(pid) for name, pid in
                 (('buttons', row_pid), ('form', form_pid))}
             evidence['process_observations']['idle'] = dict(before=before, after=after,
-                scope='Linux owned-process CPU ticks/RSS/HWM; not a zero-wakeup proof')
-            evidence['retired_before_kill'] = {name: not (Path('/proc') / str(pid)).exists()
+                scope=('BSD ps cumulative CPU at displayed resolution and RSS; '
+                    'high-water memory and wakeups unavailable' if bsd else
+                    'Linux owned-process CPU ticks/RSS/HWM; not a zero-wakeup proof'))
+            evidence['retired_before_kill'] = {name: retired(pid)
                 for name, pid in (('buttons', row_pid), ('form', form_pid))}
             for module, alias, pid in (('FvwmButtons', 'DrawingRow', row_pid),
                     ('FvwmForm', 'DrawingForm', form_pid)):
                 command('KillModule ' + module + ' ' + alias)
                 wait_for_predicate('owned drawing module exit',
-                    lambda: not (Path('/proc') / str(pid)).exists(),
+                    lambda: retired(pid),
                     time.monotonic() + 4, process=core)
+            if bsd:
+                for module in ('FvwmButtons', 'FvwmForm'):
+                    verify_bsd_binary(module)
             connection.send(b'Quit\n')
             require(core.wait_until_exit(time.monotonic() + 4) == 0,
                 'core did not exit successfully')
@@ -684,6 +739,16 @@ def _run(args, evidence, out):
             require(not any(marker in text_log for marker in
                 ('ERROR: AddressSanitizer', 'ERROR: LeakSanitizer', 'runtime error:',
                  'BadWindow', 'BadMatch', 'Assertion')), 'module/core X or sanitizer error')
+            if bsd and args.mode == 'performance':
+                observations = evidence['process_observations']
+                for name in before:
+                    samples = [observations['workload_before'][name],
+                        observations['workload_after'][name], before[name], after[name]]
+                    require(all(sample['status'] == 'collected' for sample in samples),
+                        f'BSD {name} process measurement unavailable')
+                    counters = [sample['cpu_centiseconds'] for sample in samples]
+                    require(counters == sorted(counters),
+                        f'BSD {name} cumulative CPU counter decreased')
             evidence['status'] = 'body passed; runtime cleanup pending'
         except BaseException as error:
             evidence.update(status='failed; retained', error=repr(error))

@@ -28,14 +28,48 @@ State: isolated canonical candidate prepared; checks, review and merge pending.
 Current product work retains its owner; this record owns only the selected
 method refresh and does not start a second product lane.
 
-Updated: 2026-11-04. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-05. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G6 platform costs and adoption decisions for GRAPHICS-02 #211 and
+Current work: G7 portable drawing and layout observations under GRAPHICS-02 #211
+and LAYOUT-01 #212, selected by Cam after PR357. Lead owns integration on
+`codex/r1-drawing-layout-observation`. Preserve the independent TEMPER-07 lane.
+
+G7 prepares BSD process identity, CPU and resident-memory observations for the
+existing private Form/Buttons drawing and layout comparison. Use base-system
+process observations and the existing owned WM fixture. Preserve Linux receipt
+semantics. Require exact fixture invocation and parent identity, reject missing
+or ambiguous observations, and label BSD precision and executable identity
+limits. Preserve timing outside process queries where applicable. Add focused
+offline parser and identity regressions and integrate both module consumers.
+Review remaining roundtrip and cost prerequisites for the next checkpoint.
+
+Acceptance is one source batch with focused host tests, repository checks and
+separate review. BSD behavior and measurements need later native qualification.
+Preserve G5/G6 results, both native production decisions, and all pending
+roundtrip, package/loader, consumer and release acceptance. Production source,
+defaults and dependencies are outside this batch. No broad VM or theme replay.
+The periodic whole-WM ledger stays at 4/5 for this fixture-only batch. Daybreak
+#257/#258 stay parked.
+
+The [G7 evidence record](verification/VERIFICATION-2026-11-05-DRAWING-LAYOUT-OBSERVATION.md)
+covers the BSD observer and both fixture consumers. The 32 focused host tests
+passed. Existing FreeBSD receipts provide six package records across the two
+architectures. Complete loader and package costs, native sampling, implicit
+roundtrips and broader qualification remain queued. The next shared checkpoint
+starts with one positive observation on each BSD family.
+
+PR357 merged at `1b561bd2455f2dbfcab213c2b6d85989bde330e2`.
+Reviewed head `9be28a15333214c3d9ce478220aea746a78942c3`, tree
+`c184e69363fcc139fcc9c5aa5f4956a34af3f80e`. Canonical signature, parent,
+tree and Cam author DCO verified. The delivery checkout fast-forwarded and the
+merged branch retired.
+
+Completed G6 platform costs and adoption decisions for GRAPHICS-02 #211 and
 LAYOUT-01 #212, selected by Cam after PR356. Lead owns integration; branch
 `codex/r1-drawing-layout-decisions`, base
 `5bfed2f08aa0511ccdc2b5e4514ac01136befd44`. Source/evidence and the bounded four

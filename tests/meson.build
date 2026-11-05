@@ -34,6 +34,8 @@ test('graphics-eval-records', py,
     args: [files('test_graphics_eval_records.py')], timeout: 30)
 test('graphics-eval-fixture-receipt', py,
     args: [files('test_graphics_eval_fixture.py')], timeout: 30)
+test('graphics-eval-bsd-observation', py,
+    args: [files('test_graphics_eval_bsd.py')], timeout: 30)
 
 if graphics_eval_enabled
     graphics_eval_x_probe = executable(

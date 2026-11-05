@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Drawing and layout observation checkpoint](VERIFICATION-2026-11-05-DRAWING-LAYOUT-OBSERVATION.md) records the BSD fixture scope and recovered FreeBSD package facts. Native process measurements remain queued.
+
 - [Drawing/layout platform costs and decisions](VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md):
   bounded module/linkage/package evidence, retained failures and native R1 choices;
   existing Linux GUI/theme comparisons reused, remaining runtime gates explicit.

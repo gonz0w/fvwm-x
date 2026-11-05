@@ -1,5 +1,9 @@
 # Verification reports
 
+- [Drawing/layout platform costs and decisions](VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md):
+  bounded module/linkage/package evidence, retained failures and native R1 choices;
+  existing Linux GUI/theme comparisons reused, remaining runtime gates explicit.
+
 - [Directory backend combined comparison](VERIFICATION-2026-11-02-DIRECTORY-BACKEND-COMPARISON.md): six target profiles, 42 oracle cases and 192 matched cost invocations; retain Go, defer SQLite/FTS5, preserve unavailable providers and original driver failures.
 
 - [Current property core observation](PERFORMANCE-2026-11-02-PROPERTY-CORE.md): exact baseline control relink, one current object and six paired observations; overlapping timing ranges, explicit text/RSS growth and narrow source scope.

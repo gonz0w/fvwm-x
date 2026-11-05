@@ -1,5 +1,7 @@
 # Verification reports
 
+- [FreeBSD ARM64 drawing and layout observation](VERIFICATION-2026-11-05-FREEBSD-DRAWING-LAYOUT.md) records the first BSD positive, eight interpreter-bound library totals and the local package manifest.
+
 - [Drawing and layout observation checkpoint](VERIFICATION-2026-11-05-DRAWING-LAYOUT-OBSERVATION.md) records the BSD fixture scope and recovered FreeBSD package facts. Native process measurements remain queued.
 
 - [Drawing/layout platform costs and decisions](VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md):

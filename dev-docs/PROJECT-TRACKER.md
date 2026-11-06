@@ -28,14 +28,56 @@ State: isolated canonical candidate prepared; checks, review and merge pending.
 Current product work retains its owner; this record owns only the selected
 method refresh and does not start a second product lane.
 
-Updated: 2026-11-05. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-06. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G8 first BSD drawing and layout qualification under #211 and #212.
+Current work: G9 first OpenBSD drawing and layout observation under #211 and
+#212, selected by Cam after PR359. The lead owns execution and integration on
+`codex/r1-openbsd-drawing-layout`. PR359 merged at
+`8ae512a6ea5c260ef0bb9597c105dac72dc0e1f1`. Its signed canonical commit
+matches reviewed tree `2baec768a98b8db4f6827857f2c40f0b9b9b00f6`,
+the expected parent and Cam's author DCO. The checkout fast-forwarded and
+the merged branch was retired.
+
+Use the pinned stock OpenBSD 8.0 ARM64 profile with HVF and the existing
+signed package and private PNG/Go preparation. Build the core, MFL, Form and
+private native layout Buttons target. Run one ordinary drawing fixture with
+two samples per module on private Xvfb. In the same boot, record the compiler,
+dependency versions, selected binaries and their resolved libraries. Require
+source and profile binding, four action samples, two resizes, both modules'
+workload and idle process observations, bounded export and normal teardown.
+
+The lead dispatches after separate frozen-input review. Limit this to one
+owned guest, a 45-minute runner ceiling, a 15-minute compile ceiling, a
+75-second fixture ceiling and 128 MiB of exported evidence. Allow one reviewed
+repair for a diagnosed defect within those limits. Preserve the result and
+stop at an unexplained failure or a resource limit. Separate integrated and
+signed candidate review remain required.
+
+The first OpenBSD attempt built all four targets and recorded all required
+action, resize and process samples. The fixture then failed before requesting
+module exit. OpenBSD rejected its cross-session process-group query. The one
+repair uses a BSD PID existence check that delivers no signal. The source
+change is limited to the fixture's existing exit predicate.
+
+The [OpenBSD ARM64 observation](verification/VERIFICATION-2026-11-06-OPENBSD-DRAWING-LAYOUT.md)
+records the successful retry, four action samples, two resizes, both module
+exits and all eight process samples. The four binary hashes and 41 package
+records match the first attempt. Both QEMU runners exited with status zero
+and both exports passed hash checks. The superseded first disk was retired.
+The 26 focused host graphics tests passed.
+
+Reuse the existing FreeBSD and Linux observations. AMD64 runtime, paired
+comparisons, implicit waits, further package and loader costs and shared
+qualification remain open. No product install, VESA or default-server changes,
+theme replay or whole-WM run in this slice. The whole-WM ledger stays at 4/5.
+Preserve TEMPER-07, other owners' work and the parked #257/#258.
+
+Completed G8 first BSD drawing and layout qualification under #211 and #212.
 Lead owns one FreeBSD ARM64 positive performance fixture, incremental core and
 MFL build where needed, and the related loader and package metadata capture.
 Base is merged PR358 and the branch is `codex/r1-drawing-layout-qualification`.

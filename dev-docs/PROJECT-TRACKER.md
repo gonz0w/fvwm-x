@@ -35,7 +35,47 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G7 portable drawing and layout observations under GRAPHICS-02 #211
+Current work: G8 first BSD drawing and layout qualification under #211 and #212.
+Lead owns one FreeBSD ARM64 positive performance fixture, incremental core and
+MFL build where needed, and the related loader and package metadata capture.
+Base is merged PR358 and the branch is `codex/r1-drawing-layout-qualification`.
+Preserve TEMPER-07 and other owners' resources.
+
+Reuse the stopped G6 FreeBSD ARM64 build via an isolated COW child. Verify
+current source, selected module binaries, private dependency identities and
+execution inputs. Run one ordinary drawing fixture with two action samples
+per module to exercise both ownership checks, workload and idle endpoints,
+and bounded exit. Collect the executable interpreter and local package
+records on the same guest. Bind actual results to the source and profile.
+Lead executes after separate input review. Use one guest, one initial attempt,
+bounded build and fixture commands, and unconditional teardown. A diagnosed
+current defect may receive one reviewed affected repair within scope. Stop
+and preserve the result at an unexplained failure or resource limit.
+
+The first guest stopped before compilation when Meson rejected the ambiguous
+`fvwm3` target name. The failure receipt, normal shutdown and unchanged parent
+checks are retained. One affected correction selects `fvwm3:executable` and
+keeps the prior inputs and limits.
+
+The [FreeBSD ARM64 positive and cost record](verification/VERIFICATION-2026-11-05-FREEBSD-DRAWING-LAYOUT.md)
+records four action samples, two resizes and all eight required process endpoint
+samples. The local package manifest has 596 rows. All eight retained module
+outputs share the measured 116,920-byte interpreter. The successful COW is
+stopped and both parents are unchanged. The first failed COW image retired after
+the replacement passed. Its compact failure evidence remains.
+
+This starts the shared checkpoint. OpenBSD 8.0 needs its own fresh authenticated
+profile. Paired timings, implicit wait qualification, all-target cost coverage
+and broader native consumer and release gates remain pending. No install,
+theme replay or whole-WM comparison joins this slice. Daybreak #257/#258 stay
+parked. The whole-WM ledger remains 4/5.
+
+PR358 merged at `5dfdb9e60c3f1fa50bfc05e072fc11a0ddea4132`.
+Reviewed head `1d3e1de0bb8ebb7be4fb8e2c0df9369fd14e32c9`, tree
+`234152bdfa4a4b96457b14eb71475447f421a73f`. Canonical signature, tree,
+parent and Cam author DCO verified. The delivery checkout fast-forwarded.
+
+Completed G7 portable drawing and layout observations under GRAPHICS-02 #211
 and LAYOUT-01 #212, selected by Cam after PR357. Lead owns integration on
 `codex/r1-drawing-layout-observation`. Preserve the independent TEMPER-07 lane.
 

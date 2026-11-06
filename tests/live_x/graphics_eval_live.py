@@ -365,7 +365,9 @@ def _run(args, evidence, out):
                 if bsd_observer is None:
                     return not (Path('/proc') / str(pid)).exists()
                 try:
-                    os.getpgid(pid)
+                    # The owned core has its own session. Signal zero checks
+                    # PID existence without delivering a signal.
+                    os.kill(pid, 0)
                 except ProcessLookupError:
                     return True
                 return False

@@ -35,7 +35,46 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G9 first OpenBSD drawing and layout observation under #211 and
+Current work: G10 OpenBSD AMD64 drawing and layout comparisons under #211
+and #212, selected by Cam after PR360. Lead owns execution and integration on
+`codex/r1-openbsd-amd64-paired`. PR360 merged at
+`d78aa544f3ee4caba3214572c1cd99e264e9378a`. The canonical signature,
+reviewed tree `08bd1ed588f8baf35f66321419ec20154741dc8d`, parent and Cam's
+author DCO matched. The delivery checkout fast-forwarded and the branch retired.
+
+Use one stock OpenBSD 8.0 AMD64 QEMU TCG guest, one build and the existing
+private Slate dark Xvfb fixture. Reuse the retained same-profile PNG 1.6.59
+prefix only after checking the pinned archive, historical upstream suite,
+compiler, installed-file identities, vendor ABI and current loader/version
+probe. Prepare the normal signed packages and pinned private Go SDK.
+Use two reverse-order blocks of ordinary, native drawing, Cairo, native
+layout and Clay, with six action samples per module and six reflows per
+layout case. Keep trace disabled. Bind every result to the same source, build
+and server profile, with both module exits and eight valid process endpoints
+per case. Preserve order and individual medians. The ordinary baseline
+describes end-to-end workload cost; paired variants isolate the comparison
+within their private control contracts.
+
+Dispatch after separate frozen-input review. Use one owned guest, one
+initial attempt, a 45-minute runner ceiling, a 15-minute compile ceiling,
+75 seconds per fixture invocation and at most 128 MiB of evidence.
+Stop at a resource limit or unexplained failure. Allow one reviewed repair
+for a diagnosed in-scope defect. This emulated profile can supply descriptive
+same-profile evidence. Other BSD pairs, implicit waits, installed costs,
+consumer and release qualification remain open. No installs, theme replay
+or whole-WM run. The whole-WM ledger stays at 4/5. Preserve TEMPER-07,
+other owners' resources and the parked #257/#258.
+
+The [OpenBSD AMD64 paired record](verification/VERIFICATION-2026-11-06-OPENBSD-AMD64-DRAWING-LAYOUT.md)
+records ten passing cases, 120 actions, 24 reflows, 80 process observations
+and both module exits in every case. One ten-target build and the verified
+retained PNG prefix served the complete run. Cairo used more RSS and had
+higher Buttons action medians in both blocks. Clay had lower reflow medians
+with a smaller difference in the second block. The AMD64 loader identity,
+42 package entries and both order blocks are retained. The 130 export
+hashes matched and QEMU exited with status zero. R1 native decisions stand.
+
+Completed G9 first OpenBSD drawing and layout observation under #211 and
 #212, selected by Cam after PR359. The lead owns execution and integration on
 `codex/r1-openbsd-drawing-layout`. PR359 merged at
 `8ae512a6ea5c260ef0bb9597c105dac72dc0e1f1`. Its signed canonical commit

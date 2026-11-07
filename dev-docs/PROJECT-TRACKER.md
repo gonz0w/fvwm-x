@@ -35,7 +35,46 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G10 OpenBSD AMD64 drawing and layout comparisons under #211
+Current work: G11 remaining BSD drawing and layout pairs under #211 and
+#212, selected by Cam after PR361. Lead owns execution and integration on
+`codex/r1-bsd-paired`. PR361 merged at
+`7794e94d4047f456f94b11f4d5bfc7962762663b`. The signed canonical commit
+matched reviewed tree `766d5355464154beadb13435f7b61ec51e1bbdf7`,
+the expected parent and Cam's author DCO. The merged branch was retired.
+
+Select FreeBSD ARM64 and AMD64 and OpenBSD 8.0 ARM64. Use the two retained
+FreeBSD builds through isolated COW children. Verify their parent chains
+and private dependency identities. Prepare a stock ARM64 OpenBSD guest
+with the existing signed package and pinned PNG/Go recipe. Use the G10
+Slate dark workload with tracing off, one build per profile and two
+reversed blocks of five cases. Each case requires six actions per module,
+six reflows when layout is selected, eight process samples and both
+module exits. Bind results to the same source, build and server per profile.
+Reuse the G10 OpenBSD AMD64 observations at their original identity.
+
+The lead dispatches after separate frozen-input review. Run one selected
+guest at a time with a 45-minute outer ceiling, 15-minute compile ceiling,
+75 seconds per case and 128 MiB export limit per profile. One reviewed
+repair is allowed for a diagnosed in-scope defect. Stop dependent work at
+an unexplained failure or limit, preserve the evidence and continue the
+other selected profiles when independent. Separate integrated and signed
+candidate review remain required.
+
+This slice addresses nested-X process and timing comparisons. Implicit X11
+waits, installed costs and broader consumer and release gates remain open.
+The whole-WM ledger stays at 4/5. Preserve other owners' resources and
+the parked #257/#258.
+
+The [remaining BSD paired record](verification/VERIFICATION-2026-11-06-BSD-DRAWING-LAYOUT-PAIRS.md)
+records 30 passing cases across the three profiles, 360 actions, 72 reflows
+and 240 process samples. Cairo RSS was higher in all six new pairs. Clay
+used more Buttons RSS and its FreeBSD AMD64 reflow difference changed
+direction between blocks. All 309 exported files matched their receipts,
+QEMU exited with status zero on each profile and both FreeBSD backing
+chains and firmware sources retained their admission identities. Together
+with G10 this completes the four-profile BSD paired fixture slice.
+
+Completed G10 OpenBSD AMD64 drawing and layout comparisons under #211
 and #212, selected by Cam after PR360. Lead owns execution and integration on
 `codex/r1-openbsd-amd64-paired`. PR360 merged at
 `d78aa544f3ee4caba3214572c1cd99e264e9378a`. The canonical signature,

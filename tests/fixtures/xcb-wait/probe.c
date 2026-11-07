@@ -85,6 +85,17 @@ static void check_result(const char *name,
 	const struct fvwm_xcb_wait_result *result, uint32_t reply_calls,
 	int positive)
 {
+	if (result->abi != FVWM_XCB_WAIT_ABI || result->invalid ||
+	    result->overflow || result->reply_calls != reply_calls)
+	{
+		fprintf(stderr, "case=%s abi=%u invalid=%d overflow=%d "
+			"reply_calls=%u expected=%u records=%u logical_waits=%u "
+			"wait_calls=%u partial_wait_calls=%u\n", name,
+			result->abi, result->invalid, result->overflow,
+			result->reply_calls, reply_calls, result->records,
+			result->logical_waits, result->wait_calls,
+			result->partial_wait_calls);
+	}
 	require(result->abi == FVWM_XCB_WAIT_ABI && !result->invalid &&
 		!result->overflow && result->reply_calls == reply_calls,
 		"observer scope or call count");
@@ -151,6 +162,7 @@ int main(int argc, char **argv)
 	struct release_control release;
 	pthread_t thread;
 	Window root;
+	uint64_t previous_xlib_reply, xlib_request;
 	int revert;
 
 	require(argc == 2, "usage: probe /absolute/private/libxcb.so.1.1.0");
@@ -176,6 +188,7 @@ int main(int argc, char **argv)
 	xlib_connection = get_connection(display);
 	require(xlib_connection != NULL, "Xlib connection identity");
 	XSync(display, False);
+	previous_xlib_reply = LastKnownRequestProcessed(display);
 	get_focus(connection, xcb_get_input_focus(connection));
 	get_focus(other, xcb_get_input_focus(other));
 
@@ -202,6 +215,7 @@ int main(int argc, char **argv)
 		"direct outstanding controller acknowledgment");
 	check_result("outstanding-xcb", &result, 1, 1);
 
+	xlib_request = NextRequest(display);
 	start_controller(&release, &thread, controller);
 	require(fvwm_xcb_wait_begin(xlib_connection, &release.entered),
 		"Xlib outstanding scope start");
@@ -210,7 +224,19 @@ int main(int argc, char **argv)
 	require(fvwm_xcb_wait_end(&result), "Xlib outstanding scope end");
 	require(pthread_join(thread, NULL) == 0 && release.saw_wait,
 		"Xlib outstanding controller acknowledgment");
-	check_result("outstanding-xlib", &result, 1, 1);
+	check_result("outstanding-xlib", &result, 2, 1);
+	/* This Xlib retains its last successful reply node. The later reply
+	 * retires that node before Xlib consumes the already-buffered current
+	 * reply. Count both contexts while requiring one logical wait.
+	 */
+	require(result.records == 2 &&
+		result.record[0].sequence == previous_xlib_reply &&
+		!result.record[0].reply_available &&
+		result.record[0].wait_calls >= 1 &&
+		result.record[1].sequence == xlib_request &&
+		result.record[1].reply_available &&
+		result.record[1].wait_calls == 0,
+		"Xlib prior-node retirement and current reply identities");
 
 	start_controller(&release, &thread, controller);
 	require(fvwm_xcb_wait_begin(connection, &release.entered),

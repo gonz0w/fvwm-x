@@ -26,13 +26,18 @@ Require each generated source and its corresponding header to exist and
 be nonempty. Then build `libxcb.la` in a second invocation. The direct
 library target bypasses the release Makefile's normal generated-source
 ordering. The generation recipe belongs to the `.c` targets; it writes
-both source and header. This sequence is supported by source inspection;
-native qualification is pending after the first two build-driver failures.
+both source and header. This sequence generated all six files and built the private library in the
+Linux ARM64 continuation. The initial two build-driver failures remain in
+the verification record.
 
 The native probe uses six controls. An asynchronous request and retrieval
 of an already-buffered reply require zero wait entries. Outstanding direct
 XCB, Xlib and checked-void requests require one logical reply wait each.
 A separate connection must remain outside the watched connection's scope.
+The pinned Xlib retains its prior successful reply node. Its control
+therefore requires two exact request records: the prior node retires without
+a reply after one logical wait, and the current reply is already buffered
+and requires no wait. This distinguishes reply contexts from logical waits.
 The probe confirms that its API and Xlib dependency resolve the same
 private XCB library. A controller owns a server grab and releases it after
 an atomic acknowledgment from the actual reply-wait hook. A three-second

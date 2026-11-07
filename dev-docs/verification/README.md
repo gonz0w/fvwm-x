@@ -1,6 +1,6 @@
 # Verification reports
 
-- [Private XCB wait observer and AMD64 package costs](VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md) records the private fixture source, completed FreeBSD AMD64 package closures and the generated-source prerequisite blocking native wait qualification.
+- [Private XCB wait observer and AMD64 package costs](VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md) records the private fixture source, completed FreeBSD AMD64 package closures and the completed Linux ARM64 native logical-wait qualification, with partial-packet and broader coverage still open.
 
 - [Reply-wait feasibility and installed package costs](VERIFICATION-2026-11-06-WAITS-INSTALLED-COSTS.md) records the matching Xlib/XCB source seam, complete FreeBSD package dependency closures and the remaining observation boundary.
 

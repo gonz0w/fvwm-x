@@ -77,7 +77,8 @@ The pure C observer unit also passed on macOS ARM64 with assertions enabled.
 These checks cover counter state, connection/request filtering, invalid nesting,
 unfinished scopes, record limits and refusal to reapply a source patch.
 
-Linux native qualification remains pending. The first attempt patched and
+At the initial draft checkpoint Linux native qualification remained pending.
+The first attempt patched and
 configured the private source, then stopped before C compilation because
 fresh extraction timestamps caused Make to try regenerating shipped
 Autotools inputs. The single reviewed correction preserved the archive's
@@ -94,8 +95,8 @@ Source inspection identifies the next build prerequisite. First generate
 `xproto.c`, `bigreq.c` and `xc_misc.c` in a separate Make invocation.
 Their recipes also write the matching headers. Check all six files before
 building the private core target. A combined parallel generation/library
-invocation would retain the race. This correction is documented for the
-next selected checkpoint and remains unexecuted.
+invocation would retain the race. This correction was documented for the
+next selected checkpoint; the continuation below records its execution.
 
 The source is libxcb 1.15 with the matching Ubuntu generator patch.
 The isolated generator uses pinned xcb-proto 1.16.0 XML and Python source,
@@ -134,12 +135,91 @@ The xcb-proto archive SHA-256 is
 Artifacts are under `builddir/codex-2026-11-06/r1-xcb-wait-observer`.
 The package result is in `packages/freebsd-amd64-run01/export`.
 Linux attempt exports are in `linux/capture/export` and
-`linux/repair01/capture/export`. The latest private source/build in the
-stopped container is `/tmp/fvwm-appearance-a4-20261102-01/g13-xcbwait02`.
+`linux/repair01/capture/export`. At draft publication the latest private source/build in the
+stopped container was `/tmp/fvwm-appearance-a4-20261102-01/g13-xcbwait02`.
 It retains the current state for the next build prerequisite check.
 The earlier private tree can retire at that next owned session while
 its compact host diagnostics remain.
 
 Both FreeBSD package profiles now have complete snapshot calculations.
-Linux and OpenBSD package costs and the wait qualification remain open.
+Linux and OpenBSD package costs and complete wait qualification remain open.
 The periodic whole-WM ledger remains at 4/5.
+
+## Native continuation — 2026-11-07
+
+Cam selected completion of draft PR364 with the diagnosed protocol-generation
+correction. The lead retained native execution and integration. Separate
+review cleared the frozen inputs before each run. The budget was one attempt
+plus one diagnosed, separately reviewed correction, using the existing single
+Linux ARM64 guest and 900-second private build limit.
+
+A separate Make invocation generated `xproto.c`, `bigreq.c` and `xc_misc.c`.
+All three sources and their paired headers were nonempty regular files and
+were hashed before the second invocation built `libxcb.la`. The native C
+observer unit passed with assertions enabled, and the probe compiled with
+`-Wall -Wextra -Werror`. The generated headers resolved the original build
+failure without installing packages or changing the system XCB library.
+
+The first continuation run passed asynchronous, buffered and direct-XCB
+controls, then failed the Xlib reply-context count. Pinned Xlib 1.8.7
+`_XReply` retains its last successful pending-request node. The next query
+visits that prior node before retrieving its current reply. Pinned XCB marks
+the older sequence complete when the newer reply arrives. The original
+one-context expectation therefore mischaracterized this Xlib path.
+
+The correction requires two exact request records, using
+`LastKnownRequestProcessed` after warmup and `NextRequest` before the measured
+query. The prior record must retire without a reply after at least one wait;
+the current record must return its buffered reply with zero waits. Both must
+complete. The exactly-one-logical-wait expectation remains unchanged.
+Failure diagnostics now identify the observed flags and reply counts.
+
+The corrected run passed the native observer unit and all six controls:
+
+| Control | Reply contexts | Logical waits | Connection-wait calls |
+| --- | ---: | ---: | ---: |
+| Asynchronous request | 0 | 0 | 0 |
+| Buffered reply | 1 | 0 | 0 |
+| Outstanding direct XCB | 1 | 1 | 1 |
+| Outstanding Xlib | 2 | 1 | 1 |
+| Checked void | 1 | 1 | 1 |
+| Other connection | 0 | 0 | 0 |
+
+All partial-read counters were zero. The controller acknowledged the actual
+wait hook before releasing its owned server grab in each outstanding case.
+The probe verified that its observer/reply APIs and Xlib's reply dependency
+resolved to the same private library. All recorded tool/library identities
+matched the frozen profile; the Xlib bridge identity matched before and after.
+This is native Linux ARM64 execution in the existing profile, with Xvfb.
+
+The successful job retired all 13 command groups. Its 30 exported files and
+archive matched their recorded hashes; the failed continuation's 27 files
+and archive also matched. Both launches confirmed container and machine
+shutdown. No system installs, package installs or WM runs occurred. Broader
+platform, sanitizer, theme and performance reruns were not selected because
+this continuation changes the private qualification fixture only.
+
+First continuation plan SHA-256
+`9ad8d1121d70eeeba1f17746b949fa25fd7c345d057aca04a6ff1d69d63f6634`.
+Successful correction plan SHA-256
+`3a724186630128241f495bd28c6778f9a5da4f122e880c752e20a595264f93c8`.
+Successful dispatch receipt SHA-256
+`457b16b032f3901f1a93b7658b4aea1f21b35d86b00c8bcfc91f4c5c6dde8c2f`.
+Private library SHA-256
+`571373c623fac9d56f5221a95455fe8172b4ffccb0ccb8037525cd4e3a0781f1`.
+Probe SHA-256
+`7ef516d02f45e88c7d903e0b8faede71ed648772b98e20bbde19e0a66b2fd238`.
+
+Source fixture base `113d818a884d8ed5f654b355b18dfed28c3fa51f`, plus the
+reviewed probe correction in this delivery. Frozen probe source SHA-256
+`c7a8fd055a70d835719798edde089516ca300a7d9c7ecd77170905be1809ca10`.
+Artifacts are under `builddir/codex-2026-11-07/r1-xcb-native`, with the
+successful capture in `repair01/capture/export/evidence`. The latest private
+build remains in the stopped container at
+`/tmp/fvwm-appearance-a4-20261102-01/g13-xcbwait04`.
+
+This completes the selected native logical-wait fixture qualification.
+Controlled fragmented-packet qualification, FVWM draw-operation integration,
+complete implicit-wait coverage and remaining Linux/OpenBSD package closures
+remain open under #211/#212. These results do not establish kernel sleep,
+whole-process multithread coverage or release acceptance.

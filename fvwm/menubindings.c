@@ -403,10 +403,13 @@ Binding *menu_binding_is_key(XEvent* event, int context)
 
 int menu_binding(
 	Display *disp, binding_t type, int button, KeySym keysym,
-	int context, int modifier, char *action, char *menu_style)
+	int context, int modifier, char *action, char *menu_style,
+	const fvwm_config_origin *source)
 {
 	Binding *rmlist;
-	int rc;
+	Binding *b;
+	int rc, i;
+	Bool replaced_existing;
 	Bool dummy;
 
 	if (menu_bindings == NULL)
@@ -436,6 +439,7 @@ int menu_binding(
 	CollectBindingList(
 		disp, menu_bindings, &rmlist, &dummy, type,
 		button, keysym, modifier, context, menu_style);
+	replaced_existing = (rmlist != NULL);
 	if (rmlist != NULL)
 	{
 		FreeBindingList(rmlist);
@@ -475,6 +479,8 @@ int menu_binding(
 	rc = AddBinding(
 		disp, menu_bindings, type, button, keysym,
 		NULL, modifier, context, (void *)action, NULL, menu_style);
+	for (b = *menu_bindings, i = 0; i < rc; i++, b = b->NextBinding)
+		binding_set_provenance(b, source, replaced_existing);
 
 	return rc;
 }

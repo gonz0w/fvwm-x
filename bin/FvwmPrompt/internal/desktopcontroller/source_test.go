@@ -113,6 +113,19 @@ func TestConfigSourceStrictSchema(t *testing.T) {
 		}
 	}
 }
+func TestConfigurationContextKindsPreserveNoticeText(t *testing.T) {
+	for _, kind := range []string{"generated", "invocation", "unavailable"} {
+		source, err := decodeConfigSource([]byte(strings.Replace(fileSource, `"kind":"file"`, `"kind":"`+kind+`"`, 1)))
+		if err != nil {
+			t.Fatal(kind, err)
+		}
+		want := "Source: " + kind + "; definition context unavailable\nInvocation: /tmp/a$\"%&\\配置:2-4\nRead from /tmp/root:7-9"
+		if source.text() != want {
+			t.Fatalf("%s notice changed: %q", kind, source.text())
+		}
+	}
+}
+
 func TestConfigSourcePairCannotLeak(t *testing.T) {
 	metadata := sourceFrame(configSourceMessage, 5, fileSource)
 	config := sourceFrame(configInfo, 5, "*FvwmDesktop: palette invalid")

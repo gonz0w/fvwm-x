@@ -4,6 +4,7 @@
 #define FVWMLIB_BINDINGS_H_H
 
 #include "fvwm_x11.h"
+#include "config_origin.h"
 
 /* ---------------------------- global definitions ------------------------- */
 
@@ -39,6 +40,11 @@ typedef struct Binding
 	void *Action2;          /* This one can be used too */
 	char *windowName;	/* Name of window (regex pattern) this binding
 				   applies to. NULL means all windows. */
+	/* Owned diagnostic snapshot; moving a binding transfers this ownership.
+	 * The charge counts full source allocations per reference, not RSS. */
+	const fvwm_config_origin *source;
+	size_t source_charge;
+	Bool replaced_existing;
 	struct Binding *NextBinding;
 } Binding;
 
@@ -54,6 +60,10 @@ int AddBinding(
 	int button, KeySym keysym, char *key_name,
 	int modifiers, int contexts, void *action, void *action2,
 	char *windowName);
+/* Set once on each new record, before activation. Metadata exhaustion never
+ * rejects a binding. AddBinding's other callers keep unavailable sources. */
+void binding_set_provenance(Binding *b, const fvwm_config_origin *source,
+	Bool replaced_existing);
 void FreeBindingStruct(Binding *b);
 void FreeBindingList(Binding *b);
 void RemoveBinding(Binding **pblist, Binding *b, Binding *prev);

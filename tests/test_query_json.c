@@ -282,6 +282,80 @@ static void test_colorsets(void)
 	assert(completed);
 }
 
+static cJSON *assert_binding_provenance(cJSON *item, unsigned int position,
+	bool replaced, const char *selection, const char *kind)
+{
+	cJSON *provenance = cJSON_GetObjectItemCaseSensitive(item, "provenance");
+	cJSON *source;
+
+	assert(cJSON_IsObject(provenance));
+	assert(cJSON_GetArraySize(provenance) == 6);
+	assert(cJSON_GetObjectItemCaseSensitive(provenance, "version")->valueint
+		== 1);
+	assert(cJSON_GetObjectItemCaseSensitive(provenance, "position")->valueint
+		== (int)position);
+	assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(provenance,
+		"replaced_existing")) == replaced);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(provenance,
+		"selection")->valuestring, selection) == 0);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(provenance,
+		"effective")->valuestring, "requires-event-context") == 0);
+	source = cJSON_GetObjectItemCaseSensitive(provenance, "source");
+	assert(cJSON_IsObject(source));
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(source,
+		"kind")->valuestring, kind) == 0);
+	return source;
+}
+
+static void test_binding_source_kinds(void)
+{
+	fvwm_config_origin *root = fvwm_config_origin_file("/root.cfg", 2, 3,
+		NULL);
+	fvwm_config_origin *child = fvwm_config_origin_file("/child.cfg", 8, 9,
+		root);
+	fvwm_config_origin *sources[] = {child,
+		fvwm_config_origin_derive(child, "generated", "generated context"),
+		fvwm_config_origin_derive(child, "invocation", "enclosing context"),
+		NULL, fvwm_config_origin_file("relative", 1, 1, NULL),
+		fvwm_config_origin_binding_budget_exhausted(),
+		fvwm_config_origin_derive(NULL, "generated", ""),
+		fvwm_config_origin_derive(NULL, "invocation", "")};
+	const char *kinds[] = {"file", "generated", "invocation", "unavailable",
+		"unavailable", "unavailable", "generated", "invocation"};
+	struct fvwm_query_spec spec = {.limit = 1, .generation = "-"};
+	const char *error;
+
+	fvwm_config_origin_release(root);
+	for (size_t i = 0; i < sizeof(sources) / sizeof(sources[0]); i++)
+	{
+		Binding binding = {.type = BIND_KEYPRESS, .Action = "Nop",
+			.source = sources[i], .replaced_existing = True};
+		cJSON *result = fvwm_query_bindings(&binding, token, &spec, &error);
+		cJSON *source;
+
+		assert(result && !error);
+		source = assert_binding_provenance(cJSON_GetArrayItem(
+			cJSON_GetObjectItemCaseSensitive(result, "bindings"), 0),
+			0, true, "window-specific-before-global", kinds[i]);
+		if (i < 3)
+		{
+			assert(strcmp(cJSON_GetObjectItemCaseSensitive(source,
+				"path")->valuestring, "/child.cfg") == 0);
+			assert(cJSON_GetObjectItemCaseSensitive(source,
+				"first")->valueint == 8);
+			assert(cJSON_GetArraySize(cJSON_GetObjectItemCaseSensitive(
+				source, "include")) == 1);
+		}
+		if (i == 5)
+			assert(strcmp(cJSON_GetObjectItemCaseSensitive(source,
+				"reason")->valuestring,
+				"binding source retention budget exhausted") == 0);
+		cJSON_Delete(result);
+	}
+	for (size_t i = 0; i < sizeof(sources) / sizeof(sources[0]); i++)
+		fvwm_config_origin_release(sources[i]);
+}
+
 static void test_binding_pages(void)
 {
 	Binding bindings[3] = {{.type = BIND_KEYPRESS, .key_name = "F1",
@@ -299,6 +373,10 @@ static void test_binding_pages(void)
 	assert(result && error == NULL);
 	list = cJSON_GetObjectItemCaseSensitive(result, "bindings");
 	assert(cJSON_GetArraySize(list) == 2);
+	assert_binding_provenance(cJSON_GetArrayItem(list, 0), 0, false,
+		"window-specific-before-global", "unavailable");
+	assert_binding_provenance(cJSON_GetArrayItem(list, 1), 1, false,
+		"window-specific-before-global", "unavailable");
 	assert(cJSON_GetObjectItemCaseSensitive(result,
 		"next_offset")->valueint == 2);
 	assert(strcmp(cJSON_GetObjectItemCaseSensitive(
@@ -306,9 +384,14 @@ static void test_binding_pages(void)
 		"action")->valuestring, bindings[0].Action) == 0);
 	cJSON_Delete(result);
 	spec.offset = 2;
+	assert(!fvwm_query_bindings(bindings, token, &spec, &error));
+	assert(strcmp(error, "stale_generation") == 0);
 	strcpy(spec.generation, token);
 	result = fvwm_query_bindings(bindings, token, &spec, &error);
 	assert(result && !error);
+	list = cJSON_GetObjectItemCaseSensitive(result, "bindings");
+	assert_binding_provenance(cJSON_GetArrayItem(list, 0), 2, false,
+		"window-specific-before-global", "unavailable");
 	assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(result,
 		"next_offset")));
 	cJSON_Delete(result);
@@ -342,11 +425,20 @@ static void test_binding_domains(void)
 	assert(result && !error);
 	assert(strcmp(cJSON_GetObjectItemCaseSensitive(result,
 		"scope")->valuestring, "menu-bindings") == 0);
+	assert_binding_provenance(cJSON_GetArrayItem(
+		cJSON_GetObjectItemCaseSensitive(result, "bindings"), 0), 0,
+		false, "menu-before-fallback", "unavailable");
 	assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(
 		cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(result,
 			"bindings"), 0), "key")));
 	cJSON_Delete(result);
 	strcpy(spec.resource, "menu-defaults");
+	result = fvwm_query_bindings(&binding, token, &spec, &error);
+	assert(result && !error);
+	assert_binding_provenance(cJSON_GetArrayItem(
+		cJSON_GetObjectItemCaseSensitive(result, "bindings"), 0), 0,
+		false, "menu-before-fallback", "unavailable");
+	cJSON_Delete(result);
 	result = fvwm_query_bindings(NULL, token, &spec, &error);
 	assert(result && !error);
 	assert(strcmp(cJSON_GetObjectItemCaseSensitive(result,
@@ -401,12 +493,16 @@ static void test_monitors_and_failure_cleanup(void)
 		.dx = 3, .dy = 2,
 		.effective_scale = MONITOR_SCALE_RESULT_SAFE_INIT};
 	struct monitors monitors;
+	fvwm_config_origin *root = fvwm_config_origin_file("/root.cfg", 1, 2,
+		NULL);
 	Binding binding = {.type = BIND_KEYPRESS, .key_name = "F1",
-		.Action = "Nop"};
+		.Action = "Nop", .source = fvwm_config_origin_file("/child.cfg",
+			3, 4, root)};
 	struct fvwm_query_spec spec = {.limit = 8, .generation = "-"};
 	const char *error;
 	cJSON *result;
 
+	fvwm_config_origin_release(root);
 	RB_INIT(&monitors);
 	assert(RB_INSERT(monitors, &monitors, &monitor) == NULL);
 	result = fvwm_query_topology(&topology, &error);
@@ -473,6 +569,7 @@ static void test_monitors_and_failure_cleanup(void)
 	monitor.Desktops = NULL;
 	assert(!fvwm_query_workspaces(&monitors, 800, 600, "global", &error));
 	assert(strcmp(error, "unavailable") == 0);
+	fvwm_config_origin_release(binding.source);
 }
 
 int main(void)
@@ -480,6 +577,7 @@ int main(void)
 	test_internal_grammar();
 	test_appearance();
 	test_colorsets();
+	test_binding_source_kinds();
 	test_binding_pages();
 	test_binding_domains();
 	test_monitors_and_failure_cleanup();

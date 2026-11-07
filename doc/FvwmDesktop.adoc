@@ -639,9 +639,19 @@ constraints and known submitted state. Theme rows distinguish the provider's
 semantic role projection from the core's observed colorset, menu and decor
 definitions. Scheduled appearance is captured provider policy, not a claim about
 current painted pixels. Bindings show bounded active global, menu, fallback,
-placement and modifier/context policy. Their free-form action arguments and
-window match text are hidden. Commands use the same generated core inventory as
-FvwmPrompt completion; arbitrary command argument grammar is not inferred.
+placement and modifier/context policy. For Key, PointerKey and Mouse definitions
+in the global and menu lists, they show the current definition's source, list
+position, selection order and whether an existing same-identity binding was
+removed when it was created. This is not a replacement history or a winner for
+every event. A literal file source identifies its definition span; generated or
+function invocation sources identify only enclosing context, not the exact
+dynamic definition. Source and include locations continue across rows when
+needed; incomplete display and unavailable source metadata are identified.
+If the binding source retention budget is exhausted, the viewer reports that
+reason; bindings continue to execute. Placement and modifier-policy origins
+are not included. Free-form action arguments and window match text are hidden.
+Commands use the same generated core inventory as FvwmPrompt completion;
+arbitrary command argument grammar is not inferred.
 
 Layout coverage is monitor/workspace/work-area and scale metadata in actual X11
 pixels. Per-widget bounds and effective per-window style attribution are

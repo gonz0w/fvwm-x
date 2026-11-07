@@ -185,6 +185,27 @@ control characters and replace malformed UTF-8 at presentation; no text from a
 query result is evaluated as a command. Numeric context masks use FVWM's context
 bits; modifier masks retain the configured X11 mask, including AnyModifier.
 
+Each global, regular menu and fallback menu binding entry also has a
+`provenance` object with six fields:
+
+* `version`: 1.
+* `source`: the version 1 configuration-origin object, with kind `file`,
+  `generated`, `invocation` or `unavailable` and path, line span and include
+  ancestry when known. A file identifies a literal definition; generated and
+  invocation sources identify enclosing context, not an exact dynamic definition.
+* `replaced_existing`: whether creation removed an existing binding with the
+  same identity. It does not describe a complete replacement history.
+* `position`: the absolute index in the queried scope's list.
+* `selection`: `window-specific-before-global` for global records or
+  `menu-before-fallback` for menu records.
+* `effective`: `requires-event-context`; no entry is a universal winner.
+
+Retained binding sources have a 1 MiB per-process budget, charging each
+reference's complete allocation and parent chain. If it is exhausted, binding
+execution continues and the source is unavailable with this reason:
+`binding source retention budget exhausted`. Placement and modifier-policy
+origins are not part of this metadata.
+
 Binding pages default to offset 0 and limit 8. `limit` must be an integer from
 1 to 16; `offset` an integer from 0 to 4096. Use the returned `next_offset` and
 48-character lowercase hexadecimal `generation` for continuation; null ends

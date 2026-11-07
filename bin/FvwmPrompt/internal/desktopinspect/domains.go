@@ -149,7 +149,7 @@ func masks(value int, mapping map[string]json.RawMessage) string {
 }
 func (c *collector) bindings(s *Section) {
 	s.State = "observed"
-	s.Reason = "Observed binding scopes; action arguments and window matches hidden; sampled separately"
+	s.Reason = "Current definitions and list order; event winner requires context; action arguments/window matches hidden; sampled separately"
 	generation := ""
 	contexts, modifiers := map[string]json.RawMessage{}, map[string]json.RawMessage{}
 	policy, err := c.call("bindings", "policy", 0, "", false)
@@ -197,12 +197,16 @@ func (c *collector) bindings(s *Section) {
 			if key == "" {
 				key = fmt.Sprint(code)
 			}
+			binding := scope + " " + kind + " " + key
+			if len(s.Rows) >= RowLimit-1 {
+				return c.bindingSourceRows(s, binding, []Row{{binding + " source", "unavailable"}})
+			}
 			window := ""
 			if windowMatch != "" {
 				window = "; window match hidden"
 			}
-			c.row(s, scope+" "+kind+" "+key, fmt.Sprintf("context=%s; modifiers=%s; %s%s", masks(context, contexts), masks(modifier, modifiers), c.action(action), window))
-			return nil
+			c.row(s, binding, fmt.Sprintf("context=%s; modifiers=%s; %s%s", masks(context, contexts), masks(modifier, modifiers), c.action(action), window))
+			return c.bindingProvenance(s, item, scope, binding, count-1)
 		})
 	}
 	placement, err := c.call("bindings", "placement", 0, generation, false)

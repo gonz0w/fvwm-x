@@ -4,10 +4,114 @@
  */
 #include "config.h"
 #include "libs/config_origin.h"
+#include "libs/Bindings.h"
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+static void test_binding_ownership(void)
+{
+	Binding *list = NULL, *removed = NULL, *specific;
+	Bool similar;
+	XClassHint window_class = {.res_name = "editor", .res_class = "Editor"};
+	fvwm_config_origin *root, *child;
+	size_t charge;
+
+	root = fvwm_config_origin_file("/bindings.cfg", 3, 4, NULL);
+	child = fvwm_config_origin_file("/keys.cfg", 8, 9, root);
+	charge = fvwm_config_origin_storage_bytes(child);
+	assert(charge > FVWM_CONFIG_SOURCE_MAX_BYTES * 2);
+	assert(AddBinding(NULL, &list, BIND_BUTTONPRESS, 1, 0, NULL,
+		0, 1, "global", NULL, NULL) == 1);
+	assert(list->source == NULL && list->source_charge == 0);
+	assert(!list->replaced_existing);
+	binding_set_provenance(list, child, False);
+	assert(AddBinding(NULL, &list, BIND_BUTTONPRESS, 1, 0, NULL,
+		0, 1, "specific", NULL, "editor*") == 1);
+	binding_set_provenance(list, child, True);
+	specific = list;
+	/* Put another global definition first: a later specific match must win. */
+	assert(AddBinding(NULL, &list, BIND_BUTTONPRESS, 1, 0, NULL,
+		0, 1, "global", NULL, NULL) == 1);
+	binding_set_provenance(list, child, False);
+	fvwm_config_origin_release(child);
+	fvwm_config_origin_release(root);
+	assert(specific->source_charge == charge);
+	assert(strstr(fvwm_config_origin_json(specific->source),
+		"/bindings.cfg") != NULL);
+	assert(strcmp(CheckBinding(list, 1, 0, 0, 1, BIND_BUTTONPRESS,
+		&window_class, "editor document"), "specific") == 0);
+	/* Moving an existing binding transfers both the snapshot and its charge. */
+	CollectBindingList(NULL, &list, &removed, &similar, BIND_BUTTONPRESS,
+		1, 0, 0, 1, "editor*");
+	assert(removed == specific && removed->NextBinding == NULL);
+	assert(removed->source_charge == charge && removed->replaced_existing);
+	assert(strcmp(CheckBinding(list, 1, 0, 0, 1, BIND_BUTTONPRESS,
+		&window_class, "editor document"), "global") == 0);
+	/* A replacement keeps its own source after the removed owner is freed. */
+	assert(AddBinding(NULL, &list, BIND_BUTTONPRESS, 1, 0, NULL,
+		0, 1, "replacement", NULL, "editor*") == 1);
+	binding_set_provenance(list, removed->source, removed != NULL);
+	FreeBindingList(removed);
+	removed = NULL;
+	assert(strstr(fvwm_config_origin_json(list->source), "/keys.cfg"));
+	CollectBindingList(NULL, &list, &removed, &similar, BIND_BUTTONPRESS,
+		1, 0, 0, 1, "editor*");
+	assert(removed && !removed->NextBinding);
+	FreeBindingList(removed);
+	FreeBindingList(list);
+}
+
+static void test_binding_budget(void)
+{
+	fvwm_config_origin *origin = fvwm_config_origin_file("/budget.cfg",
+		1, 1, NULL);
+	size_t charge = fvwm_config_origin_storage_bytes(origin);
+	size_t expected = (1024U * 1024U) / charge;
+
+	/* Repeat after teardown: every charged owner must return its budget. */
+	for (unsigned int pass = 0; pass < 2; pass++)
+	{
+		Binding *list = NULL, *recovered = NULL;
+		size_t count;
+
+		for (count = 0; count <= expected; count++)
+		{
+			assert(AddBinding(NULL, &list, BIND_BUTTONPRESS, 1, 0,
+				NULL, 0, 1, "Nop", NULL, NULL) == 1);
+			binding_set_provenance(list, origin, False);
+			if (count < expected)
+				assert(list->source_charge == charge);
+			else
+			{
+				assert(list->source_charge == 0);
+				assert(strstr(fvwm_config_origin_json(list->source),
+					"binding source retention budget exhausted"));
+			}
+		}
+		/* The unavailable head remains a usable binding. Free one retained
+		 * reference and prove the next definition can retain source again. */
+		assert(strcmp(CheckBinding(list, 1, 0, 0, 1, BIND_BUTTONPRESS,
+			NULL, NULL), "Nop") == 0);
+		RemoveBinding(&list, list->NextBinding, list);
+		assert(AddBinding(NULL, &recovered, BIND_BUTTONPRESS, 2, 0,
+			NULL, 0, 1, "Nop", NULL, NULL) == 1);
+		binding_set_provenance(recovered, origin, False);
+		assert(recovered->source_charge == charge);
+		/* Replacing metadata on one owner must not double-charge it. */
+		binding_set_provenance(recovered, recovered->source, True);
+		assert(recovered->source_charge == charge);
+		assert(recovered->replaced_existing);
+		FreeBindingList(recovered);
+		FreeBindingList(list);
+	}
+	fvwm_config_origin_release(origin);
+	assert(fvwm_config_origin_storage_bytes(NULL) == 0);
+	origin = fvwm_config_origin_binding_budget_exhausted();
+	assert(fvwm_config_origin_storage_bytes(origin) == 0);
+	fvwm_config_origin_release(fvwm_config_origin_retain(origin));
+}
 
 int main(void)
 {
@@ -15,8 +119,13 @@ int main(void)
 	char large[FVWM_CONFIG_SOURCE_MAX_BYTES + 2];
 	unsigned int i;
 
+	test_binding_ownership();
+	test_binding_budget();
 	root = fvwm_config_origin_file("/root.cfg", 2, 4, NULL);
 	child = fvwm_config_origin_file("/child.cfg", 8, 9, root);
+	assert(fvwm_config_origin_storage_bytes(child) >
+		fvwm_config_origin_storage_bytes(root) +
+		FVWM_CONFIG_SOURCE_MAX_BYTES);
 	held = fvwm_config_origin_retain(child);
 	fvwm_config_origin_release(root);
 	fvwm_config_origin_release(child);

@@ -27,6 +27,10 @@ static fvwm_config_origin unavailable_origin = { .json =
 	"{\"version\":1,\"kind\":\"unavailable\",\"reason\":"
 	"\"source unavailable or exceeds provenance bounds\"}" };
 
+static fvwm_config_origin binding_budget_origin = { .json =
+	"{\"version\":1,\"kind\":\"unavailable\",\"reason\":"
+	"\"binding source retention budget exhausted\"}" };
+
 static fvwm_config_origin generated_origin = { .json =
 	"{\"version\":1,\"kind\":\"generated\",\"reason\":"
 	"\"generated command; invocation source unavailable\"}" };
@@ -173,7 +177,8 @@ fvwm_config_origin *fvwm_config_origin_derive(
 fvwm_config_origin *fvwm_config_origin_retain(const fvwm_config_origin *origin)
 {
 	if (origin != NULL && origin != &unavailable_origin &&
-	    origin != &generated_origin && origin != &invocation_origin)
+	    origin != &generated_origin && origin != &invocation_origin &&
+	    origin != &binding_budget_origin)
 		((fvwm_config_origin *)origin)->refs++;
 	return (fvwm_config_origin *)origin;
 }
@@ -183,6 +188,7 @@ void fvwm_config_origin_release(const fvwm_config_origin *origin)
 	fvwm_config_origin *owned = (fvwm_config_origin *)origin;
 	if (owned != NULL && owned != &unavailable_origin &&
 	    owned != &generated_origin && owned != &invocation_origin &&
+	    owned != &binding_budget_origin &&
 	    --owned->refs == 0)
 	{
 		fvwm_config_origin_release(owned->parent);
@@ -194,4 +200,27 @@ void fvwm_config_origin_release(const fvwm_config_origin *origin)
 const char *fvwm_config_origin_json(const fvwm_config_origin *origin)
 {
 	return origin ? origin->json : unavailable_origin.json;
+}
+
+size_t fvwm_config_origin_storage_bytes(const fvwm_config_origin *origin)
+{
+	size_t total = 0;
+
+	/* Each reference is charged the whole reachable allocation, even when
+	 * another owner shares it. Serialized bytes are embedded in the struct. */
+	for (; origin != NULL && origin->refs != 0; origin = origin->parent)
+	{
+		size_t path_bytes = strlen(origin->path) + 1;
+
+		if (path_bytes > SIZE_MAX - sizeof(*origin) ||
+		    total > SIZE_MAX - sizeof(*origin) - path_bytes)
+			return SIZE_MAX;
+		total += sizeof(*origin) + path_bytes;
+	}
+	return total;
+}
+
+fvwm_config_origin *fvwm_config_origin_binding_budget_exhausted(void)
+{
+	return &binding_budget_origin;
 }

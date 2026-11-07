@@ -16,6 +16,11 @@ fvwm_config_origin *fvwm_config_origin_file(const char *path,
 fvwm_config_origin *fvwm_config_origin_derive(
 	const fvwm_config_origin *site, const char *kind, const char *reason);
 fvwm_config_origin *fvwm_config_origin_retain(const fvwm_config_origin *origin);
+/* Complete retained heap allocation, including each parent; static sources
+ * cost zero. SIZE_MAX means the sum cannot be represented. */
+size_t fvwm_config_origin_storage_bytes(const fvwm_config_origin *origin);
+/* Static unavailable source for the binding diagnostic retention limit. */
+fvwm_config_origin *fvwm_config_origin_binding_budget_exhausted(void);
 void fvwm_config_origin_release(const fvwm_config_origin *origin);
 const char *fvwm_config_origin_json(const fvwm_config_origin *origin);
 

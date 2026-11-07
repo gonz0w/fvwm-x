@@ -1,5 +1,7 @@
 # Verification reports
 
+- [OpenBSD AMD64 drawing and layout comparisons](VERIFICATION-2026-11-06-OPENBSD-AMD64-DRAWING-LAYOUT.md) records the ordinary baseline, two reversed comparison blocks and same-guest build, loader and package evidence.
+
 - [OpenBSD ARM64 drawing and layout observation](VERIFICATION-2026-11-06-OPENBSD-DRAWING-LAYOUT.md) records the first OpenBSD positive, the fixture's cross-session exit check repair and four source-bound executable and library records.
 
 - [FreeBSD ARM64 drawing and layout observation](VERIFICATION-2026-11-05-FREEBSD-DRAWING-LAYOUT.md) records the first BSD positive, eight interpreter-bound library totals and the local package manifest.

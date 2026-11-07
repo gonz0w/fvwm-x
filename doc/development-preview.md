@@ -7,6 +7,25 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Binding source inspection (in progress)
+
+The optional inspector now shows current binding definitions with retained
+file/span/include locations. This unmodified Slate dark capture filters `f12`
+and pages to `user:leaf.config:2-3` and its `user:entry.config:2-2` include.
+The files have already been removed by the synthetic fixture; the core retains
+their parsed source metadata. The small black window is its focus probe.
+
+![Native inspector showing binding definition and include locations](screenshots/binding-origin-slate-dark.png)
+
+The inventory is explicitly partial and additional rows are omitted. Current
+status text wraps awkwardly; the complete source rows remain visible. These are
+current-definition facts: the effective event winner needs context, and generated
+commands can name only their enclosing invocation. This remains development work.
+Prior Dune and enlarged Classic checks retain their earlier scope; this addition
+has one fresh capture. See the [manifest](screenshots/binding-origin-manifest.json),
+[usage](FvwmDesktop.adoc) and
+[focused qualification](../dev-docs/verification/VERIFICATION-2026-11-07-BINDING-PROVENANCE-CLOSEOUT.md).
+
 ## Live theme color reload (in progress)
 
 These unmodified native-X captures show R1 reloads after custom purple palette

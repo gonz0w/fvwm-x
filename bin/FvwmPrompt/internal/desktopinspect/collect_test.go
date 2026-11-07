@@ -94,6 +94,12 @@ func fixtureQuery(t *testing.T, mutate func(map[string]json.RawMessage, map[stri
 			t.Fatal("nonquery operation")
 		}
 		m := fixtureResult(stringField(request, "resource"), stringField(request, "scope"))
+		if items, ok := m["bindings"].([]any); ok {
+			offset, _ := intField(request, "offset")
+			for i, item := range items {
+				item.(map[string]any)["provenance"] = fixtureProvenance(stringField(request, "scope"), offset+i, fixtureOrigin("file", "/fixture/config"))
+			}
+		}
 		if mutate != nil {
 			mutate(request, m)
 		}

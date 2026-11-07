@@ -8,6 +8,10 @@ fvwmprompt_files = r.stdout().strip().split()
 # Explicit service inputs make source additions visible to existing
 # incremental builds when this build definition changes.
 foreach filemanager_source : [
+    'internal/configsource/source.go',
+    'internal/configsource/source_test.go',
+    'internal/desktopinspect/binding_provenance.go',
+    'internal/desktopinspect/binding_provenance_test.go',
     'internal/desktopcontroller/native_settings.go',
     'internal/desktopcontroller/native_settings_wire.go',
     'internal/desktopcontroller/native_settings_supervisor.go',
@@ -64,7 +68,8 @@ fvwmprompt_test_binaries = custom_target(
     output: [
         'FvwmPrompt.test', 'fvwmcommand.test', 'fvwmdesktopworker.test',
         'desktopworker.test', 'desktopsettings.test', 'desktopcheck.test',
-        'desktopcontroller.test', 'fvwmdesktop.test', 'runtimepath.test',
+        'configsource.test', 'desktopcontroller.test', 'fvwmdesktop.test',
+        'runtimepath.test',
         'fvwmmenudesktop.test', 'fvwmmenudirectory.test',
         'fvwmmenuxlock.test', 'fvwmscriptcom.test', 'xdgmenu.test',
         'xdgsource.test', 'iconrender.test', 'trayicons.test', 'transport.test',

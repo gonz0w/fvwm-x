@@ -252,7 +252,8 @@ static void _rebind_global_key(Binding **pblist, int Button_Key)
 static int ParseBinding(
 	Display *disp, Binding **pblist, char *tline, binding_t type,
 	int *nr_left_buttons, int *nr_right_buttons,
-	unsigned short *buttons_grabbed, Bool is_silent)
+	unsigned short *buttons_grabbed, Bool is_silent,
+	const fvwm_config_origin *source)
 {
 	char *action;
 	char context_string[20];
@@ -274,6 +275,7 @@ static int ParseBinding(
 	Bool is_unbind_request = False;
 	Bool is_pass_through = False;
 	Bool are_similar_bindings_left;
+	Bool replaced_existing;
 	Binding *b;
 	Binding *rmlist = NULL;
 
@@ -443,7 +445,7 @@ static int ParseBinding(
 	{
 		menu_binding(
 			disp, type, button, keysym, context, modifier, action,
-			window_name);
+			window_name, source);
 		/* ParseBinding returns the number of new bindings in pblist
 		 * menu bindings does not add to pblist, and should return 0 */
 
@@ -466,6 +468,7 @@ static int ParseBinding(
 	CollectBindingList(
 		disp, pblist, &rmlist, &are_similar_bindings_left, type,
 		button, keysym, modifier, context, window_name);
+	replaced_existing = (rmlist != NULL);
 	if (rmlist != NULL)
 	{
 		int bcontext;
@@ -527,6 +530,9 @@ static int ParseBinding(
 		disp, pblist, type,
 		button, keysym, key_string, modifier, context, (void *)action,
 		NULL, window_name);
+	/* AddBinding prepends every expanded keycode; retain for each record. */
+	for (b = *pblist, n1 = 0; n1 < rc; n1++, b = b->NextBinding)
+		binding_set_provenance(b, source, replaced_existing);
 
 	return rc;
 }
@@ -540,7 +546,8 @@ static void binding_cmd(F_CMD_ARGS, binding_t type)
 	binding_query_changed();
 	count = ParseBinding(
 		dpy, &Scr.AllBindings, action, type, &Scr.nr_left_buttons,
-		&Scr.nr_right_buttons, &btg, Scr.flags.are_functions_silent);
+		&Scr.nr_right_buttons, &btg, Scr.flags.are_functions_silent,
+		exc->source);
 	if (btg != Scr.buttons2grab)
 	{
 		Scr.flags.do_need_window_update = 1;

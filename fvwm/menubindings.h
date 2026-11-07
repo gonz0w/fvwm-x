@@ -69,7 +69,8 @@ const Binding *menu_query_bindings(Bool fallback);
  * To be called from bindings.c *only*. */
 int menu_binding(
 	Display *dpy, binding_t type, int button, KeySym keysym,
-	int context, int modifier, char *action, char *menu_style);
+	int context, int modifier, char *action, char *menu_style,
+	const fvwm_config_origin *source);
 
 /* Checks if the given mouse or keyboard event in the given context
  * corresponds to a menu binding.  If so, the binding is returned.  Otherwise

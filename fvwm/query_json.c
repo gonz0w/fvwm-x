@@ -271,6 +271,34 @@ static bool snapshot_generation(const char *generation,
 	return true;
 }
 
+static bool binding_provenance(cJSON *item, const Binding *binding,
+	unsigned int position, bool menu)
+{
+	cJSON *provenance = cJSON_AddObjectToObject(item, "provenance");
+	cJSON *source;
+
+	if (!provenance)
+		return false;
+	/* The immutable source serializer already enforces the origin wire bound.
+	 * Parse it under the query allocator so every failure uses normal cleanup. */
+	source = cJSON_Parse(fvwm_config_origin_json(binding->source));
+	if (!source)
+		return false;
+	if (!cJSON_AddItemToObject(provenance, "source", source))
+	{
+		cJSON_Delete(source);
+		return false;
+	}
+	return cJSON_AddNumberToObject(provenance, "version", 1) &&
+		cJSON_AddBoolToObject(provenance, "replaced_existing",
+			binding->replaced_existing) &&
+		cJSON_AddNumberToObject(provenance, "position", position) &&
+		cJSON_AddStringToObject(provenance, "selection", menu ?
+			"menu-before-fallback" : "window-specific-before-global") &&
+		cJSON_AddStringToObject(provenance, "effective",
+			"requires-event-context");
+}
+
 cJSON *fvwm_query_bindings(const Binding *bindings, const char *generation,
 	const struct fvwm_query_spec *spec, const char **error)
 {
@@ -353,7 +381,10 @@ cJSON *fvwm_query_bindings(const Binding *bindings, const char *generation,
 			b->Modifier) ||
 		    !cJSON_AddStringToObject(item, "action", b->Action) ||
 		    !(b->windowName ? cJSON_AddStringToObject(item, "window",
-			b->windowName) : cJSON_AddNullToObject(item, "window")))
+			b->windowName) : cJSON_AddNullToObject(item, "window")) ||
+		    !binding_provenance(item, b, offset + count,
+			strcmp(spec->resource, "menu-bindings") == 0 ||
+			strcmp(spec->resource, "menu-defaults") == 0))
 			goto fail;
 	}
 	if (b && offset + count > MODULE_QUERY_OFFSET_MAX)

@@ -35,7 +35,178 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, U2 — finish PR369's replacement/lifecycle tail, 2026-11-07.
+Current work, V2 — finish PR370 binding-provenance qualification, 2026-11-07.
+Cam explicitly requested fixing the build-metadata guard and completing the
+remaining checks/screenshots, reusing the passing C build without a full matrix.
+Lead owns integration, tracker, native execution and final ready state on the
+existing `codex/r1-binding-provenance`, starting at signed draft head
+`f536ccfd0e86031d9c150eaa4291e37a383665f7`. V1 below remains stopped history.
+
+Bounded outcome: verify actual generated browser target inputs against exact
+expected duplicate multiplicities, relative order and all remaining fields;
+finish the three C units, four Go race packages, two configured helper builds,
+two scoped ASan/UBSan units, library closure, two candidate/base manual renders
+and one actual-X binding/inspector capture. Retain passing C compilation and all
+unchanged source/tool/library/theme/lifecycle evidence. No source overlay replay,
+C rebuild, OS/install matrix, optional benchmark or unrelated feature is selected.
+The ten expected unique additions are each registered twice by the existing
+absolute finder plus relative explicit list. Export the actual target metadata
+before checking the exact multiset; unsupported differences remain failures.
+Do not change the project build graph merely to satisfy a private observer.
+
+Acceptance remains V1's four-story contract. Source fixes, if needed, are limited
+to reproduced current acceptance failures, separately reviewed before execution.
+Lead uses only the existing owned Linux profile, strict fresh host admission,
+45min/128MiB maximum, one remaining-check qualification plus one separately
+reviewed diagnosed correction; stop/replan a repeated unexplained failure or
+budget exhaustion. No package/SDK/storage/resource-limit changes. Separate final
+source/evidence and exact signed-head reviews plus canonical proof precede ready
+state of PR370. Stop there; #218 remains open for its other provenance domains.
+
+V2 qualification passes all18remaining native commands in22.996seconds. The
+9.043second C build is reused. Three C units, four Go race packages, two helpers,
+two scoped leak-enabled sanitizer units, library closure, four manual renders and
+all three actual-X case groups pass. Actual browser metadata is752entries/732
+unique, with the precise ten additions registered twice; old order and every
+other target field verify. Current2518source files and final tool/SDK/library/
+unrelated-binary controls match; all command groups and the owned container/
+machine retire. No production C rebuild, package change or full matrix occurs.
+
+Lead and separate product review inspect the unmodified Slate dark source capture
+and60/80column candidate/base manual text. New source rows are readable; existing
+status prose wraps/cuts off and the inventory is truthfully partial. Mandoc lint
+remains nonzero with identical paired families/counts (Desktop3/3; MFL4/4); the
+initial host wrapper's lint0/3 assumption is corrected and recorded, not treated
+as a product failure. Prior three-theme/lifecycle evidence remains source-bound;
+no fresh alternative-theme, physical/assistive/release or performance claim is
+added. The comparison remains due. Final review/signed delivery are pending.
+[Closeout and receipts](verification/VERIFICATION-2026-11-07-BINDING-PROVENANCE-CLOSEOUT.md).
+
+Historical V1 — binding-definition provenance under #218, 2026-11-07.
+Cam requested merge/cleanup of PR369 followed by a related provenance batch.
+Lead owns integration, tracker and native execution on
+`codex/r1-binding-provenance`, base `c2d1ebecd3bdbc2d7d8808d6f0b0f4750116ef54`.
+PR369 merged with the exact reviewed tree, valid canonical signature, sole
+expected parent and Cam author DCO. Clean main is synchronized; its completed
+local/remote branch is retired. #217 is closed by the merge; reconcile its issue
+and PR Project records to Done; those mirrors now verify Done. #218 is the sole
+feature owner for this batch.
+
+Bounded outcome: four related stories deliver current-definition origins for
+Key/PointerKey/Mouse records, menu/fallback origins, truthful replacement and
+selection facts in existing paged queries, and native file/span/include display.
+Reuse immutable `fvwm_config_origin` snapshots, shared bindings and existing
+query/inspector machinery; no second grammar or executable inspection. Preserve
+binding syntax, action ordering, precedence, unbind behavior and generation/page
+contracts. Metadata failure must preserve behavior and report unavailable data.
+
+Retained binding-origin storage is capped at1MiB per process, conservatively
+charging each reference's complete allocation/parent chain, not serialized bytes
+alone; release charge exactly once with its owned binding. Static unavailable
+sources need no retained heap charge. Budget exhaustion is explicit metadata,
+not a binding-capacity limit. Share the current strict Go origin-schema decoder
+between controller and inspector; keep packet-pair ownership in the controller.
+Display complete bounded location continuations or label incomplete metadata;
+redact unknown roots, action arguments and window patterns.
+
+Version1 binding `provenance` JSON contains `source` (existing version1 origin
+object), `replaced_existing` (boolean), `position` (absolute query list offset),
+`selection` (`window-specific-before-global` or `menu-before-fallback`) and
+`effective` (`requires-event-context`). Facts describe current definition/order,
+not a universal winner or retained history. Source kind distinguishes a literal
+file from generated/invocation enclosing context; NULL/limits stay unavailable.
+No native packet type/mask changes; compile affected Binding-layout consumers.
+
+Exclude theme field/group origins (including async Colorset/menu-style/decor
+copy/swap lifetimes), placement/modifier-policy origins, historical override
+chains and per-event/window resolution. #218 remains open for those finite
+remaining domains; do not manufacture exact dynamic provenance or close it here.
+
+Acceptance: owned origins survive Read/include/file closure, keycode expansion,
+replacement/list movement/unbind/teardown and retention exhaustion; native query
+source/order facts and strict consumer validation remain bounded and truthful;
+inspector distinguishes static definition/enclosing context, redacts paths and
+labels row/source truncation. Preserve all accepted PR266/268/368/369 evidence.
+Run affected incremental Linux core/library/MFL/FvwmScript and Go builds plus
+focused C ownership/query and Go decoder/controller/projection checks together.
+Select one focused native-X origin/inspector capture at this coherent checkpoint;
+reuse prior themes/lifecycle/manuals except affected manual text. No full matrix,
+install campaign, renderer/dependency change or quiet-host performance claim.
+Lead alone admits an existing owned profile after fresh inventory, at most45min/
+128MiB, one qualification plus one separately reviewed diagnosed correction;
+stop/replan repeated unexplained failure or budget limit. No packages/SDK/global
+workflow changes. Separate integrated/signed-head review and canonical proof
+precede one new PR; stop at that PR, with remaining owner/release gates explicit.
+
+V1 source preflight found that independently filtered generic metadata rows
+could hide a matching binding's origin. All related row labels now carry its
+binding identity; a regression uses F12 with generic leaf/include filenames,
+so the fixture does not disguise the gap through tailored names. A separate
+fixture correction also treats late X errors discovered during display cleanup
+as failure before final evidence. Neither correction followed a native attempt.
+
+The one Linux checkpoint uses at most24 bounded commands: affected incremental
+core/library/MFL/FvwmScript/FvwmIconMan and existing unit targets; three C units;
+four affected Go race packages; two configured helper builds; two focused
+ASan/UBSan ownership/query units; candidate/base renders of two affected manuals;
+and the one binding-origin X/UI capture. Binding layout also affects IconMan.
+Legitimate Meson regeneration may add the declared Go source/test inputs while
+options/config/toolchain/recipes and unrelated binary controls stay unchanged.
+New Ninja/Meson and previously unpinned Script/IconMan admission measurements
+are identified as observations, not invented historical byte provenance.
+Affected Go/build checks replace their old results; prior lifecycle/themes remain
+accepted history, not fresh whole-binary qualification. No install/matrix run is
+selected. A transient other-owner QEMU process declined quiet-host admission
+before any owned start; it later ended without our control. The optional due
+comparison is disabled and remains due; no timing claim follows. The strict
+zero-other-VM guard remains in the functional checkpoint.
+
+The first preparation then stopped before source overlays or commands because
+FvwmScript had never been built in this incremental directory. Existing required
+core/MFL/Go identities passed. Record absent Script/IconMan outputs explicitly
+instead of inventing previous hashes; require all six affected binaries after
+building. No product/runtime test failed or ran. The owned container and machine
+shut down cleanly; preserve the small admission/preparation receipts. A fresh
+job name continues the same qualification after separate input review, without
+changing acceptance, packages, build options or the native correction budget.
+A second preparation stopped at a guessed `/usr/bin/meson` path, again before
+source overlays or any command. Preserve that failure and confirmed shutdown.
+Preparation is replanned to read the configured regeneration command from the
+existing Ninja build instead of guessing the Meson installation. No package
+installation, reconfiguration or test-budget renewal follows. The actual native
+qualification has not begun; require separate input review before continuation.
+
+The first native qualification passes Ninja/Meson version observations and the
+125-step affected incremental C build in9.043seconds, including all four native
+consumers and three unit executables. It then stops at a private browser-target
+metadata guard, before executing units, Go tests/builds, sanitizers, manuals or X.
+That guard expected only four new Go inputs. The pinned source inventory also
+contains six previously accepted reload/palette files absent from the old target
+inventory. The one diagnosed correction must require exactly those ten added
+inputs, unchanged prior order/other target fields, and current metadata matching
+the captured post-build hashes. Resume all source/tool/SDK/unaffected controls
+against the retained receipt; reuse the passed build rather than rerun it. Record
+new C output identities on resumption; no prior missing identity is invented.
+The remaining checks get one bounded continuation, with no further native
+correction after an unexplained failure. Preserve this stopped qualification and
+confirmed container/machine shutdown. No product defect or UI pass is claimed.
+
+V1 continuation stops before all fresh commands at the expected `old+10` input
+list length. The later set/order/other-field guards do not run. Separate source
+review identifies absolute finder results versus relative explicit-list membership
+checks: old target metadata has732entries/722unique, including ten duplicate
+explicit inputs. The current construction predicts twenty added entries for ten
+unique files, not ten entries; the actual new list/count was not exported.
+This is a source-supported private-runner diagnosis, not a runtime guard pass.
+The native campaign is stopped; do not renew it or broaden scope. Publish this
+coherent implementation as a draft PR with the passed C build retained and all
+remaining qualification explicit. No new screenshot was produced. A future
+bounded continuation must capture the actual normalized input multiset and
+validate exact expected multiplicities/order/other fields before remaining tests;
+it should reuse compilation and all unchanged evidence, without a full matrix.
+[Stopped checkpoint and pending gates](verification/VERIFICATION-2026-11-07-BINDING-PROVENANCE.md).
+
+Historical U2 — PR369 lifecycle completion, 2026-11-07.
 Cam explicitly requested this continuation: repair the replacement-wallpaper
 fixture, finish its remaining checks, reuse passing evidence and avoid a matrix.
 Lead owns tracker, native execution and integration on the existing
@@ -8871,8 +9042,8 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
-| RELOAD-01 | P2 / Review; U2 qualified closing candidate; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
-| INSPECT-01 | P2 / In progress; U1 closeout; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
+| RELOAD-01 | Done / #217 closed by merged PR369; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
+| INSPECT-01 | P2 / In progress; V1 binding origins; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
 | ACTIONS-01 | P2 / Done; merged PR270; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
 | WORKSPACE-01 | P2 / Backlog; F3 Workspace tools | [#220](https://github.com/gonz0w/fvwm-x/issues/220). Package reusable per-desktop floating, columns/master-stack and snapping policies while retaining FVWM command/configuration flexibility. |
 | WORKSPACE-02 | P2 / Backlog; F3 Workspace tools | [#221](https://github.com/gonz0w/fvwm-x/issues/221). Provide configurable reusable scratchpad behavior for terminals, notes and other chosen applications, independently of tiling or compositing. |

@@ -16,6 +16,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdint.h>
 
 #include <X11/keysym.h>
 #include <X11/X.h>
@@ -36,9 +37,38 @@ static Bool is_grabbing_everything = False;
 static int key_min = 0;
 static int key_max = 0;
 
+/* Single-threaded diagnostic retention, conservatively charged per reference.
+ * Binding records and static unavailable sources do not consume this heap cap. */
+#define BINDING_SOURCE_BUDGET (1024U * 1024U)
+static size_t binding_source_bytes;
+
+void binding_set_provenance(Binding *b, const fvwm_config_origin *source,
+	Bool replaced_existing)
+{
+	size_t charge = fvwm_config_origin_storage_bytes(source);
+
+	/* Compute/validate the charge before changing ownership or accounting. */
+	if (charge == SIZE_MAX || charge > BINDING_SOURCE_BUDGET -
+	    (binding_source_bytes - b->source_charge))
+	{
+		source = fvwm_config_origin_binding_budget_exhausted();
+		charge = 0;
+	}
+	/* Retain first so replacing a record's only reference remains safe. */
+	source = fvwm_config_origin_retain(source);
+	fvwm_config_origin_release(b->source);
+	binding_source_bytes -= b->source_charge;
+	b->source = source;
+	b->source_charge = charge;
+	b->replaced_existing = replaced_existing;
+	binding_source_bytes += charge;
+}
+
 /* Free the memory use by a binding. */
 void FreeBindingStruct(Binding *b)
 {
+	fvwm_config_origin_release(b->source);
+	binding_source_bytes -= b->source_charge;
 	if (b->key_name)
 	{
 		free(b->key_name);
@@ -229,6 +259,9 @@ int AddBinding(
 				}
 				temp = *pblist;
 				(*pblist) = fxmalloc(sizeof(Binding));
+				(*pblist)->source = NULL;
+				(*pblist)->source_charge = 0;
+				(*pblist)->replaced_existing = False;
 				(*pblist)->type = type;
 				(*pblist)->Button_Key = i;
 				if (BIND_IS_KEY_BINDING(type) &&

@@ -1,0 +1,336 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07",
+  "checkpoint": "V1 binding provenance draft; qualification stopped",
+  "base": "c2d1ebecd3bdbc2d7d8808d6f0b0f4750116ef54",
+  "branch": "codex/r1-binding-provenance",
+  "source": {
+    "bin/FvwmPrompt/internal/configsource/source.go": "d1b092dbe46793a95a45554b9371f305653a531acf7e5e7642e883fc673d3a45",
+    "bin/FvwmPrompt/internal/configsource/source_test.go": "f285e185baab8a77717f004c124a840be6884bde4787b5cf296c6e87ab2112b7",
+    "bin/FvwmPrompt/internal/desktopcontroller/source.go": "c5caca337e6c06bb2a33e7147d57edd751316d49ddd72666c10030ca0cb87edc",
+    "bin/FvwmPrompt/internal/desktopcontroller/source_test.go": "48897697da8c61be3c706c352b85b726896e3d436da859509a96bd2c618ec569",
+    "bin/FvwmPrompt/internal/desktopinspect/binding_provenance.go": "51be32c43605dce6dbf0f71701ec7a658ade6b6976d60cef5abb7eee28ebeaf4",
+    "bin/FvwmPrompt/internal/desktopinspect/binding_provenance_test.go": "3e9d530f9e5df8f9f617c243406e871ad8e526dbbf04e31c418f12d46c07a0c4",
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "57573f9b9852c8d44602fb64f65a8fddf0ad0842eb121b3eea108a1434dfb371",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "35d33ec06b5c9a9b1895e2bcba591cb7b6846885e31038e445dbe12bf6abaa04",
+    "bin/FvwmPrompt/meson.build": "5caa4e59bd1e0a01dbc5bcf35d229af2a28e077d491646ae1a51d18fa82ed69e",
+    "doc/FvwmDesktop.adoc": "e1bc009575d42c130ea170ab6b8aaefb465a7f62b8107138e13829d9a2ad4b70",
+    "doc/FvwmMFL.adoc": "4a9cad77a8e6c70b99ff6c7bd3ee42c186a37ae64d495cb2ed69355da819825b",
+    "fvwm/bindings.c": "7fe0480dde75fa7c8baa2568ff1d42767afc7049456229a1f423e43f1206e70d",
+    "fvwm/menubindings.c": "5e49d98a8acc9be7246e456a1b7a9ccc34b9517eaed2f9284e0a57964d2d69b9",
+    "fvwm/menubindings.h": "60f142cde8331db8c45c92b8d846b09ded19021c0a7e92d4627c45990724c1ce",
+    "fvwm/query_json.c": "f8f13a2a52b463fe167f081180bbccb5d945835e0453554fedac3b96b71f2e34",
+    "libs/Bindings.c": "fc1f3d16cc81ea3094f4875238608b43a2109f223db61425df06ba16fc8c0790",
+    "libs/Bindings.h": "8b3f32bd82185f29e442fdccd59e59691a83fce42be2de6a8e8f17453e7a66a3",
+    "libs/config_origin.c": "2ab158f30b7a052a687319605511797ae5217c8110955ecb8483ee669e59f688",
+    "libs/config_origin.h": "411df5931d52bc761d8fc20a33788a96813831b8f4174adaf526d915e8a39521",
+    "tests/live_x/binding_origin_live.py": "f4bf345124e63723fee70d0868bb92497245b69e61433dddbbec0d2b1592d3f9",
+    "tests/test_config_origin.c": "c2b05aab1fb3999df24630aa5990c152bc6c0a14e46bab1699f9d236203806ed",
+    "tests/test_query_json.c": "f2ce2b90fd789d45d767a70833e6666a8ab623b48222d791b01b7d709b8cf7d5"
+  },
+  "plan_sha256": "fbbe19277a725ee9823d1e962d2ea5f27d652d4bd3ad333944b6e6eb2935299a",
+  "artifact_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance",
+  "status": "draft; not ready to merge",
+  "execution_profile": "native-cpu",
+  "accepted_checks": [
+    {
+      "label": "ninja-version",
+      "argv": [
+        "/usr/bin/ninja",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03",
+      "timeout_seconds": 60,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 6,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 0.0011730850000013504,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/ninja-version.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/ninja-version.stdout",
+        "bytes": 7,
+        "sha256": "4f9416d650bd28343244b868dfebdb11e70d7b32423536cb87b8c31fde62f993"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/ninja-version.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/ninja-version.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "meson-version",
+      "argv": [
+        "/workspace/meson-env/bin/meson",
+        "--version"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/build",
+      "timeout_seconds": 60,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 7,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 0.1525769780000008,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/meson-version.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/meson-version.stdout",
+        "bytes": 6,
+        "sha256": "bb7320d831e7a151aa901c35e7326c752fa2ef5024f30768c42319b8bed171ed"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/meson-version.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/meson-version.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "affected-incremental-build",
+      "argv": [
+        "/usr/bin/ninja",
+        "-C",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "-j2",
+        "fvwm3",
+        "modules/FvwmMFL/FvwmMFL",
+        "modules/FvwmScript/FvwmScript",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "tests/test-config-origin",
+        "tests/test-query-json",
+        "tests/test-script-binding-owner"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03",
+      "timeout_seconds": 600,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 10,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 9.042511837,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/affected-incremental-build.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/affected-incremental-build.stdout",
+        "bytes": 21003,
+        "sha256": "6a714c01e7c871b64adafb728764897cad9d64e7e142cc5190caa4cc7a13e406"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/affected-incremental-build.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/v1-binding-origin03/evidence/affected-incremental-build.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "source_resumption": {
+    "files_verified": 2513,
+    "overlay_after_verified": 22,
+    "current_files_verified": 2518,
+    "manifest_sha256": "e063882462721a649cf6c44b960911df5d39df7400fe8b6c63a19829966b2461",
+    "state": "retained candidate after prior overlay; freshly reverified"
+  },
+  "post_c_build_admission": {
+    "fvwm3": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "bytes": 5874968,
+      "sha256": "5695d8885b3da97a67d108fcc1cde864b308847cead0491bd954c2f6cf440352"
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "bytes": 463696,
+      "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba"
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "bytes": 2294512,
+      "sha256": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490"
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "bytes": 1782616,
+      "sha256": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229"
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "bytes": 6828326,
+      "sha256": "fc8aad1b8f04dc249aed228add7594b6a3b36959a1516440febf42f5285ab83d"
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "bytes": 6551935,
+      "sha256": "53fc1fb4635ec468ad1b2566ae37ad3b051a3435bc41c5cded9c83472e060e9a"
+    }
+  },
+  "build_metadata_after_regeneration": {
+    "build.ninja": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "bytes": 2683128,
+      "sha256": "c8ac7849e172b1414401d8bde42b240070ea4c9717c4715cf56d51c3680995b1"
+    },
+    "meson-private/coredata.dat": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "bytes": 125462,
+      "sha256": "bf9e6bd45be5dcbd0deff2500fb1701cebb8d483bd6372b13d1e74c905494edc"
+    },
+    "meson-info/intro-targets.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "bytes": 2325849,
+      "sha256": "1e85a3e6b7ca4a6a64a5d3fe5447b644c01810f7c9aa5d1b236e2112b0722992"
+    },
+    "meson-info/intro-buildoptions.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "bytes": 20791,
+      "sha256": "12d2b9a79ffe0856c507593fd04a9f03791a8b06e9760671fed59484811e84d9"
+    },
+    "meson-info/intro-compilers.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "bytes": 683,
+      "sha256": "433b58d89baa09821881a7d252c6a4fac6c907fdcb228c95a66782d23ec67e8a"
+    },
+    "meson-info/intro-machines.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "bytes": 707,
+      "sha256": "988c50080b5be124eff30aab006a9844149395fb07a65aea2c8bdda300dd5033"
+    },
+    "meson-info/intro-dependencies.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "bytes": 9253,
+      "sha256": "e6dee5544b04106387ce62834ee38318fa9cac0c2a8dc47f4b8997cb76852a80"
+    },
+    "meson-info/meson-info.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "bytes": 1137,
+      "sha256": "c49fa33f5ad34acb2223e1ba98d006bf6b1484083790b029804d16984ebb6c67"
+    }
+  },
+  "attempts": [
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance/admission-declined01",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('holder ended before readiness')",
+        "dispatch_exit": null,
+        "holder_exit": 1
+      }
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance/preparation-failed01",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      },
+      "capture_sha256": "3c86baa0106acf58052774d2f27c711b6b53a876ee182a5e6cc0bab582ef7492",
+      "archive_sha256": "6ec8405e002ba1808ac98005e7fe334f883a2872e4c0c5dd05ef7702a73e6017",
+      "native_status": "failed; retained",
+      "native_error": "FileNotFoundError(2, 'No such file or directory')",
+      "executed_commands": []
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance/preparation-failed02",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      },
+      "capture_sha256": "12e17dec32f897c19647346682904a95e1a25ba369839aeed25cd187445f2776",
+      "archive_sha256": "463cae652a0752da77895457798a339da7b1912de1a2f608c641dde191aa6f8e",
+      "native_status": "failed; retained",
+      "native_error": "FileNotFoundError(2, 'No such file or directory')",
+      "executed_commands": []
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance/qualification-stopped01",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      },
+      "capture_sha256": "1a48f5fac0546fb2b1f22b5e008b328285270b9f22b5274ed8818c0619541116",
+      "archive_sha256": "6ec1bfb0d88c44c3bc51bf476d1dd1e36ef495e4d68c5214d40bb2b5d3119774",
+      "native_status": "failed; retained",
+      "native_error": "AssertionError('file_browser')",
+      "executed_commands": [
+        {
+          "label": "ninja-version",
+          "exit": 0,
+          "seconds": 0.0011730850000013504,
+          "group_absent": true
+        },
+        {
+          "label": "meson-version",
+          "exit": 0,
+          "seconds": 0.1525769780000008,
+          "group_absent": true
+        },
+        {
+          "label": "affected-incremental-build",
+          "exit": 0,
+          "seconds": 9.042511837,
+          "group_absent": true
+        }
+      ]
+    },
+    {
+      "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-binding-provenance",
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      },
+      "capture_sha256": "1e402623c4bc18cb305419cea31a710e58d4e15ea4f24cd03024e6216b5ff8b5",
+      "archive_sha256": "f581b6781c0279f31a2e28c8a9f90327bcfbeee16da7a095cef92dc3d061e8e6",
+      "native_status": "failed; retained",
+      "native_error": "AssertionError()",
+      "executed_commands": []
+    }
+  ],
+  "pending": [
+    "three C unit executions",
+    "four Go race packages",
+    "two configured Go helper builds",
+    "two scoped ASan/UBSan unit build/executions",
+    "affected library closure",
+    "candidate/base rendering of two manuals and host formatter review",
+    "native binding query/inspector fixture and screenshot"
+  ],
+  "performance": {
+    "status": "not executed; remains due",
+    "reason": "quiet-host admission interrupted; no timing or RSS claim"
+  },
+  "cleanup": {
+    "container": "confirmed stopped",
+    "machine": "confirmed stopped",
+    "receipt_sha256": "d2397ac7f9e9b051b53954823b2a353af4c08e88b42f51ae0aefcade50db7f9d"
+  },
+  "limitations": [
+    "Passing C compilation is not runtime or Go qualification",
+    "Length assertion fails before path-set and other target checks; actual list/count unavailable; ten unique additions and duplicate-registration cause are source analysis only",
+    "Prior three-theme/lifecycle results retain their original scope; no new UI capture exists",
+    "No full OS/install matrix; #218 remains open for theme/placement/modifier provenance and broader acceptance",
+    "Native attempt limit reached; checkpoint/replan required before another run"
+  ]
+}

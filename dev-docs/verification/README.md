@@ -1,5 +1,7 @@
 # Verification reports
 
+- [PR369 lifecycle tail completion](VERIFICATION-2026-11-07-AUTHORING-TAIL.md) records the repaired replacement oracle, four fresh native passes, eight reused cases and RELOAD-01 acceptance mapping.
+
 - [Reload/inspector feature closeout](VERIFICATION-2026-11-07-AUTHORING-CLOSEOUT.md) maps accepted evidence, new lifecycle cases, the retained readiness failure and remaining inspector provenance.
 
 - [PR368 UI/manual closeout](VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md) records three actual theme passes, four inspected captures, repaired fixture preconditions and reused Go/build/manual evidence.

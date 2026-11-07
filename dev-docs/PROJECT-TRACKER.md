@@ -35,7 +35,59 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, U1 — close bounded reload/inspector feature contracts, 2026-11-07.
+Current work, U2 — finish PR369's replacement/lifecycle tail, 2026-11-07.
+Cam explicitly requested this continuation: repair the replacement-wallpaper
+fixture, finish its remaining checks, reuse passing evidence and avoid a matrix.
+Lead owns tracker, native execution and integration on the existing
+`codex/r1-authoring-closeout`, starting at signed head `c77748777b13f8ee87e0c0e36ea03b4e73f7e808`.
+U1 below remains a stopped historical campaign; its failures are not renewed.
+
+Bounded outcome: qualify replacement baseline, ordered native preview recovery,
+external conflict retention and closed-inspector late-result retirement, then
+make the same PR369 ready if its applicable gates pass. #217 may close only if
+its complete map passes; #218's static theme/binding provenance stays open.
+No production change is selected without a reproduced current contract defect.
+No source/provenance engine, OS API, package, build, install or broad audit change.
+
+Approach: source-backed readiness must distinguish the new selected root from
+its valid predecessor, after the replacement controller's exact submitted
+Colorset20 source and command barrier. Ownership/corner pixels or Colorset idle
+alone are insufficient. Preserve expected/current diagnostics and strict full
+root equality after the new baseline. Add a focused tail mode to the existing
+fixture; skip eight qualified U1 cases rather than replaying their acceptance.
+Genuine worker/preview operations supply necessary setup; no fabricated results.
+
+Reuse U1's eight distinct passes, inspected stale capture, PR368's three themes,
+five Go package passes, both helpers and manuals after relevant identity checks.
+One existing native Linux ARM64 tail session, lead only, at most45minutes/128MiB:
+one qualification plus at most one separately reviewed diagnosed correction;
+stop/replan unexplained repeated failure or limit. Fresh inventory, one owned
+otherwise-idle guest plus at most one known other VM; preserve other owners.
+Exact source/input review precedes dispatch. No full OS/install/build matrix,
+new SDK or performance claim; the shared-host comparison remains due. Finish
+source/static/evidence and separate integrated/signed-head review on this PR;
+mark ready only after observed tail results. Do not merge in this continuation.
+
+U2 result: the first focused native Linux ARM64 command passes all four tail
+cases in 4.877seconds; eight U1 cases are reused, not rerun. The controlled
+replacement source now publishes root2097684 instead of retained2097260 with
+matching PNG pixels; strict full-root checks subsequently pass. Actual native
+preview recovery precedes color publication/success, external conflict preserves
+its exact owner state, and closed-inspector work drains before successor/frame
+checks. All 89 exports/archive verify; no observer X/cleanup errors occur,
+command group retires and both owned resources stop. No builds, Go tests,
+manual/theme repetition or full matrix ran. The unused correction budget stops
+here because evidence is sufficient. Relevant sources/binaries/tools are pinned.
+
+[U2 report and frozen criterion map](verification/VERIFICATION-2026-11-07-AUTHORING-TAIL.md)
+composes four fresh/eight retained cases with accepted PR368 themes and policy.
+#217 is a closing candidate on PR369 merge, subject to final separate delivery
+review; #218 keeps static theme/binding provenance. Finish integrated/signed-head
+review, canonical signature/tree/parent/DCO proof and mark the existing PR ready.
+Do not merge here. Its issue/Project mirrors must distinguish Review from Done;
+release/platform/hardware and due performance obligations stay with their owners.
+
+Historical U1 — bounded reload/inspector checkpoint, 2026-11-07.
 Delivery: [draft PR369](https://github.com/gonz0w/fvwm-x/pull/369), source checkpoint
 `e50da5996356c38d6cc26267edd23b0d61b4c9b1`, has canonical valid signature,
 reviewed tree/parent and Cam author DCO. Source/static/evidence/visual review is
@@ -8819,7 +8871,7 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
-| RELOAD-01 | P2 / In progress; U1 stopped lifecycle tail; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
+| RELOAD-01 | P2 / Review; U2 qualified closing candidate; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
 | INSPECT-01 | P2 / In progress; U1 closeout; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
 | ACTIONS-01 | P2 / Done; merged PR270; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
 | WORKSPACE-01 | P2 / Backlog; F3 Workspace tools | [#220](https://github.com/gonz0w/fvwm-x/issues/220). Package reusable per-desktop floating, columns/master-stack and snapping policies while retaining FVWM command/configuration flexibility. |

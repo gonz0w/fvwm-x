@@ -1,5 +1,8 @@
 # Reload and inspector lifecycle checkpoint
 
+Historical U1 result. [U2 completes the remaining tail](VERIFICATION-2026-11-07-AUTHORING-TAIL.md)
+without relabelling these retained failures. Use that report for current acceptance.
+
 Base: merged PR368, `656a4cc7316faf873e4aa97c098f11d843cfc4ff`.
 Owner: Cam. U1 batches RELOAD-01 #217 and INSPECT-01 #218; the tracker owns
 acceptance. This report separates accepted implementation from the final

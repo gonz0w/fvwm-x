@@ -1,0 +1,312 @@
+{
+  "base": "c77748777b13f8ee87e0c0e36ea03b4e73f7e808",
+  "plan_sha256": "c8ca3e33995c9e919ed9dc6baadd18a4c0b5fcee01d17b4e078cda27cbbdda9f",
+  "driver_sha256": "3a6e6c467f6b81e37794868a93016bffa1f9ebb66a27a700a5ff563f0064dd6e",
+  "gate_sha256": "95d8ae6266b7c5accf95b8801f6d4e5c84399fc9128847ee6eb8b1b2d57b367b",
+  "status": "four U2 lifecycle tail cases passed; eight U1 cases reused",
+  "native_command": {
+    "label": "native-theme-tail",
+    "argv": [
+      "/usr/bin/python3",
+      "-E",
+      "-S",
+      "-B",
+      "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/theme_reload_live.py",
+      "--build",
+      "/tmp/fvwm-appearance-a4-20261102-01/build",
+      "--artifacts-dir",
+      "/tmp/fvwm-appearance-a4-20261102-01/u2-theme-tail01/evidence/native",
+      "--profiles",
+      "slate-dark",
+      "--lifecycle-tail"
+    ],
+    "pid": 6,
+    "exit": 0,
+    "group_absent": true,
+    "seconds": 4.8772031479999995,
+    "stdout": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/u2-theme-tail01/evidence/native-theme-tail.stdout",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u2-theme-tail01/evidence/native-theme-tail.stdout",
+      "bytes": 39,
+      "sha256": "9f7a5cf421f0cb9efd1520fe9f56ddb5cfe0faced60e3bfd82667812f08d8fdb"
+    },
+    "stderr": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/u2-theme-tail01/evidence/native-theme-tail.stderr",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u2-theme-tail01/evidence/native-theme-tail.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "archive_sha256": "59578f5f5d305b86eb41d47466c10a78a035650c5d54a018299fdf8559512b64",
+  "export_files": 89,
+  "artifact_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-authoring-tail",
+  "admitted_source": {
+    "manifest_sha256": "72b190688eba6d2855670157115cf50a03c3e47625ce97ef0ab950d3902c9960",
+    "files_verified": 2513
+  },
+  "reused_lifecycle_checks": {
+    "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-authoring-closeout/correction02/capture/export/evidence/native/slate-dark/evidence.json",
+    "source_sha256": "2717f498d0db9e9f41cb58cf644a4f5b261ea8ef500a9105392fe0176ecdcec2",
+    "native_plan_sha256": "c75bbb740382ae9e3ab797683204d0c7bb60a5c53e764b1a86bec0cc042e9f74",
+    "archive_sha256": "c1dba60bea1bdb28671e563c140bdc7cbcd30aeb423cd92f530d1d7405a0c5d9",
+    "cases": [
+      "duplicate-pending-noop",
+      "missing-input-recovered",
+      "partial-input-recovered",
+      "pending-theme-controller-provider-loss",
+      "repeated-noop",
+      "stale-inspector-and-retired-frame",
+      "stale-settings-result-refused",
+      "worker-death-recovered"
+    ],
+    "status": "historical observed passes in an overall failed run; not freshly executed"
+  },
+  "candidate_go_binaries": {
+    "FvwmDesktop": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "bytes": 6828326,
+      "sha256": "fc8aad1b8f04dc249aed228add7594b6a3b36959a1516440febf42f5285ab83d"
+    },
+    "fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "bytes": 6551935,
+      "sha256": "53fc1fb4635ec468ad1b2566ae37ad3b051a3435bc41c5cded9c83472e060e9a"
+    }
+  },
+  "root_predecessor": {
+    "properties": {
+      "_XROOTPMAP_ID": 2097260,
+      "ESETROOT_PMAP_ID": null,
+      "_XSETROOT_ID": null
+    },
+    "image": {
+      "pixmap": 2097260,
+      "width": 1440,
+      "height": 1200,
+      "depth": 24,
+      "bytes_per_line": 5760,
+      "bits_per_pixel": 32,
+      "byte_order": 0,
+      "pixels_sha256": "591936b3964eaa8f7d5fb01c2f7fa0d2547bbcf632847b2f44c1d783063c1a38",
+      "corner_pixels": [
+        1846324,
+        2903123,
+        1846324,
+        2903123
+      ]
+    }
+  },
+  "replacement_root": {
+    "properties": {
+      "_XROOTPMAP_ID": 2097684,
+      "ESETROOT_PMAP_ID": null,
+      "_XSETROOT_ID": null
+    },
+    "image": {
+      "pixmap": 2097684,
+      "width": 1440,
+      "height": 1200,
+      "depth": 24,
+      "bytes_per_line": 5760,
+      "bits_per_pixel": 32,
+      "byte_order": 0,
+      "pixels_sha256": "591936b3964eaa8f7d5fb01c2f7fa0d2547bbcf632847b2f44c1d783063c1a38",
+      "corner_pixels": [
+        1846324,
+        2903123,
+        1846324,
+        2903123
+      ]
+    }
+  },
+  "replacement_source": {
+    "since": 10.207793137,
+    "predecessor": {
+      "properties": {
+        "_XROOTPMAP_ID": 2097260,
+        "ESETROOT_PMAP_ID": null,
+        "_XSETROOT_ID": null
+      },
+      "image": {
+        "pixmap": 2097260,
+        "width": 1440,
+        "height": 1200,
+        "depth": 24,
+        "bytes_per_line": 5760,
+        "bits_per_pixel": 32,
+        "byte_order": 0,
+        "pixels_sha256": "591936b3964eaa8f7d5fb01c2f7fa0d2547bbcf632847b2f44c1d783063c1a38",
+        "corner_pixels": [
+          1846324,
+          2903123,
+          1846324,
+          2903123
+        ]
+      }
+    },
+    "expected": [
+      "Colorset 20 Plain, bg #ff00ff",
+      "Colorset 20 AspectPixmap \"/tmp/fvwm-theme-reload-43y5gspl/theme/wallpapers/slate-dark.png\""
+    ],
+    "observed": [
+      "Colorset 20 Plain, bg #ff00ff",
+      "Colorset 20 AspectPixmap \"/tmp/fvwm-theme-reload-43y5gspl/theme/wallpapers/slate-dark.png\""
+    ]
+  },
+  "fresh_cases": {
+    "replacement-provider-baseline": {
+      "provider": "5ffafef474c815b36767502e023e59aa",
+      "wallpaper_commands": [
+        "Colorset 20 Plain, bg #ff00ff",
+        "Colorset 20 AspectPixmap \"/tmp/fvwm-theme-reload-43y5gspl/theme/wallpapers/slate-dark.png\""
+      ],
+      "editor": 12582919,
+      "surface": 6838344
+    },
+    "actual-preview-recovery-before-reload": {
+      "recovered": 11.507247638,
+      "published": 11.507291714,
+      "acknowledged": 11.50736902
+    },
+    "actual-preview-conflict-retains-owner": {
+      "external_colorset": {
+        "state": "observed",
+        "scope": "core-colorsets",
+        "generation": "0000000000000008301de5c30000000a00000000000000d5",
+        "values": "published",
+        "units": "actual-pixels",
+        "pixel_encoding": "colormap-hex",
+        "total": 15,
+        "record_limit": 4096,
+        "page_max": 16,
+        "preview_supported": false,
+        "colorsets": [
+          {
+            "pixels": {
+              "foreground": "0000000000ffffff",
+              "background": "0000000000135724",
+              "hilight": "0000000000000000",
+              "shadow": "0000000000000000",
+              "foreground_shadow": "00000000004e2d5b",
+              "tint": "0000000000000000",
+              "icon_tint": "0000000000000000"
+            },
+            "opacity_percent": {
+              "foreground": 100,
+              "image": 100,
+              "icon": 100
+            },
+            "background": {
+              "has_pixmap": false,
+              "transparency": "none",
+              "type": 0,
+              "width": 0,
+              "height": 0
+            },
+            "id": 14,
+            "update_state": "idle",
+            "tint_percent": 0,
+            "icon_tint_percent": 0,
+            "dither": false,
+            "icon_dither": false,
+            "has_shape": false
+          }
+        ],
+        "targeted": true,
+        "offset": null,
+        "next_offset": null
+      },
+      "diagnostic": "FvwmDesktop: Theme reload refused: \"Preview recovery is unconfirmed; working theme retained\"\n"
+    },
+    "closed-inspector-late-result": {
+      "worker": {
+        "pid": 131,
+        "operation": "inspect",
+        "request_sha256": "101fde84ab9028703feea15ea839ab2ee9dba6fc8d72f10bebbd12a2854f339d",
+        "started": 12.528715897,
+        "returncode": 0,
+        "result_sha256": "cb2a8b8a3c016cf54ed2fadeb52d80645f9105eef51589086d4b11ea3c559b84",
+        "token": "131-12528701193",
+        "phase": "result",
+        "held": 12.53393185
+      },
+      "successor_frame": "0310517243a4baa71b40c6edf66b0059",
+      "successor_window": 14680070,
+      "successor_requested": 12.696052371,
+      "publications_after_close": 2
+    }
+  },
+  "last_retained_root": {
+    "stage": "successor inspector closed after completion fence",
+    "expected": {
+      "properties": {
+        "_XROOTPMAP_ID": 2097684,
+        "ESETROOT_PMAP_ID": null,
+        "_XSETROOT_ID": null
+      },
+      "image": {
+        "pixmap": 2097684,
+        "width": 1440,
+        "height": 1200,
+        "depth": 24,
+        "bytes_per_line": 5760,
+        "bits_per_pixel": 32,
+        "byte_order": 0,
+        "pixels_sha256": "591936b3964eaa8f7d5fb01c2f7fa0d2547bbcf632847b2f44c1d783063c1a38",
+        "corner_pixels": [
+          1846324,
+          2903123,
+          1846324,
+          2903123
+        ]
+      }
+    },
+    "observed": {
+      "properties": {
+        "_XROOTPMAP_ID": 2097684,
+        "ESETROOT_PMAP_ID": null,
+        "_XSETROOT_ID": null
+      },
+      "image": {
+        "pixmap": 2097684,
+        "width": 1440,
+        "height": 1200,
+        "depth": 24,
+        "bytes_per_line": 5760,
+        "bits_per_pixel": 32,
+        "byte_order": 0,
+        "pixels_sha256": "591936b3964eaa8f7d5fb01c2f7fa0d2547bbcf632847b2f44c1d783063c1a38",
+        "corner_pixels": [
+          1846324,
+          2903123,
+          1846324,
+          2903123
+        ]
+      }
+    }
+  },
+  "observer_x_errors": [],
+  "cleanup_errors": [],
+  "launch": {
+    "status": "dispatch and holder passed",
+    "holder_exit": 0,
+    "dispatch_exit": 0
+  },
+  "owned_shutdown": [
+    {
+      "container_shutdown": "confirmed"
+    },
+    {
+      "machine_shutdown": "confirmed"
+    }
+  ],
+  "screenshots": "existing PR368 three themes and U1 stale capture reused; no new UI production change or capture",
+  "scope_limits": [
+    "No production change or Go execution/build",
+    "No six-target/install/default-server/native-CPU/physical/release pass inferred",
+    "INSPECT-01 static theme/binding provenance remains open",
+    "Periodic performance comparison remains due on shared host"
+  ]
+}

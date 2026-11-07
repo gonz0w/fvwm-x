@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Reload/inspector feature closeout](VERIFICATION-2026-11-07-AUTHORING-CLOSEOUT.md) maps accepted evidence, new lifecycle cases, the retained readiness failure and remaining inspector provenance.
+
 - [PR368 UI/manual closeout](VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md) records three actual theme passes, four inspected captures, repaired fixture preconditions and reused Go/build/manual evidence.
 
 - [Theme reload and inspector authoring](VERIFICATION-2026-11-07-THEME-RELOAD.md) records composed Go/package build passes, retained UI failure, source-only fixture repair and pending screenshots/manual qualification. Draft delivery only.

@@ -30,6 +30,21 @@ See [reload theme colors](FvwmDesktop.adoc#_reload_theme_colors), the
 [closeout verification report](../dev-docs/verification/VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md)
 for usage, image provenance and the scope of the run.
 
+### Stale inspection during reload
+
+If theme colors change while an inspection is being collected, the old snapshot
+stays visibly marked stale. Refresh collects the current policy; it does not
+present the old colors as current. This capture shows the previous purple policy
+values beneath the reloaded brown panel, with the stale warning and refresh control.
+
+![Inspector marks an old color snapshot stale after reload](screenshots/theme-reload-stale-inspector.png)
+
+[Capture provenance](screenshots/theme-reload-lifecycle-manifest.json) records
+this passing case within the retained diagnostic run; the later replacement
+readiness failure does not establish full lifecycle acceptance.
+[Current closeout](../dev-docs/verification/VERIFICATION-2026-11-07-AUTHORING-CLOSEOUT.md)
+keeps that remaining qualification explicit. FVWM-X remains in development.
+
 ## Optional Lucide menu glyphs (in progress)
 
 The optional 16-glyph menu theme uses existing native picture rendering and

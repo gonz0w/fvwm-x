@@ -71,6 +71,17 @@ commands and current qualification gaps are documented in
 [R1 reference profiles](../../dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md).
 It starts no processes and changes no build, baseline, default or installed CLI.
 
+`package_costs.compare(packages, baseline_roots, candidate_roots)` calculates
+nominal package sizes for complete dependency closures. Package keys are exact
+names. Each value contains `version`, nonnegative integer `flat_bytes` and
+a `dependencies` dictionary mapping names to exact versions. Supply the
+package names owning the selected library paths as the root collections.
+The helper deduplicates shared dependencies, handles cycles and rejects
+missing or inconsistent metadata before returning added and removed packages.
+Its result describes the supplied snapshot. The caller records provenance,
+base-system and private files, and the selected product or module baseline.
+The tests run through the existing `tools/maintenance/tests` discovery.
+
 `build.py` uses argv subprocess calls, drains diagnostic output in bounded
 chunks, and returns the failed command's exit status even in verbose mode.
 A changed option or `--reconfigure` reconfigures without `--wipe`. Identical

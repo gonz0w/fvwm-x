@@ -192,7 +192,8 @@ int main(int argc, char **argv)
 	get_focus(connection, xcb_get_input_focus(connection));
 	get_focus(other, xcb_get_input_focus(other));
 
-	require(fvwm_xcb_wait_begin(connection, NULL), "async scope start");
+	require(fvwm_xcb_wait_begin(connection, NULL, NULL),
+		"async scope start");
 	xcb_no_operation(connection);
 	require(xcb_flush(connection) > 0, "async flush");
 	require(fvwm_xcb_wait_end(&result), "async scope end");
@@ -201,13 +202,14 @@ int main(int argc, char **argv)
 	first = xcb_get_input_focus(connection);
 	barrier = xcb_get_input_focus(connection);
 	get_focus(connection, barrier);
-	require(fvwm_xcb_wait_begin(connection, NULL), "buffered scope start");
+	require(fvwm_xcb_wait_begin(connection, NULL, NULL),
+		"buffered scope start");
 	get_focus(connection, first);
 	require(fvwm_xcb_wait_end(&result), "buffered scope end");
 	check_result("buffered", &result, 1, 0);
 
 	start_controller(&release, &thread, controller);
-	require(fvwm_xcb_wait_begin(connection, &release.entered),
+	require(fvwm_xcb_wait_begin(connection, &release.entered, NULL),
 		"direct outstanding scope start");
 	get_focus(connection, xcb_get_input_focus(connection));
 	require(fvwm_xcb_wait_end(&result), "direct outstanding scope end");
@@ -217,7 +219,7 @@ int main(int argc, char **argv)
 
 	xlib_request = NextRequest(display);
 	start_controller(&release, &thread, controller);
-	require(fvwm_xcb_wait_begin(xlib_connection, &release.entered),
+	require(fvwm_xcb_wait_begin(xlib_connection, &release.entered, NULL),
 		"Xlib outstanding scope start");
 	require(XGetInputFocus(display, &root, &revert) != 0,
 		"Xlib input focus reply");
@@ -239,7 +241,7 @@ int main(int argc, char **argv)
 		"Xlib prior-node retirement and current reply identities");
 
 	start_controller(&release, &thread, controller);
-	require(fvwm_xcb_wait_begin(connection, &release.entered),
+	require(fvwm_xcb_wait_begin(connection, &release.entered, NULL),
 		"checked-void scope start");
 	{
 		xcb_void_cookie_t cookie = xcb_no_operation_checked(connection);
@@ -251,7 +253,8 @@ int main(int argc, char **argv)
 		"checked-void controller acknowledgment");
 	check_result("checked-void", &result, 1, 1);
 
-	require(fvwm_xcb_wait_begin(connection, NULL), "other scope start");
+	require(fvwm_xcb_wait_begin(connection, NULL, NULL),
+		"other scope start");
 	get_focus(other, xcb_get_input_focus(other));
 	require(fvwm_xcb_wait_end(&result), "other scope end");
 	check_result("other-connection", &result, 0, 0);
@@ -264,7 +267,7 @@ int main(int argc, char **argv)
 	dlclose(xlib);
 	alarm(0);
 	puts("{\"status\":\"passed\",\"controls\":6,"
-		"\"native_partial_read_control\":\"pending\","
+		"\"native_partial_read_control\":\"separate-fixture\","
 		"\"scope\":\"calling-thread logical reply waits\"}");
 	return 0;
 }

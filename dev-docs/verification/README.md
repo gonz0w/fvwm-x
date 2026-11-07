@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Fragmented XCB replies and installed package closures](VERIFICATION-2026-11-07-XCB-FRAGMENTS-PACKAGE-COSTS.md) records native partial-read qualification, complete Linux graphs and the remaining OpenBSD capture boundary.
+
 - [Private XCB wait observer and AMD64 package costs](VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md) records the private fixture source, completed FreeBSD AMD64 package closures and the completed Linux ARM64 native logical-wait qualification, with partial-packet and broader coverage still open.
 
 - [Reply-wait feasibility and installed package costs](VERIFICATION-2026-11-06-WAITS-INSTALLED-COSTS.md) records the matching Xlib/XCB source seam, complete FreeBSD package dependency closures and the remaining observation boundary.

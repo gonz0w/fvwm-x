@@ -82,6 +82,36 @@ Its result describes the supplied snapshot. The caller records provenance,
 base-system and private files, and the selected product or module baseline.
 The tests run through the existing `tools/maintenance/tests` discovery.
 
+`debian_package_costs.parse_snapshot(text, native_architecture)` adapts a
+complete installed `dpkg-query` snapshot. Capture nine tab-separated fields:
+`binary:Package`, `Version`, `Installed-Size`, `Depends`, `Pre-Depends`,
+`Provides`, `Status`, `Architecture` and `Multi-Arch`. Capture the native and
+foreign architecture lists separately; the current comparison supports a
+single native architecture plus architecture-independent packages. Historical
+seven-field captures are refused. The returned `packages` graph works with
+`compare`; `resolutions` records the first satisfiable declared alternative,
+preferring an installed real package over one unambiguous provider. This is a
+reproducible installed satisfier closure, not the original installation plan.
+Versioned relationships are checked. Unsupported architecture restrictions,
+ambiguous providers and missing dependencies fail. Sizes convert declared KiB
+to bytes; Recommends and Suggests are outside this dependency scope.
+
+`openbsd_package_costs.parse_snapshot(records)` accepts a complete dictionary
+keyed by installed package identifier. Each row contains raw `contents`,
+`requiring`, `required_by` and `size` fields. The first three capture
+`+CONTENTS`, `+REQUIRING` and `+REQUIRED_BY`; the latter two may be `None` when
+their database files are absent. Size is the integer line returned by
+`pkg_info -q -s` for that one package. Forward and reverse dependencies must
+agree, all targets must exist and the packing-list identity must match. Full
+installed identifiers encode version/flavor and serve as exact graph keys and
+version identities. The helper does not execute packing-list instructions or
+reimplement package-spec matching. Its byte totals are package-tool estimates.
+Actual OpenBSD capture qualification remains in the owning verification record.
+
+Both adapters bound input and graph work and use only Python's standard
+library. Keep database/library/owner identities and base/private-file costs
+with the capture; a validated graph alone does not prove installed ownership.
+
 `build.py` uses argv subprocess calls, drains diagnostic output in bounded
 chunks, and returns the failed command's exit status even in verbose mode.
 A changed option or `--reconfigure` reconfigures without `--wipe`. Identical

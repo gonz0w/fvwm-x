@@ -33,18 +33,18 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 - Optional pinboard: saved references, shaped cells and management;
   unpin preserves targets.
 
-Slate: desktop pinboard.
+Slate pinboard.
 
 ![Slate dark desktop pinboard manager](doc/screenshots/pinboard-acceptance-slate-dark.png)
 
-Dune: 4096-entry grid.
+Dune grid.
 
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
 [More screenshots, theme/config examples and limits](doc/development-preview.md).
 [Clipboard](doc/fvwm-clipboard.adoc), file-manager and release qualification remain open.
 OpenBSD baseline: 8.0.
-[Native drawing/layout retained](dev-docs/verification/VERIFICATION-2026-11-04-DRAWING-LAYOUT-COSTS.md).
+[Native rendering; prototype research deferred](dev-docs/decisions/REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md).
 
 [R1 resource profiles](dev-docs/decisions/R1-REFERENCE-PROFILES-2026-10-26.md)
 and [release scope](dev-docs/decisions/RELEASE-PLAN-2026-10-26.md).

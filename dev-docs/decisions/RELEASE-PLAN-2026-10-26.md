@@ -18,6 +18,16 @@ The next finite #209/#29/#226 checkpoint freezes
 claim a whole-M5 audit. No release publication, tag, credential or upstream notification is
 selected by this roadmap.
 
+## Owner-approved prototype cutoff — 2026-11-07
+
+The [accepted cutoff](REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md) completes
+R1's rejected Cairo/Clay evaluations using their recorded decisions and available
+results. The named remaining research moves to
+[R2 #366](https://github.com/gonz0w/fvwm-x/issues/366). Native #212 consumer
+fixes and all production safety, support and release checks remain in R1.
+Original release counts below describe the October 26 contract snapshot;
+the tracker and GitHub milestones include this later scoped follow-up.
+
 ## Release targets and work classification
 
 Milestones identify releases; Stage labels/Project field identify technical
@@ -236,6 +246,9 @@ folded in GitHub; the original near-limit CLEAN issue is preserved in
 | [#234](https://github.com/gonz0w/fvwm-x/issues/234) | Major | Implement and qualify finite detected Linux worker restrictions with truthful support reporting. |
 | [#236](https://github.com/gonz0w/fvwm-x/issues/236) | Minor | Complete a bounded OpenBSD allocator-audit qualification profile. |
 | [#259](https://github.com/gonz0w/fvwm-x/issues/259) | Major | Record a finite acceptance decision for the R2 candidate and its frozen maintenance manifest, preserving the shipped R1 desktop features. |
+
+The later [#366](https://github.com/gonz0w/fvwm-x/issues/366) R2 follow-up owns
+only the accepted rejected-prototype research cutoff above.
 
 ## R3 — Developer Tooling and Deferred Work manifest
 

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Native layout paint-boundary closeout](VERIFICATION-2026-11-07-NATIVE-LAYOUT-CLOSEOUT.md) records the two production repairs, focused native results, accepted R2 research cutoff and R1 issue acceptance map.
+
 - [Fragmented XCB replies and installed package closures](VERIFICATION-2026-11-07-XCB-FRAGMENTS-PACKAGE-COSTS.md) records native partial-read qualification, complete Linux graphs and the remaining OpenBSD capture boundary.
 
 - [Private XCB wait observer and AMD64 package costs](VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md) records the private fixture source, completed FreeBSD AMD64 package closures and the completed Linux ARM64 native logical-wait qualification, with partial-packet and broader coverage still open.

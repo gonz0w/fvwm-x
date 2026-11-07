@@ -1194,23 +1194,37 @@
       "title": "GRAPHICS-02: Evaluate direct Cairo drawing and bounded native effects",
       "release": "R1",
       "work_size": "Major",
-      "end_goal": "Finish the direct Cairo native-module comparison and implement the accepted bounded drawing/effects outcome.",
+      "end_goal": "Finish the R1 Cairo evaluation with the recorded reject decision, retained native drawing and available source-bound comparison with explicit limitations.",
       "acceptance": [
         "Prototype vector paths, antialiased shapes, gradients and local control transitions against the same #210 native workload and fallback.",
         "Preserve shared draw/hit regions, scale/palette/resource generations and teardown; changing visible content alone schedules animation, with idle sleep and reduced-motion support.",
         "Publish adopt/defer/reject before production renderer integration; if adopted, implement only the named operations/consumer and retained fallback, otherwise retain the qualified baseline.",
-        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence.",
-        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Include interruption, resize/unmap/destroy and input-latency observations."
+        "Publish the existing source-bound same-workload behavior/performance and six-target cost ledger, distinguishing measured, emulated and unavailable values; transfer the named remaining rejected-prototype research to R2 #366.",
+        "Retain the qualified focused real-X behavior and three-theme evidence, including enlarged text and interruption/resize/unmap/destroy/input observations; keep production safety/support/release acceptance with its existing R1 owners."
       ],
       "non_goals": [
-        "No renderer/compositor replacement, automatic Cairo adoption from existing SVG linkage, mandatory toolkit/GPU or continuing animation when idle. Unselected effects remain outside the accepted finite workload."
+        "No renderer/compositor replacement, automatic Cairo adoption from existing SVG linkage, mandatory toolkit/GPU or continuing animation when idle. Unselected effects remain outside the accepted finite workload.",
+        "Remaining rejected-prototype research in #366 is not an R1 closure prerequisite. Production defects, safety, compatibility and R1 platform/release checks are not deferred or marked passing."
       ],
       "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
       "coordination": [
         "#210 supplies the stable native drawing/resource baseline; #54 provides shared text runs where needed. No dependency on all later workspace tools."
       ],
       "wave": "R1-W2 Cairo decision and accepted implementation",
-      "original_body_sha256": "b724ca631950c297d1249cf4cafcb6a7843c8ad1e8e182dae73aef3f4d6c7b05"
+      "original_body_sha256": "b724ca631950c297d1249cf4cafcb6a7843c8ad1e8e182dae73aef3f4d6c7b05",
+      "original_acceptance": [
+        "Prototype vector paths, antialiased shapes, gradients and local control transitions against the same #210 native workload and fallback.",
+        "Preserve shared draw/hit regions, scale/palette/resource generations and teardown; changing visible content alone schedules animation, with idle sleep and reduced-motion support.",
+        "Publish adopt/defer/reject before production renderer integration; if adopted, implement only the named operations/consumer and retained fallback, otherwise retain the qualified baseline.",
+        "Publish repeated same-workload results for simplicity, startup/latency/CPU/RSS/idle work and complete direct/transitive/build/runtime/install costs across Linux/FreeBSD/OpenBSD AMD64/ARM64, distinguishing native, emulated and unavailable evidence.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint. Include interruption, resize/unmap/destroy and input-latency observations."
+      ],
+      "scope_revision": {
+        "date": "2026-11-07",
+        "authority": "Cam: defer rejected-prototype research to R2",
+        "decision": "REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md",
+        "follow_up_issue": 366
+      }
     },
     {
       "number": 212,
@@ -1218,23 +1232,37 @@
       "title": "LAYOUT-01: Build reusable responsive native panel and collection layouts",
       "release": "R1",
       "work_size": "Major",
-      "end_goal": "Ship reusable responsive native layout for two representative panel/collection consumers and complete the bounded optional Clay comparison.",
+      "end_goal": "Ship reusable responsive native layout for the panel and browser consumers and retain native layout after the scoped Clay reject decision.",
       "acceptance": [
         "Define bounded alignment/spacing/sizing/overflow/virtualization policies; preserve configured legacy geometry and use one prepared result for draw and hit testing.",
         "Implement translated/long/enlarged text and mixed-scale layout while preserving keyboard/focus/selection/clipping through resize and provider changes.",
         "Qualify two named native consumers and report redraw/input latency, CPU/RSS/idle work on the same bounded workloads.",
-        "Compare one optional isolated Clay consumer with the native layout baseline, including text/input/accessibility/lifetime and complete dependency costs; record adopt/defer/reject and implement only accepted scoped integration.",
+        "Publish the scoped native/Clay comparison and reject decision with existing source-bound results and honest limitations; transfer the named remaining rejected-prototype research to R2 #366 without production adoption.",
         "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
       ],
       "non_goals": [
-        "No mandatory Clay/layout engine, toolkit replacement, automatic legacy geometry migration or requirement to adopt the experiment before native consumers ship."
+        "No mandatory Clay/layout engine, toolkit replacement, automatic legacy geometry migration or requirement to adopt the experiment before native consumers ship.",
+        "Remaining rejected-prototype research in #366 is not an R1 closure prerequisite. Production defects, safety, compatibility and R1 platform/release checks are not deferred or marked passing."
       ],
       "accepted_work": "Preserve all accepted component evidence in the historical issue record; this release contract covers only the listed remaining deliverables.",
       "coordination": [
         "#209 handoff and accepted button/text/collection/scale contracts are sufficient for baseline layout; use #54 measurement subset. #210/#211 comparisons inform Clay where relevant, not unrelated baseline consumers."
       ],
       "wave": "R1-W2 responsive layouts",
-      "original_body_sha256": "5b2baaf4796bba82a73a932848f4eb91c18c44a230f967622fc266b2dd4ce22e"
+      "original_body_sha256": "5b2baaf4796bba82a73a932848f4eb91c18c44a230f967622fc266b2dd4ce22e",
+      "original_acceptance": [
+        "Define bounded alignment/spacing/sizing/overflow/virtualization policies; preserve configured legacy geometry and use one prepared result for draw and hit testing.",
+        "Implement translated/long/enlarged text and mixed-scale layout while preserving keyboard/focus/selection/clipping through resize and provider changes.",
+        "Qualify two named native consumers and report redraw/input latency, CPU/RSS/idle work on the same bounded workloads.",
+        "Compare one optional isolated Clay consumer with the native layout baseline, including text/input/accessibility/lifetime and complete dependency costs; record adopt/defer/reject and implement only accepted scoped integration.",
+        "Retain source-bound focused policy/real-X evidence and inspect screenshots in 2–3 materially different theme/configurations, including enlarged text; qualify affected support profiles at the combined checkpoint."
+      ],
+      "scope_revision": {
+        "date": "2026-11-07",
+        "authority": "Cam: defer rejected-prototype research to R2",
+        "decision": "REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md",
+        "follow_up_issue": 366
+      }
     },
     {
       "number": 213,

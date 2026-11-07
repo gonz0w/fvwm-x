@@ -1,6 +1,6 @@
 # R1 Clay layout integration decision
 
-Status: **selected R1 production decision; evaluation acceptance remains open**. LAYOUT-01 [#212](https://github.com/gonz0w/fvwm-x/issues/212).
+Status: **selected R1 production decision; remaining prototype research deferred to R2**. LAYOUT-01 [#212](https://github.com/gonz0w/fvwm-x/issues/212).
 The selected G6 outcome is to reject production integration of the evaluated
 private Clay row prototype for R1. Retain the existing
 [native responsive panel and collection layout](NATIVE-LAYOUT-2026-10-26.md),
@@ -40,6 +40,20 @@ open: `layout-eval` stays default-disabled and its comparison targets remain
 non-installed. This decision adds no mandatory dependency or toolkit, and does
 not authorize broad deletion or claim that development and hypothetical adoption
 costs are zero.
+
+## Owner-approved R1 cutoff — 2026-11-07
+
+Cam approved the [R1 cutoff](REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md).
+Remaining operation-level implicit-wait measurements, OpenBSD comparison package
+closures and frozen prototype-specific comparisons move to
+[R2 #366](https://github.com/gonz0w/fvwm-x/issues/366). These unavailable results
+are not passing or zero. The existing reject decision and available source-bound
+evidence complete the revised R1 evaluation outcome; no production integration
+follows. Production native consumer requirements and all R1 safety/platform/
+release checks retain their existing owners and acceptance.
+
+The following original acceptance description is historical for those transferred
+prototype-research requirements. It does not reinstate them as R1 blockers.
 
 ## Remaining acceptance and reconsideration
 

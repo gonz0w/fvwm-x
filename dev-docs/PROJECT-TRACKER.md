@@ -35,7 +35,95 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, G15 — fragmented XCB packets and package costs, 2026-11-07.
+Current work, G16 — native layout issue closeout, 2026-11-07.
+Cam directed a return to GitHub issue completion after the evaluation-heavy
+G7–G15 sequence. Lead owns scope, tracker, native execution and integration on
+`codex/r1-native-layout-closeout`. PR365 merged at
+`477fea09c07258d7709ef0c843eaab40aceadf40`, preserving reviewed tree
+`87f4128a7610c8324210d9e5d20bd7e18c1429e1`, expected parent,
+GitHub-verified signature and Cam author DCO. Its local branch is retired;
+Project PR365 is Done.
+
+First reconcile #211/#212's existing release checkboxes against accepted
+component evidence and identify concrete missing native Form/panel/browser
+behavior under #212. The bounded discovery output is an acceptance map and
+three to five source-supported related fixes, or an explicit smaller complete
+owner slice. Select their exact behavior and files here before implementation.
+Do not invent product defects to fill a batch, repeat qualified comparisons,
+add optional measurement tooling, waive frozen acceptance or close a broader
+issue without its required results. Existing Cairo/Clay R1 non-adoption stands;
+their remaining rejected-prototype evaluation and OpenBSD cost requirements
+move to the owner-approved R2 follow-up below. Production requirements stay R1. Separate reviewer remains
+required; native checks follow the shared major-feature cadence, with affected
+incremental compilation and reproduced-defect checks only during development.
+No new VM or test campaign is selected by this discovery step.
+
+G16 selected native slice: repair Form collection paint boundaries under #212.
+Source inspection found long core/fontset captions bypass the existing paired
+GC/string-region helper, and valid narrow `ListViewport 1 8` cells can produce
+nonpositive icon extents passed to unsigned X drawing dimensions. Reuse the
+shared clipped-string helper, admit only positive icon interiors and clip both
+list/grid icon branches to the prepared cell. Preserve cell/hit geometry,
+provider identities, focus, selection and supported configuration syntax.
+Owner files are `modules/FvwmForm/list_widget.c` and the existing native-layout
+regression driver, with narrowly necessary related declarations only.
+
+Acceptance is source-bound clipping/positive-size behavior for long labels and
+small cells in list/grid modes, pointer/keyboard state retention, affected Form
+incremental build, focused native regression and representative screenshots.
+Use one owned Linux ARM64 session: reproduce on the retained baseline, apply
+only the accepted source overlay, compile the affected target and run the
+combined regression. Reuse earlier scale/resize/browser/race evidence; do not
+repeat their suites or boot BSD for unchanged X11/helper contracts. Limit the
+native job to one attempt plus one diagnosed reviewed correction, one owned
+otherwise-idle guest, 45 minutes total and 128 MiB export. Freeze/review inputs
+before lead execution, preserve failed evidence and stop at the limit.
+Cam approved the [R1 cutoff](decisions/REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md):
+remaining rejected Cairo/Clay research moves to [R2 #366](https://github.com/gonz0w/fvwm-x/issues/366).
+The named implicit-wait operation comparisons, both OpenBSD prototype package
+closures and remaining frozen prototype-specific comparisons cease to block
+R1 #211/#212 closure. Retain their unavailable values and source-bound evidence.
+Native consumer fixes, production text/accessibility, safety, configuration
+compatibility and Linux/FreeBSD/OpenBSD release qualification remain in R1.
+Existing feature evidence plus the current native paint-boundary repair determine
+#212 implementation acceptance; broader release checks retain their own owners.
+#211 can close with the accepted reject decision, published available comparison
+and honest limitations once this changed contract is reviewed and integrated.
+
+G16 native campaign stopped at its attempt limit. The first run's fixture
+quoted raw Form color values and failed before useful paint observations. The
+reviewed correction preserves the original pixel expectations and reproduces
+both actual baseline caption spills (66 gutter pixels in list and grid) and
+3-pixel cells painting marks. Baseline pointer/keyboard checks pass. The
+candidate build then stops on the new diagnostic's missing `libs/log.h`
+declaration; candidate execution has not run. Both failures and shutdown
+receipts remain retained. Correct only that include.
+
+Replan G16-C1 under the lead's existing accepted repair/execution authority:
+reuse the verified baseline and unchanged corrected driver; select one affected
+Form build and three-profile candidate regression, with no baseline repetition,
+new benchmark, new executor or profile. Freeze and separately review the exact
+include-only change, previous result/binary/source identities and incremental
+cache before one bounded run. This is a separate diagnosed compilation closeout
+checkpoint, not a renewal of the exhausted baseline campaign. Limit it to one
+run, 15-minute build, 180-second candidate driver, 45-minute owned session and
+128 MiB export; stop and report any further failure without another retry.
+Native candidate acceptance remains pending until actual results pass.
+
+G16-C1 passed the affected Form build, all three candidate paint profiles and
+one manual render. Core caption gutter spill is 66→0 pixels in both modes;
+3-pixel icon cells change 30→0 and 4→0 pixels. Pointer/keyboard state remains
+correct. All four candidate captures were inspected; examples and the exact
+acceptance map are in the [G16 report](verification/VERIFICATION-2026-11-07-NATIVE-LAYOUT-CLOSEOUT.md).
+All 34 successful export hashes and four command retirements verify; the
+container and machine are stopped. The two earlier campaign failures retain
+12/19 verified diagnostic files. #211/#212's revised R1 component criteria
+are complete for integration and issue closure; R2 #366 and production release
+owners retain their explicit remaining scope. No whole-R1 pass is claimed.
+Performance is due (5/5) on this implementation merge and joins the next major
+shared checkpoint without a separate guest boot or merge delay.
+
+Merged checkpoint, G15 — fragmented XCB packets and package costs, 2026-11-07.
 Cam selected this coherent #211/#212 checkpoint after PR364. Lead owns native
 execution, tracker, evidence and integration on
 `codex/r1-xcb-fragments-package-costs`. PR364 merged at
@@ -8365,8 +8453,8 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | MODERNIZE-01 | P2 / Backlog; Future features | [#208](https://github.com/gonz0w/fvwm-x/issues/208). Track the approved lightweight X11 modernization program without duplicating existing owners. This is an index and sequencing owner, not runtime implementation or a new release prerequisite. |
 | FOUNDATION-READY-01 | P1 / Backlog; O1 Measured optimization | [#209](https://github.com/gonz0w/fvwm-x/issues/209). Turn the user's cleanup/optimization-first priority into a finite, reviewable scheduling gate. Existing qualified components stay accepted; planning does not reopen them. |
 | GRAPHICS-01 | P2 / Backlog; F2 Native UI | [#210](https://github.com/gonz0w/fvwm-x/issues/210). Implement the already approved native graphics baseline using existing X11 drawing/resource owners, before adding another direct renderer. |
-| GRAPHICS-02 | P2 / In progress; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). Scoped R1 Cairo non-adoption and six-target costs recorded; frozen measurement/runtime/support acceptance remains open. |
-| LAYOUT-01 | P2 / In progress; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Native layout retained and scoped R1 Clay non-adoption recorded; broader consumer/measurement/support acceptance remains open. |
+| GRAPHICS-02 | P2 / In progress; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). R1 Cairo reject decision and available comparison complete; close on G16 integration. Remaining rejected-prototype research is R2 #366; production release checks stay R1. |
+| LAYOUT-01 | P2 / In progress; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Native panel/browser layout, scale/state and G16 paint fixes complete; close on G16 integration. Clay research is R2 #366; production release checks stay R1. |
 | BIND-01 | Done / #213 closed by merged PR269 | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |

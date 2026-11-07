@@ -35,7 +35,54 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, V1 — binding-definition provenance under #218, 2026-11-07.
+Current work, V2 — finish PR370 binding-provenance qualification, 2026-11-07.
+Cam explicitly requested fixing the build-metadata guard and completing the
+remaining checks/screenshots, reusing the passing C build without a full matrix.
+Lead owns integration, tracker, native execution and final ready state on the
+existing `codex/r1-binding-provenance`, starting at signed draft head
+`f536ccfd0e86031d9c150eaa4291e37a383665f7`. V1 below remains stopped history.
+
+Bounded outcome: verify actual generated browser target inputs against exact
+expected duplicate multiplicities, relative order and all remaining fields;
+finish the three C units, four Go race packages, two configured helper builds,
+two scoped ASan/UBSan units, library closure, two candidate/base manual renders
+and one actual-X binding/inspector capture. Retain passing C compilation and all
+unchanged source/tool/library/theme/lifecycle evidence. No source overlay replay,
+C rebuild, OS/install matrix, optional benchmark or unrelated feature is selected.
+The ten expected unique additions are each registered twice by the existing
+absolute finder plus relative explicit list. Export the actual target metadata
+before checking the exact multiset; unsupported differences remain failures.
+Do not change the project build graph merely to satisfy a private observer.
+
+Acceptance remains V1's four-story contract. Source fixes, if needed, are limited
+to reproduced current acceptance failures, separately reviewed before execution.
+Lead uses only the existing owned Linux profile, strict fresh host admission,
+45min/128MiB maximum, one remaining-check qualification plus one separately
+reviewed diagnosed correction; stop/replan a repeated unexplained failure or
+budget exhaustion. No package/SDK/storage/resource-limit changes. Separate final
+source/evidence and exact signed-head reviews plus canonical proof precede ready
+state of PR370. Stop there; #218 remains open for its other provenance domains.
+
+V2 qualification passes all18remaining native commands in22.996seconds. The
+9.043second C build is reused. Three C units, four Go race packages, two helpers,
+two scoped leak-enabled sanitizer units, library closure, four manual renders and
+all three actual-X case groups pass. Actual browser metadata is752entries/732
+unique, with the precise ten additions registered twice; old order and every
+other target field verify. Current2518source files and final tool/SDK/library/
+unrelated-binary controls match; all command groups and the owned container/
+machine retire. No production C rebuild, package change or full matrix occurs.
+
+Lead and separate product review inspect the unmodified Slate dark source capture
+and60/80column candidate/base manual text. New source rows are readable; existing
+status prose wraps/cuts off and the inventory is truthfully partial. Mandoc lint
+remains nonzero with identical paired families/counts (Desktop3/3; MFL4/4); the
+initial host wrapper's lint0/3 assumption is corrected and recorded, not treated
+as a product failure. Prior three-theme/lifecycle evidence remains source-bound;
+no fresh alternative-theme, physical/assistive/release or performance claim is
+added. The comparison remains due. Final review/signed delivery are pending.
+[Closeout and receipts](verification/VERIFICATION-2026-11-07-BINDING-PROVENANCE-CLOSEOUT.md).
+
+Historical V1 — binding-definition provenance under #218, 2026-11-07.
 Cam requested merge/cleanup of PR369 followed by a related provenance batch.
 Lead owns integration, tracker and native execution on
 `codex/r1-binding-provenance`, base `c2d1ebecd3bdbc2d7d8808d6f0b0f4750116ef54`.

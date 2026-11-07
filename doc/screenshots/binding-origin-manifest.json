@@ -1,0 +1,15 @@
+{
+  "description": "Unmodified V2 native-X binding provenance inspector; Slate dark partial inventory. Prior Dune/enlarged Classic presentation checks reused at their original scope.",
+  "base": "f536ccfd0e86031d9c150eaa4291e37a383665f7",
+  "plan_sha256": "b4a4c3cf15fa8cfbdedacaa30ff05b606ef6447996079ad48bff5220b2a89307",
+  "fixture_sha256": "f4bf345124e63723fee70d0868bb92497245b69e61433dddbbec0d2b1592d3f9",
+  "asset": "binding-origin-slate-dark.png",
+  "bytes": 74709,
+  "sha256": "79719ec1b68db1be16d871a437deb4f65d22ef3d297edf2e9c7efdd7cc14726f",
+  "cases": {
+    "retained_nested_continued_expanded_and_source_kinds": true,
+    "genuine_projection_filter_f2_escape_nonexecuting": true,
+    "replacement_stale_generation_xtest_unbind": true
+  },
+  "observed": "Filter f12; page3/6; retained leaf.config2-3 and entry.config2-2; synthetic focus probe visible; existing status text wraps/cuts off"
+}

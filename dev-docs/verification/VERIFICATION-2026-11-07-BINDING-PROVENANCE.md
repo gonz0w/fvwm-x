@@ -1,5 +1,7 @@
 # Binding provenance: draft checkpoint
 
+Historical V1. [V2 finishes the focused qualification](VERIFICATION-2026-11-07-BINDING-PROVENANCE-CLOSEOUT.md); the stopped results below remain unchanged.
+
 Base: merged PR369, `c2d1ebecd3bdbc2d7d8808d6f0b0f4750116ef54`.
 Owner: Cam; INSPECT-01 #218. Branch: `codex/r1-binding-provenance`.
 This candidate is **not ready to merge**. Affected C compilation passes, but

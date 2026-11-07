@@ -1,0 +1,25 @@
+{
+  "description": "Unmodified W2 native Linux/Xvfb Slate dark aggregate policy last-value-change pages; in-progress development.",
+  "base": "fa734751f2db1b8d59275e441d847ffa2f36aead",
+  "fixture_sha256": "c52aac1fadff3cb100933e62fdc99aa22d387948836616a49e8201287c59952e",
+  "shared_setup_sha256": "4ac5d355cd29a154aa1ce5c452c60844c2626822a6d908a822e233386e2c9bee",
+  "plan_sha256": "520bef31024a6a1f717d9bf1f60b819c83bb7b53ee90b5e8f98029d6bdf658c7",
+  "cases": {
+    "retained_nested_policy_sources_and_normalized_masks": true,
+    "unchanged_origins_conservative_placement_and_modifier_parse_error": true,
+    "genuine_policy_projection_filter_navigation_read_only": true
+  },
+  "captures": [
+    {
+      "asset": "policy-modifiers-slate-dark.png",
+      "bytes": 74314,
+      "sha256": "7a488ed16cecfe5684324696b1e911d18eb677f0ea268efecb854209ba114307"
+    },
+    {
+      "asset": "policy-placement-slate-dark.png",
+      "bytes": 74271,
+      "sha256": "f24b5dfbacd8c9da41275d8392b44d4ccdf876bd5ef43113e6fa95f5012e4a17"
+    }
+  ],
+  "limits": "Partial policy-filtered inventory. Existing header/status wraps. Modifier definition bad.config2-2 and drag definition leaf.config3-4 visible; entry.config2-2 include is in data on another page, not the placement screenshot. Black window is synthetic focus probe."
+}

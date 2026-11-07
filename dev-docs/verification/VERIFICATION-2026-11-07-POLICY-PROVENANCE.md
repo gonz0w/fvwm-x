@@ -1,5 +1,7 @@
 # Placement and modifier provenance: draft checkpoint
 
+Historical W1. [W2 completes the focused qualification](VERIFICATION-2026-11-07-POLICY-PROVENANCE-CLOSEOUT.md); the stopped results below remain unchanged.
+
 Base: merged PR370, `cba50a36de33bfcbad069bb83f2cb81204b5fae5`.
 Owner: Cam; INSPECT-01 #218; branch: `codex/r1-policy-provenance`.
 This checkpoint is **not ready to merge**. C compilation and two C units pass;

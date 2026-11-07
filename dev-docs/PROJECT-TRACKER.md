@@ -35,7 +35,55 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, W1 — placement/modifier provenance under #218, 2026-11-07.
+Current work, W2 — qualify PR371 policy provenance, 2026-11-07.
+Cam explicitly requests qualifying the Go fix, finishing remaining checks and
+capturing new UI, reusing the passing C build and units without a full matrix.
+Lead owns tracker, native execution, integration and ready state on the existing
+`codex/r1-policy-provenance` at signed draft
+`fa734751f2db1b8d59275e441d847ffa2f36aead`. W1 below remains stopped history.
+
+Bounded outcome: apply only the reviewed Go ordering fix to the retained native
+source, verify all2526source files and post-C ELF/archive/metadata controls, then
+run the13remaining commands: affected inspector/worker race packages, two exact
+configured helper builds, two scoped sanitizer build/executions, library closure,
+four candidate/base manual renders and the genuine native policy scene/two
+captures. No Ninja, Meson regeneration, normal C compilation/unit execution,
+package/SDK/install matrix or optional benchmark repeats. The prior C build/two
+unit passes remain source/output-bound; failed/unqualified Go history remains.
+
+Acceptance and exclusions remain W1's four-story contract. Source/fixture fixes
+are limited to reproduced current acceptance failures, separately reviewed before
+execution. One qualification plus one separately reviewed diagnosed correction,
+45min/128MiB maximum, lead-only existing owned profile; stop/replan a repeated
+unexplained failure or exhausted budget. Fresh inventory finds128GiB host RAM
+and zero other VMs; use strict zero-other-VM admission, preserve all other owners
+and existing idle/identity/shutdown guards. Do not resize resources or renew old
+exceptions. Separate source/evidence and exact signed-head reviews plus canonical
+verification precede ready state of PR371. Stop there; #218's other provenance
+and platform/release gates remain open. Inspect and publish unmodified new UI
+captures, reusing prior alternative-theme evidence at its original scope.
+
+W2's13fresh commands pass in10.004seconds, reusing the42-step C build and both
+C units without Ninja/normal-C repeats. Both corrected Go race packages, two
+helpers, two scoped leak-enabled sanitizer units, closure, four manual renders
+and all three native policy cases pass. Current2526source bytes, eight ELF
+admission identities, archive and full metadata controls verify. Six C executables
+and archive remain unchanged, only two Go outputs change; all command groups and
+owned resources retire. A transient other VM declined initial host admission,
+then ended without our control; the identical plan/bundle ran with strict guards.
+
+Lead and separate product review inspect two unmodified Slate source pages and
+60/80column manual output. Modifier bad.config2-2 and drag leaf.config3-4 are
+legible with last-change/partial labels. Include entry.config2-2 exists in query/
+filtered data but is not visible in the drag screenshot. Existing status prose
+still wraps/clips. Native manuals render; inherited lint families remain nonzero
+(Desktop3/3; MFL4/4), with six additional long-input diagnostics per candidate and
+no other count/family changes. Prior alternative-theme/lifecycle evidence stays
+source-bound; no new performance, hardware/assistive, full matrix or #218 closure
+is claimed. Final integrated/signed-head review and canonical delivery pending.
+[Closeout and receipts](verification/VERIFICATION-2026-11-07-POLICY-PROVENANCE-CLOSEOUT.md).
+
+Historical W1 — placement/modifier provenance under #218, 2026-11-07.
 Cam requested merge/cleanup of PR370, then the next related provenance batch.
 PR370 merges as `cba50a36de33bfcbad069bb83f2cb81204b5fae5`; exact reviewed
 tree, valid canonical signature, sole parent and Cam DCO verify. Clean main is

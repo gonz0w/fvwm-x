@@ -35,7 +35,137 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, V2 — finish PR370 binding-provenance qualification, 2026-11-07.
+Current work, W1 — placement/modifier provenance under #218, 2026-11-07.
+Cam requested merge/cleanup of PR370, then the next related provenance batch.
+PR370 merges as `cba50a36de33bfcbad069bb83f2cb81204b5fae5`; exact reviewed
+tree, valid canonical signature, sole parent and Cam DCO verify. Clean main is
+synchronized and the completed branch retired. Lead owns integration, tracker,
+native execution and delivery on `codex/r1-policy-provenance` at that base.
+
+Four selected stories: retain last value-changing source for both placement
+finish masks; retain the ignored-modifier policy's last value-changing source;
+add truthful bounded version1 group metadata to existing providers; and show
+strict redacted policy sources/explanations before binding rows exhaust the UI
+budget. These are aggregate-mask origins, not ownership of every bit/button.
+No history or per-event/window winner is inferred. Preserve placement actions,
+button-zero behavior, invalid-input effects, values and shared generation rules.
+Same-value commands retain the earlier source. Preserve placement's existing
+conservative generation invalidations, including no-op/rejected input; no generic
+binding-generation optimization is selected. Same-value modifier commands retain
+their earlier generation as already qualified. Preserve malformed
+IgnoreModifiers' existing resulting-mask behavior and expose parse-error effect
+when that command actually changes the mask. XKB exclusions are compiled policy;
+the used mask is derived, with no fabricated configuration source.
+
+Schema: additive `provenance` object with `version:1`; placement includes `drag`
+and `interactive` entries, binding-policy includes `ignored_modifiers`. Each
+entry has exactly `basis`, `source`, `effect`, `retention`: basis is
+`builtin-default` or `last-value-change`; source reuses existing version1 origins;
+effect is `builtin-default`, `applied` or `parse-error`; retention is
+`not-applicable`, `retained`, `unavailable` or `budget-exhausted`. Builtin entries
+use builtin effect/not-applicable retention and unavailable source. Changed
+entries use applied/parse-error effect and the applicable retained/unavailable/
+budget result. Retain before release; three fixed slots each charge at most64KiB
+of complete source/parent allocations (192KiB maximum additional retention).
+Retained snapshots can themselves describe unavailable coordinates; retention
+describes ownership, not guaranteed file availability. Unavailable/budget entries
+carry unavailable sources. Metadata limits preserve policy behavior. Three static slots share the core policy
+state's process lifetime; replacement releases old references, and helper clear
+supports unit cleanup without new core teardown hooks. No packet/grammar/dependency change.
+
+C ownership: source slots, placement/modifier mutation hooks, provider snapshots,
+JSON and focused ownership/query tests. Go ownership: strict policy projection,
+redaction, bounded source continuations, row ordering and regressions. Lead owns
+manuals, native fixture, evidence and integration. Reuse existing source decoder
+and helper lifetimes; no broad rewrite or project build-graph cleanup is selected.
+Exclude Colorset/menu-style/decor lifetimes, exact per-button/bit lineage and all
+other release gates. #218 stays open for those remaining finite domains.
+
+Acceptance: origins survive nested Read/include/file closure; only changed groups
+replace origins; no-op/rejected placement preserves source and conservative generation behavior; malformed
+modifier changes are truthful; fixed-slot release/budget behavior and exact JSON
+validate; genuine inspector preserves read-only state and exposes these policy
+rows within existing limits. Run affected incremental core/unit/Go builds and
+focused tests together, then one native query/inspector capture in the existing
+owned Linux profile; reuse prior binding/theme/lifecycle evidence, no full OS/
+install matrix. Lead alone admits after fresh inventory,45min/128MiB maximum,
+one qualification plus one separately reviewed diagnosed correction; stop/replan
+repeated unexplained failure or budget exhaustion. No packages/SDK/storage or
+resource-limit changes, optional benchmark or unrelated discoveries join this
+batch. Separate final integrated/signed-head review and canonical proof precede
+one new PR; stop there. New UI captures are inspected and published as development
+examples, retaining existing alternative-theme checks at their original scope.
+
+W1's inherited quiet-host guard declines before owned start/native dispatch because
+another owner's QEMU PID52321 is active. Preserve that receipt; no qualification
+attempt ran. Fresh read-only inventory observes128GiB host RAM and exactly that
+one VM. Under WORKFLOW's current resource-bounded concurrency, select task-local
+functional admission of one owned otherwise-idle Linux VM plus at most that exact
+other VM (two total), allowing zero if it ends and refusing unexpected additions.
+This is a fresh bounded selection, not activation of a historical exception.
+Leave the other VM untouched. Keep current owner/identity/idle/shutdown guards,
+CPU/RAM/disk settings and all per-job/source/command/time/export limits. No global
+policy, executor, performance observation or other-resource authority changes.
+Separately review the host-only refreeze; preserve the byte-identical native
+bundle and unexecuted qualification. No native attempt budget is renewed.
+
+W1 first qualification stops during Meson regeneration after0.884seconds, before
+any C compilation or tests: the retained guest lacks the already-merged
+`tests/test_graphics_eval_bsd.py` referenced by current tests/meson.build. Sync
+that exact cba50a36 file and its existing `tests/live_x/graphics_eval_bsd.py`
+import dependency; neither is a new product change or a new W1 test. Other absent
+committed XCB research fixtures are unrelated and stay unsynced. Preserve the
+failure/command receipt and confirmed owned shutdown; the other VM was untouched.
+The one diagnosed correction verifies all2524already-applied source bytes and
+all original ELF/config/SDK/tool controls, skips rewriting those22overlays, and
+copies only the two proven committed support files. Retry the same16commands
+in the same incremental build, with unchanged metadata guard/acceptance/budgets;
+no compiler/runtime pass is inferred from the failed regeneration. Stop/replan
+on another unexplained failure, without renewing this native correction budget.
+
+The correction's admission refuses before commands or support writes: only
+`meson-info/meson-info.json` changes from the earlier recorded index; all seven
+other metadata files,2524source bytes and six ELF identities match. The later
+SDK/tool/library controls did not run in that refusal and are not fresh passes.
+The index's actual contents/semantic change are not yet exported; do not infer
+an error flag. It is not used to select inputs by this direct Ninja runner;
+tools/maintenance/build.py does consume it and is not changed or relaxed.
+
+After bounded analyst review, amend only this unexecuted correction's admission:
+preserve baseline and both failed receipts; require the full exact index identity
+transition from1137bytes/c49fa33f5ad34acb2223e1ba98d006bf6b1484083790b029804d16984ebb6c67
+to1214bytes/e7276afbf493ffb9d36cc191a8b609311e93026afe5e0447293bec864e850821,
+same path/realpath and metadata keyset, with every other record exactly baseline.
+Export actual current index bytes/pin during admission. No metadata file class is
+ignored, no arbitrary hash accepted, and no historical baseline overwritten.
+Recheck all remaining source/ELF/config/SDK/tool/library/regenerator controls
+before either support write. All post-build metadata/target/config checks remain.
+Deduct this refusal's actual time and output as well as the first failure's cost;
+zero commands is not zero resource use. Preserve the16commands/two support files,
+source overlay, executor and acceptance. This is a reviewed exact admission
+transition, not a second correction or renewed attempt budget. A further drift,
+unexplained failure or exhausted aggregate budget stops the correction; no
+automatic additional pin or retry. Separate review binds the amended inputs.
+
+W1's admitted correction compiles42incremental steps in5.097seconds; both
+policy-origin and core-query-json units pass. Actual319target metadata validates
+all bounded additions/order/other fields. It then fails the Go inspector race
+package at three unavailable-source state assertions; worker package passes
+against that pre-fix dependency. The helper marked an empty section unavailable
+before inserting known policy facts. A separately reviewed source-only fix moves
+the status update after row insertion, preserving tests/schema/redaction/bounds.
+The fix is unqualified. Native attempts stop; no further execution is selected.
+
+Preserve current C compilation/units, exact post-C ELF/archive and metadata pins.
+Go helper builds, scoped sanitizers, library closure, manuals and the native
+scenario/two screenshots were not reached. The raw index is now exported and
+shows error=true with the missing BSD-file message; no earlier claim assumed its
+contents. All command groups and owned resources retire, other VM untouched.
+Prepare one draft PR with explicit remaining gates and finite continuation;
+#218 stays open. No full matrix, performance or screenshot pass is inferred.
+[Draft checkpoint and receipts](verification/VERIFICATION-2026-11-07-POLICY-PROVENANCE.md).
+
+Historical V2 — finish PR370 binding-provenance qualification, 2026-11-07.
 Cam explicitly requested fixing the build-metadata guard and completing the
 remaining checks/screenshots, reusing the passing C build without a full matrix.
 Lead owns integration, tracker, native execution and final ready state on the

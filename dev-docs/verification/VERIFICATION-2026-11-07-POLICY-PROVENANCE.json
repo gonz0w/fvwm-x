@@ -1,0 +1,307 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07",
+  "checkpoint": "W1 placement/modifier policy provenance draft",
+  "base": "cba50a36de33bfcbad069bb83f2cb81204b5fae5",
+  "branch": "codex/r1-policy-provenance",
+  "status": "draft; not ready to merge",
+  "tested_source": {
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "80f7981dae1c51971b7b3cea5698478e729d352dc1c11156718cfb792aae07ec",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "b0237329f01745042db12b72c0ba1c9b768ef7ec318a865eaa457e8bd4dc87fd",
+    "bin/FvwmPrompt/internal/desktopinspect/policy_provenance.go": "a2025631a8fd471d871869b7027e1210683b5f146e580f3aa837edce83e88afb",
+    "bin/FvwmPrompt/internal/desktopinspect/policy_provenance_test.go": "1daea49b19b700886665156fa73b232a694e35d01bd4d08d3bf2839068725c3c",
+    "bin/FvwmPrompt/meson.build": "7b4a3878a6046df491187d994df0c67c83667e54b7e1cd1ac0b884f5c5afb7f7",
+    "doc/FvwmDesktop.adoc": "89429bb6921a382d8b151466538619ff0e44729e587c1c09788f4ccdc03a7340",
+    "doc/FvwmMFL.adoc": "1f9b48d11fc441e5fddc2ce1e23765ca891b6ad053eb5bea2ddb427e29bddfc8",
+    "fvwm/bindings.c": "59a3ede402044d0d6549c7a339ad560aae229907ced82350826fb63c9531c8db",
+    "fvwm/bindings.h": "c5cc820a0ee12f5cb76a1a2d30d58432d0d0fbaa8a30df5351a5585782fb8726",
+    "fvwm/module_interface.c": "bc052e38ee894fe0f14ebd7ff293c91c6e9a740b8258b4a68322b8cde5200392",
+    "fvwm/move_resize.c": "b890382f4cc479fda9b297b8084fe4db930fe2fbdf37e9943b8db156873c2ee2",
+    "fvwm/move_resize.h": "e01db8aab2d8da1da0abbf7703f27f95c8a682d7966d5ce603949e0c65f1606b",
+    "fvwm/query_json.c": "ad7cc17578c84ddf0fcf768e20f3cd51764e4e434e5c8e3660170ac2fa8c4270",
+    "fvwm/query_json.h": "d3731663b62274b06a1fb3c969fdba53623ff4fcf9a2260c596d9028583c3204",
+    "libs/meson.build": "922630631044ba8608a9442f2f05d059015a870a4f4280417a7edd69bf30f34f",
+    "libs/policy_origin.c": "da5d0435d7c45274a6b32ee60b8875e2ac6854aee17306f05a10fc35f0a4835f",
+    "libs/policy_origin.h": "15814bcc8373bd7b45fd651bc56ac72ca0c0cea751fbd73064fd62944583aadd",
+    "tests/live_x/binding_origin_live.py": "4ac5d355cd29a154aa1ce5c452c60844c2626822a6d908a822e233386e2c9bee",
+    "tests/live_x/graphics_eval_bsd.py": "3f3387532b5c3bd13507cfb8a2dd5de66e68b8cad006ec3058d4b28fa1ac8864",
+    "tests/live_x/policy_origin_live.py": "c52aac1fadff3cb100933e62fdc99aa22d387948836616a49e8201287c59952e",
+    "tests/meson.build": "a2a63ac6f4943675dab8af7fc0437970b1a76db2a88680ab4917878b1049bd2a",
+    "tests/test_graphics_eval_bsd.py": "acbd13bfbcb290d618685b65addb32e19a0e6a60d6e096a64273b33b89e96811",
+    "tests/test_policy_origin.c": "a5bf2b438961ed2afaa1ee65bc0e04e77e44e8497c06cadcaa13b6ed6b594d45",
+    "tests/test_query_json.c": "fcaf1b4825d9a95bb5bef653f9572267c471a49d6265692724238e15e232cba0"
+  },
+  "current_unqualified_fix": {
+    "bin/FvwmPrompt/internal/desktopinspect/policy_provenance.go": {
+      "tested": "a2025631a8fd471d871869b7027e1210683b5f146e580f3aa837edce83e88afb",
+      "current": "b5c6d5e2231457c7fcfa51977b68a48452785a04baa78ab33c5466041f50f0c7"
+    }
+  },
+  "artifact_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-policy-provenance",
+  "plan_sha256": "917792a7b6eb2f56f5becb17f7b7330fb44be4a25d7266963e49d85fbd87c928",
+  "archive_sha256": "700052ed31ae3d7957344c5c893586bcb9456f7c0131e9ad6d4d1f0fb3d8f1ae",
+  "exported_files": {
+    "evidence/test-policy-origin.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/affected-go-race-tests.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/result.json": "a3ca595ab67717ad0ce7a12ed02d8a9542efa6fb9d796c2b80214d734d8bb37e",
+    "evidence/affected-go-race-tests.stdout": "05e286ba767d81f03127c34e99d07dd0323d29315181ce6f862073f5cf28336d",
+    "evidence/intro-targets-after.json": "bbfd9e5eaa5bdd11b4821782a58cf7cdfe05dd8c875e9fe88b02032d649bdfbe",
+    "evidence/native-inputs-before.json": "9d27ccaa2d0c0802b97116e949db951e20f8116b34786d7ec405c59a8f15a210",
+    "evidence/test-policy-origin.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-query-json.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/intro-targets-before.json": "7695b50fa8a9ad05a527e011fc284b1d526824627e63296003d244cffc9f56b4",
+    "evidence/affected-incremental-build.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/intro-targets-failure.json": "bbfd9e5eaa5bdd11b4821782a58cf7cdfe05dd8c875e9fe88b02032d649bdfbe",
+    "evidence/affected-incremental-build.stdout": "65aa074097a7f1110c52e1c827c07deffbbbfe3220559037d71f765c6eb48c39",
+    "evidence/meson-index-observed.json": "e7276afbf493ffb9d36cc191a8b609311e93026afe5e0447293bec864e850821",
+    "evidence/test-query-json.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "execution_profile": "native-cpu",
+  "commands": [
+    {
+      "label": "affected-incremental-build",
+      "exit": 0,
+      "seconds": 5.096894190999999,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stdout",
+        "bytes": 14004,
+        "sha256": "65aa074097a7f1110c52e1c827c07deffbbbfe3220559037d71f765c6eb48c39"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-policy-origin",
+      "exit": 0,
+      "seconds": 0.0003796529999995357,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-query-json",
+      "exit": 0,
+      "seconds": 0.0009592160000000405,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "affected-go-race-tests",
+      "exit": 1,
+      "seconds": 2.096426052,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stdout",
+        "bytes": 1821,
+        "sha256": "05e286ba767d81f03127c34e99d07dd0323d29315181ce6f862073f5cf28336d"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "go_failure": "--- FAIL: TestPolicyRowsKindsPrivacyAndEffects (0.00s)\n    --- FAIL: TestPolicyRowsKindsPrivacyAndEffects/unavailable/applied (0.00s)\n        policy_provenance_test.go:151: {  unavailable  Policy source unavailable [{policy ignored modifiers basis last-value-change; aggregate mask only; no per-bit/button ownership or event winner} {policy ignored modifiers retention unavailable} {policy ignored modifiers effect applied; last value-changing command; same-value commands retain earlier source} {policy ignored modifiers source unavailable; reported source unavailable; details hidden}] false}\n    --- FAIL: TestPolicyRowsKindsPrivacyAndEffects/unavailable/parse-error (0.00s)\n        policy_provenance_test.go:151: {  unavailable  Policy source unavailable [{policy ignored modifiers basis last-value-change; aggregate mask only; no per-bit/button ownership or event winner} {policy ignored modifiers retention unavailable} {policy ignored modifiers effect parse-error; parse error in IgnoreModifiers changed observed mask; command did not succeed} {policy ignored modifiers source unavailable; reported source unavailable; details hidden}] false}\n--- FAIL: TestPolicyRetainedUnavailableSourceNeverClaimsCoordinates (0.00s)\n    policy_provenance_test.go:336: {  unavailable  Policy source unavailable [{policy ignored modifiers basis last-value-change; aggregate mask only; no per-bit/button ownership or event winner} {policy ignored modifiers retention retained} {policy ignored modifiers effect applied; last value-changing command; same-value commands retain earlier source} {policy ignored modifiers source unavailable; reported source unavailable; details hidden}] false}\nFAIL\nFAIL\tgithub.com/fvwmorg/FvwmPrompt/internal/desktopinspect\t1.491s\nok  \tgithub.com/fvwmorg/FvwmPrompt/internal/desktopworker\t1.069s\nFAIL\n",
+  "post_c_build_measurement": {
+    "fvwm3": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "bytes": 5881680,
+      "sha256": "2ed3d7efb8bd866f072e2bbf3c3507fdab6e12831adc2f42b9fa038f1ceeb1e8"
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "bytes": 463696,
+      "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba"
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "bytes": 2294512,
+      "sha256": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490"
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "bytes": 1782616,
+      "sha256": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229"
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "bytes": 6826762,
+      "sha256": "2c866ae1b94058ccc0eca80e7fd55bf0ed02cd7e8453a33f43eaceb7a15f349d"
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "bytes": 6554680,
+      "sha256": "f8bcfbdd2efbbcad2e7f34f5009a03011e5ce55a734d9af12a0768fc056ea533"
+    },
+    "tests/test-policy-origin": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "bytes": 116160,
+      "sha256": "cf3996b17b95f5eec1233d7e143264bafb3b5798d564eaa28df31ecaf1f24690"
+    },
+    "tests/test-query-json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "bytes": 474488,
+      "sha256": "0d10331cab480882dcd524b04339445697f37d8c8e092eb651cf8536b7d38e69"
+    }
+  },
+  "archive_after_c_build_measurement": {
+    "path": "/tmp/fvwm-appearance-a4-20261102-01/build/libs/libfvwm3.a",
+    "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/libs/libfvwm3.a",
+    "bytes": 28620,
+    "sha256": "0e94a125ae1252917463bb530a2c11478e36e25214cbb9f3a6e9c11e5f09807d"
+  },
+  "build_metadata_after_regeneration": {
+    "build.ninja": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "bytes": 2692010,
+      "sha256": "d8b5670cc8c2e5acae753fce14c72f64e54d33702f4d2c5e53d9ea806e1ac02f"
+    },
+    "meson-private/coredata.dat": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "bytes": 125535,
+      "sha256": "120118aaea0ab42c805f32c7208181e5aeb1e7e5b9a785fa47d82b507f34774d"
+    },
+    "meson-info/intro-targets.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "bytes": 2336493,
+      "sha256": "708e18ee545acdd823d3da0ad6abcc5a9d11f69edb4d0674ad7a38de690cf04d"
+    },
+    "meson-info/intro-buildoptions.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "bytes": 20791,
+      "sha256": "12d2b9a79ffe0856c507593fd04a9f03791a8b06e9760671fed59484811e84d9"
+    },
+    "meson-info/intro-compilers.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "bytes": 683,
+      "sha256": "433b58d89baa09821881a7d252c6a4fac6c907fdcb228c95a66782d23ec67e8a"
+    },
+    "meson-info/intro-machines.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "bytes": 707,
+      "sha256": "988c50080b5be124eff30aab006a9844149395fb07a65aea2c8bdda300dd5033"
+    },
+    "meson-info/intro-dependencies.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "bytes": 9253,
+      "sha256": "e6dee5544b04106387ce62834ee38318fa9cac0c2a8dc47f4b8997cb76852a80"
+    },
+    "meson-info/meson-info.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "bytes": 1137,
+      "sha256": "c49fa33f5ad34acb2223e1ba98d006bf6b1484083790b029804d16984ebb6c67"
+    }
+  },
+  "target_delta": {
+    "baseline_count": 318,
+    "new_target": "test-policy-origin",
+    "shared_go_targets": [
+      "3d451e1@@FvwmPrompt@cus",
+      "3d451e1@@FvwmPrompt-test-binaries@cus",
+      "3d451e1@@fvwm-clipboard@cus",
+      "3d451e1@@FvwmCommand@cus",
+      "3d451e1@@fvwm-menu-xlock@cus",
+      "3d451e1@@fvwm-menu-directory@cus",
+      "3d451e1@@fvwm-script-ComExample@cus",
+      "3d451e1@@fvwm-menu-desktop@cus",
+      "3d451e1@@fvwm-file-browser@cus",
+      "3d451e1@@fvwm-pinboard@cus",
+      "3d451e1@@FvwmDesktop@cus",
+      "3d451e1@@fvwm-desktop-worker@cus",
+      "3d451e1@@fvwm-session@cus"
+    ],
+    "new_go_inputs": [
+      "/tmp/fvwm-appearance-a4-20261102-01/src/bin/FvwmPrompt/internal/desktopinspect/policy_provenance.go",
+      "/tmp/fvwm-appearance-a4-20261102-01/src/bin/FvwmPrompt/internal/desktopinspect/policy_provenance_test.go"
+    ],
+    "new_library_source": "/tmp/fvwm-appearance-a4-20261102-01/src/libs/policy_origin.c"
+  },
+  "index_transition": {
+    "original": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "bytes": 1137,
+      "sha256": "c49fa33f5ad34acb2223e1ba98d006bf6b1484083790b029804d16984ebb6c67"
+    },
+    "observed": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "bytes": 1214,
+      "sha256": "e7276afbf493ffb9d36cc191a8b609311e93026afe5e0447293bec864e850821"
+    },
+    "exported": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/meson-index-observed.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/meson-index-observed.json",
+      "bytes": 1214,
+      "sha256": "e7276afbf493ffb9d36cc191a8b609311e93026afe5e0447293bec864e850821"
+    },
+    "semantics": "unknown; this direct Ninja runner does not select inputs from the index",
+    "unchanged_other_metadata_files": 7
+  },
+  "pending": [
+    "corrected Go inspector and dependent worker race checks",
+    "two configured Go helper builds",
+    "two scoped ASan/UBSan unit builds/executions",
+    "affected library closure",
+    "candidate/base rendering of two manuals and host formatter review",
+    "native query/inspector scenario and two screenshots"
+  ],
+  "cleanup": {
+    "owned_container": "confirmed stopped",
+    "owned_machine": "confirmed stopped",
+    "receipt_sha256": "a36d6a826ab2af793311830d13bdd9b12100f4c07d6de4dcf274144ba7f51bd8",
+    "other_vm": "untouched; no performance claim"
+  },
+  "limits": {
+    "native_campaign": "stopped at attempt limit; no additional retry selected",
+    "scope": "focused Linux ARM64 only; no full OS/install/release claim",
+    "issue218": "open for qualification and remaining theme/per-bit/per-window provenance",
+    "performance": "not executed; remains due"
+  }
+}

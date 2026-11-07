@@ -61,7 +61,7 @@ def retain(runtime, out):
             shutil.copy2(path, out / path.name)
 
 
-def run(args):
+def run(args, scenario=None):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = args.artifacts_dir.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -217,6 +217,16 @@ def run(args):
         before_settings = wait_for_predicate('Slate owner settings', settings_ready,
                                             time.monotonic() + 12, process=core)
         assert before_settings['settings']['palette']['effective'] == 'slate'
+        if scenario is not None:
+            # Share only owned display/module setup and teardown. Each scene
+            # supplies its own acceptance; old binding cases are not replayed.
+            scenario(runtime=runtime, out=out, user=user, probe=probe,
+                query=query, snapshot=snapshot, before_settings=before_settings,
+                view=view, core=core, evidence=evidence, required=required,
+                records=records, env=env)
+            assert not errors.unexpected, errors.unexpected
+            evidence['status'] = 'passed'
+            return
         entry, leaf = user / 'entry.config', user / 'leaf.config'
         entry.write_text('# independent nested Read coordinates\nRead "' + str(leaf) + '"\n')
         leaf.write_text('# physical continuation\nKey F12 R N \\\n Echo V1_KEY ' + SECRET + '\n'

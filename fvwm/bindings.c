@@ -56,6 +56,8 @@
 /* ---------------------------- local variables ---------------------------- */
 
 static int mods_unused = DEFAULT_MODS_UNUSED;
+/* The live policy and its bounded source share the process lifetime. */
+static fvwm_policy_origin mods_unused_origin = FVWM_POLICY_ORIGIN_INIT;
 /* Conservative revision: every binding command invalidates pages. Zero
  * after exhaustion disables queries rather than ever reusing a revision. */
 static uint64_t bindings_generation = 1;
@@ -454,7 +456,7 @@ static int ParseBinding(
 	/* short circuit placement bindings for now. */
 	if ((context & C_PLACEMENT) == C_PLACEMENT)
 	{
-		placement_binding(button,keysym,modifier,action);
+		placement_binding(button, keysym, modifier, action, source);
 		/* ParseBinding returns the number of new bindings in pblist
 		 * placement bindings does not add to pblist, and should
 		 * return 0 */
@@ -631,6 +633,11 @@ unsigned int GetUnusedModifiers(void)
 	return mods_unused;
 }
 
+const fvwm_policy_origin *binding_query_ignored_origin(void)
+{
+	return &mods_unused_origin;
+}
+
 /* ---------------------------- builtin commands --------------------------- */
 
 void CMD_Key(F_CMD_ARGS)
@@ -660,6 +667,7 @@ void CMD_IgnoreModifiers(F_CMD_ARGS)
 {
 	char *token;
 	int mods_unused_old = mods_unused;
+	fvwm_policy_effect effect = FVWM_POLICY_EFFECT_APPLIED;
 
 	token = PeekToken(action, &action);
 	if (!token)
@@ -672,11 +680,14 @@ void CMD_IgnoreModifiers(F_CMD_ARGS)
 	}
 	else if (modifiers_string_to_modmask(token, &mods_unused))
 	{
+		effect = FVWM_POLICY_EFFECT_PARSE_ERROR;
 		fvwm_debug(__func__,
 			   "illegal modifier in line %s\n", action);
 	}
 	if (mods_unused != mods_unused_old)
 	{
+		fvwm_policy_origin_changed(&mods_unused_origin, exc->source,
+			effect);
 		binding_query_changed();
 		/* broadcast config to modules */
 		broadcast_ignore_modifiers();

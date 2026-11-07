@@ -102,6 +102,10 @@ static int move_interactive_finish_button_mask =
 static int move_drag_finish_button_mask =
 	((1<<(NUMBER_OF_EXTENDED_MOUSE_BUTTONS))-1) & ~0x3;
 
+/* Sources share the process lifetime of these aggregate policy values. */
+static fvwm_policy_origin move_drag_origin = FVWM_POLICY_ORIGIN_INIT;
+static fvwm_policy_origin move_interactive_origin = FVWM_POLICY_ORIGIN_INIT;
+
 /* ----- end of move globals ----- */
 
 /* ----- resize globals ----- */
@@ -2035,8 +2039,19 @@ void placement_query_masks(unsigned int *drag, unsigned int *interactive)
 	*interactive = (unsigned int)move_interactive_finish_button_mask;
 }
 
-int placement_binding(int button, KeySym keysym, int modifier, char *action)
+void placement_query_origins(const fvwm_policy_origin **drag,
+	const fvwm_policy_origin **interactive)
 {
+	*drag = &move_drag_origin;
+	*interactive = &move_interactive_origin;
+}
+
+int placement_binding(int button, KeySym keysym, int modifier, char *action,
+	const fvwm_config_origin *source)
+{
+	int drag_old = move_drag_finish_button_mask;
+	int interactive_old = move_interactive_finish_button_mask;
+
 	if (keysym != 0)
 	{
 		/* fixme */
@@ -2161,6 +2176,12 @@ int placement_binding(int button, KeySym keysym, int modifier, char *action)
 			   "invalid action %s", action);
 	}
 
+	if (move_drag_finish_button_mask != drag_old)
+		fvwm_policy_origin_changed(&move_drag_origin, source,
+			FVWM_POLICY_EFFECT_APPLIED);
+	if (move_interactive_finish_button_mask != interactive_old)
+		fvwm_policy_origin_changed(&move_interactive_origin, source,
+			FVWM_POLICY_EFFECT_APPLIED);
 	return 0;
 }
 

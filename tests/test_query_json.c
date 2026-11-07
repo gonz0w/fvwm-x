@@ -63,6 +63,8 @@ static void test_internal_grammar(void)
 	}
 }
 
+static const fvwm_policy_origin builtin_origin = FVWM_POLICY_ORIGIN_INIT;
+
 static const char token[] =
 	"000000000000000000000000000000000000000000000001";
 
@@ -414,6 +416,93 @@ static void test_binding_pages(void)
 	assert(strcmp(error, "query_too_large") == 0);
 }
 
+static void assert_policy_entry(cJSON *entry, const char *basis,
+	const char *effect, const char *retention, const char *source_kind)
+{
+	assert(cJSON_IsObject(entry) && cJSON_GetArraySize(entry) == 4);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(entry,
+		"basis")->valuestring, basis) == 0);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(entry,
+		"effect")->valuestring, effect) == 0);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(entry,
+		"retention")->valuestring, retention) == 0);
+	cJSON *source = cJSON_GetObjectItemCaseSensitive(entry, "source");
+
+	assert(cJSON_GetObjectItemCaseSensitive(source,
+		"version")->valueint == 1);
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(source,
+		"kind")->valuestring, source_kind) == 0);
+}
+
+static void test_policy_sources(void)
+{
+	struct fvwm_query_spec spec = {.limit = 8, .generation = "-"};
+	fvwm_policy_origin changed = FVWM_POLICY_ORIGIN_INIT;
+	fvwm_policy_origin exhausted = {
+		.effect = FVWM_POLICY_EFFECT_APPLIED,
+		.retention = FVWM_POLICY_RETENTION_BUDGET_EXHAUSTED
+	};
+	fvwm_config_origin *root = fvwm_config_origin_file("/root.cfg", 1, 2,
+		NULL);
+	fvwm_config_origin *child = fvwm_config_origin_file("/child.cfg", 3, 4,
+		root);
+	const char *error;
+	cJSON *result, *provenance;
+
+	fvwm_policy_origin_changed(&changed, child, FVWM_POLICY_EFFECT_APPLIED);
+	fvwm_config_origin_release(root);
+	fvwm_config_origin_release(child);
+	result = fvwm_query_placement(token, &spec, 4, 5, &changed,
+		&builtin_origin, &error);
+	assert(result && !error);
+	provenance = cJSON_GetObjectItemCaseSensitive(result, "provenance");
+	assert(cJSON_GetArraySize(provenance) == 3);
+	assert(cJSON_GetObjectItemCaseSensitive(provenance,
+		"version")->valueint == 1);
+	assert_policy_entry(cJSON_GetObjectItemCaseSensitive(provenance,
+		"drag"), "last-value-change", "applied", "retained", "file");
+	assert_policy_entry(cJSON_GetObjectItemCaseSensitive(provenance,
+		"interactive"), "builtin-default", "builtin-default",
+		"not-applicable", "unavailable");
+	cJSON *source = cJSON_GetObjectItemCaseSensitive(
+		cJSON_GetObjectItemCaseSensitive(provenance, "drag"), "source");
+
+	assert(strcmp(cJSON_GetObjectItemCaseSensitive(source,
+		"path")->valuestring, "/child.cfg") == 0);
+	assert(cJSON_GetArraySize(cJSON_GetObjectItemCaseSensitive(source,
+		"include")) == 1);
+	char *wire = cJSON_PrintUnformatted(result);
+
+	assert(wire && strlen(wire) < MODULE_QUERY_RESULT_MAX);
+	free(wire);
+	cJSON_Delete(result);
+
+	fvwm_policy_origin_changed(&changed, changed.source,
+		FVWM_POLICY_EFFECT_PARSE_ERROR);
+	result = fvwm_query_binding_policy(token, &spec, 2, &changed, &error);
+	assert(result && !error);
+	provenance = cJSON_GetObjectItemCaseSensitive(result, "provenance");
+	assert(cJSON_GetArraySize(provenance) == 2);
+	assert(cJSON_GetObjectItemCaseSensitive(provenance,
+		"version")->valueint == 1);
+	assert_policy_entry(cJSON_GetObjectItemCaseSensitive(provenance,
+		"ignored_modifiers"), "last-value-change", "parse-error",
+		"retained", "file");
+	cJSON_Delete(result);
+	fvwm_policy_origin_changed(&changed, NULL, FVWM_POLICY_EFFECT_APPLIED);
+	result = fvwm_query_placement(token, &spec, 0, 0, &changed, &exhausted,
+		&error);
+	assert(result && !error);
+	provenance = cJSON_GetObjectItemCaseSensitive(result, "provenance");
+	assert_policy_entry(cJSON_GetObjectItemCaseSensitive(provenance,
+		"drag"), "last-value-change", "applied", "unavailable", "unavailable");
+	assert_policy_entry(cJSON_GetObjectItemCaseSensitive(provenance,
+		"interactive"), "last-value-change", "applied",
+		"budget-exhausted", "unavailable");
+	cJSON_Delete(result);
+	fvwm_policy_origin_clear(&changed);
+}
+
 static void test_binding_domains(void)
 {
 	struct fvwm_query_spec spec = {.limit = 8, .generation = "-",
@@ -446,7 +535,8 @@ static void test_binding_domains(void)
 	assert(cJSON_GetArraySize(cJSON_GetObjectItemCaseSensitive(result,
 		"bindings")) == 0);
 	cJSON_Delete(result);
-	result = fvwm_query_placement(token, &spec, 4, 5, &error);
+	result = fvwm_query_placement(token, &spec, 4, 5,
+		&builtin_origin, &builtin_origin, &error);
 	assert(result && !error);
 	assert(cJSON_GetObjectItemCaseSensitive(result,
 		"drag_finish_mask")->valueint == 4);
@@ -455,7 +545,8 @@ static void test_binding_domains(void)
 	assert(cJSON_IsFalse(cJSON_GetObjectItemCaseSensitive(result,
 		"key_bindings")));
 	cJSON_Delete(result);
-	result = fvwm_query_binding_policy(token, &spec, 2, &error);
+	result = fvwm_query_binding_policy(token, &spec, 2,
+		&builtin_origin, &error);
 	assert(result && !error);
 	assert(cJSON_GetObjectItemCaseSensitive(result,
 		"ignored_modifier_mask")->valueint == 2);
@@ -467,16 +558,20 @@ static void test_binding_domains(void)
 		"control")->valueint == 4);
 	cJSON_Delete(result);
 	spec.offset = 1;
-	assert(!fvwm_query_placement(token, &spec, 0, 0, &error));
+	assert(!fvwm_query_placement(token, &spec, 0, 0,
+		&builtin_origin, &builtin_origin, &error));
 	assert(strcmp(error, "invalid_request") == 0);
-	assert(!fvwm_query_binding_policy(token, &spec, 0, &error));
+	assert(!fvwm_query_binding_policy(token, &spec, 0,
+		&builtin_origin, &error));
 	assert(strcmp(error, "invalid_request") == 0);
 	spec.offset = 0;
 	strcpy(spec.generation,
 		"000000000000000000000000000000000000000000000002");
-	assert(!fvwm_query_placement(token, &spec, 0, 0, &error));
+	assert(!fvwm_query_placement(token, &spec, 0, 0,
+		&builtin_origin, &builtin_origin, &error));
 	assert(strcmp(error, "stale_generation") == 0);
-	assert(!fvwm_query_binding_policy(token, &spec, 0, &error));
+	assert(!fvwm_query_binding_policy(token, &spec, 0,
+		&builtin_origin, &error));
 	assert(strcmp(error, "stale_generation") == 0);
 }
 
@@ -501,7 +596,10 @@ static void test_monitors_and_failure_cleanup(void)
 	struct fvwm_query_spec spec = {.limit = 8, .generation = "-"};
 	const char *error;
 	cJSON *result;
+	fvwm_policy_origin changed_origin = FVWM_POLICY_ORIGIN_INIT;
 
+	fvwm_policy_origin_changed(&changed_origin, binding.source,
+		FVWM_POLICY_EFFECT_APPLIED);
 	fvwm_config_origin_release(root);
 	RB_INIT(&monitors);
 	assert(RB_INSERT(monitors, &monitors, &monitor) == NULL);
@@ -546,15 +644,18 @@ static void test_monitors_and_failure_cleanup(void)
 				break;
 			case 3:
 				result = fvwm_query_placement(token, &spec,
-					4, 5, &error);
+					4, 5, &changed_origin, &builtin_origin, &error);
 				break;
 			default:
+				changed_origin.effect = FVWM_POLICY_EFFECT_PARSE_ERROR;
 				result = fvwm_query_binding_policy(token, &spec,
-					2, &error);
+					2, &changed_origin, &error);
 				break;
 			}
 			completed = result != NULL;
 			assert(completed ? error == NULL : error != NULL);
+			if (kind >= 3 && !completed)
+				assert(strcmp(error, "allocation_failed") == 0);
 			cJSON_Delete(result);
 			assert(live == 0);
 			cJSON_InitHooks(NULL);
@@ -570,6 +671,7 @@ static void test_monitors_and_failure_cleanup(void)
 	assert(!fvwm_query_workspaces(&monitors, 800, 600, "global", &error));
 	assert(strcmp(error, "unavailable") == 0);
 	fvwm_config_origin_release(binding.source);
+	fvwm_policy_origin_clear(&changed_origin);
 }
 
 int main(void)
@@ -580,6 +682,7 @@ int main(void)
 	test_binding_source_kinds();
 	test_binding_pages();
 	test_binding_domains();
+	test_policy_sources();
 	test_monitors_and_failure_cleanup();
 	return 0;
 }

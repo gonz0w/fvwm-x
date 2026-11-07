@@ -164,13 +164,52 @@ func (c *collector) bindings(s *Section) {
 			generation = ""
 			c.problem(s, "Malformed binding policy")
 		} else {
-			for _, key := range []string{"ignored_modifier_mask", "xkb_ignored_modifier_mask", "used_modifier_mask"} {
-				if n, ok := intField(policy, key); ok && n >= 0 {
-					c.row(s, "policy "+key, masks(n, modifiers))
+			if n, ok := intField(policy, "ignored_modifier_mask"); ok && n >= 0 {
+				c.row(s, "policy ignored modifiers value", masks(n, modifiers))
+			} else {
+				c.problem(s, "Malformed binding mask policy")
+			}
+			c.policyProvenance(s, policy, "ignored_modifiers")
+			for _, derived := range []struct{ key, label, explanation string }{
+				{"xkb_ignored_modifier_mask", "policy XKB exclusions", "compiled policy; no configuration source"},
+				{"used_modifier_mask", "policy used modifiers", "derived mask; no independent configuration source"},
+			} {
+				if n, ok := intField(policy, derived.key); ok && n >= 0 {
+					c.row(s, derived.label, masks(n, modifiers)+"; "+derived.explanation)
 				} else {
 					c.problem(s, "Malformed binding mask policy")
 				}
 			}
+		}
+	}
+	placement, err := c.call("bindings", "placement", 0, generation, false)
+	if err != nil {
+		c.problem(s, "placement: "+err.Error())
+	} else if got := stringField(placement, "generation"); !token(got) || generation != "" && got != generation {
+		c.problem(s, "Placement generation changed")
+	} else {
+		if generation == "" {
+			generation = got
+		}
+		if value, ok := intField(placement, "button_count"); ok && value >= 0 {
+			c.row(s, "policy placement button_count", fmt.Sprint(value))
+		} else {
+			c.problem(s, "Malformed placement policy")
+		}
+		for _, group := range []string{"drag", "interactive"} {
+			if value, ok := intField(placement, group+"_finish_mask"); ok && value >= 0 {
+				c.row(s, "policy placement "+group+" value", fmt.Sprint(value))
+			} else {
+				c.problem(s, "Malformed placement policy")
+			}
+		}
+		c.policyProvenance(s, placement, "drag", "interactive")
+		keys, keysOK := boolField(placement, "key_bindings")
+		modifiers, modifiersOK := boolField(placement, "modifier_bindings")
+		if !keysOK || !modifiersOK || keys || modifiers {
+			c.problem(s, "Malformed placement binding limits")
+		} else {
+			c.row(s, "policy placement limits", "No key or modifier bindings in placement policy")
 		}
 	}
 	for _, scope := range []string{"global", "menu", "menu-fallback"} {
@@ -208,30 +247,6 @@ func (c *collector) bindings(s *Section) {
 			c.row(s, binding, fmt.Sprintf("context=%s; modifiers=%s; %s%s", masks(context, contexts), masks(modifier, modifiers), c.action(action), window))
 			return c.bindingProvenance(s, item, scope, binding, count-1)
 		})
-	}
-	placement, err := c.call("bindings", "placement", 0, generation, false)
-	if err != nil {
-		c.problem(s, "placement: "+err.Error())
-	} else if got := stringField(placement, "generation"); !token(got) || generation != "" && got != generation {
-		c.problem(s, "Placement generation changed")
-	} else {
-		if generation == "" {
-			generation = got
-		}
-		for _, key := range []string{"button_count", "drag_finish_mask", "interactive_finish_mask"} {
-			if value, ok := intField(placement, key); ok && value >= 0 {
-				c.row(s, "placement "+key, fmt.Sprint(value))
-			} else {
-				c.problem(s, "Malformed placement policy")
-			}
-		}
-		keys, keysOK := boolField(placement, "key_bindings")
-		modifiers, modifiersOK := boolField(placement, "modifier_bindings")
-		if !keysOK || !modifiersOK || keys || modifiers {
-			c.problem(s, "Malformed placement binding limits")
-		} else {
-			c.row(s, "placement limits", "No key or modifier bindings in placement policy")
-		}
 	}
 	s.Generation = generation
 }

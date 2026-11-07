@@ -19,11 +19,14 @@
 
 #include <stdbool.h>
 #include "libs/module_query.h"
+#include "libs/policy_origin.h"
 
 bool binding_query_token(char output[MODULE_QUERY_GENERATION_LEN + 1]);
 void update_key_bindings(void);
 unsigned int MaskUsedModifiers(unsigned int in_modifiers);
 unsigned int GetUnusedModifiers(void);
+/* Borrowed immutable view until the next value-changing command. */
+const fvwm_policy_origin *binding_query_ignored_origin(void);
 void print_bindings(void);
 
 #endif /* FVWM_BINDINGS_H */

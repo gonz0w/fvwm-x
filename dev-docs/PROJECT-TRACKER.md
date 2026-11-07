@@ -28,14 +28,266 @@ State: isolated canonical candidate prepared; checks, review and merge pending.
 Current product work retains its owner; this record owns only the selected
 method refresh and does not start a second product lane.
 
-Updated: 2026-11-06. This is the active tracker. Retired milestone planning and
+Updated: 2026-11-07. This is the active tracker. Retired milestone planning and
 upstream notes live under [history](history/README.md). Update status with
 evidence, not estimates; use [the current index](README.md) for project guides.
 
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, G16 — native layout issue closeout, 2026-11-07.
+Current work, PR368 — UI/manual gates complete; final delivery review, 2026-11-07.
+The source-backed fixture repairs qualify all three native configurations in
+4.198 seconds with exact wallpaper root/pixel equality after reload and refusal,
+retained editor/browser/settings identity and real draft callback validation.
+All four unmodified captures are inspected. Candidate/base manuals render, and
+60/80-column reading checks pass; inherited formatter families/counts are recorded.
+Five Go packages and both helper builds are reused, not rerun. Ninety-four success
+exports/archive and owned shutdown verify. No production Go changes were needed
+in this continuation. [Closeout and gallery](verification/VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md).
+
+Finish separate integrated/signed-head review, push the follow-up to
+[PR368](https://github.com/gonz0w/fvwm-x/pull/368), reconcile GitHub mirrors and mark
+it ready for review. Do not merge it in this continuation. Broader issue/platform/
+release and due performance gates retain their owners; no whole-issue closure
+is selected. The previous failures below remain historical evidence.
+
+Historical continuation, T2 — finish PR368 UI and manual qualification, 2026-11-07.
+Cam explicitly requested continuation of #368: diagnose its UI failure, reuse
+passing checks, finish manuals and capture the new UI, then make it merge-ready.
+Lead owns scope, execution and integration on `codex/r1-live-theme-reload`,
+base/head `22ee9ff545a9dcc8aeee31985e8f4b7058591a55` (draft PR368).
+T1's campaigns remain stopped and their failures retained; this is the newly
+requested diagnostic continuation, not an automatic renewal.
+
+Bounded outcome: establish the original UI failure with the committed diagnostic-
+preservation fix; repair only current fixture/product acceptance; qualify reload,
+retained state and include ancestry in Slate, Dune and enlarged Classic; inspect
+new actual captures; render/lint the affected manual; separately review and mark
+PR368 ready. Do not merge it in this continuation. No new feature scope, profile,
+SDK/package/install change, broad matrix or benchmark is selected.
+
+Reuse the five passing Go packages and two configured helper builds; verify their
+source/binary identities instead of rerunning them. One owned Linux ARM64 UI
+session, at most 45 minutes/128 MiB export, one diagnostic run plus one diagnosed
+separately reviewed correction. Stop unexplained repeated failures at that limit.
+Run independent manual generation before UI so a fixture failure cannot hide it.
+Exact inputs need separate review before lead execution. The retained source
+postimages, SDK/library/font pins and built Go helper identities bind admission.
+Functional-only work may share the 128 GiB host with one other VM: fresh inventory
+shows PID3933 `qemu-system-aarch64`; preserve it untouched, allow zero if it ends,
+reject unexpected additional VMs, and retain owned stopped/idle/cleanup guards.
+No performance claim follows from the shared host. New unrelated findings return
+to existing milestone ownership. Screenshots/manual/source/evidence and signed
+DCO delivery remain one PR; no native check solely for publication.
+
+T2 diagnostic run identifies the exact first failure: initial panel color passes,
+then the fixture times out waiting for an owned wallpaper before reload is
+exercised. The fixed cleanup retains traceback, stage and native logs with no
+observer X errors. Candidate and PR367 baseline manuals independently render
+successfully before UI. Nineteen exported files/archive verify, all three command
+groups retire, and both owned resources stop.
+
+Source diagnosis: PNG and solid root preparation also use the image worker;
+`image_background_client.c` selects FVWM_IMAGE_SVG_WORKER or an installed path.
+The build-tree fixture omits that override, unlike the working composition
+fixture. Select its explicit retained build worker and require/admit the existing
+Backer, image worker and browser executables before UI. Preserve strict owned-
+wallpaper and unchanged-root assertions. Record extra helper identities at
+admission and recheck afterward; do not invent historical byte provenance or
+compile/install speculatively. Missing prerequisites must fail clearly.
+This is the sole reviewed diagnosed T2 correction; reuse both manual renders,
+five Go passes and two helper builds. Host 60/80-column manual rendering is
+readable; lint retains Asciidoctor GNU mso/LINKSTYLE, long-input-line and paragraph
+families (baseline/candidate exit3), not a clean-lint claim. Exact results remain
+with the continuation evidence. No further feature or platform campaign joins.
+
+T2 has stopped at its two-run limit. The explicit image worker repairs initial
+wallpaper setup; helper prerequisites and library checks pass. Valid reload
+changes the panel while retaining browser/editor/settings state, then the root
+witness equality fails after 0.875 seconds. No unexpected X errors or cleanup
+failures occur. Thirty-two exports/archive verify and all owned children and
+resources stop. Both root snapshots were saved only after the assertion, so the
+actual differing field is unavailable. Relay confirms no colorset20 publication
+by reload; asynchronous startup or root-resource identity churn is a hypothesis,
+not an established cause. Do not weaken the wallpaper requirement from that guess.
+
+Select T3, a narrower root-witness diagnosis for the newly reached assertion:
+retain initial/current root samples before comparison and run Slate only once
+against the unchanged strict oracle. No tests, builds, manuals or other themes
+repeat. If the captured difference establishes a specific fixture/product cause,
+allow one separately reviewed minimal correction with the full three-profile
+acceptance/captures. Retain all previous failures; stop on unexplained repeat or
+exhausted T3 limit. This is a new observed-field diagnostic checkpoint, not a
+renewal of T2's setup run. Existing owner, profile, input guards, shared-host
+resource bounds,45-minute/128MiB limits and independent review remain binding.
+No new product domain or compatibility decision is inferred. Five Go passes,
+two builds and manual results remain reused. Lead alone executes exact reviewed
+inputs, and the PR stays draft until actual UI qualification passes.
+
+T3 source diagnosis establishes a missing baseline precondition: a valid current
+owned root may coexist with pending replacement; it does not mean the final
+selected wallpaper has finished loading. Startup submits light then dark assets.
+Adopt the existing composition readiness queries (root_owned and colorset20 idle),
+a desktop barrier after editor/browser setup, and independently known corner
+pixels from the admitted selected PNG at fixed fixture geometry. Bind those
+expected samples to each asset hash. This distinguishes the selected image from
+an intermediate solid/opposite-phase root, without a timing sleep or a new decoder.
+Save all root/readiness samples before assertions. Preserve exact root dictionary
+and pixel/hash/identity equality after success and refusal.
+
+This source-backed precondition repair replaces the proposed opaque Slate-only
+observation: select one full three-profile UI qualification with retained failure
+diagnostics, then at most one specifically diagnosed reviewed correction within
+T3 if evidence warrants it. Five package passes, built helpers, extra-helper
+identities and both manual results remain reused. No product change or root-
+identity compatibility waiver is selected. Original root field difference remains
+unobserved; successful execution is required before resolving the race diagnosis.
+
+Historical checkpoint, T1 — identity-preserving semantic theme reload, 2026-11-07.
+Current delivery status: source and composed five-package policy checks pass;
+both configured helpers build. Native UI qualification failed without usable
+profile diagnostics. New screenshots and manual rendering remain pending.
+Prepare a draft PR after source-only fixture cleanup and separate review; no
+further native execution or issue closure is selected in this checkpoint.
+[Exact results and continuation](verification/VERIFICATION-2026-11-07-THEME-RELOAD.md).
+
+Selected issues: RELOAD-01 #217, its THEME-02 #214 role consumer and
+INSPECT-01 #218 literal include provenance. Lead owns
+scope, tracker, native execution and integration on `codex/r1-live-theme-reload`.
+PR367 merged at `1ad74db32e0abe3f1bf4fd3ea44735538b9b652d`; its reviewed
+signature, tree and Cam DCO verify. #211/#212 are closed; R2 #366 retains only
+the explicitly deferred rejected-prototype research. Completed branch is retired.
+
+Outcome: explicitly reload the existing `palettes.json` semantic color component
+without restarting the desktop or discarding open Forms, browser identities,
+selection, drafts or saved preferences. Four related stories share this batch:
+strict bounded source-aware palette validation; asynchronous preparation through
+the existing private worker; preview-recovery/generation-fenced publication to
+existing native color roles; and a discoverable settings-menu action with clear
+success/refusal diagnostics and documented limits. A fifth related authoring
+story exposes the checker's already-recorded include ancestry in the inspector,
+using root-relative labels with line spans and explicit redaction outside known
+roots. Keep literal candidate provenance distinct from exact runtime origin.
+Preserve the last working
+projection on invalid/missing data, preparation failure, stale completion or
+conflicting recovery. Ordinary reload-settings keeps its existing semantics.
+
+Supported reload domain is the existing named palette/phase/color roles and
+native colorsets 0–8 and 10–14. Wallpaper image assets, fonts, geometry, arbitrary config
+commands, shell actions, external Colorset overrides and service restart are
+excluded. Existing fonts/density/borders/motion/icons are already implemented;
+do not reimplement them from stale issue summaries or add a second settings
+store, parser, image engine or evaluation framework. Wallpaper resources remain
+with their existing owner. No production renderer/dependency adoption is selected.
+
+Acceptance: reject incomplete/duplicate/oversize/non-color data with source
+context before live mutation; bounded worker ownership and stale-generation/
+teardown/refusal behavior; retain settings generation/revision and surviving UI;
+republish changed role content even when preference names are unchanged; retain
+preview ownership until recovery succeeds. Update the primary manual and source-
+bound report. Separate integrated and signed-head review precede publication.
+Per-PR source/static checks and affected compilation apply; authored runtime
+coverage joins the next shared major-feature checkpoint, with new UI captures
+from one focused Linux session if needed. No full platform/install campaign.
+The due periodic comparison remains queued for that shared checkpoint.
+Implementation has one bounded pass plus one diagnosed review correction; stop
+and checkpoint on repeated unexplained failure. Any native job requires its exact
+input review and one owned otherwise-idle Linux session, at most 45 minutes,
+one attempt plus one diagnosed correction and 128 MiB export. Lead alone executes.
+Broader #214/#215 and R1 release gates stay open; do not claim whole-issue closure
+until each frozen criterion has observed evidence. T1 implements the finite #217
+component; its remaining runtime acceptance is tracked separately from source.
+
+T1 source review found a required identity/freshness repair before native freeze:
+calling the existing inspector stale helper recreates its Form, and an in-flight
+inspection's old color snapshot can appear fresh when settings identity and
+palette names deliberately survive reload. Keep the open inspector frame/filter
+intact, retain stale status for the next explicit view action, and compare its
+captured colors when accepting a delayed result. This is current T1 acceptance,
+not a new inspector feature or native campaign. Add it to the one composed
+controller check and separately review the diagnosed correction. No failed
+runtime attempt or additional test matrix is implied.
+
+T1 predispatch review rejected the initial private job: its direct desktop Go
+build omitted the configured Meson linker definitions. No native attempt ran.
+Preserve those exact retained build values in the incremental recipe before
+refreezing; the worker recipe has no corresponding linker definitions. Add one
+focused actual include-ancestry capture to the same UI session, rather than
+running the full inspector suite. Source checks passed; execution waits for
+separate review of the corrected exact inputs.
+
+T1 native attempt 1 stopped at the composed Go tests (5.12 seconds), before
+product helper builds, UI or manual execution. Settings, worker and worker-command
+packages pass; controller and inspector fail. Five exported files verify, and
+owned container/machine shutdown is confirmed. Preserve the failed frozen plan
+`5425e8047506e559c7374fdb2a73ae501776756603043aa69db6d5cf3a7e1f05`.
+The unchanged-data check compares named and unnamed Go map types, so it wrongly
+republishes equal palettes. Existing inspector tests also expose its stale reader
+of current desktop-metric/icon metadata and an outdated registry count. These
+are selected current #217/#218 acceptance repairs: use consistent palette domain
+types and update only the finite registry consumer/fixtures, preserving rejection
+of malformed metadata. No assertion is weakened or unrelated audit added.
+Prepare the sole diagnosed correction from the verified applied 19-file guest
+source state. Recheck unchanged binaries/tools and original failed evidence,
+review exact replacement inputs, then run affected checks once in the same owned
+profile. The one-failure/one-correction budget remains; stop on another failure.
+
+The correction's host preflight refused before starting the owned VM or dispatch:
+another owner's `qemu-system-aarch64` (PID89493) is running. The sole native
+correction has not executed; preserve that preflight receipt too. Read-only
+inventory finds 128 GiB host memory and one other VM. Under WORKFLOW's existing
+resource-bounded VM concurrency, select a task-local shared-host admission:
+one owned otherwise-idle Linux guest plus at most that one other VM (two total).
+This run contains no performance/latency/RSS/wait measurements. Preserve the
+other VM untouched, reject unexpected additional VMs, and keep own profile
+identity/idle admission, execution limits and shutdown guards. Prepare a new
+host path with identical native bundle, source/driver expectations and deadlines;
+separately review its host-only admission change before execution. This changes
+no global policy, executor, other-owner authority or native attempt budget.
+
+T1's original native campaign is stopped at its two-attempt limit. The sole
+correction passes controller, settings, worker and worker-command packages;
+only the inspector fails its existing 128-row bound after accepting complete
+current metadata. The two-row compaction forecast was insufficient. Both owned
+resources stopped, and its five diagnostic exports/archive verify. Product helper
+builds, UI and manual have not run. Preserve both failures as failures.
+
+Replan T1-C1, a finite inspector-presentation closeout within accepted #218:
+fold every finite choices/range field into its existing metadata row uniformly,
+retaining content and the 128-row/200-rune limits. This replaces the brittle
+Desktop-only exception and reduces redundant native pages. Keep complete-registry
+and malformed-state assertions; do not raise bounds or omit fields. Exact fixed
+registry descriptors bound row lengths. Global persistence errors may still
+legitimately produce explicit truncated inventories.
+
+Reuse the four now-passing package results. Select one changed inspector package
+check, two affected configured helper builds, the first actual three-profile UI
+run/four captures and one manual render. Do not repeat the other package suites,
+baseline, full inspector/browser, performance or platform campaigns. One new
+source-bound closeout run only, with unchanged driver oracles, resources and
+budgets, independent input review and existing shared-host admission. This is an
+explicit diagnosed smaller checkpoint, not renewal of the exhausted campaign.
+Stop and report any further failure; no automatic additional retry is selected.
+
+T1-C1 has stopped on its first UI execution; no more native execution or replan
+is selected. The changed inspector package passes, composing with the four
+previous package passes. Both helpers build successfully using the exact
+configured commands. The UI driver exits after 10.41 seconds with an X connection
+error and no exported profile diagnostics or screenshots. Its teardown stops the
+X server before closing the observer connection, which can terminate Python
+before preserving the original failure. The initial UI failure cause remains
+unestablished; do not classify it as a product pass or a diagnosed product defect.
+All eleven exported files/archive verify and five command groups retired. Owned
+container and machine shutdown is confirmed; the other VM was not controlled.
+
+Delivery disposition: source-only diagnostic preservation correction to the
+focused driver, syntax/source checks and separate review, then a signed DRAFT PR.
+Do not rerun the fixture, boot a guest, recover guest logs, waive the UI gate or
+close #217/#218. Manual rendering was not reached. Native UI qualification,
+new screenshots and manual render remain explicit blockers for a future selected
+checkpoint. Preserve the built helpers and current source for that continuation.
+
+Merged checkpoint, G16 — native layout issue closeout, 2026-11-07.
 Cam directed a return to GitHub issue completion after the evaluation-heavy
 G7–G15 sequence. Lead owns scope, tracker, native execution and integration on
 `codex/r1-native-layout-closeout`. PR365 merged at
@@ -8453,13 +8705,13 @@ GitHub mirrors these rows; creating issues does not advance runtime work.
 | MODERNIZE-01 | P2 / Backlog; Future features | [#208](https://github.com/gonz0w/fvwm-x/issues/208). Track the approved lightweight X11 modernization program without duplicating existing owners. This is an index and sequencing owner, not runtime implementation or a new release prerequisite. |
 | FOUNDATION-READY-01 | P1 / Backlog; O1 Measured optimization | [#209](https://github.com/gonz0w/fvwm-x/issues/209). Turn the user's cleanup/optimization-first priority into a finite, reviewable scheduling gate. Existing qualified components stay accepted; planning does not reopen them. |
 | GRAPHICS-01 | P2 / Backlog; F2 Native UI | [#210](https://github.com/gonz0w/fvwm-x/issues/210). Implement the already approved native graphics baseline using existing X11 drawing/resource owners, before adding another direct renderer. |
-| GRAPHICS-02 | P2 / In progress; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). R1 Cairo reject decision and available comparison complete; close on G16 integration. Remaining rejected-prototype research is R2 #366; production release checks stay R1. |
-| LAYOUT-01 | P2 / In progress; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Native panel/browser layout, scale/state and G16 paint fixes complete; close on G16 integration. Clay research is R2 #366; production release checks stay R1. |
+| GRAPHICS-02 | P2 / Done; merged PR367; F2 Native UI | [#211](https://github.com/gonz0w/fvwm-x/issues/211). R1 Cairo reject decision and available comparison complete; closed with PR367. Remaining rejected-prototype research is R2 #366; production release checks stay R1. |
+| LAYOUT-01 | P2 / Done; merged PR367; F2 Native UI | [#212](https://github.com/gonz0w/fvwm-x/issues/212). Native panel/browser layout, scale/state and G16 paint fixes complete; closed with PR367. Clay research is R2 #366; production release checks stay R1. |
 | BIND-01 | Done / #213 closed by merged PR269 | [#213](https://github.com/gonz0w/fvwm-x/issues/213). Extend accepted CFG/IPC/provider observation into reusable native model/view bindings; reuse existing transport, state and revision authority. |
 | THEME-02 | P2 / In progress; F1 Shared contracts | [#214](https://github.com/gonz0w/fvwm-x/issues/214). Extend existing palettes/colorsets and the typed settings registry into a small data-driven theme model without replacing FVWM configuration. |
 | ICON-01 | P2 / In progress; F1 Shared contracts | [#215](https://github.com/gonz0w/fvwm-x/issues/215). Reuse the existing Go XDG icon-theme lookup as a bounded shared resolver for native UI, applications, files and collections. |
 | ICON-02 | P2 / Backlog; F2 Native UI | [#216](https://github.com/gonz0w/fvwm-x/issues/216). Support configurable font icons alongside SVG/application icons using the existing font stack and named icon contract. |
-| RELOAD-01 | P2 / Backlog; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
+| RELOAD-01 | P2 / In progress; T1 semantic component; F2 Native UI | [#217](https://github.com/gonz0w/fvwm-x/issues/217). Build supported live appearance/component authoring on accepted CFG preview/recovery and generation contracts. |
 | INSPECT-01 | P2 / Backlog; F2 Native UI | [#218](https://github.com/gonz0w/fvwm-x/issues/218). Extend accepted IPC binding/colorset/appearance inspection into a native opt-in configuration authoring tool. |
 | ACTIONS-01 | P2 / Done; merged PR270; F3 Workspace tools | [#219](https://github.com/gonz0w/fvwm-x/issues/219). Deliver the approved discoverable action palette through existing native collection views, structured queries and command ownership. |
 | WORKSPACE-01 | P2 / Backlog; F3 Workspace tools | [#220](https://github.com/gonz0w/fvwm-x/issues/220). Package reusable per-desktop floating, columns/master-stack and snapping policies while retaining FVWM command/configuration flexibility. |

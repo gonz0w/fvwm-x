@@ -469,6 +469,10 @@ func (d *Controller) pollJobs() {
 				d.finishSessionRequest(result)
 				continue
 			}
+			if result.key == "theme-reload" {
+				d.finishThemeReload(result)
+				continue
+			}
 			if result.key == "inspection" {
 				d.finishInspection(result)
 				continue

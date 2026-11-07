@@ -340,6 +340,96 @@ func sessionSettingsMetadata(key string, item map[string]json.RawMessage) (bool,
 	return unavailable, application == expected
 }
 
+// Submission metadata belongs to a finite consumer domain. Accept its current
+// producer grammar without allowing a tray/native observation on other keys.
+func settingsApplication(key string, item map[string]json.RawMessage) bool {
+	application := stringField(item, "application")
+	switch {
+	case key == "desktop_icon_theme":
+		return stringField(item, "capability") == "owned-tray-icon-profile" &&
+			member(application, []string{"not-submitted", "tray-configuration-submitted"})
+	case desktopsettings.DesktopKey(key):
+		return member(application, []string{"next-owned-form-start; launcher-not-submitted", "next-owned-form-start; launcher-submitted"})
+	case desktopsettings.ApplicationKey(key):
+		if stringField(item, "capability") != "optional-native-application-preference" {
+			return false
+		}
+		if application == "not-observed" {
+			_, observed := item["readiness"]
+			return !observed
+		}
+		readiness := stringField(item, "readiness")
+		return application == "native-"+readiness &&
+			member(readiness, []string{"off", "starting", "ready", "conflict", "lost", "failed", "stopping", "stop-unknown"}) &&
+			member(stringField(item, "resource_state"), []string{"applied", "inherited", "conflict", "unavailable"})
+	case desktopsettings.TrayKey(key):
+		return member(application, []string{"not-submitted", "requested-state-submitted"})
+	default:
+		return member(application, []string{"not-submitted", "submitted-to-fvwm"})
+	}
+}
+
+func settingsConstraint(key, constraint string) bool {
+	switch key {
+	case "desktop_font", "desktop_density", "desktop_border":
+		return constraint == "save-apply-only; existing-forms-unchanged"
+	case "desktop_icon_theme":
+		return constraint == "save-apply-only; named-native-icons"
+	case "wallpaper_palette", "wallpaper_appearance":
+		return constraint == "wallpaper-retained"
+	case "transparency":
+		return constraint == "high-contrast"
+	case "launcher_opacity":
+		return constraint == "high-contrast" || constraint == "transparency-disabled"
+	}
+	return false
+}
+
+// Metric roles are requested logical values, not measurements of existing Forms.
+// Check them against the same typed policy that publishes the controller rows.
+func desktopSettingsMetadata(key string, item map[string]json.RawMessage, snapshot map[string]map[string]json.RawMessage) bool {
+	if !settingsConstraint(key, stringField(item, "runtime_constraint")) {
+		return false
+	}
+	if key == "desktop_icon_theme" {
+		var effective any
+		if json.Unmarshal(item["effective"], &effective) != nil {
+			return false
+		}
+		resolved, err := desktopsettings.DesktopIconTheme(desktopsettings.Values{key: effective})
+		expected := "explicit"
+		if effective == "" {
+			expected = "profile-baseline"
+		}
+		return err == nil && stringField(item, "resolution") == expected && stringField(item, "resolved") == resolved
+	}
+	values := desktopsettings.Values{}
+	for _, name := range []string{"desktop_font", "desktop_density", "desktop_border"} {
+		var value any
+		if json.Unmarshal(snapshot[name]["effective"], &value) != nil {
+			return false
+		}
+		values[name] = value
+	}
+	metrics, err := desktopsettings.ResolveDesktopMetrics(values)
+	version, valid := intField(item, "component_version")
+	roles, object := objectField(item, "component_roles")
+	if err != nil || !valid || version != metrics.Version || !object || len(roles) != 4 {
+		return false
+	}
+	for name, expected := range map[string]int{"menu_item_padding": metrics.MenuItemPad,
+		"menu_title_padding": metrics.MenuTitlePad, "form_text_padding": metrics.FormPad, "menu_border": metrics.MenuBorder} {
+		if value, valid := intField(roles, name); !valid || value != expected {
+			return false
+		}
+	}
+	expected, resolved := "explicit", values[key]
+	if resolved == "" || resolved == "inherit" {
+		expected, resolved = "profile-baseline", "configured-profile"
+	}
+	return stringField(item, "resolution") == expected && stringField(item, "resolved") == resolved
+}
+
 func (c *collector) settings(s *Section) {
 	s.Generation = c.req.SettingsGeneration
 	var snapshot map[string]map[string]json.RawMessage
@@ -368,7 +458,14 @@ func (c *collector) settings(s *Section) {
 				continue
 			}
 		}
+		if desktopsettings.DesktopKey(key) && !desktopSettingsMetadata(key, item, snapshot) {
+			c.problem(s, "Invalid desktop component metadata")
+			continue
+		}
 		value := func(field string) string {
+			if field == "resolved" && desktopsettings.DesktopKey(key) && key != "desktop_icon_theme" && stringField(item, "resolution") == "profile-baseline" {
+				return "configured-profile"
+			}
 			if field == "effective" && sessionUnavailable {
 				return "unavailable"
 			}
@@ -393,7 +490,7 @@ func (c *collector) settings(s *Section) {
 			return fmt.Sprint(validated)
 		}
 		c.row(s, key, fmt.Sprintf("default=%v; saved=%s; effective=%s", definition.Default, value("saved"), value("effective")))
-		c.row(s, key+" metadata", definition.Description+"; group="+definition.Group+"; type="+definition.Type)
+		metadata := definition.Description + "; group=" + definition.Group + "; type=" + definition.Type
 		constraint := ""
 		if len(definition.Choices) > 0 {
 			constraint = "choices=" + strings.Join(definition.Choices, ",")
@@ -401,15 +498,17 @@ func (c *collector) settings(s *Section) {
 		if definition.Minimum != nil {
 			constraint = fmt.Sprintf("range=%v..%v", definition.Minimum, definition.Maximum)
 		}
+		// Keep the complete finite value grammar with its metadata. A separate
+		// values row repeats the setting identity and consumes room needed for
+		// source, resolution and availability in the bounded current registry.
 		if constraint != "" {
-			c.row(s, key+" values", constraint)
+			metadata += "; " + constraint
 		}
+		c.row(s, key+" metadata", metadata)
 		source, application := stringField(item, "source"), stringField(item, "application")
-		applications := []string{"not-submitted", "submitted-to-fvwm"}
-		if desktopsettings.TrayKey(key) {
-			applications = append(applications, "requested-state-submitted")
-		}
-		if !session && (!member(source, []string{"saved", "module-configuration"}) || !member(application, applications)) {
+		validSource := member(source, []string{"saved", "module-configuration"}) ||
+			source == "runtime-kept-preference-unsaved" && desktopsettings.PreviewKey(key) && stringField(item, "persistence_error") == "Runtime unsaved."
+		if !session && (!validSource || !settingsApplication(key, item)) {
 			c.problem(s, "Invalid settings source or application metadata")
 			continue
 		}
@@ -431,14 +530,15 @@ func (c *collector) settings(s *Section) {
 		var runtime any
 		_ = json.Unmarshal(item["runtime_constraint"], &runtime)
 		if runtime != nil {
-			if constraint, ok := runtime.(string); ok && member(constraint, []string{"wallpaper-retained", "high-contrast", "transparency-disabled"}) {
+			if constraint, ok := runtime.(string); ok && settingsConstraint(key, constraint) {
 				c.row(s, key+" constraint", constraint)
 			} else {
 				c.problem(s, "Unknown settings constraint")
 			}
 		}
 		resolution := stringField(item, "resolution")
-		if member(resolution, []string{"explicit", "retained", "follow", "requested", "high-contrast", "transparency-disabled"}) {
+		if member(resolution, []string{"explicit", "retained", "follow", "requested", "high-contrast", "transparency-disabled"}) ||
+			resolution == "profile-baseline" && desktopsettings.DesktopKey(key) {
 			c.row(s, key+" resolution", resolution+"; resolved="+value("resolved"))
 		}
 		if data := item["persistence_error"]; len(data) > 0 && string(data) != "null" {
@@ -492,7 +592,7 @@ func (c *collector) sources(s *Section) {
 	}
 	c.row(s, "Coverage", fmt.Sprintf("%s; files=%d; checked=%d; unchecked=%d; errors=%d", observed.Report.Coverage, len(observed.Report.Files), observed.Report.CheckedDirectives, observed.Report.Unchecked, observed.Report.Errors))
 	for _, observation := range observed.Observations {
-		position := fmt.Sprintf("%s:%d", filepath.Base(observation.Path), observation.Line)
+		position := fmt.Sprintf("%s:%d", sourceRootLabel(c.req.Source, observation.Path), observation.Line)
 		if observation.EndLine != observation.Line {
 			position += fmt.Sprintf("-%d", observation.EndLine)
 		}
@@ -501,10 +601,49 @@ func (c *collector) sources(s *Section) {
 			last = "; last in checked literals"
 		}
 		c.row(s, fmt.Sprintf("%d %s", observation.Order, observation.Key), fmt.Sprintf("%v; %s; includes=%d%s", observation.Value, position, len(observation.IncludedFrom), last))
+		for i, source := range observation.IncludedFrom {
+			name := sourceRootLabel(c.req.Source, source.Path)
+			span := fmt.Sprintf(":%d", source.Line)
+			if source.EndLine != source.Line {
+				span += fmt.Sprintf("-%d", source.EndLine)
+			}
+			// Reserve room for the line span and a visible truncation marker.
+			// c.row's normal limit must not silently disguise a cut path.
+			runes := []rune(name)
+			if len(runes)+len(span) > 200 {
+				name = string(runes[:200-len(span)-3]) + "..."
+			}
+			c.row(s, fmt.Sprintf("%d include %d/%d", observation.Order, i+1, len(observation.IncludedFrom)), name+span)
+		}
 	}
 	for _, diagnostic := range observed.Report.Diagnostics {
 		// Codes and parser ownership are fixed checker data; message text and
 		// full paths may contain user-specific source and are never forwarded.
 		c.row(s, "Source diagnostic", diagnostic.Severity+" "+diagnostic.Code+"; "+filepath.Base(diagnostic.Path)+":"+strconv.Itoa(diagnostic.Line))
 	}
+}
+
+// This is a lexical display label, not an assertion about symlink targets.
+// Refuse ambiguous paths rather than cleaning '..' across a symlink boundary.
+func sourceRootLabel(request desktopcheck.Request, path string) string {
+	cleanAbsolute := func(value string) bool {
+		return filepath.IsAbs(value) && value == filepath.Clean(value) && value != string(filepath.Separator)
+	}
+	if !cleanAbsolute(path) {
+		return "outside:(hidden)"
+	}
+	label, longest := "outside:(hidden)", 0
+	for _, root := range []struct{ name, path string }{
+		{"user", request.Userdir}, {"data", request.Datadir}, {"cwd", request.Cwd},
+	} {
+		if !cleanAbsolute(root.path) || len(root.path) <= longest {
+			continue
+		}
+		relative, err := filepath.Rel(root.path, path)
+		if err != nil || relative == ".." || strings.HasPrefix(relative, ".."+string(filepath.Separator)) {
+			continue
+		}
+		label, longest = root.name+":"+relative, len(root.path)
+	}
+	return label
 }

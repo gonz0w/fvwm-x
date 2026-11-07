@@ -7,6 +7,29 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Live theme color reload (in progress)
+
+These unmodified native-X captures show R1 reloads after custom purple palette
+edits in Slate dark, Dune light and enlarged Classic configurations. The component
+editor and file browser retain their draft and selection; the wallpaper remains
+unchanged. Classic uses 18pt text and a legacy navy/wheat Form override.
+
+![Slate dark custom color reload with retained editor and browser](screenshots/theme-reload-slate-dark.png)
+
+![Dune light custom color reload with retained editor and browser](screenshots/theme-reload-dune-light.png)
+
+![Enlarged Classic custom color reload with retained editor and browser](screenshots/theme-reload-classic-large.png)
+
+The Slate diagnostic also shows literal `Read` include ancestry from
+`user:local.config:2`:
+
+![Slate reload diagnostic showing literal Read include ancestry](screenshots/theme-reload-include-ancestry.png)
+
+See [reload theme colors](FvwmDesktop.adoc#_reload_theme_colors), the
+[capture manifest](screenshots/theme-reload-manifest.json), and the
+[closeout verification report](../dev-docs/verification/VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md)
+for usage, image provenance and the scope of the run.
+
 ## Optional Lucide menu glyphs (in progress)
 
 The optional 16-glyph menu theme uses existing native picture rendering and

@@ -25,7 +25,7 @@ func fixtureRequest(t *testing.T, scope string) Request {
 	t.Helper()
 	values := desktopsettings.Defaults()
 	values["contrast"] = "high"
-	snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{Saved: values, Effective: values, Overrides: desktopsettings.Values{}, Generation: "gen-1", Submitted: true}, "all", true)
+	snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{Saved: values, Effective: values, Overrides: desktopsettings.Values{}, Generation: "gen-1", Submitted: true, Native: desktopsettings.NativeObservation{Readiness: "off", ResourceState: "unavailable", Reason: "none"}}, "all", true)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -102,6 +102,100 @@ func fixtureQuery(t *testing.T, mutate func(map[string]json.RawMessage, map[stri
 	}
 }
 func textResult(r Result) string { data, _ := json.Marshal(r); return string(data) }
+
+func TestSourceIncludeAncestryAndRedaction(t *testing.T) {
+	root := t.TempDir()
+	user := filepath.Join(root, "user")
+	data := filepath.Join(root, "data")
+	cwd := filepath.Join(root, "cwd")
+	for _, dir := range []string{user, data, cwd} {
+		if err := os.Mkdir(dir, 0700); err != nil {
+			t.Fatal(err)
+		}
+	}
+	for name, content := range map[string]string{
+		filepath.Join(user, "config"):    "# entry\nRead child\n",
+		filepath.Join(data, "child"):     "Read \\\n grandchild\n",
+		filepath.Join(cwd, "grandchild"): "*FvwmDesktop: motion on\n",
+	} {
+		if err := os.WriteFile(name, []byte(content), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	r := fixtureRequest(t, "sources")
+	r.Source = desktopcheck.Request{Path: filepath.Join(user, "config"), Userdir: user, Datadir: data, Cwd: cwd}
+	result, err := Collect(context.Background(), r, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rows := result.Sections[0].Rows
+	if len(rows) < 4 || rows[2] != (Row{"1 include 1/2", "user:config:2"}) || rows[3] != (Row{"1 include 2/2", "data:child:1-2"}) {
+		t.Fatalf("ordered include ancestry: %+v", rows)
+	}
+	if strings.Contains(textResult(result), root) {
+		t.Fatal("absolute source root exposed")
+	}
+	for _, path := range []string{filepath.Join(root, "private", "config"), user + "/../private/config", "relative"} {
+		if got := sourceRootLabel(r.Source, path); got != "outside:(hidden)" {
+			t.Fatalf("untrusted path %q disclosed as %q", path, got)
+		}
+	}
+	if got := sourceRootLabel(desktopcheck.Request{Userdir: "/", Datadir: data, Cwd: cwd}, filepath.Join(root, "private", "config")); got != "outside:(hidden)" {
+		t.Fatalf("root directory disclosed %q", got)
+	}
+	if got := sourceRootLabel(desktopcheck.Request{Userdir: root, Datadir: data, Cwd: cwd}, filepath.Join(data, "child")); got != "data:child" {
+		t.Fatalf("most specific root lost: %q", got)
+	}
+}
+
+func TestSourceAncestryMarksLongPath(t *testing.T) {
+	root := t.TempDir()
+	longName := strings.Repeat("a", 220)
+	for name, content := range map[string]string{
+		"config": "Read " + longName + "\n", longName: "Read child\n",
+		"child": "*FvwmDesktop: motion on\n",
+	} {
+		if err := os.WriteFile(filepath.Join(root, name), []byte(content), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	r := fixtureRequest(t, "sources")
+	r.Source = desktopcheck.Request{Path: filepath.Join(root, "config"), Userdir: root, Datadir: root, Cwd: root}
+	result, err := Collect(context.Background(), r, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, row := range result.Sections[0].Rows {
+		if row.Label == "1 include 2/2" {
+			if len(row.Value) != 200 || !strings.HasSuffix(row.Value, "...:1") {
+				t.Fatalf("long path truncation not visible: %q", row.Value)
+			}
+			return
+		}
+	}
+	t.Fatal("long include missing")
+}
+
+func TestSourceAncestryReportsRowBudget(t *testing.T) {
+	root := t.TempDir()
+	path := filepath.Join(root, "config")
+	if err := os.WriteFile(path, []byte(strings.Repeat("Read child\n", 90)), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(root, "child"), []byte("*FvwmDesktop: motion on\n*FvwmDesktop: appearance dark\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	r := fixtureRequest(t, "sources")
+	r.Source = desktopcheck.Request{Path: path, Userdir: root, Datadir: root, Cwd: root}
+	result, err := Collect(context.Background(), r, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if section := result.Sections[0]; !section.Truncated || len(section.Rows) != RowLimit || !strings.Contains(section.Reason, "budget") {
+		t.Fatalf("row budget must be visible: %+v", section)
+	}
+}
+
 func TestAllSectionsHaveBoundedTruthfulInventory(t *testing.T) {
 	r := fixtureRequest(t, "all")
 	root := t.TempDir()
@@ -331,11 +425,17 @@ func TestMalformedBindingTextNeverLabelsAnObservedCompleteList(t *testing.T) {
 	}
 }
 
-func TestTrayRequestedPolicyUsesNativeTwentyOneSettingSnapshot(t *testing.T) {
+func TestTrayRequestedPolicyUsesCompleteNativeRegistrySnapshot(t *testing.T) {
 	request := fixtureRequest(t, "settings")
 	var snapshot map[string]map[string]json.RawMessage
-	if err := json.Unmarshal(request.Settings, &snapshot); err != nil || len(snapshot) != 21 {
-		t.Fatal("native settings registry snapshot incomplete", len(snapshot), err)
+	keys, _ := desktopsettings.Scope("all")
+	if err := json.Unmarshal(request.Settings, &snapshot); err != nil || len(snapshot) != len(keys) {
+		t.Fatal("native settings registry snapshot incomplete", len(snapshot), len(keys), err)
+	}
+	for _, key := range keys {
+		if snapshot[key] == nil {
+			t.Fatal("native registry setting missing", key)
+		}
 	}
 	result, err := Collect(context.Background(), request, nil)
 	if err != nil {
@@ -345,6 +445,15 @@ func TestTrayRequestedPolicyUsesNativeTwentyOneSettingSnapshot(t *testing.T) {
 	for _, row := range result.Sections[0].Rows {
 		rows[row.Label] = row.Value
 	}
+	for _, key := range keys {
+		if _, exists := rows[key]; !exists {
+			t.Fatal("native registry setting was not rendered", key)
+		}
+	}
+	if result.Sections[0].State != "provider-policy" || result.Sections[0].Truncated {
+		t.Fatal("complete current registry did not fit the bounded inspector", result.Sections[0])
+	}
+	assertCompleteSettingsMetadata(t, result.Sections[0])
 	for key, requested := range map[string]string{
 		"tray_enabled": "false", "tray_gap": "4", "tray_padding": "4", "tray_orientation": "horizontal", "tray_modern": "false", "tray_icon_size": "24",
 	} {
@@ -397,6 +506,7 @@ func TestSessionSettingsUnavailableAndLiveOwnerTuples(t *testing.T) {
 				snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{
 					Saved: saved, Effective: effective, Overrides: desktopsettings.Values{"session_bus": "reuse"},
 					Generation: request.SettingsGeneration, Submitted: true, SessionAvailable: available,
+					Native: desktopsettings.NativeObservation{Readiness: "off", ResourceState: "unavailable", Reason: "none"},
 				}, "all", observed)
 				if err != nil {
 					t.Fatal(err)
@@ -479,5 +589,194 @@ func TestSessionSettingsRejectMalformedAvailabilityAndForeignNulls(t *testing.T)
 		if err != nil || result.Sections[0].State != "partial" {
 			t.Fatal("owner observation accepted null metadata", field, result, err)
 		}
+	}
+}
+
+func assertCompleteSettingsMetadata(t *testing.T, section Section) {
+	t.Helper()
+	rows := map[string]string{}
+	for _, row := range section.Rows {
+		rows[row.Label] = row.Value
+	}
+	for key, definition := range desktopsettings.Registry() {
+		if _, exists := rows[key]; !exists {
+			t.Fatal("registry value missing", key)
+		}
+		if _, exists := rows[key+" source"]; !exists {
+			t.Fatal("registry source missing", key)
+		}
+		metadata := rows[key+" metadata"]
+		for _, required := range []string{definition.Description, "group=" + definition.Group, "type=" + definition.Type} {
+			if !strings.Contains(metadata, required) {
+				t.Fatal("registry metadata missing", key, required, metadata)
+			}
+		}
+		if len(definition.Choices) != 0 && !strings.Contains(metadata, "choices="+strings.Join(definition.Choices, ",")) {
+			t.Fatal("registry choices lost", key, metadata)
+		}
+		if definition.Minimum != nil && !strings.Contains(metadata, fmt.Sprintf("range=%v..%v", definition.Minimum, definition.Maximum)) {
+			t.Fatal("registry range lost", key, metadata)
+		}
+		if len([]rune(metadata)) > 200 {
+			t.Fatal("registry metadata exceeds the bounded row", key, metadata)
+		}
+		if _, exists := rows[key+" values"]; exists {
+			t.Fatal("redundant values row retained", key)
+		}
+	}
+}
+
+func TestCompleteSettingsMetadataFitsUnchangedRowBudget(t *testing.T) {
+	for _, highContrast := range []bool{false, true} {
+		for _, explicit := range []bool{false, true} {
+			for _, held := range []bool{false, true} {
+				t.Run(fmt.Sprintf("high=%t/explicit=%t/held=%t", highContrast, explicit, held), func(t *testing.T) {
+					request := fixtureRequest(t, "settings")
+					saved, effective := desktopsettings.Defaults(), desktopsettings.Defaults()
+					if highContrast {
+						saved["contrast"], effective["contrast"] = "high", "high"
+					}
+					if explicit {
+						for key, value := range (desktopsettings.Values{"desktop_font": "fixed", "desktop_density": "spacious", "desktop_border": "strong", "desktop_icon_theme": "UserIcons"}) {
+							saved[key], effective[key] = value, value
+						}
+					}
+					var runtime desktopsettings.PreviewValues
+					if held {
+						runtime = desktopsettings.PreviewValues{}
+						for _, key := range []string{"palette", "appearance", "contrast", "transparency", "keep_wallpaper", "wallpaper_palette", "wallpaper_appearance", "launcher_opacity"} {
+							value, err := desktopsettings.PreviewValueFor(key, effective[key])
+							if err != nil {
+								t.Fatal(err)
+							}
+							runtime[key] = value
+						}
+					}
+					snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{
+						Saved: saved, Effective: effective, Generation: request.SettingsGeneration,
+						Submitted: true, DesktopSubmitted: true, DesktopIconSubmitted: true,
+						Native:      desktopsettings.NativeObservation{Readiness: "off", ResourceState: "inherited", Reason: "none"},
+						RuntimeHeld: runtime,
+					}, "all", true)
+					if err != nil {
+						t.Fatal(err)
+					}
+					request.Settings, _ = json.Marshal(snapshot)
+					result, err := Collect(context.Background(), request, nil)
+					if err != nil || len(result.Sections) != 1 {
+						t.Fatal(result, err)
+					}
+					section := result.Sections[0]
+					// Thirty keys each have value, metadata and source rows. The
+					// finite domains add at most ten session/tray request rows,
+					// eight constraints and eight resolutions. Runtime-kept
+					// preferences may add eight distinct persistence notices.
+					bound := 30*3 + 10 + 8 + 8
+					if held {
+						bound += 8
+					}
+					if len(section.Rows) > bound || section.Truncated || section.State != "provider-policy" || RowLimit != 128 {
+						t.Fatal("canonical registry exceeded the unchanged bounded view", len(section.Rows), bound, section)
+					}
+					assertCompleteSettingsMetadata(t, section)
+				})
+			}
+		}
+	}
+}
+
+func TestCurrentDesktopAndNativeSettingsMetadata(t *testing.T) {
+	for _, submitted := range []bool{false, true} {
+		for _, inherit := range []bool{false, true} {
+			t.Run(fmt.Sprintf("submitted=%t/inherit=%t", submitted, inherit), func(t *testing.T) {
+				request := fixtureRequest(t, "settings")
+				values := desktopsettings.Defaults()
+				if !inherit {
+					values["desktop_font"], values["desktop_density"], values["desktop_border"] = "fixed", "compact", "strong"
+					values["desktop_icon_theme"] = "UserIcons"
+				}
+				effective := desktopsettings.Values{}
+				for key, value := range values {
+					effective[key] = value
+				}
+				effective["palette"] = "ink"
+				held, err := desktopsettings.PreviewValueFor("palette", "ink")
+				if err != nil {
+					t.Fatal(err)
+				}
+				snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{
+					Saved: values, Effective: effective, Overrides: desktopsettings.Values{},
+					Generation: request.SettingsGeneration, Submitted: true,
+					DesktopSubmitted: submitted, DesktopIconSubmitted: submitted,
+					Native:      desktopsettings.NativeObservation{Readiness: "conflict", ResourceState: "unavailable", Reason: "owner-conflict"},
+					RuntimeHeld: desktopsettings.PreviewValues{"palette": held},
+				}, "all", true)
+				if err != nil {
+					t.Fatal(err)
+				}
+				request.Settings, _ = json.Marshal(snapshot)
+				result, err := Collect(context.Background(), request, nil)
+				if err != nil || result.Sections[0].State != "provider-policy" {
+					t.Fatal("current native/component tuple rejected", result, err)
+				}
+				assertCompleteSettingsMetadata(t, result.Sections[0])
+				rows := map[string]string{}
+				for _, row := range result.Sections[0].Rows {
+					rows[row.Label] = row.Value
+				}
+				application := "next-owned-form-start; launcher-not-submitted"
+				iconApplication := "not-submitted"
+				if submitted {
+					application, iconApplication = "next-owned-form-start; launcher-submitted", "tray-configuration-submitted"
+				}
+				if rows["desktop_font source"] != "saved; "+application+"; owner=FvwmDesktop" ||
+					rows["desktop_icon_theme source"] != "saved; "+iconApplication+"; owner=FvwmDesktop" ||
+					rows["application_font source"] != "saved; native-conflict; owner=FvwmDesktop" ||
+					!strings.HasPrefix(rows["palette source"], "runtime-kept-preference-unsaved;") {
+					t.Fatal("current domain attribution lost", rows)
+				}
+				if inherit && (rows["desktop_font resolution"] != "profile-baseline; resolved=configured-profile" || rows["desktop_icon_theme resolution"] != "profile-baseline; resolved=hicolor") {
+					t.Fatal("profile baseline was presented as an actual resource", rows)
+				}
+			})
+		}
+	}
+}
+
+func TestDesktopAndNativeMetadataRejectsForeignAndMalformedClaims(t *testing.T) {
+	cases := []struct {
+		name, key, field, value string
+	}{
+		{"desktop-state-on-palette", "palette", "application", `"next-owned-form-start; launcher-submitted"`},
+		{"icon-state-on-font", "desktop_font", "application", `"tray-configuration-submitted"`},
+		{"native-state-on-tray", "tray_enabled", "application", `"native-ready"`},
+		{"native-state-without-readiness", "application_font", "application", `"native-ready"`},
+		{"invalid-native-readiness", "application_font", "readiness", `"painted"`},
+		{"invalid-native-resource", "application_font", "resource_state", `"painted"`},
+		{"invalid-native-capability", "application_font", "capability", `"owned-tray-icon-profile"`},
+		{"foreign-unsaved-source", "desktop_font", "source", `"runtime-kept-preference-unsaved"`},
+		{"foreign-constraint", "palette", "runtime_constraint", `"save-apply-only; existing-forms-unchanged"`},
+		{"wrong-desktop-constraint", "desktop_font", "runtime_constraint", `"save-apply-only; named-native-icons"`},
+		{"wrong-metric-version", "desktop_density", "component_version", `2`},
+		{"wrong-metric-roles", "desktop_density", "component_roles", `{"menu_item_padding":4,"menu_title_padding":6,"form_text_padding":6,"menu_border":1}`},
+		{"missing-metric-roles", "desktop_density", "component_roles", `null`},
+		{"false-baseline", "desktop_font", "resolved", `"fixed"`},
+		{"false-icon-baseline", "desktop_icon_theme", "resolved", `"OtherTheme"`},
+		{"unknown-resolution", "desktop_border", "resolution", `"measured"`},
+	}
+	for _, test := range cases {
+		t.Run(test.name, func(t *testing.T) {
+			request := fixtureRequest(t, "settings")
+			var snapshot map[string]map[string]json.RawMessage
+			if err := json.Unmarshal(request.Settings, &snapshot); err != nil {
+				t.Fatal(err)
+			}
+			snapshot[test.key][test.field] = json.RawMessage(test.value)
+			request.Settings, _ = json.Marshal(snapshot)
+			result, err := Collect(context.Background(), request, nil)
+			if err != nil || result.Sections[0].State != "partial" {
+				t.Fatal("foreign/malformed domain metadata accepted", result, err)
+			}
+		})
 	}
 }

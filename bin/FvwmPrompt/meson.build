@@ -5,14 +5,20 @@
 # Extract all of the go sources from the current directory
 r = run_command('find-go-sources.sh', meson.current_source_dir(), check: true)
 fvwmprompt_files = r.stdout().strip().split()
-# Explicit service inputs keep incremental rebuilds correct for an existing
-# configured browser target as the bounded adapter lands.
+# Explicit service inputs make source additions visible to existing
+# incremental builds when this build definition changes.
 foreach filemanager_source : [
     'internal/desktopcontroller/native_settings.go',
     'internal/desktopcontroller/native_settings_wire.go',
     'internal/desktopcontroller/native_settings_supervisor.go',
     'internal/desktopcontroller/native_settings_test.go',
     'internal/desktopsettings/application_test.go',
+    'internal/desktopcontroller/theme_reload.go',
+    'internal/desktopcontroller/theme_reload_test.go',
+    'internal/desktopsettings/palettes.go',
+    'internal/desktopsettings/palettes_test.go',
+    'internal/desktopworker/palettes.go',
+    'internal/desktopworker/palettes_test.go',
     'cmd/fvwmfilebrowser/filemanager_child.go',
     'cmd/fvwmfilebrowser/filemanager_plan.go',
     'cmd/fvwmfilebrowser/filemanager_service.go',

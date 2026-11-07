@@ -95,6 +95,9 @@ func Decode(data []byte) (Request, error) {
 	if request.Operation == "inspect" && (len(seen) != 3 || !seen["version"] || !seen["operation"] || !seen["inspect"]) {
 		return request, errors.New("unexpected inspector worker field")
 	}
+	if request.Operation == "palettes" && (len(seen) != 3 || !seen["version"] || !seen["operation"] || !seen["path"]) {
+		return request, errors.New("unexpected palette worker field")
+	}
 	if request.Operation == "startups" && (len(seen) != 2 || !seen["version"] || !seen["operation"]) {
 		return request, errors.New("unexpected startup activity worker field")
 	}
@@ -122,6 +125,12 @@ func validateRequest(request Request) (Request, error) {
 		}
 	}
 
+	if request.Operation == "palettes" {
+		if request.Path == "" || request.System != "" || request.Action != "" || len(request.Directories) != 0 || request.Check != nil || request.Inspect != nil {
+			return request, errors.New("invalid palette worker request")
+		}
+		return request, nil
+	}
 	if request.Operation == "inspect" {
 		if request.System != "" || request.Action != "" || request.Path != "" || len(request.Directories) != 0 || request.Check != nil || request.Inspect == nil {
 			return request, errors.New("invalid inspector request")
@@ -258,6 +267,11 @@ func Run(ctx context.Context, request Request, env Environment) (any, error) {
 	}
 	var value any
 	switch request.Operation {
+	case "palettes":
+		if err := ctx.Err(); err != nil {
+			return nil, err
+		}
+		value = readPalettes(request.Path, env.Read)
 	case "startups":
 		value, err = collectStartups(ctx, env.Query)
 	case "inspect":

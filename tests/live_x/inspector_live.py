@@ -554,6 +554,8 @@ def run(args, profile):
             source_rows = sections['sources']['rows']
             assert any('inspector-included.config:' in row['value'] and 'includes=1' in row['value']
                 for row in source_rows), source_rows
+            assert any('include 1/1' in row['label'] and row['value'] == 'user:local.config:2'
+                for row in source_rows), source_rows
             assert any('palette' in row['label'] and 'last in checked literals' in row['value']
                 for row in source_rows), source_rows
             assert any('actual pixels' in row['value'] for row in sections['layout']['rows'])

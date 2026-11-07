@@ -17,6 +17,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/desktopinspect"
+	"github.com/fvwmorg/FvwmPrompt/internal/desktopworker"
 )
 
 func inspectionResult(work *inspectionWork) desktopinspect.Result {
@@ -390,5 +391,54 @@ func TestInspectorFocusPolicyIsScopedLazyAndConfiguredOnce(t *testing.T) {
 	}
 	if count != 1 {
 		t.Fatal("paging, refresh or replacement redefined focus policy", count)
+	}
+}
+
+func TestInspectorThemeReloadRetainsViewAndRejectsOldColorFreshness(t *testing.T) {
+	d, commands := fixture(t)
+	if err := d.theme(true); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.startInspection("theme"); err != nil {
+		t.Fatal(err)
+	}
+	finishInspectionFixture(d, inspectionResult(d.inspectionJob), nil)
+	d.inspection.filter = "saved filter"
+	if err := d.refreshInspection(); err != nil {
+		t.Fatal(err)
+	}
+	view, work := d.inspection, d.inspectionJob
+	frame, token, filter := view.frame, view.token, view.filter
+	generation, theme := d.generation, append([]any(nil), d.lastTheme...)
+	// The existing worker owns its immutable old-color request while the
+	// visible inspector may hold additional, unsubmitted filter input.
+	d.queue = nil
+	d.jobs["inspection"].running = true
+	if err := d.reloadTheme(); err != nil {
+		t.Fatal(err)
+	}
+	*commands = nil
+	finishReloadFixture(d, desktopworker.PaletteResult{Palettes: reloadCandidate(t, d)}, nil)
+	if d.inspection != view || view.frame != frame || view.token != token || view.filter != filter || d.inspectionJob != work {
+		t.Fatal("color reload replaced an inspector identity or draft")
+	}
+	if !strings.Contains(view.status, "Theme colors changed") || generation != d.generation || !reflect.DeepEqual(theme, d.lastTheme) {
+		t.Fatal("reload lost stale status or changed the preference tuple")
+	}
+	assertReloadCommands(t, *commands)
+	finishInspectionFixture(d, inspectionResult(work), nil)
+	if !strings.HasPrefix(view.status, "Stale:") || view.token != token || view.filter != filter {
+		t.Fatal("old-color result became fresh or replaced the view", view.status)
+	}
+	if err := d.refreshInspection(); err != nil {
+		t.Fatal(err)
+	}
+	fresh := d.inspectionJob
+	if !reflect.DeepEqual(fresh.request.Colors, d.lastThemeColors) || reflect.DeepEqual(fresh.request.Colors, work.request.Colors) {
+		t.Fatal("explicit refresh did not acquire the current colors")
+	}
+	finishInspectionFixture(d, inspectionResult(fresh), nil)
+	if strings.HasPrefix(view.status, "Stale:") || view.result == nil || view.token != token || view.filter != filter {
+		t.Fatal("current-color refresh was not accepted", view.status)
 	}
 }

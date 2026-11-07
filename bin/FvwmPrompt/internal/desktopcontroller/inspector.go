@@ -171,7 +171,8 @@ func (d *Controller) finishInspection(completed job) {
 			view.result = &result
 			view.page = min(view.page, inspectionPages(&result)-1)
 			view.status = "Separate point-in-time observations; no atomic desktop snapshot."
-			if work.request.Provider != d.instance || work.request.SettingsGeneration != d.generation || !reflect.DeepEqual(work.themeKey, d.lastTheme) {
+			if work.request.Provider != d.instance || work.request.SettingsGeneration != d.generation ||
+				!reflect.DeepEqual(work.themeKey, d.lastTheme) || !reflect.DeepEqual(work.request.Colors, d.lastThemeColors) {
 				view.status = "Stale: settings or theme policy changed during collection. Press F5."
 			}
 		}

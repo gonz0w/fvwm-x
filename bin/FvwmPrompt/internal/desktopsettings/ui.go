@@ -345,6 +345,8 @@ func Menus(s Snapshot, scope string) ([]Menu, error) {
 			"SendToModule FvwmDesktop edit-settings " + scope},
 		Row{"Reset " + scope,
 			"SendToModule FvwmDesktop reset " + scope},
+		Row{"Reload theme colors",
+			"SendToModule FvwmDesktop reload-theme"},
 		Row{"Reload saved settings",
 			"SendToModule FvwmDesktop reload-settings"},
 		Row{"Check local.config...",

@@ -234,6 +234,11 @@ func (d *Controller) handle(command, argument string) error {
 			return errors.New("retry-native-settings takes no arguments")
 		}
 		return d.retryNativeSettings()
+	case "reload-theme":
+		if argument != "" {
+			return errors.New("reload-theme takes no arguments")
+		}
+		return d.reloadTheme()
 	case "reload-settings":
 		if argument != "" {
 			return errors.New("reload-settings takes no arguments")
@@ -465,6 +470,7 @@ func (d *Controller) tick() {
 	d.pollBrowserLaunches()
 	d.pollLocker()
 	d.preview.tick()
+	d.publishThemeReload()
 	d.paletteTick()
 	if d.editor != nil && !time.Now().Before(d.editor.deadline) {
 		d.retireEditor()

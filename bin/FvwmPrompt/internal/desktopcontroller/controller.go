@@ -11,10 +11,8 @@ package desktopcontroller
 import (
 	"context"
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"time"
@@ -63,10 +61,11 @@ type Controller struct {
 	startupActivity                          *startupActivity
 	startupWork                              string
 	startupFocusConfigured                   bool
+	themeReload                              *themeReload
 	lastThemeColors                          map[string]string
 	lastThemeAppearance                      string
 	report                                   *report
-	palettes                                 map[string]map[string]map[string]string
+	palettes                                 desktopsettings.Palettes
 	lastDesktop                              *desktopsettings.DesktopMetrics
 	lastDesktopIconTheme                     string
 	lastTheme                                []any
@@ -109,21 +108,12 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	d.appBinding = newMenuBinding("intent")
 	d.systemBinding = newMenuBinding("intent")
 	d.preview.desktop = d
-	file, err := os.Open(filepath.Join(root, "palettes.json"))
+	palettes, err := desktopworker.LoadPalettes(filepath.Join(root, "palettes.json"))
 	if err != nil {
 		cancel()
 		return nil, err
 	}
-	data, err := io.ReadAll(io.LimitReader(file, 65537))
-	file.Close()
-	if err != nil || len(data) > 65536 {
-		cancel()
-		return nil, errors.New("Invalid palette data")
-	}
-	if err = json.Unmarshal(data, &d.palettes); err != nil {
-		cancel()
-		return nil, err
-	}
+	d.palettes = palettes
 	d.saved, d.revision, err = loadSettings(statePath)
 	if err != nil {
 		d.saved, d.revision = desktopsettings.Defaults(), nil

@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Theme reload and inspector authoring](VERIFICATION-2026-11-07-THEME-RELOAD.md) records composed Go/package build passes, retained UI failure, source-only fixture repair and pending screenshots/manual qualification. Draft delivery only.
+
 - [Native layout paint-boundary closeout](VERIFICATION-2026-11-07-NATIVE-LAYOUT-CLOSEOUT.md) records the two production repairs, focused native results, accepted R2 research cutoff and R1 issue acceptance map.
 
 - [Fragmented XCB replies and installed package closures](VERIFICATION-2026-11-07-XCB-FRAGMENTS-PACKAGE-COSTS.md) records native partial-read qualification, complete Linux graphs and the remaining OpenBSD capture boundary.

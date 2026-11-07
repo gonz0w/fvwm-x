@@ -179,9 +179,7 @@ func (d *Controller) theme(force bool) error {
 		return err
 	}
 	palette := d.palettes[key[0].(string)][key[1].(string)]
-	for _, role := range projection.Roles {
-		d.emit(fmt.Sprintf("Colorset %d Plain, fg %s, bg %s, hi %s, sh %s", role.Colorset, role.Foreground, role.Background, role.Highlight, role.Shadow))
-	}
+	d.publishColorRoles(projection)
 	d.effective["wallpaper"] = selected
 	wallpaper := [2]string{selected["palette"].(string), selected["appearance"].(string)}
 	if wallpaper != d.lastWallpaper {

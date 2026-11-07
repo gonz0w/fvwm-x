@@ -13,7 +13,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
 - Atomic buttons, responsive layout and settings/editor;
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
-- Source-aware errors and configuration reports.
+- Source-aware reports, ancestry and [theme-color reload](doc/FvwmDesktop.adoc#_reload_theme_colors).
 - Structured IPC and eight-setting preview/recovery; optional
   [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
@@ -41,7 +41,7 @@ Dune grid.
 
 ![Dune light file browser showing a selected grid entry](doc/screenshots/browser-dune-grid.png)
 
-[More screenshots, theme/config examples and limits](doc/development-preview.md).
+[Screenshots, theme/config examples and limits](doc/development-preview.md).
 [Clipboard](doc/fvwm-clipboard.adoc), file-manager and release qualification remain open.
 OpenBSD baseline: 8.0.
 [Native rendering; prototype research deferred](dev-docs/decisions/REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md).

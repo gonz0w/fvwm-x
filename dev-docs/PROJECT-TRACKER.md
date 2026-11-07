@@ -35,7 +35,62 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G12 implicit-wait feasibility and installed dependency costs
+Current work: G13 private XCB wait observation and remaining package costs
+under #211 and #212, selected by Cam after PR363. Lead owns execution and
+integration on `codex/r1-xcb-wait-observer`. PR363 merged at
+`e56489d442303fc14a0c437cce977a5f90cf243b`. The signed canonical tree
+`24e403479634329b9521421d498608fd5cf16607`, expected parent and Cam
+author DCO matched. The merged branch was retired.
+
+Implement a private matching-source XCB observer at the reply-unavailable
+branch and the partial-read wait path, scoped to a registered connection
+and request. Use bounded value counters and explicit invalid/overflow
+results. Distinguish logical wait entries and partial-read wait calls from
+kernel sleep. Qualify a single Linux ARM64 profile with asynchronous,
+buffered, outstanding Xlib, direct-XCB and other-connection controls before
+using it for any candidate drawing measurements. Build from pinned source
+in a private directory with existing compiler tools and source generator
+assets where required. The private library is excluded from production
+and system install paths.
+
+Reuse the G12 complete package graph capture and calculator for the
+retained FreeBSD AMD64 profile, with exact library and owner identities.
+Keep the actual snapshot and baseline selection explicit. Linux and
+OpenBSD package closure gaps remain when this batch cannot establish
+their complete graph contract.
+
+Dispatch only frozen, separately reviewed inputs. Limit each selected
+profile to one attempt plus one reviewed diagnosed correction, one owned
+guest at a time, 45 minutes total, 15-minute private build and 128 MiB
+export. Metadata-only package reads may share the host with one other VM
+under the established total-two bound. Wait control execution requires
+an otherwise idle profile. Stop at an unexplained failure or limit.
+Run focused observer and calculator checks, relevant private compilation
+and the single selected control set. Complete wait coverage, broader
+consumer/release qualification and the whole-WM ledger remain explicit.
+The ledger stays at 4/5. Preserve the parked #257/#258 and other owners.
+
+The [G13 source and cost checkpoint](verification/VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md)
+records the private observer, source installer, six-control probe and tests.
+Four patch tests and the pure observer host unit pass. Native Linux
+qualification is pending after the selected two build attempts. The first
+required preservation of release extraction timestamps. The retry then
+exposed a missing generated-protocol header barrier in the direct library
+target. The attempt limit is reached. Generate the three protocol sources
+in a separate Make invocation, verify the paired headers and then build
+the core library at the next selected checkpoint. That sequence remains
+unexecuted. Preserve both failures and the required controls.
+
+The FreeBSD AMD64 package capture passed with 603 packages and 1,082 edges.
+Cairo adds 359,582,746 nominal package bytes over the isolated drawing
+closure, or zero when the recorded librsvg package is required by both
+baselines. Clay adds zero packages. All 107 export hashes and 53 query
+retirements passed. The two Linux exports retain 529 raw package records;
+their complete graph interpretation remains pending. Both Linux machine
+and container shutdowns were confirmed. This delivery is a draft source
+checkpoint until the private native library and controls qualify.
+
+Completed G12 implicit-wait feasibility and installed dependency costs
 under #211 and #212, selected by Cam after PR362. Lead owns execution and
 integration on `codex/r1-waits-installed-costs`. PR362 merged at
 `a27795528b7a0fcdf8b69ad22227736ad9717d2b`. Canonical signature,

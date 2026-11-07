@@ -5,7 +5,7 @@
 #include <stdatomic.h>
 
 #define FVWM_XCB_WAIT_CAPACITY 64
-#define FVWM_XCB_WAIT_ABI 1
+#define FVWM_XCB_WAIT_ABI 2
 
 struct fvwm_xcb_wait_record
 {
@@ -38,10 +38,11 @@ struct fvwm_xcb_wait_result
 #endif
 
 /* Optional atomic storage belongs to the caller and must remain live until
- * scope end. It acknowledges the matching reply-wait branch to a controller.
+ * scope end. Each pointer acknowledges its matching wait branch to the
+ * controller.
  */
 FVWM_XCB_WAIT_PUBLIC int fvwm_xcb_wait_begin(void *connection,
-	_Atomic uint32_t *entered_wait);
+	_Atomic uint32_t *entered_wait, _Atomic uint32_t *entered_partial);
 FVWM_XCB_WAIT_PUBLIC int fvwm_xcb_wait_end(struct fvwm_xcb_wait_result *result);
 
 /* Private hooks are called only by the matching patched XCB implementation. */

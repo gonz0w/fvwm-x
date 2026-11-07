@@ -35,7 +35,74 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current continuation, 2026-11-07: Cam selected completion of draft
+Current work, G15 — fragmented XCB packets and package costs, 2026-11-07.
+Cam selected this coherent #211/#212 checkpoint after PR364. Lead owns native
+execution, tracker, evidence and integration on
+`codex/r1-xcb-fragments-package-costs`. PR364 merged at
+`b076e3f309be463435bc70cccb3154e515a93726`, with the reviewed tree
+`96298f1a6872760b7156818a4b27fee3d4303edb`, expected parent,
+GitHub-verified signature and Cam author DCO. Its local branch was retired;
+the remote branch was already absent after merge.
+
+Bounded outcome: qualify the private XCB partial-read wait branch using an
+owned deterministic fragmented-reply transport with complete byte/request
+identity and an unfragmented negative control. Keep reply-context, logical
+wait and partial-read counters distinct. Extend complete installed package
+closure accounting to the remaining Linux/OpenBSD snapshots where the
+recorded graph and exact library ownership can establish it. Validate package
+versions, providers/alternatives and base/private-file exclusions explicitly;
+never treat missing graph data as zero. Reuse accepted FreeBSD costs and the
+six logical controls unless affected inputs change. No production library or
+renderer adoption, general X proxy, new toolkit or broad WM changes.
+
+Acceptance: reviewed private fixture and data-only graph parsing, focused
+policy checks plus one affected Linux ARM64 native run, source-bound package
+captures/calculations, verified exports and owned-resource teardown, and a
+separate integrated review in one PR. Frozen native jobs require separate
+predispatch review. Each selected profile has one attempt plus one diagnosed
+reviewed correction, one owned guest, 45 minutes total, 15-minute private
+build and 128 MiB export. Wait controls require an otherwise idle host;
+metadata-only captures retain the established total-two VM bound. Stop at
+an unexplained failure or limit, checkpoint with evidence and remaining gaps.
+Complete implicit waits, FVWM draw-operation integration, broader consumers
+and release coverage retain their existing acceptance; they do not expand
+this batch automatically. Full platform/theme/performance reruns are not
+selected for private fixture and metadata changes. Whole-WM ledger stays 4/5.
+
+G15 progress: the single Linux ARM64 run passes the native ABI2 observer
+unit, both deterministic packet controls and the six existing logical controls.
+The fragmented packet enters one logical and one partial-read wait; the
+complete packet enters no partial-read wait. The fresh nine-field package
+snapshot resolves all 529 packages and 1,714 edges with exact comparison-library
+owners. All 26 version comparisons agree with native dpkg. Cairo adds
+2,302,976 nominal package bytes over isolated native drawing roots; Clay adds
+zero. All 201 export files and the archive verify, all 16 outer and 82 metadata
+command groups retired, and container/machine shutdown is confirmed.
+
+Linux AMD64's first metadata capture succeeded with 668 packages, but its
+wrapper expected 500 and stopped before the final executable recheck. The
+original G6 raw manifest independently contains the same 668 name/version
+pairs. Preserve the 165 verified diagnostics and normal shutdown/unchanged
+backing-chain evidence. The sole reviewed correction passed: 668 packages,
+2,171 edges, all 26 dpkg version comparisons and all eight executable/library
+rechecks. Cairo adds 2,471,936 nominal package bytes; Clay adds zero. All 165
+successful export files and the archive verify, and all 82 metadata command
+groups retired. QEMU exited normally; the full backing chain and seed remain
+unchanged. The superseded failed COW child was retired after independent
+replacement qualification and verified diagnostic preservation. No ARM64 or
+full WM suite repeated for that wrapper repair.
+
+OpenBSD's strict package adapter passes seven host policy tests; nine Debian
+adapter tests pass. OpenBSD graph captures remain unavailable through the
+retained guests because their ephemeral job login keys were retired by the
+canonical prior-job cleanup. Preserve the exact status/missing-key records.
+Do not change retained authentication or boot configuration for this batch.
+A future bounded cost checkpoint can use the existing fresh canonical profile
+route. Both OpenBSD package closures stay open, with the prepared collector
+explicitly unexecuted. See the
+[G15 report](verification/VERIFICATION-2026-11-07-XCB-FRAGMENTS-PACKAGE-COSTS.md).
+
+Completed native continuation, 2026-11-07: Cam selected completion of draft
 [PR #364](https://github.com/gonz0w/fvwm-x/pull/364), with the lead retaining
 execution and integration ownership. Fix the diagnosed protocol-generation
 ordering in the frozen Linux ARM64 job: generate the three protocol source
@@ -67,7 +134,7 @@ records exact plans, native results and remaining boundaries. Native acceptance
 is complete; separate final review and the signed source/evidence identity
 control the ready-for-review transition for PR364.
 
-Current work: G13 private XCB wait observation and remaining package costs
+Merged G13 private XCB wait observation and remaining package costs
 under #211 and #212, selected by Cam after PR363. Lead owns execution and
 integration on `codex/r1-xcb-wait-observer`. PR363 merged at
 `e56489d442303fc14a0c437cce977a5f90cf243b`. The signed canonical tree

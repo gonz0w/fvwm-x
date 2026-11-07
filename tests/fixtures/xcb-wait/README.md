@@ -58,12 +58,42 @@ not establish whole-process multithread coverage or kernel sleep counts.
 Nested scope or reply contexts, unmatched hooks, unfinished scopes and
 record/counter overflow produce sticky invalid results. The observer
 keeps at most 64 copied request records. It allocates no memory and emits
-no per-hook output. Connection and optional atomic acknowledgment pointers
+no per-hook output. ABI 2 accepts separate optional logical and partial wait
+acknowledgment pointers. Connection and acknowledgment pointers
 are retained only during the active scope and cleared at scope end.
 
 The focused Python test accepts `XCB_WAIT_SOURCE_ARCHIVE` naming the
 checksum-pinned 1.15 original archive. That input enables an actual patch
 and reapplication-refusal check, in addition to the ordinary rejection
-checks. Native partial-packet qualification remains pending until the
-owning job supplies a controlled fragmented-reply case. The C unit covers
-the partial counter's scoping, nested/unfinished states and record limit.
+checks. The C unit covers the partial counter and acknowledgment scoping,
+cleared pointer lifetime, nested/unfinished states and record limit.
+
+## Fragmented-reply control
+
+Compile `fragment_probe.c` with the private build's `config.h`, headers and
+`.libs` directory, linking XCB, dl and pthread. Pass the absolute private
+library path as its sole argument. This fixture needs no display server.
+It uses one owned AF_UNIX socket pair and peer thread per control. XCB owns
+the client descriptor; the peer stays open until reply consumption and scope
+end are acknowledged, then the thread closes its descriptor. A 30-second
+whole-process alarm and three-second I/O and acknowledgment deadlines bound
+the run. Timeout terminates the fixture or releases the remaining reply
+body and fails the expected acknowledgment.
+
+The peer accepts only an exact unauthenticated X11 11.0 setup and one
+24-byte GetProperty request with known window, property, type and length.
+It returns a 32-byte reply header and a known 16-byte payload. The positive
+control waits for the logical-wait hook acknowledgment before sending the
+header, then for the actual partial-read hook before releasing the body.
+It requires one exact completed reply context, one logical wait, at least
+one partial-read wait and exact reply/payload bytes. The negative control
+writes the complete 48-byte reply before scope entry and requires zero
+partial-read waits. Socket availability does not imply an XCB-buffered
+reply, so this control does not require zero logical waits. The existing
+buffered-reply control retains that separate assertion.
+
+The fragment fixture confirms that its observer and reply API resolve to
+the supplied private library. It exercises the actual patched read path;
+it is not a general X server or proxy. Native execution and results belong
+to the owning frozen job's verification record. Broader partial-packet,
+multi-thread and FVWM draw-operation coverage remain separate.

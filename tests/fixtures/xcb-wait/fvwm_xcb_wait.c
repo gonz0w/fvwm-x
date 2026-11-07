@@ -14,6 +14,7 @@ static _Thread_local struct
 {
 	void *connection;
 	_Atomic uint32_t *entered_wait;
+	_Atomic uint32_t *entered_partial;
 	int active;
 	int in_reply;
 	uint64_t sequence;
@@ -38,7 +39,8 @@ static int matches(void *connection)
 	return observation.active && observation.connection == connection;
 }
 
-int fvwm_xcb_wait_begin(void *connection, _Atomic uint32_t *entered_wait)
+int fvwm_xcb_wait_begin(void *connection, _Atomic uint32_t *entered_wait,
+	_Atomic uint32_t *entered_partial)
 {
 	if (observation.active)
 	{
@@ -53,9 +55,14 @@ int fvwm_xcb_wait_begin(void *connection, _Atomic uint32_t *entered_wait)
 	}
 	observation.connection = connection;
 	observation.entered_wait = entered_wait;
+	observation.entered_partial = entered_partial;
 	if (entered_wait != NULL)
 	{
 		atomic_store_explicit(entered_wait, 0, memory_order_release);
+	}
+	if (entered_partial != NULL)
+	{
+		atomic_store_explicit(entered_partial, 0, memory_order_release);
 	}
 	observation.active = 1;
 	return 1;
@@ -154,6 +161,11 @@ void fvwm_xcb_wait_partial(void *connection)
 	record = &observation.result.record[observation.result.records - 1];
 	increment(&record->partial_wait_calls);
 	increment(&observation.result.partial_wait_calls);
+	if (observation.entered_partial != NULL)
+	{
+		atomic_store_explicit(observation.entered_partial, 1,
+			memory_order_release);
+	}
 }
 
 void fvwm_xcb_wait_reply_end(void *connection, uint64_t sequence,

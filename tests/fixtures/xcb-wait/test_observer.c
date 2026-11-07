@@ -12,12 +12,12 @@
 int main(void)
 {
 	int first, other;
-	_Atomic uint32_t entered = 0;
+	_Atomic uint32_t entered = 0, partial = 0;
 	struct fvwm_xcb_wait_result result;
 
 	assert(!fvwm_xcb_wait_end(&result) && result.invalid);
-	assert(!fvwm_xcb_wait_begin(NULL, NULL));
-	assert(fvwm_xcb_wait_begin(&first, &entered));
+	assert(!fvwm_xcb_wait_begin(NULL, NULL, NULL));
+	assert(fvwm_xcb_wait_begin(&first, &entered, &partial));
 	fvwm_xcb_wait_reply_begin(&other, 1);
 	fvwm_xcb_wait_reply_wait(&other, 1);
 	fvwm_xcb_wait_partial(&other);
@@ -25,9 +25,9 @@ int main(void)
 	fvwm_xcb_wait_partial(&first);
 	assert(fvwm_xcb_wait_end(&result));
 	assert(result.records == 0 && result.partial_wait_calls == 0);
-	assert(atomic_load(&entered) == 0);
+	assert(atomic_load(&entered) == 0 && atomic_load(&partial) == 0);
 
-	assert(fvwm_xcb_wait_begin(&first, &entered));
+	assert(fvwm_xcb_wait_begin(&first, &entered, &partial));
 	fvwm_xcb_wait_reply_begin(&first, 12);
 	fvwm_xcb_wait_reply_end(&first, 12, 1);
 	fvwm_xcb_wait_reply_begin(&first, 13);
@@ -36,7 +36,7 @@ int main(void)
 	fvwm_xcb_wait_partial(&first);
 	fvwm_xcb_wait_partial(&other);
 	fvwm_xcb_wait_reply_end(&first, 13, 1);
-	assert(atomic_load(&entered) == 1);
+	assert(atomic_load(&entered) == 1 && atomic_load(&partial) == 1);
 	assert(fvwm_xcb_wait_end(&result));
 	assert(result.reply_calls == 2 && result.records == 2);
 	assert(result.logical_waits == 1 && result.wait_calls == 2);
@@ -48,21 +48,45 @@ int main(void)
 		result.record[1].partial_wait_calls == 1 &&
 		result.record[1].completed && result.record[1].reply_available);
 
-	assert(fvwm_xcb_wait_begin(&first, NULL));
-	assert(!fvwm_xcb_wait_begin(&other, NULL));
+	/* Ending a scope releases both acknowledgments, including after a reply
+	 * has completed. Subsequent hooks must not access the caller's storage.
+	 */
+	atomic_store(&entered, 0);
+	atomic_store(&partial, 0);
+	fvwm_xcb_wait_reply_wait(&first, 13);
+	fvwm_xcb_wait_partial(&first);
+	assert(atomic_load(&entered) == 0 && atomic_load(&partial) == 0);
+	assert(fvwm_xcb_wait_begin(&first, NULL, &partial));
+	fvwm_xcb_wait_partial(&first);
+	assert(atomic_load(&partial) == 0);
+	fvwm_xcb_wait_reply_begin(&first, 14);
+	fvwm_xcb_wait_partial(&other);
+	assert(atomic_load(&partial) == 0);
+	fvwm_xcb_wait_partial(&first);
+	assert(atomic_load(&partial) == 1);
+	fvwm_xcb_wait_reply_end(&first, 14, 1);
+	atomic_store(&partial, 0);
+	fvwm_xcb_wait_partial(&first);
+	assert(atomic_load(&partial) == 0);
+	assert(fvwm_xcb_wait_end(&result));
+	fvwm_xcb_wait_partial(&first);
+	assert(atomic_load(&partial) == 0);
+
+	assert(fvwm_xcb_wait_begin(&first, NULL, NULL));
+	assert(!fvwm_xcb_wait_begin(&other, NULL, NULL));
 	assert(!fvwm_xcb_wait_end(&result) && result.invalid);
-	assert(fvwm_xcb_wait_begin(&first, NULL));
+	assert(fvwm_xcb_wait_begin(&first, NULL, NULL));
 	fvwm_xcb_wait_reply_begin(&first, 1);
 	assert(!fvwm_xcb_wait_end(&result) && result.invalid);
-	assert(fvwm_xcb_wait_begin(&first, NULL));
+	assert(fvwm_xcb_wait_begin(&first, NULL, NULL));
 	fvwm_xcb_wait_reply_wait(&first, 1);
 	assert(!fvwm_xcb_wait_end(&result) && result.invalid);
-	assert(fvwm_xcb_wait_begin(&first, NULL));
+	assert(fvwm_xcb_wait_begin(&first, NULL, NULL));
 	fvwm_xcb_wait_reply_begin(&first, 1);
 	fvwm_xcb_wait_reply_end(&first, 2, 0);
 	assert(!fvwm_xcb_wait_end(&result) && result.invalid);
 
-	assert(fvwm_xcb_wait_begin(&first, NULL));
+	assert(fvwm_xcb_wait_begin(&first, NULL, NULL));
 	for (uint64_t sequence = 0; sequence <= FVWM_XCB_WAIT_CAPACITY;
 	     ++sequence)
 	{

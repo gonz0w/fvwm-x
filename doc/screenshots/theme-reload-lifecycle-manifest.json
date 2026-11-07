@@ -1,0 +1,14 @@
+{
+  "description": "Unmodified native-X stale inspector capture from a passing case within the retained failed U1 diagnostic.",
+  "base_head": "656a4cc7316faf873e4aa97c098f11d843cfc4ff",
+  "executed_driver_sha256": "3a6fce675039a71d79d4a4bb56c90d464c7d71303f3455abe3134f148953a5d4",
+  "gate_sha256": "95d8ae6266b7c5accf95b8801f6d4e5c84399fc9128847ee6eb8b1b2d57b367b",
+  "plan_sha256": "4965b62a6f6b5d13c1763932c3f0e4752ffb26d048c11754cd98c61573409d2e",
+  "case": "stale-inspector-and-retired-frame",
+  "case_status": "passed",
+  "overall_run_status": "failed later at replacement provider readiness; not full lifecycle acceptance",
+  "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-authoring-closeout/capture/export/evidence/native/slate-dark/theme-reload-stale-inspector.png",
+  "asset": "theme-reload-stale-inspector.png",
+  "bytes": 122736,
+  "sha256": "d486944d19632ef70040af568f1a34c7b6ba0a81700f81d3bd44002696afb4b9"
+}

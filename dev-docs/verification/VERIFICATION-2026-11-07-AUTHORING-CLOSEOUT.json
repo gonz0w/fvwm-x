@@ -1,0 +1,153 @@
+{
+  "base": "656a4cc7316faf873e4aa97c098f11d843cfc4ff",
+  "scope": "U1 reload/inspector lifecycle checkpoint; stopped at native attempt limit",
+  "source_files": {
+    "tests/live_x/theme_reload_live.py": "e0b625153dc18d561b78d81c07de5f3f284eba063a46328f3bcc0d71b7f7cd9d",
+    "tests/live_x/theme_worker_gate.py": "95d8ae6266b7c5accf95b8801f6d4e5c84399fc9128847ee6eb8b1b2d57b367b"
+  },
+  "native_runs": [
+    {
+      "plan_sha256": "4965b62a6f6b5d13c1763932c3f0e4752ffb26d048c11754cd98c61573409d2e",
+      "root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-authoring-closeout",
+      "overall_status": "failed; retained",
+      "native_command": {
+        "label": "native-theme-reload",
+        "argv": [
+          "/usr/bin/python3",
+          "-E",
+          "-S",
+          "-B",
+          "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/theme_reload_live.py",
+          "--build",
+          "/tmp/fvwm-appearance-a4-20261102-01/build",
+          "--artifacts-dir",
+          "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring01/evidence/native",
+          "--profiles",
+          "slate-dark",
+          "--lifecycle"
+        ],
+        "pid": 6,
+        "exit": 1,
+        "group_absent": true,
+        "seconds": 7.064038249999999,
+        "stdout": {
+          "path": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring01/evidence/native-theme-reload.stdout",
+          "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring01/evidence/native-theme-reload.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring01/evidence/native-theme-reload.stderr",
+          "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring01/evidence/native-theme-reload.stderr",
+          "bytes": 1495,
+          "sha256": "3c7674d20b52f3c4fdc27f9225eba269aa49d0cf78dbce4edf708a2d7e29f9b3"
+        }
+      },
+      "archive_sha256": "419fb2f89cd6d63bc3fe065e1724c170a92566f72e5da4578844b905098d908a",
+      "export_files": 103,
+      "failure_stage": "replacement desktop provider",
+      "failure": "AssertionError({'version': 1, 'id': 'theme-reload-56', 'status': 'error', 'error': {'code': 'provider_not_ready'}})",
+      "passed_cases": [
+        "duplicate-pending-noop",
+        "repeated-noop",
+        "missing-input-recovered",
+        "partial-input-recovered",
+        "worker-death-recovered",
+        "stale-settings-result-refused",
+        "stale-inspector-and-retired-frame",
+        "pending-theme-controller-provider-loss"
+      ],
+      "screenshots": [
+        "theme-reload-stale-inspector.png"
+      ],
+      "observer_x_errors": [],
+      "cleanup_errors": [],
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    },
+    {
+      "plan_sha256": "c75bbb740382ae9e3ab797683204d0c7bb60a5c53e764b1a86bec0cc042e9f74",
+      "root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-authoring-closeout/correction02",
+      "overall_status": "failed; retained",
+      "native_command": {
+        "label": "native-theme-reload",
+        "argv": [
+          "/usr/bin/python3",
+          "-E",
+          "-S",
+          "-B",
+          "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/theme_reload_live.py",
+          "--build",
+          "/tmp/fvwm-appearance-a4-20261102-01/build",
+          "--artifacts-dir",
+          "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring02/evidence/native",
+          "--profiles",
+          "slate-dark",
+          "--lifecycle"
+        ],
+        "pid": 6,
+        "exit": 1,
+        "group_absent": true,
+        "seconds": 7.1563973690000005,
+        "stdout": {
+          "path": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring02/evidence/native-theme-reload.stdout",
+          "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring02/evidence/native-theme-reload.stdout",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "stderr": {
+          "path": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring02/evidence/native-theme-reload.stderr",
+          "realpath": "/tmp/fvwm-appearance-a4-20261102-01/u1-authoring02/evidence/native-theme-reload.stderr",
+          "bytes": 627,
+          "sha256": "c69fb80a5835726d1a0616cd99e4443e7cf2e749022902d106d3fb9c97c26499"
+        }
+      },
+      "archive_sha256": "c1dba60bea1bdb28671e563c140bdc7cbcd30aeb423cd92f530d1d7405a0c5d9",
+      "export_files": 107,
+      "failure_stage": "replacement provider editor focus",
+      "failure": "AssertionError()",
+      "passed_cases": [
+        "duplicate-pending-noop",
+        "repeated-noop",
+        "missing-input-recovered",
+        "partial-input-recovered",
+        "worker-death-recovered",
+        "stale-settings-result-refused",
+        "stale-inspector-and-retired-frame",
+        "pending-theme-controller-provider-loss"
+      ],
+      "screenshots": [
+        "theme-reload-stale-inspector.png"
+      ],
+      "observer_x_errors": [],
+      "cleanup_errors": [],
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    }
+  ],
+  "host_only_refusal": {
+    "plan_sha256": "e62266518104ac0871609f00ee04df20455f4a9746919cd37e3e2f02de795286",
+    "owned_start_attempted": false,
+    "native_dispatch": false,
+    "reason": "Two other VMs exceeded task-local two-total cap; resumed same unexecuted native correction after one ended."
+  },
+  "reused": "PR368 five Go package passes, two helper builds, manuals and three configurations; 796 helper-source identities and binary/tool/library identities rechecked, no compilation or Go execution.",
+  "remaining": [
+    "Replacement baseline/root diagnostic gap",
+    "Actual normal preview recovery before theme publication",
+    "External native preview conflict preserves owner",
+    "Closed inspector late-result successor completion fence",
+    "INSPECT-01 static theme/binding ownership/effective-rule explanations"
+  ],
+  "qualification": "No issue closure, whole lifecycle, all-platform, release or performance pass.",
+  "next": "Diagnose/review the replacement wallpaper baseline before a separately bounded tail checkpoint; no automatic native retry.",
+  "source_only_followup": "After stopped native campaign: retain expected/current roots before exact equality, plus named replacement baseline. No acceptance/assertion/timeout weakening and no native execution of this diagnostic-only follow-up."
+}

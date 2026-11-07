@@ -5,8 +5,10 @@
 """Focused semantic-color reload with surviving editor/browser identities.
 
 Uses the existing native module relay, X witnesses and settings/files IPC.
-Preview failure/race policy remains with the affected Go tests; this workload
-covers actual recoloring, source refusal, saved state and an unsubmitted draft.
+--lifecycle adds the finite U1 worker, preview and inspector races in Slate.
+--lifecycle-tail reuses the eight qualified U1 cases and runs only the U2 tail.
+It uses a fixture-only bounded worker gate; actual request/result bytes pass
+unchanged. Existing three-profile captures remain the ordinary UI checkpoint.
 """
 import argparse
 import base64
@@ -44,11 +46,21 @@ def run(args, profile):
     browser_executable = build / 'bin/FvwmPrompt/fvwm-file-browser'
     out = args.artifacts_dir.resolve() / profile
     out.mkdir(parents=True, exist_ok=False)
+    lifecycle = args.lifecycle or args.lifecycle_tail
     evidence = dict(status='running', profile=profile, screenshots=[],
-        scope='semantic color reload; preview race policy uses Go tests')
+        scope='semantic color reload', lifecycle=lifecycle,
+        lifecycle_tail=args.lifecycle_tail)
+    if args.lifecycle_tail:
+        evidence['reused_lifecycle_cases'] = [
+            'duplicate-pending-noop', 'repeated-noop',
+            'missing-input-recovered', 'partial-input-recovered',
+            'worker-death-recovered', 'stale-settings-result-refused',
+            'stale-inspector-and-retired-frame',
+            'pending-theme-controller-provider-loss']
     with HarnessRuntime(prefix='fvwm-theme-reload-') as runtime:
         control = rpc = client = errors = pointer = core = browser = server = None
         native, config = runtime.root / 'native', runtime.root / 'config'
+        gates = runtime.root / 'worker-gates'
         try:
             evidence['stage'] = 'required fixture executables'
             evidence['required_executables'] = {}
@@ -126,6 +138,15 @@ def run(args, profile):
                 'FVWMMFL_SOCKET_PATH': str(runtime.root),
                 'XDG_DATA_HOME': str(runtime.root / 'data'),
                 'XDG_DATA_DIRS': str(runtime.root / 'absent')})
+            if lifecycle:
+                gates.mkdir(mode=0o700)
+                worker_gate = runtime.root / 'desktop-worker-gate'
+                worker_gate.write_text('#!/bin/sh\nexec ' + shlex.join([
+                    sys.executable, '-E', '-S', '-B',
+                    str(source / 'tests/live_x/theme_worker_gate.py'),
+                    env['FVWM_DESKTOP_WORKER'], str(gates)]) + '\n')
+                worker_gate.chmod(0o700)
+                env['FVWM_DESKTOP_WORKER'] = str(worker_gate)
             core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
                 '-f', str(config)], 'core.log', env)
             endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') + '.sock')
@@ -148,14 +169,20 @@ def run(args, profile):
                         browser_poll=browser.poll() if browser else None)
                     raise
 
-            def request(resource='settings', **fields):
+            def request(resource='settings', method='query', readiness=False,
+                    **fields):
                 nonlocal serial
                 serial += 1
                 token = 'theme-reload-%d' % serial
-                rpc.send(frame(token, resource=resource, **fields))
+                rpc.send(frame(token, method=method, resource=resource, **fields))
                 value = rpc.record()['reply']
                 assert value['id'] == token, value
                 if value['status'] == 'error' and value['error']['code'] == 'not_ready':
+                    return None
+                # A replacement can register before its initial configuration
+                # finishes. Only the bounded readiness query may retry this.
+                if (readiness and value['status'] == 'error' and
+                        value['error']['code'] == 'provider_not_ready'):
                     return None
                 assert value['status'] == 'ok', value
                 return expanded_settings(value['result']) if resource == 'settings' else value['result']
@@ -169,7 +196,7 @@ def run(args, profile):
                 control.expect_echo(token)
 
             def ready():
-                value = request(scope='all')
+                value = request(scope='all', readiness=True)
                 return value if value and value['settings']['palette']['application'] == 'submitted-to-fvwm' else None
 
             before = wait('desktop theme ready', ready)
@@ -194,7 +221,7 @@ def run(args, profile):
                 finally:
                     x.XDestroyImage(image)
 
-            def root_state():
+            def root_state(predecessor=None):
                 # Valid old roots can coexist with a pending replacement.
                 # Query the composition fixture's submitted-resource gates,
                 # then require the actual selected asset before the baseline.
@@ -210,6 +237,14 @@ def run(args, profile):
                 if (not capability['root_owned'] or
                         colorset['update_state'] != 'idle'):
                     return None
+                if predecessor is not None:
+                    background = colorset['background']
+                    if (int(colorset['pixels']['background'], 16) != 0xff00ff or
+                            not background['has_pixmap'] or
+                            background['type'] != 4 or
+                            (background['width'], background['height']) !=
+                            (1600, 1000)):
+                        return None
                 try:
                     observed = witness.root_state()
                 except AssertionError as error:
@@ -217,6 +252,10 @@ def run(args, profile):
                     return None
                 diagnostic['observed_root'] = observed
                 if observed['image']['corner_pixels'] != expected_corners:
+                    return None
+                if (predecessor is not None and observed['properties'][
+                        '_XROOTPMAP_ID'] == predecessor['properties'][
+                        '_XROOTPMAP_ID']):
                     return None
                 return observed
 
@@ -342,7 +381,8 @@ def run(args, profile):
                 path.replace(out / name)
                 evidence['screenshots'].append(name)
 
-            capture('theme-reload-' + profile + '.png')
+            if not lifecycle:
+                capture('theme-reload-' + profile + '.png')
             log = runtime.root / 'core.log'
             log_offset = log.stat().st_size
             palettes_path.write_text('{"slate":{}}\n')
@@ -395,9 +435,10 @@ def run(args, profile):
                     wait('fixture validation notice retired',
                         lambda: view.named('FVWM-X') is None)
                 inspection_since = time.monotonic()
-                control.send(b'SendToModule FvwmDesktop inspect sources\n')
+                if not args.lifecycle_tail:
+                    control.send(b'SendToModule FvwmDesktop inspect sources\n')
 
-                def inspection_page(required):
+                def inspection_page(required, scope='sources'):
                     lines, published = [], None
                     for row in outgoing(desktop, inspection_since):
                         text = row.get('text', '')
@@ -407,7 +448,8 @@ def run(args, profile):
                             lines.append(text)
                         elif text == 'Module FvwmForm SlateInspectorForm':
                             decoded = form_text(lines)
-                            if 'Snapshot scope: sources' in decoded and required in decoded:
+                            if (required in decoded and (scope is None or
+                                    'Snapshot scope: ' + scope in decoded)):
                                 published = dict(lines=list(lines), text=decoded,
                                     frame=inspector_frame(lines), time=row['time'])
                     if not published:
@@ -427,24 +469,465 @@ def run(args, profile):
                         return None
                     return dict(published, window=window, module=active[0])
 
-                first = wait('actual sources worker and initial native page',
-                    lambda: inspection_page('Coverage'))
-                control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
-                    (first['window'], first['window'])).encode())
-                wait('actual inspector page focus',
-                    lambda: view.focus() == first['window'])
-                page_since = time.monotonic()
-                view.key('F2')
-                expected_callback = ('SendToModule FvwmDesktop inspect-control ' +
-                    first['frame'] + ' page 1')
-                wait('real inspector Next callback', lambda: next((row for row in
-                    outgoing(build / 'modules/FvwmForm/FvwmForm', page_since)
-                    if row.get('text') == expected_callback), None))
-                ancestry = wait('actual include ancestry native page',
-                    lambda: inspection_page('user:local.config:2'))
-                assert 'include 1/1' in ancestry['text']
-                capture('theme-reload-include-ancestry.png')
-                evidence['include_ancestry'] = ancestry
+                if not args.lifecycle_tail:
+                    first = wait('actual sources worker and initial native page',
+                        lambda: inspection_page('Coverage'))
+                    control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                        (first['window'], first['window'])).encode())
+                    wait('actual inspector page focus',
+                        lambda: view.focus() == first['window'])
+                    page_since = time.monotonic()
+                    view.key('F2')
+                    expected_callback = ('SendToModule FvwmDesktop inspect-control ' +
+                        first['frame'] + ' page 1')
+                    wait('real inspector Next callback', lambda: next((row for row in
+                        outgoing(build / 'modules/FvwmForm/FvwmForm', page_since)
+                        if row.get('text') == expected_callback), None))
+                    ancestry = wait('actual include ancestry native page',
+                        lambda: inspection_page('user:local.config:2'))
+                    assert 'include 1/1' in ancestry['text']
+                    if not lifecycle:
+                        capture('theme-reload-include-ancestry.png')
+                    evidence['include_ancestry'] = ancestry
+                if lifecycle:
+                    cases = evidence['lifecycle_cases'] = {}
+
+                    def command(text):
+                        control.send(('SendToModule FvwmDesktop ' + text +
+                            '\n').encode())
+
+                    def roles_since(since):
+                        return [row for row in outgoing(desktop, since)
+                            if row.get('text', '').startswith('Colorset ')]
+
+                    def root_retained():
+                        current_root = witness.root_state()
+                        # Retain both objects before exact equality can fail;
+                        # an old owned root may outlive pending replacement.
+                        evidence['last_retained_root'] = dict(
+                            stage=evidence['stage'], expected=initial_root,
+                            observed=current_root)
+                        assert current_root == initial_root
+
+                    def preserved(surface):
+                        barrier()
+                        assert pixel() == surface
+                        root_retained()
+                        return retained()
+
+                    def arm(operation='palettes', phase='result'):
+                        (gates / ('held-' + operation + '.json')).unlink(
+                            missing_ok=True)
+                        (gates / ('arm-' + operation)).write_text(
+                            json.dumps(dict(phase=phase)))
+
+                    def held(operation='palettes'):
+                        path = gates / ('held-' + operation + '.json')
+                        wait('actual worker held at ' + operation,
+                            path.exists)
+                        value = json.loads(path.read_text())
+                        assert time.monotonic() - value['held'] < 2, value
+                        return value
+
+                    def release(value):
+                        (gates / ('release-' + value['token'])).touch()
+                        path = gates / ('done-' + value['token'] + '.json')
+                        wait('real worker result released', path.exists)
+                        result = json.loads(path.read_text())
+                        assert not result.get('gate_timeout'), result
+                        return result
+
+                    def refusal(offset, expected):
+                        def observed():
+                            assert log.stat().st_size <= 16777216
+                            text = log.read_bytes()[offset:].decode(
+                                'utf-8', 'replace')
+                            return text if expected in text else None
+                        return wait('source-aware refusal: ' + expected,
+                            observed)
+
+                    def reload():
+                        command('reload-theme')
+                        control.expect_echo(PENDING)
+                        control.expect_echo(SUCCESS)
+                        barrier()
+
+                    candidate = json.loads(json.dumps(changed))
+                    if not args.lifecycle_tail:
+                        # A real completed worker waits while a duplicate arrives.
+                        # Only the admitted no-op may acknowledge success; neither
+                        # request may publish colors or disturb the current Form.
+                        arm()
+                        since = time.monotonic()
+                        command('reload-theme')
+                        control.expect_echo(PENDING)
+                        pending = held()
+                        command('reload-theme')
+                        barrier()
+                        assert not roles_since(since)
+                        released = release(pending)
+                        control.expect_echo(SUCCESS)
+                        preserved(changed_surface)
+                        rows = outgoing(desktop, since)
+                        assert sum(row.get('text') == 'Echo ' + PENDING
+                            for row in rows) == 1, rows
+                        assert sum(row.get('text') == 'Echo ' + SUCCESS
+                            for row in rows) == 1, rows
+                        assert not roles_since(since)
+                        cases['duplicate-pending-noop'] = released
+                        since = time.monotonic()
+                        reload()
+                        reload()
+                        preserved(changed_surface)
+                        assert not roles_since(since)
+                        cases['repeated-noop'] = dict(publications=0)
+
+                        # Missing input and a genuinely truncated file both go
+                        # through the actual worker parser. Recover after each.
+                        for kind, contents in (('missing', None),
+                                ('partial', '{"slate":{"dark":')):
+                            offset, since = log.stat().st_size, time.monotonic()
+                            if contents is None:
+                                palettes_path.unlink()
+                            else:
+                                palettes_path.write_text(contents)
+                            command('reload-theme')
+                            control.expect_echo(PENDING)
+                            diagnostic = refusal(offset, str(palettes_path))
+                            preserved(changed_surface)
+                            assert not roles_since(since)
+                            palettes_path.write_text(json.dumps(changed) + '\n')
+                            reload()
+                            preserved(changed_surface)
+                            cases[kind + '-input-recovered'] = diagnostic
+                        arm(phase='input')
+                        offset, since = log.stat().st_size, time.monotonic()
+                        command('reload-theme')
+                        control.expect_echo(PENDING)
+                        pending = held()
+                        os.kill(pending['pid'], signal.SIGKILL)
+                        diagnostic = refusal(offset, 'Desktop worker failed')
+                        preserved(changed_surface)
+                        assert not roles_since(since)
+                        reload()
+                        preserved(changed_surface)
+                        cases['worker-death-recovered'] = dict(worker=pending,
+                            diagnostic=diagnostic)
+
+                        # Start with a genuine completed palette result, then use
+                        # the supported settings action. Generation changes retire
+                        # the editor intentionally; the old result must not publish.
+                        candidate = json.loads(json.dumps(changed))
+                        candidate[palette][phase]['surface'] = '#523c60'
+                        palettes_path.write_text(json.dumps(candidate) + '\n')
+                        arm()
+                        command('reload-theme')
+                        control.expect_echo(PENDING)
+                        pending = held()
+                        old = request(scope='all')
+                        current = request(method='action', operation='set',
+                            provider=old['provider'], generation=old['generation'],
+                            values={'motion': True})
+                        assert current['provider'] == old['provider']
+                        assert current['generation'] != old['generation']
+                        assert current['settings']['motion']['saved'] is True
+                        assert current['settings']['motion']['effective'] is False
+                        barrier()
+                        wait('intentional old editor retirement', lambda:
+                            view.named('Desktop component settings') is None)
+                        offset, since = log.stat().st_size, time.monotonic()
+                        release(pending)
+                        refusal(offset, 'Settings changed while theme colors')
+                        assert not roles_since(since)
+                        assert pixel() == changed_surface
+                        assert witness.root_state() == initial_root
+                        cases['stale-settings-result-refused'] = dict(
+                            worker=pending, old_generation=old['generation'],
+                            new_generation=current['generation'])
+                        # Re-establish explicit post-action identities and draft.
+                        command('edit-settings group:desktop')
+                        editor = view.wait('Desktop component settings')
+                        editor_children = sorted(view.children(editor))
+                        control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                            (editor, editor)).encode())
+                        wait('replacement editor focus', lambda:
+                            view.focus() == editor)
+                        view.key('space')
+                        before = request(scope='all')
+                        saved_before = saved.read_bytes()
+                        # A current request can now publish the formerly stale map.
+                        reload()
+                        changed_surface = int(candidate[palette][phase]['surface'][1:], 16)
+                        wait('fresh generation recolor', lambda:
+                            pixel() == changed_surface)
+                        preserved(changed_surface)
+                        changed = candidate
+
+                        # Collect old colors in the real inspector worker, reload
+                        # while its completed result is held, then display the
+                        # required stale marker and reject its retired callbacks.
+                        arm('inspect')
+                        inspection_since = time.monotonic()
+                        command('inspect theme')
+                        pending = held('inspect')
+                        collecting = wait('retained collecting inspector', lambda:
+                            inspection_page('Collecting;', scope=None))
+                        collecting_children = sorted(view.children(collecting['window']))
+                        candidate = json.loads(json.dumps(changed))
+                        candidate[palette][phase]['surface'] = '#604b38'
+                        palettes_path.write_text(json.dumps(candidate) + '\n')
+                        reload()
+                        changed_surface = int(candidate[palette][phase]['surface'][1:], 16)
+                        wait('recolor during inspector collection', lambda:
+                            pixel() == changed_surface)
+                        assert view.named('Configuration inspector') == collecting['window']
+                        assert sorted(view.children(collecting['window'])) == collecting_children
+                        release(pending)
+                        stale = wait('visible stale-color inspector', lambda:
+                            inspection_page('Stale: settings or theme policy changed',
+                                scope='theme'))
+                        control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                            (stale['window'], stale['window'])).encode())
+                        wait('visible stale inspector focus', lambda:
+                            view.focus() == stale['window'])
+                        capture('theme-reload-stale-inspector.png')
+                        old_frame = stale['frame']
+                        inspection_since = time.monotonic()
+                        command('inspect-control ' + old_frame + ' refresh')
+                        fresh = wait('fresh inspector color snapshot', lambda:
+                            inspection_page('Separate point-in-time observations;',
+                                scope='theme'))
+                        since = time.monotonic()
+                        command('inspect-control ' + old_frame + ' refresh')
+                        command('inspect-control ' + old_frame + ' page 0')
+                        barrier()
+                        assert not any(row.get('text') ==
+                            'DestroyModuleConfig SlateInspectorForm:*'
+                            for row in outgoing(desktop, since))
+                        cases['stale-inspector-and-retired-frame'] = dict(
+                            stale=stale, fresh=fresh, worker=pending,
+                            collecting_window=collecting['window'],
+                            collecting_children=collecting_children)
+
+                    # Tail mode uses this real operation only as setup for
+                    # replacement; its U1 acceptance is reused, not counted.
+                    # Provider loss owns a prepared theme job and actual native
+                    # preview lease. Recover the lease without publishing the
+                    # held map; the controller owns cancellation and reaping.
+                    command('preview-resource ' + before['provider'] +
+                        ' contrast high')
+                    view.wait('Preview contrast')
+                    wait('native preview before provider loss', lambda:
+                        pixel() != changed_surface)
+                    candidate[palette][phase]['surface'] = '#685848'
+                    palettes_path.write_text(json.dumps(candidate) + '\n')
+                    arm()
+                    command('reload-theme')
+                    control.expect_echo(PENDING)
+                    pending = held()
+                    identities = [path for path in native.glob('module-*.json')
+                        if json.loads(path.read_text())['real'] == str(desktop)]
+                    assert len(identities) == 1, identities
+                    stopped = native / ('stopped-' +
+                        identities[0].stem.removeprefix('module-') + '.json')
+                    since = time.monotonic()
+                    control.send(b'KillModule FvwmDesktop\n')
+                    wait('controller with pending theme retired', stopped.exists)
+
+                    def worker_gone():
+                        try:
+                            os.kill(pending['pid'], 0)
+                        except ProcessLookupError:
+                            return True
+                        return None
+
+                    wait('controller reaped pending theme worker', worker_gone)
+                    assert not (gates / ('done-' + pending['token'] + '.json')).exists()
+                    wait('provider-loss native preview recovery', lambda:
+                        pixel() == changed_surface and
+                        request('appearance')['resource_preview']['slot_available'])
+                    assert not roles_since(since)
+                    assert not any(row.get('text') == 'Echo ' + SUCCESS
+                        for row in outgoing(desktop, since))
+                    assert witness.root_state() == initial_root
+                    assert (saved.read_bytes() if saved.exists() else
+                        None) == saved_before
+                    old_provider = before['provider']
+                    provider_loss = dict(worker=pending,
+                        stopped=json.loads(stopped.read_text()),
+                        provider=old_provider, recovered_surface=changed_surface)
+                    if args.lifecycle_tail:
+                        evidence['prerequisite_setup'] = provider_loss
+                    else:
+                        cases['pending-theme-controller-provider-loss'] = provider_loss
+
+                    # Replacement intentionally restarts editor and native
+                    # resource identities. Keep browser/selection unchanged.
+                    predecessor_root = witness.root_state()
+                    replacement_since = time.monotonic()
+                    control.send(b'KillModule FvwmForm SlateSettingsForm\n'
+                        b'KillModule FvwmForm SlateInspectorForm\n'
+                        b'KillModule FvwmForm SlatePreview-*\n'
+                        b'Module FvwmDesktop\n')
+                    before = wait('replacement desktop provider', lambda:
+                        (value if (value := ready()) and
+                            value['provider'] != old_provider else None))
+                    changed_surface = int(candidate[palette][phase]['surface'][1:], 16)
+                    bar = view.wait('SlateBar')
+                    wait('replacement provider current colors', lambda:
+                        pixel() == changed_surface)
+                    command('edit-settings group:desktop')
+                    editor = view.wait('Desktop component settings')
+                    editor_children = sorted(view.children(editor))
+                    control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                        (editor, editor)).encode())
+                    wait('replacement provider editor focus', lambda:
+                        view.focus() == editor)
+                    view.key('space')
+                    before = request(scope='all')
+                    barrier()
+                    wallpaper_commands = [row['text'] for row in
+                        outgoing(desktop, replacement_since)
+                        if row.get('text', '').startswith('Colorset 20 ')]
+                    expected_commands = ['Colorset 20 Plain, bg #ff00ff',
+                        'Colorset 20 AspectPixmap "' + str(wallpaper) + '"']
+                    evidence['replacement_wallpaper_source'] = dict(
+                        since=replacement_since, predecessor=predecessor_root,
+                        expected=expected_commands, observed=wallpaper_commands)
+                    assert wallpaper_commands == expected_commands
+                    initial_root = wait('replacement selected wallpaper',
+                        lambda: root_state(predecessor_root))
+                    evidence['replacement_initial_root'] = initial_root
+                    preserved(changed_surface)
+                    cases['replacement-provider-baseline'] = dict(
+                        provider=before['provider'], root=initial_root,
+                        predecessor_root=predecessor_root,
+                        wallpaper_commands=wallpaper_commands,
+                        editor=editor, surface=changed_surface)
+
+                    # Reload must abandon the actual native contrast preview,
+                    # receive recovery, then publish the prepared role component.
+                    command('preview-resource ' + before['provider'] +
+                        ' contrast high')
+                    view.wait('Preview contrast')
+                    wait('actual high contrast panel', lambda:
+                        pixel() != changed_surface)
+                    candidate[palette][phase]['surface'] = '#73524b'
+                    palettes_path.write_text(json.dumps(candidate) + '\n')
+                    since = time.monotonic()
+                    reload()
+                    changed_surface = int(candidate[palette][phase]['surface'][1:], 16)
+                    wait('preview recovered before recolor acknowledgement', lambda:
+                        view.named('Preview contrast') is None and
+                        pixel() == changed_surface)
+                    rows = outgoing(desktop, since)
+                    restored = '*SlateNoticeForm: TextHex x' + (
+                        'Resource preview abandoned; previous resources restored.').encode().hex()
+                    restored_at = next(row['time'] for row in rows
+                        if row.get('text') == restored)
+                    success_at = next(row['time'] for row in rows
+                        if row.get('text') == 'Echo ' + SUCCESS)
+                    published_at = roles_since(since)[0]['time']
+                    assert restored_at < published_at < success_at, rows
+                    preserved(changed_surface)
+                    cases['actual-preview-recovery-before-reload'] = dict(
+                        recovered=restored_at, published=published_at,
+                        acknowledged=success_at)
+
+                    # Native resource conflict is final: external ownership
+                    # remains untouched and the controller refuses publication.
+                    command('preview-resource ' + before['provider'] +
+                        ' contrast high')
+                    view.wait('Preview contrast')
+                    arm()
+                    command('reload-theme')
+                    control.expect_echo(PENDING)
+                    pending = held()
+                    control.send(b'Colorset 14 bg #135724\n')
+                    barrier()
+                    conflict = request('colorsets', target='14')
+                    offset, since = log.stat().st_size, time.monotonic()
+                    release(pending)
+                    diagnostic = refusal(offset, 'Preview recovery is unconfirmed')
+                    barrier()
+                    assert not roles_since(since)
+                    assert request('colorsets', target='14') == conflict
+                    root_retained()
+                    retained()
+                    cases['actual-preview-conflict-retains-owner'] = dict(
+                        external_colorset=conflict, diagnostic=diagnostic)
+
+                    # Close a collecting inspector through its actual native
+                    # Close callback, then deliver its real late result. It
+                    # must not reopen or act on a successor frame.
+                    arm('inspect')
+                    inspection_since = time.monotonic()
+                    command('inspect theme')
+                    pending = held('inspect')
+                    collecting = wait('collecting inspector page', lambda:
+                        inspection_page('Collecting;', scope=None))
+                    control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                        (collecting['window'], collecting['window'])).encode())
+                    wait('collecting inspector focus', lambda:
+                        view.focus() == collecting['window'])
+                    close_since = time.monotonic()
+                    view.key('Escape')
+                    wait('closed collecting inspector', lambda:
+                        view.named('Configuration inspector') is None)
+                    wait('controller consumed actual inspector close callback',
+                        lambda: next((row for row in outgoing(desktop, close_since)
+                            if row.get('text') ==
+                            'KillModule FvwmForm SlateInspectorForm'), None))
+                    since = time.monotonic()
+                    release(pending)
+                    barrier()
+                    # The worker receipt and controller barrier do not fence
+                    # completion. A different-scope successor must finish via
+                    # the same single inspection slot, draining the old job.
+                    successor_requested = time.monotonic()
+                    inspection_since = successor_requested
+                    command('inspect settings')
+                    successor = wait('successor drains closed inspection work',
+                        lambda: inspection_page(
+                            'Separate point-in-time observations;',
+                            scope='settings'))
+                    lines, publications = [], []
+                    for row in outgoing(desktop, since):
+                        text = row.get('text', '')
+                        if text == 'DestroyModuleConfig SlateInspectorForm:*':
+                            lines = []
+                        elif text.startswith('*SlateInspectorForm:'):
+                            lines.append(text)
+                        elif text == 'Module FvwmForm SlateInspectorForm':
+                            decoded = form_text(lines)
+                            assert row['time'] >= successor_requested, row
+                            assert 'Snapshot scope: theme' not in decoded, decoded
+                            publications.append(dict(time=row['time'], text=decoded))
+                    assert successor['frame'] != collecting['frame']
+                    successor_children = sorted(view.children(successor['window']))
+                    callbacks_since = time.monotonic()
+                    command('inspect-control ' + collecting['frame'] + ' refresh')
+                    command('inspect-control ' + collecting['frame'] + ' page 0')
+                    barrier()
+                    assert view.named('Configuration inspector') == successor['window']
+                    assert sorted(view.children(successor['window'])) == successor_children
+                    assert not any(row.get('text') ==
+                        'DestroyModuleConfig SlateInspectorForm:*'
+                        for row in outgoing(desktop, callbacks_since))
+                    control.send(('WindowId %d Raise\nWindowId %d Focus NoWarp\n' %
+                        (successor['window'], successor['window'])).encode())
+                    wait('successor inspector close focus', lambda:
+                        view.focus() == successor['window'])
+                    view.key('Escape')
+                    wait('successor inspector closed after completion fence',
+                        lambda: view.named('Configuration inspector') is None)
+                    root_retained()
+                    retained()
+                    cases['closed-inspector-late-result'] = dict(
+                        worker=pending, successor=successor,
+                        publications_after_close=publications,
+                        successor_requested=successor_requested)
+
             control.send(b'Quit\n')
             assert core.wait_until_exit(time.monotonic() + 5) == 0
             evidence['status'] = 'passed'
@@ -474,6 +957,8 @@ def run(args, profile):
                     shutil.copy2(path, out / path.name)
                 if native.exists():
                     shutil.copytree(native, out / 'native', dirs_exist_ok=True)
+                if gates.exists():
+                    shutil.copytree(gates, out / 'worker-gates', dirs_exist_ok=True)
                 if config.exists():
                     (out / 'configuration.fvwm').write_bytes(config.read_bytes())
 
@@ -531,7 +1016,14 @@ def main():
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--profiles', nargs='+', choices=PROFILES,
         default=list(PROFILES))
+    modes = parser.add_mutually_exclusive_group()
+    modes.add_argument('--lifecycle', action='store_true',
+        help='U1 lifecycle checkpoint; requires --profiles slate-dark')
+    modes.add_argument('--lifecycle-tail', action='store_true',
+        help='U2 replacement/preview/closed-inspector tail; Slate only')
     args = parser.parse_args()
+    if (args.lifecycle or args.lifecycle_tail) and args.profiles != ['slate-dark']:
+        parser.error('lifecycle modes require --profiles slate-dark')
     def deadline(signum, frame_):
         raise TimeoutError('focused theme reload exceeded 180 seconds')
     signal.signal(signal.SIGALRM, deadline)

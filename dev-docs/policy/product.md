@@ -13,6 +13,10 @@ their existing scope. The owner changes required policy through the existing pro
   maintenance moves to R2/R3. Existing evaluations finish in R1 and implement
   accepted choices. Follow the [three-release plan](../decisions/RELEASE-PLAN-2026-10-26.md)
   and tracker execution order instead of older cleanup-first scheduling.
+  Owner amendment, 2026-11-07: remaining research for the rejected Cairo/Clay
+  prototypes moves to R2 #366 under the
+  [accepted cutoff](../decisions/REJECTED-PROTOTYPE-R1-CUTOFF-2026-11-07.md).
+  Native product fixes and all production safety/support/release checks stay R1.
   Major/Minor describes work breadth, not urgency. Preserve accepted components,
   platform/configuration scope and the risk-based testing cadence. Future feature
   intake goes to later releases unless R1 scope is explicitly changed.

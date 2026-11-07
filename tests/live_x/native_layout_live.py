@@ -671,9 +671,313 @@ def run(args, profile):
     print(json.dumps(evidence))
 
 
+def run_collection_paint(args, profile):
+    """Reproduce only the Form caption/icon paint-boundary defects."""
+    source, build = Path(__file__).resolve().parents[2], args.build.resolve()
+    out = args.artifacts_dir.resolve() / profile
+    out.mkdir(parents=True, exist_ok=False)
+    evidence = dict(status='running', case='collection-paint', profile=profile,
+                    screenshots=[], controls=[])
+    with HarnessRuntime(prefix='fvwm-collection-paint-') as runtime:
+        connection = client = errors = pointer = core = None
+        try:
+            _, display = start_display_server(runtime, 'Xvfb',
+                ['Xvfb', '-screen', '0', '1024x768x24', '-noreset'],
+                'xserver.log', time.monotonic() + 8)
+            modules = runtime.root / 'modules'
+            modules.mkdir()
+            for name in ('FvwmForm', 'FvwmMFL'):
+                executable = (args.form.resolve() if name == 'FvwmForm' and
+                    args.form else build / 'modules' / name / name)
+                assert executable.is_file(), executable
+                (modules / name).symlink_to(executable)
+            config = runtime.root / 'config'
+            config.write_text('ModulePath ' + str(modules) + '\nRead ' +
+                str(source / 'fvwm/ConfigFvwmDefaults') + '\n'
+                'Style G16Paint* NoTitle, NoHandles, BorderWidth 0, HandleWidth 0\n'
+                'AddToFunc StartFunction I Module FvwmMFL\n')
+            env = runtime.environment({'DISPLAY': display,
+                'HOME': str(runtime.root), 'FVWM_USERDIR': str(runtime.root),
+                'FVWMMFL_SOCKET_PATH': str(runtime.root)})
+            shutil.copy2(config, out / 'generated.config')
+            core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
+                '-f', str(config)], 'core.log', env)
+            endpoint = runtime.root / ('fvwm_mfl_' + display.replace(':', '_') +
+                '.sock')
+            wait_for_predicate('collection paint MFL', endpoint.exists,
+                time.monotonic() + 8, process=core)
+            connection = Connection(endpoint)
+            connection.record()
+            connection.send(b'set echo\n')
+            connection.echo('collection-paint-ready')
+            client = connect_client(display)
+            errors = SessionXErrors(client, evidence).install()
+            view = NativeView(client, errors, core)
+            pointer, x, d = view.pointer, client.x, client.display
+            x.XSetInputFocus.argtypes = [C.c_void_p, C.c_ulong, C.c_int,
+                C.c_ulong]
+            x.XGetWMNormalHints.argtypes = [C.c_void_p, C.c_ulong,
+                C.POINTER(SizeHints), C.POINTER(C.c_long)]
+            x.XTranslateCoordinates.argtypes = [C.c_void_p, C.c_ulong,
+                C.c_ulong, C.c_int, C.c_int, C.POINTER(C.c_int),
+                C.POINTER(C.c_int), C.POINTER(C.c_ulong)]
+            palette = json.loads((source / 'default-config/palettes.json').read_text())
+            colors = palette['dune']['light'] if profile == 'dune-light' else palette['slate']['dark']
+            if profile == 'classic-large':
+                colors = dict(surface='ivory', text='black')
+            font = 'fixed' if profile == 'classic-large' else 'xft:Sans:size=10:antialias=True'
+            evidence.update(font=font, colors=colors,
+                palette_sha256=hashlib.sha256((source /
+                    'default-config/palettes.json').read_bytes()).hexdigest(),
+                form_sha256=hashlib.sha256((modules / 'FvwmForm').read_bytes()).hexdigest())
+            serial = 0
+
+            def command(text):
+                connection.send((text + '\n').encode())
+                connection.echo('collection-paint-command')
+
+            def state(alias):
+                nonlocal serial
+                serial += 1
+                token = 'paint%d' % serial
+                connection.send(('SendToModule %s ListStatus picks %s selection\n' %
+                    (alias, token)).encode())
+                deadline = time.monotonic() + 4
+                while time.monotonic() < deadline:
+                    text = connection.record().get('echo', {}).get('message', '')
+                    if not text.startswith('FVWM_FORM_LIST ' + token + ' '):
+                        continue
+                    fields = text.split()
+                    assert fields[3:5] == ['0', '0'], text
+                    return base64.urlsafe_b64decode(fields[5][1:] + '==')
+                raise AssertionError('missing native list receipt ' + token)
+
+            def geometry(window):
+                a = view.attributes(window)
+                assert a and a.map_state == 2
+                return [a.x, a.y, a.width, a.height]
+
+            def pixels(window):
+                width, height = geometry(window)[2:]
+                assert width * height <= 262144
+                image = x.XGetImage(d, window, 0, 0, width, height,
+                    C.c_ulong(-1).value, 2)
+                assert image
+                try:
+                    return tuple(x.XGetPixel(image, px, py)
+                        for py in range(height) for px in range(width))
+                finally:
+                    x.XDestroyImage(image)
+
+            def snapshot(name):
+                previous = os.environ.get('DISPLAY')
+                os.environ['DISPLAY'] = display
+                try:
+                    path = Path(NativeCapture(build / 'bin/fvwm-desktop-capture').screenshot(
+                        out).removeprefix('Screenshot saved: '))
+                    path.rename(out / name)
+                    evidence['screenshots'].append(name)
+                finally:
+                    if previous is None:
+                        os.environ.pop('DISPLAY', None)
+                    else:
+                        os.environ['DISPLAY'] = previous
+
+            def create(mode, small=False):
+                alias = 'G16Paint' + ('Tiny' if small else '') + mode.title()
+                columns = 8 if small and mode == 'grid' else 2 if mode == 'grid' else 1
+                count = columns * 2
+                lines = ['Title "' + alias + '"',
+                    'Position %d %d' % (40 if mode == 'list' else 420,
+                        380 if small else 60),
+                    'Font "' + ('5x7' if small else font) + '"',
+                    'ButtonFont "' + ('5x7' if small else font) + '"',
+                    'Fore ' + colors['text'],
+                    'Back ' + colors['surface'],
+                    'ItemFore ' + colors['text'],
+                    'ItemBack ' + colors['surface'],
+                    'Line left', 'List picks 24 2',
+                    'ListViewport %d %d' % (1 if small else 4, columns),
+                    'ListVersioned', *['ListItem off ""' for _ in range(count)],
+                    'ListFocus 1']
+                (out / (alias + '.config')).write_text('\n'.join(
+                    '*' + alias + ': ' + line for line in lines) + '\n')
+                for line in lines:
+                    connection.send(('*' + alias + ': ' + line + '\n').encode())
+                command('Module FvwmForm ' + alias)
+                window = view.wait(alias)
+                children = view.children(window)
+                assert len(children) == 1, children
+                child = children[0]
+                x.XSetInputFocus(d, window, 1, 0)
+                x.XSync(d, 0)
+                wait_for_predicate('Form focus', lambda: view.focus() == window,
+                    time.monotonic() + 3, process=core)
+                original = state(alias)
+                form = dict(alias=alias, window=window, child=child,
+                    columns=columns, count=count, generation=1)
+                if small:
+                    hints, supplied = SizeHints(), C.c_long()
+                    assert x.XGetWMNormalHints(d, window, C.byref(hints), C.byref(supplied))
+                    # This form has only the viewport line: the documented
+                    # unscaled padding is 20 + two 3px borders + 16px gutter.
+                    cell = hints.min_width - 42
+                    assert 1 <= cell <= 6, (cell, hints.min_width)
+                    width = hints.min_width + (columns - 1) * cell
+                    height = geometry(window)[3]
+                    x.XResizeWindow(d, window, width, height)
+                    x.XSync(d, 0)
+                    wait_for_predicate('tiny admitted viewport',
+                        lambda: geometry(child)[2] == width - 20,
+                        time.monotonic() + 3, process=core)
+                    assert state(alias) == original
+                    form['tiny_cell_width'] = cell
+                return form
+
+            def publish(form, label, icon=''):
+                before = state(form['alias'])
+                generation = form['generation'] + 1
+                command('SendToModule %s ListBegin picks %d %d' %
+                    (form['alias'], form['generation'], generation))
+                for index in range(1, form['count'] + 1):
+                    suffix = ' ' + icon if index == form['count'] and icon else ''
+                    connection.send(('SendToModule %s ListEntry picks %d %d "%s"%s\n' %
+                        (form['alias'], generation, index,
+                        label if index == form['count'] else '', suffix)).encode())
+                command('SendToModule %s ListCommit picks %d' %
+                    (form['alias'], generation))
+                after = state(form['alias'])
+                assert int.from_bytes(after[:4], 'big') == generation
+                assert before[4:] == after[4:], (before, after)
+                form['generation'] = generation
+                evidence['last_publication'] = dict(alias=form['alias'],
+                    generation=generation, before=before.hex(),
+                    after=after.hex())
+                return after
+
+            forms = []
+            for mode in ('list', 'grid'):
+                form = create(mode)
+                forms.append(form)
+                child = form['child']
+                width, height = geometry(child)[2:]
+                blank = pixels(child)
+                evidence['active_control'] = dict(alias=form['alias'],
+                    parent_geometry=geometry(form['window']),
+                    child_geometry=geometry(child), state=state(form['alias']).hex(),
+                    blank_colors=sorted(set(blank)))
+                cell_width = (width - 22) // form['columns']
+                assert (height - 6) % 2 == 0
+                row_height = (height - 6) // 2
+                left = 3 + (form['columns'] - 1) * cell_width
+                right = left + cell_width
+                top, bottom = 3 + row_height, 3 + 2 * row_height
+                inside = [py * width + px for py in range(top, bottom)
+                    for px in range(left, right)]
+                outside = [py * width + px for py in range(1, height - 1)
+                    for px in range(1, width - 1)
+                    if not (left <= px < right and top <= py < bottom)]
+                gutter = [py * width + px for py in range(top, bottom)
+                    for px in range(right, width - 1)]
+                publish(form, 'W' * 120)
+                def painted_inside():
+                    value = pixels(child)
+                    return value if any(value[index] != blank[index]
+                        for index in inside) else None
+                painted = wait_for_predicate('caption visibly painted',
+                    painted_inside, time.monotonic() + 3, process=core)
+                changed = sum(painted[index] != blank[index] for index in outside)
+                evidence['controls'].append(dict(mode=mode, font=font,
+                    kind='caption', outside_changed_pixels=changed,
+                    cell_width=cell_width, gutter_start=right,
+                    gutter_changed_pixels=sum(painted[index] != blank[index]
+                        for index in gutter)))
+                if args.expect_caption_overflow and profile == 'classic-large':
+                    assert evidence['controls'][-1]['gutter_changed_pixels'] > 0, (
+                        'baseline core caption did not reproduce', changed)
+                else:
+                    assert changed == 0, 'caption escaped its cell'
+                publish(form, '')
+                wait_for_predicate('blank caption restored',
+                    lambda: pixels(child) == blank,
+                    time.monotonic() + 3, process=core)
+                publish(form, '', 'file')
+                icon = wait_for_predicate('native icon visibly painted',
+                    painted_inside, time.monotonic() + 3, process=core)
+                assert all(icon[index] == blank[index] for index in outside)
+                publish(form, 'W' * 120)
+                # Actual keyboard/pointer selection remains owned by Form.
+                view.key('Home')
+                view.key('space')
+                def selection(on):
+                    value = state(form['alias'])
+                    return value if bool(value[-1] & 1) == on else None
+                selected = wait_for_predicate('keyboard selected first entry',
+                    lambda: selection(True), time.monotonic() + 3, process=core)
+                rx, ry, sub = C.c_int(), C.c_int(), C.c_ulong()
+                assert x.XTranslateCoordinates(d, child, client.root, 4, 4,
+                    C.byref(rx), C.byref(ry), C.byref(sub))
+                pointer.motion(rx.value, ry.value)
+                pointer.button(True)
+                time.sleep(.03)
+                pointer.button(False)
+                x.XSync(d, 0)
+                cleared = wait_for_predicate('pointer cleared first entry',
+                    lambda: selection(False), time.monotonic() + 3, process=core)
+                assert cleared[4:6] == selected[4:6]
+                evidence['controls'][-1]['pointer_keyboard_state'] = dict(
+                    selected=selected.hex(), cleared=cleared.hex())
+            snapshot('collection-paint-' + profile + '.png')
+            for form in forms:
+                command('KillModule FvwmForm ' + form['alias'])
+            if profile == 'classic-large':
+                for mode in ('list', 'grid'):
+                    form = create(mode, small=True)
+                    child = form['child']
+                    blank = pixels(child)
+                    publish(form, '', 'file')
+                    current = pixels(child)
+                    if not args.expect_caption_overflow:
+                        assert current == blank, 'nonpositive icon interior painted'
+                    evidence['controls'].append(dict(mode=mode, font='5x7',
+                        kind='tiny-icon', cell_width=form['tiny_cell_width'],
+                        changed_pixels=sum(a != b for a, b in zip(blank, current))))
+                snapshot('collection-paint-tiny.png')
+            connection.send(b'Quit\n')
+            assert core.wait_until_exit(time.monotonic() + 4) == 0
+            logs = '\n'.join(path.read_text(errors='replace') for path in runtime.root.glob('*.log'))
+            assert not any(marker in logs for marker in ('ERROR: AddressSanitizer',
+                'runtime error:', 'Assertion', 'BadMatch', 'BadValue', 'BadWindow')), logs
+            assert not errors.unexpected, errors.unexpected
+            evidence['status'] = 'passed'
+        finally:
+            failure = sys.exc_info()[1]
+            if failure is not None:
+                evidence.update(status='failed', failure=repr(failure))
+            if connection:
+                connection.close()
+            if pointer:
+                pointer.button(False)
+            if core:
+                core.close(time.monotonic() + 4)
+            if errors:
+                errors.close_display()
+            elif client:
+                client.close()
+            for path in runtime.root.glob('*.log'):
+                shutil.copy2(path, out / path.name)
+            (out / 'result.json').write_text(json.dumps(evidence, indent=2) + '\n')
+    assert not errors.unexpected, errors.unexpected
+    print(json.dumps(evidence))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--build', required=True, type=Path)
+    parser.add_argument('--case', choices=('full', 'collection-paint'), default='full')
+    parser.add_argument('--form', type=Path, help='owned Form binary for focused baseline/candidate comparison')
+    parser.add_argument('--expect-caption-overflow', action='store_true',
+        help='require the known core-font gutter spill in the focused baseline')
     parser.add_argument('--artifacts-dir', required=True, type=Path)
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
     options = parser.parse_args()
@@ -683,5 +987,9 @@ if __name__ == '__main__':
     signal.signal(signal.SIGALRM, deadline)
     signal.alarm(120)
     for selected_profile in options.profiles:
-        run(options, selected_profile)
+        if options.case == 'collection-paint':
+            run_collection_paint(options, selected_profile)
+        else:
+            assert not options.form and not options.expect_caption_overflow
+            run(options, selected_profile)
     signal.alarm(0)

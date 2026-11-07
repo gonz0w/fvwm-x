@@ -611,7 +611,9 @@ does not force the focused entry back onscreen during resize.
   Append one quoted presentation label (at most 1024 source bytes including
   quotes) to the preceding List. The optional literal type chooses a native
   monochrome mark scaled from ButtonFont. Grid cells without a type use a
-  generic mark. These marks load no files or thumbnails. Labels are clipped to
+  generic mark. These marks load no files or thumbnails. A mark is omitted
+  when the cell has no positive interior for it; labels and focus remain.
+  Labels are clipped to
   their cell; use the consumer's properties view for a long name.
   Labels have no action/path identity. Use only
   nonsensitive metadata: ordinary command and Echo channels are public to the

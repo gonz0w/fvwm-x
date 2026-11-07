@@ -2,6 +2,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2, or any later version. */
 #include "config.h"
+#include "libs/log.h"
 #include <stdio.h>
 #include "libs/Module.h"
 #include "libs/fvwmlib.h"
@@ -73,7 +74,12 @@ void form_list_draw(Item *item)
 	int width = item->header.size_x;
 	int columns = form_list_columns(s);
 	int cell_width = (width - 2 * BOX_SPC - LIST_GUTTER) / columns;
+	int icon_limit = cell_width - 2 * TEXT_SPC;
 
+	if (icon_limit > height - 2 * TEXT_SPC)
+		icon_limit = height - 2 * TEXT_SPC;
+	if (icon_limit < 0)
+		icon_limit = 0;
 	XClearWindow(dpy, item->header.win);
 	str->flags.has_colorset = False;
 	str->win = item->header.win;
@@ -108,24 +114,36 @@ void form_list_draw(Item *item)
 			icon_size = height - 4 * TEXT_SPC - dt->dt_Ffont->height;
 			if (icon_size < 8)
 				icon_size = 8;
-			if (icon_size > cell_width - 2 * TEXT_SPC)
-				icon_size = cell_width - 2 * TEXT_SPC;
-			XSetRegion(dpy, dt->dt_item_GC, region);
-			list_icon(item, entry->icon,
-				x + (cell_width - icon_size) / 2,
-				y + TEXT_SPC, icon_size);
-			XSetClipMask(dpy, dt->dt_item_GC, None);
+			if (icon_size > icon_limit)
+				icon_size = icon_limit;
+			if (icon_size > 0)
+			{
+				XSetRegion(dpy, dt->dt_item_GC, region);
+				list_icon(item, entry->icon,
+					x + (cell_width - icon_size) / 2,
+					y + TEXT_SPC, icon_size);
+				XSetClipMask(dpy, dt->dt_item_GC, None);
+			}
 			str->y = y + 2 * TEXT_SPC + icon_size +
 				dt->dt_Ffont->ascent;
 		}
 		else if (entry->icon != FORM_ICON_NONE)
 		{
 			icon_size = height - 2 * TEXT_SPC;
-			list_icon(item, entry->icon, x + TEXT_SPC,
-				y + TEXT_SPC, icon_size);
-			str->x += icon_size + TEXT_SPC;
+			if (icon_size > icon_limit)
+				icon_size = icon_limit;
+			if (icon_size > 0)
+			{
+				XSetRegion(dpy, dt->dt_item_GC, region);
+				list_icon(item, entry->icon, x + TEXT_SPC,
+					y + TEXT_SPC, icon_size);
+				XSetClipMask(dpy, dt->dt_item_GC, None);
+				str->x += icon_size + TEXT_SPC;
+			}
 		}
-		FlocaleDrawString(dpy, dt->dt_Ffont, str, FWS_HAVE_LENGTH);
+		if (!flocale_draw_string_clipped(dpy, dt->dt_Ffont, str,
+		    FWS_HAVE_LENGTH, clip))
+			fvwm_debug(__func__, "could not prepare collection label clip");
 		if (CF.cur_list == item && index == s->focus)
 		{
 			int stroke = form_focus_stroke(CF.ui_metrics.stroke,
@@ -151,6 +169,7 @@ void form_list_draw(Item *item)
 			}
 		}
 		str->flags.has_clip_region = False;
+		str->clip_region = NULL;
 		XDestroyRegion(region);
 	}
 	str->str = NULL;

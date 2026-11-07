@@ -35,7 +35,115 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, T1 — identity-preserving semantic theme reload, 2026-11-07.
+Current work, PR368 — UI/manual gates complete; final delivery review, 2026-11-07.
+The source-backed fixture repairs qualify all three native configurations in
+4.198 seconds with exact wallpaper root/pixel equality after reload and refusal,
+retained editor/browser/settings identity and real draft callback validation.
+All four unmodified captures are inspected. Candidate/base manuals render, and
+60/80-column reading checks pass; inherited formatter families/counts are recorded.
+Five Go packages and both helper builds are reused, not rerun. Ninety-four success
+exports/archive and owned shutdown verify. No production Go changes were needed
+in this continuation. [Closeout and gallery](verification/VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md).
+
+Finish separate integrated/signed-head review, push the follow-up to
+[PR368](https://github.com/gonz0w/fvwm-x/pull/368), reconcile GitHub mirrors and mark
+it ready for review. Do not merge it in this continuation. Broader issue/platform/
+release and due performance gates retain their owners; no whole-issue closure
+is selected. The previous failures below remain historical evidence.
+
+Historical continuation, T2 — finish PR368 UI and manual qualification, 2026-11-07.
+Cam explicitly requested continuation of #368: diagnose its UI failure, reuse
+passing checks, finish manuals and capture the new UI, then make it merge-ready.
+Lead owns scope, execution and integration on `codex/r1-live-theme-reload`,
+base/head `22ee9ff545a9dcc8aeee31985e8f4b7058591a55` (draft PR368).
+T1's campaigns remain stopped and their failures retained; this is the newly
+requested diagnostic continuation, not an automatic renewal.
+
+Bounded outcome: establish the original UI failure with the committed diagnostic-
+preservation fix; repair only current fixture/product acceptance; qualify reload,
+retained state and include ancestry in Slate, Dune and enlarged Classic; inspect
+new actual captures; render/lint the affected manual; separately review and mark
+PR368 ready. Do not merge it in this continuation. No new feature scope, profile,
+SDK/package/install change, broad matrix or benchmark is selected.
+
+Reuse the five passing Go packages and two configured helper builds; verify their
+source/binary identities instead of rerunning them. One owned Linux ARM64 UI
+session, at most 45 minutes/128 MiB export, one diagnostic run plus one diagnosed
+separately reviewed correction. Stop unexplained repeated failures at that limit.
+Run independent manual generation before UI so a fixture failure cannot hide it.
+Exact inputs need separate review before lead execution. The retained source
+postimages, SDK/library/font pins and built Go helper identities bind admission.
+Functional-only work may share the 128 GiB host with one other VM: fresh inventory
+shows PID3933 `qemu-system-aarch64`; preserve it untouched, allow zero if it ends,
+reject unexpected additional VMs, and retain owned stopped/idle/cleanup guards.
+No performance claim follows from the shared host. New unrelated findings return
+to existing milestone ownership. Screenshots/manual/source/evidence and signed
+DCO delivery remain one PR; no native check solely for publication.
+
+T2 diagnostic run identifies the exact first failure: initial panel color passes,
+then the fixture times out waiting for an owned wallpaper before reload is
+exercised. The fixed cleanup retains traceback, stage and native logs with no
+observer X errors. Candidate and PR367 baseline manuals independently render
+successfully before UI. Nineteen exported files/archive verify, all three command
+groups retire, and both owned resources stop.
+
+Source diagnosis: PNG and solid root preparation also use the image worker;
+`image_background_client.c` selects FVWM_IMAGE_SVG_WORKER or an installed path.
+The build-tree fixture omits that override, unlike the working composition
+fixture. Select its explicit retained build worker and require/admit the existing
+Backer, image worker and browser executables before UI. Preserve strict owned-
+wallpaper and unchanged-root assertions. Record extra helper identities at
+admission and recheck afterward; do not invent historical byte provenance or
+compile/install speculatively. Missing prerequisites must fail clearly.
+This is the sole reviewed diagnosed T2 correction; reuse both manual renders,
+five Go passes and two helper builds. Host 60/80-column manual rendering is
+readable; lint retains Asciidoctor GNU mso/LINKSTYLE, long-input-line and paragraph
+families (baseline/candidate exit3), not a clean-lint claim. Exact results remain
+with the continuation evidence. No further feature or platform campaign joins.
+
+T2 has stopped at its two-run limit. The explicit image worker repairs initial
+wallpaper setup; helper prerequisites and library checks pass. Valid reload
+changes the panel while retaining browser/editor/settings state, then the root
+witness equality fails after 0.875 seconds. No unexpected X errors or cleanup
+failures occur. Thirty-two exports/archive verify and all owned children and
+resources stop. Both root snapshots were saved only after the assertion, so the
+actual differing field is unavailable. Relay confirms no colorset20 publication
+by reload; asynchronous startup or root-resource identity churn is a hypothesis,
+not an established cause. Do not weaken the wallpaper requirement from that guess.
+
+Select T3, a narrower root-witness diagnosis for the newly reached assertion:
+retain initial/current root samples before comparison and run Slate only once
+against the unchanged strict oracle. No tests, builds, manuals or other themes
+repeat. If the captured difference establishes a specific fixture/product cause,
+allow one separately reviewed minimal correction with the full three-profile
+acceptance/captures. Retain all previous failures; stop on unexplained repeat or
+exhausted T3 limit. This is a new observed-field diagnostic checkpoint, not a
+renewal of T2's setup run. Existing owner, profile, input guards, shared-host
+resource bounds,45-minute/128MiB limits and independent review remain binding.
+No new product domain or compatibility decision is inferred. Five Go passes,
+two builds and manual results remain reused. Lead alone executes exact reviewed
+inputs, and the PR stays draft until actual UI qualification passes.
+
+T3 source diagnosis establishes a missing baseline precondition: a valid current
+owned root may coexist with pending replacement; it does not mean the final
+selected wallpaper has finished loading. Startup submits light then dark assets.
+Adopt the existing composition readiness queries (root_owned and colorset20 idle),
+a desktop barrier after editor/browser setup, and independently known corner
+pixels from the admitted selected PNG at fixed fixture geometry. Bind those
+expected samples to each asset hash. This distinguishes the selected image from
+an intermediate solid/opposite-phase root, without a timing sleep or a new decoder.
+Save all root/readiness samples before assertions. Preserve exact root dictionary
+and pixel/hash/identity equality after success and refusal.
+
+This source-backed precondition repair replaces the proposed opaque Slate-only
+observation: select one full three-profile UI qualification with retained failure
+diagnostics, then at most one specifically diagnosed reviewed correction within
+T3 if evidence warrants it. Five package passes, built helpers, extra-helper
+identities and both manual results remain reused. No product change or root-
+identity compatibility waiver is selected. Original root field difference remains
+unobserved; successful execution is required before resolving the race diagnosis.
+
+Historical checkpoint, T1 — identity-preserving semantic theme reload, 2026-11-07.
 Current delivery status: source and composed five-package policy checks pass;
 both configured helpers build. Native UI qualification failed without usable
 profile diagnostics. New screenshots and manual rendering remain pending.

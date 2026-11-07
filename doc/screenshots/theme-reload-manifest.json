@@ -1,0 +1,39 @@
+{
+  "description": "Unmodified native-X theme reload captures; custom palette edits in a development fixture.",
+  "base_head": "22ee9ff545a9dcc8aeee31985e8f4b7058591a55",
+  "source_qualification": "T2/T3 working-tree changes and fixture inputs; not the clean base head alone.",
+  "executed_driver_sha256": "69ddd60207f629be8290b2c01556846d7a7dcc78ec533d65c6a767775159b7d6",
+  "plan_sha256": "4a9dfa029299b823186cf330f9fa945d8f2f7b64a96f50805bbc69813418302b",
+  "result": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/result.json",
+  "case_evidence_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/export/evidence/native",
+  "assets": [
+    {
+      "asset": "theme-reload-slate-dark.png",
+      "profile": "slate-dark",
+      "bytes": 111654,
+      "sha256": "11452c684123f5c86c4a9a28b8359f73907f7179c7c8f67fa1bfa798980edaa7",
+      "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/export/evidence/native/slate-dark/theme-reload-slate-dark.png"
+    },
+    {
+      "asset": "theme-reload-dune-light.png",
+      "profile": "dune-light",
+      "bytes": 112153,
+      "sha256": "e1407979abf52f1d61e07f7417e52f5d8a808e23ba74137567534cc9eb55292c",
+      "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/export/evidence/native/dune-light/theme-reload-dune-light.png"
+    },
+    {
+      "asset": "theme-reload-classic-large.png",
+      "profile": "classic-large",
+      "bytes": 209524,
+      "sha256": "eb6e26aaae2b4545a49367359b4471272fe62ffbee0bba1e3e58a3844802c816",
+      "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/export/evidence/native/classic-large/theme-reload-classic-large.png"
+    },
+    {
+      "asset": "theme-reload-include-ancestry.png",
+      "profile": "slate-dark",
+      "bytes": 116337,
+      "sha256": "5091e349f80326769694839d5f10bc46e7585b28aaccb2e9276e366547eef8ff",
+      "source": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-theme-ui-resume/root-readiness/capture/export/evidence/native/slate-dark/theme-reload-include-ancestry.png"
+    }
+  ]
+}

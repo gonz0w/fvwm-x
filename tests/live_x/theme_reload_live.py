@@ -39,6 +39,9 @@ SUCCESS = ('FvwmDesktop: theme colors reloaded; wallpaper and other '
 
 def run(args, profile):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
+    backer = build / 'modules/FvwmBacker/FvwmBacker'
+    image_worker = build / 'bin/fvwm-image-svg-worker'
+    browser_executable = build / 'bin/FvwmPrompt/fvwm-file-browser'
     out = args.artifacts_dir.resolve() / profile
     out.mkdir(parents=True, exist_ok=False)
     evidence = dict(status='running', profile=profile, screenshots=[],
@@ -47,6 +50,14 @@ def run(args, profile):
         control = rpc = client = errors = pointer = core = browser = server = None
         native, config = runtime.root / 'native', runtime.root / 'config'
         try:
+            evidence['stage'] = 'required fixture executables'
+            evidence['required_executables'] = {}
+            for name, executable in (('backer', backer),
+                    ('image_worker', image_worker),
+                    ('file_browser', browser_executable)):
+                assert executable.is_file() and os.access(executable, os.X_OK), (
+                    'required executable unavailable: ' + str(executable))
+                evidence['required_executables'][name] = str(executable)
             server, display = start_display_server(runtime, 'Xvfb',
                 ['Xvfb', '-screen', '0', '1440x1200x24', '-noreset'],
                 'xserver.log', time.monotonic() + 10)
@@ -70,6 +81,24 @@ def run(args, profile):
                     str(executable), str(native)]) + ' "$@"\n')
                 wrapper.chmod(0o700)
             palette, phase = ('dune', 'light') if profile == 'dune-light' else ('slate', 'dark')
+            # Independently inspected shipped PNG corner samples distinguish
+            # the selected asset from a valid old root or solid placeholder.
+            wallpaper_samples = {
+                ('slate', 'dark'): (
+                    '662a472394348a9a0c717035e770109a7'
+                    '84991d7149a03146a7e76aa2a59ff87',
+                    [0x1c2c34, 0x2c4c53, 0x1c2c34, 0x2c4c53]),
+                ('dune', 'light'): (
+                    '3bdc776292b00122746304285ac113568'
+                    '66675dcccd787029aea6e30adb9163a',
+                    [0xe4d9ca, 0xd5c5b3, 0xe4d9ca, 0xd5c5b3]),
+            }
+            asset_hash, expected_corners = wallpaper_samples[palette, phase]
+            wallpaper = root / 'wallpapers' / (palette + '-' + phase + '.png')
+            assert hashlib.sha256(wallpaper.read_bytes()).hexdigest() == asset_hash
+            evidence['wallpaper_fixture'] = dict(
+                asset=str(wallpaper.relative_to(root)), sha256=asset_hash,
+                expected_corner_pixels=expected_corners)
             included = user / 'theme-reload-included.config'
             included.write_text('*FvwmDesktop: motion Off\n')
             (user / 'local.config').write_text('*FvwmDesktop: palette ' + palette +
@@ -93,6 +122,7 @@ def run(args, profile):
                 'HOME': str(runtime.root), 'FVWM_USERDIR': str(user),
                 'FVWM_DESKTOP_ROOT': str(root),
                 'FVWM_DESKTOP_WORKER': str(build / 'bin/FvwmPrompt/fvwm-desktop-worker'),
+                'FVWM_IMAGE_SVG_WORKER': str(image_worker),
                 'FVWMMFL_SOCKET_PATH': str(runtime.root),
                 'XDG_DATA_HOME': str(runtime.root / 'data'),
                 'XDG_DATA_DIRS': str(runtime.root / 'absent')})
@@ -108,8 +138,15 @@ def run(args, profile):
             serial = 0
 
             def wait(label, predicate):
-                return wait_for_predicate(label, predicate,
-                    time.monotonic() + 10, process=core)
+                evidence['stage'] = label
+                try:
+                    return wait_for_predicate(label, predicate,
+                        time.monotonic() + 10, process=core)
+                except BaseException:
+                    evidence['wait_failure'] = dict(stage=label,
+                        core_poll=core.poll(),
+                        browser_poll=browser.poll() if browser else None)
+                    raise
 
             def request(resource='settings', **fields):
                 nonlocal serial
@@ -122,6 +159,14 @@ def run(args, profile):
                     return None
                 assert value['status'] == 'ok', value
                 return expanded_settings(value['result']) if resource == 'settings' else value['result']
+
+            def barrier():
+                nonlocal serial
+                serial += 1
+                token = 'theme-reload-barrier-' + str(serial)
+                control.send(('SendToModule FvwmDesktop barrier ' + token +
+                    '\n').encode())
+                control.expect_echo(token)
 
             def ready():
                 value = request(scope='all')
@@ -143,27 +188,49 @@ def run(args, profile):
                     C.c_ulong(-1).value, 2)
                 assert image
                 try:
-                    return int(x.XGetPixel(image, 0, 0))
+                    actual = int(x.XGetPixel(image, 0, 0))
+                    evidence['last_panel_pixel'] = actual
+                    return actual
                 finally:
                     x.XDestroyImage(image)
 
             def root_state():
+                # Valid old roots can coexist with a pending replacement.
+                # Query the composition fixture's submitted-resource gates,
+                # then require the actual selected asset before the baseline.
+                appearance = request('appearance')
+                colorsets = request('colorsets', target='20')
+                if appearance is None or colorsets is None:
+                    return None
+                capability = appearance['complete_bundle_preview']
+                colorset = colorsets['colorsets'][0]
+                diagnostic = dict(appearance=appearance, colorset20=colorset,
+                    expected_corner_pixels=expected_corners)
+                evidence['last_root_readiness'] = diagnostic
+                if (not capability['root_owned'] or
+                        colorset['update_state'] != 'idle'):
+                    return None
                 try:
-                    return witness.root_state()
-                except AssertionError:
-                    return None  # The initial owned wallpaper may still load.
+                    observed = witness.root_state()
+                except AssertionError as error:
+                    diagnostic['root_error'] = repr(error)
+                    return None
+                diagnostic['observed_root'] = observed
+                if observed['image']['corner_pixels'] != expected_corners:
+                    return None
+                return observed
 
             palettes_path = root / 'palettes.json'
             original = json.loads(palettes_path.read_text())
             normal_surface = int(original[palette][phase]['surface'][1:], 16)
+            evidence['expected_initial_panel_pixel'] = normal_surface
             wait('initial actual panel surface', lambda: pixel() == normal_surface)
-            initial_root = wait('initial owned wallpaper', root_state)
             folder = runtime.root / 'files'
             folder.mkdir()
             for name in ('alpha', 'beta', 'gamma'):
                 (folder / name).touch()
-            browser = runtime.start('browser', [str(build /
-                'bin/FvwmPrompt/fvwm-file-browser'), '--socket', str(endpoint),
+            browser = runtime.start('browser', [str(browser_executable),
+                '--socket', str(endpoint),
                 '--view', 'grid', '--reveal', str(folder / 'beta')],
                 'browser.log', env)
             providers = wait('browser provider', lambda:
@@ -233,6 +300,9 @@ def run(args, profile):
                 assert browser.poll() is None
                 return current
 
+            barrier()
+            initial_root = wait('initial selected owned wallpaper', root_state)
+            evidence['initial_root'] = initial_root
             changed = json.loads(json.dumps(original))
             selected = changed[palette][phase]
             selected['surface'] = '#ded4ec' if phase == 'light' else '#34304d'
@@ -244,9 +314,13 @@ def run(args, profile):
             control.expect_echo(PENDING)
             control.expect_echo(SUCCESS)
             changed_surface = int(selected['surface'][1:], 16)
+            evidence['expected_changed_panel_pixel'] = changed_surface
             wait('same-name semantic surface changed', lambda: pixel() == changed_surface)
             after = retained()
-            assert witness.root_state() == initial_root
+            evidence['stage'] = 'unchanged wallpaper after valid reload'
+            current_root = witness.root_state()
+            evidence['root_after_reload'] = current_root
+            assert current_root == initial_root
             roles = [row['text'] for row in outgoing(desktop, since)
                 if row.get('text', '').startswith('Colorset ')]
             assert [int(row.split()[1]) for row in roles] == list(range(9)) + list(range(10, 15)), roles
@@ -281,7 +355,10 @@ def run(args, profile):
                 return text if 'Theme reload refused: ' in text and str(palettes_path) in text else None
             diagnostic = wait('source-aware palette refusal', refused)
             assert pixel() == changed_surface
-            assert witness.root_state() == initial_root
+            evidence['stage'] = 'unchanged wallpaper after refused reload'
+            current_root = witness.root_state()
+            evidence['root_after_refusal'] = current_root
+            assert current_root == initial_root
             retained()
             assert not any(row.get('text', '').startswith('Colorset ')
                 for row in outgoing(desktop, since))

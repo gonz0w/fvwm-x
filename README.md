@@ -13,7 +13,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
 - Atomic buttons, responsive layout and settings/editor;
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
-- Source-aware reports, ancestry and [theme-color reload](doc/FvwmDesktop.adoc#_reload_theme_colors).
+- Source-aware reports, ancestry and [theme-color reload](doc/development-preview.md#live-theme-color-reload-in-progress).
 - Structured IPC and eight-setting preview/recovery; optional
   [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),

@@ -2,7 +2,10 @@
 
 T1 under #214, #217 and #218; base PR367,
 `1ad74db32e0abe3f1bf4fd3ea44735538b9b652d`.
-**Delivery: draft. Native UI, screenshots and manual rendering remain blocked.**
+**Historical T1 delivery: draft at `22ee9ff`.** The later
+[UI/manual closeout](VERIFICATION-2026-11-07-THEME-UI-CLOSEOUT.md) qualifies the
+repaired fixture and publishes four captures. Results below retain their original
+T1 source and failure status.
 
 ## Implemented behavior
 

@@ -577,6 +577,12 @@ from Desktop settings, or run:
 SendToModule FvwmDesktop reload-theme
 ....
 
+The profile root is *FVWM_DESKTOP_ROOT* when set before starting FvwmDesktop;
+otherwise it is *FVWM_DATADIR/default-config*, using the compiled data directory
+when FVWM_DATADIR is unset. To customize without editing installed data, copy
+the profile to a user-owned directory and set FVWM_DESKTOP_ROOT before module
+startup. Reload uses that same root; it does not switch profiles.
+
 This explicit operation prepares semantic colors without restarting the desktop.
 It reads only the current profile's palettes.json in the existing bounded worker;
 it does not search or execute configuration. The file must contain exactly the
@@ -584,11 +590,12 @@ four registered palettes (slate, dune, grove and ink), each with dark and light
 phases and the eight existing #RRGGBB roles. The maximum file size is 64 KiB.
 Missing, incomplete, duplicate, malformed or unreadable data is refused with
 source context in the module error log, retaining the working colors. Save a
-complete file before requesting reload; a concurrent edit is not an automatic retry.
+complete file before requesting reload; a concurrent edit is not an automatic
+retry.
 
 The supported component is the semantic foreground, surface, accent and state
-projection into native colorsets 0–8 and 10–14 (colorset 9 is not a theme role). The existing high-contrast and panel
-transparency policies still apply. Wallpaper backgrounds and image assets,
+projection into native colorsets 0–8 and 10–14 (colorset 9 is not a theme role).
+The existing high-contrast and panel transparency policies still apply. Wallpaper backgrounds and image assets,
 fonts, geometry, service settings, arbitrary legacy commands and external
 Colorset overrides are outside this reload domain. Their existing owners and
 commands remain authoritative.
@@ -600,8 +607,7 @@ for successful recovery before replacing working colors; conflicting or blocked
 recovery retains the old theme. Finish an opacity-only preview before reloading.
 Success emits a fixed Echo record without opening a notification window,
 preserving the focused control. This reports command submission; it does not
-claim that every native consumer
-has finished painting or that an external override was detected.
+claim that every native consumer has finished painting or that an external override was detected.
 
 Reload preserves saved preferences, their file revision and settings generation.
 Open settings drafts, Forms, menu bindings and browser identities survive; the

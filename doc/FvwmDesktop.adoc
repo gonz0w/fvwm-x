@@ -648,8 +648,16 @@ function invocation sources identify only enclosing context, not the exact
 dynamic definition. Source and include locations continue across rows when
 needed; incomplete display and unavailable source metadata are identified.
 If the binding source retention budget is exhausted, the viewer reports that
-reason; bindings continue to execute. Placement and modifier-policy origins
-are not included. Free-form action arguments and window match text are hidden.
+reason; bindings continue to execute. Placement and ignored-modifier policy rows
+show the last value-changing command for each aggregate mask, before bounded
+binding enumeration. These sources do not identify the owner of every bit or
+button. No-op values retain their earlier source; placement can still invalidate
+the query generation conservatively. Malformed IgnoreModifiers input that changes
+the mask is explicitly marked as a parse-error result, not a successful command.
+Builtin defaults, missing sources and the per-slot64KiB retention limit are shown
+honestly. A retained snapshot can itself have unavailable coordinates. XKB
+exclusions are compiled policy and the used-modifier mask is derived. Free-form
+action arguments and window match text are hidden.
 Commands use the same generated core inventory as FvwmPrompt completion;
 arbitrary command argument grammar is not inferred.
 

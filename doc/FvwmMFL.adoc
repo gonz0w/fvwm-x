@@ -264,6 +264,30 @@ not a bit to OR into a specific modifier combination. This metadata helps
 interpret raw records; it does not resolve window matching, keysym lookup,
 menu precedence or a hypothetical event's winning action.
 
+Placement and policy also return additive `provenance` with `version: 1`.
+Placement has `drag` and `interactive` entries; policy has `ignored_modifiers`.
+Each entry contains exactly `basis`, `source`, `effect` and `retention`.
+`basis` is `builtin-default` until the aggregate value changes, then
+`last-value-change`. This identifies the last change to a whole mask, not the
+source of each individual bit or button. Identical values retain the earlier
+source. Placement retains its existing conservative generation invalidation;
+an identical IgnoreModifiers value retains its earlier generation.
+
+`source` uses the existing version1 file/span/include or enclosing-context schema.
+`effect` is `builtin-default`, `applied` or `parse-error`. A malformed
+IgnoreModifiers token can change the observed mask under existing parsing rules;
+`parse-error` identifies that outcome without claiming the command succeeded.
+XKB exclusions are compiled policy; `used_modifier_mask` is derived, not attributed
+to a second configuration source. No event winner or override history is retained.
+
+`retention` is `not-applicable` for builtin defaults, `retained` for an owned
+source snapshot, `unavailable` when no source was supplied, or `budget-exhausted`.
+A retained snapshot may itself report unavailable coordinates. Each of the three
+policy slots conservatively charges complete source/parent allocations up to
+64KiB, at most192KiB additional retention; replacing a slot releases its old
+reference. Exceeding the metadata budget preserves the policy value. Builtin and
+unavailable/budget entries carry unavailable sources, not fabricated file paths.
+
 Placement and policy are whole scalar snapshots: they reject `offset` and
 `limit` even when zero/default, and have no `bindings` list or `next_offset`.
 An optional exact generation makes either conditional. Unknown scopes, wrong

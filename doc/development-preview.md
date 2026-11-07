@@ -7,6 +7,28 @@ owns current status. The original live-update checkpoint in
 [PR #173](https://github.com/gonz0w/fvwm-x/pull/173) is retained in the earlier
 theme examples; newer sections record their own source identities.
 
+## Policy source inspection (in progress)
+
+The native inspector now retains the last value-changing command source for
+ignored modifiers and the two placement finish masks. These are aggregate-mask
+facts, not ownership of every individual button/bit or an event winner. The
+unmodified Slate dark pages below use a synthetic configuration and the `policy`
+filter. The first source belongs to a malformed modifier command whose resulting
+mask changed; its separate effect row labels that parse error.
+
+![Ignored-modifier last-change source](screenshots/policy-modifiers-slate-dark.png)
+
+![Placement drag last-change source](screenshots/policy-placement-slate-dark.png)
+
+The files have already been removed; their source metadata survives. The drag
+include entry is in the data on another page, not visible in this capture.
+Both views explicitly report a partial inventory; existing header/status prose
+wraps awkwardly. The black window is the synthetic focus probe. This remains
+in-progress development. Prior alternative-theme checks retain their original
+scope. See the [capture manifest](screenshots/policy-origin-manifest.json),
+[usage](FvwmDesktop.adoc) and
+[focused qualification](../dev-docs/verification/VERIFICATION-2026-11-07-POLICY-PROVENANCE-CLOSEOUT.md).
+
 ## Binding source inspection (in progress)
 
 The optional inspector now shows current binding definitions with retained

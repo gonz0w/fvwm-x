@@ -1,0 +1,1288 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-07",
+  "checkpoint": "W2 PR371 policy provenance closeout",
+  "status": "passed focused native Linux ARM64 qualification; C build/units reused",
+  "base": "fa734751f2db1b8d59275e441d847ffa2f36aead",
+  "source": {
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "80f7981dae1c51971b7b3cea5698478e729d352dc1c11156718cfb792aae07ec",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "b0237329f01745042db12b72c0ba1c9b768ef7ec318a865eaa457e8bd4dc87fd",
+    "bin/FvwmPrompt/internal/desktopinspect/policy_provenance.go": "b5c6d5e2231457c7fcfa51977b68a48452785a04baa78ab33c5466041f50f0c7",
+    "bin/FvwmPrompt/internal/desktopinspect/policy_provenance_test.go": "1daea49b19b700886665156fa73b232a694e35d01bd4d08d3bf2839068725c3c",
+    "bin/FvwmPrompt/meson.build": "7b4a3878a6046df491187d994df0c67c83667e54b7e1cd1ac0b884f5c5afb7f7",
+    "doc/FvwmDesktop.adoc": "89429bb6921a382d8b151466538619ff0e44729e587c1c09788f4ccdc03a7340",
+    "doc/FvwmMFL.adoc": "1f9b48d11fc441e5fddc2ce1e23765ca891b6ad053eb5bea2ddb427e29bddfc8",
+    "fvwm/bindings.c": "59a3ede402044d0d6549c7a339ad560aae229907ced82350826fb63c9531c8db",
+    "fvwm/bindings.h": "c5cc820a0ee12f5cb76a1a2d30d58432d0d0fbaa8a30df5351a5585782fb8726",
+    "fvwm/module_interface.c": "bc052e38ee894fe0f14ebd7ff293c91c6e9a740b8258b4a68322b8cde5200392",
+    "fvwm/move_resize.c": "b890382f4cc479fda9b297b8084fe4db930fe2fbdf37e9943b8db156873c2ee2",
+    "fvwm/move_resize.h": "e01db8aab2d8da1da0abbf7703f27f95c8a682d7966d5ce603949e0c65f1606b",
+    "fvwm/query_json.c": "ad7cc17578c84ddf0fcf768e20f3cd51764e4e434e5c8e3660170ac2fa8c4270",
+    "fvwm/query_json.h": "d3731663b62274b06a1fb3c969fdba53623ff4fcf9a2260c596d9028583c3204",
+    "libs/meson.build": "922630631044ba8608a9442f2f05d059015a870a4f4280417a7edd69bf30f34f",
+    "libs/policy_origin.c": "da5d0435d7c45274a6b32ee60b8875e2ac6854aee17306f05a10fc35f0a4835f",
+    "libs/policy_origin.h": "15814bcc8373bd7b45fd651bc56ac72ca0c0cea751fbd73064fd62944583aadd",
+    "tests/live_x/binding_origin_live.py": "4ac5d355cd29a154aa1ce5c452c60844c2626822a6d908a822e233386e2c9bee",
+    "tests/live_x/policy_origin_live.py": "c52aac1fadff3cb100933e62fdc99aa22d387948836616a49e8201287c59952e",
+    "tests/meson.build": "a2a63ac6f4943675dab8af7fc0437970b1a76db2a88680ab4917878b1049bd2a",
+    "tests/test_policy_origin.c": "a5bf2b438961ed2afaa1ee65bc0e04e77e44e8497c06cadcaa13b6ed6b594d45",
+    "tests/test_query_json.c": "fcaf1b4825d9a95bb5bef653f9572267c471a49d6265692724238e15e232cba0",
+    "tests/live_x/graphics_eval_bsd.py": "3f3387532b5c3bd13507cfb8a2dd5de66e68b8cad006ec3058d4b28fa1ac8864",
+    "tests/test_graphics_eval_bsd.py": "acbd13bfbcb290d618685b65addb32e19a0e6a60d6e096a64273b33b89e96811"
+  },
+  "artifact_root": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-policy-closeout",
+  "plan_sha256": "520bef31024a6a1f717d9bf1f60b819c83bb7b53ee90b5e8f98029d6bdf658c7",
+  "archive_sha256": "6261202c10e93d9ff64977ec2c7a9ac9101013e05bf57f82e5371d9db4b9804f",
+  "exported_files": {
+    "evidence/native-policy-origin.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmMFL-candidate-manual.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmMFL-baseline-manual.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmDesktop-baseline.1": "c32c8db070f3f062b38ba54ec3de3e818cbf88fabcd2112f885859bd919844f8",
+    "evidence/FvwmDesktop-baseline-manual.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/affected-go-race-tests.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/affected-library-closure.stdout": "af933c4a0fba3b3a5d5a15eeaf61944a84904ac6005ac301f9f6dd3259489c7d",
+    "evidence/build-FvwmDesktop.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-policy-origin-asan-ubsan": "8d873167eaa6577b6747264724b2551f9c873f764ff830b3ec34747a3fdf506d",
+    "evidence/result.json": "728c9fbdbbb4360a80918aa1ea82881f0f779c31078b5efbfa76272a7124ea8d",
+    "evidence/FvwmDesktop-candidate.1": "4f24837d296aff7565e884d32d47141ad80311e912deb871acf129de50def0b1",
+    "evidence/test-query-json-asan-ubsan": "898b6e1f57ab5539114fef7a5e639914bed0d2b64a3439efc8c2b7f8dfbaca10",
+    "evidence/FvwmDesktop-baseline-manual.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-FvwmDesktop.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/affected-library-closure.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/affected-go-race-tests.stdout": "bbdf88a8dbc7a52f149414bc1880457261d750ad2591e9d7d1895a1f61ba9305",
+    "evidence/native-inputs-current.json": "1c03f2b37bc2fcdb6e99de5f1995b2cd59f71db137f9d0fc640a6248e61cc7c9",
+    "evidence/native-inputs-before.json": "1f33625f0e593a3d1302899d0ae049507436182e293f24b94b167d55cb427c9c",
+    "evidence/FvwmMFL-baseline-manual.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/native-policy-origin.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmMFL-candidate-manual.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-policy-origin-asan-ubsan.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-test-query-json-asan-ubsan.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-query-json-asan-ubsan.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/intro-targets-before.json": "bbfd9e5eaa5bdd11b4821782a58cf7cdfe05dd8c875e9fe88b02032d649bdfbe",
+    "evidence/FvwmDesktop-candidate-manual.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-test-policy-origin-asan-ubsan.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-fvwm-desktop-worker.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmMFL-candidate.1": "b2f23bb1f3b5596aea681cdfdf0f127b8ebadca04f0eedd897b60a71bbb8afdc",
+    "evidence/FvwmMFL-baseline.1": "2e3aab168413a9327732d28646709f2bc625cd47efe7ea410016064bd5d562fd",
+    "evidence/build-test-policy-origin-asan-ubsan.stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-fvwm-desktop-worker.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/FvwmDesktop-candidate-manual.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-query-json-asan-ubsan.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/build-test-query-json-asan-ubsan.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/test-policy-origin-asan-ubsan.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/native/evidence.json": "56c9bb9cae1fb2bd651daddf0f0abdce5ae3c80cdff9075db46860347ff9435b",
+    "evidence/native/policy-modifiers-slate-dark.png": "7a488ed16cecfe5684324696b1e911d18eb677f0ea268efecb854209ba114307",
+    "evidence/native/worker-probe": "bc57085861718914a46291b99f20065eb718ff6ad1a099aece061bce7bab656b",
+    "evidence/native/policy-placement-slate-dark.png": "f24b5dfbacd8c9da41275d8392b44d4ccdf876bd5ef43113e6fa95f5012e4a17",
+    "evidence/native/core.log": "6e5439ed804767e81c4632a35f0c65ef96f2bbb83a78357e6157f812ab07e490",
+    "evidence/native/boot.config": "a4decff1bb63147f68742c1545397408158fff9cf90cad335dd6a74f7b294785",
+    "evidence/native/xserver.log": "f172a1b0f5cf2a0d462c51dfc335af1a1dfc8e873cb66f61d018c8b1b35fe416",
+    "evidence/native/leaf.config": "794913ef4ea7a075f4564f9497ca8072a4220b2f23de03929f279c81dc19b14a",
+    "evidence/native/probe.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/native/entry.config": "93ccafc562d3835f589d1090654d172f9b3a413e615a7c82f2df55c1237a13b4",
+    "evidence/native/fvwmmfl_lockfile__0.lock": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/native/bad.config": "bf644f9dc707bd2a87a0ccc9386dc643da301439c2f672461ffcdb2dc4530717",
+    "evidence/native/native/stopped-272.json": "ad94db14c05ed8428b2ef96c839171691ef3e5968d6931a7927f7e3b925fa621",
+    "evidence/native/native/module-262.json": "e464f95db26e5c29c61f667a8636d87b298b6a931dbbcc67c2293c722893e53c",
+    "evidence/native/native/end-config-255.jsonl": "c8fc2908d5c6d9a7a0ae59578f4af30ed536f742c9156bbecee86bc0af583ff0",
+    "evidence/native/native/stopped-287.json": "73dc2f25d0a66e7e0ffe12d747939c3a2053d45bf76b9bd9127190c1f6d9cdd3",
+    "evidence/native/native/module-281.json": "fecba73a7ecc12d86ba3cef95f9cc8a6d7329d5b3246d56fb94819db045e6dc3",
+    "evidence/native/native/end-config-273.jsonl": "f574a79fe9f7ce8d5696469e6b3b2d2f8198f90b2a8e929b2dff0ee70d69778c",
+    "evidence/native/native/module-273.jsonl": "3244a883bf52f63a30805d85c3baeea9225a2d613d5a1a42d8fc8cb162f187a0",
+    "evidence/native/native/module-255.json": "c24cf4cd7d870e73d9e42251263835652493b35c3ed94d45d3ffd63c8de56a27",
+    "evidence/native/native/module-279.json": "8ec2f6c87c3146b4ff7fa79e706acc58afdc981836834de491368dbd580692dc",
+    "evidence/native/native/module-255.jsonl": "cd7982e58c26c817e62a19c07a25b6a5a99678ba07cac5d0531e114f4ca1270a",
+    "evidence/native/native/stopped-273.json": "29adbb17d312cbaeb324c3c5e8797bc8728dc95803c87b62c97060cc3fbf53a0",
+    "evidence/native/native/stopped-265.json": "3f2a4126cd652e42ce1739a4cd3a4807609a5ad4e159e6372b4807c290af2a2a",
+    "evidence/native/native/stopped-281.json": "7058625fb5f46d4d1bec6ff68ca89301d4ee9b24787cba8859abca87a92ecf30",
+    "evidence/native/native/module-287.json": "d30c314ba5645425f6dec1d8c92ede7350dbf619db92d590f71c0d9448c549a4",
+    "evidence/native/native/end-config-272.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "evidence/native/native/module-276.jsonl": "e1339e5ce85487d02cf1762eea085d4992382027d3d1c3d87cf6ad558b040af3",
+    "evidence/native/native/module-272.json": "f34ee822203bb1352ce0be21a8a0df0ea0a2440487f5c55dc4a7a1e2a39f0f9c",
+    "evidence/native/native/stopped-262.json": "9d105be4bbd82ceac768cd8e4e23d6b083c4f0facd7de9b9776c8ac73f62d649",
+    "evidence/native/native/module-225.json": "06db9f5efcef2f85c37d44c70c7e9fcbf6204ee25e514588a82436c7503aef90",
+    "evidence/native/native/module-265.json": "3b0aa3135fa06114c14e86c92ea4690bf66e45afba2414f8defac4cedf603828",
+    "evidence/native/native/module-273.json": "911b79502cf1c554cc6852b15b9a9e8bdac0f39223cff8b17ce0e8b7a1426ea3",
+    "evidence/native/native/end-config-276.jsonl": "398ecc34ac06863e58612a84b48147d8b86885eb686d97a0be16a01ee579dd32",
+    "evidence/native/native/stopped-255.json": "824f31d7c43bae9bea154460f45c0526ebc24f961dae1309af93ffef55099214",
+    "evidence/native/native/module-272.jsonl": "3d58c85bee0ac1574b229d9d14509c2390045af33f706322c4cba8e271f1e8ed",
+    "evidence/native/native/stopped-279.json": "04914895a3e7559f1dbbf86a39459547f32d8b308aee3cbaa8786043e832ecdb",
+    "evidence/native/native/module-285.json": "13e598fe0ce485a7e083cdf7ccf62a6c2873d669cf8c91239063d1147b985d08",
+    "evidence/native/native/module-283.jsonl": "c04c5dcab6f6d3216eaabee5b8a8544f889952b872edefba99d1c07cbc774ca2",
+    "evidence/native/native/stopped-283.json": "e6991361fee4980096b7559d0c16fcd2154ca1f3840db4f8bcf3691d21857404",
+    "evidence/native/native/end-config-287.jsonl": "0782d138d8cbba78b01e414782a702ea6ba248965993e4c69aa38c236d1ef593",
+    "evidence/native/native/end-config-285.jsonl": "3fc0883d070084da9f16ba04093c341c0779a7c130b8469f578d55606ec26159",
+    "evidence/native/native/module-281.jsonl": "d6b477ca1c07f659ce2c5702aeee0f11384196a03368043cc5b5d8c1baf6dc92",
+    "evidence/native/native/stopped-276.json": "e569f95a30cc272ef79367f51ce9ce69bf2ad3935c8e349af60aaa377b5a740d",
+    "evidence/native/native/module-265.jsonl": "fe0480e0b5e5b9d1c686dc8db87a244dbbc97bc29734d99a72352db5b17fbecd",
+    "evidence/native/native/end-config-265.jsonl": "c6df576bd724e09ac1dcf70fa3206850f16244605152b4f31a8b1ef418f27019",
+    "evidence/native/native/end-config-281.jsonl": "d6d8f621a57c528011c859273ae125df66ff470c3507e244c1648c827858111a",
+    "evidence/native/native/module-285.jsonl": "4e9f29361d756be5822593908655a1a3a2ca083d4466c78a8c662ff482c0f69e",
+    "evidence/native/native/module-287.jsonl": "7f513d94458236b9695ad357885e88a384e282130ab46834a9725c106908b19f",
+    "evidence/native/native/end-config-283.jsonl": "58ced84a0becd725cfe98f372723031ec0a3443aa6029c3e5b0085af80f7eae1",
+    "evidence/native/native/end-config-279.jsonl": "4a6ff538bc33a31a67c4425c94d445a5caf0495b0a8a39e15ac3cdefe26331e1",
+    "evidence/native/native/module-276.json": "56fdefb33b226b2a4a8eb782f7b1ecb10d7e67f97c91b51ed8cb710cbf87b8c7",
+    "evidence/native/native/end-config-225.jsonl": "bc009758babb2755c7266696d9ec8e19b76ad1dbacc11d7ea38c095fcd04ad3e",
+    "evidence/native/native/end-config-262.jsonl": "59324bf6d89aafbf61a0761bd3ea95b93269546e8e4ad272046ed06980f11877",
+    "evidence/native/native/module-283.json": "0fe476d1c54aad441d7d3ecf40d968a55b5c9a8d33a1f69461b968429c0f5d16",
+    "evidence/native/native/stopped-285.json": "ef89a20102802f00d224b80f571b0b5640114deb6b15c0108e3754cd92027bf4",
+    "evidence/native/native/module-262.jsonl": "69c3034396045ed2a344dc0d4d7e0e758391ee891fd9c32f03b7d32d195fe5fd",
+    "evidence/native/native/module-225.jsonl": "4ce046a002f07329554de49cbd98c0be7e9d9a7c0e9d30e193f130cd9cd5fd3b",
+    "evidence/native/native/module-279.jsonl": "60bb8778220154b673f89e3cc8dc0655ef0ad2677cd5f7f8e596d54753348b19",
+    "evidence/native/user/local.config": "12167955ff1695f4250fea022aae0bfa0d9d33b93f11d70558d3526d87e29db7",
+    "evidence/native/worker-records/w15287776055-264.json": "e72c199ae1c3eb1d387d6f48f72a97af74f5a890564a0d49914cdf9b64d66164",
+    "evidence/native/worker-records/w14866666142-254.json": "4cc90c9fd782366702d3a2933db7283cf0c440086fce60581b13cad966acee65",
+    "evidence/native/probe/p00009.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/p00025.json": "ca34378e73791f05106a26a629e18e696bb74fe8dcb05cd047282d0f6a194390",
+    "evidence/native/probe/command-p00003.json": "a8fe64b1d730c4c57aa17c13881685c535856c19f239b64da251b997ec50a910",
+    "evidence/native/probe/command-p00015.json": "0223c9b291720643cabaffe661746df898765a9724b78e8662d2ba197da19888",
+    "evidence/native/probe/p00033.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00035.json": "1a7d3db0cc39c6c05160dc63f5bddfa51a6d1bc5f95339592e1e379e398c8f77",
+    "evidence/native/probe/p00013.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/p00005.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00023.json": "0644a183e214dc2bfe249acd5c8fff7a38b22096a81b865e01b8a9d00bd43f68",
+    "evidence/native/probe/p00029.json": "8601ffeb8b572758ba19856809bbf59dd176d6479b0d5d60dfe9b3f30bc3da37",
+    "evidence/native/probe/command-p00019.json": "26e494a2f757ce9c93b74e401118e08bb4eff5d94748de78f125a78877f26a3a",
+    "evidence/native/probe/command-p00018.json": "0a8608980e33d15450068af9dabb4bfadbabe6e0e3ae4a57211b796a27613bf4",
+    "evidence/native/probe/p00028.json": "016a5d62885c915f0d34b8edacb887ffebc891bd791788d35ab5321eb8c05f1e",
+    "evidence/native/probe/p00004.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00022.json": "f99b4e11237529187635127af5a4b6bb877d0a54f8b3b2e1d998e420783381d1",
+    "evidence/native/probe/command-p00034.json": "4d7e04db519c2175924dab0e6a0d0ba787719baa730dd78922e9bd8d70c8afa2",
+    "evidence/native/probe/p00012.json": "47775deb03eb95e53c6dc0626b46f8063fd4469686053c73f8415e7e2a0599e0",
+    "evidence/native/probe/command-p00014.json": "6b3cf4c6c02e410ecba3d325a43b19566da3e26f533d82c6cf630d68741d8927",
+    "evidence/native/probe/p00032.json": "a9b6680dd5c74de85276c59badcf8301796223efe0f9de028dbfc65aeee47d7d",
+    "evidence/native/probe/p00024.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00002.json": "d94b19bd136f4a7190aad16554f5bdeeeaeb546adc7e258f9221a81431792783",
+    "evidence/native/probe/p00008.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/p00015.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00033.json": "307aaa178c76a62b3c6e7127d0c44155c07bc68125453245693f3e7e0f6aea0d",
+    "evidence/native/probe/command-p00025.json": "8c7749f6ce71826f33f1505f17398aedd3b1525cc3c5cd864260027e2189df79",
+    "evidence/native/probe/p00003.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00009.json": "7215eca2e3ad2652146000fcf421b7f1307eae3f7ab390f0a9cf50456b0bb174",
+    "evidence/native/probe/p00019.json": "8a00ce930a4b42f90899221054377303a62c626f7be5e6429278e702e40612ac",
+    "evidence/native/probe/command-p00029.json": "62fc9d07d4ff448ed1e47e4bab6920afb78b7e1de61bb3a8f24291e2dc6585e7",
+    "evidence/native/probe/command-p00005.json": "070e48ad510feb5e917b6e91a8e1dddc85156de9b68fe9fee36f56c568466a05",
+    "evidence/native/probe/p00023.json": "ca34378e73791f05106a26a629e18e696bb74fe8dcb05cd047282d0f6a194390",
+    "evidence/native/probe/p00035.json": "029c5212a59d06aaf6d61e4cbde6b4981b6c5ab31301df3d01cd7088dda6209a",
+    "evidence/native/probe/command-p00013.json": "67c130d1287f8bec2fcc9c85b323fae5bdebbf430ccde0b905b1d8de1f5919d3",
+    "evidence/native/probe/p00034.json": "a9b6680dd5c74de85276c59badcf8301796223efe0f9de028dbfc65aeee47d7d",
+    "evidence/native/probe/command-p00012.json": "390f5070e0ee3c4deb7dc005761b4f7c9ca04ba58666b8b1acfac8bd3fc59921",
+    "evidence/native/probe/command-p00004.json": "5b44ac370d452b59e85f6ae81be9b7dca7a0f2ae99d47024c5ff04a61ad898bd",
+    "evidence/native/probe/p00022.json": "0beab891996554527abe5b8e0d571e2e1bcffb6ff5f47b8d779617b1495e8517",
+    "evidence/native/probe/command-p00028.json": "c4de3df15a92e40f51f64ca2ed8bdf94bcbeaf502f030b8f226a93c29719d266",
+    "evidence/native/probe/p00018.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00008.json": "587052f249e2ce99d021d91954cb69d5c0de2082de945fda88fcaa800bee9104",
+    "evidence/native/probe/command-p00024.json": "c9d9ce73905f753974aa0e99838b29ceb5305a03d0531512d52cfca6bbcb9c04",
+    "evidence/native/probe/p00002.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/p00014.json": "069e86f1547f5c50135a05a80c5a530f298248ab7b783763a504cacedbac5cf1",
+    "evidence/native/probe/command-p00032.json": "292e5a6d821745121b3c3a44b7e16911016f283851063e412281db041eea7efb",
+    "evidence/native/probe/p00001.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00027.json": "c9dc93de549bd2bca3ff9d7939f5f0c396d84e3548846b5e092776967af26cc8",
+    "evidence/native/probe/command-p00031.json": "ab204b9ed0b2d23bdf24199db6d9ca8f5a22cc569ab83980c06c1af19c677df8",
+    "evidence/native/probe/p00017.json": "8a00ce930a4b42f90899221054377303a62c626f7be5e6429278e702e40612ac",
+    "evidence/native/probe/command-p00011.json": "fec2213f1d22de61cd3d3c029c50ceec425b3fba975473ea5b3c33871e4feb8f",
+    "evidence/native/probe/p00021.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00007.json": "973bde3fda51c262d3a4c164fd2a47f0e0198f3b25ee82bc2d4eae25fb4f6c83",
+    "evidence/native/probe/p00020.json": "b36d6893f37635015463e683f8e007f1061b90a819ef72444d4a6463b937d7c1",
+    "evidence/native/probe/command-p00006.json": "f9b18fb6e14900d9cccedbf8317b9e42999dfb0dd2088b74b478b021c7bf75fc",
+    "evidence/native/probe/command-p00010.json": "136e7d4c1c7ed12765a87f7b3e6050a2e725124724862a78e96d0dad53111fa4",
+    "evidence/native/probe/p00036.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00030.json": "74c685cfa29d022c7348e0f806971ab93cd05619621dbac821c661ed2ec5dff6",
+    "evidence/native/probe/p00016.json": "069e86f1547f5c50135a05a80c5a530f298248ab7b783763a504cacedbac5cf1",
+    "evidence/native/probe/command-p00026.json": "30e1f79c93f118e98caa9e08b0df26d235ce96ae04d7a329b36ae95dc8962e05",
+    "evidence/native/probe/p00031.json": "8601ffeb8b572758ba19856809bbf59dd176d6479b0d5d60dfe9b3f30bc3da37",
+    "evidence/native/probe/command-p00017.json": "adf6a2b39e41ec754fc81c7488c27331abde636d548657ebe8b1dc221ee45deb",
+    "evidence/native/probe/command-p00001.json": "8a868fd3db7c55bfc552d51f058dcbd16cecff6a0aaf3a74c60e3aa70cf34de5",
+    "evidence/native/probe/p00027.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00021.json": "0066373f5cd1b11b407cccd3aa72cc9b9db594cc268d1344cbc92ae4b2e4b8dc",
+    "evidence/native/probe/p00007.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/ready.json": "10bbfd0f19948475d1c459b43a6dc346f70435aebf6450eee6f6e5e96ebdb4fe",
+    "evidence/native/probe/p00011.json": "26bc30dc1d3540cc82abd36e8c2a7a02b5d90b20b25dd48a28237f1c84e3f448",
+    "evidence/native/probe/p00010.json": "26bc30dc1d3540cc82abd36e8c2a7a02b5d90b20b25dd48a28237f1c84e3f448",
+    "evidence/native/probe/command-p00036.json": "e53d290ea8a29d0f11a104d1a32912d56b13ebfe89a3ab815f57d72a5d85a3df",
+    "evidence/native/probe/command-p00020.json": "0f62c26aa53fd453a82e803c8322a35f887ad145cbeff62d15d1fc3f647166a2",
+    "evidence/native/probe/p00006.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/p00026.json": "016a5d62885c915f0d34b8edacb887ffebc891bd791788d35ab5321eb8c05f1e",
+    "evidence/native/probe/p00030.json": "db54d810224afe1c3e3bf34cc7ca18f19977fabcd22089b5817f8cd82ecb17a0",
+    "evidence/native/probe/command-p00016.json": "56d618896c6b8208d06f7eee7699af6089ab4254d00f89ccba591b7a46866fef"
+  },
+  "execution_profile": "native-cpu",
+  "commands": [
+    {
+      "label": "affected-go-race-tests",
+      "exit": 0,
+      "seconds": 3.5255477299999995,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-go-race-tests.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-go-race-tests.stdout",
+        "bytes": 131,
+        "sha256": "bbdf88a8dbc7a52f149414bc1880457261d750ad2591e9d7d1895a1f61ba9305"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-go-race-tests.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-go-race-tests.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "build-FvwmDesktop",
+      "exit": 0,
+      "seconds": 0.741353461000001,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-FvwmDesktop.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-FvwmDesktop.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-FvwmDesktop.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-FvwmDesktop.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "build-fvwm-desktop-worker",
+      "exit": 0,
+      "seconds": 0.17093178999999914,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-fvwm-desktop-worker.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-fvwm-desktop-worker.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-fvwm-desktop-worker.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-fvwm-desktop-worker.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "build-test-policy-origin-asan-ubsan",
+      "exit": 0,
+      "seconds": 0.2330922520000005,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-policy-origin-asan-ubsan.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-policy-origin-asan-ubsan.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-policy-origin-asan-ubsan.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-policy-origin-asan-ubsan.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-policy-origin-asan-ubsan",
+      "exit": 0,
+      "seconds": 0.0042538929999995645,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-policy-origin-asan-ubsan.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-policy-origin-asan-ubsan.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-policy-origin-asan-ubsan.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-policy-origin-asan-ubsan.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "build-test-query-json-asan-ubsan",
+      "exit": 0,
+      "seconds": 0.7805829389999985,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-query-json-asan-ubsan.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-query-json-asan-ubsan.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-query-json-asan-ubsan.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/build-test-query-json-asan-ubsan.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-query-json-asan-ubsan",
+      "exit": 0,
+      "seconds": 0.010568107000000992,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-query-json-asan-ubsan.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-query-json-asan-ubsan.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-query-json-asan-ubsan.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/test-query-json-asan-ubsan.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "affected-library-closure",
+      "exit": 0,
+      "seconds": 0.009558574999999792,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-library-closure.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-library-closure.stdout",
+        "bytes": 2365,
+        "sha256": "af933c4a0fba3b3a5d5a15eeaf61944a84904ac6005ac301f9f6dd3259489c7d"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-library-closure.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/affected-library-closure.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "FvwmDesktop-candidate-manual",
+      "exit": 0,
+      "seconds": 0.11588996300000076,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-candidate-manual.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-candidate-manual.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-candidate-manual.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-candidate-manual.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "FvwmDesktop-baseline-manual",
+      "exit": 0,
+      "seconds": 0.07081539999999897,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-baseline-manual.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-baseline-manual.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-baseline-manual.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmDesktop-baseline-manual.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "FvwmMFL-candidate-manual",
+      "exit": 0,
+      "seconds": 0.08747807600000002,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-candidate-manual.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-candidate-manual.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-candidate-manual.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-candidate-manual.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "FvwmMFL-baseline-manual",
+      "exit": 0,
+      "seconds": 0.08072985099999919,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-baseline-manual.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-baseline-manual.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-baseline-manual.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/FvwmMFL-baseline-manual.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "native-policy-origin",
+      "exit": 0,
+      "seconds": 3.068446473,
+      "group_absent": true,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/native-policy-origin.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/native-policy-origin.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/native-policy-origin.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w2-policy-origin01/evidence/native-policy-origin.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "reused_commands": [
+    {
+      "label": "affected-incremental-build",
+      "argv": [
+        "/usr/bin/ninja",
+        "-j2",
+        "fvwm3",
+        "tests/test-policy-origin",
+        "tests/test-query-json"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/build",
+      "timeout_seconds": 600,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 6,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 5.096894190999999,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stdout",
+        "bytes": 14004,
+        "sha256": "65aa074097a7f1110c52e1c827c07deffbbbfe3220559037d71f765c6eb48c39"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-incremental-build.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-policy-origin",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/build",
+      "timeout_seconds": 120,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 228,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 0.0003796529999995357,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-policy-origin.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "label": "test-query-json",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json"
+      ],
+      "cwd": "/tmp/fvwm-appearance-a4-20261102-01/build",
+      "timeout_seconds": 120,
+      "termination_grace_seconds": 5,
+      "forced_kill": false,
+      "pid": 229,
+      "exit": 0,
+      "cleanup_exit": 0,
+      "group_absent": true,
+      "seconds": 0.0009592160000000405,
+      "stdout": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stdout",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stdout",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stderr",
+        "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/test-query-json.stderr",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "prior_failed_command": {
+    "label": "affected-go-race-tests",
+    "argv": [
+      "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+      "test",
+      "-race",
+      "-mod=vendor",
+      "./internal/desktopinspect",
+      "./internal/desktopworker"
+    ],
+    "cwd": "/tmp/fvwm-appearance-a4-20261102-01/src/bin/FvwmPrompt",
+    "timeout_seconds": 240,
+    "termination_grace_seconds": 5,
+    "forced_kill": false,
+    "pid": 230,
+    "exit": 1,
+    "failure": "AssertionError('affected-go-race-tests')",
+    "cleanup_exit": 1,
+    "group_absent": true,
+    "seconds": 2.096426052,
+    "stdout": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stdout",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stdout",
+      "bytes": 1821,
+      "sha256": "05e286ba767d81f03127c34e99d07dd0323d29315181ce6f862073f5cf28336d"
+    },
+    "stderr": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stderr",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/w1-policy-origin03/evidence/affected-go-race-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "admitted_source": {
+    "files_verified": 2526,
+    "current_files_verified": 2526,
+    "overlay_after_verified": 1,
+    "manifest_sha256": "1cee2a5dc0f4431e53e7d56092a5bddfdd3625ff6ed6d8ef8ed92d8b752817ab",
+    "overlay": {
+      "src/bin/FvwmPrompt/internal/desktopinspect/policy_provenance.go": "b5c6d5e2231457c7fcfa51977b68a48452785a04baa78ab33c5466041f50f0c7"
+    }
+  },
+  "before": {
+    "fvwm3": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "bytes": 5881680,
+      "sha256": "2ed3d7efb8bd866f072e2bbf3c3507fdab6e12831adc2f42b9fa038f1ceeb1e8"
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "bytes": 463696,
+      "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba"
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "bytes": 2294512,
+      "sha256": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490"
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "bytes": 1782616,
+      "sha256": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229"
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "bytes": 6826762,
+      "sha256": "2c866ae1b94058ccc0eca80e7fd55bf0ed02cd7e8453a33f43eaceb7a15f349d"
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "bytes": 6554680,
+      "sha256": "f8bcfbdd2efbbcad2e7f34f5009a03011e5ce55a734d9af12a0768fc056ea533"
+    },
+    "tests/test-policy-origin": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "bytes": 116160,
+      "sha256": "cf3996b17b95f5eec1233d7e143264bafb3b5798d564eaa28df31ecaf1f24690"
+    },
+    "tests/test-query-json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "bytes": 474488,
+      "sha256": "0d10331cab480882dcd524b04339445697f37d8c8e092eb651cf8536b7d38e69"
+    }
+  },
+  "after": {
+    "fvwm3": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "bytes": 5881680,
+      "sha256": "2ed3d7efb8bd866f072e2bbf3c3507fdab6e12831adc2f42b9fa038f1ceeb1e8"
+    },
+    "modules/FvwmMFL/FvwmMFL": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "bytes": 463696,
+      "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba"
+    },
+    "modules/FvwmScript/FvwmScript": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmScript/FvwmScript",
+      "bytes": 2294512,
+      "sha256": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490"
+    },
+    "modules/FvwmIconMan/FvwmIconMan": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmIconMan/FvwmIconMan",
+      "bytes": 1782616,
+      "sha256": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229"
+    },
+    "bin/FvwmPrompt/FvwmDesktop": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "bytes": 6826522,
+      "sha256": "d3ad2edde51286346b01d7b34477d0c291aa647563bff0a811ee18f59f3b7c0c"
+    },
+    "bin/FvwmPrompt/fvwm-desktop-worker": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "bytes": 6557346,
+      "sha256": "d1dcf1210826d415fe93282b9ac94fc5de103e9f0a2f0f1fc007a01b0ed3a240"
+    },
+    "tests/test-policy-origin": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-policy-origin",
+      "bytes": 116160,
+      "sha256": "cf3996b17b95f5eec1233d7e143264bafb3b5798d564eaa28df31ecaf1f24690"
+    },
+    "tests/test-query-json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json",
+      "bytes": 474488,
+      "sha256": "0d10331cab480882dcd524b04339445697f37d8c8e092eb651cf8536b7d38e69"
+    }
+  },
+  "binary_byte_changes": {
+    "fvwm3": 0,
+    "modules/FvwmMFL/FvwmMFL": 0,
+    "modules/FvwmScript/FvwmScript": 0,
+    "modules/FvwmIconMan/FvwmIconMan": 0,
+    "bin/FvwmPrompt/FvwmDesktop": -240,
+    "bin/FvwmPrompt/fvwm-desktop-worker": 2666,
+    "tests/test-policy-origin": 0,
+    "tests/test-query-json": 0
+  },
+  "archive_admission": {
+    "path": "/tmp/fvwm-appearance-a4-20261102-01/build/libs/libfvwm3.a",
+    "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/libs/libfvwm3.a",
+    "bytes": 28620,
+    "sha256": "0e94a125ae1252917463bb530a2c11478e36e25214cbb9f3a6e9c11e5f09807d"
+  },
+  "metadata_before": {
+    "build.ninja": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/build.ninja",
+      "bytes": 2692010,
+      "sha256": "d8b5670cc8c2e5acae753fce14c72f64e54d33702f4d2c5e53d9ea806e1ac02f"
+    },
+    "meson-private/coredata.dat": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-private/coredata.dat",
+      "bytes": 125535,
+      "sha256": "120118aaea0ab42c805f32c7208181e5aeb1e7e5b9a785fa47d82b507f34774d"
+    },
+    "meson-info/intro-targets.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-targets.json",
+      "bytes": 2336493,
+      "sha256": "708e18ee545acdd823d3da0ad6abcc5a9d11f69edb4d0674ad7a38de690cf04d"
+    },
+    "meson-info/intro-buildoptions.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-buildoptions.json",
+      "bytes": 20791,
+      "sha256": "12d2b9a79ffe0856c507593fd04a9f03791a8b06e9760671fed59484811e84d9"
+    },
+    "meson-info/intro-compilers.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-compilers.json",
+      "bytes": 683,
+      "sha256": "433b58d89baa09821881a7d252c6a4fac6c907fdcb228c95a66782d23ec67e8a"
+    },
+    "meson-info/intro-machines.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-machines.json",
+      "bytes": 707,
+      "sha256": "988c50080b5be124eff30aab006a9844149395fb07a65aea2c8bdda300dd5033"
+    },
+    "meson-info/intro-dependencies.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/intro-dependencies.json",
+      "bytes": 9253,
+      "sha256": "e6dee5544b04106387ce62834ee38318fa9cac0c2a8dc47f4b8997cb76852a80"
+    },
+    "meson-info/meson-info.json": {
+      "path": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "realpath": "/tmp/fvwm-appearance-a4-20261102-01/build/meson-info/meson-info.json",
+      "bytes": 1137,
+      "sha256": "c49fa33f5ad34acb2223e1ba98d006bf6b1484083790b029804d16984ebb6c67"
+    }
+  },
+  "native_report": {
+    "status": "passed",
+    "profile": "slate-dark",
+    "cases": {
+      "retained_nested_policy_sources_and_normalized_masks": true,
+      "unchanged_origins_conservative_placement_and_modifier_parse_error": true,
+      "genuine_policy_projection_filter_navigation_read_only": true
+    },
+    "screenshots": [
+      "policy-modifiers-slate-dark.png",
+      "policy-placement-slate-dark.png"
+    ],
+    "executables": {
+      "core": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+      "desktop": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+      "worker": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+      "svg": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-image-svg-worker",
+      "backer": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmBacker/FvwmBacker",
+      "form": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmForm/FvwmForm",
+      "mfl": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+      "capture": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-desktop-capture"
+    },
+    "observer_unexpected_x_errors": [],
+    "observer_retired_windows": 0,
+    "keyboard_mapping": {
+      "cleared": 96,
+      "added": [
+        250,
+        251
+      ]
+    },
+    "initial_policy": {
+      "policy": {
+        "state": "observed",
+        "scope": "binding-policy",
+        "provenance": {
+          "version": 1,
+          "ignored_modifiers": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-appearance-a4-20261102-01/src/default-config/desktop.fvwm",
+              "first": 13,
+              "last": 13,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/boot.config",
+                  "first": 31,
+                  "last": 31
+                }
+              ],
+              "reason": ""
+            }
+          }
+        },
+        "contexts": {
+          "window": 1,
+          "title": 2,
+          "icon": 4,
+          "root": 8,
+          "menu": 16,
+          "placement": 32,
+          "left_1": 64,
+          "right_1": 128,
+          "left_2": 256,
+          "right_2": 512,
+          "left_3": 1024,
+          "right_3": 2048,
+          "left_4": 4096,
+          "right_4": 8192,
+          "left_5": 16384,
+          "right_5": 32768,
+          "unmanaged": 65536,
+          "ewmh_desktop": 131072,
+          "top_left": 1048576,
+          "top_right": 2097152,
+          "bottom_left": 4194304,
+          "bottom_right": 8388608,
+          "left_side": 16777216,
+          "right_side": 33554432,
+          "top_side": 67108864,
+          "bottom_side": 134217728,
+          "menu_item": 20,
+          "frame": 15728640,
+          "sidebar": 251658240,
+          "all": 267583439
+        },
+        "modifiers": {
+          "shift": 1,
+          "lock": 2,
+          "control": 4,
+          "mod1": 8,
+          "mod2": 16,
+          "mod3": 32,
+          "mod4": 64,
+          "mod5": 128,
+          "any": 32768
+        },
+        "generation": "000000000000000e1c8c5565000000df0000000000000088",
+        "ignored_modifier_mask": 146,
+        "xkb_ignored_modifier_mask": 24576,
+        "used_modifier_mask": 109
+      },
+      "placement": {
+        "state": "observed",
+        "scope": "placement-bindings",
+        "provenance": {
+          "version": 1,
+          "drag": {
+            "basis": "builtin-default",
+            "effect": "builtin-default",
+            "retention": "not-applicable",
+            "source": {
+              "version": 1,
+              "kind": "unavailable",
+              "reason": "source unavailable or exceeds provenance bounds"
+            }
+          },
+          "interactive": {
+            "basis": "builtin-default",
+            "effect": "builtin-default",
+            "retention": "not-applicable",
+            "source": {
+              "version": 1,
+              "kind": "unavailable",
+              "reason": "source unavailable or exceeds provenance bounds"
+            }
+          }
+        },
+        "generation": "000000000000000e1c8c5565000000df0000000000000088",
+        "button_count": 15,
+        "drag_finish_mask": 32764,
+        "interactive_finish_mask": 32765,
+        "key_bindings": false,
+        "modifier_bindings": false
+      }
+    },
+    "retained_policy": {
+      "policy": {
+        "state": "observed",
+        "scope": "binding-policy",
+        "provenance": {
+          "version": 1,
+          "ignored_modifiers": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/leaf.config",
+              "first": 7,
+              "last": 7,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/user/entry.config",
+                  "first": 2,
+                  "last": 2
+                }
+              ],
+              "reason": ""
+            }
+          }
+        },
+        "contexts": {
+          "window": 1,
+          "title": 2,
+          "icon": 4,
+          "root": 8,
+          "menu": 16,
+          "placement": 32,
+          "left_1": 64,
+          "right_1": 128,
+          "left_2": 256,
+          "right_2": 512,
+          "left_3": 1024,
+          "right_3": 2048,
+          "left_4": 4096,
+          "right_4": 8192,
+          "left_5": 16384,
+          "right_5": 32768,
+          "unmanaged": 65536,
+          "ewmh_desktop": 131072,
+          "top_left": 1048576,
+          "top_right": 2097152,
+          "bottom_left": 4194304,
+          "bottom_right": 8388608,
+          "left_side": 16777216,
+          "right_side": 33554432,
+          "top_side": 67108864,
+          "bottom_side": 134217728,
+          "menu_item": 20,
+          "frame": 15728640,
+          "sidebar": 251658240,
+          "all": 267583439
+        },
+        "modifiers": {
+          "shift": 1,
+          "lock": 2,
+          "control": 4,
+          "mod1": 8,
+          "mod2": 16,
+          "mod3": 32,
+          "mod4": 64,
+          "mod5": 128,
+          "any": 32768
+        },
+        "generation": "000000000000000e1c8c5565000000df000000000000008d",
+        "ignored_modifier_mask": 2,
+        "xkb_ignored_modifier_mask": 24576,
+        "used_modifier_mask": 253
+      },
+      "placement": {
+        "state": "observed",
+        "scope": "placement-bindings",
+        "provenance": {
+          "version": 1,
+          "drag": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/leaf.config",
+              "first": 3,
+              "last": 4,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/user/entry.config",
+                  "first": 2,
+                  "last": 2
+                }
+              ],
+              "reason": ""
+            }
+          },
+          "interactive": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/leaf.config",
+              "first": 5,
+              "last": 5,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/user/entry.config",
+                  "first": 2,
+                  "last": 2
+                }
+              ],
+              "reason": ""
+            }
+          }
+        },
+        "generation": "000000000000000e1c8c5565000000df000000000000008d",
+        "button_count": 15,
+        "drag_finish_mask": 1,
+        "interactive_finish_mask": 2,
+        "key_bindings": false,
+        "modifier_bindings": false
+      }
+    },
+    "malformed_policy": {
+      "policy": {
+        "state": "observed",
+        "scope": "binding-policy",
+        "provenance": {
+          "version": 1,
+          "ignored_modifiers": {
+            "basis": "last-value-change",
+            "effect": "parse-error",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/bad.config",
+              "first": 2,
+              "last": 2,
+              "include": [],
+              "reason": ""
+            }
+          }
+        },
+        "contexts": {
+          "window": 1,
+          "title": 2,
+          "icon": 4,
+          "root": 8,
+          "menu": 16,
+          "placement": 32,
+          "left_1": 64,
+          "right_1": 128,
+          "left_2": 256,
+          "right_2": 512,
+          "left_3": 1024,
+          "right_3": 2048,
+          "left_4": 4096,
+          "right_4": 8192,
+          "left_5": 16384,
+          "right_5": 32768,
+          "unmanaged": 65536,
+          "ewmh_desktop": 131072,
+          "top_left": 1048576,
+          "top_right": 2097152,
+          "bottom_left": 4194304,
+          "bottom_right": 8388608,
+          "left_side": 16777216,
+          "right_side": 33554432,
+          "top_side": 67108864,
+          "bottom_side": 134217728,
+          "menu_item": 20,
+          "frame": 15728640,
+          "sidebar": 251658240,
+          "all": 267583439
+        },
+        "modifiers": {
+          "shift": 1,
+          "lock": 2,
+          "control": 4,
+          "mod1": 8,
+          "mod2": 16,
+          "mod3": 32,
+          "mod4": 64,
+          "mod5": 128,
+          "any": 32768
+        },
+        "generation": "000000000000000e1c8c5565000000df0000000000000091",
+        "ignored_modifier_mask": 1,
+        "xkb_ignored_modifier_mask": 24576,
+        "used_modifier_mask": 254
+      },
+      "placement": {
+        "state": "observed",
+        "scope": "placement-bindings",
+        "provenance": {
+          "version": 1,
+          "drag": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/leaf.config",
+              "first": 3,
+              "last": 4,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/user/entry.config",
+                  "first": 2,
+                  "last": 2
+                }
+              ],
+              "reason": ""
+            }
+          },
+          "interactive": {
+            "basis": "last-value-change",
+            "effect": "applied",
+            "retention": "retained",
+            "source": {
+              "version": 1,
+              "kind": "file",
+              "path": "/tmp/fvwm-binding-origin-otytn_95/user/leaf.config",
+              "first": 5,
+              "last": 5,
+              "include": [
+                {
+                  "path": "/tmp/fvwm-binding-origin-otytn_95/user/entry.config",
+                  "first": 2,
+                  "last": 2
+                }
+              ],
+              "reason": ""
+            }
+          }
+        },
+        "generation": "000000000000000e1c8c5565000000df0000000000000091",
+        "button_count": 15,
+        "drag_finish_mask": 1,
+        "interactive_finish_mask": 2,
+        "key_bindings": false,
+        "modifier_bindings": false
+      }
+    },
+    "elapsed_seconds": 2.9766968289999998,
+    "children_after_cleanup": {
+      "Xvfb": 0,
+      "core": 0
+    },
+    "cleanup_failures": []
+  },
+  "native_full_report": {
+    "path": "/Users/cam/DEV/fvwm3/builddir/codex-2026-11-07/r1-policy-closeout/capture/export/evidence/native/evidence.json",
+    "bytes": 46038,
+    "sha256": "56c9bb9cae1fb2bd651daddf0f0abdce5ae3c80cdff9075db46860347ff9435b"
+  },
+  "large_native_fields": {
+    "projection": {
+      "canonical_json_sha256": "fae0872df61ed27c1e3b1456eac655df8a0054c60945e13c61a408c327ae2c6e"
+    },
+    "filtered_projection": {
+      "canonical_json_sha256": "aad426d2ded4995dd478393a55e0be470ea8e5f234c3cdce22a40304f0c9fa1d"
+    },
+    "capture_forms": {
+      "canonical_json_sha256": "36de7e3c63f582bc051ad84b7351320bc024d981c120b9e8ca5ac5da0c57c15c"
+    }
+  },
+  "manuals": [
+    {
+      "label": "FvwmDesktop-baseline-lint",
+      "exit": 3,
+      "diagnostics": {
+        "ERROR: skipping insecure request": 1,
+        "ERROR: skipping unknown macro": 1,
+        "STYLE: input text line longer than 80 bytes": 120,
+        "WARNING: skipping paragraph macro": 19
+      },
+      "stdout_bytes": 27487,
+      "stderr_bytes": 0,
+      "source_sha256": "c32c8db070f3f062b38ba54ec3de3e818cbf88fabcd2112f885859bd919844f8"
+    },
+    {
+      "label": "FvwmDesktop-baseline-60",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 85516,
+      "stderr_bytes": 0,
+      "source_sha256": "c32c8db070f3f062b38ba54ec3de3e818cbf88fabcd2112f885859bd919844f8"
+    },
+    {
+      "label": "FvwmDesktop-baseline-80",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 83605,
+      "stderr_bytes": 0,
+      "source_sha256": "c32c8db070f3f062b38ba54ec3de3e818cbf88fabcd2112f885859bd919844f8"
+    },
+    {
+      "label": "FvwmDesktop-candidate-lint",
+      "exit": 3,
+      "diagnostics": {
+        "ERROR: skipping insecure request": 1,
+        "ERROR: skipping unknown macro": 1,
+        "STYLE: input text line longer than 80 bytes": 126,
+        "WARNING: skipping paragraph macro": 19
+      },
+      "stdout_bytes": 28822,
+      "stderr_bytes": 0,
+      "source_sha256": "4f24837d296aff7565e884d32d47141ad80311e912deb871acf129de50def0b1"
+    },
+    {
+      "label": "FvwmDesktop-candidate-60",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 86188,
+      "stderr_bytes": 0,
+      "source_sha256": "4f24837d296aff7565e884d32d47141ad80311e912deb871acf129de50def0b1"
+    },
+    {
+      "label": "FvwmDesktop-candidate-80",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 84256,
+      "stderr_bytes": 0,
+      "source_sha256": "4f24837d296aff7565e884d32d47141ad80311e912deb871acf129de50def0b1"
+    },
+    {
+      "label": "FvwmMFL-baseline-lint",
+      "exit": 4,
+      "diagnostics": {
+        "ERROR: skipping insecure request": 1,
+        "ERROR: skipping unknown macro": 1,
+        "STYLE: input text line longer than 80 bytes": 274,
+        "UNSUPP: ignoring macro in table": 130,
+        "WARNING: skipping paragraph macro": 29
+      },
+      "stdout_bytes": 79543,
+      "stderr_bytes": 0,
+      "source_sha256": "2e3aab168413a9327732d28646709f2bc625cd47efe7ea410016064bd5d562fd"
+    },
+    {
+      "label": "FvwmMFL-baseline-60",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 131761,
+      "stderr_bytes": 0,
+      "source_sha256": "2e3aab168413a9327732d28646709f2bc625cd47efe7ea410016064bd5d562fd"
+    },
+    {
+      "label": "FvwmMFL-baseline-80",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 129584,
+      "stderr_bytes": 0,
+      "source_sha256": "2e3aab168413a9327732d28646709f2bc625cd47efe7ea410016064bd5d562fd"
+    },
+    {
+      "label": "FvwmMFL-candidate-lint",
+      "exit": 4,
+      "diagnostics": {
+        "ERROR: skipping insecure request": 1,
+        "ERROR: skipping unknown macro": 1,
+        "STYLE: input text line longer than 80 bytes": 280,
+        "UNSUPP: ignoring macro in table": 130,
+        "WARNING: skipping paragraph macro": 29
+      },
+      "stdout_bytes": 81154,
+      "stderr_bytes": 0,
+      "source_sha256": "b2f23bb1f3b5596aea681cdfdf0f127b8ebadca04f0eedd897b60a71bbb8afdc"
+    },
+    {
+      "label": "FvwmMFL-candidate-60",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 133509,
+      "stderr_bytes": 0,
+      "source_sha256": "b2f23bb1f3b5596aea681cdfdf0f127b8ebadca04f0eedd897b60a71bbb8afdc"
+    },
+    {
+      "label": "FvwmMFL-candidate-80",
+      "exit": 0,
+      "diagnostics": {},
+      "stdout_bytes": 131291,
+      "stderr_bytes": 0,
+      "source_sha256": "b2f23bb1f3b5596aea681cdfdf0f127b8ebadca04f0eedd897b60a71bbb8afdc"
+    }
+  ],
+  "cleanup": {
+    "launch": "dispatch and holder passed",
+    "receipt_sha256": "304870317006a775b0f8f59563014af55cd9f84eb2f160cb3987afe881141959"
+  },
+  "limits": [
+    "Focused Linux ARM64 only; no full OS/install/release/hardware/accessibility claim",
+    "Prior alternative themes reused at original scope; two fresh Slate source-page captures",
+    "Existing status/header wrapping and explicit partial inventory retained",
+    "Include rows present in filtered projection; not visible in the placement capture",
+    "Performance observation remains due and unrun; no speed/RSS claim",
+    "#218 stays open for remaining theme/fine-grained provenance and broader acceptance"
+  ]
+}

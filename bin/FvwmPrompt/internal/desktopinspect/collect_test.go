@@ -48,12 +48,14 @@ func fixtureResult(resource, scope string) map[string]any {
 	case "bindings":
 		switch scope {
 		case "policy":
+			m["provenance"] = fixturePolicyProvenance("ignored_modifiers")
 			m["contexts"] = map[string]any{"root": 8, "window": 1}
 			m["modifiers"] = map[string]any{"shift": 1, "control": 4}
 			m["ignored_modifier_mask"] = 2
 			m["xkb_ignored_modifier_mask"] = 16
 			m["used_modifier_mask"] = 5
 		case "placement":
+			m["provenance"] = fixturePolicyProvenance("drag", "interactive")
 			m["button_count"] = 15
 			m["drag_finish_mask"] = 4
 			m["interactive_finish_mask"] = 2

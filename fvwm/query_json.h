@@ -6,6 +6,7 @@
 #include "libs/Colorset.h"
 #include "libs/monitor_types.h"
 #include "libs/module_query.h"
+#include "libs/policy_origin.h"
 #include <stdint.h>
 
 struct fvwm_query_spec {
@@ -54,10 +55,11 @@ cJSON *fvwm_query_workspaces(struct monitors *monitors, int width, int height,
 	const char *mode, const char **error);
 cJSON *fvwm_query_binding_policy(const char *generation,
 	const struct fvwm_query_spec *spec, unsigned int ignored_modifiers,
-	const char **error);
+	const fvwm_policy_origin *ignored_origin, const char **error);
 cJSON *fvwm_query_placement(const char *generation,
 	const struct fvwm_query_spec *spec, unsigned int drag,
-	unsigned int interactive, const char **error);
+	unsigned int interactive, const fvwm_policy_origin *drag_origin,
+	const fvwm_policy_origin *interactive_origin, const char **error);
 cJSON *fvwm_query_bindings(const Binding *bindings, const char *generation,
 	const struct fvwm_query_spec *spec, const char **error);
 

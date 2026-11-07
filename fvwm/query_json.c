@@ -403,11 +403,79 @@ fail:
 	return NULL;
 }
 
+/* The owner provides a synchronous read-only view of its process-lifetime
+ * slot. No command runs while this view is serialized. */
+static bool policy_origin_entry(cJSON *provenance, const char *name,
+	const fvwm_policy_origin *origin)
+{
+	cJSON *entry = cJSON_AddObjectToObject(provenance, name);
+	cJSON *source;
+	const char *effect, *retention;
+
+	switch (origin->effect)
+	{
+	case FVWM_POLICY_EFFECT_BUILTIN_DEFAULT:
+		effect = "builtin-default";
+		break;
+	case FVWM_POLICY_EFFECT_APPLIED:
+		effect = "applied";
+		break;
+	case FVWM_POLICY_EFFECT_PARSE_ERROR:
+		effect = "parse-error";
+		break;
+	default:
+		return false;
+	}
+	switch (origin->retention)
+	{
+	case FVWM_POLICY_RETENTION_NOT_APPLICABLE:
+		retention = "not-applicable";
+		break;
+	case FVWM_POLICY_RETENTION_RETAINED:
+		retention = "retained";
+		break;
+	case FVWM_POLICY_RETENTION_UNAVAILABLE:
+		retention = "unavailable";
+		break;
+	case FVWM_POLICY_RETENTION_BUDGET_EXHAUSTED:
+		retention = "budget-exhausted";
+		break;
+	default:
+		return false;
+	}
+	if (!entry ||
+	    !cJSON_AddStringToObject(entry, "basis", origin->effect ==
+		FVWM_POLICY_EFFECT_BUILTIN_DEFAULT ? "builtin-default" :
+		"last-value-change") ||
+	    !cJSON_AddStringToObject(entry, "effect", effect) ||
+	    !cJSON_AddStringToObject(entry, "retention", retention))
+		return false;
+	source = cJSON_Parse(fvwm_config_origin_json(origin->source));
+	if (!source)
+		return false;
+	if (!cJSON_AddItemToObject(entry, "source", source))
+	{
+		cJSON_Delete(source);
+		return false;
+	}
+	return true;
+}
+
+static cJSON *policy_provenance(cJSON *result)
+{
+	cJSON *provenance = cJSON_AddObjectToObject(result, "provenance");
+
+	return provenance &&
+		cJSON_AddNumberToObject(provenance, "version", 1) ?
+		provenance : NULL;
+}
+
 cJSON *fvwm_query_placement(const char *generation,
 	const struct fvwm_query_spec *spec, unsigned int drag,
-	unsigned int interactive, const char **error)
+	unsigned int interactive, const fvwm_policy_origin *drag_origin,
+	const fvwm_policy_origin *interactive_origin, const char **error)
 {
-	cJSON *result;
+	cJSON *result, *provenance;
 
 	*error = "invalid_request";
 	if (spec->offset != 0)
@@ -417,6 +485,7 @@ cJSON *fvwm_query_placement(const char *generation,
 	result = observed_result("placement-bindings", error);
 	if (!result)
 		return NULL;
+	provenance = policy_provenance(result);
 	/* Placement stores normalized finish masks, not command strings.
 	 * Bit zero describes button 1, including the higher X mouse buttons. */
 	if (!cJSON_AddStringToObject(result, "generation", generation) ||
@@ -426,7 +495,10 @@ cJSON *fvwm_query_placement(const char *generation,
 	    !cJSON_AddNumberToObject(result, "interactive_finish_mask",
 		interactive) ||
 	    !cJSON_AddBoolToObject(result, "key_bindings", false) ||
-	    !cJSON_AddBoolToObject(result, "modifier_bindings", false))
+	    !cJSON_AddBoolToObject(result, "modifier_bindings", false) ||
+	    !provenance ||
+	    !policy_origin_entry(provenance, "drag", drag_origin) ||
+	    !policy_origin_entry(provenance, "interactive", interactive_origin))
 	{
 		cJSON_Delete(result);
 		return NULL;
@@ -437,7 +509,7 @@ cJSON *fvwm_query_placement(const char *generation,
 
 cJSON *fvwm_query_binding_policy(const char *generation,
 	const struct fvwm_query_spec *spec, unsigned int ignored_modifiers,
-	const char **error)
+	const fvwm_policy_origin *ignored_origin, const char **error)
 {
 	static const struct {
 		const char *name;
@@ -464,7 +536,7 @@ cJSON *fvwm_query_binding_policy(const char *generation,
 		{"mod4", Mod4Mask}, {"mod5", Mod5Mask},
 		{"any", AnyModifier}
 	};
-	cJSON *result, *context_map, *modifier_map;
+	cJSON *result, *context_map, *modifier_map, *provenance;
 
 	*error = "invalid_request";
 	if (spec->offset != 0)
@@ -474,9 +546,11 @@ cJSON *fvwm_query_binding_policy(const char *generation,
 	result = observed_result("binding-policy", error);
 	if (!result)
 		return NULL;
+	provenance = policy_provenance(result);
 	context_map = cJSON_AddObjectToObject(result, "contexts");
 	modifier_map = cJSON_AddObjectToObject(result, "modifiers");
-	if (!context_map || !modifier_map ||
+	if (!context_map || !modifier_map || !provenance ||
+	    !policy_origin_entry(provenance, "ignored_modifiers", ignored_origin) ||
 	    !cJSON_AddStringToObject(result, "generation", generation) ||
 	    !cJSON_AddNumberToObject(result, "ignored_modifier_mask",
 		ignored_modifiers) ||

@@ -1205,14 +1205,20 @@ void CMD_Send_Query(F_CMD_ARGS)
 			if (strcmp(spec.resource, "placement") == 0)
 			{
 				unsigned int drag, interactive;
+				const fvwm_policy_origin *drag_origin;
+				const fvwm_policy_origin *interactive_origin;
 
+				placement_query_origins(&drag_origin,
+					&interactive_origin);
 				placement_query_masks(&drag, &interactive);
 				result = fvwm_query_placement(generation, &spec,
-					drag, interactive, &error);
+					drag, interactive, drag_origin,
+					interactive_origin, &error);
 			}
 			else if (strcmp(spec.resource, "binding-policy") == 0)
 				result = fvwm_query_binding_policy(generation,
-					&spec, GetUnusedModifiers(), &error);
+					&spec, GetUnusedModifiers(),
+					binding_query_ignored_origin(), &error);
 			else
 				result = fvwm_query_bindings(
 					strcmp(spec.resource, "bindings") == 0 ?

@@ -11,6 +11,9 @@ void ApplyDefaultFontAndColors(void);
 void InitFvwmDecor(FvwmDecor *decor);
 void reset_decor_changes(void);
 Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose);
+/* Accumulates accepted clauses independently of parser status/value changes. */
+Bool ReadDecorFaceAccepted(char *s, DecorFace *df, int button, int verbose,
+	bool *accepted);
 void FreeDecorFace(Display *dpy, DecorFace *df);
 /* Transfer a prepared face, retaining old backing for pending replacements.
  * Empty the source and relocate callbacks to the live destination. */

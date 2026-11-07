@@ -256,7 +256,8 @@ status_init_pipe(void)
  *
  */
 static char *
-ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
+ReadTitleButton(char *s, TitleButton *tb, Bool append, int button,
+    bool *accepted)
 {
 	char	 *end = NULL;
 	char	 *spec;
@@ -367,10 +368,12 @@ ReadTitleButton(char *s, TitleButton *tb, Bool append, int button)
 			if (multiple && (i & use_mask) != set_mask) {
 				continue;
 			}
-			ReadDecorFace(spec, &TB_STATE(*tb)[i], button, verbose);
+			ReadDecorFaceAccepted(spec, &TB_STATE(*tb)[i], button,
+				verbose, accepted);
 			verbose = False;
 		}
 	} else if (ReadDecorFace(spec, &tmpdf, button, True)) {
+		*accepted = true;
 		if (append) {
 			DecorFace *head = &TB_STATE(*tb)[bs_start];
 			DecorFace *tail = head;
@@ -476,6 +479,7 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 {
 	char	  *parm;
 	char	  *prev;
+	bool accepted = false;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
 	fvwm_query_appearance_changed();
@@ -487,13 +491,19 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 	    prev  = action) {
 		if (!do_add && StrEquals(parm, "centered")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_CENTER;
+			accepted = true;
 		} else if (!do_add && StrEquals(parm, "leftjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_LEFT;
+			accepted = true;
 		} else if (!do_add && StrEquals(parm, "rightjustified")) {
 			TB_JUSTIFICATION(decor->titlebar) = JUST_RIGHT;
+			accepted = true;
 		} else if (!do_add && StrEquals(parm, "height")) {
 			int height = 0;
 			int next   = 0;
+
+			/* Invalid heights still apply the historical reset/clamp. */
+			accepted = true;
 
 			if (!action
 			    || sscanf(action, "%d%n", &height, &next) <= 0
@@ -518,6 +528,9 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 			int height = 0;
 			int next   = 0;
 
+			/* Invalid heights still apply the historical reset/clamp. */
+			accepted = true;
+
 			if (!action
 			    || sscanf(action, "%d%n", &height, &next) <= 0
 			    || height < MIN_FONT_HEIGHT
@@ -536,10 +549,14 @@ do_title_style(F_CMD_ARGS, Bool do_add)
 				action += next;
 		} else {
 			action =
-			    ReadTitleButton(prev, &decor->titlebar, do_add, -1);
+			    ReadTitleButton(prev, &decor->titlebar, do_add, -1,
+				&accepted);
 		}
 	}
 
+	if (accepted)
+		fvwm_theme_origin_definition(&decor->origin, exc->source,
+			FVWM_THEME_MERGE, NULL);
 	return;
 }
 
@@ -754,6 +771,7 @@ DestroyFvwmDecor(FvwmDecor *decor)
 	int i;
 
 	fvwm_query_appearance_changed();
+	fvwm_theme_origin_clear(&decor->origin);
 	/* reset to default button set (frees allocated mem) */
 	DestroyAllButtons(decor);
 	for (i = 0; i < BS_MaxButtonState; ++i) {
@@ -845,6 +863,7 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 	int	     multi  = 0;
 	int	     button = 0;
 	int	     do_return;
+	bool accepted = false;
 	char	    *text  = NULL;
 	char	    *prev  = NULL;
 	char	    *parm  = NULL;
@@ -878,6 +897,8 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 			 * set was specified */
 			if (StrEquals(parm, "reset")) {
 				ResetAllButtons(decor);
+				fvwm_theme_origin_definition(&decor->origin,
+				    exc->source, FVWM_THEME_RESET, NULL);
 			} else {
 				fvwm_debug(__func__,
 				    "Bad button style (2) in line %s", action);
@@ -918,6 +939,7 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 					tok++;
 				}
 				if (StrEquals(tok, "Clear")) {
+					accepted = true;
 					if (multi) {
 						for (i = 0;
 						    i < NUMBER_OF_TITLE_BUTTONS;
@@ -958,18 +980,23 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 						 * set == 0 ? */
 					}
 				} else if (StrEquals(tok, "MWMDecorMenu")) {
+					accepted = true;
 					SetMWMButtonFlag(MWM_DECOR_MENU, multi,
 					    set, decor, tb);
 				} else if (StrEquals(tok, "MWMDecorMin")) {
+					accepted = true;
 					SetMWMButtonFlag(MWM_DECOR_MINIMIZE,
 					    multi, set, decor, tb);
 				} else if (StrEquals(tok, "MWMDecorMax")) {
+					accepted = true;
 					SetMWMButtonFlag(MWM_DECOR_MAXIMIZE,
 					    multi, set, decor, tb);
 				} else if (StrEquals(tok, "MWMDecorShade")) {
+					accepted = true;
 					SetMWMButtonFlag(MWM_DECOR_SHADE, multi,
 					    set, decor, tb);
 				} else if (StrEquals(tok, "MWMDecorStick")) {
+					accepted = true;
 					SetMWMButtonFlag(MWM_DECOR_STICK, multi,
 					    set, decor, tb);
 				} else if (StrEquals(tok, "MwmDecorLayer")) {
@@ -991,6 +1018,7 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 						    " layer -- line: %s",
 						    text);
 					} else {
+						accepted = true;
 						SetLayerButtonFlag(layer, multi,
 						    set, decor, tb);
 					}
@@ -1016,16 +1044,19 @@ do_button_style(F_CMD_ARGS, Bool do_add)
 					    || ((multi & 2) && (i & 1))) {
 						text = ReadTitleButton(prev,
 						    &decor->buttons[i], do_add,
-						    i);
+						    i, &accepted);
 					}
 				}
 			} else if (!(text = ReadTitleButton(
-					 prev, tb, do_add, button))) {
+					 prev, tb, do_add, button, &accepted))) {
 				break;
 			}
 		}
 	}
 
+	if (accepted)
+		fvwm_theme_origin_definition(&decor->origin, exc->source,
+			FVWM_THEME_MERGE, NULL);
 	return;
 }
 
@@ -1630,7 +1661,8 @@ FreeDecorFace(Display *disp, DecorFace *df)
  *
  */
 static Bool
-read_decor_face(char *s, DecorFace *df, int button, int verbose)
+read_decor_face(char *s, DecorFace *df, int button, int verbose,
+    bool *accepted)
 {
 	int   offset;
 	char  style[256], *file;
@@ -1917,6 +1949,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 			}
 			return False;
 		}
+		*accepted = true;
 	}
 
 	/* Process button flags ("--" signals start of flags,
@@ -1935,10 +1968,12 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 				tok++;
 			}
 			if (StrEquals(tok, "Clear")) {
+				*accepted = true;
 				memset(&DFS_FLAGS(df->style), (set) ? 0 : 0xff,
 				    sizeof(DFS_FLAGS(df->style)));
 				/* ? what is set == 0 good for ? */
 			} else if (StrEquals(tok, "Left")) {
+				*accepted = true;
 				if (set) {
 					DFS_H_JUSTIFICATION(df->style) =
 					    JUST_LEFT;
@@ -1947,6 +1982,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    JUST_RIGHT;
 				}
 			} else if (StrEquals(tok, "Right")) {
+				*accepted = true;
 				if (set) {
 					DFS_H_JUSTIFICATION(df->style) =
 					    JUST_RIGHT;
@@ -1955,9 +1991,11 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    JUST_LEFT;
 				}
 			} else if (StrEquals(tok, "Centered")) {
+				*accepted = true;
 				DFS_H_JUSTIFICATION(df->style) = JUST_CENTER;
 				DFS_V_JUSTIFICATION(df->style) = JUST_CENTER;
 			} else if (StrEquals(tok, "Top")) {
+				*accepted = true;
 				if (set) {
 					DFS_V_JUSTIFICATION(df->style) =
 					    JUST_TOP;
@@ -1966,6 +2004,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    JUST_BOTTOM;
 				}
 			} else if (StrEquals(tok, "Bottom")) {
+				*accepted = true;
 				if (set) {
 					DFS_V_JUSTIFICATION(df->style) =
 					    JUST_BOTTOM;
@@ -1974,6 +2013,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    JUST_TOP;
 				}
 			} else if (StrEquals(tok, "Flat")) {
+				*accepted = true;
 				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
 					    DFS_BUTTON_IS_FLAT;
@@ -1983,6 +2023,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    DFS_BUTTON_IS_UP;
 				}
 			} else if (StrEquals(tok, "Sunk")) {
+				*accepted = true;
 				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
 					    DFS_BUTTON_IS_SUNK;
@@ -1992,6 +2033,7 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    DFS_BUTTON_IS_UP;
 				}
 			} else if (StrEquals(tok, "Raised")) {
+				*accepted = true;
 				if (set) {
 					DFS_BUTTON_RELIEF(df->style) =
 					    DFS_BUTTON_IS_UP;
@@ -2000,16 +2042,20 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 					    DFS_BUTTON_IS_SUNK;
 				}
 			} else if (StrEquals(tok, "UseTitleStyle")) {
+				*accepted = true;
 				if (set) {
 					DFS_USE_TITLE_STYLE(df->style)	= 1;
 					DFS_USE_BORDER_STYLE(df->style) = 0;
 				} else
 					DFS_USE_TITLE_STYLE(df->style) = 0;
 			} else if (StrEquals(tok, "HiddenHandles")) {
+				*accepted = true;
 				DFS_HAS_HIDDEN_HANDLES(df->style) = !!set;
 			} else if (StrEquals(tok, "NoInset")) {
+				*accepted = true;
 				DFS_HAS_NO_INSET(df->style) = !!set;
 			} else if (StrEquals(tok, "UseBorderStyle")) {
+				*accepted = true;
 				if (set) {
 					DFS_USE_BORDER_STYLE(df->style) = 1;
 					DFS_USE_TITLE_STYLE(df->style)	= 0;
@@ -2037,7 +2083,8 @@ read_decor_face(char *s, DecorFace *df, int button, int verbose)
 	return True;
 }
 
-Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
+Bool ReadDecorFaceAccepted(char *s, DecorFace *df, int button, int verbose,
+	bool *accepted)
 {
 	char *start = SkipSpaces(s, NULL, 0);
 	DecorFace prepared = {0};
@@ -2048,10 +2095,10 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 	}
 	if (*start == '\0' || strncasecmp(start, "--", 2) == 0)
 	{
-		return read_decor_face(s, df, button, verbose);
+		return read_decor_face(s, df, button, verbose, accepted);
 	}
 	DFS_FACE_TYPE(prepared.style) = SimpleButton;
-	if (!read_decor_face(s, &prepared, button, verbose))
+	if (!read_decor_face(s, &prepared, button, verbose, accepted))
 	{
 		/* Preserve immediate parser-refusal behavior. Deferred worker
 		 * refusal keeps the successfully parsed face's backing. */
@@ -2061,6 +2108,13 @@ Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
 	}
 	replace_decor_face(df, &prepared);
 	return True;
+}
+
+Bool ReadDecorFace(char *s, DecorFace *df, int button, int verbose)
+{
+	bool accepted = false;
+
+	return ReadDecorFaceAccepted(s, df, button, verbose, &accepted);
 }
 
 /*
@@ -2939,12 +2993,18 @@ CMD_DestroyDecor(F_CMD_ARGS)
 		if (!do_recreate) {
 			_remove_window_decors(F_PASS_ARGS, found);
 		}
+		bool replaced =
+		    found->origin.operation != FVWM_THEME_BUILTIN_DEFAULT;
+
 		DestroyFvwmDecor(found);
 		if (do_recreate) {
 			int i;
 
 			InitFvwmDecor(found);
 			found->tag			      = fxstrdup(item);
+			fvwm_theme_origin_definition(&found->origin, exc->source,
+			    FVWM_THEME_RESET, NULL);
+			found->origin.replaces_definition = replaced;
 			Scr.flags.do_need_window_update	      = 1;
 			found->flags.has_changed	      = 1;
 			found->flags.has_title_height_changed = 0;

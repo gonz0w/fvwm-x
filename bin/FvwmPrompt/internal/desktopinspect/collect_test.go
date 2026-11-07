@@ -40,11 +40,11 @@ func fixtureResult(resource, scope string) map[string]any {
 		m["window_effective_state"] = false
 		m["rendered_completion"] = "unknown"
 	case "colorsets":
-		m["colorsets"] = []any{map[string]any{"id": 2, "update_state": "pending", "pixels": map[string]any{"foreground": "0000000000ffffff", "background": "0000000000000000"}, "background": map[string]any{"transparency": "none"}}}
+		m["colorsets"] = []any{map[string]any{"provenance": fixtureThemeProvenance("builtin-default", "builtin-default", "not-applicable", fixtureOrigin("unavailable", "")), "id": 2, "update_state": "pending", "pixels": map[string]any{"foreground": "0000000000ffffff", "background": "0000000000000000"}, "background": map[string]any{"transparency": "none"}}}
 	case "menu-styles":
-		m["menu_styles"] = []any{map[string]any{"name": "fixture-menu", "opacity_percent": 100, "border_width": 2, "colorsets": map[string]any{"menu": 5, "active": 6}}}
+		m["menu_styles"] = []any{map[string]any{"provenance": fixtureThemeProvenance("builtin-default", "builtin-default", "not-applicable", fixtureOrigin("unavailable", "")), "name": "fixture-menu", "opacity_percent": 100, "border_width": 2, "colorsets": map[string]any{"menu": 5, "active": 6}}}
 	case "decorations":
-		m["decorations"] = []any{map[string]any{"name": nil, "title_height": 20, "minimum_title_height": 12, "title_justification": "center"}}
+		m["decorations"] = []any{map[string]any{"provenance": fixtureThemeProvenance("builtin-default", "builtin-default", "not-applicable", fixtureOrigin("unavailable", "")), "name": nil, "title_height": 20, "minimum_title_height": 12, "title_justification": "center"}}
 	case "bindings":
 		switch scope {
 		case "policy":

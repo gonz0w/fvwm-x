@@ -14,6 +14,8 @@ foreach filemanager_source : [
     'internal/desktopinspect/binding_provenance_test.go',
     'internal/desktopinspect/policy_provenance.go',
     'internal/desktopinspect/policy_provenance_test.go',
+    'internal/desktopinspect/theme_provenance.go',
+    'internal/desktopinspect/theme_provenance_test.go',
     'internal/desktopcontroller/native_settings.go',
     'internal/desktopcontroller/native_settings_wire.go',
     'internal/desktopcontroller/native_settings_supervisor.go',

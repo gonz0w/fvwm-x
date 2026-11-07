@@ -187,6 +187,7 @@ bool menustyle_preview_opacity(const char *name, int opacity, int *previous)
 		 * face, pixmap or window; recovery is safe during a menu grab too.
 		 * Already visible pixels may retain their previous presentation. */
 		ST_TRANSLUCENT_PERCENT(style) = opacity;
+		fvwm_theme_origin_preview(&style->origin);
 		fvwm_query_appearance_changed();
 		return true;
 	}
@@ -207,19 +208,51 @@ static MenuStyle *menustyle_preview_named(const char *name)
 	return NULL;
 }
 
+bool menustyle_preview_capture_origin(const char *name,
+	fvwm_theme_origin *origin)
+{
+	MenuStyle *style = menustyle_preview_named(name);
+
+	if (!style)
+		return false;
+	fvwm_theme_origin_clone(origin, &style->origin);
+	return true;
+}
+
+bool menustyle_preview_restore(const char *name, int opacity, int *previous,
+	fvwm_theme_origin *origin)
+{
+	if (!menustyle_preview_opacity(name, opacity, previous))
+		return false;
+	/* The setter cannot dispatch; resolve again without retaining a pointer. */
+	fvwm_theme_origin_move(&menustyle_preview_named(name)->origin, origin);
+	return true;
+}
+
+void menustyle_preview_pair_clear(struct menustyle_preview_pair *pair)
+{
+	for (unsigned int i = 0; i < 2; i++)
+		fvwm_theme_origin_clear(&pair->origins[i]);
+	memset(pair, 0, sizeof(*pair));
+}
+
 bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair)
 {
 	static const char *names[2] = {"*", "SlateLauncherStyle"};
 	struct menustyle_preview_pair captured = {0};
 
-	memset(pair, 0, sizeof(*pair));
+	menustyle_preview_pair_clear(pair);
 	for (unsigned int i = 0; i < 2; i++)
 	{
 		MenuStyle *style = menustyle_preview_named(names[i]);
 
 		if (!style || ST_TRANSLUCENT_PERCENT(style) < 0 ||
 		    ST_TRANSLUCENT_PERCENT(style) > 100)
+		{
+			menustyle_preview_pair_clear(&captured);
 			return false;
+		}
+		fvwm_theme_origin_clone(&captured.origins[i], &style->origin);
 		captured.identities[i] = (uintptr_t)style;
 		captured.opacity[i] = ST_TRANSLUCENT_PERCENT(style);
 	}
@@ -227,8 +260,8 @@ bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair)
 	return true;
 }
 
-bool menustyle_preview_pair_set_values(const struct menustyle_preview_pair *pair,
-	int menu_opacity, int launcher_opacity)
+bool menustyle_preview_pair_set_values(struct menustyle_preview_pair *pair,
+	int menu_opacity, int launcher_opacity, bool restore)
 {
 	MenuStyle *styles[2] = {menustyle_preview_named("*"),
 		menustyle_preview_named("SlateLauncherStyle")};
@@ -239,12 +272,18 @@ bool menustyle_preview_pair_set_values(const struct menustyle_preview_pair *pair
 		    opacity[i] < 0 || opacity[i] > 100)
 			return false;
 	for (unsigned i = 0; i < 2; i++)
+	{
 		ST_TRANSLUCENT_PERCENT(styles[i]) = opacity[i];
+		if (restore)
+			fvwm_theme_origin_move(&styles[i]->origin, &pair->origins[i]);
+		else
+			fvwm_theme_origin_preview(&styles[i]->origin);
+	}
 	fvwm_query_appearance_changed();
 	return true;
 }
 
-bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
+bool menustyle_preview_pair_set(struct menustyle_preview_pair *pair,
 	enum preview_resource_kind kind, bool restore)
 {
 	MenuStyle *styles[2] = {menustyle_preview_named("*"),
@@ -263,7 +302,13 @@ bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
 			return false;
 	}
 	for (unsigned int i = 0; i < 2; i++)
+	{
 		ST_TRANSLUCENT_PERCENT(styles[i]) = opacity[i];
+		if (restore)
+			fvwm_theme_origin_move(&styles[i]->origin, &pair->origins[i]);
+		else
+			fvwm_theme_origin_preview(&styles[i]->origin);
+	}
 	fvwm_query_appearance_changed();
 	return true;
 }
@@ -277,6 +322,7 @@ void menustyle_free(MenuStyle *ms)
 		return;
 	}
 	fvwm_query_appearance_changed();
+	fvwm_theme_origin_clear(&ms->origin);
 	if (FORE_GC(ST_MENU_INACTIVE_GCS(ms)))
 	{
 		XFreeGC(dpy, FORE_GC(ST_MENU_INACTIVE_GCS(ms)));
@@ -535,6 +581,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	MenuStyle *tmpms;
 	Bool is_initialised = True;
 	Bool has_gc_changed = False;
+	bool accepted = false;
 	int val[2];
 	int n;
 	FlocaleFont *new_font = NULL;
@@ -562,6 +609,9 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	{
 		/* copy the structure over our temporary menu face. */
 		memcpy(tmpms, ms, sizeof(MenuStyle));
+		/* The scratch face has no diagnostic owner until it is committed.
+		 * A rejected definition must not lose provenance to clone budget. */
+		tmpms->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
 		free(name);
 	}
 	else
@@ -722,34 +772,42 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				/* now begin the real work */
 				is_initialised = True;
+				accepted = true;
 				continue;
 			}
+			accepted = true;
 			break;
 
 		case 3: /* HilightBack */
 			ST_DO_HILIGHT_BACK(tmpms) = on;
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 4: /* ActiveFore */
 			ST_DO_HILIGHT_FORE(tmpms) = on;
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 5: /* Hilight3DThick */
 			ST_RELIEF_THICKNESS(tmpms) = 2;
+			accepted = true;
 			break;
 
 		case 6: /* Hilight3DThin */
 			ST_RELIEF_THICKNESS(tmpms) = 1;
+			accepted = true;
 			break;
 
 		case 7: /* Hilight3DOff */
 			ST_RELIEF_THICKNESS(tmpms) = 0;
+			accepted = true;
 			break;
 
 		case 8: /* Animation */
 			ST_IS_ANIMATED(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 9: /* Font */
@@ -776,6 +834,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_USING_DEFAULT_FONT(tmpms) = False;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 10: /* PopupDelay */
@@ -788,6 +847,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_POPUP_DELAY(tmpms) = (*val+9)/10;
 			}
+			accepted = true;
 			break;
 
 		case 11: /* PopupOffset */
@@ -796,6 +856,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				fvwm_debug(__func__,
 					   "PopupOffset requires one or two"
 					   " arguments");
+				break;
 			}
 			else
 			{
@@ -809,46 +870,57 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 					ST_POPUP_OFFSET_PERCENT(tmpms) = 100;
 				}
 			}
+			accepted = true;
 			break;
 
 		case 12: /* TitleWarp */
 			ST_DO_WARP_TO_TITLE(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 13: /* TitleUnderlines0 */
 			ST_TITLE_UNDERLINES(tmpms) = 0;
+			accepted = true;
 			break;
 
 		case 14: /* TitleUnderlines1 */
 			ST_TITLE_UNDERLINES(tmpms) = 1;
+			accepted = true;
 			break;
 
 		case 15: /* TitleUnderlines2 */
 			ST_TITLE_UNDERLINES(tmpms) = 2;
+			accepted = true;
 			break;
 
 		case 16: /* SeparatorsLong */
 			ST_HAS_LONG_SEPARATORS(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 17: /* SeparatorsShort */
 			ST_HAS_LONG_SEPARATORS(tmpms) = !on;
+			accepted = true;
 			break;
 
 		case 18: /* TrianglesSolid */
 			ST_HAS_TRIANGLE_RELIEF(tmpms) = !on;
+			accepted = true;
 			break;
 
 		case 19: /* TrianglesRelief */
 			ST_HAS_TRIANGLE_RELIEF(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 20: /* PopupImmediately */
 			ST_DO_POPUP_IMMEDIATELY(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 21: /* PopupDelayed */
 			ST_DO_POPUP_IMMEDIATELY(tmpms) = !on;
+			accepted = true;
 			break;
 
 		case 22: /* DoubleClickTime */
@@ -862,6 +934,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_DOUBLE_CLICK_TIME(tmpms) = *val;
 			}
+			accepted = true;
 			break;
 
 		case 23: /* SidePic */
@@ -888,6 +961,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			}
 			menu_image_destroy(&ST_SIDEPIC(tmpms));
 			ST_SIDEPIC(tmpms) = replacement;
+			accepted = true;
 			break;
 		}
 
@@ -903,30 +977,37 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_SIDE_COLOR(tmpms) = GetColor(arg1);
 				ST_HAS_SIDE_COLOR(tmpms) = 1;
 			}
+			accepted = true;
 			break;
 
 		case 25: /* PopupAsRootmenu */
 			ST_DO_POPUP_AS(tmpms) = MDP_ROOT_MENU;
+			accepted = true;
 			break;
 
 		case 26: /* PopupAsSubmenu */
 			ST_DO_POPUP_AS(tmpms) = MDP_POST_MENU;
+			accepted = true;
 			break;
 
 		case 27: /* RemoveSubmenus */
 			ST_DO_UNMAP_SUBMENU_ON_POPDOWN(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 28: /* HoldSubmenus */
 			ST_DO_UNMAP_SUBMENU_ON_POPDOWN(tmpms) = !on;
+			accepted = true;
 			break;
 
 		case 29: /* SubmenusRight */
 			ST_USE_LEFT_SUBMENUS(tmpms) = !on;
+			accepted = true;
 			break;
 
 		case 30: /* SubmenusLeft */
 			ST_USE_LEFT_SUBMENUS(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 31: /* BorderWidth */
@@ -940,10 +1021,12 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_BORDER_WIDTH(tmpms) = *val;
 			}
+			accepted = true;
 			break;
 
 		case 32: /* Hilight3DThickness */
-			if (GetIntegerArguments(args, NULL, val, 1) > 0)
+			if (GetIntegerArguments(args, NULL, val, 1) == 0)
+				break;
 			{
 				if (*val < 0)
 				{
@@ -958,6 +1041,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 					*val = MAX_MENU_ITEM_RELIEF_THICKNESS;
 				ST_RELIEF_THICKNESS(tmpms) = *val;
 			}
+			accepted = true;
 			break;
 
 		case 33: /* ItemFormat */
@@ -967,10 +1051,12 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_ITEM_FORMAT(tmpms) = fxstrdup(arg1);
 			}
+			accepted = true;
 			break;
 
 		case 34: /* AutomaticHotkeys */
 			ST_USE_AUTOMATIC_HOTKEYS(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 35: /* VerticalItemSpacing */
@@ -979,6 +1065,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				&ST_ITEM_GAP_BELOW(tmpms),
 				DEFAULT_MENU_ITEM_TEXT_Y_OFFSET,
 				DEFAULT_MENU_ITEM_TEXT_Y_OFFSET2);
+			accepted = true;
 			break;
 
 		case 36: /* VerticalTitleSpacing */
@@ -987,6 +1074,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				&ST_TITLE_GAP_BELOW(tmpms),
 				DEFAULT_MENU_TITLE_TEXT_Y_OFFSET,
 				DEFAULT_MENU_TITLE_TEXT_Y_OFFSET2);
+			accepted = true;
 			break;
 
 		case 37: /* MenuColorset */
@@ -1004,6 +1092,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_CSET_MENU(tmpms) = *val;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 38: /* ActiveColorset */
@@ -1021,6 +1110,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_CSET_ACTIVE(tmpms) = *val;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 39: /* GreyedColorset */
@@ -1038,6 +1128,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_CSET_GREYED(tmpms) = *val;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 40: /* SelectOnRelease */
@@ -1048,14 +1139,17 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 					dpy, FvwmStringToKeysym(dpy, arg1));
 			}
 			ST_SELECT_ON_RELEASE_KEY(tmpms) = keycode;
+			accepted = true;
 			break;
 
 		case 41: /* PopdownImmediately */
 			ST_DO_POPDOWN_IMMEDIATELY(tmpms) = 1;
+			accepted = true;
 			break;
 
 		case 42: /* PopdownDelayed */
 			ST_DO_POPDOWN_IMMEDIATELY(tmpms) = 0;
+			accepted = true;
 			break;
 
 		case 43: /* PopdownDelay */
@@ -1068,6 +1162,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_POPDOWN_DELAY(tmpms) = (*val+9)/10;
 			}
+			accepted = true;
 			break;
 
 		case 44: /* PopupActiveArea */
@@ -1081,14 +1176,17 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			{
 				ST_ACTIVE_AREA_PERCENT(tmpms) = *val;
 			}
+			accepted = true;
 			break;
 
 		case 45: /* PopupIgnore */
 			ST_DO_POPUP_AS(tmpms) = MDP_IGNORE;
+			accepted = true;
 			break;
 
 		case 46: /* PopupClose */
 			ST_DO_POPUP_AS(tmpms) = MDP_CLOSE;
+			accepted = true;
 			break;
 
 		case 47: /* MouseWheel */
@@ -1126,14 +1224,17 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_MOUSE_WHEEL(tmpms) =
 					(on) ? MMW_POINTER : MMW_OFF;
 			}
+			accepted = true;
 			break;
 
 		case 48: /* ScrollOffPage */
 			ST_SCROLL_OFF_PAGE(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 49: /* TrianglesUseFore */
 			ST_TRIANGLES_USE_FORE(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 50: /* TitleColorset */
@@ -1151,11 +1252,13 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_CSET_TITLE(tmpms) = *val;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 51: /* TitleHilightBack */
 			ST_DO_HILIGHT_TITLE_BACK(tmpms) = on;
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 52: /* TitleFont */
@@ -1184,6 +1287,7 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				ST_USING_DEFAULT_TITLEFONT(tmpms) = False;
 			}
 			has_gc_changed = True;
+			accepted = true;
 			break;
 
 		case 53: /* VerticalMargins */
@@ -1191,10 +1295,12 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 				args, &ST_VERTICAL_MARGIN_TOP(tmpms),
 				&ST_VERTICAL_MARGIN_BOTTOM(tmpms),
 				0, 0);
+			accepted = true;
 			break;
 
 		case 54: /* UniqueHotKeyActivatesImmediate */
 			ST_HOTKEY_ACTIVATES_IMMEDIATE(tmpms) = on;
+			accepted = true;
 			break;
 
 		case 55: /* Translucent */
@@ -1207,11 +1313,13 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 			} else {
 				ST_TRANSLUCENT_PERCENT(tmpms) = *val;
 			}
+			accepted = true;
 			break;
 
 #if 0
 		case 99: /* PositionHints */
 			/* to be implemented */
+			accepted = true;
 			break;
 #endif
 
@@ -1228,6 +1336,11 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 		arg1 = NULL;
 	} /* while */
 
+	if (ms)
+		fvwm_theme_origin_move(&tmpms->origin, &ms->origin);
+	if (accepted)
+		fvwm_theme_origin_definition(&tmpms->origin, exc->source,
+			FVWM_THEME_MERGE, NULL);
 	if (has_gc_changed)
 	{
 		menustyle_update(tmpms);
@@ -1242,7 +1355,9 @@ MenuStyle *menustyle_parse_style(F_CMD_ARGS)
 	else if (ms)
 	{
 		/* copy our new menu face over the old one */
+		fvwm_theme_origin_clear(&ms->origin);
 		memcpy(ms, tmpms, sizeof(MenuStyle));
+		tmpms->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
 		free(tmpms);
 		menu_image_bind_style(ms);
 		return ms;
@@ -1441,6 +1556,7 @@ void CMD_CopyMenuStyle(F_CMD_ARGS)
 	char *buffer;
 	MenuStyle *origms;
 	MenuStyle *destms;
+	bool existed;
 
 	origname = PeekToken(action, &action);
 	if (origname == NULL)
@@ -1471,6 +1587,7 @@ void CMD_CopyMenuStyle(F_CMD_ARGS)
 	}
 
 	destms = menustyle_find(destname);
+	existed = destms != NULL;
 	if (!destms)
 	{
 		/* create destms menu style */
@@ -1510,6 +1627,10 @@ void CMD_CopyMenuStyle(F_CMD_ARGS)
 	}
 
 	menustyle_copy(origms, destms);
+	if (!existed)
+		fvwm_theme_origin_clear(&destms->origin);
+	fvwm_theme_origin_definition(&destms->origin, exc->source,
+		FVWM_THEME_COPY, ST_NAME(origms));
 
 	return;
 }

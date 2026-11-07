@@ -549,6 +549,36 @@ include configured `title_height`, `minimum_title_height`,
 configured height leaves sizing to the existing font/minimum policy. Faces,
 paths, resource handles, callback owners and window assignments are omitted.
 
+Each menu-style, decoration and colorset entry has a version 1 `provenance`
+object with exactly seven fields:
+
+* `version`: 1.
+* `basis`: `builtin-default`, `last-definition` or `runtime-preview`.
+* `source`: the existing version 1 configuration-origin object.
+* `operation`: `builtin-default`, `merge`, `copy`, `reset` or `preview`.
+* `retention`: `not-applicable`, `retained`, `unavailable` or
+  `budget-exhausted`.
+* `replaces_definition`: whether the operation replaced a definition.
+* `copied_from`: the exact donor name for a copy, at most 256 UTF-8 bytes,
+  or null for other operations. A copy can also report null with unavailable
+  source and `unavailable` or `budget-exhausted` retention.
+
+This records the latest aggregate definition operation, not the origin of every
+field or the last value change. A merge can leave fields from earlier definitions;
+an accepted definition can advance provenance even when values are unchanged.
+There is no definition history. For CopyMenuStyle, available source metadata
+identifies the copy invocation context and `copied_from` identifies its donor;
+neither describes transitive lineage. Missing context, an overlong donor or
+exhausted retention is reported as unavailable. Builtin defaults and runtime
+previews have unavailable sources. Recovery restores the captured origin;
+confirmation retains runtime
+ownership. A conflict leaves the authoritative current record in place.
+
+Colorset sources follow the requested values through asynchronous publication,
+not whichever Read is current when preparation completes. Diagnostic source
+and donor retention shares a 1 MiB cap, including clones and previews. Budget
+exhaustion affects metadata only, not the definitions or their execution.
+
 No query adds an X round trip or changes definitions. Existing message/result,
 queue, deadline, cancellation and read-only limits apply. Tokens are
 process/resource observations, not authentication or persistent identifiers;

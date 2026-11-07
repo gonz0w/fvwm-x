@@ -68,6 +68,108 @@ static const fvwm_policy_origin builtin_origin = FVWM_POLICY_ORIGIN_INIT;
 static const char token[] =
 	"000000000000000000000000000000000000000000000001";
 
+static void assert_theme_origin(cJSON *item, const char *basis,
+	const char *operation, const char *retention, bool replaces,
+	const char *donor)
+{
+	cJSON *origin = cJSON_GetObjectItemCaseSensitive(item, "provenance");
+
+	assert(cJSON_IsObject(origin) && cJSON_GetArraySize(origin) == 7);
+	assert(cJSON_GetObjectItemCaseSensitive(origin, "version")->valueint == 1);
+	assert(!strcmp(cJSON_GetObjectItemCaseSensitive(origin,
+		"basis")->valuestring, basis));
+	assert(!strcmp(cJSON_GetObjectItemCaseSensitive(origin,
+		"operation")->valuestring, operation));
+	assert(!strcmp(cJSON_GetObjectItemCaseSensitive(origin,
+		"retention")->valuestring, retention));
+	assert(cJSON_IsTrue(cJSON_GetObjectItemCaseSensitive(origin,
+		"replaces_definition")) == replaces);
+	if (donor)
+		assert(!strcmp(cJSON_GetObjectItemCaseSensitive(origin,
+			"copied_from")->valuestring, donor));
+	else
+		assert(cJSON_IsNull(cJSON_GetObjectItemCaseSensitive(origin,
+			"copied_from")));
+	assert(cJSON_IsObject(cJSON_GetObjectItemCaseSensitive(origin, "source")));
+}
+
+static void test_theme_sources(void)
+{
+	colorset_t colorset = {0};
+	MenuStyle menu = {.name = "*"};
+	FvwmDecor decor = {0};
+	struct fvwm_query_colorset entry = {0, &colorset, "idle"};
+	struct fvwm_query_spec spec = {.limit = 1, .generation = "-",
+		.resource = "colorsets"};
+	fvwm_config_origin *root = fvwm_config_origin_file("/root.cfg", 2, 4,
+		NULL);
+	fvwm_config_origin *source = fvwm_config_origin_file("/theme.cfg", 8, 9,
+		root);
+	const char *error;
+	cJSON *result, *item, *origin;
+
+	for (unsigned int state = 0; state < 7; state++)
+	{
+		const char *operation[] = {"builtin-default", "merge", "copy",
+			"preview", "reset", "copy", "merge"};
+		const char *basis = state == 0 ? "builtin-default" :
+			state == 3 ? "runtime-preview" : "last-definition";
+		const char *retention = state == 0 || state == 3 ?
+			"not-applicable" : state == 6 ? "budget-exhausted" :
+			state >= 4 ? "unavailable" : "retained";
+
+		if (state == 1 || state == 2)
+			fvwm_theme_origin_definition(&colorset.origin, source,
+				state == 1 ? FVWM_THEME_MERGE : FVWM_THEME_COPY,
+				state == 2 ? "*" : NULL);
+		else if (state == 3)
+			fvwm_theme_origin_preview(&colorset.origin);
+		else if (state == 6)
+		{
+			fvwm_theme_origin_clear(&colorset.origin);
+			colorset.origin.operation = FVWM_THEME_MERGE;
+			colorset.origin.retention = FVWM_THEME_BUDGET_EXHAUSTED;
+			colorset.origin.replaces_definition = true;
+		}
+		else if (state >= 4)
+			fvwm_theme_origin_definition(&colorset.origin, NULL,
+				state == 4 ? FVWM_THEME_RESET : FVWM_THEME_COPY, NULL);
+		fvwm_theme_origin_clone(&menu.origin, &colorset.origin);
+		fvwm_theme_origin_clone(&decor.origin, &colorset.origin);
+		for (unsigned int domain = 0; domain < 3; domain++)
+		{
+			const char *list = domain == 0 ? "colorsets" :
+				domain == 1 ? "menu_styles" : "decorations";
+
+			result = domain == 0 ? fvwm_query_colorsets(&entry, 1, 1,
+				token, &spec, &error) : domain == 1 ?
+				fvwm_query_menu_styles(&menu, token, &spec, &error) :
+				fvwm_query_decorations(&decor, token, &spec, &error);
+			assert(result && !error);
+			item = cJSON_GetArrayItem(cJSON_GetObjectItemCaseSensitive(
+				result, list), 0);
+			assert_theme_origin(item, basis, operation[state], retention,
+				state >= 2, state == 2 ? "*" : NULL);
+			if (state == 1 || state == 2)
+			{
+				origin = cJSON_GetObjectItemCaseSensitive(item, "provenance");
+				char *json = cJSON_PrintUnformatted(origin);
+
+				assert(json && strstr(json, "/theme.cfg") &&
+					strstr(json, "/root.cfg"));
+				free(json);
+			}
+			cJSON_Delete(result);
+		}
+	}
+	fvwm_config_origin_release(source);
+	fvwm_config_origin_release(root);
+	fvwm_theme_origin_clear(&colorset.origin);
+	fvwm_theme_origin_clear(&menu.origin);
+	fvwm_theme_origin_clear(&decor.origin);
+	assert(fvwm_theme_origin_retained_bytes() == 0);
+}
+
 static void test_appearance(void)
 {
 	MenuStyle menus[2] = {{.name = "*"}, {.name = "literal $[desk.n]"}};
@@ -678,6 +780,7 @@ int main(void)
 {
 	test_internal_grammar();
 	test_appearance();
+	test_theme_sources();
 	test_colorsets();
 	test_binding_source_kinds();
 	test_binding_pages();

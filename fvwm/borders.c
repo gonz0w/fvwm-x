@@ -5324,6 +5324,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 {
 	char *parm;
 	char *prev;
+	bool accepted = false;
 	FvwmDecor *decor = Scr.cur_decor ? Scr.cur_decor : &Scr.DefaultDecor;
 
 	fvwm_query_appearance_changed();
@@ -5363,13 +5364,13 @@ void CMD_BorderStyle(F_CMD_ARGS)
 					fvwm_debug(__func__,
 						   "error in %s border"
 						   " specification", parm);
-					return;
+					goto finish;
 				}
 				while (isspace(*action))
 				{
 					++action;
 				}
-				if (ReadDecorFace(action, &tmpdf,-1,True))
+				if (ReadDecorFaceAccepted(action, &tmpdf, -1, True, &accepted))
 				{
 					replace_decor_face(df, &tmpdf);
 				}
@@ -5381,21 +5382,20 @@ void CMD_BorderStyle(F_CMD_ARGS)
 				fvwm_debug(__func__,
 					   "error in %s border specification",
 					   parm);
-				return;
+				goto finish;
 			}
 			tmp = fxstrdup(action);
-			ReadDecorFace(tmp, df,-1,True);
+			ReadDecorFaceAccepted(tmp, df, -1, True, &accepted);
 			free(tmp);
 			action = end + 1;
 		}
 		else if (strcmp(parm,"--")==0)
 		{
-			if (ReadDecorFace(
-				    prev, &decor->BorderStyle.active,-1,True))
+			if (ReadDecorFaceAccepted(prev, &decor->BorderStyle.active,
+				-1, True, &accepted))
 			{
-				ReadDecorFace(
-					prev, &decor->BorderStyle.inactive, -1,
-					False);
+				ReadDecorFaceAccepted(prev, &decor->BorderStyle.inactive,
+					-1, False, &accepted);
 			}
 			decor->BorderStyle.active.flags.has_changed = 1;
 			decor->BorderStyle.inactive.flags.has_changed = 1;
@@ -5411,7 +5411,7 @@ void CMD_BorderStyle(F_CMD_ARGS)
 			{
 				tmpdf.u.p = NULL;
 			}
-			if (ReadDecorFace(prev, &tmpdf,-1,True))
+			if (ReadDecorFaceAccepted(prev, &tmpdf, -1, True, &accepted))
 			{
 				replace_decor_face(
 				    &decor->BorderStyle.active, &tmpdf);
@@ -5426,5 +5426,9 @@ void CMD_BorderStyle(F_CMD_ARGS)
 		}
 	}
 
+finish:
+	if (accepted)
+		fvwm_theme_origin_definition(&decor->origin, exc->source,
+			FVWM_THEME_MERGE, NULL);
 	return;
 }

@@ -39,6 +39,7 @@
 #include "libs/flist.h"
 #include "libs/Bindings.h"
 #include "libs/PictureBase.h"
+#include "libs/theme_origin.h"
 
 #define SIZE_HINDENT 5
 #define SIZE_VINDENT 3
@@ -277,6 +278,7 @@ typedef struct
 
 typedef struct FvwmDecor
 {
+	fvwm_theme_origin origin;
 	char *tag;                    /* general style tag */
 	int title_height;           /* explicitly specified title bar height */
 	int min_title_height;

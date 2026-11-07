@@ -18,7 +18,7 @@ import (
 func (c *collector) theme(s *Section) {
 	s.State = "observed"
 	s.Generation = "multiple-domains"
-	s.Reason = "Published core definitions plus provider policy; final paint unknown; domains are not an atomic snapshot"
+	s.Reason = "Published definitions; final paint unknown; domains are not an atomic snapshot"
 	contrast := ""
 	var settings map[string]map[string]json.RawMessage
 	if json.Unmarshal(c.req.Settings, &settings) == nil {
@@ -49,11 +49,14 @@ func (c *collector) theme(s *Section) {
 			c.row(s, "Appearance generation", appearanceGeneration)
 		}
 	}
+	colorsets := &Section{State: "observed", Rows: []Row{}}
+	menus := &Section{State: "observed", Rows: []Row{}}
+	decorations := &Section{State: "observed", Rows: []Row{}}
 	colorsGeneration := ""
 	count := 0
-	c.pages(s, "colorsets", "", "colorsets", &colorsGeneration, func(item map[string]json.RawMessage) error {
+	c.pages(colorsets, "colorsets", "", "colorsets", &colorsGeneration, func(item map[string]json.RawMessage) error {
 		if count >= 32 {
-			s.Truncated = true
+			colorsets.Truncated = true
 			return errors.New("colorset row budget reached")
 		}
 		count++
@@ -72,16 +75,17 @@ func (c *collector) theme(s *Section) {
 		if !member(transparency, []string{"none", "parent", "root"}) {
 			return errors.New("invalid colorset background")
 		}
-		c.row(s, fmt.Sprintf("Observed colorset %d", id), fmt.Sprintf("%s; fg pixel=%s; bg pixel=%s; background=%s", state, fg, bg, transparency))
-		return nil
+		prefix := fmt.Sprintf("Observed colorset %d", id)
+		c.row(colorsets, prefix, fmt.Sprintf("%s; fg pixel=%s; bg pixel=%s; background=%s", state, fg, bg, transparency))
+		return c.themeProvenance(colorsets, item, prefix)
 	})
 	if colorsGeneration != "" {
 		c.row(s, "Colorset generation", colorsGeneration)
 	}
 	count = 0
-	c.pages(s, "menu-styles", "", "menu_styles", &appearanceGeneration, func(item map[string]json.RawMessage) error {
+	c.pages(menus, "menu-styles", "", "menu_styles", &appearanceGeneration, func(item map[string]json.RawMessage) error {
 		if count >= 32 {
-			s.Truncated = true
+			menus.Truncated = true
 			return errors.New("menu style row budget reached")
 		}
 		count++
@@ -97,13 +101,14 @@ func (c *collector) theme(s *Section) {
 		if !mok || !aok {
 			return errors.New("invalid menu colorsets")
 		}
-		c.row(s, "Observed menu "+name, fmt.Sprintf("colorset=%d; active=%d; opacity=%d%%; border=%d configuration pixels", menu, active, opacity, border))
-		return nil
+		prefix := "Observed menu " + name
+		c.row(menus, prefix, fmt.Sprintf("colorset=%d; active=%d; opacity=%d%%; border=%d configuration pixels", menu, active, opacity, border))
+		return c.themeProvenance(menus, item, prefix)
 	})
 	count = 0
-	c.pages(s, "decorations", "", "decorations", &appearanceGeneration, func(item map[string]json.RawMessage) error {
+	c.pages(decorations, "decorations", "", "decorations", &appearanceGeneration, func(item map[string]json.RawMessage) error {
 		if count >= 32 {
-			s.Truncated = true
+			decorations.Truncated = true
 			return errors.New("decoration row budget reached")
 		}
 		count++
@@ -120,9 +125,11 @@ func (c *collector) theme(s *Section) {
 		if !ok || !mok || height < 0 || minimum < 0 || !member(justification, []string{"left", "center", "right", "unknown"}) {
 			return errors.New("invalid decoration definition")
 		}
-		c.row(s, "Observed decoration "+name, fmt.Sprintf("title=%d; minimum=%d configuration pixels; justify=%s", height, minimum, justification))
-		return nil
+		prefix := "Observed decoration " + name
+		c.row(decorations, prefix, fmt.Sprintf("title=%d; minimum=%d configuration pixels; justify=%s", height, minimum, justification))
+		return c.themeProvenance(decorations, item, prefix)
 	})
+	c.themeDomainRows(s, colorsets, menus, decorations)
 	if len(s.Rows) == 0 {
 		s.State = "unavailable"
 	}

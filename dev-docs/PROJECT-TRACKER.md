@@ -36,6 +36,13 @@ Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
 Current work, U1 — close bounded reload/inspector feature contracts, 2026-11-07.
+Delivery: [draft PR369](https://github.com/gonz0w/fvwm-x/pull/369), source checkpoint
+`e50da5996356c38d6cc26267edd23b0d61b4c9b1`, has canonical valid signature,
+reviewed tree/parent and Cam author DCO. Source/static/evidence/visual review is
+clear for draft publication only. The native campaign below is stopped; the PR
+is not ready for merge and neither owner is closed. Continue on this branch/PR
+with the named replacement-baseline diagnosis, not a duplicate delivery.
+
 Selected owners: RELOAD-01 #217 and INSPECT-01 #218. Lead owns integration,
 tracker and native execution on `codex/r1-authoring-closeout`. Cam directed merge
 and cleanup of PR368, followed by a related R1 batch focused on issue closure.

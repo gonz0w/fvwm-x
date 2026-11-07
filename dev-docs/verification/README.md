@@ -1,5 +1,7 @@
 # Verification reports
 
+- [Reply-wait feasibility and installed package costs](VERIFICATION-2026-11-06-WAITS-INSTALLED-COSTS.md) records the matching Xlib/XCB source seam, complete FreeBSD package dependency closures and the remaining observation boundary.
+
 - [Remaining BSD drawing and layout comparisons](VERIFICATION-2026-11-06-BSD-DRAWING-LAYOUT-PAIRS.md) records the 30 paired fixture cases on both FreeBSD architectures and OpenBSD ARM64, with build, loader and package observations.
 
 - [OpenBSD AMD64 drawing and layout comparisons](VERIFICATION-2026-11-06-OPENBSD-AMD64-DRAWING-LAYOUT.md) records the ordinary baseline, two reversed comparison blocks and same-guest build, loader and package evidence.

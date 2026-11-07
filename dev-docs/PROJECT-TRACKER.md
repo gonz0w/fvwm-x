@@ -35,7 +35,60 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G11 remaining BSD drawing and layout pairs under #211 and
+Current work: G12 implicit-wait feasibility and installed dependency costs
+under #211 and #212, selected by Cam after PR362. Lead owns execution and
+integration on `codex/r1-waits-installed-costs`. PR362 merged at
+`a27795528b7a0fcdf8b69ad22227736ad9717d2b`. Canonical signature,
+reviewed tree `281719cde76a609deeb83f0cb5a96242b8499f6c`, sole parent
+and Cam's author DCO matched; the merged branch was retired.
+
+First select one pinned Linux profile for a finite reply-wait observation
+feasibility probe. Require controls for an asynchronous operation, a buffered
+reply, an actual outstanding reply, direct XCB and an unrelated connection.
+Resolve library coverage and the observation boundary before relying on a
+count. An incomplete seam records unavailable coverage and stops the collector
+claim. Preserve the existing complete implicit-wait requirement.
+
+For installed costs, use one retained FreeBSD ARM64 profile in an isolated
+COW child to capture the local package dependency graph, exact owners of
+the compared native/Cairo library closures and nominal package sizes.
+Compute complete owner-package dependency closures and their set difference.
+Keep base-system and private PNG file costs explicit. Retain missing data
+as unavailable. This is a local package metadata check with bounded pure
+closure coverage; full staged and release qualification remain open.
+
+The lead dispatches after separate frozen-input review. Limit this delivery
+to one attempt per selected profile plus one reviewed correction of a
+diagnosed defect, one owned guest at a time, 45 minutes per job, 128 MiB
+export and bounded command/output limits. The first package admission found
+one unrelated project VM and stopped before creating a child or booting.
+Package metadata collection may share the host with that single VM, within
+the existing two-job resource bound. Its result depends on data identity;
+command timings are diagnostic only. Performance probes require an otherwise
+idle VM profile. Preserve the original admission receipt. Use focused host checks and an affected
+probe compile. Stop at an unexplained failure, unavailable required seam
+or a resource limit. New tracing infrastructure, package installs and broad
+runtime or release suites require their own selected work. Preserve the
+parked #257/#258 and other owners' resources. The whole-WM ledger stays 4/5.
+
+The [G12 wait and installed-cost record](verification/VERIFICATION-2026-11-06-WAITS-INSTALLED-COSTS.md)
+identifies the internal XCB reply and partial-read paths and the lack of
+a qualified complete-wait seam. The five native controls remain unexecuted.
+This stops the collector claim at its prerequisite. The concrete next
+candidate is a matching private XCB observation build.
+
+The FreeBSD ARM64 package capture passed after one diagnosed empty-row
+parser repair. Its 596 records and 1,067 edges resolve completely, with
+exact owners for the eight module closures. The pure closure helper and
+seven focused tests cover shared/transitive/cyclic dependencies and missing
+metadata. Cairo adds 359,457,073 nominal package bytes over the isolated
+native module closure in this snapshot; including the recorded librsvg
+package in both root sets makes the package increment zero. Clay adds
+zero packages. All 107 export hashes matched. Both guest exits and backing
+chain guards passed. Other platform package closures, implicit waits and
+broader acceptance remain open.
+
+Completed G11 remaining BSD drawing and layout pairs under #211 and
 #212, selected by Cam after PR361. Lead owns execution and integration on
 `codex/r1-bsd-paired`. PR361 merged at
 `7794e94d4047f456f94b11f4d5bfc7962762663b`. The signed canonical commit

@@ -35,7 +35,94 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work: G12 implicit-wait feasibility and installed dependency costs
+Current continuation, 2026-11-07: Cam selected completion of draft
+[PR #364](https://github.com/gonz0w/fvwm-x/pull/364), with the lead retaining
+execution and integration ownership. Fix the diagnosed protocol-generation
+ordering in the frozen Linux ARM64 job: generate the three protocol source
+and header pairs, require nonempty outputs, then build the private library
+separately. Run the native observer unit and six controlled XCB/Xlib cases.
+Keep the same source and dependency pins and preserve both earlier failures.
+This is a newly selected bounded continuation after that checkpoint, with
+one attempt and at most one separately reviewed diagnosed correction, using
+the existing guest, time and export limits. Stop and preserve evidence on an
+unexplained failure or exhausted limit. Acceptance is a source-bound private
+library, native unit and all six controls, verified teardown and separate
+integrated review before marking the draft ready. Partial-packet, FVWM drawing
+integration, complete implicit waits and package-graph work retain their own
+pending acceptance; this continuation does not expand into those outcomes.
+No broad platform or whole-WM performance rerun is selected.
+
+The first continuation attempt generated all six files, built the private
+library and passed the native observer unit. Async, buffered and direct-XCB
+controls passed. The Xlib control exposed an incorrect fixture expectation:
+Xlib retains the prior successful reply node and revisits it before the
+current reply. The separately reviewed correction checks both exact request
+identities and their reply availability, with one logical wait on the prior
+node and zero on the buffered current node. The corrected native unit and
+all six controls pass. All 30 export files and the archive matched their
+hashes; all 13 command groups retired, and container/machine shutdown was
+confirmed. Preserve the failed run and its 27 verified diagnostics. The
+[report](verification/VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md#native-continuation--2026-11-07)
+records exact plans, native results and remaining boundaries. Native acceptance
+is complete; separate final review and the signed source/evidence identity
+control the ready-for-review transition for PR364.
+
+Current work: G13 private XCB wait observation and remaining package costs
+under #211 and #212, selected by Cam after PR363. Lead owns execution and
+integration on `codex/r1-xcb-wait-observer`. PR363 merged at
+`e56489d442303fc14a0c437cce977a5f90cf243b`. The signed canonical tree
+`24e403479634329b9521421d498608fd5cf16607`, expected parent and Cam
+author DCO matched. The merged branch was retired.
+
+Implement a private matching-source XCB observer at the reply-unavailable
+branch and the partial-read wait path, scoped to a registered connection
+and request. Use bounded value counters and explicit invalid/overflow
+results. Distinguish logical wait entries and partial-read wait calls from
+kernel sleep. Qualify a single Linux ARM64 profile with asynchronous,
+buffered, outstanding Xlib, direct-XCB and other-connection controls before
+using it for any candidate drawing measurements. Build from pinned source
+in a private directory with existing compiler tools and source generator
+assets where required. The private library is excluded from production
+and system install paths.
+
+Reuse the G12 complete package graph capture and calculator for the
+retained FreeBSD AMD64 profile, with exact library and owner identities.
+Keep the actual snapshot and baseline selection explicit. Linux and
+OpenBSD package closure gaps remain when this batch cannot establish
+their complete graph contract.
+
+Dispatch only frozen, separately reviewed inputs. Limit each selected
+profile to one attempt plus one reviewed diagnosed correction, one owned
+guest at a time, 45 minutes total, 15-minute private build and 128 MiB
+export. Metadata-only package reads may share the host with one other VM
+under the established total-two bound. Wait control execution requires
+an otherwise idle profile. Stop at an unexplained failure or limit.
+Run focused observer and calculator checks, relevant private compilation
+and the single selected control set. Complete wait coverage, broader
+consumer/release qualification and the whole-WM ledger remain explicit.
+The ledger stays at 4/5. Preserve the parked #257/#258 and other owners.
+
+The [G13 source and cost checkpoint](verification/VERIFICATION-2026-11-06-XCB-WAIT-OBSERVER.md)
+records the private observer, source installer, six-control probe and tests.
+Four patch tests and the pure observer host unit pass. At draft publication,
+native Linux qualification remained pending after two build attempts. The
+first required preservation of release extraction timestamps; the retry
+exposed the missing generated-protocol header barrier. That attempt budget
+stopped at the diagnosed prerequisite. The separately selected continuation
+above now records successful generation, build and logical-wait controls.
+Both earlier failures remain preserved.
+
+The FreeBSD AMD64 package capture passed with 603 packages and 1,082 edges.
+Cairo adds 359,582,746 nominal package bytes over the isolated drawing
+closure, or zero when the recorded librsvg package is required by both
+baselines. Clay adds zero packages. All 107 export hashes and 53 query
+retirements passed. The two Linux exports retain 529 raw package records;
+their complete graph interpretation remains pending. Both Linux machine
+and container shutdowns were confirmed. The native continuation above qualifies
+the private library and six logical-wait controls; partial-packet and broader
+wait coverage remain open.
+
+Completed G12 implicit-wait feasibility and installed dependency costs
 under #211 and #212, selected by Cam after PR362. Lead owns execution and
 integration on `codex/r1-waits-installed-costs`. PR362 merged at
 `a27795528b7a0fcdf8b69ad22227736ad9717d2b`. Canonical signature,

@@ -227,7 +227,7 @@ func Run(ctx context.Context, input io.Reader, output io.Writer, environment map
 		if err != nil {
 			return err
 		}
-		path, err := renderer.Resolve(xdgmenu.IconRequest{Name: request.Name, Theme: request.Theme, Size: request.Size, ScaleQuarters: request.Quarters})
+		path, err := renderer.ResolveOptional(xdgmenu.IconRequest{Name: request.Name, Theme: request.Theme, Size: request.Size, ScaleQuarters: request.Quarters}, nil)
 		if err != nil {
 			return err
 		}

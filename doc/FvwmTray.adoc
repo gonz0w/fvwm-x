@@ -279,6 +279,12 @@ module for up to five seconds; a stalled startup can terminate that module,
 after which surviving XEmbed clients must dock with a new tray owner. A single
 kernel or Xlib call can outlast a deadline.
 
+One malformed or vanished named image uses the existing per-item fallback;
+healthy sibling items remain in the completed batch. Malformed selected theme
+metadata yields text. Cancellation, aggregate resource limits and publication
+failure still reject the image job. Item identities and generation checks apply
+to both image and empty-path results.
+
 An active item can display a named icon or pixmap, and an attention item uses
 its attention icon with normal-icon or text fallback. Passive entries are
 retained without a visible cell. Hover shows bounded plain-text tooltip data.

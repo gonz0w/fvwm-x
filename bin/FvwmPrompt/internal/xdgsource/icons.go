@@ -26,6 +26,13 @@ type IconFinder struct {
 	remaining  int
 }
 
+// IconThemeContentError identifies a parsed index.theme content failure.
+// Acquisition, cancellation and lookup work limits retain their fatal errors.
+type IconThemeContentError struct{ Err error }
+
+func (e *IconThemeContentError) Error() string { return e.Err.Error() }
+func (e *IconThemeContentError) Unwrap() error { return e.Err }
+
 func NewIconFinder(source *Source, home string, paths xdgmenu.SearchPaths, theme string, size int) *IconFinder {
 	roots := []string{filepath.Join(home, ".icons")}
 	for _, path := range paths.Data {
@@ -83,7 +90,7 @@ func (f *IconFinder) theme(name string) (*xdgmenu.IconTheme, error) {
 		}
 		theme, err := xdgmenu.ParseIconTheme(data)
 		if err != nil {
-			return nil, err
+			return nil, &IconThemeContentError{Err: err}
 		}
 		if len(f.themes) >= xdgmenu.MaxItems {
 			return nil, errors.New("too many icon themes")

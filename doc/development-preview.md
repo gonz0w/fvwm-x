@@ -9,7 +9,7 @@ theme examples; newer sections record their own source identities.
 
 ## Independent component settings (in progress)
 
-This draft adds separate launcher item/title fonts and style, three Form font
+The native controls add separate launcher item/title fonts and style, three Form font
 roles, and separate launcher/Form spacing. Global desktop values remain the
 fallback. Existing Forms retain their metrics; newly opened owned Forms use the
 submitted roles. The compact editor separates Defaults, Launcher and Forms.
@@ -31,10 +31,31 @@ schedule Form retains its previous metrics:
 
 ![Enlarged Classic launcher and existing legacy Form](screenshots/component-relief-launcher-classic-large.png)
 
-Slate and Dune pass the combined scene. Classic stops on a strict menu-width
-growth assertion; its Form/editor acceptance is still pending. These unmodified
-images show development behavior, not a completed release or accessibility
-qualification. See the [capture manifest](screenshots/component-composition-manifest.json),
+Slate, Dune and enlarged Classic now compose passing checks. The Classic
+capture uses the corrected same-family comparison; its compact pages also fit:
+
+![Enlarged Classic launcher editor](screenshots/component-launcher-settings-classic-large.png)
+
+![Enlarged Classic Form editor](screenshots/component-form-settings-classic-large.png)
+
+Malformed icons now preserve healthy sibling images and labeled actions through
+one shared optional resolver. Synthetic green artwork marks the healthy item:
+
+![Slate application image fallback](screenshots/icon-fallback-slate-dark-invalid-application.png)
+
+![Dune application image fallback](screenshots/icon-fallback-dune-light-invalid-application.png)
+
+![Classic application image fallback](screenshots/icon-fallback-classic-large-invalid-application.png)
+
+![Classic directory retains its healthy file image](screenshots/icon-fallback-classic-large-invalid-directory.png)
+
+![Compiled format-disabled producer retains application labels](screenshots/icon-fallback-formats-disabled-application.png)
+
+![Invalid theme retains directory labels](screenshots/icon-fallback-invalid-theme-directory-text.png)
+
+Directory pixels are checked after an exact-path readiness probe, not as a cold
+SVG activation claim. These unmodified images show development behavior, not a
+completed release or accessibility qualification. See the [capture manifest](screenshots/component-composition-manifest.json),
 [usage](FvwmDesktop.adoc) and
 [focused report](../dev-docs/verification/VERIFICATION-2026-11-07-COMPONENT-COMPOSITION.md).
 

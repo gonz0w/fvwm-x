@@ -25,7 +25,8 @@ private content identities; SVG and PNG use requested physical extent, while
 XPM retains source dimensions. Source bytes, requests/cache strings and published
 bytes are bounded separately. A new acquisition replaces all three owners,
 including negative theme results; older menu generations retain their copies.
-Automatic retirement of old disk copies remains an explicit #215 gap.
+Export lifetime follows the Y2 durable-artifact contract below; automatic
+retirement of old disk copies is not provided.
 
 Application menus add `--icon-scale`; normal defaults remain unchanged.
 Directory menus opt in with `--icon-theme` and resolve only four type roles in
@@ -63,8 +64,9 @@ application/directory menu refreshes source lookup; changed bytes produce new
 content identities, leaving preceding exported paths intact. Worker exit is not
 reference release: retained core menu pictures can load again at another scale,
 and exported files can be read later or copied. No age-, mtime- or generation-only
-sweep is selected. Whole #215 export lifetime acceptance remains open pending an
-owned acknowledged menu mode or an explicit exported-artifact lifetime contract.
+sweep is selected. A5 left #215 export lifetime acceptance open pending an owned acknowledged
+menu mode or an explicit exported-artifact lifetime contract. Y2 selects the
+latter below; the earlier checkpoint did not establish that choice.
 
 Private consumers already have narrower ownership: tray batch files survive
 through result consumption and retire afterwards; pinboard replacements retire
@@ -72,3 +74,29 @@ obsolete generations at acknowledged native boundaries, retaining files when
 shutdown cannot confirm release. Preserve these mechanisms rather than adding a
 shared collector. The A5 source/compile checkpoint queues its new generation,
 held-batch refresh and retention cases for A5–A8 combined runtime acceptance.
+
+
+## Y2 exported-artifact lifetime contract — 2026-11-07
+
+Select A5's explicit exported-artifact contract for application/directory menus.
+Generated content-addressed images are durable outputs referenced by exported
+menu commands/files, not temporary worker files. Publication transfers their
+retention obligation to the owner of those exports. Regeneration can create new
+identities but cannot release old references; worker exit, elapsed age and source
+replacement are not permission to remove them. Existing absolute-path output
+and FVWM configuration syntax remain unchanged.
+
+Keep each image while any live menu, saved/copied menu file or other exported
+consumer can load its path. Manual retirement requires retiring every such
+reference first, then removing only images known to belong to that retired set.
+The application cannot infer when copied exports disappear. It does not sweep
+shared directories or promise automatic garbage collection. Per-acquisition
+source, request and output limits remain enforced; there is no cumulative disk
+quota across arbitrarily many retained exports. This is distinct from bounded
+resident memory and must not be described as a total disk bound.
+
+Tray and pinboard retain their existing acknowledgement-based private-generation
+retirement. This contract resolves A5's exported-lifetime choice without a new
+collector, protocol, store or mandatory package. The combined #214/#215
+checkpoint checks changed source identities and retained earlier export bytes;
+its passing result is required before treating the new checkpoint as qualified.

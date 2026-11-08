@@ -143,3 +143,57 @@ func TestInputDeadlineOwnsIncompleteFrame(t *testing.T) {
 		t.Fatal("incomplete input escaped its deadline", err)
 	}
 }
+
+func TestMalformedIconsRetainHealthyBatchSiblings(t *testing.T) {
+	for _, extension := range []string{"png", "xpm", "theme"} {
+		t.Run(extension, func(t *testing.T) {
+			dir, home, root := t.TempDir(), t.TempDir(), t.TempDir()
+			if err := os.Chmod(dir, 0700); err != nil {
+				t.Fatal(err)
+			}
+			var imageData bytes.Buffer
+			if err := png.Encode(&imageData, image.NewNRGBA(image.Rect(0, 0, 24, 24))); err != nil {
+				t.Fatal(err)
+			}
+			good := filepath.Join(root, "good.png")
+			if err := os.WriteFile(good, imageData.Bytes(), 0600); err != nil {
+				t.Fatal(err)
+			}
+			bad, theme := filepath.Join(root, "bad."+extension), "hicolor"
+			if extension == "theme" {
+				bad, theme = "named-icon", "broken"
+				if err := os.MkdirAll(filepath.Join(root, theme), 0700); err != nil {
+					t.Fatal(err)
+				}
+				if err := os.WriteFile(filepath.Join(root, theme, "index.theme"), []byte("[unrelated]\n"), 0600); err != nil {
+					t.Fatal(err)
+				}
+			} else if err := os.WriteFile(bad, []byte("malformed image"), 0600); err != nil {
+				t.Fatal(err)
+			}
+			encode := func(value string) string { return hex.EncodeToString([]byte(value)) }
+			input := fmt.Sprintf("FVWM_TRAY_ICONS 1 2 %s png,xpm\n9 11 24 4 %s %s %s\n10 12 24 4 %s - %s\nEND\n",
+				encode(dir), encode(bad), encode(theme), encode(root), encode(good), encode(root))
+			var output bytes.Buffer
+			env := map[string]string{"HOME": home, "XDG_DATA_HOME": filepath.Join(home, "data"), "XDG_DATA_DIRS": filepath.Join(home, "empty")}
+			if err := Run(context.Background(), strings.NewReader(input), &output, env); err != nil {
+				t.Fatal(err)
+			}
+			lines := strings.Split(strings.TrimSuffix(output.String(), "\n"), "\n")
+			if len(lines) != 4 || lines[0] != "FVWM_TRAY_ICONS 1 2" || lines[1] != "9 11 -" || lines[3] != "END" {
+				t.Fatal("broken item discarded healthy batch", output.String())
+			}
+			fields := strings.Split(lines[2], " ")
+			if len(fields) != 3 || fields[0] != "10" || fields[1] != "12" || fields[2] == "-" {
+				t.Fatal("healthy sibling lost identity or path", output.String())
+			}
+			path, err := hex.DecodeString(fields[2])
+			if err != nil {
+				t.Fatal(err)
+			}
+			if data, err := os.ReadFile(string(path)); err != nil || !bytes.Equal(data, imageData.Bytes()) {
+				t.Fatal("healthy sibling image changed", err)
+			}
+		})
+	}
+}

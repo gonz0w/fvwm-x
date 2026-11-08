@@ -140,6 +140,11 @@ Example: `+--title '%*-40p\tDate, Type\tSize' --item '%*40n\t%d %t\t%s'+`
   files can retain absolute paths after the worker exits, and FVWM can read them
   later or reload them at another scale. Preserve copies while any menu refers
   to them. There is no automatic filesystem watch or shared copy cleanup.
+  A malformed or vanished individual named image leaves that role without an
+  image while healthy sibling roles remain. Malformed selected theme metadata
+  yields text. Cancellation, aggregate limits and publication errors still fail
+  the image worker; the enclosing directory menu retains its labeled entries.
+
 *--wm-icons*::
   Define icon names suitable for use with wm-icons package. Currently this
   is equivalent to: `+--icon-title menu/folder-open.xpm --icon-item

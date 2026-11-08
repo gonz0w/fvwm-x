@@ -68,6 +68,9 @@ func TestRenderedContentGeneration(t *testing.T) {
 			if extension == "png" {
 				before = fixturePNG(t, 16, color.NRGBA{R: 255, A: 255})
 				after = fixturePNG(t, 16, color.NRGBA{G: 255, A: 255})
+			} else if extension == "xpm" {
+				before = []byte("/* XPM */ static char *x[]={\"1 1 1 1\",\". c #ff0000\",\".\"};\n")
+				after = []byte("/* XPM */ static char *x[]={\"1 1 1 1\",\". c #00ff00\",\".\"};\n")
 			}
 			writeFixture(t, path, before)
 			r := newTestRenderer(t, dir, []string{extension})
@@ -254,5 +257,193 @@ func TestAggregatePublicationBudget(t *testing.T) {
 	request.Name = firstSource
 	if got, err := r.Resolve(request); err != nil || got != first {
 		t.Fatal("exhaustion broke existing generation cache", got, err)
+	}
+}
+
+func TestOptionalImageFallbackPreservesStrictResolution(t *testing.T) {
+	dir := t.TempDir()
+	bad, good := filepath.Join(dir, "bad.png"), filepath.Join(dir, "good.png")
+	writeFixture(t, bad, []byte("malformed PNG"))
+	writeFixture(t, good, fixturePNG(t, 16, color.NRGBA{G: 255, A: 255}))
+	r := newTestRenderer(t, dir, []string{"png"})
+	request := xdgmenu.IconRequest{Name: bad, Fallback: good, Size: 16, ScaleQuarters: 4}
+	var notices []error
+	got, err := r.ResolveOptional(request, func(err error) { notices = append(notices, err) })
+	if err != nil || got == "" || len(notices) != 1 {
+		t.Fatal("malformed image lost its fallback", got, err, notices)
+	}
+	var asset *AssetError
+	if _, err := r.Resolve(request); !errors.As(err, &asset) {
+		t.Fatal("optional cache changed strict error contract", err)
+	}
+	request.Override, request.Name, request.Fallback = bad, good, bad
+	if path, err := r.ResolveOptional(request, nil); err != nil || path != got {
+		t.Fatal("malformed override did not use name before fallback", path, err)
+	}
+	request.Override, request.Name, request.Fallback = "", bad, bad
+	if path, err := r.ResolveOptional(request, nil); err != nil || path != "" {
+		t.Fatal("malformed images lost text fallback", path, err)
+	}
+	truncated := filepath.Join(dir, "header-only.png")
+	data := fixturePNG(t, 16, color.NRGBA{A: 255})
+	writeFixture(t, truncated, data[:33])
+	request.Name, request.Fallback = truncated, good
+	if path, err := r.ResolveOptional(request, nil); err != nil || path != got {
+		t.Fatal("same-size malformed pixel data bypassed fallback", path, err)
+	}
+	if _, err := r.Resolve(request); !errors.As(err, &asset) {
+		t.Fatal("strict PNG accepted header without pixels", err)
+	}
+	// A selected file can disappear between finder admission and acquisition.
+	if _, err := r.present(filepath.Join(dir, "disappeared.png"), 16); !errors.As(err, &asset) || !errors.Is(err, os.ErrNotExist) {
+		t.Fatal("disappeared image was not classified locally", err)
+	}
+}
+
+func TestOptionalBoundedXPMAndMalformedTheme(t *testing.T) {
+	dir := t.TempDir()
+	bad := filepath.Join(dir, "bad.xpm")
+	writeFixture(t, bad, []byte("/* XPM */ static char *x[]={\"no geometry\"};"))
+	good := filepath.Join(dir, "good.xpm")
+	data := []byte("/* XPM */ static char *x[]={\"1 1 1 1\",\". c #fff\",\".\"};\n")
+	writeFixture(t, good, data)
+	request := xdgmenu.IconRequest{Name: bad, Size: 24, ScaleQuarters: 4}
+	for _, pixels := range []int{64 * 1024 * 1024, 256 * 256} {
+		r := newTestRenderer(t, dir, []string{"xpm"})
+		r.sourcePixels = pixels
+		if path, err := r.ResolveOptional(request, nil); err != nil || path != "" {
+			t.Fatal("malformed XPM did not retain text", pixels, path, err)
+		}
+		var asset *AssetError
+		if _, err := r.Resolve(request); !errors.As(err, &asset) {
+			t.Fatal("strict XPM admission lost typed error", pixels, err)
+		}
+		fallback := request
+		fallback.Fallback = good
+		path, err := r.ResolveOptional(fallback, nil)
+		if err != nil || path == "" {
+			t.Fatal("malformed XPM header lost healthy fallback", pixels, path, err)
+		}
+		if published, err := os.ReadFile(path); err != nil || !bytes.Equal(published, data) {
+			t.Fatal("admitted native XPM bytes changed", pixels, err)
+		}
+	}
+	writeFixture(t, filepath.Join(dir, ".icons", "broken", "index.theme"), []byte("[unrelated]\n"))
+	r := newTestRenderer(t, dir, []string{"png"})
+	request.Name, request.Theme = "application", "broken"
+	var content *xdgsource.IconThemeContentError
+	if _, err := r.Resolve(request); !errors.As(err, &content) {
+		t.Fatal("strict theme error lost its classification", err)
+	}
+	if path, err := r.ResolveOptional(request, nil); err != nil || path != "" {
+		t.Fatal("malformed theme did not select explicit text fallback", path, err)
+	}
+}
+
+func TestOptionalFailuresRetainFatalBoundaries(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "good.png")
+	writeFixture(t, path, fixturePNG(t, 16, color.NRGBA{A: 255}))
+	request := xdgmenu.IconRequest{Name: path, Size: 16, ScaleQuarters: 4}
+	for _, kind := range []string{"invalid", "cancel", "acquisition", "cache", "publication", "unsafe-publication"} {
+		t.Run(kind, func(t *testing.T) {
+			r := newTestRenderer(t, t.TempDir(), []string{"png"})
+			candidate := request
+			switch kind {
+			case "invalid":
+				candidate.Fallback = "../invalid"
+			case "cancel":
+				ctx, cancel := context.WithCancel(context.Background())
+				cancel()
+				r.source = xdgsource.New(ctx)
+			case "acquisition":
+				r.source, _ = xdgsource.NewLimited(context.Background(), 1, 1)
+				r.finder.Source = r.source
+			case "cache":
+				r.cacheBytes = 1
+			case "publication":
+				r.outputBytes = 1
+			case "unsafe-publication":
+				r.dir = filepath.Join(t.TempDir(), "not-directory")
+				writeFixture(t, r.dir, []byte("existing private file"))
+			}
+			var asset *AssetError
+			if got, err := r.ResolveOptional(candidate, nil); err == nil || got != "" || errors.As(err, &asset) {
+				t.Fatal("fatal failure treated as missing image", got, err)
+			}
+		})
+	}
+}
+
+func TestOptionalDiagnosticsAreBounded(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "bad.png")
+	writeFixture(t, path, []byte("bad PNG"))
+	r := newTestRenderer(t, dir, []string{"png"})
+	notices := 0
+	for i := 0; i < 12; i++ {
+		_, err := r.ResolveOptional(xdgmenu.IconRequest{Name: path, Size: 16, ScaleQuarters: 4}, func(err error) {
+			notices++
+			if len(err.Error()) > 256 || strings.ContainsAny(err.Error(), "\r\n\x00") {
+				t.Fatal("unbounded optional diagnostic", err)
+			}
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+	if notices != 8 {
+		t.Fatal("diagnostic count", notices)
+	}
+}
+
+func TestOptionalDiagnosticCancellationWinsOverTextFallback(t *testing.T) {
+	for _, kind := range []string{"image", "theme"} {
+		t.Run(kind, func(t *testing.T) {
+			dir := t.TempDir()
+			ctx, cancel := context.WithCancel(context.Background())
+			defer cancel()
+			r, err := New(xdgsource.New(ctx), xdgmenu.SearchPaths{}, dir,
+				Config{CacheDir: filepath.Join(dir, "cache"), Extensions: []string{"png"}})
+			if err != nil {
+				t.Fatal(err)
+			}
+			request := xdgmenu.IconRequest{Size: 24, ScaleQuarters: 4}
+			if kind == "image" {
+				request.Name = filepath.Join(dir, "bad.png")
+				writeFixture(t, request.Name, []byte("malformed PNG"))
+			} else {
+				request.Name, request.Theme = "icon", "broken"
+				writeFixture(t, filepath.Join(dir, ".icons", "broken", "index.theme"), []byte("[unrelated]\n"))
+			}
+			notices := 0
+			got, err := r.ResolveOptional(request, func(error) {
+				notices++
+				cancel()
+			})
+			if got != "" || !errors.Is(err, context.Canceled) || notices != 1 {
+				t.Fatal("canceled optional request became text fallback", got, err, notices)
+			}
+		})
+	}
+}
+
+func TestOptionalResolverKeepsNormalThemeInheritance(t *testing.T) {
+	dir := t.TempDir()
+	root := filepath.Join(dir, ".icons")
+	for name, parent := range map[string]string{"child": "parent", "parent": ""} {
+		writeFixture(t, filepath.Join(root, name, "index.theme"), []byte(
+			"[Icon Theme]\nDirectories=16x16\nInherits="+parent+"\n[16x16]\nSize=16\nType=Fixed\n"))
+	}
+	data := fixturePNG(t, 16, color.NRGBA{A: 255})
+	writeFixture(t, filepath.Join(root, "parent", "16x16", "good.png"), data)
+	r := newTestRenderer(t, dir, []string{"png"})
+	request := xdgmenu.IconRequest{Name: "good", Theme: "child", Size: 16, ScaleQuarters: 4}
+	path, err := r.ResolveOptional(request, nil)
+	if err != nil || path == "" {
+		t.Fatal("optional consumer bypassed inherited theme", path, err)
+	}
+	if got, err := os.ReadFile(path); err != nil || !bytes.Equal(got, data) {
+		t.Fatal("wrong inherited asset", err)
 	}
 }

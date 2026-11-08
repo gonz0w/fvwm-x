@@ -149,6 +149,10 @@ func decodePictures(data []byte) ([4]string, error) {
 }
 
 func resolveIcons(ctx context.Context, o options, env map[string]string) ([4]string, error) {
+	return resolveIconsWithDiagnostics(ctx, o, env, nil)
+}
+
+func resolveIconsWithDiagnostics(ctx context.Context, o options, env map[string]string, diagnostic func(error)) ([4]string, error) {
 	var result [4]string
 	paths, err := xdgmenu.SearchDirectories(o.home, env)
 	if err != nil {
@@ -182,8 +186,8 @@ func resolveIcons(ctx context.Context, o options, env map[string]string) ([4]str
 		if overrides[i] == "0" {
 			continue
 		}
-		result[i], err = renderer.Resolve(xdgmenu.IconRequest{Name: name, Theme: o.iconTheme,
-			Size: o.iconSize, ScaleQuarters: o.iconScaleQuarters, Override: overrides[i]})
+		result[i], err = renderer.ResolveOptional(xdgmenu.IconRequest{Name: name, Theme: o.iconTheme,
+			Size: o.iconSize, ScaleQuarters: o.iconScaleQuarters, Override: overrides[i]}, diagnostic)
 		if err != nil {
 			return [4]string{}, err
 		}
@@ -210,7 +214,9 @@ func iconWorker(args []string, out, diagnostics io.Writer, program string) int {
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), iconDeadline)
 	defer cancel()
-	result, err := resolveIcons(ctx, o, env)
+	result, err := resolveIconsWithDiagnostics(ctx, o, env, func(err error) {
+		fmt.Fprintln(diagnostics, "fvwm-menu-directory: icons:", err)
+	})
 	if err == nil {
 		err = json.NewEncoder(out).Encode(result)
 	}

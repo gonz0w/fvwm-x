@@ -35,6 +35,111 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
+Four component-setting stories plus shared invalid-image fallback for three
+consumers are implemented. Five affected Go packages, normal/disabled helper
+builds, all six Go OS/architecture profiles, three manuals, corrected Classic's
+four component cases and final13 mixed-icon cases pass. All23 preceding command
+passes are reused after two fixture-only repairs. Nine new captures inspected;
+all owned labs stop, foreign VM untouched. The five-criterion
+closure maps are complete; integrate after separate review to close #214/#215. #75/full R1 release gates stay separate;
+no cold-SVG self-destroy, native BSD or full install/release claim is made.
+[Combined results and frozen maps](verification/VERIFICATION-2026-11-07-COMPONENT-COMPOSITION.md).
+
+Y2 current batch — expanded PR373, #214/#215, 2026-11-07.
+Owner directs implementation before combined testing. Lead owns integration,
+tracker/GitHub and native execution; one icon implementer owns the shared
+renderer and menu/directory/tray adapters. Preserve other owners' work.
+
+Outcome: deliver Y1's four component stories together with invalid-image
+fallback and healthy-sibling isolation for application menus, directory roles
+and tray batches. Classify asset-local malformed/vanished inputs separately
+from cancellation, invalid requests, aggregate limits and publication failure.
+Keep strict rendering available; optional consumers share one fallback path.
+Malformed selected theme metadata yields explicit text fallback without inventing
+new inheritance precedence. Keep usable labels/actions and bounded diagnostics.
+
+Analyst/source reconciliation finds no six additional mandatory features:
+launcher/Form roles satisfy the finite component mapping; no panel API/schema,
+new cache quota/garbage collector/watcher, resolver/asset rewrite or marginal
+tuning is selected. Exported immutable images retain their references; worker
+exit is not a last-reference acknowledgement. Existing per-job bounds remain. Select A5's explicit durable-export lifetime
+contract in the named-icon decision: manually retire only after all live/saved/
+copied references disappear; no cumulative disk quota or automatic GC claim.
+#75 consumes this evidence; its physical/assistive/release criteria stay owned.
+
+Acceptance: compose retained settings/migration/recovery/role passes with new
+asset-local fallback and mixed healthy/bad-item regressions, while hard failures
+still refuse the job. Finish corrected Classic Form/editor/reset acceptance,
+invalid/disabled-format text fallback, fresh-generation replacement, and updated
+manuals/examples/screenshots in one combined checkpoint after implementation.
+Reuse passing checks whose inputs/contracts are unchanged. Review both frozen
+five-criterion maps before using Closes #214/#215; an unavailable gate is not a
+pass. Reuse accepted numeric contrast, resolver, asset/license/install and native
+consumer evidence; full R1 release qualification stays separately owned.
+
+This expanded owner-selected delivery supersedes Y1's small source boundary.
+Before native execution, record the finite combined inputs/executor/commands
+and one diagnosed focused-correction allowance; stop repeated unexplained
+failure. It does not renew Y1's exhausted campaign. No per-helper campaigns or
+all-OS rerun solely for a PR; one compact summary/evidence index for Y2.
+
+Y2 implementation complete; selected combined checkpoint (lead execution only):
+five affected Go packages; one incremental menu/directory/worker build; two
+compiled icon-format-disabled producers; five additional OS/architecture Go
+cross-builds of those three helpers (native Linux ARM64 supplies the sixth);
+three affected manual renders; corrected Classic component scene only; one
+mixed-invalid/healthy icon scene across three configurations, quarter scale,
+source replacement and disabled-format text fallback. Reuse five unchanged
+settings packages, normal C request unit, earlier Slate/Dune component scenes
+and two unchanged manuals. No C rebuild/install/all-platform X matrix or new
+benchmark/sanitizer/race campaign: no changed C, concurrency or OS API.
+
+Admit only the existing stopped owned Linux ARM64 profile with fresh host/VM
+inventory and unchanged resource identities. Freeze source/control inputs before
+dispatch. Combined candidate cap25min, active-lab30min,128MiB evidence; existing
+shutdown-only reserve remains. One combined run plus at most two diagnosed
+focused repairs within that envelope, reusing passing commands. Hard stop on
+repeated unexplained failure or a missing executor/gate. Cross-build outputs
+are hashed then retired immediately; preserve current reusable build/cache.
+
+Y2 admission-only stop: the unrelated VM restarted (PID57455 became73238),
+so the exact-PID guard refused before any owned start or product command.
+Preserve that receipt. Resource admission now allows at most one foreign
+qemu-system-aarch64 process with RSS at most8GiB plus one owned2GiB Podman VM
+on the128GiB host. Recheck count/name/RSS and owned stopped/idle identities
+before starting. This avoids treating another owner's routine restart as our
+workload identity; no foreign control or performance claim is selected.
+Zero product work or owned VM start occurred in the stopped admission. The
+holder's final receipt now treats cleanup as inapplicable when start was never
+attempted; attempted owned resources still require confirmed shutdown.
+
+Y2 first combined result: all23 preceding commands pass, including all five
+Go packages, three normal/two disabled producers, fifteen cross-builds, three
+manuals and corrected Classic's four cases. Mixed icons pass application and
+directory cases in Slate/Dune plus Classic application, then fail to remap the
+Classic directory. Source diagnosis finds the fixture retries Popup after its
+DynamicPopDownAction has destroyed the directory menu. Production is unchanged.
+One focused fixture correction republishes before directory retries, records
+attempt/map/pixel state and deliberately witnesses directory dismissal/recreation.
+Retain strict pixel thresholds and timeouts. Reuse all23 passes; run only this
+failed mixed-icon scene with a10min candidate/15min active cap inside Y2's
+original envelope. Owned shutdown is confirmed and foreign VM is untouched.
+
+Y2 first focused result: only the mixed-icon scene ran. Remapping succeeds,
+but Dune directory's image stays unready through repeated recreation. Source
+analysis identifies deferred displayed-menu image commits plus last-subscriber
+cancellation on self-destruction; repeated publication also changes file inode
+identity. Pointer movement or more retries would not establish readiness.
+Final focused correction reuses the accepted Lucide exact-path persistent
+readiness-menu pattern after each completed publication, retaining the image
+reference while checking the original unmodified directory menu. Keep strict
+pixels and lifecycle remap witnesses. This qualifies ready-image presentation
+and per-item fallback, not cold SVG activation for self-destroying menus.
+Only this scene runs again; all23 passes remain reused. Last diagnosed repair,
+8min candidate/12min active cap within Y2's original envelope; hard stop on any
+further failure. Both executed labs shut down and preserve raw failure evidence.
+
 Y1 current outcome — draft checkpoint, 2026-11-07. Four #214 component stories
 are implemented with eight settings and compact editors. All five Go packages,
 targeted native/Go builds, corrected request unit and both manuals pass.

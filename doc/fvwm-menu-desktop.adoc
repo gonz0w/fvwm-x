@@ -150,6 +150,13 @@ files can retain absolute paths after the worker exits, and FVWM can read those
 paths later or reload them at another scale. Preserve the copies for as long as
 any menu references them. There is no automatic filesystem watch or shared
 copy cleanup.
+An individually malformed PNG or XPM header, or a source that vanishes
+before it is read, uses the next explicit fallback and then the ordinary label.
+Healthy sibling icons and application actions remain usable. Malformed selected
+theme metadata yields text without changing theme precedence. Diagnostics are
+bounded. Invalid requests, cancellation, aggregate resource limits and unsafe or
+failed output publication still fail the job; these are not missing images.
+
 Optional localized application, action and .directory icons use this same
 resolver. A localized icon requires a base Icon value; an action icon falls
 back to its parent application's icon.

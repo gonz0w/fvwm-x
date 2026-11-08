@@ -1,7 +1,7 @@
 {
   "issue": 214,
   "base": "0333fe370db7d1924470228dc439864ac16c11c1",
-  "status": "draft; Classic native UI acceptance unresolved",
+  "status": "Y2 composed checkpoint passed; issue closure on reviewed integration",
   "attempts": [
     {
       "label": "qualification",
@@ -394,10 +394,292 @@
     "benchmark/RSS comparison"
   ],
   "screenshot_manifest": "../../doc/screenshots/component-composition-manifest.json",
-  "source_only_after_native": {
-    "tests/live_x/component_composition_live.py": {
-      "sha256": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59",
-      "change": "Same-family Classic width oracle; record compared geometries before assertion; unexecuted"
-    }
+  "source_only_after_native": {},
+  "expanded_batch": {
+    "issues": [
+      214,
+      215
+    ],
+    "attempts": [
+      {
+        "label": "combined",
+        "plan_sha256": "9bad10774f1106a24a94cf9352c3c7f20e1101a95b58ee3195ad1c4cdf754350",
+        "archive_sha256": "8d51b654f10f7f14ce5e4ad98520227dc48422fc8c105e7b74d0e280b00b6757",
+        "exported_files": 154,
+        "status": "failed; retained",
+        "error": "AssertionError('native-mixed-icons')",
+        "seconds": 32.905552867,
+        "commands": [
+          {
+            "label": "combined-icon-tests",
+            "exit": 0,
+            "seconds": 0.9115476950000012,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "affected-incremental-build",
+            "exit": 0,
+            "seconds": 0.33580760899999973,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-disabled-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 0.1603176099999999,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-disabled-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.15430064599999938,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-linux-amd64-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 3.0076391329999996,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-linux-amd64-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.33862105599999914,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-linux-amd64-fvwm-desktop-worker",
+            "exit": 0,
+            "seconds": 0.7100639799999993,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-amd64-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 3.0083667710000004,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-amd64-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.3605140889999987,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-amd64-fvwm-desktop-worker",
+            "exit": 0,
+            "seconds": 0.7213361339999977,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-arm64-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 3.3379814359999997,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-arm64-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.36147549900000087,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-freebsd-arm64-fvwm-desktop-worker",
+            "exit": 0,
+            "seconds": 0.7382584729999984,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-amd64-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 2.8944487629999998,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-amd64-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.30635955400000014,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-amd64-fvwm-desktop-worker",
+            "exit": 0,
+            "seconds": 0.6586094510000002,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-arm64-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 2.772404622,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-arm64-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.2931304800000021,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "build-openbsd-arm64-fvwm-desktop-worker",
+            "exit": 0,
+            "seconds": 0.669971578000002,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "render-fvwm-menu-desktop",
+            "exit": 0,
+            "seconds": 0.0923696420000013,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "render-fvwm-menu-directory",
+            "exit": 0,
+            "seconds": 0.055564651000000964,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "render-FvwmTray",
+            "exit": 0,
+            "seconds": 0.05361566499999881,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "native-classic-components",
+            "exit": 0,
+            "seconds": 3.729074266999998,
+            "group_absent": true,
+            "forced_kill": false
+          },
+          {
+            "label": "native-mixed-icons",
+            "exit": 1,
+            "seconds": 6.462784661000001,
+            "group_absent": true,
+            "forced_kill": false
+          }
+        ],
+        "overlay": {
+          "src/bin/FvwmPrompt/cmd/fvwmmenudesktop/icons.go": "538056f1e737d17ae6f91b05f39082fd06d45551da2962e38122a2d70876c164",
+          "src/bin/FvwmPrompt/cmd/fvwmmenudesktop/icons_test.go": "ae0a9d75b2a7ffa48d25a5044db5628b639335023ff8552b99310217f054c647",
+          "src/bin/FvwmPrompt/cmd/fvwmmenudesktop/main.go": "c33980854e0bd282eebca7213c3b501b4e907f7b1b101b972da3334b70b29663",
+          "src/bin/FvwmPrompt/cmd/fvwmmenudirectory/icons.go": "831533438dc6a8154b5697962ebe3decc6427895d1f767c7b888815e056d5008",
+          "src/bin/FvwmPrompt/cmd/fvwmmenudirectory/icons_test.go": "61b7ff35589233e96e3b83eaa92d44ac53b79e9ca6762ca217faf4247002a2c8",
+          "src/bin/FvwmPrompt/internal/iconrender/budgets_test.go": "d4c181b38f3a79d17c5123a994864b6ab54feb397f1e8093ac3e35c1a69aa74b",
+          "src/bin/FvwmPrompt/internal/iconrender/render.go": "0a66454733cc956187057a8dd01343d96000ce0c67daf64830d5cb52421df54e",
+          "src/bin/FvwmPrompt/internal/iconrender/render_test.go": "47f66152fe89e8aa3bc83a7390e64d6cd5a5ebd3e19611479f16ec72320f2662",
+          "src/bin/FvwmPrompt/internal/trayicons/icons.go": "74d50bd469f49c29182beba5f00472151c6e12f20c7b03c14dd39cf5ad3a3da4",
+          "src/bin/FvwmPrompt/internal/trayicons/icons_test.go": "d4694eddb79f2b7cb17b307f6444d5494887a13e4c40de5c361c0fec479f81b0",
+          "src/bin/FvwmPrompt/internal/xdgsource/icons.go": "6ad6ab5a6c837b697fb3d9fcd618f847c673b140eea232741360343811bba5eb",
+          "src/doc/FvwmTray.adoc": "2ab75e9eff6433cedaecb2c4bc56d277fbda3860a4dc49677507fdc9853c99e8",
+          "src/doc/fvwm-menu-desktop.adoc": "0226d4cb9d91331f55f630f19552a5850e7e5e57447a6765e0b0d6a278456755",
+          "src/doc/fvwm-menu-directory.adoc": "ff97a4299c414a32b54d8c49685e3ed5caec4c00aeae2d330f0e4a7170a4f6ba",
+          "src/tests/live_x/component_composition_live.py": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59",
+          "src/tests/live_x/named_menu_icons_live.py": "38c6e2b78922fd072ab612c92e01f4274a831ed3979bc23b9c7ccc3a2f33a88d"
+        },
+        "shutdown": [
+          {
+            "container_shutdown": "confirmed"
+          },
+          {
+            "machine_shutdown": "confirmed"
+          }
+        ]
+      },
+      {
+        "label": "focused-remap",
+        "plan_sha256": "ff8c611ce3db22530e905073bd02e86a044828113c081f628cf2087eef790b0f",
+        "archive_sha256": "63598974b5d4c5f398b02594d8eb41cd71b15c3aa6a65c957b4145cb13df180d",
+        "exported_files": 13,
+        "status": "failed; retained",
+        "error": "AssertionError('native-mixed-icons')",
+        "seconds": 8.894487307999999,
+        "commands": [
+          {
+            "label": "native-mixed-icons",
+            "exit": 1,
+            "seconds": 8.289614095999998,
+            "group_absent": true,
+            "forced_kill": false
+          }
+        ],
+        "overlay": {
+          "src/tests/live_x/named_menu_icons_live.py": "48a675595f1f0315d640afd6045e73f2871d9958277b9d630d53540ae437ca5d"
+        },
+        "shutdown": [
+          {
+            "container_shutdown": "confirmed"
+          },
+          {
+            "machine_shutdown": "confirmed"
+          }
+        ]
+      },
+      {
+        "label": "focused-ready-image",
+        "plan_sha256": "a44eb9e30d0e16f17e805890bd6f628b3fab54a2b557f2a4fabe80a10400d965",
+        "archive_sha256": "e8086db1823383bb8be7a172f0c6f22e63a834ecec1b8655a11ed2f63afe4c58",
+        "exported_files": 31,
+        "status": "Y2 theme and icon checkpoint passed",
+        "error": null,
+        "seconds": 5.735231695,
+        "commands": [
+          {
+            "label": "native-mixed-icons",
+            "exit": 0,
+            "seconds": 4.878473027,
+            "group_absent": true,
+            "forced_kill": false
+          }
+        ],
+        "overlay": {
+          "src/tests/live_x/named_menu_icons_live.py": "7a557e9793486d9bdc50d2a5b128030801e30edc7fae4eade569fccb551a8d86"
+        },
+        "shutdown": [
+          {
+            "container_shutdown": "confirmed"
+          },
+          {
+            "machine_shutdown": "confirmed"
+          }
+        ]
+      }
+    ],
+    "source_files": 2534,
+    "passing_commands_reused": 23,
+    "final_icon_cases": 13,
+    "profiles": [
+      "slate-dark",
+      "dune-light",
+      "classic-large"
+    ],
+    "platforms": "Native Linux ARM64; changed Go helpers compile for Linux/FreeBSD/OpenBSD AMD64/ARM64; no native BSD or full install matrix",
+    "scope_limits": [
+      "Ready-image presentation; cold SVG self-destroy activation unverified",
+      "All-formats-disabled Go producers on full-feature native core",
+      "No cumulative exported-artifact disk bound; durable reference contract"
+    ],
+    "raw_artifact_root": ".",
+    "changed_go_files": 11
   }
 }

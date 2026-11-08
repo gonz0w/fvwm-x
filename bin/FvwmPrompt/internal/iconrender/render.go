@@ -43,7 +43,16 @@ type Renderer struct {
 	cacheBytes   int
 	outputBytes  int
 	sourcePixels int
+	diagnostics  int
 }
+
+// AssetError is local to one acquired image (PNG content, bounded XPM header
+// admission or disappearance). XPM body decoding stays native. This never wraps
+// acquisition work, cancellation, publication or output-budget failures.
+type AssetError struct{ Err error }
+
+func (e *AssetError) Error() string { return e.Err.Error() }
+func (e *AssetError) Unwrap() error { return e.Err }
 
 func New(source *xdgsource.Source, paths xdgmenu.SearchPaths, home string, config Config) (*Renderer, error) {
 	if source == nil {
@@ -142,6 +151,57 @@ func (r *Renderer) Resolve(request xdgmenu.IconRequest) (string, error) {
 	r.cacheBytes -= cost
 	r.cache[request] = path
 	return path, nil
+}
+
+// ResolveOptional keeps a consumer's text/actions usable when an optional image
+// is malformed or disappears. Override, name and fallback are tried in that
+// order. A malformed theme produces text rather than inventing an inheritance
+// recovery policy. Strict Resolve and its request cache retain their contract.
+// Diagnostics, when supplied, are bounded to eight short notices per renderer.
+func (r *Renderer) ResolveOptional(request xdgmenu.IconRequest, diagnostic func(error)) (string, error) {
+	if _, err := request.PhysicalSize(); err != nil {
+		return "", err
+	}
+	if err := r.source.ContextError(); err != nil {
+		return "", err
+	}
+	for _, name := range []string{request.Override, request.Name, request.Fallback} {
+		if name == "" {
+			continue
+		}
+		candidate := request
+		candidate.Name, candidate.Override, candidate.Fallback = name, "", ""
+		path, err := r.Resolve(candidate)
+		if err == nil {
+			if path != "" {
+				return path, nil
+			}
+			continue
+		}
+		var asset *AssetError
+		var theme *xdgsource.IconThemeContentError
+		if !errors.As(err, &asset) && !errors.As(err, &theme) {
+			return "", err
+		}
+		if diagnostic != nil && r.diagnostics < 8 {
+			r.diagnostics++
+			message := fmt.Sprintf("optional icon skipped: %q", err.Error())
+			if len(message) > 256 {
+				message = message[:256]
+				for !utf8.ValidString(message) {
+					message = message[:len(message)-1]
+				}
+			}
+			diagnostic(errors.New(message))
+		}
+		if err := r.source.ContextError(); err != nil {
+			return "", err
+		}
+		if theme != nil {
+			return "", nil
+		}
+	}
+	return "", r.source.ContextError()
 }
 
 // xpmSkip consumes only C whitespace and block comments. A limited consumer
@@ -246,31 +306,34 @@ func limitedXPMHeader(data []byte) ([]byte, error) {
 func (r *Renderer) present(path string, size int) (string, error) {
 	data, err := r.source.ReadImage(path)
 	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return "", &AssetError{Err: err}
+		}
 		return "", err
 	}
 	extension := filepath.Ext(path)
-	if extension == ".xpm" && r.sourcePixels < 64*1024*1024 {
+	if extension == ".xpm" {
 		// Native XPM decoding still belongs to the shared picture path.
-		// A smaller consumer first admits only a bounded raster header.
+		// Every consumer first admits only a bounded raster header.
 		header, err := limitedXPMHeader(data)
 		if err != nil {
-			return "", err
+			return "", &AssetError{Err: err}
 		}
 		fields := strings.Fields(string(header))
 		if len(fields) < 4 {
-			return "", errors.New("invalid XPM icon geometry")
+			return "", &AssetError{Err: errors.New("invalid XPM icon geometry")}
 		}
 		width, e1 := strconv.ParseUint(fields[0], 10, 32)
 		height, e2 := strconv.ParseUint(fields[1], 10, 32)
 		if e1 != nil || e2 != nil || width < 1 || height < 1 || width > 32768 || height > 32768 || width*height > uint64(r.sourcePixels) {
-			return "", errors.New("XPM icon exceeds geometry limits")
+			return "", &AssetError{Err: errors.New("XPM icon exceeds geometry limits")}
 		}
 		colors, e3 := strconv.ParseUint(fields[2], 10, 32)
 		characters, e4 := strconv.ParseUint(fields[3], 10, 32)
-		// A small consumer also bounds native color-table and row work.
+		// Header admission also bounds native color-table and row work.
 		// Retained cells cannot justify more color records than pixels.
 		if e3 != nil || e4 != nil || colors < 1 || colors > width*height || characters < 1 || characters > 8 {
-			return "", errors.New("XPM icon exceeds color or character limits")
+			return "", &AssetError{Err: errors.New("XPM icon exceeds color or character limits")}
 		}
 	}
 	if extension == ".png" {
@@ -312,17 +375,21 @@ func (r *Renderer) present(path string, size int) (string, error) {
 func (r *Renderer) scaledPNG(data []byte, size int) ([]byte, error) {
 	config, err := png.DecodeConfig(bytes.NewReader(data))
 	if err != nil {
-		return nil, err
+		return nil, &AssetError{Err: err}
 	}
 	if config.Width < 1 || config.Height < 1 || config.Width > 32768 || config.Height > 32768 || uint64(config.Width)*uint64(config.Height) > uint64(r.sourcePixels) {
-		return nil, errors.New("PNG icon exceeds geometry limits")
+		return nil, &AssetError{Err: errors.New("PNG icon exceeds geometry limits")}
 	}
-	if config.Width == size && config.Height == size {
-		return data, nil
-	}
+	// Unscaled PNGs now do the same decoder work too: a valid size header
+	// cannot admit corrupt pixels. The pixel budget and worker deadline apply.
 	input, err := png.Decode(bytes.NewReader(data))
 	if err != nil {
-		return nil, err
+		return nil, &AssetError{Err: err}
+	}
+	if config.Width == size && config.Height == size {
+		// A matching header does not establish that the pixel data is valid.
+		// Keep the original bytes only after the same bounded PNG validation.
+		return data, nil
 	}
 	output := image.NewNRGBA(image.Rect(0, 0, size, size))
 	bounds := input.Bounds()

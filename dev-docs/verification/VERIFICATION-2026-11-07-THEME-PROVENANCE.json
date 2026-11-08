@@ -1,0 +1,532 @@
+{
+  "schema_version": 1,
+  "owner": "#218",
+  "base": "91390eb1e1c158b0404a33fe1e5073220d93f348",
+  "plan_sha256": "dfda210459063f9468587c17747267efe38aa1cd78d64cc36916f3c6373b8d11",
+  "status": "X1 combined theme provenance checkpoint passed",
+  "seconds": 29.968228689,
+  "source_files_verified": 2532,
+  "tested_inputs": {
+    "bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "97456b4555ddb40009320a377347cff2294a6ef589ba576c036dc8af777af226",
+    "bin/FvwmPrompt/internal/desktopinspect/domains.go": "d4b145be13840d8824649be903d23c5e5b38acd1ac7c3d8dbe86d88089802528",
+    "bin/FvwmPrompt/internal/desktopinspect/theme_provenance.go": "5af26a7ca39c800bb4b80f16caa0da0bbbe55b9279ee75cb5b9a527f13608622",
+    "bin/FvwmPrompt/internal/desktopinspect/theme_provenance_test.go": "4690b645aeec9296aadf6469ef43a370b4f17eddb85801803b1d09e433fb2245",
+    "bin/FvwmPrompt/meson.build": "29435581c658cd5deb7054715e6598c8984812ab14ac44c6075f025dc43dedae",
+    "doc/FvwmDesktop.adoc": "a27edc4eded81bcd496210f66c397c37f71f125605af2d97f3d8560371a2d5a0",
+    "doc/FvwmMFL.adoc": "e11146dd885164995fbdf9cab18146a8b7176cd75c9f0a288ede48226ac7516d",
+    "fvwm/appearance_preview.c": "8559bde5745bc9d0a208c80575f6124bd7855a44c3d80f21fc264cba5746fdd5",
+    "fvwm/borders.c": "70fb96122b2a50d1d210c9e59b083c2769373d5d20b92ee2a9c402e2e079fbff",
+    "fvwm/builtins.c": "981aca458d11dffb7c2b51f9ee4896e10fb8837bddd3ab0964fea449f4fa9bfa",
+    "fvwm/builtins.h": "775ba7ecfdc460faa6bca655919615e3d5393f15e52258838fb007b52c15df21",
+    "fvwm/colorset.c": "fbaa4d9674e3f5be1ab8d30dc74b265fcb47775d5968bd86f547893d3f993720",
+    "fvwm/menustyle.c": "6340287e28932ad6a783f2f77d3df42c0426a4aa0ec5f1073227ff085abefa8b",
+    "fvwm/menustyle.h": "6ea35285b8baf0d4876196add00f9d2137fde519288ca103363c5efca6eefb91",
+    "fvwm/query_json.c": "bb83110c3ad05b4e6ebf1a9a4fa4c3150d28655e77f860587f2566d6fcbffba0",
+    "fvwm/screen.h": "9935d701eae424b93eb477f73fc8900a62792f0d5c28b719162638514c27a622",
+    "libs/Colorset.h": "19df4de4157526cd020b103b0d0dc3b438ec01e88d2be08dbee9bb9127a27900",
+    "libs/meson.build": "9872e6e690758b08ed287943b0475f027513adad2e2690bb4d7ec1f5f3975b51",
+    "libs/theme_origin.c": "b56891fd7c4d8b12f1647e1cf5f979f845a8e295b12751568d2b845d4e602d86",
+    "libs/theme_origin.h": "1508e775880f6c91a65dbbd9fa85b44c834d9922d4fb1b220f8f3d391f829ed4",
+    "tests/live_x/binding_origin_live.py": "0388e50edfe7373a6dfa9939170502446a04edd7cd9c6d42b694cc243e927d4d",
+    "tests/live_x/theme_origin_live.py": "5fb0ba87a94bc15ac43d30e0e050d9d70560898c965fe46c051f5593d43c076b",
+    "tests/meson.build": "6737c997363e2bebf0d3df431abfbc03a8223fe742ac1615eb65ae4caa995461",
+    "tests/test_query_json.c": "fa58325c78a263d5b6bfd0b6f78f2b8e9bbc5273193aa282845b6452c135cf55",
+    "tests/test_theme_origin.c": "f928f6125a8610c6333df105e2610a971170bd5ba61da9be73e642700440f42b"
+  },
+  "commands": [
+    {
+      "label": "affected-incremental-build",
+      "argv": [
+        "/usr/bin/ninja",
+        "-j2",
+        "fvwm3",
+        "tests/test-theme-origin",
+        "tests/test-query-json"
+      ],
+      "exit": 0,
+      "seconds": 7.159765255,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "test-theme-origin",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-theme-origin"
+      ],
+      "exit": 0,
+      "seconds": 0.00043429200000133505,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "test-query-json",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json"
+      ],
+      "exit": 0,
+      "seconds": 0.0011886680000010585,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "affected-go-tests",
+      "argv": [
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "test",
+        "-mod=vendor",
+        "./internal/desktopinspect",
+        "./internal/desktopworker"
+      ],
+      "exit": 0,
+      "seconds": 0.6358726820000005,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "build-FvwmDesktop",
+      "argv": [
+        "/usr/bin/env",
+        "GOCACHE=/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/go-cache",
+        "GOTOOLCHAIN=local",
+        "GOPROXY=off",
+        "GOSUMDB=off",
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "build",
+        "-C",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/bin/FvwmPrompt",
+        "-mod=vendor",
+        "-ldflags",
+        "-X 'github.com/fvwmorg/FvwmPrompt/internal/startuplaunch.ModuleDirectory=/tmp/fvwm-appearance-a4-20261102-01/unused-install/libexec/fvwm3/1.1.6' -X 'main.dataDirectory=/tmp/fvwm-appearance-a4-20261102-01/unused-install/share/fvwm3' -X 'main.nativeSettingsHelperPath=/tmp/fvwm-appearance-a4-20261102-01/unused-install/libexec/fvwm3/1.1.6/fvwm-native-settings' -X main.pngEnabled=true",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+        "./cmd/fvwmdesktop"
+      ],
+      "exit": 0,
+      "seconds": 0.4990895119999976,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "build-fvwm-desktop-worker",
+      "argv": [
+        "/usr/bin/env",
+        "GOCACHE=/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/go-cache",
+        "GOTOOLCHAIN=local",
+        "GOPROXY=off",
+        "GOSUMDB=off",
+        "/tmp/fvwm-go-baseline-20261014/sdk/go/bin/go",
+        "build",
+        "-C",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/bin/FvwmPrompt",
+        "-mod=vendor",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+        "./cmd/fvwmdesktopworker"
+      ],
+      "exit": 0,
+      "seconds": 0.14146396599999989,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "build-test-theme-origin-asan-ubsan",
+      "argv": [
+        "cc",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-theme-origin.p",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/tests",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src/tests",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/fvwm",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src/fvwm",
+        "-I/usr/include/freetype2",
+        "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+        "-I/usr/include/fribidi",
+        "-I/usr/include/librsvg-2.0",
+        "-I/usr/include/glib-2.0",
+        "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+        "-I/usr/include/libmount",
+        "-I/usr/include/blkid",
+        "-I/usr/include/gdk-pixbuf-2.0",
+        "-I/usr/include/aarch64-linux-gnu",
+        "-I/usr/include/webp",
+        "-I/usr/include/cairo",
+        "-I/usr/include/pixman-1",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-Wextra",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-fno-common",
+        "-Wno-sign-compare",
+        "-Wno-unused-parameter",
+        "-Werror=implicit-function-declaration",
+        "-Werror=incompatible-pointer-types",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE",
+        "-pthread",
+        "-D_DEFAULT_SOURCE",
+        "-D_BSD_SOURCE",
+        "-DHAS_FCHOWN",
+        "-DHAS_STICKY_DIR_BIT",
+        "-UNDEBUG",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-O1",
+        "-g",
+        "-UNDEBUG",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/test_theme_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/theme_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/config_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/policy_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/Bindings.c",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/test-theme-origin-asan-ubsan",
+        "-Wl,--as-needed",
+        "-Wl,--no-undefined",
+        "-pie",
+        "-Wl,-z,relro",
+        "-Wl,-z,now",
+        "-Wl,-z,noexecstack",
+        "-Wl,--start-group",
+        "-Wl,--start-group",
+        "-lm",
+        "-Wl,-rpath,/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "-Wl,-rpath-link,/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "libs/libfvwm3.a",
+        "-Wl,--wrap=fvwm_config_origin_storage_bytes",
+        "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+        "/usr/lib/aarch64-linux-gnu/libfreetype.so",
+        "/usr/lib/aarch64-linux-gnu/libICE.so",
+        "/usr/lib/aarch64-linux-gnu/libevent.so",
+        "/usr/lib/aarch64-linux-gnu/libX11.so",
+        "/usr/lib/aarch64-linux-gnu/libXft.so",
+        "/usr/lib/aarch64-linux-gnu/libXrandr.so",
+        "/usr/lib/aarch64-linux-gnu/libXt.so",
+        "/usr/lib/aarch64-linux-gnu/libXext.so",
+        "/usr/lib/aarch64-linux-gnu/libfribidi.so",
+        "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+        "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+        "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libcairo.so",
+        "/usr/lib/aarch64-linux-gnu/libSM.so",
+        "/usr/lib/aarch64-linux-gnu/libXcursor.so",
+        "/usr/lib/aarch64-linux-gnu/libXfixes.so",
+        "/usr/lib/aarch64-linux-gnu/libXpm.so",
+        "/usr/lib/aarch64-linux-gnu/libXrender.so",
+        "-Wl,--end-group",
+        "-Wl,--end-group"
+      ],
+      "exit": 0,
+      "seconds": 0.32176326100000097,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "test-theme-origin-asan-ubsan",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/test-theme-origin-asan-ubsan"
+      ],
+      "exit": 0,
+      "seconds": 0.0035685040000004165,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "build-test-query-json-asan-ubsan",
+      "argv": [
+        "cc",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/tests/test-query-json.p",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/tests",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src/tests",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/build/fvwm",
+        "-I/tmp/fvwm-appearance-a4-20261102-01/src/fvwm",
+        "-I/usr/include/freetype2",
+        "-I/tmp/fvwm-deps/libpng-1.6.59/include/libpng16",
+        "-I/usr/include/fribidi",
+        "-I/usr/include/librsvg-2.0",
+        "-I/usr/include/glib-2.0",
+        "-I/usr/lib/aarch64-linux-gnu/glib-2.0/include",
+        "-I/usr/include/libmount",
+        "-I/usr/include/blkid",
+        "-I/usr/include/gdk-pixbuf-2.0",
+        "-I/usr/include/aarch64-linux-gnu",
+        "-I/usr/include/webp",
+        "-I/usr/include/cairo",
+        "-I/usr/include/pixman-1",
+        "-fdiagnostics-color=always",
+        "-D_FILE_OFFSET_BITS=64",
+        "-Wall",
+        "-Winvalid-pch",
+        "-Wextra",
+        "-std=c11",
+        "-O2",
+        "-g",
+        "-fno-common",
+        "-Wno-sign-compare",
+        "-Wno-unused-parameter",
+        "-Werror=implicit-function-declaration",
+        "-Werror=incompatible-pointer-types",
+        "-fstack-protector-strong",
+        "-fstack-clash-protection",
+        "-D_FORTIFY_SOURCE=3",
+        "-fPIE",
+        "-pthread",
+        "-D_DEFAULT_SOURCE",
+        "-D_BSD_SOURCE",
+        "-DHAS_FCHOWN",
+        "-DHAS_STICKY_DIR_BIT",
+        "-UNDEBUG",
+        "-fsanitize=address,undefined",
+        "-fno-omit-frame-pointer",
+        "-O1",
+        "-g",
+        "-UNDEBUG",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/test_query_json.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/../fvwm/query_json.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/theme_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/config_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/policy_origin.c",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/libs/Bindings.c",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/test-query-json-asan-ubsan",
+        "-Wl,--as-needed",
+        "-Wl,--no-undefined",
+        "-pie",
+        "-Wl,-z,relro",
+        "-Wl,-z,now",
+        "-Wl,-z,noexecstack",
+        "-Wl,--start-group",
+        "-Wl,--start-group",
+        "-lm",
+        "-Wl,-rpath,/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "-Wl,-rpath-link,/tmp/fvwm-deps/libpng-1.6.59/lib",
+        "libs/libfvwm3.a",
+        "/usr/lib/aarch64-linux-gnu/libfontconfig.so",
+        "/usr/lib/aarch64-linux-gnu/libfreetype.so",
+        "/usr/lib/aarch64-linux-gnu/libICE.so",
+        "/usr/lib/aarch64-linux-gnu/libevent.so",
+        "/usr/lib/aarch64-linux-gnu/libX11.so",
+        "/usr/lib/aarch64-linux-gnu/libXft.so",
+        "/usr/lib/aarch64-linux-gnu/libXrandr.so",
+        "/usr/lib/aarch64-linux-gnu/libXt.so",
+        "/usr/lib/aarch64-linux-gnu/libXext.so",
+        "/usr/lib/aarch64-linux-gnu/libfribidi.so",
+        "/tmp/fvwm-deps/libpng-1.6.59/lib/libpng16.so",
+        "/usr/lib/aarch64-linux-gnu/librsvg-2.so",
+        "/usr/lib/aarch64-linux-gnu/libgio-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libgdk_pixbuf-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libgobject-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libglib-2.0.so",
+        "/usr/lib/aarch64-linux-gnu/libcairo.so",
+        "/usr/lib/aarch64-linux-gnu/libSM.so",
+        "/usr/lib/aarch64-linux-gnu/libXcursor.so",
+        "/usr/lib/aarch64-linux-gnu/libXfixes.so",
+        "/usr/lib/aarch64-linux-gnu/libXpm.so",
+        "/usr/lib/aarch64-linux-gnu/libXrender.so",
+        "-Wl,--end-group",
+        "-Wl,--end-group"
+      ],
+      "exit": 0,
+      "seconds": 0.6799043900000008,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "test-query-json-asan-ubsan",
+      "argv": [
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/test-query-json-asan-ubsan"
+      ],
+      "exit": 0,
+      "seconds": 0.00952555099999941,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "render-FvwmDesktop",
+      "argv": [
+        "/usr/bin/asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/FvwmDesktop.1",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/doc/FvwmDesktop.adoc"
+      ],
+      "exit": 0,
+      "seconds": 0.09289021300000044,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "render-FvwmMFL",
+      "argv": [
+        "/usr/bin/asciidoctor",
+        "-b",
+        "manpage",
+        "-o",
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/FvwmMFL.1",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/doc/FvwmMFL.adoc"
+      ],
+      "exit": 0,
+      "seconds": 0.07118227499999819,
+      "forced_kill": false,
+      "group_absent": true
+    },
+    {
+      "label": "native-three-theme-origins",
+      "argv": [
+        "/usr/bin/python3",
+        "-E",
+        "-S",
+        "-B",
+        "/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/theme_origin_live.py",
+        "--build",
+        "/tmp/fvwm-appearance-a4-20261102-01/build",
+        "--artifacts-dir",
+        "/tmp/fvwm-appearance-a4-20261102-01/x1-theme-origin02/evidence/theme-origin"
+      ],
+      "exit": 0,
+      "seconds": 19.438993926,
+      "forced_kill": false,
+      "group_absent": true
+    }
+  ],
+  "native_archive_sha256": "38babb473aa3b97769c18c0d8bf8609325820e94634e50417e34cd556f109a43",
+  "export_files": 736,
+  "captures": {
+    "slate-dark": {
+      "file": "theme-origin-slate-dark.png",
+      "sha256": "324d6e8cb60449628b5bae45724abda2c7e149a2bee1783cfdc0c8b2645b2e87",
+      "bytes": 73807,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      }
+    },
+    "dune-light": {
+      "file": "theme-origin-dune-light.png",
+      "sha256": "9e560c854cb516d893e319ff2ae476376eb2940fe7f1fda8f105fc4df0a031f7",
+      "bytes": 74257,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      }
+    },
+    "classic-large": {
+      "file": "theme-origin-classic-large.png",
+      "sha256": "50e1d61257e16573d7e2a4ae0ba28487dbbe11f9f4af16ab6b8228b79c483137",
+      "bytes": 134915,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      }
+    }
+  },
+  "source_and_build_controls": {
+    "immutable_controls_count": 224,
+    "immutable_controls_sha256": "628546776627da88d5c74ebc603323e7103a2427a01f255a84818b10a58fb88f",
+    "sdk_sha256": "749299f7b448190f326a6db7b0c37de412cbbfec8078483bf536929d1ea57b37",
+    "build_metadata_after_sha256": "9a77248b51d0a9e40cf3f8a1bdc9baeb886682835e8936f44beca34b23c3bd16",
+    "archive_after": {
+      "bytes": 28896,
+      "sha256": "f5f61b358c86da302dc7f4dc1492ab8630eb0f3958102c06441966586ef5e439"
+    },
+    "binaries_after": {
+      "fvwm3": {
+        "bytes": 5912992,
+        "sha256": "8b591632ca7981b4a84b14151267361b1017ead52512f35e6e86cde2ae7b2b41"
+      },
+      "modules/FvwmMFL/FvwmMFL": {
+        "bytes": 463696,
+        "sha256": "ac6151b52d75935a4fe9eb897761ac5be3cb4caa1efdf3da2fd63155aa1623ba"
+      },
+      "modules/FvwmScript/FvwmScript": {
+        "bytes": 2294512,
+        "sha256": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490"
+      },
+      "modules/FvwmIconMan/FvwmIconMan": {
+        "bytes": 1782616,
+        "sha256": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229"
+      },
+      "bin/FvwmPrompt/FvwmDesktop": {
+        "bytes": 6826322,
+        "sha256": "0b1cab6719d3356bcd2f87d4b1d25ca420927ecccc570c3e4a1c4ddc34294503"
+      },
+      "bin/FvwmPrompt/fvwm-desktop-worker": {
+        "bytes": 6563023,
+        "sha256": "b0abaeaca729e8379ca27703399490464e5404a1ab00b29c0a299d1c78ae330c"
+      },
+      "tests/test-policy-origin": {
+        "bytes": 116160,
+        "sha256": "cf3996b17b95f5eec1233d7e143264bafb3b5798d564eaa28df31ecaf1f24690"
+      },
+      "tests/test-query-json": {
+        "bytes": 487376,
+        "sha256": "c294a45e1c18b6b3b1119fdd8a07a39fa828864c4ffb5882e54baab75758b5ad"
+      },
+      "tests/test-theme-origin": {
+        "bytes": 121816,
+        "sha256": "b87f6d92ec219911d14b5283ff7bb729f4bac6e3306969a722b462722428c94b"
+      }
+    },
+    "raw_evidence": "Full receipts are in the identified native archive; no duplicated baseline dossier."
+  },
+  "historical_failure": {
+    "error": "KeyError('path')",
+    "product_commands": 0,
+    "source_writes": 0,
+    "metadata_elf_archive_unchanged": true,
+    "correction": "Use known remote/name for metadata entries without path; reduce remaining budget to2100s.",
+    "shutdown_confirmed": true
+  },
+  "cleanup": {
+    "launch": {
+      "status": "dispatch and holder passed",
+      "holder_exit": 0,
+      "dispatch_exit": 0
+    },
+    "container_and_machine": "confirmed stopped",
+    "unexpected_x_errors": false
+  },
+  "manual_scope": {
+    "native": "Both manuals rendered before plain-text availability clarification; no new macros/structure in the later wording.",
+    "host": "Both native roff files rendered at60/80columns and reviewed; source clarification reviewed separately.",
+    "final_plain_text_clarification_sha256": {
+      "FvwmDesktop.adoc": "653842cbefd49bc5cf52f918093d0bee35055a98f703899303ab58287e303cab",
+      "FvwmMFL.adoc": "4c2d9c2bceb567ea1c320013d436c354e17c700181415b1f669074a5f72f9a14"
+    }
+  },
+  "remaining": [
+    "Whole R1 release/support/default-X/install qualification remains separately owned.",
+    "No per-field/per-window/dynamic history or final paint attribution.",
+    "No new performance, full platform, physical hardware or assistive qualification claim."
+  ],
+  "portable_checks": {
+    "make_verify": "exit0; one shared-cycle run",
+    "maintenance_suite": {
+      "tests": 126,
+      "skipped": 21
+    },
+    "make_check": "passed after README word-limit correction",
+    "whitespace": "passed"
+  }
+}

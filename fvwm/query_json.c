@@ -584,6 +584,48 @@ static bool add_pixel(cJSON *object, const char *name, Pixel pixel)
 	return cJSON_AddStringToObject(object, name, text) != NULL;
 }
 
+/* Latest aggregate operation only; retained source is serialized by the
+ * same immutable config-origin v1 serializer as bindings and policies. */
+static bool theme_provenance(cJSON *item, const fvwm_theme_origin *origin)
+{
+	static const char *operations[] = {"builtin-default", "merge", "copy",
+		"reset", "preview"};
+	static const char *retentions[] = {"not-applicable", "retained",
+		"unavailable", "budget-exhausted"};
+	cJSON *entry, *source;
+
+	if ((unsigned int)origin->operation >=
+	    sizeof(operations) / sizeof(operations[0]) ||
+	    (unsigned int)origin->retention >=
+	    sizeof(retentions) / sizeof(retentions[0]))
+		return false;
+	entry = cJSON_AddObjectToObject(item, "provenance");
+	if (!entry || !cJSON_AddNumberToObject(entry, "version", 1) ||
+	    !cJSON_AddStringToObject(entry, "basis", origin->operation ==
+		FVWM_THEME_BUILTIN_DEFAULT ? "builtin-default" :
+		origin->operation == FVWM_THEME_PREVIEW ? "runtime-preview" :
+		"last-definition") ||
+	    !cJSON_AddStringToObject(entry, "operation",
+		operations[origin->operation]) ||
+	    !cJSON_AddStringToObject(entry, "retention",
+		retentions[origin->retention]) ||
+	    !cJSON_AddBoolToObject(entry, "replaces_definition",
+		origin->replaces_definition) ||
+	    !(origin->copied_from ? cJSON_AddStringToObject(entry,
+		"copied_from", origin->copied_from) :
+		cJSON_AddNullToObject(entry, "copied_from")))
+		return false;
+	source = cJSON_Parse(fvwm_config_origin_json(origin->source));
+	if (!source)
+		return false;
+	if (!cJSON_AddItemToObject(entry, "source", source))
+	{
+		cJSON_Delete(source);
+		return false;
+	}
+	return true;
+}
+
 static bool add_colorset(cJSON *list, const struct fvwm_query_colorset *entry)
 {
 	const colorset_t *cs = entry->colorset;
@@ -600,6 +642,7 @@ static bool add_colorset(cJSON *list, const struct fvwm_query_colorset *entry)
 	opacity = cJSON_AddObjectToObject(item, "opacity_percent");
 	background = cJSON_AddObjectToObject(item, "background");
 	return colors && opacity && background &&
+		theme_provenance(item, &cs->origin) &&
 		cJSON_AddNumberToObject(item, "id", entry->id) &&
 		cJSON_AddStringToObject(item, "update_state",
 			entry->update_state) &&
@@ -847,7 +890,7 @@ cJSON *fvwm_query_menu_styles(const MenuStyle *styles,
 		if (!item)
 			goto fail;
 		colorsets = cJSON_AddObjectToObject(item, "colorsets");
-		if (!colorsets ||
+		if (!colorsets || !theme_provenance(item, &style->origin) ||
 		    !cJSON_AddStringToObject(item, "name", ST_NAME(style)) ||
 		    !cJSON_AddBoolToObject(item, "default",
 			offset + count == 0) ||
@@ -925,7 +968,7 @@ cJSON *fvwm_query_decorations(const FvwmDecor *decorations,
 			goto fail;
 		}
 		item = appearance_entry(list);
-		if (!item ||
+		if (!item || !theme_provenance(item, &decor->origin) ||
 		    !(decor->tag ?
 			cJSON_AddStringToObject(item, "name", decor->tag) :
 			cJSON_AddNullToObject(item, "name")) ||

@@ -4750,6 +4750,16 @@ policy_origin_test = executable(
 )
 test('policy-origin', policy_origin_test)
 
+theme_origin_test = executable(
+    'test-theme-origin', 'test_theme_origin.c',
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+    link_args: ['-Wl,--wrap=fvwm_config_origin_storage_bytes'],
+)
+test('theme-origin', theme_origin_test)
+
 # Native consumer of the finalized monitor UI handoff; never installed.
 module_ui_scale_probe = executable(
     'module-ui-scale-probe', 'module_ui_scale_probe.c',

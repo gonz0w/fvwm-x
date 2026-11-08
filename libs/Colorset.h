@@ -9,9 +9,11 @@
 #define FVWMLIB_COLORSETS_H
 #include "fvwm_x11.h"
 #include "PictureBase.h"
+#include "libs/theme_origin.h"
 
 typedef struct Colorset
 {
+	fvwm_theme_origin origin;
 	Pixel fg;
 	Pixel bg;
 	Pixel hilite;

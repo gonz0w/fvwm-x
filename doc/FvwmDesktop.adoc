@@ -637,7 +637,22 @@ Settings come from the current registry and owner snapshot, including saved and
 requested effective values, source class, high-contrast/retained-wallpaper
 constraints and known submitted state. Theme rows distinguish the provider's
 semantic role projection from the core's observed colorset, menu and decor
-definitions. Scheduled appearance is captured provider policy, not a claim about
+definitions. Theme provenance describes the latest aggregate definition operation,
+not each field's origin or the last value change. Unchanged fields can retain
+earlier definitions, and an accepted same-value definition can advance the
+record. There is no history. When available, CopyMenuStyle shows the copy
+invocation context and bounded donor name, not transitive lineage. Missing
+context, an overlong donor or exhausted retention is reported as unavailable.
+Builtin defaults and runtime previews have
+unavailable sources; recovery restores the captured origin, while confirmation
+retains runtime ownership. On conflict the current authoritative record remains.
+Colorset origins follow requested values through publication, including asynchronous
+completion. Source and donor metadata share a 1 MiB retention cap, including
+clones and previews; exhaustion affects metadata only. Missing or invalid metadata
+is shown as unavailable or partial. Source paths are bounded and redacted, with
+include locations continued across rows as needed; presentation shares space
+fairly among the three theme domains.
+Scheduled appearance is captured provider policy, not a claim about
 current painted pixels. Bindings show bounded active global, menu, fallback,
 placement and modifier/context policy. For Key, PointerKey and Mouse definitions
 in the global and menu lists, they show the current definition's source, list

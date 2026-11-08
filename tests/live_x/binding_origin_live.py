@@ -65,7 +65,9 @@ def run(args, scenario=None):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = args.artifacts_dir.resolve()
     out.mkdir(parents=True, exist_ok=False)
-    evidence = dict(status='running', profile='slate-dark', cases={}, screenshots=[])
+    profile = getattr(args, 'profile', 'slate-dark')
+    assert profile in ('slate-dark', 'dune-light', 'classic-large')
+    evidence = dict(status='running', profile=profile, cases={}, screenshots=[])
     runtime = HarnessRuntime(prefix='fvwm-binding-origin-')
     client = errors = core = server = None
     connections = []
@@ -108,18 +110,33 @@ def run(args, scenario=None):
         wrapper = runtime.root / 'worker-probe'
         shell_wrapper(wrapper, [sys.executable, '-B', inspector, '--worker',
                                required['worker'], records])
+        svg_worker = required['svg']
+        if getattr(args, 'svg_gate', False):
+            gate = runtime.root / 'svg-gate'
+            gate.mkdir(mode=0o700)
+            svg_worker = runtime.root / 'svg-probe'
+            shell_wrapper(svg_worker, [sys.executable, '-E', '-S', '-B',
+                source / 'tests/live_x/theme_origin_live.py', '--svg-gate-worker',
+                required['svg'], gate], ' "$@"')
         local = user / 'local.config'
-        local.write_text('*FvwmDesktop: palette slate\n*FvwmDesktop: appearance dark\n'
+        palette, appearance = ('dune', 'light') if profile == 'dune-light' else ('slate', 'dark')
+        local.write_text('*FvwmDesktop: palette ' + palette + '\n*FvwmDesktop: appearance ' + appearance + '\n'
                          '*FvwmDesktop: transparency Off\n*FvwmDesktop: motion Off\n')
         assets = source / 'default-config'
         body = (assets / 'config').read_text().replace('$[FVWM_DATADIR]/default-config', str(assets))
+        legacy = ''
+        if profile == 'classic-large':
+            body = body.replace('Sans:size=10:antialias=True',
+                'DejaVu Sans Mono:size=18:antialias=True')
+            legacy = ('*FvwmFormDefault: Fore wheat\n*FvwmFormDefault: Back navy\n'
+                '*FvwmFormDefault: ItemFore black\n*FvwmFormDefault: ItemBack gray\n')
         config = runtime.root / 'boot.config'
         config.write_text('ModulePath ' + str(modules) + '\nRead ' +
-            str(source / 'fvwm/ConfigFvwmDefaults') + '\n' + body +
+            str(source / 'fvwm/ConfigFvwmDefaults') + '\n' + body + '\n' + legacy +
             '\nAddToFunc StartFunction I Module InspectorProbe ' + str(observer) + '\n')
         env = runtime.environment({'DISPLAY': display, 'HOME': str(runtime.root),
             'FVWM_USERDIR': str(user), 'FVWM_DESKTOP_ROOT': str(assets),
-            'FVWM_DESKTOP_WORKER': str(wrapper), 'FVWM_IMAGE_SVG_WORKER': str(required['svg']),
+            'FVWM_DESKTOP_WORKER': str(wrapper), 'FVWM_IMAGE_SVG_WORKER': str(svg_worker),
             'FVWMMFL_SOCKET_PATH': str(runtime.root), 'XDG_DATA_HOME': str(runtime.root / 'data'),
             'XDG_DATA_DIRS': str(runtime.root / 'absent')})
         client = connect_client(display)
@@ -216,7 +233,7 @@ def run(args, scenario=None):
 
         before_settings = wait_for_predicate('Slate owner settings', settings_ready,
                                             time.monotonic() + 12, process=core)
-        assert before_settings['settings']['palette']['effective'] == 'slate'
+        assert before_settings['settings']['palette']['effective'] == palette
         if scenario is not None:
             # Share only owned display/module setup and teardown. Each scene
             # supplies its own acceptance; old binding cases are not replayed.
@@ -443,6 +460,7 @@ def run(args, scenario=None):
             cleanup_failures.append('observer unexpected X errors: ' +
                                     repr(errors.unexpected))
         evidence['cleanup_failures'] = cleanup_failures
+        evidence['observer_unexpected_x_errors'] = errors.unexpected if errors else []
         if cleanup_failures:
             evidence['status'] = 'failed'
         (out / 'evidence.json').write_text(json.dumps(evidence, indent=2) + '\n')

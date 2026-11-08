@@ -66,6 +66,7 @@ libfvwm3_sources = files(
     'config_line.c',
     'config_origin.c',
     'policy_origin.c',
+    'theme_origin.c',
     'startup_notification_policy.c',
     'startup_group_policy.c',
     'System.c',

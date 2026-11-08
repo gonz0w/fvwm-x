@@ -23,6 +23,7 @@ static struct {
 	struct fmodule *owner;
 	char cookie[65], view[17], id[49], generation[49], target[65];
 	unsigned int previous, opacity;
+	fvwm_theme_origin origin;
 	uint64_t deadline;
 	enum preview_state state;
 	const char *recovery;
@@ -132,7 +133,7 @@ static bool resource_menu_set(bool restore)
 		preserve ? resource_preview.menus.opacity[0] :
 			(int)resource_preview.plan.menu_opacity,
 		preserve ? resource_preview.menus.opacity[1] :
-			(int)resource_preview.plan.launcher_opacity);
+			(int)resource_preview.plan.launcher_opacity, restore);
 }
 
 void appearance_preview_outer_boundary(void)
@@ -241,6 +242,7 @@ void appearance_preview_outer_boundary(void)
 			"restored" : "not-applied";
 		colorset_preview_release(resource_preview.bundle);
 		resource_preview.bundle = NULL;
+		menustyle_preview_pair_clear(&resource_preview.menus);
 		resource_preview.state = RESOURCE_TERMINAL;
 	}
 }
@@ -256,10 +258,11 @@ static void preview_recover(enum preview_state state)
 	fvwm_query_appearance_token(generation);
 	decision = preview_recovery_check(preview_now(), preview.deadline,
 		preview.generation, generation, true);
-	if (decision == PREVIEW_CONFLICT || !menustyle_preview_opacity(
-		preview.target, (int)preview.previous, &previous))
+	if (decision == PREVIEW_CONFLICT || !menustyle_preview_restore(
+		preview.target, (int)preview.previous, &previous, &preview.origin))
 	{
 		preview.state = PREVIEW_CONFLICTED;
+		fvwm_theme_origin_clear(&preview.origin);
 		preview.recovery = "refused-conflict";
 		return;
 	}
@@ -282,6 +285,7 @@ void appearance_preview_service(void)
 	if (decision == PREVIEW_CONFLICT)
 	{
 		preview.state = PREVIEW_CONFLICTED;
+		fvwm_theme_origin_clear(&preview.origin);
 		preview.recovery = "refused-conflict";
 	}
 	else if (decision == PREVIEW_RESTORE)
@@ -311,6 +315,7 @@ void appearance_preview_owner_gone(struct fmodule *owner)
 	if (preview.owner != owner)
 		return;
 	preview_recover(PREVIEW_ABANDONED);
+	fvwm_theme_origin_clear(&preview.origin);
 	memset(&preview, 0, sizeof(preview));
 }
 
@@ -430,7 +435,9 @@ static cJSON *resource_request(struct fmodule *owner,
 		*error = "clock_unavailable";
 		if (now == UINT64_MAX)
 			return NULL;
+		menustyle_preview_pair_clear(&resource_preview.menus);
 		memset(&resource_preview, 0, sizeof(resource_preview));
+		fvwm_theme_origin_clear(&preview.origin);
 		memset(&preview, 0, sizeof(preview));
 		resource_preview.owner = owner;
 		strcpy(resource_preview.cookie, request->cookie);
@@ -535,6 +542,7 @@ cJSON *appearance_preview_request(struct fmodule *owner,
 	char generation[49], id[49];
 	uint64_t now;
 	int previous;
+	fvwm_theme_origin original = FVWM_THEME_ORIGIN_INIT;
 	bool owned;
 
 	appearance_preview_service();
@@ -569,22 +577,31 @@ cJSON *appearance_preview_request(struct fmodule *owner,
 		if (now == UINT64_MAX)
 			return NULL;
 		*error = "preview_unavailable";
+		if (!menustyle_preview_capture_origin(request->target, &original))
+			return NULL;
 		if (!menustyle_preview_opacity(request->target,
 			(int)request->opacity, &previous))
+		{
+			fvwm_theme_origin_clear(&original);
 			return NULL;
+		}
 		/* No callbacks run inside the setter. On revision exhaustion,
 		 * restore the scalar inside this same atomic command. */
 		if (!fvwm_query_appearance_token(generation))
 		{
 			int ignored;
 
-			menustyle_preview_opacity(
-				request->target, previous, &ignored);
+			menustyle_preview_restore(
+				request->target, previous, &ignored, &original);
+			fvwm_theme_origin_clear(&original);
 			*error = "generation_unavailable";
 			return NULL;
 		}
+		fvwm_theme_origin_clear(&preview.origin);
 		memset(&preview, 0, sizeof(preview));
+		menustyle_preview_pair_clear(&resource_preview.menus);
 		memset(&resource_preview, 0, sizeof(resource_preview));
+		fvwm_theme_origin_move(&preview.origin, &original);
 		preview.owner = owner;
 		strcpy(preview.cookie, request->cookie);
 		strcpy(preview.view, request->view);
@@ -617,6 +634,7 @@ cJSON *appearance_preview_request(struct fmodule *owner,
 		else
 		{
 			preview.state = PREVIEW_CONFIRMED;
+			fvwm_theme_origin_clear(&preview.origin);
 			preview.recovery = "kept";
 		}
 	}

@@ -1,7 +1,7 @@
 # FVWM-X
 
-FVWM-X is an X11 window manager from FVWM3, for Linux, FreeBSD Xorg
-and OpenBSD Xenocara on AMD64 and ARM64.
+FVWM-X derives from FVWM3: X11 on Linux, FreeBSD Xorg and OpenBSD Xenocara,
+AMD64/ARM64.
 
 Preserves FVWM configurations. No compositor or Wayland.
 
@@ -13,7 +13,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
 - Atomic buttons, responsive layout and settings/editor;
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
-- Source-aware reports, ancestry and [theme-color reload](doc/development-preview.md#live-theme-color-reload-in-progress).
+- Source-aware reports, ancestry, [theme-color reload](doc/development-preview.md#live-theme-color-reload-in-progress)
+  and [theme definition provenance](doc/development-preview.md#theme-definition-provenance-in-progress).
 - Structured IPC and eight-setting preview/recovery; optional
   [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),

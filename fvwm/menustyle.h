@@ -6,6 +6,7 @@
 /* ---------------------------- included header files ---------------------- */
 #include "fvwm.h"
 #include "preview_policy.h"
+#include "libs/theme_origin.h"
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -282,6 +283,7 @@ typedef struct MenuLook
 
 typedef struct MenuStyle
 {
+	fvwm_theme_origin origin;
 	char *name;
 	struct MenuStyle *next_style;
 	int usage_count;
@@ -299,15 +301,21 @@ typedef struct MenuStyle
 
 /* Bounded scalar access: no X requests, resources or retained pointers. */
 bool menustyle_preview_opacity(const char *name, int opacity, int *previous);
+bool menustyle_preview_capture_origin(const char *name,
+	fvwm_theme_origin *origin);
+bool menustyle_preview_restore(const char *name, int opacity, int *previous,
+	fvwm_theme_origin *origin);
 struct menustyle_preview_pair
 {
 	uintptr_t identities[2];
 	int opacity[2];
+	fvwm_theme_origin origins[2];
 };
+void menustyle_preview_pair_clear(struct menustyle_preview_pair *pair);
 bool menustyle_preview_pair_capture(struct menustyle_preview_pair *pair);
-bool menustyle_preview_pair_set_values(const struct menustyle_preview_pair *pair,
-	int menu_opacity, int launcher_opacity);
-bool menustyle_preview_pair_set(const struct menustyle_preview_pair *pair,
+bool menustyle_preview_pair_set_values(struct menustyle_preview_pair *pair,
+	int menu_opacity, int launcher_opacity, bool restore);
+bool menustyle_preview_pair_set(struct menustyle_preview_pair *pair,
 	enum preview_resource_kind kind, bool restore);
 void menustyle_free(MenuStyle *ms);
 MenuStyle *menustyle_find(char *name);

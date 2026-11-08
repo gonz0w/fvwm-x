@@ -1600,3 +1600,31 @@ not resampled by the tray.
 These images show presentation at the captured sizes; they do not prove input
 behavior or accessibility. Affected native Linux and combined six-profile acceptance passed; final review
 and whole-release qualification remain separate.
+
+
+## Theme definition provenance in progress
+
+The read-only inspector now shows the latest definition operation for colorsets,
+menu styles and decorations, including retained source spans/include ancestry,
+copy donor identity and runtime-preview/recovery states. An aggregate source is
+not the origin of every field; unchanged fields can retain earlier definitions.
+The shared retention and viewer bounds report unavailable or omitted metadata.
+
+These unmodified Linux ARM64 VM captures show Slate dark, Dune light and a
+controlled Classic configuration with 18pt monospaced text and legacy Form
+colors. Page 18/64 shows `user:theme-origin.config:2-2` and a menu definition.
+The actual copied/decor/include source rows are on other pages; the images do
+not show every origin. The black window is a synthetic focus probe. Existing
+status prose wraps midword; that cosmetic polish remains deferred.
+
+![Slate dark inspector with a retained colorset definition source](screenshots/theme-origin-slate-dark.png)
+
+![Dune light inspector with the same retained source span](screenshots/theme-origin-dune-light.png)
+
+![Enlarged Classic inspector with source and navigation controls](screenshots/theme-origin-classic-large.png)
+
+[Capture manifest](screenshots/theme-origin-manifest.json) ·
+[Combined source-bound results and limits](../dev-docs/verification/VERIFICATION-2026-11-07-THEME-PROVENANCE.md) ·
+[Usage](FvwmDesktop.adoc#_configuration_inspector).
+R1 remains in development; these captures are not full release or accessibility
+qualification.

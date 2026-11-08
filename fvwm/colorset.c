@@ -389,6 +389,7 @@ struct colorset_preparation
 	int id;
 	Bool refused;
 	Bool effect_needed;
+	bool origin_defined;
 	size_t references;
 };
 
@@ -438,6 +439,8 @@ static colorset_t *colorset_preparation_begin(
 	preparation->requested = *published;
 	colorset_t *requested = &preparation->requested;
 
+	requested->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
+	fvwm_theme_origin_clone(&requested->origin, &published->origin);
 	requested->preparing = True;
 	requested->preparation = preparation;
 	requested->pixmap_args = published->pixmap_args ?
@@ -591,7 +594,13 @@ static void colorset_preparation_publish(
 		colorset_color_release(published, i);
 	}
 	colorset_query_changed();
+	/* Internal refreshes and rejected no-ops do not redefine the aggregate.
+	 * Preserve its exact owner even if a preparation clone hit the cap. */
+	if (!preparation->origin_defined)
+		fvwm_theme_origin_move(&requested->origin, &published->origin);
+	fvwm_theme_origin_clear(&published->origin);
 	*published = *requested;
+	requested->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
 	published->preparation = NULL;
 	published->preparing = False;
 	int id = preparation->id;
@@ -626,7 +635,8 @@ static void colorset_image_owner_release(void *context)
 }
 
 static void parse_colorset_update(int n, char *line,
-	FvwmPicture *prepared, unsigned int prepared_type);
+	FvwmPicture *prepared, unsigned int prepared_type,
+	bool definition, const fvwm_config_origin *source);
 
 static picture_async_commit colorset_image_policy(FvwmPicture *view,
 	void *context)
@@ -726,7 +736,7 @@ static void colorset_image_settled(FvwmPicture *view, Bool applied,
 		 * lease. Reuse final tint/average/color processing without
 		 * parsing or dispatching a reconstructed command. */
 		parse_colorset_update(id, NULL, picture_snapshot(view),
-		    cs->pending_pixmap_type);
+		    cs->pending_pixmap_type, false, NULL);
 		PDestroyFvwmPicture(dpy, view);
 		if (!staged)
 		{
@@ -973,6 +983,7 @@ void colorset_preview_release(struct colorset_preview *bundle)
 		colorset_t *cs = i < bundle->count ? &bundle->original[i] :
 			&bundle->alternate[i - bundle->count];
 
+		fvwm_theme_origin_clear(&cs->origin);
 		free_colorset_background(cs, True);
 		free_colorset_shape(cs);
 		for (unsigned int slot = 0; slot < COLORSET_COLOR_COUNT; slot++)
@@ -1089,6 +1100,8 @@ static struct colorset_preview *colorset_preview_prepare_plan(
 		colorset_t *cs = &bundle->alternate[i];
 
 		*original = *published;
+		original->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
+		fvwm_theme_origin_clone(&original->origin, &published->origin);
 		original->pixmap_args = published->pixmap_args ?
 			fxstrdup(published->pixmap_args) : NULL;
 		original->gradient_args = published->gradient_args ?
@@ -1105,6 +1118,10 @@ static struct colorset_preview *colorset_preview_prepare_plan(
 				published->color_owners[slot]);
 		}
 		*cs = *original;
+		cs->origin = (fvwm_theme_origin)FVWM_THEME_ORIGIN_INIT;
+		fvwm_theme_origin_preview(&cs->origin);
+		cs->origin.replaces_definition =
+			published->origin.operation != FVWM_THEME_BUILTIN_DEFAULT;
 		/* Plain candidates have no background ownership. The original
 		 * snapshot keeps every source/rendered backing and argument. */
 		cs->picture = cs->rendered_picture = NULL;
@@ -1524,7 +1541,8 @@ void cleanup_colorsets(void)
 
 /* translate a colorset spec into a colorset structure */
 static void parse_colorset_update(int n, char *line,
-	FvwmPicture *prepared, unsigned int prepared_type)
+	FvwmPicture *prepared, unsigned int prepared_type,
+	bool definition, const fvwm_config_origin *source)
 {
 	int i;
 	int w;
@@ -1546,6 +1564,7 @@ static void parse_colorset_update(int n, char *line,
 	char *bg_tint = NULL;
 	char *icon_tint = NULL;
 	Bool have_pixels_changed = False;
+	bool accepted = false;
 	Bool has_icon_pixels_changed = False;
 	Bool has_fg_changed = False;
 	Bool has_bg_changed = False;
@@ -1660,6 +1679,7 @@ static void parse_colorset_update(int n, char *line,
 			break;
 		case 13: /* fg_alpha */
 		case 14: /* fgAlpha */
+			accepted = true;
 			if (GetIntegerArguments(args, NULL, &tmp, 1))
 			{
 				if (tmp > 100)
@@ -1794,6 +1814,7 @@ static void parse_colorset_update(int n, char *line,
 			}
 			break;
 		case 32: /* dither */
+			accepted = true;
 			if (cs->pixmap_args || cs->gradient_args)
 			{
 				has_pixmap_changed = True;
@@ -1802,6 +1823,7 @@ static void parse_colorset_update(int n, char *line,
 			cs->dither = True;
 			break;
 		case 33: /* nodither */
+			accepted = true;
 			if (cs->pixmap_args || cs->gradient_args)
 			{
 				has_pixmap_changed = True;
@@ -1812,6 +1834,7 @@ static void parse_colorset_update(int n, char *line,
 		case 34: /* Alpha */
 		case 35: /* PixmapAlpha */
 		case 36: /* ImageAlpha */
+			accepted = true;
 			if (GetIntegerArguments(args, NULL, &tmp, 1))
 			{
 				if (tmp > 100)
@@ -1832,9 +1855,11 @@ static void parse_colorset_update(int n, char *line,
                 /* dither icon is not dynamic (yet) maybe a bad opt: default
 		 * to False ? */
 		case 37: /* ditherIcon */
+			accepted = true;
 			cs->do_dither_icon = True;
 			break;
 		case 38: /* DoNotDitherIcon */
+			accepted = true;
 			cs->do_dither_icon = False;
 			break;
 		case 39: /* IconTint */
@@ -1856,6 +1881,7 @@ static void parse_colorset_update(int n, char *line,
 			cs->icon_tint_percent = 0;
 			break;
 		case 41: /* IconAlpha */
+			accepted = true;
 			if (GetIntegerArguments(args, NULL, &tmp, 1))
 			{
 				if (tmp > 100)
@@ -2699,6 +2725,17 @@ static void parse_colorset_update(int n, char *line,
 	{
 		free(icon_tint);
 	}
+	if (definition && (accepted || has_fg_changed || has_bg_changed ||
+	    has_hi_changed || has_sh_changed || has_fgsh_changed ||
+	    has_tint_changed || has_fg_tint_changed || has_bg_tint_changed ||
+	    has_icon_tint_changed || has_pixmap_changed || has_shape_changed ||
+	    do_reload_pixmap))
+	{
+		fvwm_theme_origin_definition(&cs->origin, source,
+			FVWM_THEME_MERGE, NULL);
+		if (cs->preparing)
+			cs->preparation->origin_defined = true;
+	}
 	if (cs->preparing)
 	{
 		colorset_background_capture(cs);
@@ -2711,7 +2748,7 @@ void parse_colorset(int n, char *line)
 {
 	if (n == 20 && root_source_revision)
 		root_source_revision++;
-	parse_colorset_update(n, line, NULL, 0);
+	parse_colorset_update(n, line, NULL, 0, false, NULL);
 }
 
 /* Allocate only the requested ID. Existing records remain stable and
@@ -2868,7 +2905,9 @@ void CMD_Colorset(F_CMD_ARGS)
 	{
 		return;
 	}
-	parse_colorset(n, token);
+	if (n == 20 && root_source_revision)
+		root_source_revision++;
+	parse_colorset_update(n, token, NULL, 0, true, exc->source);
 	if (!image_async_enabled())
 	{
 		update_fvwm_colorset(n);

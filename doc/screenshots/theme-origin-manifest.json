@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "owner": "#218",
+  "base": "91390eb1e1c158b0404a33fe1e5073220d93f348",
+  "native_archive_sha256": "38babb473aa3b97769c18c0d8bf8609325820e94634e50417e34cd556f109a43",
+  "unmodified": true,
+  "captures": {
+    "slate-dark": {
+      "file": "theme-origin-slate-dark.png",
+      "sha256": "324d6e8cb60449628b5bae45724abda2c7e149a2bee1783cfdc0c8b2645b2e87",
+      "bytes": 73807,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      },
+      "settings": {
+        "core": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+        "desktop": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+        "worker": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+        "svg": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-image-svg-worker",
+        "backer": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmBacker/FvwmBacker",
+        "form": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmForm/FvwmForm",
+        "mfl": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+        "capture": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-desktop-capture"
+      }
+    },
+    "dune-light": {
+      "file": "theme-origin-dune-light.png",
+      "sha256": "9e560c854cb516d893e319ff2ae476376eb2940fe7f1fda8f105fc4df0a031f7",
+      "bytes": 74257,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      },
+      "settings": {
+        "core": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+        "desktop": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+        "worker": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+        "svg": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-image-svg-worker",
+        "backer": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmBacker/FvwmBacker",
+        "form": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmForm/FvwmForm",
+        "mfl": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+        "capture": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-desktop-capture"
+      }
+    },
+    "classic-large": {
+      "file": "theme-origin-classic-large.png",
+      "sha256": "50e1d61257e16573d7e2a4ae0ba28487dbbe11f9f4af16ab6b8228b79c483137",
+      "bytes": 134915,
+      "source_visible": "user:theme-origin.config:2-2",
+      "page": "18/64",
+      "cases": {
+        "nested_theme_origins_survive_source_closure": true,
+        "copy_donor_destruction_and_preview_recovery_origins": true,
+        "native_theme_sources_navigation_read_only": true
+      },
+      "settings": {
+        "core": "/tmp/fvwm-appearance-a4-20261102-01/build/fvwm3",
+        "desktop": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/FvwmDesktop",
+        "worker": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/FvwmPrompt/fvwm-desktop-worker",
+        "svg": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-image-svg-worker",
+        "backer": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmBacker/FvwmBacker",
+        "form": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmForm/FvwmForm",
+        "mfl": "/tmp/fvwm-appearance-a4-20261102-01/build/modules/FvwmMFL/FvwmMFL",
+        "capture": "/tmp/fvwm-appearance-a4-20261102-01/build/bin/fvwm-desktop-capture"
+      }
+    }
+  },
+  "limits": [
+    "Source page shows a colorset location and a menu definition, not every domain/source/include.",
+    "Status prose still wraps midword; polish deferred.",
+    "Black client is the synthetic focus probe.",
+    "Images alone do not establish keyboard, assistive or hardware acceptance."
+  ]
+}

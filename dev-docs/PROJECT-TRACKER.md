@@ -35,7 +35,87 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, W2 — qualify PR371 policy provenance, 2026-11-07.
+Current work, X1 — finish #218 static theme provenance, 2026-11-07.
+Cam directs substantial feature implementation and issue closure; marginal
+measurements and polish wait. PR371 merged as
+`91390eb1e1c158b0404a33fe1e5073220d93f348`: exact reviewed tree, valid canonical
+signature, expected sole parent and one Cam author DCO verify. Clean main is
+synchronized and the completed branch retired. Lead owns tracker/GitHub writes,
+integration and execution on `codex/r1-theme-provenance-closeout`.
+
+Selected owner: #218. One coherent batch completes source ownership and truthful
+replacement/copy/preview explanations for existing static Colorset, MenuStyle
+and decoration query inventory, bounded redacted inspector presentation and a
+five-criterion acceptance reconciliation. C and Go implementation have separate
+file ownership after read-only lifetime analysis. A routine #214/#215 evidence
+inventory informs later selection only, not another implementation lane.
+
+Acceptance: file/span/include survives closed files and follows asynchronous
+publication, copies and restored previews without dangling references. Latest
+aggregate definition operations never claim every field or a dynamic winner.
+Default/unavailable/preview/copy states are explicit; retained sources have a
+shared finite cap. Preserve query bounds, redaction, generation and read-only
+behavior. Write focused ownership/serialization/projection regressions and one
+combined real-X fixture. Exclude per-bit/per-face history, new theme options,
+rendering polish, broad refactors, full matrices and marginal benchmarks.
+
+Implement the whole related batch before affected incremental builds and
+separate review. Reuse accepted unchanged checks; required new runtime coverage
+runs once at the major-feature checkpoint with representative theme captures in
+that same run. No per-domain campaigns. Record remaining acceptance honestly;
+merge cannot promote queued checks to passes. Routine checks get one run and
+diagnosis; a larger native campaign gets a bounded admission before execution.
+Stop/replan repeated unexplained failures. Reviewed signed-head and canonical
+verification precede integration. Close #218 only with linked frozen-criterion
+results; incidental discoveries do not become extra R1 prerequisites.
+
+X1 combined checkpoint selection: one existing native Linux ARM64 profile,
+13 commands for the entire three-domain implementation: incremental core/two
+unit build, two normal units, inspector/worker Go tests, two configured helpers,
+two scoped ownership sanitizer build/runs, two candidate manual renders and one
+native scene across Slate dark, Dune light and enlarged Classic. No dependency,
+concurrency, package or install contract changed: no extra library-closure/race/
+all-OS campaign or comparative benchmark is selected. Prior concurrency and
+six-target source foundation results retain their original scope; release gates
+remain separate. Native scene covers nested sources, same-value/rejected menu
+and decor clauses, copy donor destruction, scalar preview restoration/confirmation/
+expiry/conflict and read-only keyboard/source presentation with three captures.
+
+Lead alone executes the frozen source/driver in the existing owned reusable
+workspace. Fresh inventory:128GiB host, zero other VMs, owned machine stopped;
+retain strict zero-other-VM/idle/identity/shutdown controls and unchanged CPU/RAM/
+disk. One qualification plus one separately reviewed diagnosed correction,
+45min/128MiB total. Verify current W2 source/build/tool/SDK controls before sync;
+write changed files with fresh timestamps. Export actual metadata before shape
+checks; preserve failed receipts and successful unaffected commands. Inspect
+unmodified captures and manuals; no repeated matrix or marginal measurement.
+
+X1 implementation and combined checkpoint complete. All13commands pass in
+29.968seconds across the whole three-domain change, including three material
+configurations/enlarged text and three unmodified inspected source-page images.
+All2532source files and immutable controls verify. New normal/scoped sanitizer
+ownership/query units, ordinary inspector/worker Go tests, configured helper
+builds, two native manuals and all three case groups in each native-X profile
+pass. Every command group retires; no unexpected X/cleanup error; owned lab is
+stopped. A failed runner admission ran zero product commands/wrote no source;
+its single reviewed correction and unchanged controls remain recorded.
+
+Separate source/preflight/evidence review reconciles allfive #218 criteria with
+accepted PR266/268/368/369/370/371 and this completed static theme inventory.
+#218 is selected to close on integration, with full R1 release/platform gates
+still separately open. No current OS API, dependency, installed contract or
+consumer ABI warrants another all-target run for these portable metadata owners.
+No per-field/history/dynamic-window or performance gate is added. Both manuals
+render and60/80column content is reviewed; final plain-text copy-availability
+clarification receives source review without claiming a rerender of those bytes.
+[Acceptance map and receipts](verification/VERIFICATION-2026-11-07-THEME-PROVENANCE.md).
+Integrated review passes, including all736exported logical file identities.
+One shared make verify run passes (maintenance126tests/21explicit skips);
+repository/whitespace checks pass after a README word-limit correction.
+Signed-head review and PR delivery remain; do not repeat passing checks. The source-aware inspector status remains R1 development; status-wrap
+polish and the periodic performance comparison are deferred, not passing results.
+
+Historical W2 — qualify PR371 policy provenance, 2026-11-07.
 Cam explicitly requests qualifying the Go fix, finishing remaining checks and
 capturing new UI, reusing the passing C build and units without a full matrix.
 Lead owns tracker, native execution, integration and ready state on the existing

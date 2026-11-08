@@ -122,7 +122,10 @@ The shared native harness times out waiting for its initial application catalog
 before entering the new workspace scene. No screenshots/new UI cases pass;
 Dune/Classic are unrun. No cleanup or observer-X errors; owned VM/container
 shutdown confirmed. The recorded one-run/two-repair limit is exhausted.
-Publish a reviewed signed draft only, keep #221/#223 open and do not merge.
+[PR374](https://github.com/gonz0w/fvwm-x/pull/374) is published as a draft.
+Feature head5af9435a244c9fde07b6498038a555f4a66fa3a5 has a canonical valid
+GitHub signature, reviewed tree/sole parent and Cam DCO. Separate source and
+signed-head draft reviews pass. Keep #221/#223 open/in-progress and do not merge.
 Read-only diagnosis proves two applications were committed; the old fixture
 serialized the third Exec with shell quotes rejected by the shared Desktop
 Entry parser. Reuse the existing installed-XDG two-stage serializer in source;

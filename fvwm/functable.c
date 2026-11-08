@@ -511,6 +511,9 @@ const func_t func_table[] =
 	CMD_ENT("send_root", CMD_Send_Root, F_SEND_QUERY, 0, 0),
 	/* - Internal, fixed core-owned colorset20 background selector */
 
+	CMD_ENT("send_scratchpad", CMD_Send_Scratchpad, F_SEND_SCRATCHPAD, 0, 0),
+	/* - Internal, bounded scratchpad identity and launch leases */
+
 	CMD_ENT("send_session", CMD_Send_Session, F_SEND_QUERY, 0, 0),
 	/* - Internal, guarded cooperative session actions */
 

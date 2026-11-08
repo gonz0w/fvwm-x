@@ -18,35 +18,74 @@ static bool hex_token(const char *text, size_t length)
 		strspn(text, "0123456789abcdef") == length;
 }
 
+static bool decimal_token(const char *text, unsigned int maximum,
+	unsigned int *out)
+{
+	unsigned int value = 0;
+
+	if (!*text)
+		return false;
+	for (const char *p = text; *p; p++)
+	{
+		unsigned int digit = (unsigned int)(*p - '0');
+
+		if (*p < '0' || *p > '9' || value > maximum / 10 ||
+		    (value == maximum / 10 && digit > maximum % 10))
+			return false;
+		value = value * 10 + digit;
+	}
+	*out = value;
+	return true;
+}
+
 bool palette_request_parse(const char *text, struct palette_request *request)
 {
 	struct palette_request parsed = {0};
-	char index[11], extra;
-	unsigned int n = 0;
+	char input[1001], *tokens[9], *token, *save;
+	const char *index, *operation, *destination, *page_x, *page_y;
+	size_t count = 0;
 
 	memset(request, 0, sizeof(*request));
-	if (!text || strnlen(text, 1001) > 1000 || sscanf(text,
-	    "%64s %16s %48s %10s %c", parsed.cookie, parsed.serial,
-	    parsed.generation, index, &extra) != 4 ||
-	    strspn(parsed.cookie, "0123456789abcdef-") !=
-		strlen(parsed.cookie) || !hex_token(parsed.serial, 16))
+	if (!text || strnlen(text, sizeof(input)) >= sizeof(input))
 		return false;
+	strcpy(input, text);
+	for (token = strtok_r(input, " \t\r\n", &save); token && count < 9;
+	     token = strtok_r(NULL, " \t\r\n", &save))
+		tokens[count++] = token;
+	if ((count != 4 && count != 5 && count != 8) || token ||
+	    !tokens[0][0] || strlen(tokens[0]) > 64 ||
+	    strspn(tokens[0], "0123456789abcdef-") != strlen(tokens[0]) ||
+	    !hex_token(tokens[1], 16) || strlen(tokens[2]) > 48)
+		return false;
+	strcpy(parsed.cookie, tokens[0]);
+	strcpy(parsed.serial, tokens[1]);
+	strcpy(parsed.generation, tokens[2]);
+	index = tokens[3];
+	operation = count > 4 ? tokens[4] : "";
+	destination = count == 8 ? tokens[5] : "";
+	page_x = count == 8 ? tokens[6] : "";
+	page_y = count == 8 ? tokens[7] : "";
 	if (strcmp(parsed.generation, "-") == 0 && strcmp(index, "-") == 0)
+	{
+		if (count != 4)
+			return false;
 		parsed.release = true;
+	}
 	else
 	{
-		if (!hex_token(parsed.generation, 48) || !*index)
+		if (!hex_token(parsed.generation, 48) ||
+		    !decimal_token(index, PALETTE_ROW_MAX - 1, &parsed.index))
 			return false;
-		for (const char *p = index; *p; p++)
-		{
-			if (*p < '0' || *p > '9' ||
-			    n > (PALETTE_ROW_MAX - 1) / 10 ||
-			    n * 10 + (unsigned int)(*p - '0') >=
-				PALETTE_ROW_MAX)
-				return false;
-			n = n * 10 + (unsigned int)(*p - '0');
-		}
-		parsed.index = n;
+		if (count == 5 && strcmp(operation, "drag") == 0)
+			parsed.operation = PALETTE_DRAG;
+		else if (count == 8 && strcmp(operation, "move") == 0 &&
+		    decimal_token(destination, PALETTE_ROW_MAX - 1,
+			&parsed.destination) &&
+		    decimal_token(page_x, 2147483647U, &parsed.page_x) &&
+		    decimal_token(page_y, 2147483647U, &parsed.page_y))
+			parsed.operation = PALETTE_MOVE;
+		else if (count != 4)
+			return false;
 	}
 	*request = parsed;
 	return true;

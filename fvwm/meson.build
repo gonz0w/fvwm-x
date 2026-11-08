@@ -69,6 +69,8 @@ fvwm_sources = [
     'fvwm/appearance_preview.c',
     'fvwm/palette_policy.c',
     'fvwm/action_palette.c',
+    'fvwm/workspace_tools_policy.c',
+    'fvwm/workspace_tools.c',
     'fvwm/schedule.c',
     'fvwm/session.c',
     'fvwm/stack.c',

@@ -5078,3 +5078,23 @@ clipboard_policy_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('clipboard-policy', clipboard_policy_test)
+
+workspace_tools_policy_test = executable(
+    'test-workspace-tools-policy',
+    ['test_workspace_tools_policy.c', '../fvwm/workspace_tools_policy.c',
+     '../fvwm/palette_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('workspace-tools-policy', workspace_tools_policy_test)
+
+workspace_tools_test = executable(
+    'test-workspace-tools',
+    ['test_workspace_tools.c', '../fvwm/workspace_tools.c',
+     '../fvwm/workspace_tools_policy.c', '../fvwm/palette_policy.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    link_with: libfvwm3,
+    c_args: ['-UNDEBUG'],
+)
+test('workspace-tools-core', workspace_tools_test)

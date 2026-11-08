@@ -35,6 +35,102 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
+Current work Z1 — workspace tools, #221/#223, 2026-11-07.
+PR373 is merged as670b2d989fc2093f7bf89dd1fa8c9ed0aeb69e56; canonical
+signature/reviewed tree/parent/Cam DCO verified. #214/#215 closed/completed;
+Project Done, clean main synchronized and completed refs retired.
+Lead owns integration/GitHub/native execution on codex/r1-workspace-tools.
+
+Selected related R1 feature issues: named scratchpads #221 and compositor-free
+window/workspace overview #223, using accepted #213 identities, #212 native
+layout, #215 icon/text fallbacks and #70 snapshots. No #220 layout algorithms,
+#222 docking restoration, compositor, thumbnail capture, mandatory app/font/
+toolkit, matching language, arbitrary user-file rewrite or new state authority.
+
+Bounded outcome: structured actual-pixel workspace/window facts; generation-
+checked switch/move/interactive pointer move; searchable virtualized overview
+as a mutually exclusive mode of the current palette; coalesced updates and
+focus/teardown handling; up to16 named exact class/optional-instance scratchpads
+with literal user argv, unambiguous claims, one pending launch and desired-
+visibility coalescing; summon/dismiss/work-area placement and guarded focus
+return. Core owns live state/identity/claim leases; Go owns observed UI/config
+and the existing isolated literal-argv launch path, never authoritative windows.
+
+Prefer a live claim, otherwise exactly one match; ambiguity or unsupported
+transient/sticky/fullscreen relocation refuses without launching another app.
+Pending launches survive helper loss as bounded core leases. Expiry becomes
+uncertain, requiring explicit retry after a fresh scan; no automatic second
+launch. Full WM Restart is conservatively uncertain for unmatched definitions;
+existing matches remain claimable. No persistence journal is implied.
+The [wire/ownership contract](decisions/WORKSPACE-TOOLS-2026-11-07.md) freezes
+the two implementation lanes before coding.
+
+Acceptance: complete both frozen five-criterion maps: keyboard search/switch/
+move and selected native pointer drag; stale/disappearing/large collections;
+identity reuse, delayed/rapid/failed launch, helper/core restart, ambiguity,
+unsupported flags, topology/workspace/scale changes and focus ownership.
+Preserve supported configuration and command ordering. Implement the entire
+related batch with pure regressions before combined checks. Reuse unchanged
+passes; one affected policy/build/native-X checkpoint with three configurations
+and screenshots, plus only concretely affected target/sanitizer gates. Do not
+add marginal measurements or a full matrix for PR creation. The named native
+input/executor/attempt budget freezes before execution. Separate integrated and
+signed-head review precede one PR, with Closes markers only for complete maps.
+
+Z1 implementation is source-complete; live interaction fixture is being finalized.
+Separate source review found two Go decoding defects (signed observed source
+pages and the definite launch-failed reply code); both have scoped regressions
+and are repaired before execution. No Z1 build/runtime pass is claimed yet.
+The selected combined checkpoint uses the existing owned Linux ARM64 profile,
+unchanged 2 GiB VM/container/SDK/library identities, source/control hashes and
+foreign-process admission guard. One affected incremental core/Desktop/Prompt
+build; four C policy/snapshot tests; five affected Go packages plus coordinator
+race; two isolated recipe-derived ASan/UBSan C targets; one manual render; one
+three-theme native scratchpad/overview scene and screenshots. No fresh dependency,
+install/default-server/BSD matrix or performance campaign. Maximum 25 minutes
+candidate / 30 minutes active lab / 128 MiB exported evidence, one combined run
+plus at most two diagnosed focused repairs; retain passing checks. Freeze all
+inputs and obtain separate evaluation-input preflight before lead dispatch.
+Stop repeated unexplained failure or missing required gate; unresolved frozen
+criteria remain open rather than being promoted to passes.
+
+Z1 first combined attempt stopped in incremental compilation: the new core
+implementation omitted its palette-policy include. No unit/native suite ran;
+Meson regeneration and completed objects are retained. Correct the include and
+continue the remaining checkpoint incrementally under focused repair1/2.
+Owned container and VM shutdown are confirmed; failed receipts are preserved.
+Repair1 conservatively debits180seconds from both cumulative envelopes: at most
+1320seconds candidate and1620seconds active lab remain, not fresh budgets.
+
+Z1 repair1 result: the production core/Desktop/Prompt build and all four C
+policy/core/snapshot tests pass. Four sibling Go packages pass; the controller
+package exposes unconditional scratchpad-Form closure on idle shutdown and a
+notice-wrapping test-oracle defect. Repair2/2 preserves the existing owned-view
+shutdown contract and checks the complete decoded submission notice. Reuse the
+five passing build/C commands and four unchanged Go packages; rebuild only the
+changed Go consumers, then finish controller/race/scoped-sanitizer/manual/native
+checks. No Z1 native-X run has happened yet. Debit another180seconds from both
+shared envelopes: at most1140seconds candidate /1440seconds active lab remain.
+Both prior guests shut down cleanly; failed receipts and actual source/build
+postimages are preserved. Stop if this final focused repair cannot qualify;
+checkpoint remaining acceptance explicitly rather than renewing its budget.
+
+Z1 current result — implementation checks pass; native bootstrap blocked.
+Build/core4units, all five Go packages, controller race, both scoped guest
+ASan/UBSan targets and manual render pass with valid earlier results reused.
+The shared native harness times out waiting for its initial application catalog
+before entering the new workspace scene. No screenshots/new UI cases pass;
+Dune/Classic are unrun. No cleanup or observer-X errors; owned VM/container
+shutdown confirmed. The recorded one-run/two-repair limit is exhausted.
+Publish a reviewed signed draft only, keep #221/#223 open and do not merge.
+Read-only diagnosis proves two applications were committed; the old fixture
+serialized the third Exec with shell quotes rejected by the shared Desktop
+Entry parser. Reuse the existing installed-XDG two-stage serializer in source;
+that fixture-only correction is reviewed but unrun at the limit. Next action:
+a finite corrected-fixture/UI checkpoint using the retained implementation
+passes, then screenshots and frozen closure maps. No mask regression is proven.
+[Results and remaining acceptance](verification/VERIFICATION-2026-11-08-WORKSPACE-TOOLS.md).
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

@@ -20,6 +20,10 @@ const (
 	newPage             = 1
 	newDesk             = 1 << 1
 	paletteDestroy      = 1 << 7
+	workspaceFocus      = 1 << 6
+	workspaceIconify    = 1 << 8
+	workspaceDeiconify  = 1 << 9
+	workspaceClass      = 1 << 12
 	paletteWindowName   = 1 << 10
 	paletteResName      = 1 << 13
 	paletteVisibleName  = 1 << 26
@@ -33,7 +37,7 @@ const (
 	coreReply           = (1 << 31) | (1 << 10)
 	configSourceMessage = (1 << 31) | (1 << 11)
 	regularDesktopMask  = stringMessage | newDesk | configInfo | endConfigInfo | sendConfig
-	paletteEventMask    = newPage | paletteDestroy | paletteWindowName | paletteResName | paletteVisibleName | paletteAdd | paletteConfigure
+	paletteEventMask    = newPage | paletteDestroy | paletteWindowName | paletteResName | paletteVisibleName | paletteAdd | paletteConfigure | workspaceFocus | workspaceIconify | workspaceDeiconify | workspaceClass
 	queueLimit          = 1024 * 1024
 )
 
@@ -175,7 +179,7 @@ func Run(options Options) error {
 				} else if packet.kind == nativeEcho {
 					d.paletteNativeReply(text)
 				} else if packet.kind == coreReply {
-					if !d.logoutReply(text) && !d.paletteReply(text) {
+					if !d.scratchpadReply(text) && !d.logoutReply(text) && !d.paletteReply(text) {
 						d.preview.reply(text)
 					}
 				} else {
@@ -185,9 +189,11 @@ func Run(options Options) error {
 					}
 					d.configureMessage(text, context, mode)
 				}
-			case newPage, paletteDestroy, paletteWindowName, paletteResName, paletteVisibleName, paletteAdd, paletteConfigure:
+			case newPage, paletteDestroy, paletteWindowName, paletteResName, paletteVisibleName, paletteAdd, paletteConfigure, workspaceFocus, workspaceIconify, workspaceDeiconify, workspaceClass:
+				d.scratchpads.dirty = len(d.scratchpads.definitions) > 0
 				d.paletteEvent(packet)
 			case newDesk:
+				d.scratchpads.dirty = len(d.scratchpads.definitions) > 0
 				d.paletteEvent(packet)
 				if len(packet.body) >= 8 {
 					d.desk = int(binary.NativeEndian.Uint64(packet.body))

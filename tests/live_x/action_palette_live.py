@@ -33,6 +33,7 @@ from inspector_live import NativeView, atomic_json
 from live_x_harness import HarnessRuntime, start_display_server, wait_for_predicate
 from native_bindings_live import module_proxy, rows, worker_proxy
 from native_capture import NativeCapture
+from xdg_installed_live import desktop_string, exec_word
 from session_x_errors import SessionXErrors
 
 PROFILES = ('slate-dark', 'dune-light', 'classic-large')
@@ -281,7 +282,7 @@ def source_receipt(source, build):
                               for path in (build / 'fvwm3', build / 'bin/FvwmPrompt/FvwmDesktop')}}
 
 
-def run(args, profile, run_root):
+def run(args, profile, run_root, scenario=None):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = run_root / profile
     out.mkdir()
@@ -375,9 +376,10 @@ def run(args, profile, run_root):
             apps.mkdir(parents=True)
 
             def desktop_file(path, label, arguments):
-                # This existing launcher explicitly supports POSIX word
-                # quoting without evaluation. %% is its literal percent code.
-                quoted = shlex.join([str(value).replace('%', '%%') for value in arguments])
+                # Exec has Desktop Entry quoting plus the string escape pass,
+                # not shell quoting. Retain literal argv and %% semantics.
+                quoted = desktop_string(' '.join(exec_word(value)
+                    for value in arguments))
                 path.write_text('[Desktop Entry]\nType=Application\nName=' + label +
                     '\nExec=' + quoted + '\n')
 
@@ -538,6 +540,18 @@ def run(args, profile, run_root):
                 value = settled(query=text)
                 assert value['view']['query'] == text, value
                 return value
+
+            if scenario is not None:
+                # Share owned setup/observer/cleanup, not the historical tests.
+                scenario(args=args, profile=profile, runtime=runtime, out=out,
+                    user=user, native=native, jobs=jobs, directory=directory,
+                    config=config, env=env, client=client, view=view, core=core,
+                    probe=probe, probes=probes, windows=windows, evidence=evidence,
+                    settled=settled, focus=focus, chord=chord, opened=opened,
+                    closed=closed, capture=capture, type_query=type_query,
+                    module_cleanup_fence=module_cleanup_fence)
+                evidence['status'] = 'passed'
+                return
 
             initial = opened(keyboard=True)
             assert initial['states'] == ['observed'] * 4, initial

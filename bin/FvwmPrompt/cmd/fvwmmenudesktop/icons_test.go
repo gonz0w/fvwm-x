@@ -5,6 +5,8 @@ package main
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"image"
 	"image/color"
 	"image/png"
@@ -117,5 +119,58 @@ func TestNativeIconFallbackScaleAndFormatGates(t *testing.T) {
 		if got, err := makeRenderer().resolve("missing", false); err != nil || got != "" {
 			t.Fatal(size, got, err)
 		}
+	}
+}
+
+func TestMalformedMenuIconRetainsItemsActionsAndStyles(t *testing.T) {
+	root := t.TempDir()
+	bad, good := filepath.Join(root, "bad.png"), filepath.Join(root, "good.svg")
+	for name, data := range map[string]string{bad: "bad PNG", good: "<svg/>"} {
+		if err := os.WriteFile(name, []byte(data), 0600); err != nil {
+			t.Fatal(err)
+		}
+	}
+	o := options{iconScaleQuarters: 4}
+	o.ProviderDefaults, _ = xdgmenu.DefaultsFromPreferences(nil)
+	o.Size, o.IconDir, o.AppIcon = 24, filepath.Join(root, "cache"), good
+	r, err := newIconRenderer(xdgsource.New(nil), xdgmenu.SearchPaths{}, map[string]string{"HOME": root}, o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	entry, err := xdgmenu.ParseDesktop([]byte("[Desktop Entry]\nStartupWMClass=BrokenApp\n"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	documents := []xdgmenu.MenuDocument{{Menu: &xdgmenu.PresentedMenu{Name: "Applications", Items: []xdgmenu.PresentedItem{
+		{Kind: xdgmenu.ApplicationItem, Label: "Malformed icon", Icon: bad, Entry: &xdgmenu.AllocatedEntry{PoolEntry: xdgmenu.PoolEntry{Entry: entry}}},
+		{Kind: xdgmenu.ApplicationItem, Label: "Healthy icon", Icon: good},
+	}}}}
+	var out bytes.Buffer
+	actions := 0
+	if err := xdgmenu.RenderMenus(&out, documents, xdgmenu.RenderOptions{Title: "Apps", IncludeItems: "none", Icons: true, Icon: r.resolve,
+		Action: func(xdgmenu.PresentedItem) (string, error) {
+			actions++
+			return "Nop", nil
+		}}); err != nil {
+		t.Fatal(err)
+	}
+	if actions != 2 || !strings.Contains(out.String(), "Malformed icon") || !strings.Contains(out.String(), "Healthy icon") {
+		t.Fatal("optional icon failure lost actions/items", actions, out.String())
+	}
+	if err := iconStyles(&out, documents, r); err != nil || !strings.Contains(out.String(), `Style "BrokenApp" MiniIcon`) {
+		t.Fatal("fallback MiniIcon unavailable", out.String(), err)
+	}
+	r.appIcon = bad
+	if got, err := r.resolve(bad, false); err != nil || got != "" {
+		t.Fatal("malformed name and fallback lost text item", got, err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel()
+	r, err = newIconRenderer(xdgsource.New(ctx), xdgmenu.SearchPaths{}, map[string]string{"HOME": root}, o)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := r.resolve(good, false); !errors.Is(err, context.Canceled) {
+		t.Fatal("menu icon cancellation became text fallback", err)
 	}
 }

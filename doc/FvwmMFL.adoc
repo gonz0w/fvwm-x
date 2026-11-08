@@ -299,8 +299,9 @@ Core snapshots share the eight pending slots and absolute five-second deadline,
 read-only admission, local pending inspection and wait-only cancellation.
 Capabilities advertise the 32,768-byte decoded result maximum, binding page and
 offset limits. Each result is assembled in at most 128 ordered 256-byte chunks
-from directed `MX_REPLY`, with incarnation/serial correlation. Settings replies
-keep their separate 8192-byte maximum. Malformed core fragments return
+from directed `MX_REPLY`, with incarnation/serial correlation. Desktop settings
+replies have a separate 16,384-byte maximum; file, provider, session and
+operation replies retain their 8192-byte maximum. Malformed core fragments return
 `invalid_core_reply`; late/cancelled/disconnected assemblies are discarded.
 No native packet type or layout changes.
 
@@ -1006,8 +1007,8 @@ An explicit row error takes precedence, including a null value.
 These scoped maps contain only shared policy metadata. A group default must be
 present on every setting in that group; component roles require the matching
 explicit version. This precedence preserves each complete record within the
-fixed 8 KiB reply. Choices, descriptions, distinct bounds and distinct values remain on their
-rows; identical group bounds can be inherited. Application rows always name
+16 KiB desktop settings reply limit. Choices, descriptions, distinct bounds
+and distinct values remain on their rows; identical group bounds can be inherited. Application rows always name
 their group explicitly.
 A result with `value_inheritance_version: 1` can omit equal values. After
 metadata and explicit row fields have merged, restore a missing `saved` from
@@ -1017,6 +1018,12 @@ metadata and explicit row fields have merged, restore a missing `saved` from
 restore a missing `requested` from `saved`. An explicit value always wins,
 including null. Without the version marker, values are explicit. Reject an
 unsupported inheritance version rather than guessing its meaning.
+`group:desktop` returns all twelve desktop keys. Version 2 `component_roles`
+and `resolution` distinguish role fallback from the `effective` value and
+`source` of the saved or module key. Component fonts and densities can inherit
+the effective desktop defaults and then the configured profile. Launcher
+application reports submission, not a paint acknowledgement; Form fonts apply
+at the next owned Form start. The native corner radius is fixed at 0.
 Standalone
 FvwmDesktop `query-settings` records and native inspector metadata retain their
 own per-item owner/generation fields.
@@ -1118,7 +1125,14 @@ key still applies its own type and value rules. The 384-byte total also applies
 to multi-key updates, so individually valid values can exceed it together.
 The native Application preferences editor uses its own bounded atomic draft
 route for editing the complete group.
-The internal reply is at most 8192 decoded bytes in 32 ordered chunks. Partial,
+Desktop settings query, set, reset, reload and validate replies are at most
+16,384 decoded bytes in 64 ordered chunks of at most 256 bytes. Capabilities
+advertise this limit as `desktop_settings_result_max_bytes`. File, provider,
+session and operation replies retain their 8192-byte, 32-chunk limit. Reply
+assembly is allocated on demand; a settings reply can require up to 8 KiB more
+than before per active request. With eight waits per client and 32 clients,
+the theoretical additional aggregate is 2 MiB. Queue, client, wait and deadline
+limits are unchanged. Partial,
 malformed or out-of-order replies return `invalid_provider_reply`; expiry and
 disconnect release assembly storage. A restart cookie plus nonreused serial
 prevents late replies from completing a replacement request or MFL process.

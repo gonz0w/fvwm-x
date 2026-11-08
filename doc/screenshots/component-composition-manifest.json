@@ -1,0 +1,386 @@
+{
+  "base": "0333fe370db7d1924470228dc439864ac16c11c1",
+  "state": "Y2 focused qualification passed; full R1 release remains in development",
+  "screenshots": {
+    "component-relief-launcher-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 43437,
+      "sha256": "f57cc78f90a77db88655064d7812f0e0ec69599cc7f9771dd59ef54fc2990abf",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-launcher-settings-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 51614,
+      "sha256": "ed2d576ffafe56c5e693320114483a887a034147bef4ca16f2a819df5212c71e",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-form-settings-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 50165,
+      "sha256": "2fbb5d1b07b6c89d51c8b99ffa9e0979dbb2e3c11004c5314363a1aba3d4ff6c",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-relief-launcher-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 43881,
+      "sha256": "7a249ad4e15ebd71522cb5c48de28b6d9cca3f34bc6b5df8ff82fea88f9854fd",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-launcher-settings-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 52016,
+      "sha256": "641b08dc6d81d4dd33a0b9f974ac2749bc358a45232be568e66c638ece5bfb6c",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-form-settings-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 50584,
+      "sha256": "3e6f533a22432888a61fe45d998507a8f848d17c4230089e89b43edfe3e481ce",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-relief-launcher-classic-large.png": {
+      "bytes": 62870,
+      "sha256": "3ba84fa7d41f84c473cd86d64305721a6a318a2589322eda5de0812b44167f2b",
+      "visually_inspected": true,
+      "source": "first combined run; passing Classic scene",
+      "profile": "classic-large"
+    },
+    "icon-fallback-slate-dark-invalid-application.png": {
+      "bytes": 7886,
+      "sha256": "a4297c3fde29d4506995b110118e27dded535ee0ae30f0e73b05c6c7fd602a77",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "slate-dark"
+    },
+    "icon-fallback-dune-light-invalid-application.png": {
+      "bytes": 7899,
+      "sha256": "e73cf63aa41062caec358af8a7f70fd97d1b21f58f1b518fe8f5e4427aa0156b",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "dune-light"
+    },
+    "icon-fallback-classic-large-invalid-application.png": {
+      "bytes": 12632,
+      "sha256": "57455c68f1787bc484dc650aadd79538bf61743f11daab87bf90d90a2885243f",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "classic-large"
+    },
+    "icon-fallback-classic-large-invalid-directory.png": {
+      "bytes": 7047,
+      "sha256": "9664c19f59a8eba9e2c4e3243167a0835131fd1ccf240f643a3a3d95bd8b91bc",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "classic-large"
+    },
+    "icon-fallback-formats-disabled-application.png": {
+      "bytes": 12557,
+      "sha256": "4fc799a2441ae2a8c6da9e34450c94ac801b1e6289adc2252a95ada0ed072c42",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "classic-large"
+    },
+    "icon-fallback-invalid-theme-directory-text.png": {
+      "bytes": 6970,
+      "sha256": "32f5e83fe2814cf2743ac257e272e8374bf659980ffa5ce38e82b80b33b72ed5",
+      "visually_inspected": true,
+      "source": "final focused scene",
+      "profile": "classic-large"
+    },
+    "component-form-settings-classic-large.png": {
+      "bytes": 86106,
+      "sha256": "c888f3c285fac49628cdd8fdb361a3832083e03b80ec9e4babf17f9516ebd87b",
+      "visually_inspected": true,
+      "source": "first combined run; passing Classic scene",
+      "profile": "classic-large"
+    },
+    "component-launcher-settings-classic-large.png": {
+      "bytes": 89971,
+      "sha256": "7e7b169200c270f9564676acf1273c6509e394e3a47ce27333ce093921f30dc2",
+      "visually_inspected": true,
+      "source": "first combined run; passing Classic scene",
+      "profile": "classic-large"
+    }
+  },
+  "profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true,
+        "maximum_font_saved_override_wire_roundtrip": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": [],
+      "maximum_font_wire_bytes": 10801
+    },
+    "dune-light": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    },
+    "classic-large": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 310,
+          "height": 156
+        },
+        "enlarged_menu": {
+          "width": 370,
+          "height": 271
+        },
+        "original_form": {
+          "width": 420,
+          "height": 154,
+          "controls": [
+            {
+              "x": 296,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 326,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 72,
+              "height": 41,
+              "border": 0
+            },
+            {
+              "x": 308,
+              "y": 108,
+              "width": 102,
+              "height": 41,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 506,
+          "height": 199,
+          "controls": [
+            {
+              "x": 348,
+              "y": 10,
+              "width": 124,
+              "height": 60,
+              "border": 0
+            },
+            {
+              "x": 372,
+              "y": 75,
+              "width": 124,
+              "height": 60,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 140,
+              "width": 100,
+              "height": 54,
+              "border": 0
+            },
+            {
+              "x": 362,
+              "y": 140,
+              "width": 134,
+              "height": 54,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    }
+  },
+  "limits": "Ready-image mixed-icon pixels pass in three configs, not cold SVG self-destroy activation. Format-disabled Go producers run on full-feature native core. Published nine fresh captures inspected; twelve icon captures retained in raw archive. No accessibility/release claim.",
+  "previous_checkpoint": "https://github.com/gonz0w/fvwm-x/blob/5e112262b675cb125d00d32012971de298ae3ba0/doc/screenshots/component-composition-manifest.json",
+  "captured_icon_fixture_sha256": "7a557e9793486d9bdc50d2a5b128030801e30edc7fae4eade569fccb551a8d86",
+  "historical_y1_component_fixture_sha256": "0ca065936ba1ee6d6f8aa0c7af320fb602d8140605532dfda72f7ab7bb5f4323",
+  "component_fixture_sha256": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59",
+  "component_profile_sources": {
+    "slate-dark": "0ca065936ba1ee6d6f8aa0c7af320fb602d8140605532dfda72f7ab7bb5f4323",
+    "dune-light": "0ca065936ba1ee6d6f8aa0c7af320fb602d8140605532dfda72f7ab7bb5f4323",
+    "classic-large": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59"
+  }
+}

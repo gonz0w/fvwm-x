@@ -9,6 +9,7 @@ import ctypes as C
 import hashlib
 import json
 import os
+import re
 from pathlib import Path
 import shlex
 import shutil
@@ -140,14 +141,40 @@ def run(args):
                 wait_for_predicate('icon menu dismissed', lambda: not mapped(),
                     time.monotonic() + 5, process=core)
 
-            def menu(kind, label, color, scale='2', capture=True):
+            def ready_directory_images(text, label, color, extent):
+                # Reuse the exact-path persistent probe from the Lucide
+                # fixture. A self-destroying menu cannot retain its pending
+                # SVG subscription across the popdown commit boundary.
+                paths = sorted(set(re.findall(r'%([^%\n]+)%', text)))
+                assert len(paths) <= 4
+                for picture in paths:
+                    command('DestroyMenu recreate IconReadiness\n'
+                        'AddToMenu IconReadiness ' + json.dumps('%' + picture + '%Ready') + ' Nop')
+                    for attempt in range(40):
+                        connection.send(b'Popup IconReadiness\n')
+                        windows = wait_for_predicate('exact directory image probe maps', mapped,
+                            time.monotonic() + 5, process=core)
+                        assert len(windows) == 1
+                        time.sleep(.05)
+                        pixels = color_count(windows[0], color)
+                        dismiss()
+                        command('Nop')
+                        if pixels >= extent * extent:
+                            evidence.setdefault('directory_image_readiness', []).append(
+                                dict(name=label, path=picture, matching_pixels=pixels,
+                                     attempts=attempt + 1))
+                            break
+                    else:
+                        raise AssertionError((label, picture, 'persistent image never ready', pixels))
+
+            def menu(kind, label, color, scale='2', capture=True, disabled=False):
                 if kind == 'application':
-                    argv = [str(args.desktop), '--title', 'IconApps', '--include-items',
+                    argv = [str(args.disabled_desktop if disabled else args.desktop), '--title', 'IconApps', '--include-items',
                         'none', '--enable-mini-icons', '--theme', 'fixture', '--size', '24',
                         '--icon-scale', scale, '--app-icon', 'fixture', '--mini-icon-dir', str(cache)]
                     name = 'IconApps'
                 else:
-                    argv = [str(args.directory), '--dir', str(listing), '--title', '',
+                    argv = [str(args.disabled_directory if disabled else args.directory), '--dir', str(listing), '--title', '',
                         '--command-title', 'Nop', '--command-file', 'Nop', '--icon-theme',
                         'fixture', '--icon-size', '24', '--icon-scale', scale,
                         '--mini-icon-dir', str(cache)]
@@ -156,22 +183,46 @@ def run(args):
                 assert result.returncode == 0, result.stderr.decode()
                 text = result.stdout.decode()
                 (args.artifacts_dir / (label + '.fvwm')).write_text(text)
-                command('PipeRead ' + json.dumps(' '.join(shlex.quote(v) for v in argv)))
+                publication = 'PipeRead ' + json.dumps(' '.join(shlex.quote(v) for v in argv))
+                command(publication)
                 pointer.motion(350, 180)
                 pixels = None
                 extent = 48 if scale == '2' else 30
-                minimum = extent * extent * (2 if kind == 'directory' else 1)
+                # The mixed directory contains one broken folder image and
+                # one healthy file image; the ordinary scene expects both.
+                minimum = extent * extent * (2 if kind == 'directory' and
+                                             not args.invalid_assets else 1)
+                if kind == 'directory' and args.invalid_assets and color is not None:
+                    ready_directory_images(text, label, color, extent)
                 for attempt in range(40):
+                    recreated = kind == 'directory' and attempt > 0
+                    if recreated:
+                        # Directory menus destroy themselves on popdown. The
+                        # image-readiness retry needs a fresh published menu.
+                        command(publication)
+                        if args.invalid_assets and color is not None:
+                            ready_directory_images(text, label, color, extent)
+                    trace = {'name': label, 'index': attempt,
+                             'recreated': recreated, 'mapped': False}
+                    evidence.setdefault('popup_attempts', []).append(trace)
                     connection.send(('Popup ' + json.dumps(name) + '\n').encode())
                     windows = wait_for_predicate('named icon menu maps', mapped,
                         time.monotonic() + 5, process=core)
+                    trace['mapped'] = True
                     assert len(windows) == 1, windows
                     # An open modal menu retains its prepared pictures. Closing
                     # it exposes the existing async-image commit boundary;
                     # validate the next popup rather than demand an idle repaint.
                     time.sleep(.05)
                     pixels = color_count(windows[0], color) if color is not None else None
+                    trace['matching_pixels'] = pixels
                     if color is None or pixels >= minimum:
+                        if kind == 'directory' and args.invalid_assets and attempt == 0:
+                            # Always witness dismissal/recreation, even when
+                            # the first popup's images were already ready.
+                            dismiss()
+                            command('Nop')
+                            continue
                         break
                     dismiss()
                     command('Nop')
@@ -192,6 +243,8 @@ def run(args):
                     'matching_pixels': pixels, 'popup_attempts': attempt + 1,
                     'output_sha256': hashlib.sha256(result.stdout).hexdigest()})
                 dismiss()
+                if kind == 'directory' and args.invalid_assets:
+                    command('DestroyMenu IconReadiness')
                 return text
 
             if args.lucide_example:
@@ -199,6 +252,58 @@ def run(args):
                 run_lucide(args, source=source, data=data, env=env, palettes=palettes,
                     core=core, client=client, pointer=pointer, connection=connection,
                     command=command, mapped=mapped, dismiss=dismiss, evidence=evidence)
+            elif args.invalid_assets:
+                # A broken preferred PNG must not discard a valid sibling or
+                # usable action. The native renderer still owns SVG decoding.
+                (apps / 'healthy.desktop').write_text('[Desktop Entry]\n'
+                    'Type=Application\nName=Healthy sibling\nExec=/bin/true\n'
+                    'Icon=healthy\n')
+                for directory in ('one', 'two'):
+                    (theme / directory / 'healthy.svg').write_text(artwork('#00ff00'))
+                    (theme / directory / 'fixture.png').write_bytes(b'not a PNG')
+                    (theme / directory / 'folder.png').write_bytes(b'not a PNG')
+                for name in args.themes:
+                    if name == 'classic-large':
+                        fg, bg, hi, font = 'navy', 'wheat', 'ivory', 'xft:DejaVu Sans Mono:size=18'
+                    else:
+                        palette, variant = name.split('-')
+                        colors = palettes[palette][variant]
+                        fg, bg, hi, font = colors['text'], colors['surface'], colors['accent'], 'xft:Sans:size=11'
+                    settings = ('Colorset 0 fg ' + fg + ', bg ' + bg + '\n'
+                        'Colorset 1 fg ' + fg + ', bg ' + hi + '\n'
+                        'MenuStyle * Font "' + font + '", MenuColorset 0, ActiveColorset 1\n')
+                    command(settings.rstrip())
+                    evidence['themes'][name] = settings
+                    text = menu('application', name + '-invalid-application', 0x00ff00)
+                    assert 'Named icon application' in text and 'Healthy sibling' in text
+                    menu('directory', name + '-invalid-directory', 0x00ff00)
+                # Replacement creates a fresh immutable identity without
+                # invalidating exports retained by the earlier menu.
+                menu('application', 'mixed-quarter-scale', 0x00ff00, scale='1.25')
+                before = menu('application', 'mixed-before-refresh', 0x00ff00, capture=False)
+                retained = {path: path.read_bytes() for path in cache.glob('.fvwm-xdg-*')
+                            if path.is_file()}
+                assert retained
+                (theme / 'two/healthy.svg').write_text(artwork('#0000ff'))
+                after = menu('application', 'mixed-after-refresh', 0x0000ff)
+                assert before != after
+                for path, contents in retained.items():
+                    assert path.read_bytes() == contents, 'referenced export changed'
+                if args.disabled_desktop:
+                    for kind in ('application', 'directory'):
+                        text = menu(kind, 'formats-disabled-' + kind, None, disabled=True)
+                        assert '.fvwm-xdg-' not in text
+                    evidence['formats_disabled'] = True
+                # A malformed selected index yields text, without skipping
+                # its precedence in favour of another theme's metadata.
+                (theme / 'index.theme').write_text('[Icon Theme]\nDirectories=../bad\n')
+                text = menu('application', 'invalid-theme-text', None)
+                assert 'Named icon application' in text and 'Healthy sibling' in text
+                assert '.fvwm-xdg-' not in text
+                text = menu('directory', 'invalid-theme-directory-text', None)
+                assert '.fvwm-xdg-' not in text
+                evidence['invalid_assets_preserve_actions_and_siblings'] = True
+                evidence['replacement_retains_exports'] = True
             else:
                 for name in args.themes:
                     if name == 'classic-large':
@@ -252,4 +357,13 @@ if __name__ == '__main__':
         default=['slate-dark', 'dune-light', 'classic-large'])
     parser.add_argument('--lucide-example', type=Path,
         help='Run the optional installed menu example cases instead of synthetic themes')
-    run(parser.parse_args())
+    parser.add_argument('--invalid-assets', action='store_true',
+        help='Run only the mixed malformed-image and text-fallback checkpoint')
+    parser.add_argument('--disabled-desktop', type=Path)
+    parser.add_argument('--disabled-directory', type=Path)
+    args = parser.parse_args()
+    if bool(args.disabled_desktop) != bool(args.disabled_directory):
+        parser.error('both disabled-format producers are required together')
+    if args.invalid_assets and args.lucide_example:
+        parser.error('invalid-asset and Lucide scenes are separate checkpoints')
+    run(args)

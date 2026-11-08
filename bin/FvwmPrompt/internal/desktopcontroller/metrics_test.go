@@ -49,7 +49,7 @@ func TestDesktopMetricsScopedPublicationAndInherit(t *testing.T) {
 		t.Fatal(err)
 	}
 	for _, command := range *commands {
-		if strings.HasPrefix(command, "MenuStyle SlateLauncherStyle Font ") || strings.Contains(command, "VerticalItemSpacing") {
+		if strings.HasPrefix(command, "MenuStyle SlateLauncherStyle Font ") || strings.Contains(command, "TitleFont") || strings.Contains(command, "VerticalItemSpacing") || strings.Contains(command, "Hilight3DThickness") {
 			t.Fatal("initial inherit overrides profile", command)
 		}
 	}
@@ -58,7 +58,7 @@ func TestDesktopMetricsScopedPublicationAndInherit(t *testing.T) {
 		t.Fatal(err)
 	}
 	text := strings.Join(*commands, "\n")
-	want := `MenuStyle SlateLauncherStyle Font "xft:Sans:size=14", VerticalItemSpacing 12 12, VerticalTitleSpacing 14 14, BorderWidth 3`
+	want := `MenuStyle SlateLauncherStyle Font "xft:Sans:size=14", TitleFont "xft:Sans:size=14", VerticalItemSpacing 12 12, VerticalTitleSpacing 14 14, BorderWidth 3`
 	if !strings.Contains(text, want) || !d.desktopSubmitted() {
 		t.Fatal(text)
 	}
@@ -93,7 +93,7 @@ func TestDesktopMetricsScopedPublicationAndInherit(t *testing.T) {
 		t.Fatal(err)
 	}
 	text = strings.Join(*commands, "\n")
-	if !strings.Contains(text, `MenuStyle SlateLauncherStyle Font "$[infostore.slate_font]", VerticalItemSpacing 8 8, VerticalTitleSpacing 10 10, BorderWidth 1`) {
+	if !strings.Contains(text, `MenuStyle SlateLauncherStyle Font "$[infostore.slate_font]", TitleFont, VerticalItemSpacing 8 8, VerticalTitleSpacing 10 10, BorderWidth 1`) {
 		t.Fatal(text)
 	}
 }
@@ -136,7 +136,7 @@ func TestDesktopMetricsWaitForRecoveryAndKeepOldFormTuple(t *testing.T) {
 			}
 		}
 	}
-	if !strings.Contains(strings.Join(*commands, "\n"), `MenuStyle SlateLauncherStyle Font "fixed", VerticalItemSpacing 4 4`) {
+	if !strings.Contains(strings.Join(*commands, "\n"), `MenuStyle SlateLauncherStyle Font "fixed", TitleFont "fixed", VerticalItemSpacing 4 4`) {
 		t.Fatal(*commands)
 	}
 }
@@ -159,5 +159,167 @@ func TestDesktopMetricsEditorLiteralAndIndependentAliases(t *testing.T) {
 	before := d.saved["desktop_font"]
 	if err := d.changeSettings(values{"desktop_font": `fixed";Exec bad`}); err == nil || d.saved["desktop_font"] != before {
 		t.Fatal("unrepresentable value persisted")
+	}
+}
+
+func TestIndependentComponentPublicationAndProfileRestoration(t *testing.T) {
+	d, commands := fixture(t)
+	if err := d.theme(true); err != nil {
+		t.Fatal(err)
+	}
+	*commands = nil
+	if err := d.changeSettings(values{
+		"desktop_style": "flat", "desktop_font": "global", "desktop_density": "spacious",
+		"launcher_font": "item", "launcher_title_font": "title", "launcher_density": "compact",
+		"form_font": "body", "form_input_font": "input", "form_button_font": "button", "form_density": "comfortable",
+	}); err != nil {
+		t.Fatal(err)
+	}
+	text := strings.Join(*commands, "\n")
+	for _, want := range []string{`Font "item"`, `TitleFont "title"`, "VerticalItemSpacing 4 4, VerticalTitleSpacing 6 6", "Hilight3DThickness 0, SeparatorsLong, TrianglesSolid"} {
+		if !strings.Contains(text, want) {
+			t.Fatal(want, text)
+		}
+	}
+	forbidComponentCommands(t, *commands, "KillModule FvwmForm", "Module FvwmForm", "DefaultFont ", "MenuStyle *", "CopyMenuStyle ", "Style *")
+	*commands = nil
+	d.form("SlateNoticeForm", []string{`Text "future owned form"`}, false)
+	text = strings.Join(*commands, "\n")
+	for _, want := range []string{`*SlateNoticeForm: Font "body"`, `*SlateNoticeForm: InputFont "input"`, `*SlateNoticeForm: ButtonFont "button"`, "*SlateNoticeForm: PadVText 12"} {
+		if !strings.Contains(text, want) {
+			t.Fatal(want, text)
+		}
+	}
+	*commands = nil
+	if err := d.changeSettings(values{"desktop_style": "relief"}); err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(strings.Join(*commands, "\n"), "Hilight3DThickness 2, SeparatorsShort, TrianglesRelief") {
+		t.Fatal(*commands)
+	}
+	*commands = nil
+	if err := d.changeSettings(values{"desktop_style": "inherit", "launcher_font": "", "launcher_title_font": "", "launcher_density": "inherit"}); err != nil {
+		t.Fatal(err)
+	}
+	text = strings.Join(*commands, "\n")
+	for _, want := range []string{`Font "global", TitleFont "global"`, "VerticalItemSpacing 12 12", "Hilight3DThickness 0, SeparatorsShort, TrianglesRelief"} {
+		if !strings.Contains(text, want) {
+			t.Fatal(want, text)
+		}
+	}
+	*commands = nil
+	if err := d.changeSettings(values{"desktop_font": "", "desktop_density": "inherit"}); err != nil {
+		t.Fatal(err)
+	}
+	text = strings.Join(*commands, "\n")
+	if !strings.Contains(text, `Font "$[infostore.slate_font]", TitleFont, VerticalItemSpacing 8 8, VerticalTitleSpacing 10 10`) {
+		t.Fatal(text)
+	}
+}
+
+func TestComponentEditorPagesKeepDefaultsAndDraftsWithinVisibleKeys(t *testing.T) {
+	d, commands := fixture(t)
+	pages := map[string][]string{
+		"component:defaults": {"desktop_font", "desktop_density", "desktop_border", "desktop_icon_theme"},
+		"component:launcher": {"desktop_style", "launcher_font", "launcher_title_font", "launcher_density"},
+		"component:forms":    {"form_font", "form_input_font", "form_button_font", "form_density"},
+	}
+	if err := d.editSettings("group:desktop", false, nil); err != nil {
+		t.Fatal(err)
+	}
+	if d.editor.scope != "component:defaults" {
+		t.Fatal("broad editor scope retained", d.editor.scope)
+	}
+	for scope, keys := range pages {
+		*commands = nil
+		if err := d.editSettings(scope, true, nil); err != nil {
+			t.Fatal(err)
+		}
+		if !reflect.DeepEqual(d.editor.keys, keys) {
+			t.Fatal(scope, d.editor.keys)
+		}
+		text := strings.Join(*commands, "\n")
+		for page := range pages {
+			if page == scope {
+				continue
+			}
+			if !strings.Contains(text, "edit-settings "+page) {
+				t.Fatal("missing page navigation", scope, page, text)
+			}
+		}
+		draft := values{}
+		for _, key := range keys {
+			draft[key] = d.saved[key]
+		}
+		if err := d.editSettings(scope, false, draft); err != nil {
+			t.Fatal(err)
+		}
+		for key := range draft {
+			if !strings.Contains(strings.Join(*commands, "\n"), key) {
+				t.Fatal("draft field missing", key)
+			}
+		}
+	}
+	rows, err := d.query("group:desktop", nil, nil)
+	if err != nil || len(rows) != 12 {
+		t.Fatal("IPC desktop scope lost keys", rows, err)
+	}
+}
+
+func TestScopedComponentTupleWaitsForResourceRecovery(t *testing.T) {
+	d, commands := colorFixture(t, "normal")
+	activeColor(t, d, "palette", "dune")
+	before := *d.lastDesktop
+	*commands = nil
+	if err := d.changeSettings(values{"desktop_style": "relief", "launcher_font": "item", "launcher_title_font": "title", "form_font": "body", "form_input_font": "input", "form_button_font": "button", "launcher_density": "compact", "form_density": "spacious"}); err != nil {
+		t.Fatal(err)
+	}
+	if *d.lastDesktop != before || d.desktopSubmitted() {
+		t.Fatal("new tuple crossed resource gate", d.lastDesktop)
+	}
+	*commands = nil
+	d.form("SlateNoticeForm", []string{`Text "pending"`}, false)
+	if strings.Contains(strings.Join(*commands, "\n"), `Font "body"`) {
+		t.Fatal("pending Form font published", *commands)
+	}
+	*commands = nil
+	completeComponentRecovery(t, d)
+	if !d.desktopSubmitted() {
+		t.Fatal("recovery lost component tuple")
+	}
+	// Preview and notice forms retain their existing recovery lifecycle.
+	// Metrics publication itself starts no Form; the next caller consumes it.
+	*commands = nil
+	d.form("SlateNoticeForm", []string{`Text "recovered"`}, false)
+	text := strings.Join(*commands, "\n")
+	for _, want := range []string{`Font "body"`, `InputFont "input"`, `ButtonFont "button"`, "PadVText 16"} {
+		if !strings.Contains(text, want) {
+			t.Fatal(want, text)
+		}
+	}
+}
+
+func TestComponentDefaultsDoNotResetHiddenSettings(t *testing.T) {
+	d, _ := fixture(t)
+	if err := d.changeSettings(values{"launcher_font": "item", "launcher_title_font": "title", "form_font": "body", "form_input_font": "input", "form_button_font": "button", "launcher_density": "spacious", "form_density": "compact", "desktop_style": "relief"}); err != nil {
+		t.Fatal(err)
+	}
+	if err := d.editSettings("group:desktop", false, nil); err != nil {
+		t.Fatal(err)
+	}
+	oldToken := d.editor.token
+	if err := d.handle("defaults-settings", oldToken); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := d.currentEditor(oldToken); err == nil {
+		t.Fatal("old page callback retained")
+	}
+	if err := d.handle("apply-settings", d.editor.token+" x inherit inherit x"); err != nil {
+		t.Fatal(err)
+	}
+	for key, want := range (values{"launcher_font": "item", "launcher_title_font": "title", "form_font": "body", "form_input_font": "input", "form_button_font": "button", "launcher_density": "spacious", "form_density": "compact", "desktop_style": "relief"}) {
+		if d.saved[key] != want {
+			t.Fatal("hidden component value reset", key, d.saved[key])
+		}
 	}
 }

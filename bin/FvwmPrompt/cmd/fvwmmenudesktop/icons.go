@@ -22,6 +22,7 @@ type iconRenderer struct {
 	renderer                     *iconrender.Renderer
 	dir, theme, appIcon, dirIcon string
 	size, scaleQuarters          int
+	diagnostic                   func(error)
 }
 
 func newIconRenderer(source *xdgsource.Source, paths xdgmenu.SearchPaths, env map[string]string, o options) (*iconRenderer, error) {
@@ -65,6 +66,6 @@ func (r *iconRenderer) resolve(name string, directory bool) (string, error) {
 	if directory {
 		fallback = r.dirIcon
 	}
-	return r.renderer.Resolve(xdgmenu.IconRequest{Name: name, Theme: r.theme,
-		Size: r.size, ScaleQuarters: r.scaleQuarters, Fallback: fallback})
+	return r.renderer.ResolveOptional(xdgmenu.IconRequest{Name: name, Theme: r.theme,
+		Size: r.size, ScaleQuarters: r.scaleQuarters, Fallback: fallback}, r.diagnostic)
 }

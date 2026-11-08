@@ -63,6 +63,11 @@ func Editor(s Snapshot,
 	if _, err := identity(token); err != nil {
 		return plan, err
 	}
+	// group:desktop remains the complete data scope; native editing opens its
+	// compact default page, with explicit navigation to the two other axes.
+	if scope == "group:desktop" {
+		scope = "component:defaults"
+	}
 	keys, err := Scope(scope)
 	if err != nil {
 		return plan, err
@@ -136,12 +141,20 @@ func Editor(s Snapshot,
 			"Command SendToModule FvwmDesktop retry-native-settings")
 	}
 	if len(keys) > 0 && DesktopKey(keys[0]) {
-		lines[0] = `Title "Desktop component settings"`
-		lines = append(lines, "Line left", `Text "Launcher changes apply after preview recovery."`,
-			"Line left", `Text "Forms use these choices at their next start."`,
-			"Line left", `Text "Empty font and Inherit use the configured profile baseline."`,
-			"Line left", `Text "The icon theme applies to native tray icons; empty uses hicolor."`)
+		lines[0] = `Title "Desktop component defaults"`
+		switch scope {
+		case "component:launcher":
+			lines[0] = `Title "Launcher settings"`
+		case "component:forms":
+			lines[0] = `Title "Form settings"`
+		}
+		lines = append(lines, "Line left", `Text "Empty / Inherit: desktop default, then profile."`,
+			"Line left", `Text "Launcher: after recovery. Forms: next start only."`)
+		if has(keys, "desktop_icon_theme") {
+			lines = append(lines, "Line left", `Text "Empty tray icon theme uses hicolor."`)
+		}
 	}
+
 	previous := ""
 	for _, key := range plan.Keys {
 		item, _ := find(key)
@@ -232,6 +245,20 @@ func Editor(s Snapshot,
 		lines = append(lines, `Button continue "Desktop components..." F11`, "Command "+action+"edit-settings group:desktop")
 		lines = append(lines, `Button continue "Application preferences..." F10`, "Command "+action+"edit-settings group:application")
 	}
+	if strings.HasPrefix(scope, "component:") {
+		lines = append(lines, "Line left")
+		for _, page := range []struct{ scope, caption, shortcut string }{
+			{"component:defaults", "Defaults...", "F8"},
+			{"component:launcher", "Launcher...", "F9"},
+			{"component:forms", "Forms...", "F10"},
+		} {
+			if page.scope != scope {
+				lines = append(lines, "Button continue "+quote(page.caption)+" "+page.shortcut,
+					"Command "+action+"edit-settings "+page.scope)
+			}
+		}
+	}
+
 	for _, key := range plan.Keys {
 		if PreviewKey(key) {
 			lines = append(lines, "Line left",

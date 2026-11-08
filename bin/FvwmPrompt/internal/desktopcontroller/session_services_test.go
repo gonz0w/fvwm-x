@@ -201,8 +201,8 @@ func requireRegistrySettings(t *testing.T, rows map[string]any) {
 }
 
 func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
-	// The initial executed 19-setting projection was 9447 bytes. Shared
-	// envelope metadata must restore this existing cap without dropping rows.
+	// The expanded component registry has a dedicated 16KiB desktop result
+	// bound. Shared metadata must retain every registered row within it.
 	d, _ := fixture(t)
 	d.runtimeHeld = desktopsettings.PreviewValues{"palette": heldTestValue(t, "palette", "ink"), "appearance": heldTestValue(t, "appearance", "light"), "contrast": heldTestValue(t, "contrast", "high")}
 	for key, value := range d.runtimeHeld {
@@ -219,7 +219,7 @@ func TestAllSettingsHaveOneBoundedPublicSnapshot(t *testing.T) {
 	}
 	settings := reply["result"].(map[string]any)["settings"].(map[string]any)
 	requireRegistrySettings(t, settings)
-	if len(bytes) > 8192 {
+	if len(bytes) > desktopSettingsResultMax {
 		t.Fatalf("Complete bounded public snapshot needs reviewed reply cap: %d", len(bytes))
 	}
 }
@@ -561,7 +561,7 @@ func reconstructedPublicSetting(result, row values) values {
 		reconstructed = merged(reconstructed, defaults)
 	}
 	reconstructed = merged(reconstructed, row)
-	if result["value_inheritance_version"] == 1 {
+	if result["value_inheritance_version"] == 1 || result["value_inheritance_version"] == json.Number("1") {
 		if _, present := row["saved"]; !present {
 			reconstructed["saved"] = reconstructed["default"]
 		}
@@ -602,7 +602,14 @@ func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
 					}
 					stringValues := values{"application_font": font, "icon_theme": strings.Repeat("I", 128), "cursor_theme": strings.Repeat("C", 128)}
 					if explicit {
-						stringValues["desktop_font"], stringValues["desktop_icon_theme"] = strings.Repeat("W", 128), strings.Repeat("N", 128)
+						for _, key := range []string{"desktop_font", "launcher_font", "launcher_title_font", "form_font", "form_input_font", "form_button_font"} {
+							value := key + ":saved:xft:Noto Sans:size=24:weight=bold:"
+							stringValues[key] = (value + strings.Repeat("Ab3cD4ef5G6hIj7K8Lm9N0Op1Qr2StUv3Wx4Yz5", 4))[:128]
+						}
+						stringValues["desktop_icon_theme"] = strings.Repeat("N", 128)
+						for key, value := range (values{"desktop_style": "relief", "desktop_density": "comfortable", "launcher_density": "comfortable", "form_density": "comfortable", "desktop_border": "strong"}) {
+							stringValues[key] = value
+						}
 					}
 					for key, value := range stringValues {
 						if _, err := desktopsettings.Value(key, value, false); err != nil {
@@ -624,7 +631,13 @@ func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
 							d.effective[key] = value
 						}
 						if explicit {
-							d.effective["desktop_font"], d.effective["desktop_icon_theme"] = strings.Repeat("V", 128), strings.Repeat("O", 128)
+							for _, key := range []string{"desktop_font", "launcher_font", "launcher_title_font", "form_font", "form_input_font", "form_button_font"} {
+								value := key + ":module:xft:DejaVu Sans:size=20:weight=medium:"
+								d.effective[key] = (value + strings.Repeat("z9Y8x7W6v5U4t3S2r1Q0p9On8M7l6K5j4I3h2G1f0", 4))[:128]
+							}
+							d.effective["desktop_icon_theme"] = strings.Repeat("O", 128)
+							d.effective["desktop_style"] = "flat"
+							d.effective["launcher_density"], d.effective["form_density"] = "spacious", "compact"
 						}
 						for key := range desktopsettings.Registry() {
 							d.overrides[key] = d.effective[key]
@@ -665,23 +678,35 @@ func TestCompactSettingsWorstCaseStringsAndDistinctMetadata(t *testing.T) {
 							t.Fatal(err)
 						}
 						response := d.settingsRequest(request)
-						result := response["result"].(map[string]any)
+						encoded, err := encodeProviderReply(response)
+						if err != nil {
+							t.Fatal(err)
+						}
+						if len(encoded) > desktopSettingsResultMax {
+							t.Errorf("settings budget: operation=%s override=%t explicit=%t submitted=%t font-leading=%q bytes=%d", operation, override, explicit, submitted, font[:1], len(encoded))
+						}
+						// Decode actual wire JSON with exact numbers, including the
+						// maximum uint64 native observations. Reconstruct all rows.
+						decoded, err := desktopsettings.DecodeJSON(encoded)
+						if err != nil {
+							t.Fatal(err)
+						}
+						result := decoded.(map[string]any)["result"].(map[string]any)
 						rows := result["settings"].(map[string]any)
 						requireRegistrySettings(t, rows)
+						if len(rows) != 38 {
+							t.Fatal("expanded registry row count", len(rows))
+						}
 						for key, raw := range rows {
 							got := reconstructedPublicSetting(result, raw.(map[string]any))
 							wantJSON, _ := json.Marshal(standalone[key])
 							gotJSON, _ := json.Marshal(got)
 							if string(wantJSON) != string(gotJSON) {
-								t.Fatal("metadata roundtrip", key, got, standalone[key])
+								t.Fatal("wire metadata roundtrip", key, got, standalone[key])
 							}
 						}
-						encoded, err := encodeProviderReply(response)
-						if err != nil {
-							t.Fatal(err)
-						}
-						if len(encoded) > 8192 {
-							t.Errorf("settings budget: operation=%s override=%t explicit=%t submitted=%t font-leading=%q bytes=%d", operation, override, explicit, submitted, font[:1], len(encoded))
+						if got := boundedProviderReply(response); !reflect.DeepEqual(got, encoded) {
+							t.Fatal("bounded provider dropped a complete valid snapshot", len(encoded), string(got))
 						}
 						t.Logf("complete %d-row settings: %s override=%t explicit=%t submitted=%t bytes=%d", len(rows), operation, override, explicit, submitted, len(encoded))
 					}
@@ -740,5 +765,83 @@ func TestCompactSettingsSourceImpliedErrorPreservesDistinctExplicitErrors(t *tes
 		if string(wantJSON) != string(gotJSON) {
 			t.Fatal("source-implied error changed metadata", key, got, standalone[key])
 		}
+	}
+}
+
+func TestProviderReplyBoundsSeparateDesktopSettingsFromOtherResults(t *testing.T) {
+	for _, tc := range []struct {
+		name, resource string
+		size           int
+		settings, keep bool
+	}{
+		{"ordinary-at-8KiB", "provider", 8192, false, true},
+		{"provider-over-8KiB", "provider", 8193, false, false},
+		{"session-over-8KiB", "session", 8193, false, false},
+		{"operations-over-8KiB", "operations", 8193, false, false},
+		{"files-over-8KiB", "files", 8193, false, false},
+		{"settings-over-8KiB", "", 8193, true, true},
+		{"settings-at-16KiB", "", 16384, true, true},
+		{"settings-over-16KiB", "", 16385, true, false},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			result := values{"resource": tc.resource}
+			payload := result
+			if tc.settings {
+				payload = values{}
+				result["settings"] = payload
+			}
+			payload["padding"] = ""
+			response := success(result)
+			empty, err := encodeProviderReply(response)
+			if err != nil {
+				t.Fatal(err)
+			}
+			payload["padding"] = strings.Repeat("P", tc.size-len(empty))
+			original, err := encodeProviderReply(response)
+			if err != nil || len(original) != tc.size {
+				t.Fatal("boundary fixture", len(original), err)
+			}
+			encoded := boundedProviderReply(response)
+			if tc.keep {
+				if !reflect.DeepEqual(encoded, original) {
+					t.Fatal("bounded result discarded", len(encoded), tc.size)
+				}
+				return
+			}
+			if len(encoded) > 8192 {
+				t.Fatal("fallback exceeded ordinary cap", len(encoded))
+			}
+			decoded, err := desktopsettings.DecodeJSON(encoded)
+			if err != nil {
+				t.Fatal(err)
+			}
+			reply := decoded.(map[string]any)
+			if !tc.settings {
+				if code(reply) != "provider_reply_too_large" {
+					t.Fatal("ordinary result received settings allowance", reply)
+				}
+				return
+			}
+			fallback := reply["result"].(map[string]any)
+			if _, present := fallback["settings"]; present || fallback["settings_unavailable"] != "reply_too_large" {
+				t.Fatal("oversized settings omitted without an honest diagnostic", reply)
+			}
+		})
+	}
+}
+
+func TestProviderReplyRechecksOrdinaryCapAfterRemovingSettings(t *testing.T) {
+	response := success(values{"settings": values{"padding": strings.Repeat("S", 9000)},
+		"diagnostic": strings.Repeat("D", 9000)})
+	encoded := boundedProviderReply(response)
+	if len(encoded) > 8192 {
+		t.Fatal("remaining non-settings body retained larger cap", len(encoded))
+	}
+	decoded, err := desktopsettings.DecodeJSON(encoded)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if code(decoded.(map[string]any)) != "provider_reply_too_large" {
+		t.Fatal("oversized remaining diagnostic was retained", string(encoded))
 	}
 }

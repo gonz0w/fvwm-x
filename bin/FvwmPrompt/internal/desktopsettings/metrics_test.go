@@ -31,7 +31,7 @@ func TestDesktopMetricsBoundariesAndIndependentChoices(t *testing.T) {
 		s["desktop_font"], s["desktop_density"], s["desktop_border"] = "fixed", row.density, "strong"
 		s["application_font"], s["palette"], s["icon_theme"] = "Other font 11", "dune", "Other"
 		got, err := ResolveDesktopMetrics(s)
-		if err != nil || got.Version != 1 || got.Font != "fixed" || got.MenuItemPad != row.item || got.MenuTitlePad != row.title || got.FormPad != row.form || got.MenuBorder != 3 {
+		if err != nil || got.Version != 2 || got.Font != "fixed" || got.MenuItemPad != row.item || got.MenuTitlePad != row.title || got.FormPad != row.form || got.MenuBorder != 3 {
 			t.Fatal(row, got, err)
 		}
 	}
@@ -45,7 +45,7 @@ func TestDesktopMetricsBoundariesAndIndependentChoices(t *testing.T) {
 }
 
 func TestDesktopMetricsOldSchemasAndSeparateEditor(t *testing.T) {
-	for version := 1; version <= 10; version++ {
+	for version := 1; version <= 11; version++ {
 		state := versionedFixture(version)
 		data, _ := json.Marshal(state)
 		got, err := DecodeState(data)

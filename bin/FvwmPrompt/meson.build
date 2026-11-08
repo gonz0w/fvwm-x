@@ -21,6 +21,7 @@ foreach filemanager_source : [
     'internal/desktopcontroller/native_settings_supervisor.go',
     'internal/desktopcontroller/native_settings_test.go',
     'internal/desktopsettings/application_test.go',
+    'internal/desktopsettings/components_test.go',
     'internal/desktopcontroller/theme_reload.go',
     'internal/desktopcontroller/theme_reload_test.go',
     'internal/desktopsettings/palettes.go',

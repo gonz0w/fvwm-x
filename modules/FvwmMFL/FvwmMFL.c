@@ -1037,6 +1037,9 @@ client_local_result(struct client *c, enum mfl_request_kind kind)
 			MFL_FILES_EDIT_MAX) ||
 		    !cJSON_AddNumberToObject(result, "files_result_max_bytes",
 			MFL_SETTINGS_RESULT_MAX) ||
+		    !cJSON_AddNumberToObject(result,
+			"desktop_settings_result_max_bytes",
+			MFL_DESKTOP_SETTINGS_RESULT_MAX) ||
 		    !cJSON_AddStringToObject(result, "provider_notifications",
 			"invalidation-only") ||
 		    !cJSON_AddNumberToObject(result,

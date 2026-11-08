@@ -35,7 +35,251 @@ evidence, not estimates; use [the current index](README.md) for project guides.
 Current findings and verification gaps are summarized in
 [SECURITY-STATUS.md](SECURITY-STATUS.md).
 
-Current work, X1 — finish #218 static theme provenance, 2026-11-07.
+Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
+Four component-setting stories plus shared invalid-image fallback for three
+consumers are implemented. Five affected Go packages, normal/disabled helper
+builds, all six Go OS/architecture profiles, three manuals, corrected Classic's
+four component cases and final13 mixed-icon cases pass. All23 preceding command
+passes are reused after two fixture-only repairs. Nine new captures inspected;
+all owned labs stop, foreign VM untouched. The five-criterion
+closure maps are complete; integrate after separate review to close #214/#215. #75/full R1 release gates stay separate;
+no cold-SVG self-destroy, native BSD or full install/release claim is made.
+[Combined results and frozen maps](verification/VERIFICATION-2026-11-07-COMPONENT-COMPOSITION.md).
+
+Y2 current batch — expanded PR373, #214/#215, 2026-11-07.
+Owner directs implementation before combined testing. Lead owns integration,
+tracker/GitHub and native execution; one icon implementer owns the shared
+renderer and menu/directory/tray adapters. Preserve other owners' work.
+
+Outcome: deliver Y1's four component stories together with invalid-image
+fallback and healthy-sibling isolation for application menus, directory roles
+and tray batches. Classify asset-local malformed/vanished inputs separately
+from cancellation, invalid requests, aggregate limits and publication failure.
+Keep strict rendering available; optional consumers share one fallback path.
+Malformed selected theme metadata yields explicit text fallback without inventing
+new inheritance precedence. Keep usable labels/actions and bounded diagnostics.
+
+Analyst/source reconciliation finds no six additional mandatory features:
+launcher/Form roles satisfy the finite component mapping; no panel API/schema,
+new cache quota/garbage collector/watcher, resolver/asset rewrite or marginal
+tuning is selected. Exported immutable images retain their references; worker
+exit is not a last-reference acknowledgement. Existing per-job bounds remain. Select A5's explicit durable-export lifetime
+contract in the named-icon decision: manually retire only after all live/saved/
+copied references disappear; no cumulative disk quota or automatic GC claim.
+#75 consumes this evidence; its physical/assistive/release criteria stay owned.
+
+Acceptance: compose retained settings/migration/recovery/role passes with new
+asset-local fallback and mixed healthy/bad-item regressions, while hard failures
+still refuse the job. Finish corrected Classic Form/editor/reset acceptance,
+invalid/disabled-format text fallback, fresh-generation replacement, and updated
+manuals/examples/screenshots in one combined checkpoint after implementation.
+Reuse passing checks whose inputs/contracts are unchanged. Review both frozen
+five-criterion maps before using Closes #214/#215; an unavailable gate is not a
+pass. Reuse accepted numeric contrast, resolver, asset/license/install and native
+consumer evidence; full R1 release qualification stays separately owned.
+
+This expanded owner-selected delivery supersedes Y1's small source boundary.
+Before native execution, record the finite combined inputs/executor/commands
+and one diagnosed focused-correction allowance; stop repeated unexplained
+failure. It does not renew Y1's exhausted campaign. No per-helper campaigns or
+all-OS rerun solely for a PR; one compact summary/evidence index for Y2.
+
+Y2 implementation complete; selected combined checkpoint (lead execution only):
+five affected Go packages; one incremental menu/directory/worker build; two
+compiled icon-format-disabled producers; five additional OS/architecture Go
+cross-builds of those three helpers (native Linux ARM64 supplies the sixth);
+three affected manual renders; corrected Classic component scene only; one
+mixed-invalid/healthy icon scene across three configurations, quarter scale,
+source replacement and disabled-format text fallback. Reuse five unchanged
+settings packages, normal C request unit, earlier Slate/Dune component scenes
+and two unchanged manuals. No C rebuild/install/all-platform X matrix or new
+benchmark/sanitizer/race campaign: no changed C, concurrency or OS API.
+
+Admit only the existing stopped owned Linux ARM64 profile with fresh host/VM
+inventory and unchanged resource identities. Freeze source/control inputs before
+dispatch. Combined candidate cap25min, active-lab30min,128MiB evidence; existing
+shutdown-only reserve remains. One combined run plus at most two diagnosed
+focused repairs within that envelope, reusing passing commands. Hard stop on
+repeated unexplained failure or a missing executor/gate. Cross-build outputs
+are hashed then retired immediately; preserve current reusable build/cache.
+
+Y2 admission-only stop: the unrelated VM restarted (PID57455 became73238),
+so the exact-PID guard refused before any owned start or product command.
+Preserve that receipt. Resource admission now allows at most one foreign
+qemu-system-aarch64 process with RSS at most8GiB plus one owned2GiB Podman VM
+on the128GiB host. Recheck count/name/RSS and owned stopped/idle identities
+before starting. This avoids treating another owner's routine restart as our
+workload identity; no foreign control or performance claim is selected.
+Zero product work or owned VM start occurred in the stopped admission. The
+holder's final receipt now treats cleanup as inapplicable when start was never
+attempted; attempted owned resources still require confirmed shutdown.
+
+Y2 first combined result: all23 preceding commands pass, including all five
+Go packages, three normal/two disabled producers, fifteen cross-builds, three
+manuals and corrected Classic's four cases. Mixed icons pass application and
+directory cases in Slate/Dune plus Classic application, then fail to remap the
+Classic directory. Source diagnosis finds the fixture retries Popup after its
+DynamicPopDownAction has destroyed the directory menu. Production is unchanged.
+One focused fixture correction republishes before directory retries, records
+attempt/map/pixel state and deliberately witnesses directory dismissal/recreation.
+Retain strict pixel thresholds and timeouts. Reuse all23 passes; run only this
+failed mixed-icon scene with a10min candidate/15min active cap inside Y2's
+original envelope. Owned shutdown is confirmed and foreign VM is untouched.
+
+Y2 first focused result: only the mixed-icon scene ran. Remapping succeeds,
+but Dune directory's image stays unready through repeated recreation. Source
+analysis identifies deferred displayed-menu image commits plus last-subscriber
+cancellation on self-destruction; repeated publication also changes file inode
+identity. Pointer movement or more retries would not establish readiness.
+Final focused correction reuses the accepted Lucide exact-path persistent
+readiness-menu pattern after each completed publication, retaining the image
+reference while checking the original unmodified directory menu. Keep strict
+pixels and lifecycle remap witnesses. This qualifies ready-image presentation
+and per-item fallback, not cold SVG activation for self-destroying menus.
+Only this scene runs again; all23 passes remain reused. Last diagnosed repair,
+8min candidate/12min active cap within Y2's original envelope; hard stop on any
+further failure. Both executed labs shut down and preserve raw failure evidence.
+
+Y1 current outcome — draft checkpoint, 2026-11-07. Four #214 component stories
+are implemented with eight settings and compact editors. All five Go packages,
+targeted native/Go builds, corrected request unit and both manuals pass.
+Slate5/Dune4 native cases pass; the real maximum-font reply is10801bytes.
+Seven raw captures are inspected. Classic stops on strict menu-width growth;
+remaining enlarged Form/editor cases are unrun. Static review identifies the
+cross-family width oracle; a same-family/geometry-recording fixture repair is
+source-only and unqualified. All owned resources stop.
+The remaining-only execution is exhausted: no further native run this turn.
+Preserve passing checks and unresolved Classic acceptance in the draft PR;
+#214 stays open. See [source-bound results and continuation](verification/VERIFICATION-2026-11-07-COMPONENT-COMPOSITION.md).
+No all-OS/install/benchmark repeat or marginal tuning joins the batch.
+The pickup plan and diagnosed amendments below remain historical evidence.
+
+Current work, Y1 — independently composed desktop components under #214,
+2026-11-07. PR372 merged as `0333fe370db7d1924470228dc439864ac16c11c1`:
+reviewed tree, valid canonical signature, expected parent and one Cam DCO verify.
+#218 is closed/completed with all five criteria linked; PR/issue Project states
+are Done and the completed branch is retired. Lead owns integration, tracker,
+GitHub and native execution on `codex/r1-component-themes` at that base.
+
+Selected issue: #214. Four related feature stories: independent launcher
+flat/relief styling; separate launcher item/title fonts; separate future owned
+Form body/input/button fonts; independent launcher/Form density overrides.
+Reuse the existing global desktop defaults, border/icon controls and one private
+atomic preference store. Eight inherited-by-default keys use schema12; exact
+older schemas load without rewrite. Effective scoped key wins over effective
+desktop default, then configured profile baseline. Version2 component roles
+report this fallback and fixed native corner radius0 honestly. No per-widget
+source claim. Use compact shared editor scopes for defaults/launcher/forms,
+keeping full group:desktop IPC scope and its existing metadata factoring.
+
+Settings implementer owns registry/migration/pure projection/query/UI plans and
+its tests; controller implementer owns command publication, submitted tuple,
+scoped native editors and consumer regressions. Lead owns manuals, combined
+native fixture/captures, evidence and final review. Preserve all other edits.
+No icon resolver/asset reimplementation, live-panel font/layout API, live Form
+font replacement, new C renderer, arbitrary user-file rewrite, rounded-corner
+engine, marginal tuning or performance comparison joins this batch. #215's
+accepted resolver/assets stay accepted; broader #214 acceptance remains open.
+
+Acceptance: independent scoped values persist/reload/reset and retain module
+precedence; inherited font/density and style restoration use documented profile
+baselines; only SlateLauncherStyle and new owned Forms consume the new axes.
+Existing Form identity/font remains unchanged. Deferred resource preview keeps
+using the submitted tuple until recovery. Reject unrepresentable fonts before
+publication. Preserve the existing8KiB provider reply ceiling with shared metadata factoring
+and compact enlarged-text editors.
+Implement the entire four-story batch before focused affected Go builds/tests;
+run one combined native three-configuration scene and capture new UI once.
+Reuse X1 and earlier unchanged checks, no all-OS/install/benchmark repeat.
+Separate source and signed-head review plus canonical proof precede one PR.
+Native campaign admission/attempt budget is recorded before execution; routine
+checks run once, diagnose actual acceptance failures, stop repeated unexplained
+failures instead of adding optional work. Pure policy regressions are written
+with the behavior; test-first native execution is deferred to that combined
+checkpoint because this host is macOS. No unexecuted pass is claimed.
+
+Y1 combined checkpoint selection: five commands after the whole implementation:
+five affected Go packages (settings/controller/inspector/worker/completion), one
+incremental build of Desktop/worker/Prompt, two manual renders and one real-X
+component scene across Slate/Dune/enlarged Classic. Prompt is included because
+completion enumerates the expanded registry. Its old owned-build identity is
+measured before replacement; it is not executed. C/core/native module binaries
+and archive remain unchanged, reusing X1 ownership/sanitizer qualification.
+No new concurrency or OS API requires a race/C/all-platform campaign here.
+
+The scene checks launcher versus Form geometry independence, separate next-start
+Form font roles with unchanged existing windows, scoped reset isolation, compact
+editor keyboard navigation and Cancel, with three captures per configuration.
+Inspector v2/fallback validation and its unchanged128row cap receive focused Go
+coverage; the public provider/MFL8192byte ceiling remains intact and its maximum
+valid setting/override fixtures run in that same composed test command.
+
+Lead alone admits the existing stopped/idle Linux ARM64 profile after fresh
+128GiB/no-other-VM inventory, with unchanged CPU/RAM/disk, source/ELF/metadata/
+SDK/tool controls and confirmed shutdown. One qualification plus one separately
+reviewed diagnosed correction,30min active-lab/128MiB maximum, with a20min
+candidate cap reserving admission/export time. Shutdown-only cleanup remains
+separately bounded to10min so a failed check cannot strand owned resources.
+Stop/replan repeated unexplained failure. Export actual metadata before assertions. Preserve successful affected
+checks instead of rerunning them after a correction. Source and inputs freeze
+before dispatch; no new packages, dependencies, installs or benchmark work.
+
+Y1 first qualification: four Go packages pass; the controller's sole failure
+is the complete maximum-string/override reply fixture, up to11272bytes against
+the old8192byte ceiling. No native/UI/manual or binary build ran. Allnine ELF,
+archive and metadata controls remain unchanged; owned resources stop cleanly.
+This is a real acceptance failure, not a passing8KiB result.
+
+Lead amends the bounded reply choice for this feature prerequisite: preserve
+ordinary readable JSON and raise only desktop settings query/set/reset/reload/
+validate results to16KiB (64existing256byte chunks). File/provider/session/
+operation replies retain8KiB, core queries32KiB; request limits, queue/client/
+wait caps and deadlines remain. Pending reply storage is allocated on demand;
+settings assembly can use up to8KiB additional bytes per active request. No
+new codec, parser, store or dependency. Existing internal protocol-change
+policy permits this consumer/documentation update without a configuration
+migration; separate analyst review finds no conflicting product requirement.
+This supersedes Y1's initially selected8KiB desktop-result bound above, not
+other resource limits. Actual regression coverage must pass the new bound;
+never describe the previous8KiB failure as successful qualification.
+
+The single diagnosed correction owns the Go producer, exact MFL result-kind
+limits, boundary/roundtrip tests and manuals. Reuse the four passing Go packages;
+rerun the affected controller only, incrementally build MFL/request-unit plus
+three Go consumers, execute the request unit once, then the previously unrun
+manual/UI commands. C allocation/ownership/framing is unchanged; both fragment
+assembly and final JSON validation share the same explicit limit selector.
+Retain original receipts and the same attempt/resource budget; no new campaign
+or marginal tuning is selected. Review the correction before dispatch; another
+unexplained failure checkpoints rather than renewing the attempt.
+
+Y1 campaign STOP/checkpoint: the selected qualification and its one correction
+are exhausted. Corrected controller tests and the combined MFL/request-unit/
+three-Go build pass; the first request-unit execution aborts in its new fixture.
+The fixture incorrectly puts synchronous files-list/register operations in the
+asynchronous fragment table; production correctly refuses those fragments.
+No manual/UI run occurred. Both failed receipts and all passing package/build
+results remain intact; all process groups and owned resources retire.
+
+Explicit remaining-only replan under the same lead/work/execution authority:
+change only that test classification, retaining all real asynchronous16/8/32KiB
+boundary cases and adding explicit local-operation fragment rejection. No
+production source, protocol, feature scope or executor changes. A separate
+review confirms the cause and permits this finite replan after checkpointing;
+it grants no new authority. Reuse all five package passes and the MFL/Go build.
+Admit the actual post-build source/ELF/archive/metadata controls, then run only
+one incremental request-unit rebuild, that unit, the two unrun manuals and the
+unrun three-configuration UI scene. This is a new remaining-check plan, not a
+reset of the stopped campaign or a repeated broad qualification.
+
+One remaining execution only, hard stop on any further failure. Keep the original
+128MiB overall output budget and30min active-lab envelope; prior native work
+used12.798seconds. Reduce remaining candidate execution to15min and active-lab
+allowance to28min, retaining the separately bounded shutdown-only reserve.
+Preserve all historical evidence and re-review the exact remaining plan before
+any native effect. Do not rerun Go/MFL/Prompt checks or add optional work.
+
+Historical X1 — finish #218 static theme provenance, 2026-11-07.
 Cam directs substantial feature implementation and issue closure; marginal
 measurements and polish wait. PR371 merged as
 `91390eb1e1c158b0404a33fe1e5073220d93f348`: exact reviewed tree, valid canonical

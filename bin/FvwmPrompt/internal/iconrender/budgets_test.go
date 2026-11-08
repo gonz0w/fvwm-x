@@ -3,6 +3,7 @@
 package iconrender
 
 import (
+	"errors"
 	"image/color"
 	"os"
 	"path/filepath"
@@ -152,7 +153,7 @@ func TestLimitedXPMRefusesAmbiguousHeaderSyntax(t *testing.T) {
 	}
 }
 
-func TestLimitedXPMCharacterBoundaryAndUnlimitedPath(t *testing.T) {
+func TestXPMCharacterBoundaryAndDefaultAdmission(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "eight.xpm")
 	writeFixture(t, path, []byte("/* XPM */ static char *x[] = {\"1 1 1 8\",\"........ c #fff\",\"........\"};\n"))
@@ -163,12 +164,18 @@ func TestLimitedXPMCharacterBoundaryAndUnlimitedPath(t *testing.T) {
 	if resolved, err := renderer.Resolve(xdgmenu.IconRequest{Name: path, Size: 24, ScaleQuarters: 4}); err != nil || resolved == "" {
 		t.Fatal("refused bounded eight-character XPM", resolved, err)
 	}
-	// Legacy consumers still publish unchanged bytes for their native loader;
-	// the limited lexical admission policy must not become a shared default.
+	// Default-budget consumers share header admission and preserve valid bytes.
+	full := newTestRenderer(t, dir, []string{"xpm"})
+	if resolved, err := full.Resolve(xdgmenu.IconRequest{Name: path, Size: 24, ScaleQuarters: 4}); err != nil || resolved == "" {
+		t.Fatal("default profile refused valid eight-character XPM", resolved, err)
+	}
+	// Unsupported header syntax is now rejected at every budget, while the
+	// native loader still owns body decoding after successful admission.
 	path = filepath.Join(dir, "legacy.xpm")
 	writeFixture(t, path, []byte("/* XPM */ static char *x[] = {\"1 1 1 \\x31\"};\n"))
 	legacy := newTestRenderer(t, dir, []string{"xpm"})
-	if resolved, err := legacy.Resolve(xdgmenu.IconRequest{Name: path, Size: 24, ScaleQuarters: 4}); err != nil || resolved == "" {
-		t.Fatal("limited admission changed unlimited publication", resolved, err)
+	var asset *AssetError
+	if resolved, err := legacy.Resolve(xdgmenu.IconRequest{Name: path, Size: 24, ScaleQuarters: 4}); !errors.As(err, &asset) || resolved != "" {
+		t.Fatal("default profile admitted unsupported XPM header", resolved, err)
 	}
 }

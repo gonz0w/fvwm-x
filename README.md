@@ -11,7 +11,7 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
 - Session controls, logout, services and scaling.
 - Opt-in notifications, actions, keyboard center and bounded history;
   [scope and theme screenshots](doc/development-preview.md#native-notifications).
-- Atomic buttons, responsive layout and settings/editor;
+- Atomic buttons, layout and [component editors](doc/development-preview.md#independent-component-settings-in-progress);
   [opt-in application font/icon/cursor preferences](doc/FvwmDesktop.adoc#_application_preferences).
 - Source-aware reports, ancestry, [theme-color reload](doc/development-preview.md#live-theme-color-reload-in-progress)
   and [theme definition provenance](doc/development-preview.md#theme-definition-provenance-in-progress).

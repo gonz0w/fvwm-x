@@ -422,6 +422,9 @@ func produce(ctx context.Context, args []string, out, diagnostics io.Writer) err
 		if err != nil {
 			return err
 		}
+		icons.diagnostic = func(err error) {
+			fmt.Fprintln(diagnostics, "fvwm-menu-desktop: icons:", err)
+		}
 		renderOptions.Icon = icons.resolve
 	}
 	if err = xdgmenu.RenderMenus(&commands, documents, renderOptions); err != nil {

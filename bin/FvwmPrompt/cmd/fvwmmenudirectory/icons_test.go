@@ -213,3 +213,45 @@ func TestIconSupervisorDeadlineAndOutput(t *testing.T) {
 		})
 	}
 }
+
+func TestDirectoryMalformedIconKeepsHealthyRoleFrame(t *testing.T) {
+	o, env := directoryIconFixture(t)
+	theme := filepath.Join(env["XDG_DATA_HOME"], "icons", "test", "24x24")
+	// A broken override uses its healthy named role. Another broken role has
+	// no healthy alternative and becomes text without discarding its siblings.
+	badOverride := filepath.Join(o.home, "bad.png")
+	if err := os.WriteFile(badOverride, []byte("malformed PNG"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	o.titleIcon, o.fileIcon = badOverride, ""
+	if err := os.Remove(filepath.Join(theme, "text-x-generic.svg")); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.WriteFile(filepath.Join(theme, "text-x-generic.png"), []byte("bad PNG"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	notices := 0
+	got, err := resolveIconsWithDiagnostics(context.Background(), o, env, func(error) { notices++ })
+	if err != nil || got[0] == "" || got[1] == "" || got[2] != "" || got[3] == "" || notices != 2 {
+		t.Fatal("malformed role discarded healthy siblings", got, notices, err)
+	}
+	var frame bytes.Buffer
+	if err := json.NewEncoder(&frame).Encode(got); err != nil {
+		t.Fatal(err)
+	}
+	if decoded, err := decodePictures(frame.Bytes()); err != nil || decoded != got {
+		t.Fatal("mixed roles lost valid framing", decoded, err)
+	}
+	o.pictures, o.name, o.dir, o.item, o.title = got, "Files", "/files", "%n", "%d"
+	var menuOut bytes.Buffer
+	if err := menu(&menuOut, o, []entry{{name: "document", path: "/files/document"}}); err != nil || !strings.Contains(menuOut.String(), "document") {
+		t.Fatal("text role lost menu entry", menuOut.String(), err)
+	}
+	// Malformed selected theme metadata is explicit text fallback for all roles.
+	if err := os.WriteFile(filepath.Join(filepath.Dir(theme), "index.theme"), []byte("[unrelated]\n"), 0600); err != nil {
+		t.Fatal(err)
+	}
+	if got, err := resolveIcons(context.Background(), o, env); err != nil || got != [4]string{} {
+		t.Fatal("malformed theme did not retain text roles", got, err)
+	}
+}

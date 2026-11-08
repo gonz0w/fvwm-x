@@ -675,14 +675,10 @@ func TestCompleteSettingsMetadataFitsUnchangedRowBudget(t *testing.T) {
 						t.Fatal(result, err)
 					}
 					section := result.Sections[0]
-					// Thirty keys each have value, metadata and source rows. The
-					// finite domains add at most ten session/tray request rows,
-					// eight constraints and eight resolutions. Runtime-kept
-					// preferences may add eight distinct persistence notices.
-					bound := 30*3 + 10 + 8 + 8
-					if held {
-						bound += 8
-					}
+					// Thirty-eight keys retain value, grammar and source rows.
+					// Source rows include constraint/resolution class; ten finite
+					// request rows and one persistence notice fit the same cap.
+					bound := 38*3 + 10 + 1
 					if len(section.Rows) > bound || section.Truncated || section.State != "provider-policy" || RowLimit != 128 {
 						t.Fatal("canonical registry exceeded the unchanged bounded view", len(section.Rows), bound, section)
 					}
@@ -737,13 +733,16 @@ func TestCurrentDesktopAndNativeSettingsMetadata(t *testing.T) {
 				if submitted {
 					application, iconApplication = "next-owned-form-start; launcher-submitted", "tray-configuration-submitted"
 				}
-				if rows["desktop_font source"] != "saved; "+application+"; owner=FvwmDesktop" ||
-					rows["desktop_icon_theme source"] != "saved; "+iconApplication+"; owner=FvwmDesktop" ||
+				if !strings.HasPrefix(rows["desktop_font source"], "saved; "+application+"; owner=FvwmDesktop;") ||
+					!strings.HasPrefix(rows["desktop_icon_theme source"], "saved; "+iconApplication+"; owner=FvwmDesktop;") ||
 					rows["application_font source"] != "saved; native-conflict; owner=FvwmDesktop" ||
 					!strings.HasPrefix(rows["palette source"], "runtime-kept-preference-unsaved;") {
 					t.Fatal("current domain attribution lost", rows)
 				}
-				if inherit && (rows["desktop_font resolution"] != "profile-baseline; resolved=configured-profile" || rows["desktop_icon_theme resolution"] != "profile-baseline; resolved=hicolor") {
+				if inherit && (!strings.Contains(rows["desktop_font source"], "resolution=profile-baseline") ||
+					!strings.Contains(rows["desktop_font"], "resolved=configured-profile") ||
+					!strings.Contains(rows["desktop_icon_theme source"], "resolution=profile-baseline") ||
+					!strings.Contains(rows["desktop_icon_theme"], "resolved=hicolor")) {
 					t.Fatal("profile baseline was presented as an actual resource", rows)
 				}
 			})
@@ -765,7 +764,7 @@ func TestDesktopAndNativeMetadataRejectsForeignAndMalformedClaims(t *testing.T) 
 		{"foreign-unsaved-source", "desktop_font", "source", `"runtime-kept-preference-unsaved"`},
 		{"foreign-constraint", "palette", "runtime_constraint", `"save-apply-only; existing-forms-unchanged"`},
 		{"wrong-desktop-constraint", "desktop_font", "runtime_constraint", `"save-apply-only; named-native-icons"`},
-		{"wrong-metric-version", "desktop_density", "component_version", `2`},
+		{"wrong-metric-version", "desktop_density", "component_version", `3`},
 		{"wrong-metric-roles", "desktop_density", "component_roles", `{"menu_item_padding":4,"menu_title_padding":6,"form_text_padding":6,"menu_border":1}`},
 		{"missing-metric-roles", "desktop_density", "component_roles", `null`},
 		{"false-baseline", "desktop_font", "resolved", `"fixed"`},
@@ -786,5 +785,146 @@ func TestDesktopAndNativeMetadataRejectsForeignAndMalformedClaims(t *testing.T) 
 				t.Fatal("foreign/malformed domain metadata accepted", result, err)
 			}
 		})
+	}
+}
+
+func TestComponentV2SettingsMetadataUsesEffectiveScopedFallback(t *testing.T) {
+	request := fixtureRequest(t, "settings")
+	saved := desktopsettings.Defaults()
+	saved["desktop_font"], saved["launcher_font"] = "saved-global", "saved-launcher"
+	effective := desktopsettings.Defaults()
+	for key, value := range saved {
+		effective[key] = value
+	}
+	effective["desktop_font"], effective["launcher_title_font"] = "module-global", "module-title"
+	effective["desktop_density"], effective["form_density"] = "spacious", "compact"
+	effective["desktop_style"] = "flat"
+	query, err := desktopsettings.Query(desktopsettings.Snapshot{Saved: saved, Effective: effective,
+		Overrides:  desktopsettings.Values{"desktop_font": "module-global", "launcher_title_font": "module-title", "desktop_density": "spacious", "form_density": "compact", "desktop_style": "flat"},
+		Generation: request.SettingsGeneration, Native: desktopsettings.NativeObservation{Readiness: "off", ResourceState: "inherited"}}, "all", true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	data, _ := json.Marshal(query)
+	var snapshot map[string]map[string]json.RawMessage
+	if err := json.Unmarshal(data, &snapshot); err != nil {
+		t.Fatal(err)
+	}
+	for key := range desktopsettings.Registry() {
+		if desktopsettings.DesktopKey(key) && !desktopSettingsMetadata(key, snapshot[key], snapshot) {
+			t.Fatal("current effective component metadata rejected", key, snapshot[key])
+		}
+	}
+	for _, row := range []struct{ key, resolution, resolved string }{
+		{"launcher_font", "explicit", "saved-launcher"},
+		{"launcher_title_font", "explicit", "module-title"},
+		{"form_font", "desktop-default", "module-global"},
+		{"launcher_density", "desktop-default", "spacious"},
+		{"form_density", "explicit", "compact"},
+		{"desktop_style", "explicit", "flat"},
+	} {
+		if stringField(snapshot[row.key], "resolution") != row.resolution || stringField(snapshot[row.key], "resolved") != row.resolved {
+			t.Fatal(row, snapshot[row.key])
+		}
+	}
+	request.Settings = data
+	result, err := Collect(context.Background(), request, nil)
+	if err != nil || result.Sections[0].State != "provider-policy" || result.Sections[0].Truncated {
+		t.Fatal("current component settings not projected completely", result, err)
+	}
+	assertCompleteSettingsMetadata(t, result.Sections[0])
+	rows := map[string]string{}
+	for _, row := range result.Sections[0].Rows {
+		rows[row.Label] = row.Value
+	}
+	if !strings.Contains(rows["form_font source"], "saved;") ||
+		!strings.Contains(rows["form_font source"], "resolution=desktop-default") ||
+		!strings.Contains(rows["form_font source"], "save-apply-only; existing-forms-unchanged") ||
+		!strings.Contains(rows["form_font"], "resolved=module-global") ||
+		!strings.HasPrefix(rows["launcher_title_font source"], "module-configuration;") {
+		t.Fatal("compact rows lost fallback, request ownership or next-start constraint", rows)
+	}
+	delete(snapshot, "launcher_title_font")
+	if desktopSettingsMetadata("form_font", snapshot["form_font"], snapshot) {
+		t.Fatal("incomplete effective component scope accepted")
+	}
+}
+
+func TestComponentV2SettingsMetadataRejectsUnknownAndMistypedRoles(t *testing.T) {
+	for _, test := range []struct{ name, field, value string }{
+		{"wrong-style", "style", `"relief"`},
+		{"wrong-launcher-font", "launcher_font", `"foreign-font"`},
+		{"wrong-title-font", "launcher_title_font", `"foreign-font"`},
+		{"wrong-form-font", "form_font", `"foreign-font"`},
+		{"wrong-input-font", "form_input_font", `"foreign-font"`},
+		{"wrong-button-font", "form_button_font", `"foreign-font"`},
+		{"wrong-launcher-density", "launcher_density", `"spacious"`},
+		{"wrong-form-density", "form_density", `"compact"`},
+		{"rounded-corner-claim", "corner_radius", `4`},
+		{"wrong-menu-relief", "menu_relief", `2`},
+		{"wrong-separators", "long_separators", `true`},
+		{"wrong-triangles", "relief_triangles", `false`},
+		{"null-font", "form_font", `null`},
+		{"integer-font", "form_font", `0`},
+		{"string-boolean", "long_separators", `"false"`},
+		{"null-boolean", "long_separators", `null`},
+		{"float-integer", "corner_radius", `0.0`},
+		{"missing-font", "form_font", ""},
+		{"unknown-role", "foreign_role", `0`},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			request := fixtureRequest(t, "settings")
+			var snapshot map[string]map[string]json.RawMessage
+			if err := json.Unmarshal(request.Settings, &snapshot); err != nil {
+				t.Fatal(err)
+			}
+			item := snapshot["form_font"]
+			roles, ok := objectField(item, "component_roles")
+			if !ok {
+				t.Fatal(item)
+			}
+			if test.value == "" {
+				delete(roles, test.field)
+			} else {
+				roles[test.field] = json.RawMessage(test.value)
+			}
+			item["component_roles"], _ = json.Marshal(roles)
+			if desktopSettingsMetadata("form_font", item, snapshot) {
+				t.Fatal("unknown, mistyped or false component role accepted", test, item)
+			}
+		})
+	}
+}
+
+func TestLongComponentSettingsDisplayReportsPartialTruncation(t *testing.T) {
+	request := fixtureRequest(t, "settings")
+	values := desktopsettings.Defaults()
+	for key, setting := range desktopsettings.Registry() {
+		if setting.Type == "desktop-font" {
+			values[key] = strings.Repeat("x", 128)
+		}
+	}
+	snapshot, err := desktopsettings.Query(desktopsettings.Snapshot{Saved: values, Effective: values,
+		Generation: request.SettingsGeneration, Native: desktopsettings.NativeObservation{Readiness: "off", ResourceState: "inherited"}}, "all", true)
+	if err != nil {
+		t.Fatal(err)
+	}
+	request.Settings, _ = json.Marshal(snapshot)
+	result, err := Collect(context.Background(), request, nil)
+	if err != nil || result.Sections[0].State != "partial" || !result.Sections[0].Truncated {
+		t.Fatal("clipped font values presented as a complete settings view", result, err)
+	}
+	section := result.Sections[0]
+	if len(section.Rows) > RowLimit || !strings.Contains(section.Reason, "Settings display incomplete") {
+		t.Fatal(section)
+	}
+	assertCompleteSettingsMetadata(t, section)
+	registry := desktopsettings.Registry()
+	for _, row := range section.Rows {
+		key := strings.TrimSuffix(row.Label, " source")
+		if strings.HasSuffix(row.Label, " source") && registry[key].Type == "desktop-font" &&
+			!strings.Contains(row.Value, "resolution=explicit") {
+			t.Fatal("font clipping lost its resolution class", row)
+		}
 	}
 }

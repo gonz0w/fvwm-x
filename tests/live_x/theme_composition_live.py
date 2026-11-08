@@ -1730,7 +1730,7 @@ def run(args, profile):
                         assert item['composition_version'] == 2, item
                         assert item['effective'] == (True if setting == 'transparency' else 82), item
                     raw = json.loads(state.read_text())
-                    assert raw['schema_version'] == 11 and raw['contrast'] == 'high'
+                    assert raw['schema_version'] == 12 and raw['contrast'] == 'high'
                     assert raw['transparency'] is True and raw['launcher_opacity'] == 82
                     assert raw['wallpaper'] == {'palette': 'grove', 'appearance': 'light'}
                     assert opacity() == 100
@@ -1875,7 +1875,7 @@ def run(args, profile):
                     generation=snapshot['generation'], scope='group:wallpaper')
                 barrier()
                 assert set(snapshot['settings']) == {'wallpaper_palette', 'wallpaper_appearance'}
-                assert json.loads(state.read_text())['schema_version'] == 11
+                assert json.loads(state.read_text())['schema_version'] == 12
                 assert json.loads(state.read_text())['wallpaper'] == {'palette': opposite, 'appearance': mode}
                 snapshot = request(scope='all')
                 change({'palette': palette, 'wallpaper_palette': 'grove', 'wallpaper_appearance': 'light'})

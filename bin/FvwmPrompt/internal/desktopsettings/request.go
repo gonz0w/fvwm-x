@@ -136,15 +136,21 @@ func Query(s Snapshot, scope string, observed bool) (Values, error) {
 				return nil, err
 			}
 			v["component_version"] = metrics.Version
-			v["resolved"] = s.Effective[key]
+			resolved, resolution, err := DesktopResolution(s.Effective, key)
+			if err != nil {
+				return nil, err
+			}
+			v["resolved"], v["resolution"] = resolved, resolution
 			v["component_roles"] = Values{"menu_item_padding": metrics.MenuItemPad,
 				"menu_title_padding": metrics.MenuTitlePad, "form_text_padding": metrics.FormPad,
-				"menu_border": metrics.MenuBorder}
-			v["resolution"] = "explicit"
-			if s.Effective[key] == "" || s.Effective[key] == "inherit" {
-				v["resolution"] = "profile-baseline"
-				v["resolved"] = "configured-profile"
-			}
+				"menu_border": metrics.MenuBorder, "style": metrics.Style,
+				"launcher_font": metrics.LauncherFont, "launcher_title_font": metrics.LauncherTitleFont,
+				"form_font": metrics.FormFont, "form_input_font": metrics.FormInputFont,
+				"form_button_font": metrics.FormButtonFont,
+				"launcher_density": metrics.LauncherDensity, "form_density": metrics.FormDensity,
+				"menu_relief": metrics.MenuRelief, "long_separators": metrics.LongSeparators,
+				"relief_triangles": metrics.ReliefTriangles, "corner_radius": metrics.CornerRadius}
+
 			v["application"] = "next-owned-form-start; launcher-not-submitted"
 			if observed && s.DesktopSubmitted {
 				v["application"] = "next-owned-form-start; launcher-submitted"

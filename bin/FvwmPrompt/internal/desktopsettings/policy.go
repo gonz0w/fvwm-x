@@ -21,7 +21,7 @@ import (
 	"unicode/utf8"
 )
 
-const StateVersion = 11
+const StateVersion = 12
 const StateLimit = 8192
 const EditorSeconds = 300
 
@@ -160,6 +160,25 @@ var registry = []Setting{
 		Group:   "desktop", Description: "Launcher border"},
 	{Key: "desktop_icon_theme", Type: "theme", Default: "",
 		Group: "desktop", Description: "Native tray icon theme"},
+	{Key: "desktop_style", Type: "enum", Default: "inherit",
+		Choices: []string{"inherit", "flat", "relief"},
+		Group:   "desktop", Description: "Launcher style"},
+	{Key: "launcher_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Launcher item font"},
+	{Key: "launcher_title_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Launcher title font"},
+	{Key: "form_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Form body font"},
+	{Key: "form_input_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Form input font"},
+	{Key: "form_button_font", Type: "desktop-font", Default: "",
+		Group: "desktop", Description: "Form button font"},
+	{Key: "launcher_density", Type: "enum", Default: "inherit",
+		Choices: []string{"inherit", "compact", "comfortable", "spacious"},
+		Group:   "desktop", Description: "Launcher spacing"},
+	{Key: "form_density", Type: "enum", Default: "inherit",
+		Choices: []string{"inherit", "compact", "comfortable", "spacious"},
+		Group:   "desktop", Description: "Form spacing"},
 }
 
 // ApplicationKey identifies the separate application editor and helper lifecycle.
@@ -322,6 +341,16 @@ func Value(key string, value any, text bool) (any, error) {
 }
 
 func Scope(scope string) ([]string, error) {
+	// These aliases bound native editor size without narrowing group:desktop
+	// for IPC queries, resets or configuration consumers.
+	switch scope {
+	case "component:defaults":
+		return []string{"desktop_font", "desktop_density", "desktop_border", "desktop_icon_theme"}, nil
+	case "component:launcher":
+		return []string{"desktop_style", "launcher_font", "launcher_title_font", "launcher_density"}, nil
+	case "component:forms":
+		return []string{"form_font", "form_input_font", "form_button_font", "form_density"}, nil
+	}
 	keys := []string{}
 	for _, item := range registry {
 		if scope == "all" || scope == item.Key || scope == "group:"+item.Group {
@@ -501,7 +530,7 @@ func DecodeState(data []byte) (Values, error) {
 	delete(values, "schema_version")
 	// Validate the historical field count before supplying only the defaults
 	// absent in that schema. Checked then rejects unknown, missing or bad fields.
-	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27, 10: 30, 11: 31}[n]
+	expected := map[int]int{1: 8, 2: 9, 3: 11, 4: 12, 5: 15, 6: 16, 7: 20, 8: 22, 9: 27, 10: 30, 11: 31, 12: 39}[n]
 	if len(values) != expected {
 		return nil, errors.New("Invalid settings fields")
 	}
@@ -533,6 +562,14 @@ func DecodeState(data []byte) (Values, error) {
 		{"desktop_density", 10, "inherit"},
 		{"desktop_border", 10, "inherit"},
 		{"desktop_icon_theme", 11, ""},
+		{"desktop_style", 12, "inherit"},
+		{"launcher_font", 12, ""},
+		{"launcher_title_font", 12, ""},
+		{"form_font", 12, ""},
+		{"form_input_font", 12, ""},
+		{"form_button_font", 12, ""},
+		{"launcher_density", 12, "inherit"},
+		{"form_density", 12, "inherit"},
 	} {
 		if n < field.version {
 			if _, exists := values[field.key]; exists {

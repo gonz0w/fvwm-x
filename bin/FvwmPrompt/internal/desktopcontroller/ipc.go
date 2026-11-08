@@ -639,6 +639,41 @@ func encodeProviderReply(value any) ([]byte, error) {
 	return bytes.TrimSuffix(buffer.Bytes(), []byte{'\n'}), nil
 }
 
+const (
+	providerResultMax        = 8192
+	desktopSettingsResultMax = 16384
+)
+
+// Keep the desktop settings bound aligned with
+// MFL_DESKTOP_SETTINGS_RESULT_MAX in the native consumer.
+func providerReplyLimit(response values) int {
+	if result, ok := response["result"].(map[string]any); ok {
+		if _, settings := result["settings"]; settings {
+			return desktopSettingsResultMax
+		}
+	}
+	return providerResultMax
+}
+
+// Only complete desktop settings results get the larger bound. After removing
+// oversized settings, the remaining diagnostic must fit the ordinary 8KiB cap.
+func boundedProviderReply(response values) []byte {
+	data, _ := encodeProviderReply(response)
+	if len(data) > providerReplyLimit(response) {
+		if result, ok := response["result"].(map[string]any); ok {
+			if _, settings := result["settings"]; settings {
+				delete(result, "settings")
+				result["settings_unavailable"] = "reply_too_large"
+				data, _ = encodeProviderReply(response)
+			}
+		}
+		if len(data) > providerReplyLimit(response) {
+			data, _ = encodeProviderReply(failure("provider_reply_too_large"))
+		}
+	}
+	return data
+}
+
 func (d *Controller) ipc(argument string) {
 	parts := strings.Split(argument, " ")
 	if len(parts) != 3 || !address(parts[0]) || !identity(parts[1], 16) || parts[1] == "0000000000000000" {
@@ -665,19 +700,7 @@ func (d *Controller) ipc(argument string) {
 	if response == nil {
 		return
 	}
-	data, _ := encodeProviderReply(response)
-	if len(data) > 8192 {
-		if result, ok := response["result"].(map[string]any); ok {
-			if _, settings := result["settings"]; settings {
-				delete(result, "settings")
-				result["settings_unavailable"] = "reply_too_large"
-				data, _ = encodeProviderReply(response)
-			}
-		}
-		if len(data) > 8192 {
-			data, _ = encodeProviderReply(failure("provider_reply_too_large"))
-		}
-	}
+	data := boundedProviderReply(response)
 	prefix := "SendToModule FvwmMFL MFL_SETTINGS_1 " + parts[0] + " " + parts[1]
 	count := 0
 	for offset := 0; offset < len(data); offset += 256 {

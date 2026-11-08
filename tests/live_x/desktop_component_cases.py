@@ -117,10 +117,10 @@ def run(*, profile, evidence, change, request, barrier, control, client, core,
 
     def open_editor():
         nonlocal editor
-        assert not named_windows().get('Desktop component settings')
+        assert not named_windows().get('Desktop component defaults')
         control.send(b'SendToModule FvwmDesktop edit-settings group:desktop\n')
         editor = wait('native desktop component editor',
-            lambda: named_windows().get('Desktop component settings'))
+            lambda: named_windows().get('Desktop component defaults'))
         return settled(editor, True)
 
     def close_editor():
@@ -128,7 +128,7 @@ def run(*, profile, evidence, change, request, barrier, control, client, core,
         if editor is not None:
             control.send(('WindowId %d Close\n' % editor).encode())
             wait('component editor closed',
-                lambda: not named_windows().get('Desktop component settings'))
+                lambda: not named_windows().get('Desktop component defaults'))
             editor = None
             barrier()
 
@@ -167,10 +167,10 @@ def run(*, profile, evidence, change, request, barrier, control, client, core,
         result = request(scope='group:desktop')
         for name in ('desktop_font', 'desktop_density', 'desktop_border'):
             item = result['settings'][name]
-            assert item['component_version'] == 1, item
+            assert item['component_version'] == 2, item
             assert item['application'] == (
                 'next-owned-form-start; launcher-submitted'), item
-        assert json.loads(state.read_text())['schema_version'] == 11
+        assert json.loads(state.read_text())['schema_version'] == 12
         bar_color(palette, mode)  # Component edits preserve the panel palette.
         case.setdefault('metadata', []).append(result)
 

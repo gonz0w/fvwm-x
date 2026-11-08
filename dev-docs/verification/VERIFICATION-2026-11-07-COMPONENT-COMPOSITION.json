@@ -1,0 +1,403 @@
+{
+  "issue": 214,
+  "base": "0333fe370db7d1924470228dc439864ac16c11c1",
+  "status": "draft; Classic native UI acceptance unresolved",
+  "attempts": [
+    {
+      "label": "qualification",
+      "plan_sha256": "8903461a21af1dd1c79084e7be2282b239a01191fbc7cc0ca6ed62dee492ef6f",
+      "archive_sha256": "57a818e5fd1bf0de3a618b86b51574871bdf6e9967a890e8dd2726a9194da853",
+      "exported_files": 3,
+      "native_status": "failed; retained",
+      "error": "AssertionError('affected-go-tests')",
+      "seconds": 5.2630501700000005,
+      "commands": [
+        {
+          "label": "affected-go-tests",
+          "exit": 1,
+          "seconds": 4.59303575,
+          "group_absent": true,
+          "forced_kill": false
+        }
+      ],
+      "source_files": 2534,
+      "overlay": {
+        "src/bin/FvwmPrompt/internal/desktopcontroller/controller.go": "db0f1e116f8cf144115f7d6c521e81ff3f515b70b4fe510d3810cc816501d17f",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/metrics.go": "f12de45f27e0c43de2543e470d5fd666af40e990b89a559d031d5ee74dd398e9",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/metrics_test.go": "0b52bd2231bce89b7e1a6d3e81754621c5b392f3a0da5bfeb7fbd819fee7476b",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/resource_preview_test.go": "d42c71577d91105c1d5cb7616fc15739fcd67676b26c0ca79720b312ca815c76",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "2979a3e278c09d74fb4dcd1667851807bb8d18b874c2a3d6983b0ddabe52ee7b",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/theme_test.go": "ca2d5ba3983950c3a821a5cbefe745a824cf354a50e20e174179f766d589c374",
+        "src/bin/FvwmPrompt/internal/desktopinspect/collect.go": "70a9a6c6908450e98efcf548690466d62069553f543785b9cc05227a30a4dfa7",
+        "src/bin/FvwmPrompt/internal/desktopinspect/collect_test.go": "404696bc5c72a70758dc6fd9d451c0bb21c8e64e2b34cc523e9dcadad92f2c43",
+        "src/bin/FvwmPrompt/internal/desktopsettings/components_test.go": "b43a54031897a19ac1a6526286fb71f6a039308892f6bf607b16dad54f26ff3e",
+        "src/bin/FvwmPrompt/internal/desktopsettings/composition_test.go": "7f9568af241df1dcff8cb3ef707dc2256dc257fac1e6039827b3fc1016f8b792",
+        "src/bin/FvwmPrompt/internal/desktopsettings/contrast_preview_test.go": "5d93e0a34412c7d9405910e1d62ec31cd0752d6f161cff469fce3043de5bd421",
+        "src/bin/FvwmPrompt/internal/desktopsettings/metrics.go": "f841997047a7232a7d8cf912806b3c2e035a10298e105c891b78b235fc517603",
+        "src/bin/FvwmPrompt/internal/desktopsettings/metrics_test.go": "e94297b2aac52ec576b07871a693dc56c8bf69186f4f304c01d1b59e7f86c4b1",
+        "src/bin/FvwmPrompt/internal/desktopsettings/policy.go": "1e4ec2caaa634803330110ca984d76fe20802d83b5eab124470031c458225276",
+        "src/bin/FvwmPrompt/internal/desktopsettings/policy_test.go": "fb347c964a6ae46db1c047aa7948d90d913d51c625f79e859399d3b742df655d",
+        "src/bin/FvwmPrompt/internal/desktopsettings/request.go": "d1a9571ea898aaa4420591432e21bc921c8e61b209d852f843b2787e7000c8f8",
+        "src/bin/FvwmPrompt/internal/desktopsettings/resource_preview_test.go": "01ec06ab9bc418c2529376911493e07f9e0847e0759794887e1d9daae7de42e3",
+        "src/bin/FvwmPrompt/internal/desktopsettings/session_test.go": "510423b9b59adcdae1b765ee404026d54ed04fa453fd6fb2cb20a2ef806d5da7",
+        "src/bin/FvwmPrompt/internal/desktopsettings/ui.go": "32b006099db96de3505e26d29cdb533111e721f39ed6ff1106b96fedd5451ecd",
+        "src/bin/FvwmPrompt/meson.build": "1ec1b8d6384a5e0770a55aba7148a827f446fbb0f6076203579a922e1c5ecf4d",
+        "src/doc/FvwmDesktop.adoc": "fe8b83167ccebf48e4b68b4bc0fd3059bf1e50c8c807c8c6831c5fd8d995543e",
+        "src/doc/FvwmMFL.adoc": "afc5298c2fa2e40896dde6e3fdb4c65287930ac1c29141a358dedbb4d232c2ec",
+        "src/tests/live_x/component_composition_live.py": "4891ba0458ab05b5c53b424215819d859b3fcd1a0c377bedb1cd3be9f78f72bd",
+        "src/tests/live_x/desktop_component_cases.py": "2b9ef9f78810a90a83d63d7f75a4ac9a913f715c16234f450fa8e7f30d7b8d34",
+        "src/tests/live_x/theme_composition_live.py": "cca35f3c2c258d8510c0e97074acae00f0ea755e81da8b0899f37d006ecf78c4"
+      },
+      "shutdown": [
+        {
+          "container_shutdown": "confirmed"
+        },
+        {
+          "machine_shutdown": "confirmed"
+        }
+      ],
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    },
+    {
+      "label": "diagnosed-correction",
+      "plan_sha256": "30626559181ab5cf07acd1a8f3b64f705646e5abad81b2bd6593c5d032372ac3",
+      "archive_sha256": "8f5f2f2066e3409f5c4a2081de54805e04510281989c2287a9599b1ef28c4825",
+      "exported_files": 8,
+      "native_status": "failed; retained",
+      "error": "AssertionError('test-mfl-request')",
+      "seconds": 7.5351266930000005,
+      "commands": [
+        {
+          "label": "corrected-controller-tests",
+          "exit": 0,
+          "seconds": 4.395625246,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "affected-incremental-build",
+          "exit": 0,
+          "seconds": 2.4247831380000004,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "test-mfl-request",
+          "exit": -6,
+          "seconds": 0.035231411999999906,
+          "group_absent": true,
+          "forced_kill": false
+        }
+      ],
+      "source_files": 2534,
+      "overlay": {
+        "src/bin/FvwmPrompt/internal/desktopcontroller/ipc.go": "c33df4cd3102ed3da39247f4cdb4327aa2623779af8e427c43140b0fd0bec45a",
+        "src/bin/FvwmPrompt/internal/desktopcontroller/session_services_test.go": "a78d4c26b43fc4da3838d58ec1085c06b0fc4e56bcf5a0aac7a294d8b7f54930",
+        "src/doc/FvwmDesktop.adoc": "04e84273a85219191d1ca63b9e288e45dca6c649def32105fc3fecf64886e835",
+        "src/doc/FvwmMFL.adoc": "29624b067fdc1388559658d290bd0e7cd42ffb0d91c1ebbb5794bf8b6fdfa4b9",
+        "src/modules/FvwmMFL/FvwmMFL.c": "785d1fe6f9f595320058ed56fe8bd3c1d99cf3a6290e959efa99d3996b1c37fe",
+        "src/modules/FvwmMFL/request.c": "78d31331f05174da002b837b8d121f969acc27023233a86b803829037be4a030",
+        "src/modules/FvwmMFL/request.h": "08a45079949325cd1bb76e8e98cbc931cc7fc53f9525d40a9234f4ed02527907",
+        "src/tests/live_x/component_composition_live.py": "0ca065936ba1ee6d6f8aa0c7af320fb602d8140605532dfda72f7ab7bb5f4323",
+        "src/tests/test_mfl_request.c": "2e96ef9adeb408e1170cd0ba7ce7423fe451c9ba22e632ee57f953ee498dcd1b"
+      },
+      "shutdown": [
+        {
+          "container_shutdown": "confirmed"
+        },
+        {
+          "machine_shutdown": "confirmed"
+        }
+      ],
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    },
+    {
+      "label": "remaining-only",
+      "plan_sha256": "f2233f3e61de5a8bab32d6940adf14d9044e1f8ea36e6099bdba89b9c56e968c",
+      "archive_sha256": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30",
+      "exported_files": 254,
+      "native_status": "failed; retained",
+      "error": "AssertionError('native-component-composition')",
+      "seconds": 11.318811384000002,
+      "commands": [
+        {
+          "label": "request-unit-incremental-build",
+          "exit": 0,
+          "seconds": 0.37296951899999975,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "test-mfl-request",
+          "exit": 0,
+          "seconds": 0.0021991680000006397,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "render-FvwmDesktop",
+          "exit": 0,
+          "seconds": 0.09598817400000037,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "render-FvwmMFL",
+          "exit": 0,
+          "seconds": 0.08647158200000149,
+          "group_absent": true,
+          "forced_kill": false
+        },
+        {
+          "label": "native-component-composition",
+          "exit": 1,
+          "seconds": 10.097558979999999,
+          "group_absent": true,
+          "forced_kill": false
+        }
+      ],
+      "source_files": 2534,
+      "overlay": {
+        "src/tests/test_mfl_request.c": "543790e6277846a0236801e60acce5f1b977a789fe76acd049be134e2d05e1cd"
+      },
+      "shutdown": [
+        {
+          "container_shutdown": "confirmed"
+        },
+        {
+          "machine_shutdown": "confirmed"
+        }
+      ],
+      "launch": {
+        "status": "failed; retained",
+        "error": "AssertionError('dispatch failed; retained')",
+        "holder_exit": 0,
+        "dispatch_exit": 1
+      }
+    }
+  ],
+  "profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true,
+        "maximum_font_saved_override_wire_roundtrip": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": [],
+      "maximum_font_wire_bytes": 10801
+    },
+    "dune-light": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    },
+    "classic-large": {
+      "status": "failed",
+      "cases": {},
+      "geometry": null,
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    }
+  },
+  "raw_artifact_root": ".",
+  "source_files": 2534,
+  "packages_reused": [
+    "desktopsettings",
+    "desktopinspect",
+    "desktopworker",
+    "commandmeta",
+    "desktopcontroller"
+  ],
+  "manuals": {
+    "native_asciidoctor": "both pass",
+    "host_mandoc": "both at 60 and 80 columns; inspected"
+  },
+  "not_run": [
+    "full platform/install/default-X matrix",
+    "new race or sanitizer campaign",
+    "benchmark/RSS comparison"
+  ],
+  "screenshot_manifest": "../../doc/screenshots/component-composition-manifest.json",
+  "source_only_after_native": {
+    "tests/live_x/component_composition_live.py": {
+      "sha256": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59",
+      "change": "Same-family Classic width oracle; record compared geometries before assertion; unexecuted"
+    }
+  }
+}

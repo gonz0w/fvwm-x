@@ -1699,6 +1699,15 @@ static int settings_hex(unsigned char value)
 	return -1;
 }
 
+static size_t request_result_max(enum mfl_request_kind kind)
+{
+	if (kind >= MFL_REQUEST_SETTINGS_QUERY &&
+	    kind <= MFL_REQUEST_SETTINGS_VALIDATE)
+		return MFL_DESKTOP_SETTINGS_RESULT_MAX;
+	return mfl_request_is_core_reply(kind) ?
+		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX;
+}
+
 enum mfl_part_result mfl_request_part(
 	struct mfl_pending_request *pending, const char *payload)
 {
@@ -1707,8 +1716,7 @@ enum mfl_part_result mfl_request_part(
 	unsigned int index = 0, digits = 0;
 	size_t length;
 
-	size_t maximum = mfl_request_is_core_reply(pending->kind) ?
-		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX;
+	size_t maximum = request_result_max(pending->kind);
 
 	if ((!mfl_request_is_settings(pending->kind) &&
 	    !mfl_request_is_files(pending->kind) &&
@@ -1797,8 +1805,7 @@ cJSON *mfl_request_result(const struct mfl_pending_request *pending)
 
 	if (!pending->reply_data ||
 	    !request_shape(pending->reply_data,
-		mfl_request_is_core_reply(pending->kind) ?
-		MODULE_QUERY_RESULT_MAX : MFL_SETTINGS_RESULT_MAX, 8))
+		request_result_max(pending->kind), 8))
 		return NULL;
 	root = cJSON_ParseWithOpts(pending->reply_data, NULL, true);
 	if (!cJSON_IsObject(root) || cJSON_GetArraySize(root) != 1)

@@ -276,6 +276,13 @@ configuration-center covers these registered preferences:
 * *desktop_border*, desktop group: inherit; choices inherit, thin, strong.
 * *desktop_icon_theme*, desktop group: theme, empty by default. Empty selects
   the reserved SlateTray hicolor baseline; a name selects that icon theme.
+* *desktop_style*, desktop group: inherit; choices inherit, flat, relief.
+* *launcher_font* and *launcher_title_font*, desktop group: empty by default;
+  fonts for launcher items and titles respectively.
+* *form_font*, *form_input_font* and *form_button_font*, desktop group: empty
+  by default; fonts for new owned Form body, input and button text respectively.
+* *launcher_density* and *form_density*, desktop group: inherit; choices
+  inherit, compact, comfortable, spacious.
 * *tray_enabled*, tray group: boolean, false.
 * *tray_gap* and *tray_padding*, tray group: logical units, 0 through 64,
   default 4.
@@ -297,7 +304,7 @@ XSETTINGS and of explicit installed-menu command-line profiles. Missing themes
 use the existing hicolor, unthemed and text fallbacks. Foreign XEmbed client
 pixels are unchanged.
 
-The desktop font accepts at most 128 bytes of valid, printable UTF-8, without
+Desktop and component fonts accept at most 128 bytes of valid, printable UTF-8, without
 leading or trailing space, backslash, double quote, dollar, percent, ampersand,
 controls, U+2028 or U+2029. This restriction permits a native command literal
 without silently removing characters. Use the scoped editor for font names with
@@ -307,16 +314,26 @@ Desktop density selects menu item/title vertical spacing and owned-form text
 padding: inherit and comfortable use 8/10/12, compact uses 4/6/6, and spacious
 uses 12/14/16. Desktop border selects launcher menu border width: inherit and
 thin use 1, strong uses 3. These are profile values; existing scaling applies.
-The version 1 desktop-metrics projection is separate from color composition
-version 2, preference-file version 11 and IPC schema version 1.
+The component roles projection is version 2, separate from color composition
+version 2, preference-file version 12 and IPC schema version 1.
 
-The font, density and border settings apply to `SlateLauncherStyle` after the existing style copy and
-to future controller-owned Slate forms through their font, input font, button
-font and vertical text padding. Existing forms retain their resources until
-reopened. They do not override panel, tray, global decorations or the default
-font. Initial inherit submits no new override. Returning an explicit choice to
-inherit restores only the named shipped-profile baseline, not arbitrary live
-commands from outside the helper.
+For each key an explicit *FvwmDesktop module option takes precedence over the
+saved value. An empty component font inherits the effective desktop_font;
+component density inherit uses the effective desktop_density. If the global
+value also inherits, the configured profile supplies the baseline. Launcher
+items use `infostore.slate_font` at that baseline; launcher titles use the
+native DefaultFont when no global font is set. The three Form fonts apply when
+the next controller-owned Form starts. Existing Forms keep their resources.
+Panel fonts are not replaced live.
+
+Desktop style controls the highlight, separators and triangles of
+`SlateLauncherStyle`. Returning an explicit style to inherit restores the known
+shipped baseline for those facets, not external command history. The native
+corner radius is fixed at 0; there is no rounded-corner engine. Font, density
+and border publication affects `SlateLauncherStyle` and future owned Forms as
+applicable, not arbitrary clients. Returning an explicit choice to inherit
+restores the named shipped-profile baseline, not arbitrary live commands from
+outside the helper.
 
 Each setting submenu shows its saved value, helper-effective value and source.
 Saved means the helper's last successfully loaded or written snapshot; use
@@ -388,7 +405,13 @@ button (F8), or *edit-settings group:session*, opens a compact editor for the
 four session preferences. The Session panel also opens this scoped editor.
 Its Tray settings button (F9), or *edit-settings group:tray*, opens the compact
 six-field tray editor. The settings menu also offers Tray settings. Desktop
-settings offers a compact four-field editor with *edit-settings group:desktop*.
+settings offers compact four-field pages. *edit-settings group:desktop* opens
+the defaults page first, with navigation to the launcher and Forms pages.
+The scopes are `component:defaults` (desktop_font, desktop_density,
+desktop_border, desktop_icon_theme), `component:launcher` (desktop_style,
+launcher_font, launcher_title_font, launcher_density), and `component:forms`
+(form_font, form_input_font, form_button_font, form_density). Defaults and
+Apply affect only the selected page, without resetting hidden fields.
 The desktop settings are save/apply only and are not native PreviewKey choices.
 Publication waits for any existing resource-preview recovery; a conflict blocks
 publication.
@@ -417,6 +440,8 @@ For desktop metrics:
 ....
 SendToModule FvwmDesktop edit-settings group:desktop
 SendToModule FvwmDesktop set desktop_density spacious
+SendToModule FvwmDesktop set desktop_style flat
+SendToModule FvwmDesktop set launcher_density compact
 SendToModule FvwmDesktop set desktop_border strong
 SendToModule FvwmDesktop set desktop_icon_theme ExampleTheme
 ....
@@ -458,8 +483,12 @@ with requested_source inherits saved. Explicit unequal or null values remain
 explicit. Reject unsupported versions; see FvwmMFL for exact merge order. After merging, a source of
 `runtime-kept-preference-unsaved` implies persistence_error `Runtime unsaved.`
 when the explicit row omits that field. An explicit row error takes precedence.
+The effective value and source identify the saved or module key owner;
+resolution and version 2 component_roles describe the role fallback separately.
+Launcher application means commands were submitted, not that painting was
+acknowledged; Form font changes apply at the next owned Form start.
 Standalone query-settings/inspector records remain self-contained. This avoids
-repeated diagnostics inside the bounded IPC reply;
+repeated diagnostics inside the bounded 16 KiB desktop settings IPC reply;
 expanded typed values, choices, limits and requested/unobserved tray status
 remain complete. Each tray row reports its effective value as `requested` and readiness as
 `unobserved`; a submitted request is not proof of tray ownership.
@@ -492,10 +521,11 @@ Complete versions 1 through 7 gain tray_modern off and tray_icon_size 24.
 Complete versions 1 through 8 gain native_settings_enabled off, inherited
 application font/icon/cursor choices and cursor_size 0. Complete versions 1
 through 9 gain the three inherited desktop metrics. Complete versions 1 through
-10 gain an empty desktop icon theme. The next successful save writes
-schema_version 11 with all thirty preferences and the retained wallpaper.
-Versions 1 through 10 require their exact historical fields; incomplete or
-unknown fields are refused. Older helpers cannot read version 11. Unknown
+10 gain an empty desktop icon theme. Complete versions 1 through 11 gain the
+eight inherited component settings. Loading does not rewrite the file; the next
+successful save writes schema_version 12 with the retained wallpaper.
+Versions 1 through 11 require their exact historical fields; incomplete or
+unknown fields are refused. Older helpers cannot read version 12. Unknown
 versions, duplicate fields, oversized or invalid files are preserved. Startup
 uses defaults and reports a persistence error; repair the data file or move it
 aside, then use reload-settings. The

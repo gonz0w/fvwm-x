@@ -1,0 +1,240 @@
+{
+  "base": "0333fe370db7d1924470228dc439864ac16c11c1",
+  "state": "in-progress; Classic scene failed; not release qualification",
+  "screenshots": {
+    "component-relief-launcher-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 43437,
+      "sha256": "f57cc78f90a77db88655064d7812f0e0ec69599cc7f9771dd59ef54fc2990abf",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-launcher-settings-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 51614,
+      "sha256": "ed2d576ffafe56c5e693320114483a887a034147bef4ca16f2a819df5212c71e",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-form-settings-slate-dark.png": {
+      "profile": "slate-dark",
+      "bytes": 50165,
+      "sha256": "2fbb5d1b07b6c89d51c8b99ffa9e0979dbb2e3c11004c5314363a1aba3d4ff6c",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-relief-launcher-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 43881,
+      "sha256": "7a249ad4e15ebd71522cb5c48de28b6d9cca3f34bc6b5df8ff82fea88f9854fd",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-launcher-settings-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 52016,
+      "sha256": "641b08dc6d81d4dd33a0b9f974ac2749bc358a45232be568e66c638ece5bfb6c",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-form-settings-dune-light.png": {
+      "profile": "dune-light",
+      "bytes": 50584,
+      "sha256": "3e6f533a22432888a61fe45d998507a8f848d17c4230089e89b43edfe3e481ce",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    },
+    "component-relief-launcher-classic-large.png": {
+      "profile": "classic-large",
+      "bytes": 58704,
+      "sha256": "addcdd17ab2f034a2d2455f80a9c1015c9ef25e2d228775527f61963e53c467d",
+      "source_archive": "d93cf2617e0a859aa56a734abaa041029b0f8d40d91bed69264adbcab10fef30"
+    }
+  },
+  "profiles": {
+    "slate-dark": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true,
+        "maximum_font_saved_override_wire_roundtrip": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": [],
+      "maximum_font_wire_bytes": 10801
+    },
+    "dune-light": {
+      "status": "passed",
+      "cases": {
+        "launcher_axes_preserve_form_geometry": true,
+        "form_roles_apply_only_at_next_start": true,
+        "scoped_reset_preserves_other_components": true,
+        "compact_pages_keyboard_and_cancel": true
+      },
+      "geometry": {
+        "baseline_menu": {
+          "width": 220,
+          "height": 104
+        },
+        "enlarged_menu": {
+          "width": 307,
+          "height": 249
+        },
+        "original_form": {
+          "width": 233,
+          "height": 115,
+          "controls": [
+            {
+              "x": 162,
+              "y": 10,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 171,
+              "y": 46,
+              "width": 52,
+              "height": 31,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 82,
+              "width": 47,
+              "height": 28,
+              "border": 0
+            },
+            {
+              "x": 162,
+              "y": 82,
+              "width": 61,
+              "height": 28,
+              "border": 0
+            }
+          ]
+        },
+        "new_form": {
+          "width": 316,
+          "height": 151,
+          "controls": [
+            {
+              "x": 210,
+              "y": 10,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 222,
+              "y": 59,
+              "width": 84,
+              "height": 44,
+              "border": 0
+            },
+            {
+              "x": 10,
+              "y": 108,
+              "width": 66,
+              "height": 38,
+              "border": 0
+            },
+            {
+              "x": 220,
+              "y": 108,
+              "width": 86,
+              "height": 38,
+              "border": 0
+            }
+          ]
+        }
+      },
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    },
+    "classic-large": {
+      "status": "failed",
+      "cases": {},
+      "geometry": null,
+      "cleanup_failures": [],
+      "observer_unexpected_x_errors": []
+    }
+  },
+  "limits": "Nine settings-component cases pass across Slate/Dune; Classic stopped at strict menu width growth. Images are unmodified. No accessibility or whole-release claim.",
+  "captured_fixture_sha256": "0ca065936ba1ee6d6f8aa0c7af320fb602d8140605532dfda72f7ab7bb5f4323",
+  "unexecuted_fixture_sha256": "5ade7d6ee9d449e6f6203274752eb66053d04c9ebc5912215fdb4066fe7acf59"
+}

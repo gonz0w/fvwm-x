@@ -361,6 +361,11 @@ func (d *Controller) query(scope string, saved, effective values) (values, error
 	return desktopsettings.Query(d.snapshot(saved, effective), scope, saved == nil && effective == nil)
 }
 func (d *Controller) editSettings(scope string, defaults bool, draft values) error {
+	// Retain the compact scope too: Defaults and recovery reopen this editor.
+	// Public query/reset group:desktop remains the complete twelve-key group.
+	if scope == "group:desktop" {
+		scope = "component:defaults"
+	}
 	token := newID(16)
 	plan, err := desktopsettings.Editor(d.snapshot(nil, nil), scope, defaults, draft, token)
 	if err != nil {

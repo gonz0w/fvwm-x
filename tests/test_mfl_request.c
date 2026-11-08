@@ -375,17 +375,133 @@ static void test_settings_assembly_and_cleanup(void)
 		assert(!mfl_request_result(&pending));
 		mfl_request_clear(&pending);
 	}
-	pending.kind = MFL_REQUEST_SETTINGS_QUERY;
-	char chunk[MFL_SETTINGS_CHUNK + 1];
-	memset(chunk, 'x', sizeof(chunk) - 1);
-	chunk[sizeof(chunk) - 1] = '\0';
-	for (unsigned int i = 0; i < MFL_SETTINGS_RESULT_MAX / MFL_SETTINGS_CHUNK; i++)
-		settings_part(&pending, i, chunk);
-	assert(pending.reply_length == MFL_SETTINGS_RESULT_MAX);
-	assert(mfl_request_part(&pending, "part 32 78") ==
-		MFL_PART_INVALID);
 	mfl_request_clear(&pending);
-	mfl_request_clear(&pending);
+}
+
+static char *result_json(size_t length)
+{
+	static const char prefix[] = "{\"result\":{\"padding\":\"";
+	static const char suffix[] = "\"}}";
+	size_t padding;
+	char *json;
+
+	assert(length >= sizeof(prefix) + sizeof(suffix) - 2);
+	assert(length < SIZE_MAX);
+	padding = length - (sizeof(prefix) - 1) - (sizeof(suffix) - 1);
+	json = cJSON_malloc(length + 1);
+	assert(json);
+	memcpy(json, prefix, sizeof(prefix) - 1);
+	memset(json + sizeof(prefix) - 1, 'x', padding);
+	memcpy(json + length - (sizeof(suffix) - 1), suffix, sizeof(suffix));
+	assert(strlen(json) == length);
+	return json;
+}
+
+static void result_roundtrip(struct mfl_pending_request *pending,
+	size_t length, unsigned int parts)
+{
+	char *json = result_json(length);
+	char chunk[MFL_SETTINGS_CHUNK + 1], end[32];
+	cJSON *root;
+	const cJSON *padding;
+
+	assert(mfl_request_part(pending, "part 1 78") == MFL_PART_INVALID);
+	for (size_t offset = 0; offset < length; offset += MFL_SETTINGS_CHUNK)
+	{
+		size_t bytes = length - offset;
+
+		if (bytes > MFL_SETTINGS_CHUNK)
+			bytes = MFL_SETTINGS_CHUNK;
+		memcpy(chunk, json + offset, bytes);
+		chunk[bytes] = '\0';
+		settings_part(pending,
+			(unsigned int)(offset / MFL_SETTINGS_CHUNK), chunk);
+	}
+	assert(pending->reply_length == length &&
+		pending->reply_parts == parts);
+	assert(strcmp(pending->reply_data, json) == 0);
+	snprintf(end, sizeof(end), "end %u", parts - 1);
+	assert(mfl_request_part(pending, end) == MFL_PART_INVALID);
+	snprintf(end, sizeof(end), "end %u", parts);
+	assert(mfl_request_part(pending, end) == MFL_PART_DONE);
+	root = mfl_request_result(pending);
+	assert(root);
+	padding = cJSON_GetObjectItemCaseSensitive(
+		cJSON_GetObjectItemCaseSensitive(root, "result"), "padding");
+	assert(cJSON_IsString(padding));
+	assert(strlen(padding->valuestring) == length -
+		strlen("{\"result\":{\"padding\":\"\"}}"));
+	assert(strspn(padding->valuestring, "x") ==
+		strlen(padding->valuestring));
+	cJSON_Delete(root);
+	cJSON_free(json);
+}
+
+static void test_result_kind_limits(void)
+{
+	const struct {
+		enum mfl_request_kind kind;
+		size_t maximum;
+		unsigned int parts;
+	} cases[] = {
+		{MFL_REQUEST_SETTINGS_QUERY, 16384, 64},
+		{MFL_REQUEST_SETTINGS_SET, 16384, 64},
+		{MFL_REQUEST_SETTINGS_RESET, 16384, 64},
+		{MFL_REQUEST_SETTINGS_RELOAD, 16384, 64},
+		{MFL_REQUEST_SETTINGS_VALIDATE, 16384, 64},
+		{MFL_REQUEST_OPERATION_QUERY, 8192, 32},
+		{MFL_REQUEST_OPERATION_START, 8192, 32},
+		{MFL_REQUEST_OPERATION_CANCEL, 8192, 32},
+		{MFL_REQUEST_PROVIDER, 8192, 32},
+		{MFL_REQUEST_SESSION_QUERY, 8192, 32},
+		{MFL_REQUEST_FILES_QUERY, 8192, 32},
+		{MFL_REQUEST_FILES_ACTION, 8192, 32},
+		{MFL_REQUEST_TOPOLOGY, 32768, 128},
+		{MFL_REQUEST_SESSION_CLIENTS, 32768, 128}
+	};
+	const enum mfl_request_kind local_kinds[] = {
+		MFL_REQUEST_FILES_LIST, MFL_REQUEST_FILES_REGISTER
+	};
+
+	assert(MFL_SETTINGS_RESULT_MAX == 8192);
+	assert(MFL_DESKTOP_SETTINGS_RESULT_MAX == 16384);
+	assert(MODULE_QUERY_RESULT_MAX == 32768);
+	assert(MFL_SETTINGS_CHUNK == 256);
+	for (size_t i = 0; i < sizeof(local_kinds) / sizeof(local_kinds[0]);
+	    i++)
+	{
+		struct mfl_pending_request pending = {.kind = local_kinds[i]};
+
+		assert(mfl_request_part(&pending, "part 0 7b") ==
+			MFL_PART_INVALID);
+		assert(!pending.reply_data && !pending.reply_length &&
+			!pending.reply_parts);
+		mfl_request_clear(&pending);
+	}
+	for (size_t i = 0; i < sizeof(cases) / sizeof(cases[0]); i++)
+	{
+		struct mfl_pending_request pending = {.kind = cases[i].kind};
+		char extra[32];
+
+		if (cases[i].maximum == 16384)
+		{
+			result_roundtrip(&pending, 8193, 33);
+			mfl_request_clear(&pending);
+			pending.kind = cases[i].kind;
+		}
+		result_roundtrip(&pending, cases[i].maximum,
+			cases[i].parts);
+		snprintf(extra, sizeof(extra), "part %u 78", cases[i].parts);
+		assert(mfl_request_part(&pending, extra) == MFL_PART_INVALID);
+		assert(pending.reply_length == cases[i].maximum);
+		mfl_request_clear(&pending);
+		/* Final JSON validation independently enforces this ceiling. */
+		pending.kind = cases[i].kind;
+		pending.reply_data = result_json(cases[i].maximum + 1);
+		pending.reply_length = cases[i].maximum + 1;
+		assert(!mfl_request_result(&pending));
+		mfl_request_clear(&pending);
+	}
 }
 
 static void test_lifecycle(void)
@@ -1446,5 +1562,6 @@ int main(void)
 	test_settings_requests();
 	test_settings_string_bounds();
 	test_settings_assembly_and_cleanup();
+	test_result_kind_limits();
 	return 0;
 }

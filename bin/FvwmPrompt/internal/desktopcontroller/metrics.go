@@ -39,20 +39,39 @@ func (d *Controller) applyDesktopMetrics(metrics desktopsettings.DesktopMetrics)
 		previous = *d.lastDesktop
 	}
 	options := []string{}
-	if metrics.Font != "" || previous.Font != "" {
+	if metrics.LauncherFont != "" || previous.LauncherFont != "" {
 		font := `"$[infostore.slate_font]"`
-		if metrics.Font != "" {
+		if metrics.LauncherFont != "" {
 			// Policy refuses unrepresentable bytes instead of silently cleaning.
-			font = `"` + metrics.Font + `"`
+			font = `"` + metrics.LauncherFont + `"`
 		}
 		options = append(options, "Font "+font)
 	}
-	if metrics.Density != "inherit" || previous.Density != "" && previous.Density != "inherit" {
+	if metrics.LauncherTitleFont != "" || previous.LauncherTitleFont != "" {
+		// A bare TitleFont restores Scr.DefaultFont, the profile title baseline.
+		option := "TitleFont"
+		if metrics.LauncherTitleFont != "" {
+			option += ` "` + metrics.LauncherTitleFont + `"`
+		}
+		options = append(options, option)
+	}
+	if metrics.LauncherDensity != "inherit" || previous.LauncherDensity != "" && previous.LauncherDensity != "inherit" {
 		options = append(options, fmt.Sprintf("VerticalItemSpacing %d %d, VerticalTitleSpacing %d %d",
 			metrics.MenuItemPad, metrics.MenuItemPad, metrics.MenuTitlePad, metrics.MenuTitlePad))
 	}
 	if metrics.Border != "inherit" || previous.Border != "" && previous.Border != "inherit" {
 		options = append(options, fmt.Sprintf("BorderWidth %d", metrics.MenuBorder))
+	}
+	if metrics.Style != "inherit" || previous.Style != "" && previous.Style != "inherit" {
+		separators, triangles := "SeparatorsShort", "TrianglesSolid"
+		if metrics.LongSeparators {
+			separators = "SeparatorsLong"
+		}
+		if metrics.ReliefTriangles {
+			triangles = "TrianglesRelief"
+		}
+		options = append(options, fmt.Sprintf("Hilight3DThickness %d, %s, %s",
+			metrics.MenuRelief, separators, triangles))
 	}
 	if len(options) != 0 {
 		d.emit("MenuStyle SlateLauncherStyle " + strings.Join(options, ", "))
@@ -62,12 +81,15 @@ func (d *Controller) applyDesktopMetrics(metrics desktopsettings.DesktopMetrics)
 
 func desktopFormMetrics(metrics desktopsettings.DesktopMetrics) []string {
 	var lines []string
-	if metrics.Font != "" {
-		for _, name := range []string{"Font", "InputFont", "ButtonFont"} {
-			lines = append(lines, name+` "`+metrics.Font+`"`)
+	for _, font := range []struct{ name, value string }{
+		{"Font", metrics.FormFont}, {"InputFont", metrics.FormInputFont},
+		{"ButtonFont", metrics.FormButtonFont},
+	} {
+		if font.value != "" {
+			lines = append(lines, font.name+` "`+font.value+`"`)
 		}
 	}
-	if metrics.Density != "inherit" {
+	if metrics.FormDensity != "inherit" {
 		lines = append(lines, fmt.Sprintf("PadVText %d", metrics.FormPad))
 	}
 	return lines

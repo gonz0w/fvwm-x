@@ -370,11 +370,13 @@ func settingsApplication(key string, item map[string]json.RawMessage) bool {
 }
 
 func settingsConstraint(key, constraint string) bool {
-	switch key {
-	case "desktop_font", "desktop_density", "desktop_border":
+	if desktopsettings.DesktopKey(key) {
+		if key == "desktop_icon_theme" {
+			return constraint == "save-apply-only; named-native-icons"
+		}
 		return constraint == "save-apply-only; existing-forms-unchanged"
-	case "desktop_icon_theme":
-		return constraint == "save-apply-only; named-native-icons"
+	}
+	switch key {
 	case "wallpaper_palette", "wallpaper_appearance":
 		return constraint == "wallpaper-retained"
 	case "transparency":
@@ -404,7 +406,10 @@ func desktopSettingsMetadata(key string, item map[string]json.RawMessage, snapsh
 		return err == nil && stringField(item, "resolution") == expected && stringField(item, "resolved") == resolved
 	}
 	values := desktopsettings.Values{}
-	for _, name := range []string{"desktop_font", "desktop_density", "desktop_border"} {
+	for name := range desktopsettings.Registry() {
+		if !desktopsettings.DesktopKey(name) || name == "desktop_icon_theme" {
+			continue
+		}
 		var value any
 		if json.Unmarshal(snapshot[name]["effective"], &value) != nil {
 			return false
@@ -414,20 +419,33 @@ func desktopSettingsMetadata(key string, item map[string]json.RawMessage, snapsh
 	metrics, err := desktopsettings.ResolveDesktopMetrics(values)
 	version, valid := intField(item, "component_version")
 	roles, object := objectField(item, "component_roles")
-	if err != nil || !valid || version != metrics.Version || !object || len(roles) != 4 {
+	if err != nil || !valid || version != metrics.Version || !object || len(roles) != 16 {
 		return false
 	}
 	for name, expected := range map[string]int{"menu_item_padding": metrics.MenuItemPad,
-		"menu_title_padding": metrics.MenuTitlePad, "form_text_padding": metrics.FormPad, "menu_border": metrics.MenuBorder} {
+		"menu_title_padding": metrics.MenuTitlePad, "form_text_padding": metrics.FormPad, "menu_border": metrics.MenuBorder,
+		"menu_relief": metrics.MenuRelief, "corner_radius": metrics.CornerRadius} {
 		if value, valid := intField(roles, name); !valid || value != expected {
 			return false
 		}
 	}
-	expected, resolved := "explicit", values[key]
-	if resolved == "" || resolved == "inherit" {
-		expected, resolved = "profile-baseline", "configured-profile"
+	for name, expected := range map[string]string{"style": metrics.Style,
+		"launcher_font": metrics.LauncherFont, "launcher_title_font": metrics.LauncherTitleFont,
+		"form_font": metrics.FormFont, "form_input_font": metrics.FormInputFont,
+		"form_button_font": metrics.FormButtonFont,
+		"launcher_density": metrics.LauncherDensity, "form_density": metrics.FormDensity} {
+		value, valid := boundedStringField(roles, name, 128, false)
+		if !valid || value != expected {
+			return false
+		}
 	}
-	return stringField(item, "resolution") == expected && stringField(item, "resolved") == resolved
+	for name, expected := range map[string]bool{"long_separators": metrics.LongSeparators, "relief_triangles": metrics.ReliefTriangles} {
+		if value, valid := boolField(roles, name); !valid || value != expected {
+			return false
+		}
+	}
+	resolved, expected, err := desktopsettings.DesktopResolution(values, key)
+	return err == nil && stringField(item, "resolution") == expected && stringField(item, "resolved") == resolved
 }
 
 func (c *collector) settings(s *Section) {
@@ -441,6 +459,14 @@ func (c *collector) settings(s *Section) {
 	s.Reason = "Controller policy; submitted does not establish final paint or an atomic desktop snapshot"
 	keys, _ := desktopsettings.Scope("all")
 	registry := desktopsettings.Registry()
+	persistenceReported := false
+	row := func(label, value string) {
+		if len([]rune(c.clean(label, 81))) > 80 || len([]rune(c.clean(value, 201))) > 200 {
+			s.Truncated = true
+			c.problem(s, "Settings display incomplete")
+		}
+		c.row(s, label, value)
+	}
 	for _, key := range keys {
 		item := snapshot[key]
 		definition := registry[key]
@@ -489,7 +515,17 @@ func (c *collector) settings(s *Section) {
 			}
 			return fmt.Sprint(validated)
 		}
-		c.row(s, key, fmt.Sprintf("default=%v; saved=%s; effective=%s", definition.Default, value("saved"), value("effective")))
+		resolution := stringField(item, "resolution")
+		validResolution := member(resolution, []string{"explicit", "retained", "follow", "requested", "high-contrast", "transparency-disabled"}) ||
+			member(resolution, []string{"profile-baseline", "desktop-default"}) && desktopsettings.DesktopKey(key)
+		values := fmt.Sprintf("default=%v; saved=%s; effective=%s", definition.Default, value("saved"), value("effective"))
+		// Explicit component values already contain the resolved request. Put
+		// inherited fallback values beside their otherwise short empty/inherit
+		// request; source rows retain resolution class without repeating fonts.
+		if validResolution && (!desktopsettings.DesktopKey(key) || resolution != "explicit") {
+			values += "; resolved=" + value("resolved")
+		}
+		row(key, values)
 		metadata := definition.Description + "; group=" + definition.Group + "; type=" + definition.Type
 		constraint := ""
 		if len(definition.Choices) > 0 {
@@ -504,7 +540,7 @@ func (c *collector) settings(s *Section) {
 		if constraint != "" {
 			metadata += "; " + constraint
 		}
-		c.row(s, key+" metadata", metadata)
+		row(key+" metadata", metadata)
 		source, application := stringField(item, "source"), stringField(item, "application")
 		validSource := member(source, []string{"saved", "module-configuration"}) ||
 			source == "runtime-kept-preference-unsaved" && desktopsettings.PreviewKey(key) && stringField(item, "persistence_error") == "Runtime unsaved."
@@ -512,37 +548,42 @@ func (c *collector) settings(s *Section) {
 			c.problem(s, "Invalid settings source or application metadata")
 			continue
 		}
-		c.row(s, key+" source", source+"; "+application+"; owner=FvwmDesktop")
+		sourceMetadata := source + "; " + application + "; owner=FvwmDesktop"
 		if session {
 			request := "requested=" + value("requested") + "; source=" + stringField(item, "requested_source") + "; available=" + strings.TrimSpace(string(item["available"]))
 			if key == "session_bus" {
 				request += "; next login"
 			}
-			c.row(s, key+" request", request)
+			row(key+" request", request)
 		}
 		if desktopsettings.TrayKey(key) {
 			if stringField(item, "readiness") != "unobserved" {
 				c.problem(s, "Invalid tray readiness metadata")
 				continue
 			}
-			c.row(s, key+" request", "requested="+value("requested")+"; readiness=unobserved")
+			row(key+" request", "requested="+value("requested")+"; readiness=unobserved")
 		}
 		var runtime any
-		_ = json.Unmarshal(item["runtime_constraint"], &runtime)
-		if runtime != nil {
+		if json.Unmarshal(item["runtime_constraint"], &runtime) != nil {
+			c.problem(s, "Unknown settings constraint")
+		} else if runtime != nil {
 			if constraint, ok := runtime.(string); ok && settingsConstraint(key, constraint) {
-				c.row(s, key+" constraint", constraint)
+				sourceMetadata += "; " + constraint
 			} else {
 				c.problem(s, "Unknown settings constraint")
 			}
 		}
-		resolution := stringField(item, "resolution")
-		if member(resolution, []string{"explicit", "retained", "follow", "requested", "high-contrast", "transparency-disabled"}) ||
-			resolution == "profile-baseline" && desktopsettings.DesktopKey(key) {
-			c.row(s, key+" resolution", resolution+"; resolved="+value("resolved"))
+		if validResolution {
+			sourceMetadata += "; resolution=" + resolution
+		} else if len(item["resolution"]) != 0 {
+			c.problem(s, "Unknown settings resolution")
 		}
-		if data := item["persistence_error"]; len(data) > 0 && string(data) != "null" {
-			c.row(s, "Persistence", "An error was reported; details hidden")
+		row(key+" source", sourceMetadata)
+		// Multiple runtime-kept keys report the same persistence failure.
+		// Preserve the warning once instead of consuming one row per key.
+		if data := item["persistence_error"]; !persistenceReported && len(data) > 0 && string(data) != "null" {
+			row("Persistence", "An error was reported; details hidden")
+			persistenceReported = true
 		}
 	}
 }

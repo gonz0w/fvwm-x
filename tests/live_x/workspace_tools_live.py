@@ -435,20 +435,33 @@ def scene(**s):
         row(app_title, desk=0)
 
         probe.command('SendToModule FvwmDesktop scratchpads')
-        manager = focus_form('Scratchpads')
+        def manager_page(name, since):
+            button = f'*SlateScratchpadsFormButton continue "Toggle {name}"'
+            for path in native.glob('module-*.json'):
+                module = json.loads(path.read_text())
+                if (module['started'] < since or
+                        module['arguments'][-1:] != ['SlateScratchpadsForm']):
+                    continue
+                log = path.with_suffix('.jsonl')
+                if log.exists() and any(json.loads(line)['text'] == button
+                                        for line in log.read_text().split('\n')[:-1]):
+                    return view.named('Scratchpads')
+            return None
+
+        focus_form('Scratchpads')
         manager_at = time.monotonic()
         view.key('F2')
         wait('manager actual Next callback', lambda: any(r['direction'] == 'in' and r['time'] >= manager_at
             and r['text'].startswith('scratchpad-control ') and r['text'].endswith(' page 1') for r in rows(native)))
-        next_manager = wait('manager Next replaced its native page', lambda: (w if
-            (w := view.named('Scratchpads')) and w != manager else None))
+        # A replacement X connection can receive the same window ID.
+        wait('replacement manager received app page', lambda: manager_page('app', manager_at))
         focus_form('Scratchpads')
         s['capture']('workspace-scratchpad-manager.png')
+        previous_at = time.monotonic()
         view.key('F1')
-        wait('manager Previous actual callback', lambda: any(r['direction'] == 'in' and r['time'] >= manager_at
+        wait('manager actual Previous callback', lambda: any(r['direction'] == 'in' and r['time'] >= previous_at
             and r['text'].startswith('scratchpad-control ') and r['text'].endswith(' page 0') for r in rows(native)))
-        wait('manager Previous replaced its native page', lambda: (w if
-            (w := view.named('Scratchpads')) and w != next_manager else None))
+        wait('replacement manager received terminal page', lambda: manager_page('term', previous_at))
         focus_form('Scratchpads')
         refresh_at = time.monotonic()
         view.key('F5')

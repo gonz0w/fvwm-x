@@ -273,6 +273,7 @@ class Probe:
 
 def source_receipt(source, build):
     paths = ['tests/live_x/action_palette_live.py',
+             'tests/live_x/native_module_proxy.py',
              'bin/FvwmPrompt/internal/desktopcontroller/palette.go',
              'bin/FvwmPrompt/internal/desktopcontroller/palette_native.go',
              'fvwm/module_interface.c', 'fvwm/palette_policy.c']
@@ -956,7 +957,8 @@ def main():
     if len(sys.argv) > 1 and sys.argv[1] == '--probe':
         return module_probe(sys.argv[2:])
     if len(sys.argv) > 1 and sys.argv[1] == '--module-proxy':
-        return module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:])
+        return module_proxy(sys.argv[2], sys.argv[3], sys.argv[4:],
+                            record_core_reply=True)
     if len(sys.argv) == 4 and sys.argv[1] == '--desktop-worker':
         return worker_proxy(sys.argv[2], sys.argv[3])
     if len(sys.argv) >= 3 and sys.argv[1] == '--app-record':

@@ -134,6 +134,25 @@ a finite corrected-fixture/UI checkpoint using the retained implementation
 passes, then screenshots and frozen closure maps. No mask regression is proven.
 [Results and remaining acceptance](verification/VERIFICATION-2026-11-08-WORKSPACE-TOOLS.md).
 
+Z1 continuation, 2026-11-09. Owner requests remaining PR374 UI qualification.
+Use the retained Linux ARM64 binaries and receipts, with only the corrected
+Exec fixture overlay. Lead runs the three theme scenes and captures, with
+independent input review before dispatch and acceptance review before handoff.
+One UI run and up to two diagnosed repairs share a 25-minute active lab
+budget. Reuse completed cases where inputs are unchanged. Preserve failures
+and stop on an unexplained recurrence or missing prerequisite. No platform,
+install or performance matrix. Both issue closures depend on their frozen maps.
+
+Z1 continuation result. The corrected fixture passed 30 native cases across
+Slate, Dune and enlarged Classic after two fixture-only observer repairs.
+Nine captures are retained. Build, C/Go, race, sanitizer and manual results
+were reused. Owned lab shutdown is confirmed. Visual inspection found
+right-edge clipping of the enlarged Classic overview and Pointer Move control.
+PR374 stays draft. The next bounded checkpoint compacts the overview and
+confirms all controls fit in enlarged Classic. #221/#223 remain open for real terminal,
+live transient, identity reuse and mixed topology/scale qualification as
+applicable. [UI evidence and captures](verification/VERIFICATION-2026-11-09-WORKSPACE-UI.md).
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

@@ -29,7 +29,7 @@ void scratchpad_owner_gone(struct fmodule *owner)
 	scratchpad_registry_owner_gone(&registry, (uintptr_t)owner);
 }
 
-static bool eligible(const FvwmWindow *fw)
+bool workspace_window_is_application(const FvwmWindow *fw)
 {
 	fmodule_list_itr iterator;
 	fmodule *module;
@@ -81,7 +81,7 @@ static FvwmWindow *find_window(uint64_t identity)
 
 	for (fw = Scr.FvwmRoot.next; fw && scanned < PALETTE_SCAN_MAX;
 	     fw = fw->next, scanned++)
-		if (fw->palette_identity == identity && eligible(fw))
+		if (fw->palette_identity == identity && workspace_window_is_application(fw))
 			return fw;
 	return NULL;
 }
@@ -126,7 +126,7 @@ static bool observe(const struct scratchpad_request *request,
 		for (fw = Scr.FvwmRoot.next; fw && scanned < PALETTE_SCAN_MAX;
 		     fw = fw->next, scanned++)
 		{
-			if (!eligible(fw) || !fw->class.res_class ||
+			if (!workspace_window_is_application(fw) || !fw->class.res_class ||
 			    strcmp(fw->class.res_class, request->class_name) ||
 			    (request->instance[0] && (!fw->class.res_name ||
 			     strcmp(fw->class.res_name, request->instance))))
@@ -169,7 +169,7 @@ cJSON *scratchpad_prepare(struct fmodule *owner,
 	struct scratchpad_entry *entry;
 	struct timespec now;
 	FvwmWindow *focused = get_focus_window();
-	uint64_t prior = focused && eligible(focused) ?
+	uint64_t prior = focused && workspace_window_is_application(focused) ?
 		focused->palette_identity : 0, lease_id;
 	char lease[49], target[PALETTE_ID_MAX + 1];
 	cJSON *json;

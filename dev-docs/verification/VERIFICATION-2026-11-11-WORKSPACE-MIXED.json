@@ -1,0 +1,306 @@
+{
+  "issues": [
+    220,
+    221,
+    222,
+    223
+  ],
+  "status": "focused mixed monitor scene passed",
+  "platform": "Linux ARM64 / Xorg dummy",
+  "plan_sha256": "89944a23c778554caae4a36599112121744292f46fe5aad6b133344f57c95181",
+  "failed_build_plan_sha256": "61837caa1db26d56b98be89aad694624d78f97cc6b4c650f9909ed0af9388840",
+  "admission_rejected_plan_sha256": "2b9c0d8d9d3b60b18c8f9b160dec1a3154cf91c721b39c34c88056626f1d8d4b",
+  "native_receipt_sha256": "abeaa11053b8df38cf2889609f1ef39b061023eade86154b38804c8905ff85fa",
+  "scene_receipt_sha256": "ea7aaff7cd99a9be7e323cbfeacd6843fa5ebab9014367b09f655b16f3efd6b7",
+  "build_sha256": "a59d246de55746cc34ffae616fae81f9b3e5ac25a0d5adb377337ef551c71b5a",
+  "fixture_sha256": "6ef2e8c24176d1bf0cb3ebce53542b4b08c3f4948e8c58324acbb8c72ec8695c",
+  "focused_checks": [
+    {
+      "label": "affected-placement-build",
+      "exit": 0
+    },
+    {
+      "label": "workspace-core-unit",
+      "exit": 0
+    },
+    {
+      "label": "workspace-command-metadata",
+      "exit": 0
+    },
+    {
+      "label": "native-mixed-placement",
+      "exit": 1
+    }
+  ],
+  "prior_passing_commands_reused": 34,
+  "initial_committed_topology": {
+    "epoch": 1,
+    "monitors": {
+      "DUMMY0": {
+        "name": "DUMMY0",
+        "name_atom": 230,
+        "primary": true,
+        "geometry": {
+          "x": 0,
+          "y": 0,
+          "width": 1920,
+          "height": 1080
+        },
+        "physical_mm": {
+          "width": 508,
+          "height": 286
+        },
+        "outputs": [
+          78
+        ]
+      },
+      "DUMMY1": {
+        "name": "DUMMY1",
+        "name_atom": 231,
+        "primary": false,
+        "geometry": {
+          "x": 1920,
+          "y": 0,
+          "width": 1280,
+          "height": 1024
+        },
+        "physical_mm": {
+          "width": 169,
+          "height": 135
+        },
+        "outputs": [
+          79
+        ]
+      }
+    },
+    "workspaces": {
+      "DUMMY0": {
+        "viewport": {
+          "x": 0,
+          "y": 0,
+          "width": 3200,
+          "height": 1080
+        },
+        "pages": {
+          "width": 1,
+          "height": 1
+        },
+        "name": "DUMMY0",
+        "desk": 0,
+        "scale_quarters": 4,
+        "work_area": {
+          "x": 0,
+          "y": 56,
+          "width": 1920,
+          "height": 1024
+        },
+        "dynamic_work_area": {
+          "x": 0,
+          "y": 56,
+          "width": 1920,
+          "height": 1024
+        }
+      },
+      "DUMMY1": {
+        "viewport": {
+          "x": 0,
+          "y": 0,
+          "width": 3200,
+          "height": 1080
+        },
+        "pages": {
+          "width": 1,
+          "height": 1
+        },
+        "name": "DUMMY1",
+        "desk": 0,
+        "scale_quarters": 8,
+        "work_area": {
+          "x": 1920,
+          "y": 0,
+          "width": 1280,
+          "height": 1024
+        },
+        "dynamic_work_area": {
+          "x": 1920,
+          "y": 0,
+          "width": 1280,
+          "height": 1024
+        }
+      }
+    }
+  },
+  "failure": "deadline expired while waiting for windows within destination work area",
+  "cases": {},
+  "screenshots": [],
+  "cleanup_failures": [],
+  "observer_unexpected_x_errors": [],
+  "owned_shutdown": [
+    {
+      "container_shutdown": "confirmed"
+    },
+    {
+      "machine_shutdown": "confirmed"
+    }
+  ],
+  "columns_recovery": {
+    "plan_sha256": "3ac98ac165ed8a200991b7ff32a0503f63d4d0f20823eda586512766bb1303cb",
+    "scene_sha256": "5a4b8ba96ab45391ae6dec0e1514dfea338b54a0dad8e14bd7c2266261c04c85",
+    "build_sha256": "e50a8dcb0b991fe2eb6e2182d3ef91b4c74086d8a353b04e823188fd9f7735c1",
+    "reused_commands": 36,
+    "cases": {
+      "columns_respect_work_area_and_size_hints": true,
+      "layout_restore_preserves_newer_away_and_back_move": true,
+      "master_stack_and_owned_floating_restore": true,
+      "connected_docking_preserves_client_pixels": true,
+      "scale_and_primary_change_refuses_stale_overview_move": true
+    },
+    "screenshots": [
+      "workspace-placement-columns.png"
+    ],
+    "failure": "deadline expired while waiting for committed disabled-secondary",
+    "columns": [
+      {
+        "frame": {
+          "x": 0,
+          "y": 56,
+          "width": 630,
+          "height": 1021
+        },
+        "client": [
+          622,
+          985
+        ]
+      },
+      {
+        "frame": {
+          "x": 640,
+          "y": 56,
+          "width": 640,
+          "height": 1024
+        },
+        "client": [
+          632,
+          988
+        ]
+      },
+      {
+        "frame": {
+          "x": 1280,
+          "y": 56,
+          "width": 640,
+          "height": 1024
+        },
+        "client": [
+          632,
+          988
+        ]
+      }
+    ],
+    "docking_report": "[1794437287.985825] restore_profile: {\"version\":1,\"kind\":\"unavailable\",\"reason\":\"source unavailable or exceeds provenance bounds\"} WorkspaceDock: restored connected (3 applied, 0 skipped)\n",
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "unplug_recovery": {
+    "plan_sha256": "a4b1f0adecedbf575e7fadec61638e97f9b7eeb9a2b3c09ca995a7015dd55b49",
+    "scene_sha256": "5cac091f33d098aaa4118a32af566c2efba0f7a72e18a97471d6454f06e96ebe",
+    "build_sha256": "e50a8dcb0b991fe2eb6e2182d3ef91b4c74086d8a353b04e823188fd9f7735c1",
+    "reused_commands": 37,
+    "cases": {
+      "columns_respect_work_area_and_size_hints": true,
+      "layout_restore_preserves_newer_away_and_back_move": true,
+      "master_stack_and_owned_floating_restore": true,
+      "connected_docking_preserves_client_pixels": true,
+      "scale_and_primary_change_refuses_stale_overview_move": true,
+      "overview_refresh_tracks_remaining_committed_role": true
+    },
+    "screenshots": [
+      "workspace-placement-columns.png"
+    ],
+    "failure": "",
+    "columns": [
+      {
+        "frame": {
+          "x": 0,
+          "y": 56,
+          "width": 630,
+          "height": 1021
+        },
+        "client": [
+          622,
+          985
+        ]
+      },
+      {
+        "frame": {
+          "x": 640,
+          "y": 56,
+          "width": 640,
+          "height": 1024
+        },
+        "client": [
+          632,
+          988
+        ]
+      },
+      {
+        "frame": {
+          "x": 1280,
+          "y": 56,
+          "width": 640,
+          "height": 1024
+        },
+        "client": [
+          632,
+          988
+        ]
+      }
+    ],
+    "docking_report": "[1794437487.079075] restore_profile: {\"version\":1,\"kind\":\"unavailable\",\"reason\":\"source unavailable or exceeds provenance bounds\"} WorkspaceDock: restored travel (3 applied, 0 skipped, primary fallback)\n",
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "screenshot_sha256": "9b426042d44af32685d9baf9023e354776b4d55bb8888522994797810d6dbce3",
+  "final_run": {
+    "plan_sha256": "6bd6c70b38967a5304968d79630b88cb11cf42eb2f3e5a0dba67384e8de538e9",
+    "core_sha256": "e50a8dcb0b991fe2eb6e2182d3ef91b4c74086d8a353b04e823188fd9f7735c1",
+    "reused_commands": 37,
+    "cases": {
+      "columns_respect_work_area_and_size_hints": true,
+      "layout_restore_preserves_newer_away_and_back_move": true,
+      "master_stack_and_owned_floating_restore": true,
+      "connected_docking_preserves_client_pixels": true,
+      "scale_and_primary_change_refuses_stale_overview_move": true,
+      "overview_refresh_tracks_remaining_committed_role": true,
+      "missing_connector_reports_reachable_fallback": true,
+      "scratchpad_summon_after_unplug_preserves_client_pixels": true,
+      "replug_restore_preserves_newer_move_and_skips_retired_allocation": true
+    },
+    "screenshots": [
+      "workspace-placement-mixed.png"
+    ],
+    "screenshot_sha256": "d4c9a4a0fcd30ff8cf5be5f2e4ba414633ae19e3bfc4a902c8964a8269c67641",
+    "cleanup_failures": [],
+    "observer_errors": [],
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  }
+}

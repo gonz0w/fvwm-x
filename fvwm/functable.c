@@ -615,6 +615,12 @@ const func_t func_table[] =
 		FUNC_NEEDS_WINDOW, CRS_SELECT),
 	/* - Set styles on the selected window */
 
+	CMD_ENT("workspacedock", CMD_WorkspaceDock, F_WORKSPACE_DOCK, 0, 0),
+	/* - Capture and restore session-owned workspace docking profiles */
+
+	CMD_ENT("workspacelayout", CMD_WorkspaceLayout, F_WORKSPACE_LAYOUT, 0, 0),
+	/* - Apply or release the selected workspace layout */
+
 	CMD_ENT("xorpixmap", CMD_XorPixmap, F_XOR, 0, 0),
 	/* - Use a pixmap for move/resize rubber-band */
 

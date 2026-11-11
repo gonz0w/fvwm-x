@@ -1008,6 +1008,18 @@
     "descr": "Set styles on the selected window"
   },
   {
+    "name": "WorkspaceDock",
+    "cursor": "",
+    "window": 0,
+    "descr": "Capture and restore session-owned workspace docking profiles"
+  },
+  {
+    "name": "WorkspaceLayout",
+    "cursor": "",
+    "window": 0,
+    "descr": "Apply or release the selected workspace layout"
+  },
+  {
     "name": "XorPixmap",
     "cursor": "",
     "window": 0,

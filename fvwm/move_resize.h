@@ -39,4 +39,6 @@ int GetMoveArguments(FvwmWindow *fw,
 	char **paction, size_rect s, position *pFinal,
 	Bool *fWarp, Bool *fPointer, Bool fKeep);
 
+void record_resized_logical_client(FvwmWindow *fw);
+
 #endif /* FVWM_MOVE_RESIZE_H */

@@ -679,7 +679,7 @@ void apply_decor_change(FvwmWindow *fw)
 }
 
 /* Update which monitor a window is on. */
-Bool update_fvwm_monitor(FvwmWindow *fw)
+static Bool update_monitor(FvwmWindow *fw, bool preserve_client)
 {
 	rectangle g;
 	struct monitor *mnew;
@@ -797,7 +797,7 @@ out:
 		{
 			kind = GEOMETRY_TRANSITION_NORMAL;
 		}
-		if (dest_atom != fw->last_transition_name_atom ||
+		if (preserve_client || dest_atom != fw->last_transition_name_atom ||
 		    dest_quarters != fw->last_transition_quarters ||
 		    (int)kind != fw->last_transition_kind)
 		{
@@ -833,18 +833,18 @@ out:
 		SelectDecor(fw, &style, &buttons);
 		setup_window_font(fw, &style, True);
 		setup_icon_font(fw, &style, True);
-		if (kind != GEOMETRY_TRANSITION_NORMAL ||
+		if (preserve_client || kind != GEOMETRY_TRANSITION_NORMAL ||
 		    fw->logical_client_valid)
 		{
 			get_window_borders(fw, &dest_chrome);
-			eligible = HAS_OVERRIDE_SIZE_HINTS(fw) ||
+			eligible = !preserve_client && (HAS_OVERRIDE_SIZE_HINTS(fw) ||
 				!(IS_SIZE_FIXED(fw) || IS_PSIZE_FIXED(fw) ||
 				((fw->hints.flags & (PMinSize | PMaxSize)) ==
 				 (PMinSize | PMaxSize) &&
 				 fw->hints.min_width ==
 				 fw->hints.max_width &&
 				 fw->hints.min_height ==
-				 fw->hints.max_height));
+				 fw->hints.max_height)));
 			hints.flags = fw->hints.flags;
 			hints.min_width = fw->hints.min_width;
 			hints.min_height = fw->hints.min_height;
@@ -932,6 +932,18 @@ out:
 						dest_frame.height, True);
 				}
 			}
+		}
+		if (preserve_client)
+		{
+			fw->logical_client_valid =
+				monitor_scale_remove(src_client.width,
+				    fw->m->effective_scale.factor,
+				    &fw->logical_client.width) ==
+				    MONITOR_SCALE_CONVERSION_OK &&
+				monitor_scale_remove(src_client.height,
+				    fw->m->effective_scale.factor,
+				    &fw->logical_client.height) ==
+				    MONITOR_SCALE_CONVERSION_OK;
 		}
 		EWMH_SetFrameStrut(fw);
 	}
@@ -1044,4 +1056,14 @@ void CMD_UpdateStyles(F_CMD_ARGS)
 	}
 
 	return;
+}
+
+Bool update_fvwm_monitor(FvwmWindow *fw)
+{
+	return update_monitor(fw, false);
+}
+
+Bool update_fvwm_monitor_preserve_client(FvwmWindow *fw)
+{
+	return update_monitor(fw, true);
 }

@@ -283,7 +283,7 @@ def source_receipt(source, build):
                               for path in (build / 'fvwm3', build / 'bin/FvwmPrompt/FvwmDesktop')}}
 
 
-def run(args, profile, run_root, scenario=None):
+def run(args, profile, run_root, scenario=None, display_initializer=None):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = run_root / profile
     out.mkdir()
@@ -346,9 +346,12 @@ def run(args, profile, run_root, scenario=None):
             return result
 
         try:
-            _, display = start_display_server(runtime, 'Xvfb',
-                ['Xvfb', '-screen', '0', '1440x1200x24', '-noreset'],
-                'xserver.log', time.monotonic() + 10)
+            if display_initializer is None:
+                _, display = start_display_server(runtime, 'Xvfb',
+                    ['Xvfb', '-screen', '0', '1440x1200x24', '-noreset'],
+                    'xserver.log', time.monotonic() + 10)
+            else:
+                display = display_initializer(runtime, evidence)
             modules, user, native, jobs, directory = [runtime.root / name for name in
                 ('modules', 'user', 'native-records', 'desktop-workers', 'probe')]
             for path in (modules, user, native, jobs, directory):

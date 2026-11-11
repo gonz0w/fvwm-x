@@ -1621,7 +1621,7 @@ static Bool resize_move_window(F_CMD_ARGS)
 	return True;
 }
 
-static void record_resized_logical_client(FvwmWindow *fw)
+void record_resized_logical_client(FvwmWindow *fw)
 {
 	rectangle frame;
 	size_borders borders;

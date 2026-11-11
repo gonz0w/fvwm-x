@@ -1926,7 +1926,9 @@ void frame_free_move_resize_args(
 
 	mra = (mr_args_internal *)mr_args;
 	SET_HAS_HANDLES(fw, mra->flags.had_handles);
-	if (!fvwmrect_rectangles_equal(&mra->start_g, &mra->end_g))
+	if (mra->start_g.x != mra->end_g.x || mra->start_g.y != mra->end_g.y ||
+	    mra->start_g.width != mra->end_g.width ||
+	    mra->start_g.height != mra->end_g.height)
 		placement_revision_advance(fw);
 	fw->g.frame = mra->end_g;
 	if (mra->flags.is_lazy_shading)

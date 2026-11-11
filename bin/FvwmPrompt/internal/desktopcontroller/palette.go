@@ -31,6 +31,9 @@ type paletteQuery struct {
 	deadline       time.Time
 }
 type paletteView struct {
+	overview       bool
+	marked         *actionpalette.Row
+	facts          map[string]workspaceFacts
 	eventDirty     bool
 	window         uint64
 	token, cookie  string
@@ -56,6 +59,7 @@ type palettePage struct {
 	Truncated  bool   `json:"truncated"`
 	Coverage   string `json:"coverage"`
 	Rows       []struct {
+		workspaceFacts
 		ID      string             `json:"id"`
 		Index   int                `json:"index"`
 		Kind    actionpalette.Kind `json:"kind"`
@@ -67,17 +71,22 @@ type palettePage struct {
 }
 
 func (d *Controller) startPalette() error {
+	return d.startPaletteMode(false)
+}
+func (d *Controller) startPaletteMode(overview bool) error {
 	if d.closed || !d.ready {
 		return errors.New("Desktop is not ready")
 	}
 	if d.palette != nil {
-		return d.refreshPalette()
+		if d.palette.overview == overview {
+			return d.refreshPalette()
+		}
+		d.closePalette()
 	}
 	b, _ := viewbinding.New("core")
-	p := &paletteView{token: newID(16), cookie: newID(16), binding: b, deadline: time.Now().Add(5 * time.Minute)}
+	p := &paletteView{overview: overview, token: newID(16), cookie: newID(16), binding: b, deadline: time.Now().Add(5 * time.Minute)}
 	d.palette = p
-	d.emit(fmt.Sprintf("SET_MASK %d", coreReply|configSourceMessage|nativeEcho))
-	d.emit(fmt.Sprintf("SET_MASK %d", regularDesktopMask|paletteEventMask))
+	d.workspaceMasks()
 	d.emit("Style SlatePaletteForm FPGrabFocus, FPReleaseFocus")
 	for i := range p.model.Providers {
 		p.model.Providers[i] = actionpalette.Provider{Version: "pending", State: "loading", Coverage: "Pending initial observation"}
@@ -97,8 +106,7 @@ func (d *Controller) closePalette() {
 	d.palette = nil
 	d.emit(fmt.Sprintf("Send_Palette %s %016x - -", p.cookie, p.serial+1))
 	d.emit("KillModule FvwmForm SlatePaletteForm")
-	d.emit(fmt.Sprintf("SET_MASK %d", coreReply|configSourceMessage))
-	d.emit(fmt.Sprintf("SET_MASK %d", regularDesktopMask))
+	d.workspaceMasks()
 }
 func (d *Controller) paletteCapabilities() map[string]bool {
 	return map[string]bool{"desktop": !d.closed && d.ready, "worker": !d.closed && d.worker != "", "terminal": !d.closed && len(d.terminal) > 0}
@@ -150,6 +158,11 @@ func (d *Controller) paletteProviders() error {
 		actions.Rows = append(actions.Rows, actionpalette.Row{ID: string(a.Intent), Kind: actionpalette.Registered, Label: a.Label, Icon: "other", Version: d.generation, Intent: a.Intent, Enabled: actionpalette.Allowed(a.Intent, d.paletteCapabilities())})
 	}
 	providers[3] = actions
+	if p.overview {
+		for i := 2; i < 4; i++ {
+			providers[i] = actionpalette.Provider{Version: "overview", State: "unavailable", Coverage: "Overview contains only windows and workspaces"}
+		}
+	}
 	if err := p.model.Replace(providers); err != nil {
 		return err
 	}
@@ -161,6 +174,7 @@ func (d *Controller) refreshPalette() error {
 	if p == nil {
 		return nil
 	}
+	p.marked = nil
 	p.deadline = time.Now().Add(5 * time.Minute)
 	return d.invalidatePalette()
 }
@@ -169,8 +183,12 @@ func (d *Controller) invalidatePalette() error {
 	if p == nil {
 		return nil
 	}
+	p.marked = nil
 	if err := p.binding.Observe("core", viewbinding.Version{Producer: d.instance, Revision: "core"}); err != nil {
 		return err
+	}
+	if p.overview {
+		d.paletteEmit(`SendToModule SlatePaletteForm SetLabel marked "Marked: no window (refreshing)"`)
 	}
 	if err := p.binding.Invalidate(); err != nil {
 		return err
@@ -195,6 +213,7 @@ func (d *Controller) paletteBegin() {
 	}
 	p.ticket = ticket
 	p.core = nil
+	p.facts = make(map[string]workspaceFacts)
 	p.coreGeneration = ""
 	p.total = 0
 	p.truncated = false
@@ -245,16 +264,16 @@ func (d *Controller) paletteReply(message string) bool {
 		return false
 	}
 	f := strings.Fields(strings.TrimPrefix(message, prefix))
-	if len(f) == 3 && f[0] == "part" && f[1] == strconv.Itoa(q.parts) && len(f[2]) >= 2 && len(f[2]) <= 512 && len(f[2])%2 == 0 {
-		data, err := hex.DecodeString(f[2])
-		if err == nil && len(q.data)+len(data) <= 16384 {
-			q.data = append(q.data, data...)
-			q.parts++
-			return true
-		}
+	if !time.Now().Before(q.deadline) {
+		d.paletteFailed("Core reply timed out; Refresh to retry")
+		return true
 	}
-	if len(f) != 2 || f[0] != "end" || f[1] != strconv.Itoa(q.parts) || q.parts == 0 {
+	done, fragmentErr := coreFragment(f, &q.data, &q.parts, 16384)
+	if fragmentErr != nil {
 		d.paletteFailed("Malformed core reply; Refresh to retry")
+		return true
+	}
+	if !done {
 		return true
 	}
 	p.pending = nil
@@ -267,14 +286,18 @@ func (d *Controller) paletteReply(message string) bool {
 	data, _ := json.Marshal(response["result"])
 	if q.phase == "activate" {
 		var r struct {
-			Applied bool   `json:"applied"`
-			Action  string `json:"action"`
-			Target  string `json:"target"`
+			Applied   bool   `json:"applied"`
+			Submitted bool   `json:"submitted"`
+			Action    string `json:"action"`
+			Target    string `json:"target"`
 		}
-		if json.Unmarshal(data, &r) != nil || !r.Applied || r.Target != q.target || r.Action != q.action {
+		if json.Unmarshal(data, &r) != nil || !(r.Applied || q.action == "drag" && r.Submitted) || r.Target != q.target || r.Action != q.action {
 			d.paletteFailed("Core action was refused; Refresh to retry")
 		} else {
 			d.closePalette()
+			if q.action == "drag" {
+				d.notice("Pointer Move was submitted/returned; inspect the window. Geometry completion is not confirmed.")
+			}
 		}
 		return true
 	}
@@ -290,7 +313,7 @@ func (d *Controller) paletteReply(message string) bool {
 	}
 	for _, raw := range rawRows {
 		r, ok := raw.(map[string]any)
-		if !ok || !exact(r, "id", "index", "kind", "label", "detail", "icon", "enabled") {
+		if !ok || !paletteRowKeys(r) || p.overview && !overviewRowFacts(r) {
 			d.paletteFailed("Invalid core row; Refresh to retry")
 			return true
 		}
@@ -312,7 +335,16 @@ func (d *Controller) paletteReply(message string) bool {
 			d.paletteFailed("Invalid core row identity; Refresh to retry")
 			return true
 		}
-		p.core = append(p.core, actionpalette.Row{ID: r.ID, Kind: r.Kind, Label: r.Label, Detail: r.Detail, Icon: r.Icon, Version: page.Generation, Index: r.Index, Enabled: r.Enabled})
+		if p.overview && !r.workspaceFacts.valid(r.Kind) {
+			d.paletteFailed("Workspace facts unavailable; Refresh to retry")
+			return true
+		}
+		p.facts[r.ID] = r.workspaceFacts
+		detail := r.Detail
+		if p.overview {
+			detail = r.workspaceFacts.detail(r.Kind)
+		}
+		p.core = append(p.core, actionpalette.Row{ID: r.ID, Kind: r.Kind, Label: r.Label, Detail: detail, Icon: r.Icon, Version: page.Generation, Index: r.Index, Enabled: r.Enabled})
 	}
 	if page.Next != nil {
 		if *page.Next != len(p.core) || *page.Next >= page.Total || len(page.Rows) == 0 {
@@ -371,7 +403,7 @@ func (d *Controller) paletteControl(argument string) error {
 		d.closePalette()
 		return d.fatal
 	}
-	if len(words) != 4 {
+	if p.overview && words[1] == "move" && len(words) != 6 || words[1] != "move" && len(words) != 4 || words[1] == "move" && !p.overview {
 		return errors.New("Invalid palette callback")
 	}
 	query, err := base64.RawURLEncoding.Strict().DecodeString(strings.TrimPrefix(words[2], "x"))
@@ -388,18 +420,32 @@ func (d *Controller) paletteControl(argument string) error {
 	if err = p.model.Collection.SelectNativeView(p.model.Collection.Generation, p.native.ids, packet); err != nil {
 		return err
 	}
-	if words[1] == "activate" {
+	if words[1] == "activate" || p.overview && oneOf(words[1], "mark", "drag", "move") {
+		if words[1] == "move" {
+			for i := 4; i < 6; i++ {
+				value, err := base64.RawURLEncoding.Strict().DecodeString(strings.TrimPrefix(words[i], "x"))
+				if err != nil || !strings.HasPrefix(words[i], "x") || len(value) > 10 {
+					return errors.New("Invalid overview page input")
+				}
+				words[i] = string(value)
+			}
+		}
 		r, err := p.model.Resolve(p.model.Collection.Generation, p.model.Collection.Focus)
 		if err != nil {
 			return err
 		}
-		return d.paletteActivate(r)
+		if words[1] == "activate" {
+			return d.paletteActivate(r)
+		}
+		return d.overviewAction(words[1], r, words[4:])
 	}
 	if err = p.model.Filter(string(query)); err != nil {
 		return err
 	}
 	if words[1] == "refresh" {
-		d.requestMenuJob("apps")
+		if !p.overview {
+			d.requestMenuJob("apps")
+		}
 		return d.refreshPalette()
 	}
 	if words[1] != "filter" {
@@ -529,6 +575,13 @@ func (d *Controller) paletteState(token string) error {
 	commands := []string{"Echo FVWM_PALETTE_STATE " + token + " " + hex.EncodeToString(data)}
 	if p != nil {
 		view := map[string]any{"query": p.model.Collection.Filter(), "token": p.token, "generation": p.native.generation, "total": len(p.model.Collection.Entries)}
+		if p.overview {
+			view["mode"] = "overview"
+			view["marked"] = nil
+			if p.marked != nil {
+				view["marked"] = map[string]any{"id": p.marked.ID, "index": p.marked.Index, "generation": p.marked.Version}
+			}
+		}
 		data, _ = json.Marshal(view)
 		commands = append(commands, "Echo FVWM_PALETTE_VIEW "+token+" "+hex.EncodeToString(data))
 	}

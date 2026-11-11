@@ -138,6 +138,8 @@ Style FvwmIdent WindowListSkip
 DestroyMenu SlateLauncherMenu
 AddToMenu SlateLauncherMenu "Applications" Title
 + "Action palette..." SlatePalette
++ "Window overview..." SendToModule FvwmDesktop overview
++ "Scratchpads..." SendToModule FvwmDesktop scratchpads
 + "Terminal" SendToModule FvwmDesktop terminal
 + "Search applications..." Module FvwmForm SlateSearchForm
 + "Run command..." Module FvwmForm SlateRunForm
@@ -178,6 +180,7 @@ AddToMenu SlateWindow "Window" Title
 # Ctrl+F1..F4 and Super+1..4 switch workspaces; Alt+Tab selects a window.
 Silent Key Space A 4 SlateLauncher
 Silent Key a A 4 SlatePalette
+Silent Key o A 4 SendToModule FvwmDesktop overview
 Silent Key Return A 4 SendToModule FvwmDesktop terminal
 Silent Key d A 4 SendToModule FvwmDesktop files
 Silent Key p A 4 Module FvwmForm SlateRunForm

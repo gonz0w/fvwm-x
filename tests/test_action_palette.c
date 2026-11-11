@@ -44,6 +44,21 @@ struct monitor *monitor_resolve_name(const char *name)
 	return name && strcmp(name, "0") == 0 ? &monitor : NULL;
 }
 
+int monitor_get_all_widths(void)
+{
+	return 1920;
+}
+
+int monitor_get_all_heights(void)
+{
+	return 1080;
+}
+
+Bool focus_is_focused(const FvwmWindow *fw)
+{
+	return fw && fw->palette_identity == 1;
+}
+
 bool fvwm_query_token(uint64_t revision, char output[49])
 {
 	snprintf(output, 49, "0123456789abcdef0123456789abcdef%016" PRIx64,
@@ -96,6 +111,13 @@ static void test_snapshot_and_guard(void)
 	DesktopsInfo desktop_head = {.next = &desktop_name};
 
 	monitor.Desktops = &desktop_head;
+	monitor.virtual_scr.Vx = 1920;
+	monitor.virtual_scr.VxMax = 3840;
+	monitor.virtual_scr.VyMax = 1080;
+	fw.g.frame.x = -100;
+	fw.g.frame.y = 20;
+	fw.g.frame.width = 800;
+	fw.g.frame.height = 600;
 	FW_W(&fw) = 0x42;
 	Scr.FvwmRoot.next = &fw;
 	result = query(0, "a");
@@ -105,6 +127,11 @@ static void test_snapshot_and_guard(void)
 	item = cJSON_GetArrayItem(rows, 0);
 	assert(strcmp(field(item, "label")->valuestring, fw.visible_name) == 0);
 	assert(strcmp(field(item, "kind")->valuestring, "window") == 0);
+	assert(field(item, "x")->valueint == -100);
+	assert(field(item, "width")->valueint == 800);
+	assert(field(item, "page_x")->valueint == 0);
+	assert(cJSON_IsTrue(field(item, "focused")));
+	assert(strcmp(field(item, "monitor_output")->valuestring, "8") == 0);
 	strcpy(original, field(item, "id")->valuestring);
 	item = cJSON_GetArrayItem(rows, 2);
 	assert(strcmp(field(item, "label")->valuestring, "named desktop") == 0);
@@ -121,6 +148,34 @@ static void test_snapshot_and_guard(void)
 	assert(action_palette_command(&row, 2, command,
 		sizeof(command), &error));
 	assert(strcmp(command, "WindowId 0x42 Focus") == 0);
+	/* Typed destinations come only from the same snapshot, never raw XIDs. */
+	action.operation = PALETTE_MOVE;
+	action.destination = 2;
+	action.page_x = 2;
+	action.page_y = 1;
+	assert(action_palette_target(&owners[0], &action, &row, id, &error));
+	assert(strcmp(id, original) == 0);
+	assert(action_palette_command(&row, 0, command, sizeof(command), &error));
+	assert(strcmp(command, "WindowId 0x42 MoveToDesk 0 1") == 0);
+	assert(action_palette_command(&row, 1, command, sizeof(command), &error));
+	assert(strcmp(command, "WindowId 0x42 MoveToPage screen 0 2 1") == 0);
+	monitor.virtual_scr.VxMax = 1920;
+	assert(!action_palette_command(&row, 1, command, sizeof(command), &error));
+	monitor.virtual_scr.VxMax = 3840;
+	topology.epoch++;
+	assert(!action_palette_command(&row, 0, command, sizeof(command), &error));
+	topology.epoch--;
+	SET_STICKY_ACROSS_PAGES(&fw, 1);
+	assert(!action_palette_command(&row, 0, command, sizeof(command), &error));
+	SET_STICKY_ACROSS_PAGES(&fw, 0);
+	action.destination = 0;
+	assert(!action_palette_target(&owners[0], &action, &row, id, &error));
+	action.operation = PALETTE_DRAG;
+	assert(action_palette_target(&owners[0], &action, &row, id, &error));
+	assert(action_palette_command(&row, 3, command, sizeof(command), &error));
+	assert(strcmp(command, "WindowId 0x42 Move") == 0);
+	assert(!action_palette_command(&row, 4, command, sizeof(command), &error));
+	action.operation = PALETTE_SELECT;
 	/* Reuse the exact record and XID, but give its new management lifetime
 	 * a fresh identity. Old snapshot must refuse it. */
 	fw.palette_identity = 2;

@@ -61,6 +61,7 @@
 #include "module_list.h"
 #include "module_interface.h"
 #include "monitor_scale_config.h"
+#include "workspace_tools.h"
 #include "colorset.h"
 #include "events.h"
 #include "eventhandler.h"
@@ -2297,6 +2298,8 @@ int main(int argc, char **argv)
 		state_filename = restart_state_filename;
 	}
 
+	/* Restart reset must not authorize duplicate scratchpad launches. */
+	scratchpad_initialize(Restarting != False);
 	InitVariables();
 	monitor_scale_config_initialize();
 	if (visualClass != -1 || visualId != -1)

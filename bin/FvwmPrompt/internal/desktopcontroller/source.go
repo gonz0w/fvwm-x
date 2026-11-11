@@ -123,6 +123,12 @@ func (d *Controller) configureMessage(text string, source *configSource, mode co
 		} else {
 			_, err = desktopsettings.Value(key, value, true)
 		}
+	} else if key == "scratchpad" {
+		if mode == applyConfiguration {
+			err = d.configureScratchpad(value)
+		} else {
+			_, err = parseScratchpad(value)
+		}
 	} else if key == "terminal" {
 		if mode == applyConfiguration {
 			d.terminal = detectTerminal(value)

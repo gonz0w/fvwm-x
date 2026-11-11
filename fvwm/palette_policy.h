@@ -15,6 +15,9 @@
 #define PALETTE_BUDGET_MAX (1024 * 1024)
 
 enum palette_kind { PALETTE_WINDOW, PALETTE_DESKTOP };
+enum palette_operation { PALETTE_SELECT, PALETTE_DRAG, PALETTE_MOVE };
+enum palette_flags { PALETTE_STICKY_DESKS = 1, PALETTE_STICKY_PAGES = 2,
+	PALETTE_ICONIFIED = 4, PALETTE_FULLSCREEN = 8, PALETTE_FOCUSED = 16 };
 
 struct palette_row {
 	uint64_t identity;
@@ -22,6 +25,10 @@ struct palette_row {
 	uint64_t role;
 	int desk;
 	enum palette_kind kind;
+	uint64_t topology;
+	int page_x, page_y, x, y, width, height, page_max_x, page_max_y;
+	unsigned int flags;
+	enum palette_operation operation;
 	char label[PALETTE_TEXT_MAX + 1];
 	char detail[PALETTE_TEXT_MAX + 1];
 };
@@ -40,7 +47,8 @@ struct palette_request {
 	char cookie[65];
 	char serial[17];
 	char generation[49];
-	unsigned int index;
+	unsigned int index, destination, page_x, page_y;
+	enum palette_operation operation;
 	bool release;
 };
 

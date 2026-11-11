@@ -1,0 +1,159 @@
+{
+  "pr": 374,
+  "plan_sha256": "541cc50fc68ef935b77d7d818c5fe2276425a02f232216f49a8d86b3661368d3",
+  "archive_sha256": "2e681d492d4ca729ea89b2f2b919a46c32207bbdefe3c0301808b18b964e4088",
+  "binary_sha256": {
+    "fvwm3": "0e549d7254705ab3af9aa734ee7bb914cf0ff47b85bc1b97485d7507154efb49",
+    "modules/FvwmMFL/FvwmMFL": "fc1e42e488060a96a1ed7bc3f0e978d27c76d8af304f0bdd311ba6de3190671e",
+    "modules/FvwmScript/FvwmScript": "3ee043cd5fe1ee6b426f12f86ff9a45ab0230b9bf6a41ad327d14586692ad490",
+    "modules/FvwmIconMan/FvwmIconMan": "be6c177b003ae2e4f36f6cfcd623842d10f48a8c6c0737092199b94a0c89b229",
+    "bin/FvwmPrompt/FvwmDesktop": "d7c033858d37080adef7f30c7f5424876d928869a989de3d6bf3da3b9cad85cf",
+    "bin/FvwmPrompt/fvwm-desktop-worker": "a5f5c45e6affb9cef9225d9cdf78cc88061f235d6613c3bb2c80a42d4393d92c",
+    "tests/test-policy-origin": "cf3996b17b95f5eec1233d7e143264bafb3b5798d564eaa28df31ecaf1f24690",
+    "tests/test-query-json": "c294a45e1c18b6b3b1119fdd8a07a39fa828864c4ffb5882e54baab75758b5ad",
+    "tests/test-theme-origin": "b87f6d92ec219911d14b5283ff7bb729f4bac6e3306969a722b462722428c94b",
+    "bin/FvwmPrompt/FvwmPrompt": "f4889c1b5dc631fbd659cc102ce7a16cb912c0a96398a3218a154accb1c9cb10",
+    "tests/test-mfl-request": "75b403aae26b6e05586004b0b68b2b6f22b75d9abe8824d89c6ebbba5e6e8c86",
+    "bin/FvwmPrompt/fvwm-menu-desktop": "a1f57240961fc5b4b080b1756861dc02fc851c5154b4b4988224da30d9709f42",
+    "bin/FvwmPrompt/fvwm-menu-directory": "baab43c4b0401b3785fd7a49aa501e954e9344aa11716f0d9a39bc1760cab2b3"
+  },
+  "profiles": {
+    "slate-dark": {
+      "cases": {
+        "literal_terminal_single_launch_and_rapid_toggle_coalescing": true,
+        "summon_center_preserves_size_and_dismiss_restores_focus": true,
+        "literal_application_launch": true,
+        "keyboard_search_and_window_activation": true,
+        "overview_escape_focus_return": true,
+        "keyboard_search_mark_move_to_workspace_page": true,
+        "native_pointer_move_with_observed_geometry": true,
+        "paged_scratchpad_manager_keyboard_and_close": true,
+        "sticky_refusal_preserves_flags_and_does_not_launch": true,
+        "fullscreen_refusal_preserves_flags_and_does_not_launch": true,
+        "definite_missing_executable_acknowledged": true,
+        "helper_restart_and_forked_delayed_launch_no_duplicate": true,
+        "destroyed_allocation_refuses_stale_action": true,
+        "full_wm_restart_uncertain_unmatched_and_claimable_existing": true
+      },
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "8b20fc5b116618e07d8b477cf3b4adcf37112df31a206baba72eb0b765bf7532",
+        "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "69e2dd35b6833372b607e3fa4d0a81bf6daa0de6d20443456b388f6392a138e7",
+        "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+        "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+        "tests/live_x/workspace_tools_live.py": "8cc47cbaf68d18f4fb18e5cfe7dbe416b19095af915b44ecda00cbe5fd8fcdc6"
+      },
+      "terminal_provider": "strict-size-hints fixture",
+      "real_terminal_qualified": false,
+      "screenshots": {
+        "workspace-scratchpads-slate-dark.png": "44659fcfb33421465abe83f9b6347089cf2d024cf219059fef47666edff0beba",
+        "workspace-overview-marked-slate-dark.png": "cfb814784726af3dfdc2757e9a2bd184d2f8a9e2dbed70d8ba99670ce1ec3bc5",
+        "workspace-scratchpad-manager-slate-dark.png": "37ba69ec5026c3233462910b10c971c8353ebf5acf21e2498a89130825f12cb2"
+      },
+      "cleanup_failures": [],
+      "unexpected_x_errors": []
+    },
+    "dune-light": {
+      "cases": {
+        "literal_terminal_single_launch_and_rapid_toggle_coalescing": true,
+        "summon_center_preserves_size_and_dismiss_restores_focus": true,
+        "literal_application_launch": true,
+        "keyboard_search_and_window_activation": true,
+        "overview_escape_focus_return": true,
+        "keyboard_search_mark_move_to_workspace_page": true,
+        "native_pointer_move_with_observed_geometry": true,
+        "paged_scratchpad_manager_keyboard_and_close": true
+      },
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "8b20fc5b116618e07d8b477cf3b4adcf37112df31a206baba72eb0b765bf7532",
+        "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "69e2dd35b6833372b607e3fa4d0a81bf6daa0de6d20443456b388f6392a138e7",
+        "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+        "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+        "tests/live_x/workspace_tools_live.py": "8cc47cbaf68d18f4fb18e5cfe7dbe416b19095af915b44ecda00cbe5fd8fcdc6"
+      },
+      "terminal_provider": "strict-size-hints fixture",
+      "real_terminal_qualified": false,
+      "screenshots": {
+        "workspace-scratchpads-dune-light.png": "20c88554618add591c467705c322444e1ac4b422a2317d3928d0cf2be0aa1961",
+        "workspace-overview-marked-dune-light.png": "37fbe05f32e4a5313b022cf4f6b2fc7f3a31871e666b6c43f12dd36c0c99f647",
+        "workspace-scratchpad-manager-dune-light.png": "95072e8102afea42f2fbdd2be851c424246c50a8997520498bea46c342d3e027"
+      },
+      "cleanup_failures": [],
+      "unexpected_x_errors": []
+    },
+    "classic-large": {
+      "cases": {
+        "literal_terminal_single_launch_and_rapid_toggle_coalescing": true,
+        "summon_center_preserves_size_and_dismiss_restores_focus": true,
+        "literal_application_launch": true,
+        "keyboard_search_and_window_activation": true,
+        "overview_escape_focus_return": true,
+        "keyboard_search_mark_move_to_workspace_page": true,
+        "native_pointer_move_with_observed_geometry": true,
+        "paged_scratchpad_manager_keyboard_and_close": true
+      },
+      "source_sha256": {
+        "tests/live_x/action_palette_live.py": "8b20fc5b116618e07d8b477cf3b4adcf37112df31a206baba72eb0b765bf7532",
+        "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+        "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "69e2dd35b6833372b607e3fa4d0a81bf6daa0de6d20443456b388f6392a138e7",
+        "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+        "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+        "tests/live_x/workspace_tools_live.py": "8cc47cbaf68d18f4fb18e5cfe7dbe416b19095af915b44ecda00cbe5fd8fcdc6"
+      },
+      "terminal_provider": "strict-size-hints fixture",
+      "real_terminal_qualified": false,
+      "screenshots": {
+        "workspace-scratchpads-classic-large.png": "400498ffcdddb3124ba4538d468eb8512dc062f7518c6de8de4ad0e55fc71cf4",
+        "workspace-overview-marked-classic-large.png": "339aab864e2ff76f96b5312d4964592149edb58c5a2aecc7f4e8d4603e2a7481",
+        "workspace-scratchpad-manager-classic-large.png": "79869cd920823cccefbfab15ed69b34d5201041f5f9b67992328d44da6175ddb"
+      },
+      "cleanup_failures": [],
+      "unexpected_x_errors": []
+    }
+  },
+  "retained_passes": [
+    "affected-incremental-build",
+    "test-workspace-tools-policy",
+    "test-workspace-tools",
+    "test-palette-policy",
+    "test-action-palette",
+    "affected-go-incremental-build",
+    "desktop-controller-tests",
+    "coordinator-race",
+    "sanitizer-recipe-test-workspace-tools-policy",
+    "sanitize-test-workspace-tools-policy-0",
+    "sanitize-test-workspace-tools-policy-1",
+    "sanitize-test-workspace-tools-policy-2",
+    "sanitize-link-test-workspace-tools-policy",
+    "sanitize-run-test-workspace-tools-policy",
+    "sanitizer-recipe-test-workspace-tools",
+    "sanitize-test-workspace-tools-0",
+    "sanitize-test-workspace-tools-1",
+    "sanitize-test-workspace-tools-2",
+    "sanitize-test-workspace-tools-3",
+    "sanitize-link-test-workspace-tools",
+    "sanitize-run-test-workspace-tools",
+    "render-FvwmDesktop"
+  ],
+  "retained_go_packages": [
+    "desktopcheck",
+    "actionpalette",
+    "collection",
+    "commandmeta"
+  ],
+  "shutdown": {
+    "status": "dispatch and holder passed",
+    "holder_exit": 0,
+    "dispatch_exit": 0
+  },
+  "visual_review": {
+    "slate-dark": "Overview and manager controls fit.",
+    "dune-light": "Overview and manager controls fit.",
+    "classic-large": "Manager fits. Overview extends beyond right display edge; Pointer Move and title-bar controls clip. Summoned fixture application title is clipped."
+  },
+  "merge_blocker": "Enlarged Classic overview right-edge clipping"
+}

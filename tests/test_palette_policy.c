@@ -19,7 +19,8 @@ static void test_requests(void)
 		"a;Exec 0000000000000001 - -",
 		"a 0000000000000001 - 0",
 		"a 0000000000000001 - - extra",
-		"a 0000000000000001 short 0"};
+		"a 0000000000000001 short 0",
+		"a 0000000000000001- -"};
 	const char *bad_indices[] = {"-", "-1", "+1", "640", "4294967296",
 		"999999999999999999999999", "0;Exec"};
 
@@ -42,6 +43,18 @@ static void test_requests(void)
 		assert(!palette_request_parse(text, &request));
 		assert(!request.cookie[0]);
 	}
+	snprintf(text, sizeof(text), "a 0000000000000001 %s 1 drag", generation);
+	assert(palette_request_parse(text, &request));
+	assert(request.operation == PALETTE_DRAG);
+	snprintf(text, sizeof(text), "a 0000000000000001 %s 1 move 512 2 3",
+		generation);
+	assert(palette_request_parse(text, &request));
+	assert(request.operation == PALETTE_MOVE && request.destination == 512);
+	assert(request.page_x == 2 && request.page_y == 3);
+	snprintf(text, sizeof(text), "a 0000000000000001 %s 1 move 512 -1 3",
+		generation);
+	assert(!palette_request_parse(text, &request));
+	assert(!palette_request_parse("a 0000000000000001 - - drag", &request));
 	memset(text, 'a', sizeof(text) - 1);
 	text[sizeof(text) - 1] = '\0';
 	assert(!palette_request_parse(text, &request));

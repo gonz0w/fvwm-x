@@ -1,0 +1,314 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-08",
+  "issues": [
+    221,
+    223
+  ],
+  "base": "670b2d989fc2093f7bf89dd1fa8c9ed0aeb69e56",
+  "status": "implementation checks pass; native bootstrap failed; draft only",
+  "source_sha256": {
+    "bin/FvwmPrompt/internal/commandmeta/commands.json": "9709fafb159adbddee03f336e03a4cf6ed415f23a3fab500ad6a7616d41f0f1d",
+    "bin/FvwmPrompt/internal/desktopcheck/check.go": "859ec958830acce07c652883d7a132ac9e35cc0b2f0540e5214d92d8fb3beff8",
+    "bin/FvwmPrompt/internal/desktopcheck/check_test.go": "705743349d77ead795e9b7fccd6e168cc40c8f56d05d04d3732e4c22154cac0e",
+    "bin/FvwmPrompt/internal/desktopcontroller/controller.go": "77eb4e1766fecf08a906d67ac556d4cfcbd1eccb0d5f728d2d2cdb3b42c443d9",
+    "bin/FvwmPrompt/internal/desktopcontroller/core_reply.go": "69f3f290e12027dc6339ad9e2cd9091d89566c7d5c16d90f4fffc85fee96722c",
+    "bin/FvwmPrompt/internal/desktopcontroller/dispatch.go": "610e6ec1c5c1f8118b54ec73dd8bcb17868f4c9d59c45205fa3217c1b6f15bfa",
+    "bin/FvwmPrompt/internal/desktopcontroller/module.go": "5831ecf31d7724aaa9e09c833c590e40b6ba0afabe8351ccfd287ab109f75d78",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "69e2dd35b6833372b607e3fa4d0a81bf6daa0de6d20443456b388f6392a138e7",
+    "bin/FvwmPrompt/internal/desktopcontroller/scratchpads.go": "ff306cfcea0792e994cc992165509fb8d81e25e39db31312cbe17288a5de294f",
+    "bin/FvwmPrompt/internal/desktopcontroller/scratchpads_test.go": "8da439441c48a2fab5a7a31938c26868b79ce13e9a904a3255ebf7800fb03e28",
+    "bin/FvwmPrompt/internal/desktopcontroller/source.go": "7754dfa4b528a3a9a2f123d59111cc86aedc85c25e842e01a792fbc6bb1a10aa",
+    "bin/FvwmPrompt/internal/desktopcontroller/ui.go": "bf1d1d86b9360d6bcabc03b1030893d769575729706ed1602e524b55b04359b0",
+    "bin/FvwmPrompt/internal/desktopcontroller/workspace_tools.go": "51a608c5ab7ae0dcf8039cb19b1523e17dd06286ddf9b69ccb32148b0523d14f",
+    "bin/FvwmPrompt/internal/desktopcontroller/workspace_tools_test.go": "5534b57eeca73151d37667d2d1501c42fa6b053d4c52ea82bcbd99e6c97cee9e",
+    "bin/FvwmPrompt/meson.build": "cd2b9b174746c06a0cdbe6ab5990eb2168b2242f28c32f02d09baf34447d0e12",
+    "default-config/desktop.fvwm": "5b6ba53c196909bbfe27e458bb1f693066ba0552f0bd10713016cec6dc3401c4",
+    "fvwm/action_palette.c": "b3dc1b4f81dfc6d0601c209042309bb067ef4d8cf4c3cafc4ccf79b9da28e6a6",
+    "fvwm/commands.h": "b8f8fe180b106fb71146153997189521eec029702911e1ae6f6fb93f18270dfe",
+    "fvwm/functable.c": "2f4671b8a53b027db6e0f41904af75b233a99222b8d45e53fb9b7559391b284d",
+    "fvwm/fvwm3.c": "3843bf130c4d98bf3530acb208ad3d1b298e7ade536ec3219c9fc693c4116537",
+    "fvwm/meson.build": "0227b608d33b77f8f267f8beec7e353f5a184df8288d67c756e99e3a677eac28",
+    "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+    "fvwm/module_runtime.c": "375fc062f0a506c132df552b318399db4d86603af11bef8c0e1f17e7f260973b",
+    "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+    "fvwm/palette_policy.h": "4b4471bb87633c925a4a46217b3ddb95f5b7f22da029a55825519535cfe8875d",
+    "fvwm/workspace_tools.c": "9e202f5737ec961bb85b682290ca258dd3f8f86bcf053721329de502be6efb32",
+    "fvwm/workspace_tools.h": "caf72f527e1c4a0a6094526ecad75ec690b9ab0c08514b443a1faaf0b0e6f7f9",
+    "fvwm/workspace_tools_policy.c": "327dad77d99fadb1a00eaf789e3b3100b2ecb08097b9685a2fb944bf7d57e686",
+    "fvwm/workspace_tools_policy.h": "9b7a88147d0be50cc06b0a0e88b7eecc2185d76bfbdf107522bb6e42e816f4e7",
+    "tests/live_x/action_palette_live.py": "b902028a82bb40bb0e118b3438ec9315cdcb33b47b3af14351edb7464a288adc",
+    "tests/live_x/workspace_tools_live.py": "fd4008019fc92a36765b6d65397bc7e4deaecd698cb422b0547959940f3ae76e",
+    "tests/meson.build": "4433dcc895aaf492467b254d988beab2a7cfbcc9a9d47c5d85acd82faf9b7250",
+    "tests/test_action_palette.c": "4fc957d2857a44ab986c50c6c9b67a58183821802d38d1e307b80411dc9e532c",
+    "tests/test_palette_policy.c": "4c32a96ef324a18c88914d408e2a26755e73ea7e522d74c5050f679e7473db5f",
+    "tests/test_workspace_tools.c": "6b031d1f82a0009973f8c700bc5617c59222822bdaa1c000258ad71ec7eba34b",
+    "tests/test_workspace_tools_policy.c": "80271595d5b93d77f8b216c5911c9e4b1fcfe227a6db761b3f574cf0fa40bb1d"
+  },
+  "commands": [
+    {
+      "origin": "repair1",
+      "label": "affected-incremental-build",
+      "exit": 0,
+      "seconds": 1.1015514759999991,
+      "stdout_sha256": "6262f1569947d9839e6c89d9f45cc25cbd9e998f09bc0e383328a13b19eff206",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair1",
+      "label": "test-workspace-tools-policy",
+      "exit": 0,
+      "seconds": 0.0003304159999988343,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair1",
+      "label": "test-workspace-tools",
+      "exit": 0,
+      "seconds": 0.00025508399999907283,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair1",
+      "label": "test-palette-policy",
+      "exit": 0,
+      "seconds": 0.0002278329999985118,
+      "stdout_sha256": "da3f0302673dfdc018e5ce880e3781628294e744accb29d974b9d5b4e595f1b8",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair1",
+      "label": "test-action-palette",
+      "exit": 0,
+      "seconds": 0.0018530849999986998,
+      "stdout_sha256": "8d41e6245c54cc44abd62d514df1570f296c491c33a93efa2dd9bc4678c039e9",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "affected-go-incremental-build",
+      "exit": 0,
+      "seconds": 0.6070631639999995,
+      "stdout_sha256": "7705ae621248de570602f502e26606ac34eaafc438bf2605215574a1fbd7b9aa",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "desktop-controller-tests",
+      "exit": 0,
+      "seconds": 4.216834335,
+      "stdout_sha256": "d9b253f0e3f5b9073b02c48e2eaa2d0105132a250b271860079f5715b82e60f2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "coordinator-race",
+      "exit": 0,
+      "seconds": 12.098048096000001,
+      "stdout_sha256": "e280517fe0b286d446a8df5c4b57521a8680a57e1a1177015ad9361aac9cdb45",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitizer-recipe-test-workspace-tools-policy",
+      "exit": 0,
+      "seconds": 0.007767797999999715,
+      "stdout_sha256": "b0ea560104e95671d4cc1f6cb84c4279c7c7c5e93a98266728592366edb837ba",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-policy-0",
+      "exit": 0,
+      "seconds": 0.10854651299999674,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-policy-1",
+      "exit": 0,
+      "seconds": 0.1719517770000003,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-policy-2",
+      "exit": 0,
+      "seconds": 0.07508606699999731,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-link-test-workspace-tools-policy",
+      "exit": 0,
+      "seconds": 0.025209398000001215,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-run-test-workspace-tools-policy",
+      "exit": 0,
+      "seconds": 0.002903794000001625,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitizer-recipe-test-workspace-tools",
+      "exit": 0,
+      "seconds": 0.007083006000002001,
+      "stdout_sha256": "0f77cfaaac112c058e12fb764eed175b824206e445fe91289b31e18b748361fd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-0",
+      "exit": 0,
+      "seconds": 0.1017717150000017,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-1",
+      "exit": 0,
+      "seconds": 0.1636046449999995,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-2",
+      "exit": 0,
+      "seconds": 0.16917160899999928,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-test-workspace-tools-3",
+      "exit": 0,
+      "seconds": 0.07573748399999758,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-link-test-workspace-tools",
+      "exit": 0,
+      "seconds": 0.033678445999999695,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "sanitize-run-test-workspace-tools",
+      "exit": 0,
+      "seconds": 0.003119211000001343,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "render-FvwmDesktop",
+      "exit": 0,
+      "seconds": 0.09280624899999879,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "group_absent": true,
+      "forced_kill": false
+    },
+    {
+      "origin": "repair2",
+      "label": "native-workspace-tools",
+      "exit": 1,
+      "seconds": 12.742599626999997,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "c8d235137456fa40e9a9f3146f345899ef937439b343836daf304d2eca07fd60",
+      "group_absent": true,
+      "forced_kill": false
+    }
+  ],
+  "reused_go_packages": [
+    "desktopcheck",
+    "actionpalette",
+    "collection",
+    "commandmeta"
+  ],
+  "reused_go_stdout_sha256": "3b3a141a33d0c7b91476d2ecba3540e21d49af80c51f6712ab3fd53f21bb9670",
+  "final_plan_sha256": "7a9b0707137d869a93ddc7785c8037cdc74a23d5e623e22d47abbdd520054275",
+  "raw_archive_sha256": "9bbc21b506c89ff616cedc666783f35f0422cc39cdf5a746078f7cb5e17aaf48",
+  "native_failure": {
+    "scene_entered": false,
+    "profile": "slate-dark",
+    "message": "deadline expired while waiting for initial application catalog committed",
+    "screenshots": 0,
+    "cleanup_failures": [],
+    "unexpected_x_errors": [],
+    "diagnosis": "Fixture used shell quoting in Desktop Entry Exec; correct parser skipped third entry; two apps successfully committed",
+    "source_correction": "Reuse installed-XDG two-stage serializer; not rerun at attempt limit"
+  },
+  "owned_container_shutdown": "confirmed",
+  "owned_vm_shutdown": "confirmed",
+  "remaining": [
+    "Run source-reviewed fixture-only Desktop Entry serializer correction and reach new workspace scene",
+    "Run and inspect three-theme workspace/scratchpad interactions and screenshots",
+    "Complete frozen #221/#223 acceptance maps before closure",
+    "R1 platform/install/default-X/native-CPU/physical/assistive release checks retain separate ownership"
+  ],
+  "unexecuted_source_changes": {
+    "tests/live_x/action_palette_live.py": {
+      "before": "871b36c44ee08326d6f02da8aee50b29e0c271815081722962e190dcc23facff",
+      "after": "b902028a82bb40bb0e118b3438ec9315cdcb33b47b3af14351edb7464a288adc"
+    }
+  }
+}

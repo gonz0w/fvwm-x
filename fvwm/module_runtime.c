@@ -3,6 +3,7 @@
 #include "config.h"
 #include "appearance_preview.h"
 #include "action_palette.h"
+#include "workspace_tools.h"
 #include "fvwm/module_records.h"
 #include <errno.h>
 #include <assert.h>
@@ -101,6 +102,7 @@ void module_destroy(fmodule *module)
 	}
 	appearance_preview_owner_gone(module);
 	action_palette_owner_gone(module);
+	scratchpad_owner_gone(module);
 	if (MOD_WRITEFD(module) >= 0)
 	{
 		close(MOD_WRITEFD(module));
@@ -324,6 +326,7 @@ void module_kill(fmodule *module)
 	}
 	appearance_preview_owner_gone(module);
 	action_palette_owner_gone(module);
+	scratchpad_owner_gone(module);
 	module->xflags.is_retired = 1;
 	/* Retirement must not need new storage while handling refusal. */
 	store = module_list_take(module, &module_list);

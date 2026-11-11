@@ -440,6 +440,10 @@ func (c *checker) line(data []byte, loc Location) {
 			diagnostic("unchecked", "terminal-provider", "Terminal invocation and provider availability are not checked")
 			return
 		}
+		if key == "scratchpad" {
+			diagnostic("unchecked", "scratchpad-definition", "Scratchpad definition and application availability are unchecked; the live desktop controller validates the definition")
+			return
+		}
 		keys, err := desktopsettings.Scope(key)
 		if err != nil || len(keys) != 1 || keys[0] != key {
 			diagnostic("error", "setting-name", "Unknown FvwmDesktop option")

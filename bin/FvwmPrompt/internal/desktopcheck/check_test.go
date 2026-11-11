@@ -46,6 +46,15 @@ func TestLiteralSubset(t *testing.T) {
 		t.Fatalf("%+v", v)
 	}
 }
+
+func TestScratchpadDefinitionIsKnownButNotStaticallyQualified(t *testing.T) {
+	r, write := fixture(t)
+	write("config", "*FvwmDesktop: Scratchpad terminal XTerm - xterm -name literal\n")
+	v := checked(t, r)
+	if v.Errors != 0 || len(v.Diagnostics) != 1 || v.Diagnostics[0].Severity != "unchecked" || v.Diagnostics[0].Code != "scratchpad-definition" || v.CheckedDirectives != 0 {
+		t.Fatalf("valid runtime option became an unknown setting or a static pass: %+v", v)
+	}
+}
 func TestReadLocationsAndCycles(t *testing.T) {
 	r, write := fixture(t)
 	write("config", "# parent\nRead 'child config'\n")

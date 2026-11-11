@@ -1265,8 +1265,8 @@ Each provider displays its state, retained count and failure or truncation
 reason. Refresh (F5) requests a fresh core snapshot and application discovery.
 While the view is open, native window add/configure/destroy/name and desk/page
 events coalesce into refreshes. Its own Form updates are excluded. Closing
-restores the ordinary desktop subscriptions. An unchanged palette does not poll
-windows.
+drops the view subscriptions while any scratchpad monitoring remains active.
+An unchanged palette does not poll windows.
 
 Type a query and press Filter (F3). Matching is literal and case insensitive
 using the shared collection policy, with a maximum of 128 UTF-8 bytes. It is
@@ -1307,3 +1307,120 @@ also emits *Echo FVWM_PALETTE_VIEW token hex-json* with query, view token,
 native generation and total retained rows. Tokens follow the same bounded
 identifier syntax as barrier. Every record fits the 1000-byte native command
 limit; reading diagnostics neither refreshes nor activates the palette.
+
+== NAMED SCRATCHPADS
+
+A scratchpad provides a named way to summon and hide an existing application
+window, or start the application if no matching window exists. Each definition
+has an exact, case-sensitive window class, an optional exact instance and a
+literal application argument list. Use the application's actual WM_CLASS values;
+the window title is not used as the identity. Up to sixteen definitions and
+their claims or pending launches are supported.
+
+If available, run `xprop WM_CLASS` and select the application window to inspect
+its instance and class, in that order. Names use at most 32 ASCII letters,
+digits, underscores or hyphens. Class and instance values use at most 128
+UTF-8 bytes each and cannot contain control characters. Arguments are passed
+directly to the configured executable; shell expansion and pipelines are not
+interpreted. A definition allows at most 64 argument words including the
+executable, up to 1024 UTF-8 bytes per word and 8192 bytes after `Scratchpad`;
+argument words cannot contain control characters.
+
+Add definitions to the FVWM configuration with this form:
+
+....
+*FvwmDesktop: Scratchpad NAME CLASS INSTANCE|- COMMAND [ARG...]
+....
+
+Use `-` for INSTANCE to match any instance of that class. For example, if
+`xterm` is installed and `xprop` confirms the shown class and instances:
+
+....
+*FvwmDesktop: Scratchpad terminal XTerm scratch xterm -name scratch
+*FvwmDesktop: Scratchpad notes XTerm notes xterm -name notes -title "Scratch notes"
+....
+
+The word parser accepts quotes to keep an argument containing spaces together.
+In the second example, `Scratch notes` is one literal argument. Configure the
+class and instance for the actual application you use. Without a live claim,
+multiple matching windows prevent an automatic choice or a new launch. Restart
+FvwmDesktop after adding definitions to its configuration.
+
+Send these commands from a binding, function or FVWM console:
+
+....
+SendToModule FvwmDesktop scratchpad terminal
+SendToModule FvwmDesktop scratchpad notes
+SendToModule FvwmDesktop scratchpads
+SendToModule FvwmDesktop scratchpad-retry terminal
+....
+
+The first two toggle the named scratchpad. `scratchpads` opens the manager and
+reports status without itself requesting a new show or hide. A status refresh
+can reconcile a previously pending visibility request. Use `scratchpad-retry`
+only after checking an uncertain launch, as described below.
+
+The manager shows one configured scratchpad per page. Use Previous (F1) and
+Next (F2) to choose a page, Toggle to summon or hide it, and Explicit Retry to
+rescan and retry an uncertain launch. Refresh (F5) requests current status;
+Close (Esc) dismisses the manager.
+
+When summoned, the window is centered in the current monitor's reachable work
+area on the selected workspace and page. The client is not resized. Hiding uses
+iconification. When a hidden scratchpad had focus, the previous window regains
+focus only if it still exists and the scratchpad still owns focus; a later
+manual focus change is respected.
+
+The desktop keeps an existing live claim when possible. If there is no claim,
+it claims exactly one supported match. Multiple matches are reported as
+ambiguous. A matching transient, sticky or fullscreen window cannot be moved as
+a scratchpad; the operation is refused without changing that window or starting
+another copy. A changed definition cannot silently replace an active claim or
+pending launch.
+
+The core retains up to sixteen named records for the lifetime of the window
+manager and does not silently evict them when configuration changes. If the
+table is full, another name is refused. A changed active definition can also
+be refused until a full FVWM Restart clears the old record. After Restart,
+existing matches remain claimable, while an unmatched definition starts in an
+uncertain state. Inspect existing windows and consider the retry warning below
+before explicitly retrying an unmatched definition.
+
+While a launch is pending, repeated requests update the desired visibility
+without starting another process. A launch reservation lasts thirty seconds.
+If its outcome is uncertain, including after a helper loss during a pending
+launch or a full window-manager Restart for an unmatched definition, the
+desktop does not launch again automatically.
+Inspect existing windows before using the explicit retry action. Retry scans
+again before authorizing another launch, but an exceptionally late original
+application can still appear and produce a duplicate. In a normal new session,
+summoning an unmatched definition may start its application. Replacing FVWM
+with a different window manager does not guarantee recovery of these claims.
+
+== WINDOW AND WORKSPACE OVERVIEW
+
+Open the overview with:
+
+....
+SendToModule FvwmDesktop overview
+....
+
+The native overview provides a searchable collection of managed windows and
+workspaces. Activate a window row to focus it or a workspace row to switch to
+it. To move a window to another workspace and page:
+
+. Select the window and choose Mark window (F6).
+. Select the destination workspace and enter its page X and Y as zero-based
+  decimal integers, such as `0` and `1`, without leading zeroes. They must be
+  within the bounds shown for that workspace.
+. Choose Move marked to workspace/page (F8).
+
+To start FVWM's native interactive pointer Move instead, select a window and
+choose Pointer Move (F7). Submitting that operation does not by itself confirm
+that the move was completed.
+
+The overview uses native labels; it does not require a compositor and does not
+capture window thumbnails. It shares the Action palette's bounded
+collection and snapshot lifecycle. Window and workspace changes can make a
+displayed target stale; in that case refresh the view and select it again.
+Closing the overview releases its view without stopping scratchpad monitoring.

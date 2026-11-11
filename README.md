@@ -19,7 +19,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   [read-only reduced-motion portal bridge](doc/fvwm-settings-portal.adoc).
 - [Localized application actions](dev-docs/verification/VERIFICATION-2026-10-29-XDG-INSTALLED.md),
   palette and startup activity.
-- Optional browser: list/grid, watching, Files-menu handoff, application choosers
+- In progress: [named scratchpads and workspace overview](doc/FvwmDesktop.adoc#_named_scratchpads).
+- Optional browser: list/grid, watching, Files handoff, app choosers
   and live updates; [opt-in FileManager1](doc/fvwm-file-browser.adoc#filemanager1-service).
   [SQLite/FTS5 deferred](dev-docs/decisions/DIRECTORY-BACKEND-EVALUATION-2026-11-02.md).
 - Script selection metadata and bounded INCR paste;
@@ -30,8 +31,8 @@ lite. Builds require Go. [Build/upgrade notes](INSTALL.md).
   progress, conflicts and cancellation.
 - Native tray: XEmbed, opt-in StatusNotifier, bar popup and optional
   Buttons slot; [usage](doc/FvwmTray.adoc) and [current captures](doc/development-preview.md#native-tray-completion-work-in-progress).
-- Optional Lucide menu glyphs; [theme examples](doc/development-preview.md#optional-lucide-menu-glyphs-in-progress).
-- Optional pinboard: saved references, shaped cells and management;
+- Optional Lucide glyphs; [theme examples](doc/development-preview.md#optional-lucide-menu-glyphs-in-progress).
+- Optional pinboard: shaped cells;
   unpin preserves targets.
 
 Slate pinboard.

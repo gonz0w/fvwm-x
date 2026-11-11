@@ -38,8 +38,8 @@ def terminate(child):
             child.wait(timeout=.7)
 
 
-def module_proxy(real, directory, arguments, *, record_end_config=False):
-    """Relay both pipes verbatim; optionally record config-END headers only."""
+def module_proxy(real, directory, arguments, *, record_end_config=False, record_core_reply=False):
+    """Relay both pipes verbatim; optionally record config-END headers and directed replies."""
     from contextlib import ExitStack
 
     outgoing, incoming = map(int, arguments[:2])
@@ -111,7 +111,9 @@ def module_proxy(real, directory, arguments, *, record_end_config=False):
                             if len(parsing) < length:
                                 break
                             text = (bytes(parsing[7 * WORD:length]).split(b'\0', 1)[0]
-                                    if kind in (1 << 18, 1 << 22) else None)
+                                    if kind in (1 << 18, 1 << 22) or
+                                    (record_core_reply and kind == ((1 << 31) | (1 << 10)))
+                                    else None)
                         del parsing[:length]
                         if end_log is not None and direction == 'in' and kind == 1 << 19:
                             row = json.dumps({'time': time.monotonic(), 'kind': kind}) + '\n'

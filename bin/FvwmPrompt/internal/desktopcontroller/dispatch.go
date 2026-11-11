@@ -53,6 +53,28 @@ func (d *Controller) Handle(message string) {
 }
 func (d *Controller) handle(command, argument string) error {
 	switch command {
+	case "overview":
+		if argument != "" {
+			return errors.New("overview takes no arguments")
+		}
+		return d.startPaletteMode(true)
+	case "scratchpad", "scratchpad-retry":
+		words, err := wordCount(argument, 1)
+		if err != nil {
+			return err
+		}
+		verb := "toggle"
+		if command == "scratchpad-retry" {
+			verb = "retry"
+		}
+		return d.scratchpadAction(words[0], verb)
+	case "scratchpads":
+		if argument != "" {
+			return errors.New("scratchpads takes no arguments")
+		}
+		return d.startScratchpads()
+	case "scratchpad-control":
+		return d.scratchpadControl(argument)
 	case "palette":
 		if argument != "" {
 			return errors.New("palette takes no arguments")
@@ -472,6 +494,7 @@ func (d *Controller) tick() {
 	d.preview.tick()
 	d.publishThemeReload()
 	d.paletteTick()
+	d.scratchpadTick()
 	if d.editor != nil && !time.Now().Before(d.editor.deadline) {
 		d.retireEditor()
 	}

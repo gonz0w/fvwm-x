@@ -184,7 +184,8 @@ enum
 	F_SEND_REPLY,
 	F_SEND_QUERY,
 	F_SEND_PREVIEW,
-	F_SEND_PALETTE
+	F_SEND_PALETTE,
+	F_SEND_SCRATCHPAD
 };
 
 /* ---------------------------- exported variables (globals) --------------- */
@@ -329,6 +330,7 @@ void CMD_Send_Root(F_CMD_ARGS);
 void CMD_Send_Query(F_CMD_ARGS);
 void CMD_Send_Preview(F_CMD_ARGS);
 void CMD_Send_Palette(F_CMD_ARGS);
+void CMD_Send_Scratchpad(F_CMD_ARGS);
 void CMD_Send_Session(F_CMD_ARGS);
 void CMD_Send_WindowList(F_CMD_ARGS);
 void CMD_SendToModule(F_CMD_ARGS);

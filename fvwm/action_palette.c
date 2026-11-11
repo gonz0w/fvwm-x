@@ -8,9 +8,11 @@
 #include "execcontext.h"
 #include "screen.h"
 #include "query_json.h"
+#include "focus.h"
 #include "libs/monitor_types.h"
 #include "libs/safemalloc.h"
 #include <inttypes.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -84,6 +86,18 @@ static void palette_copy_text(struct palette_slot *slot,
 		slot->truncated = true;
 }
 
+/* Frame positions are viewport-relative; page facts include virtual offset. */
+static int palette_page(int coordinate, int offset, int extent)
+{
+	int64_t value = (int64_t)coordinate + offset;
+
+	if (extent <= 0)
+		return 0;
+	value = value >= 0 ? value / extent :
+		-((-value + extent - 1) / extent);
+	return value > INT_MAX ? INT_MAX : value < INT_MIN ? INT_MIN : (int)value;
+}
+
 static void palette_prepare_windows(struct palette_slot *slot)
 {
 	FvwmWindow *fw;
@@ -106,6 +120,23 @@ static void palette_prepare_windows(struct palette_slot *slot)
 		memset(row, 0, sizeof(*row));
 		row->kind = PALETTE_WINDOW;
 		row->identity = fw->palette_identity;
+		row->desk = fw->Desk;
+		row->output = fw->m->si ? fw->m->si->rr_output : 0;
+		row->role = fw->m->si ? fw->m->si->name_atom : 0;
+		row->x = fw->g.frame.x;
+		row->y = fw->g.frame.y;
+		row->width = fw->g.frame.width;
+		row->height = fw->g.frame.height;
+		row->page_x = palette_page(fw->g.frame.x,
+			fw->m->virtual_scr.Vx, monitor_get_all_widths());
+		row->page_y = palette_page(fw->g.frame.y,
+			fw->m->virtual_scr.Vy, monitor_get_all_heights());
+		row->flags = (IS_STICKY_ACROSS_DESKS(fw) ?
+			PALETTE_STICKY_DESKS : 0) |
+			(IS_STICKY_ACROSS_PAGES(fw) ? PALETTE_STICKY_PAGES : 0) |
+			(IS_ICONIFIED(fw) ? PALETTE_ICONIFIED : 0) |
+			(IS_EWMH_FULLSCREEN(fw) ? PALETTE_FULLSCREEN : 0) |
+			(focus_is_focused(fw) ? PALETTE_FOCUSED : 0);
 		palette_copy_text(slot, row->label,
 			fw->visible_name ? fw->visible_name : fw->name.name,
 			"Unnamed window");
@@ -151,6 +182,10 @@ static void palette_prepare_desktops(struct palette_slot *slot)
 			row->desk = (int)i;
 			row->output = m->si->rr_output;
 			row->role = m->si->name_atom;
+			row->page_max_x = monitor_get_all_widths() > 0 ?
+				m->virtual_scr.VxMax / monitor_get_all_widths() : 0;
+			row->page_max_y = monitor_get_all_heights() > 0 ?
+				m->virtual_scr.VyMax / monitor_get_all_heights() : 0;
 			snprintf(label, sizeof(label), "Desktop %zu", i);
 			palette_copy_text(slot, row->label, label, "Desktop");
 			snprintf(detail, sizeof(detail), "Desktop %zu; %.160s",
@@ -251,7 +286,7 @@ cJSON *action_palette_query(struct fmodule *owner,
 	for (size_t i = spec->offset; i < end; i++)
 	{
 		const struct palette_row *row = &slot->rows[i];
-		char id[PALETTE_ID_MAX + 1];
+		char id[PALETTE_ID_MAX + 1], output[32], role[32];
 		cJSON *item = cJSON_CreateObject();
 
 		if (!item)
@@ -262,6 +297,8 @@ cJSON *action_palette_query(struct fmodule *owner,
 			goto fail;
 		}
 		palette_row_id(id, slot->generation, row);
+		snprintf(output, sizeof(output), "%" PRIu64, row->output);
+		snprintf(role, sizeof(role), "%" PRIu64, row->role);
 		if (!cJSON_AddStringToObject(item, "id", id) ||
 		    !cJSON_AddNumberToObject(item, "index", i) ||
 		    !cJSON_AddStringToObject(item, "kind",
@@ -270,7 +307,28 @@ cJSON *action_palette_query(struct fmodule *owner,
 		    !cJSON_AddStringToObject(item, "detail", row->detail) ||
 		    !cJSON_AddStringToObject(item, "icon",
 			row->kind == PALETTE_WINDOW ? "file" : "directory") ||
-		    !cJSON_AddBoolToObject(item, "enabled", true))
+		    !cJSON_AddBoolToObject(item, "enabled", true) ||
+		    !cJSON_AddNumberToObject(item, "desk", row->desk) ||
+		    !cJSON_AddStringToObject(item, "monitor_output", output) ||
+		    !cJSON_AddStringToObject(item, "monitor_role", role) ||
+		    !cJSON_AddNumberToObject(item, "page_x", row->page_x) ||
+		    !cJSON_AddNumberToObject(item, "page_y", row->page_y) ||
+		    !cJSON_AddNumberToObject(item, "x", row->x) ||
+		    !cJSON_AddNumberToObject(item, "y", row->y) ||
+		    !cJSON_AddNumberToObject(item, "width", row->width) ||
+		    !cJSON_AddNumberToObject(item, "height", row->height) ||
+		    !cJSON_AddNumberToObject(item, "page_max_x", row->page_max_x) ||
+		    !cJSON_AddNumberToObject(item, "page_max_y", row->page_max_y) ||
+		    !cJSON_AddBoolToObject(item, "sticky_desks",
+			(row->flags & PALETTE_STICKY_DESKS) != 0) ||
+		    !cJSON_AddBoolToObject(item, "sticky_pages",
+			(row->flags & PALETTE_STICKY_PAGES) != 0) ||
+		    !cJSON_AddBoolToObject(item, "iconified",
+			(row->flags & PALETTE_ICONIFIED) != 0) ||
+		    !cJSON_AddBoolToObject(item, "fullscreen",
+			(row->flags & PALETTE_FULLSCREEN) != 0) ||
+		    !cJSON_AddBoolToObject(item, "focused",
+			(row->flags & PALETTE_FOCUSED) != 0))
 			goto fail;
 	}
 	*error = NULL;
@@ -339,6 +397,35 @@ bool action_palette_target(struct fmodule *owner,
 			return false;
 	}
 	palette_row_id(id, slot->generation, row);
+	row->operation = request->operation;
+	row->topology = slot->topology;
+	if (request->operation != PALETTE_SELECT)
+	{
+		*error = "unsupported_target";
+		if (row->kind != PALETTE_WINDOW)
+			return false;
+		topology = FScreenGetTopologySnapshot();
+		*error = "stale_topology";
+		if (!topology || topology->epoch != slot->topology)
+			return false;
+		if (request->operation == PALETTE_MOVE)
+		{
+			const struct palette_row *destination;
+
+			*error = "invalid_destination";
+			if (request->destination >= slot->count)
+				return false;
+			destination = &slot->rows[request->destination];
+			if (destination->kind != PALETTE_DESKTOP ||
+			    !palette_desktop_find(destination))
+				return false;
+			row->output = destination->output;
+			row->role = destination->role;
+			row->desk = destination->desk;
+			row->page_x = (int)request->page_x;
+			row->page_y = (int)request->page_y;
+		}
+	}
 	*error = NULL;
 	return true;
 }
@@ -350,13 +437,55 @@ bool action_palette_command(const struct palette_row *row, unsigned int step,
 	command[0] = '\0';
 	if (row->kind == PALETTE_WINDOW)
 	{
-		static const char *verbs[] = {"Iconify off", "Raise", "Focus"};
+		static const char *verbs[] = {"Iconify off", "Raise", "Focus", "Move"};
 		FvwmWindow *fw = palette_window_find(row->identity);
 
-		if (!fw || step >= sizeof(verbs) / sizeof(verbs[0]))
+		if (!fw)
 			return false;
-		snprintf(command, size, "WindowId 0x%lx %s",
-			FW_W(fw), verbs[step]);
+		if (row->operation != PALETTE_SELECT)
+		{
+			const monitor_topology_snapshot *topology =
+				FScreenGetTopologySnapshot();
+
+			*error = "unsupported_target";
+			if (IS_TRANSIENT(fw) || IS_STICKY_ACROSS_DESKS(fw) ||
+			    IS_STICKY_ACROSS_PAGES(fw) || IS_EWMH_FULLSCREEN(fw))
+				return false;
+			*error = "stale_topology";
+			if (!topology || topology->epoch != row->topology)
+				return false;
+		}
+		if (row->operation == PALETTE_MOVE)
+		{
+			struct monitor *m = palette_desktop_find(row);
+			int width = monitor_get_all_widths();
+			int height = monitor_get_all_heights();
+			char number[32];
+
+			*error = "invalid_destination";
+			if (!m || width <= 0 || height <= 0 || step > 1 ||
+			    row->page_x < 0 || row->page_y < 0 ||
+			    row->page_x > m->virtual_scr.VxMax / width ||
+			    row->page_y > m->virtual_scr.VyMax / height)
+				return false;
+			snprintf(number, sizeof(number), "%d", m->number);
+			if (monitor_resolve_name(number) != m)
+				return false;
+			if (!step)
+				snprintf(command, size, "WindowId 0x%lx MoveToDesk 0 %d",
+					FW_W(fw), row->desk);
+			else
+				snprintf(command, size,
+					"WindowId 0x%lx MoveToPage screen %d %d %d",
+					FW_W(fw), m->number, row->page_x, row->page_y);
+		}
+		else
+		{
+			if (step >= (row->operation == PALETTE_DRAG ? 4U : 3U))
+				return false;
+			snprintf(command, size, "WindowId 0x%lx %s",
+				FW_W(fw), verbs[step]);
+		}
 	}
 	else
 	{

@@ -59,6 +59,7 @@
 #include "startup_notification.h"
 #include "session_clients.h"
 #include "action_palette.h"
+#include "workspace_tools.h"
 #include "colorset.h"
 #include "menustyle.h"
 #include "libs/vpacket.h"
@@ -1313,14 +1314,35 @@ void CMD_Send_Palette(F_CMD_ARGS)
 	result = cJSON_CreateObject();
 	error = "allocation_failed";
 	if (!result ||
-	    !cJSON_AddBoolToObject(result, "applied", !request.release) ||
+	    !cJSON_AddBoolToObject(result, "applied", !request.release &&
+		request.operation != PALETTE_DRAG) ||
 	    !cJSON_AddStringToObject(result, "action", request.release ?
-		"release" : row.kind == PALETTE_WINDOW ? "focus" : "desktop") ||
+		"release" : request.operation == PALETTE_DRAG ? "drag" :
+		request.operation == PALETTE_MOVE ? "move" :
+		row.kind == PALETTE_WINDOW ? "focus" : "desktop") ||
 	    !cJSON_AddStringToObject(result, "target", id))
 		goto fail;
 	if (!request.release)
 	{
-		unsigned int steps = row.kind == PALETTE_WINDOW ? 3 : 1;
+		unsigned int steps = request.operation == PALETTE_DRAG ? 4 :
+			request.operation == PALETTE_MOVE ? 2 :
+			row.kind == PALETTE_WINDOW ? 3 : 1;
+
+		if (request.operation == PALETTE_DRAG &&
+		    !cJSON_AddBoolToObject(result, "submitted", true))
+			goto fail;
+		if (request.operation == PALETTE_MOVE)
+		{
+			struct palette_row destination = row;
+			char destination_id[PALETTE_ID_MAX + 1];
+
+			destination.kind = PALETTE_DESKTOP;
+			palette_row_id(destination_id, request.generation,
+				&destination);
+			if (!cJSON_AddStringToObject(result, "destination",
+				destination_id))
+				goto fail;
+		}
 
 		/* Revalidate allocation identity before each fixed operation.
 		 * No borrowed FvwmWindow survives a recursive engine call. */
@@ -1343,6 +1365,61 @@ void CMD_Send_Palette(F_CMD_ARGS)
 fail:
 	cJSON_Delete(result);
 	result = NULL;
+reply:
+	send_query_result(module, request.cookie, request.serial, result, error);
+}
+
+void CMD_Send_Scratchpad(F_CMD_ARGS)
+{
+	struct scratchpad_request request;
+	struct scratchpad_plan plan;
+	fmodule *module = exc->m.module;
+	cJSON *result;
+	const char *error = NULL;
+	char command[160];
+	unsigned int steps;
+
+	if (!module)
+		return;
+	if (!scratchpad_request_parse(action, &request))
+	{
+		char version[3], cookie[65], serial[17], route[90];
+		struct palette_request routing;
+
+		/* Reply only when the routing prefix is itself validated. */
+		if (action && sscanf(action, "%2s %64s %16s",
+		    version, cookie, serial) == 3 && !strcmp(version, "v1"))
+		{
+			snprintf(route, sizeof(route), "%s %s - -", cookie, serial);
+			if (palette_request_parse(route, &routing))
+				send_query_result(module, cookie, serial, NULL,
+					"invalid-request");
+		}
+		return;
+	}
+	result = scratchpad_prepare(module, &request, &plan, &error);
+	if (!result)
+		goto reply;
+	steps = plan.action == SCRATCHPAD_SUMMON ? 5 :
+		plan.action == SCRATCHPAD_DISMISS ? 2 : 0;
+	for (unsigned int step = 0; step < steps; step++)
+	{
+		if (!scratchpad_command(&plan, step, command,
+			sizeof(command), &error))
+		{
+			cJSON_Delete(result);
+			result = NULL;
+			break;
+		}
+		if (command[0])
+			execute_function_override_window(NULL, exc, command, NULL,
+				FUNC_DONT_EXPAND_COMMAND, NULL);
+		if (MOD_IS_RETIRED(module))
+		{
+			cJSON_Delete(result);
+			return;
+		}
+	}
 reply:
 	send_query_result(module, request.cookie, request.serial, result, error);
 }

@@ -55,6 +55,7 @@ type Controller struct {
 	preview                                  preview
 	session                                  sessionControl
 	palette                                  *paletteView
+	scratchpads                              scratchpadService
 	inspection                               *inspection
 	inspectionJob                            *inspectionWork
 	inspectionFocusConfigured                bool
@@ -126,7 +127,11 @@ func New(root, statePath, system, worker, capture string, png bool, send func(st
 	return d, nil
 }
 func (d *Controller) Close() {
+	if d.closed {
+		return
+	}
 	d.closePalette()
+	d.closeScratchpads()
 	d.closeStartupActivity()
 	d.closed = true
 	d.browser.menuToken = ""
@@ -249,6 +254,8 @@ func (d *Controller) finishConfiguration() error {
 	}
 	d.changed(newID(16))
 	d.ready = true
+	d.workspaceMasks()
+	d.scratchpads.dirty = true
 	d.preview.constrain()
 	d.applySessionPolicy()
 	d.announceSettings()

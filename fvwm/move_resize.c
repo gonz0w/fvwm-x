@@ -1962,6 +1962,8 @@ static void AnimatedMoveAnyWindow(
 		XFlush(dpy);
 		if (fw)
 		{
+			if (fw->g.frame.x != current.x || fw->g.frame.y != current.y)
+				placement_revision_advance(fw);
 			fw->g.frame.x = current.x;
 			fw->g.frame.y = current.y;
 			update_absolute_geometry(fw);
@@ -2398,6 +2400,8 @@ static void _move_window(F_CMD_ARGS, Bool do_animate, int mode)
 			fw->UpdateDesk = m->virtual_scr.CurrentDesk;
 		}
 
+		if (fw->m != m)
+			placement_revision_advance(fw);
 		fw->m = m;
 	}
 	else
@@ -5970,6 +5974,7 @@ int stick_across_pages(F_CMD_ARGS, int toggle)
 	{
 		return 0;
 	}
+	placement_revision_advance(fw);
 	if (IS_STICKY_ACROSS_PAGES(fw))
 	{
 		SET_STICKY_ACROSS_PAGES(fw, 0);
@@ -5999,6 +6004,7 @@ int stick_across_desks(F_CMD_ARGS, int toggle)
 		return 0;
 	}
 
+	placement_revision_advance(fw);
 	if (IS_STICKY_ACROSS_DESKS(fw))
 	{
 		SET_STICKY_ACROSS_DESKS(fw, 0);

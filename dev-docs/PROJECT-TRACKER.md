@@ -184,6 +184,38 @@ qualification as applicable. The next placement feature batch can combine
 #220 layout and #222 docking work around committed topology and placement
 ownership, then cover the shared monitor cases in one checkpoint.
 
+PR377 merged as f809dadc926cddce26d96e86d28dfb9155219162. The verified
+squash tree matches the reviewed candidate. Retain all 16 Slate passes.
+
+Start the #220/#222 layout and docking batch on codex/r1-layout-docking.
+The source audit found a missing placement ownership guard shared by both
+consumers. Implement that core boundary first, then explicit per-desktop
+layout and scoped docking profile restore. Fold #221/#223 mixed-monitor
+cases into one owned Xorg dummy session once both consumers are available.
+The batch record names the authoritative paths, preservation rules and
+shared native checks.
+[Layout and docking batch](decisions/WORKSPACE-LAYOUT-DOCKING-2026-11-11.md).
+
+Layout/docking foundation in progress. Record per-allocation placement
+revisions at frame and workspace changes, including recapture, and distinguish
+viewport translation. Guard overview move and drag admission with the captured
+revision. Add the columns/master-stack planner and exact docking connector
+resolver. Build the affected core once and run the five shared policy/core
+units together on the retained Linux profile. Reuse the earlier UI evidence
+and reserve the mixed-monitor run for the layout and docking consumers.
+The initial core build and both new policy tests passed. The overview test
+overwrote its prepared row while checking admission refusal. Check the
+prepared row before admission reuses its output buffer. One focused test
+repair reuses the core and policy results and completes the remaining units.
+
+
+Layout/docking foundation result. The affected core and all five policy/core
+units passed on the retained Linux profile. The two policy units cover both
+features. The overview tests check stale placement admission and dispatch.
+Keep the foundation in the feature branch while wiring layout and docking
+consumers. The combined mixed-monitor run remains queued with #221/#223.
+[Foundation evidence](verification/VERIFICATION-2026-11-11-PLACEMENT-FOUNDATION.md).
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

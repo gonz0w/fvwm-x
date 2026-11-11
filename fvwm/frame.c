@@ -350,7 +350,7 @@ static void frame_setup_titlebar(
 
 static void _frame_setup_window(
 	FvwmWindow *fw, rectangle *frame_g, Bool do_send_configure_notify,
-	Bool do_force, Bool is_application_request)
+	Bool do_force, Bool is_application_request, Bool viewport_translation)
 {
 	frame_move_resize_args mr_args;
 	Bool is_resized = False;
@@ -410,6 +410,8 @@ static void _frame_setup_window(
 		 * According to the July 27, 1988 ICCCM draft, we should send a
 		 * synthetic ConfigureNotify event to the client if the window
 		 * was moved but not resized. */
+		if (!viewport_translation)
+			placement_revision_advance(fw);
 		XMoveWindow(dpy, FW_W_FRAME(fw), frame_g->x, frame_g->y);
 		fw->g.frame = *frame_g;
 		if ((draw_parts = border_get_transparent_decorations_part(fw))
@@ -1924,6 +1926,8 @@ void frame_free_move_resize_args(
 
 	mra = (mr_args_internal *)mr_args;
 	SET_HAS_HANDLES(fw, mra->flags.had_handles);
+	if (!fvwmrect_rectangles_equal(&mra->start_g, &mra->end_g))
+		placement_revision_advance(fw);
 	fw->g.frame = mra->end_g;
 	if (mra->flags.is_lazy_shading)
 	{
@@ -2055,9 +2059,17 @@ void frame_setup_window(
 	g.y = y;
 	g.width = w;
 	g.height = h;
-	_frame_setup_window(fw, &g, do_send_configure_notify, False, False);
+	_frame_setup_window(fw, &g, do_send_configure_notify,
+		False, False, False);
 
 	return;
+}
+
+void frame_translate_viewport(FvwmWindow *fw, int x, int y)
+{
+	rectangle g = {x, y, fw->g.frame.width, fw->g.frame.height};
+
+	_frame_setup_window(fw, &g, False, False, False, True);
 }
 
 void frame_setup_window_app_request(
@@ -2070,7 +2082,8 @@ void frame_setup_window_app_request(
 	g.y = y;
 	g.width = w;
 	g.height = h;
-	_frame_setup_window(fw, &g, do_send_configure_notify, False, True);
+	_frame_setup_window(fw, &g, do_send_configure_notify,
+		False, True, False);
 
 	return;
 }
@@ -2085,7 +2098,8 @@ void frame_force_setup_window(
 	g.y = y;
 	g.width = w;
 	g.height = h;
-	_frame_setup_window(fw, &g, do_send_configure_notify, True, False);
+	_frame_setup_window(fw, &g, do_send_configure_notify,
+		True, False, False);
 
 	return;
 }

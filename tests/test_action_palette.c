@@ -175,6 +175,12 @@ static void test_snapshot_and_guard(void)
 	assert(action_palette_command(&row, 3, command, sizeof(command), &error));
 	assert(strcmp(command, "WindowId 0x42 Move") == 0);
 	assert(!action_palette_command(&row, 4, command, sizeof(command), &error));
+	/* A move away and back leaves the same geometry with a newer revision. */
+	fw.placement_revision = 2;
+	assert(!action_palette_command(&row, 0, command, sizeof(command), &error));
+	assert(strcmp(error, "stale_placement") == 0);
+	assert(!action_palette_target(&owners[0], &action, &row, id, &error));
+	assert(strcmp(error, "stale_placement") == 0);
 	action.operation = PALETTE_SELECT;
 	/* Reuse the exact record and XID, but give its new management lifetime
 	 * a fresh identity. Old snapshot must refuse it. */

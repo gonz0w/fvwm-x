@@ -610,6 +610,8 @@ static void MapDesk(struct monitor *m, int desk, Bool grab)
 		{
 			/*  If window is sticky, just update its desk (it's
 			 * still mapped).  */
+			if (t->Desk != desk)
+				placement_revision_advance(t);
 			t->Desk = desk;
 			if (sf == t)
 			{
@@ -1467,11 +1469,9 @@ static void move_viewport_delta(
 							t, False);
 					}
 				}
-				frame_setup_window(
+				frame_translate_viewport(
 					t, t->g.frame.x + delta.x,
-					t->g.frame.y + delta.y,
-					t->g.frame.width,
-					t->g.frame.height, False);
+					t->g.frame.y + delta.y);
 			}
 		}
 		/*  Bump to next win...  */
@@ -1513,11 +1513,9 @@ static void move_viewport_delta(
 							t1, False);
 					}
 				}
-				frame_setup_window(
+				frame_translate_viewport(
 					t1, t1->g.frame.x + delta.x,
-					t1->g.frame.y + delta.y,
-					t1->g.frame.width,
-					t1->g.frame.height, False);
+					t1->g.frame.y + delta.y);
 			}
 		}
 		/*  Bump to next win...  */
@@ -1742,6 +1740,8 @@ void do_move_window_to_desk(FvwmWindow *fw, int desk)
 		return;
 
 	m = fw->m;
+	if (fw->Desk != desk)
+		placement_revision_advance(fw);
 
 	/*
 	 * Set the window's desktop, and map or unmap it as needed.

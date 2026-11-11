@@ -238,7 +238,11 @@ static void setup_window_structure(
 
 	memset(*pfw, 0, sizeof(FvwmWindow));
 	if (savewin)
+	{
 		(*pfw)->palette_identity = savewin->palette_identity;
+		(*pfw)->placement_revision = savewin->placement_revision;
+		placement_revision_advance(*pfw);
+	}
 	else
 		palette_next_identity(&next_palette_identity,
 			&(*pfw)->palette_identity);

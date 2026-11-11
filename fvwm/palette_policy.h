@@ -29,6 +29,7 @@ struct palette_row {
 	int page_x, page_y, x, y, width, height, page_max_x, page_max_y;
 	unsigned int flags;
 	enum palette_operation operation;
+	uint32_t placement_revision;
 	char label[PALETTE_TEXT_MAX + 1];
 	char detail[PALETTE_TEXT_MAX + 1];
 };

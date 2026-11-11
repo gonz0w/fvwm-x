@@ -73,11 +73,6 @@ static FvwmWindow *palette_window_find(uint64_t identity)
 	return NULL;
 }
 
-static bool palette_window_live(uint64_t identity)
-{
-	return palette_window_find(identity) != NULL;
-}
-
 static void palette_copy_text(struct palette_slot *slot,
 	char output[PALETTE_TEXT_MAX + 1], const char *input,
 	const char *fallback)
@@ -120,6 +115,7 @@ static void palette_prepare_windows(struct palette_slot *slot)
 		memset(row, 0, sizeof(*row));
 		row->kind = PALETTE_WINDOW;
 		row->identity = fw->palette_identity;
+		row->placement_revision = fw->placement_revision;
 		row->desk = fw->Desk;
 		row->output = fw->m->si ? fw->m->si->rr_output : 0;
 		row->role = fw->m->si ? fw->m->si->name_atom : 0;
@@ -386,8 +382,17 @@ bool action_palette_target(struct fmodule *owner,
 	*error = "stale_target";
 	if (row->kind == PALETTE_WINDOW)
 	{
-		if (!palette_window_live(row->identity))
+		FvwmWindow *fw = palette_window_find(row->identity);
+
+		if (!fw)
 			return false;
+		if (request->operation != PALETTE_SELECT &&
+		    (fw->placement_revision == UINT32_MAX ||
+		     fw->placement_revision != row->placement_revision))
+		{
+			*error = "stale_placement";
+			return false;
+		}
 	}
 	else
 	{
@@ -447,6 +452,12 @@ bool action_palette_command(const struct palette_row *row, unsigned int step,
 			const monitor_topology_snapshot *topology =
 				FScreenGetTopologySnapshot();
 
+			if (step == 0 && (fw->placement_revision == UINT32_MAX ||
+			    fw->placement_revision != row->placement_revision))
+			{
+				*error = "stale_placement";
+				return false;
+			}
 			*error = "unsupported_target";
 			if (IS_TRANSIENT(fw) || IS_STICKY_ACROSS_DESKS(fw) ||
 			    IS_STICKY_ACROSS_PAGES(fw) || IS_EWMH_FULLSCREEN(fw))

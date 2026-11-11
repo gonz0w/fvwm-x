@@ -5098,3 +5098,21 @@ workspace_tools_test = executable(
     c_args: ['-UNDEBUG'],
 )
 test('workspace-tools-core', workspace_tools_test)
+
+
+workspace_layout_policy_test = executable(
+    'test-workspace-layout-policy',
+    ['test_workspace_layout_policy.c', '../fvwm/workspace_layout_policy.c'],
+    include_directories: includedirs,
+    dependencies: all_found_deps,
+    c_args: ['-UNDEBUG'],
+)
+test('workspace-layout-policy', workspace_layout_policy_test)
+
+workspace_docking_policy_test = executable(
+    'test-workspace-docking-policy',
+    ['test_workspace_docking_policy.c', '../fvwm/workspace_docking_policy.c'],
+    include_directories: includedirs,
+    c_args: ['-UNDEBUG'],
+)
+test('workspace-docking-policy', workspace_docking_policy_test)

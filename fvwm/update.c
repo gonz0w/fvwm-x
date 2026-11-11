@@ -702,6 +702,7 @@ Bool update_fvwm_monitor(FvwmWindow *fw)
 	bool eligible;
 	Bool dest_changed;
 	Bool do_plan;
+	int original_desk = fw->Desk;
 
 	if (IS_WINDOW_BEING_MOVED_OPAQUE(fw))
 	{
@@ -776,6 +777,8 @@ out:
 		fw->m = mnew;
 		dest_changed = True;
 	}
+	if (dest_changed || original_desk != fw->Desk)
+		placement_revision_advance(fw);
 	do_plan = False;
 	if (dest_changed && fw->m != NULL && !IS_ICONIFIED(fw))
 	{

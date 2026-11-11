@@ -2,17 +2,17 @@
 
 Repository: https://github.com/gonz0w/agent-temper
 
-Revision: `5222ac45c9edaa23c188816c7727fc70780a95a8`
+Revision: `bc4ae7f68ee346b9970f07c7c4bff020120f0278`
 
-Source: https://github.com/gonz0w/agent-temper/tree/5222ac45c9edaa23c188816c7727fc70780a95a8
+Source: https://github.com/gonz0w/agent-temper/tree/bc4ae7f68ee346b9970f07c7c4bff020120f0278
 
 Local selection: [project policy](../dev-docs/PROJECT.md); only Codex is selected.
 Historical routing update: https://github.com/gonz0w/fvwm-x/issues/272
 
-Nine upstream files retain their original bytes and complete BSD-3-Clause
+Ten upstream files retain their original bytes and complete BSD-3-Clause
 [license](LICENSE). Existing project licensing and external-source terms remain.
-SHA256SUMS covers all nine upstream files and this local source record. The
-manifest itself is excluded. Exact inventory is those eleven files; signed
+SHA256SUMS covers all ten upstream files and this local source record. The
+manifest itself is excluded. Exact inventory is those twelve files; signed
 consumer history binds the local provenance. Checksums alone do not authenticate
 source. Previous adoption is recoverable through consumer Git history.
 
@@ -29,6 +29,8 @@ Current modular-policy adoption: https://github.com/gonz0w/fvwm-x/issues/282. Th
 checker are outside this immutable bundle. This adoption preserves existing local
 requirements, historical decisions and all five role files. CI is unchanged.
 
-Tree: `7c5b4f351046333be115cc819efe768afea681c1`
+Tree: `ef53a3a141aca778ba08c432d4e1c0fcf57dad68`
 
-Current guidance refresh: https://github.com/gonz0w/fvwm-x/issues/342
+Earlier guidance refresh: https://github.com/gonz0w/fvwm-x/issues/342
+
+Current artifact-retention refresh: https://github.com/gonz0w/fvwm-x/issues/375

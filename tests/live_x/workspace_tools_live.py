@@ -323,6 +323,9 @@ def scene(**s):
         probe.command('Read '+shlex.quote(str(local)), 'KillModule FvwmDesktop', 'Module FvwmDesktop')
         wait('new helper reads scratchpad definitions', lambda: next((r for r in replies(native)
             if r['name'] == 'term' and r['cookie'] not in previous), None), 12)
+        page_x = int(profile == 'slate-dark')
+        if page_x:
+            probe.command('DesktopSize 2 1')
         prior = view.wait('Palette prior focus')
         probe.command('GotoDesk 0 0', 'GotoPage 0 0', 'WindowId %d Focus' % prior)
         wait('scratchpad prior focus', lambda: focus_is(prior))
@@ -412,19 +415,32 @@ def scene(**s):
         s['capture']('workspace-overview-marked.png')
         filtered = filter_query('palette desk five', from_list=True)
         select_single()
+        if page_x:
+            view.key('Tab')
+            view.key('u', control=True)
+            view.key('1')
         moved_at = time.monotonic()
         view.key('F8')
         wait('actual F8 move closes overview', lambda: not view.named(OVERVIEW))
-        moved = row(app_title, desk=5, page_x=0, page_y=0)
+        moved = row(app_title, desk=5, page_x=page_x, page_y=0)
         assert (moved['width'], moved['height']) == (app_before['width'], app_before['height']), (app_before, moved)
         commands = [r['text'] for r in rows(native) if r['direction'] == 'out' and r['time'] >= moved_at
             and r['text'].startswith('Send_Palette ') and ' move ' in r['text']]
-        assert commands and commands[-1].endswith(' 0 0'), commands
+        assert commands and commands[-1].endswith(f' {page_x} 0'), commands
         evidence['overview_move'] = dict(selected=selected, marked=marked, destination=filtered,
             observed=moved, commands=commands)
         cases['keyboard_search_mark_move_to_workspace_page'] = True
 
-        probe.command('GotoDesk 0 5', 'GotoPage 0 0')
+        overview_open()
+        filter_query('palette desk five')
+        select_single()
+        view.key('Return')
+        wait('overview workspace activation closes the Form', lambda: not view.named(OVERVIEW))
+        desktop = probe.query(resource='workspaces', limit=8)
+        assert any(m['desk'] == 5 for m in desktop['result']['monitors']), desktop
+        evidence['overview_workspace_activation'] = desktop
+        cases['overview_keyboard_workspace_activation'] = True
+        probe.command(f'GotoPage {page_x} 0')
         overview_open()
         filter_query('workspace application')
         select_single()
@@ -490,6 +506,22 @@ def scene(**s):
 
         if profile == 'slate-dark':
             evidence['workspace_scene']['resources_before'] = resources()
+            client.x.XSetTransientForHint.argtypes = [C.c_void_p, C.c_ulong, C.c_ulong]
+            client.x.XDeleteProperty.argtypes = [C.c_void_p, C.c_ulong, C.c_ulong]
+            before = row(app_title)
+            client.x.XSetTransientForHint(client.display, application, prior)
+            client.x.XSync(client.display, 0)
+            started = time.monotonic()
+            probe.command('SendToModule FvwmDesktop scratchpad app')
+            transient = actual('app', started, state='unsupported', action='none')
+            after = row(app_title)
+            assert all(before[key] == after[key] for key in ('id', 'x', 'y', 'width', 'height'))
+            assert launch_count(app_record) == 1
+            # XA_WM_TRANSIENT_FOR is the predefined atom 68.
+            client.x.XDeleteProperty(client.display, application, 68)
+            client.x.XSync(client.display, 0)
+            evidence['transient_refusal'] = dict(reply=transient, before=before, after=after)
+            cases['live_transient_refusal_preserves_window_and_does_not_launch'] = True
             probe.command('WindowId %d StickAcrossDesks on' % application)
             sticky = row(app_title, sticky_desks=True)
             started = time.monotonic()

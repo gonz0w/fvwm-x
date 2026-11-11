@@ -166,6 +166,24 @@ and visual inspection confirms the title bar and every overview control fit.
 PR374 is ready for review. The broader #221/#223 qualification maps stay open.
 [Focused result and fresh screenshot](verification/VERIFICATION-2026-11-11-WORKSPACE-LAYOUT.md).
 
+PR374 merged as d74b839072c2ab7e2901f354edb38c4345adc1cb. The signed
+squash tree matches the reviewed candidate. The #221/#223 follow-up batches
+overview workspace activation, nonzero page movement and live transient
+refusal in the existing Slate scene. Reuse the layout checkpoint binaries
+and existing theme and policy receipts. One focused scene and one diagnosed
+repair within eight minutes of owned lab time. Keep the broader open gates
+with their owners for the next shared checkpoint.
+
+PR374 follow-up result. All 16 Slate cases pass on the merged build.
+The focused run adds evidence for workspace activation through the overview,
+movement to nonzero page (1,0) and live transient refusal without a second
+launch. Existing layout, other theme and policy results were reused.
+[Follow-up evidence](verification/VERIFICATION-2026-11-11-WORKSPACE-FOLLOWUP.md).
+Keep #221/#223 open for real terminal, identity reuse and topology/scale
+qualification as applicable. The next placement feature batch can combine
+#220 layout and #222 docking work around committed topology and placement
+ownership, then cover the shared monitor cases in one checkpoint.
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

@@ -4,6 +4,13 @@
 #define FVWM_GEOMETRY_H
 #include "fvwm.h"
 
+/* Saturation disables guarded placement for this allocation. */
+static inline void placement_revision_advance(FvwmWindow *fw)
+{
+	if (fw->placement_revision != UINT32_MAX)
+		fw->placement_revision++;
+}
+
 #define CS_ROUND_UP          0x01
 #define CS_UPDATE_MAX_DEFECT 0x02
 

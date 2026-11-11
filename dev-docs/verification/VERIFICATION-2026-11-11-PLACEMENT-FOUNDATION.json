@@ -1,0 +1,65 @@
+{
+  "base": "f809dadc926cddce26d96e86d28dfb9155219162",
+  "plan_sha256": "9ae17fc988806818a6657d47241d666426113cecb069360253c0409e260f9f4e",
+  "archive_sha256": "5240aa77240957bfb6ad66a783eeb6c8b05552ec8794f015f4fda71e79f92f4f",
+  "initial_plan_sha256": "5792e048686e17e9f75249f278086a8d184f6cf552dbfbac9e75689267224a9a",
+  "initial_archive_sha256": "cfe78bf1f31134b0aa43b23c188be19472ad4e2d5ae70ea42aacdcadc9778132",
+  "source_sha256": {
+    "src/fvwm/action_palette.c": "a2fab44ef868f43a9009220b994fdcfd41391202088665a74c2eff06fe922f41",
+    "src/fvwm/add_window.c": "3937a0785e6c0aacad565cdefe1fb7ca38e751c8fa4e663f62f0c0771aadf9dd",
+    "src/fvwm/frame.c": "9bfaa314ba892aee5ef2cd1e1e7a0dfa49002c81fb4858c95a8503d66b86826d",
+    "src/fvwm/frame.h": "65298297a066a831309a9de48b351a23420a45e5e38fd89382fb97007695c660",
+    "src/fvwm/fvwm.h": "073a4b29d4a546a096e75e78b44a0dc9631d7ed6d43904257aaf3ef7b4d0045d",
+    "src/fvwm/geometry.h": "44ee3fdd475b40dad12c90ad6abd8a2424ce6513c5186eda1393805ac39439f6",
+    "src/fvwm/icons.c": "0fdf9cd61aaf1d35f5b3637be5ce5efeec6316fffc47a795f5afdb71a1294759",
+    "src/fvwm/move_resize.c": "c4a3c218197eb1bec34a981ff906206e5b918085b9c516c67c68a507db4c2c0a",
+    "src/fvwm/palette_policy.h": "05587ed401ad1da1cce3d30f1143d003742c90b53932160a2405ccb683b7deb4",
+    "src/fvwm/placement.c": "2f499ff45efc5921e64a17d8473b1223c3e736cb518ce521a71ca63eb69f5c74",
+    "src/fvwm/update.c": "1ad27757b3092498d6aa0000a3c5ee0197932aec479d75280f52033fd29825d6",
+    "src/fvwm/virtual.c": "a4226b09b7d6655b8eaf835a6672c23315d1094db2674bd2aa48ed680761a3a3",
+    "src/fvwm/workspace_docking_policy.c": "69f31595cbc56d591db6e31017d3dd30afdd8a4096f522fff36cf38574cb2469",
+    "src/fvwm/workspace_docking_policy.h": "a63cc2579a691eda623294c2fc155c26f15ab521bbbba740ded1e0ee283c96b7",
+    "src/fvwm/workspace_layout_policy.c": "4891e29ad63bf1a982e950d350cbb6f194a1ec3237460f43b6ac4091c352a7c4",
+    "src/fvwm/workspace_layout_policy.h": "0db8686c625a28e044a012bfebda1566774d2e46ab094132bce0379ae72073ed",
+    "src/tests/meson.build": "83a971134953738978c6702d867b401f158374b283aabe8bc40c2c94fd65bf56",
+    "src/tests/test_action_palette.c": "02fadeca7d59e9de38769cd05ad52e25c809388fdb2fe707c82ba6046c94d58d",
+    "src/tests/test_workspace_docking_policy.c": "9dbcc85d3cc6f61ef263dd34a82d5806519a0c165052362f2f238f5b56e5b799",
+    "src/tests/test_workspace_layout_policy.c": "e4d409690531cb7493d970076ab54882d5a285891378804658ba4f4b454c071b"
+  },
+  "core_sha256": "4803fdf4c32340570bc9760ef1f5546728416ecd30fd11f3f4235abf4a994879",
+  "checks": [
+    {
+      "label": "affected-placement-build",
+      "exit": 0
+    },
+    {
+      "label": "test-workspace-layout-policy",
+      "exit": 0
+    },
+    {
+      "label": "test-workspace-docking-policy",
+      "exit": 0
+    },
+    {
+      "label": "overview-unit-incremental-build",
+      "exit": 0
+    },
+    {
+      "label": "test-action-palette",
+      "exit": 0
+    },
+    {
+      "label": "test-palette-policy",
+      "exit": 0
+    },
+    {
+      "label": "test-workspace-tools",
+      "exit": 0
+    }
+  ],
+  "shutdown": {
+    "status": "dispatch and holder passed",
+    "holder_exit": 0,
+    "dispatch_exit": 0
+  }
+}

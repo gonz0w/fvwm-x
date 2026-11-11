@@ -6987,6 +6987,29 @@ specified is used.
 	sets attributes (styles) on the selected window. The _options_ are
 	exactly the same as for the *Style* command.
 
+*WorkspaceLayout* _columns_ | _master-stack_ | _floating_::
+	Apply a layout on the pointer monitor's current workspace and page.
+	Columns divide its work area into equal vertical cells. Master-stack
+	gives the first window the left half and stacks the others on the right.
+	The window manager honors move and resize rules and client size hints.
+	Windows that cannot fit their cells keep their current geometry.
+	Floating releases the layout and restores placements still owned by it.
+	Newer moves or resizes take precedence. The layout is explicit and
+	applies to at most 64 eligible windows. Up to eight monitor, workspace
+	and page combinations retain restoration state until topology changes
+	or FVWM restarts.
+
+*WorkspaceDock* _Capture NAME CONNECTOR_ | _Restore NAME_::
+	Capture eligible windows from the pointer monitor's current workspace
+	and page as a named session profile targeting an exact RandR connector
+	name. Restore places still-owned windows on the target monitor's current
+	workspace, using offsets from the work area and keeping client pixel
+	dimensions. If the connector is absent, restore uses the unique primary
+	monitor. An ambiguous connector refuses restore. Explicit recapture
+	replaces an existing profile. Up to eight names of at most 32 ASCII
+	letters, digits, underscores or hyphens are available until FVWM restarts.
+	Each profile covers at most 64 windows.
+
 === Window Styles
 
 *AddButtonStyle* button [_state_] [_style_] [-- +++[!]+++_flag_ ...]::

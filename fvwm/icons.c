@@ -1704,6 +1704,8 @@ void AutoPlaceIcon(
    * visible on the current page. */
   if (IS_ICON_STICKY_ACROSS_DESKS(t) || IS_STICKY_ACROSS_DESKS(t))
   {
+    if (t->Desk != t->m->virtual_scr.CurrentDesk)
+      placement_revision_advance(t);
     t->Desk = t->m->virtual_scr.CurrentDesk;
   }
   if (IS_ICON_STICKY_ACROSS_PAGES(t) || IS_STICKY_ACROSS_PAGES(t))
@@ -2869,6 +2871,8 @@ void Iconify(FvwmWindow *fw, initial_window_options_t *win_opts)
 	}
 	if (IS_ICON_STICKY_ACROSS_DESKS(fw) || IS_STICKY_ACROSS_DESKS(fw))
 	{
+		if (fw->Desk != fw->m->virtual_scr.CurrentDesk)
+			placement_revision_advance(fw);
 		fw->Desk = fw->m->virtual_scr.CurrentDesk;
 	}
 	if (fw->Desk == fw->m->virtual_scr.CurrentDesk)

@@ -184,6 +184,101 @@ qualification as applicable. The next placement feature batch can combine
 #220 layout and #222 docking work around committed topology and placement
 ownership, then cover the shared monitor cases in one checkpoint.
 
+PR377 merged as f809dadc926cddce26d96e86d28dfb9155219162. The verified
+squash tree matches the reviewed candidate. Retain all 16 Slate passes.
+
+Start the #220/#222 layout and docking batch on codex/r1-layout-docking.
+The source audit found a missing placement ownership guard shared by both
+consumers. Implement that core boundary first, then explicit per-desktop
+layout and scoped docking profile restore. Fold #221/#223 mixed-monitor
+cases into one owned Xorg dummy session once both consumers are available.
+The batch record names the authoritative paths, preservation rules and
+shared native checks.
+[Layout and docking batch](decisions/WORKSPACE-LAYOUT-DOCKING-2026-11-11.md).
+
+Layout/docking foundation in progress. Record per-allocation placement
+revisions at frame and workspace changes, including recapture, and distinguish
+viewport translation. Guard overview move and drag admission with the captured
+revision. Add the columns/master-stack planner and exact docking connector
+resolver. Build the affected core once and run the five shared policy/core
+units together on the retained Linux profile. Reuse the earlier UI evidence
+and reserve the mixed-monitor run for the layout and docking consumers.
+The initial core build and both new policy tests passed. The overview test
+overwrote its prepared row while checking admission refusal. Check the
+prepared row before admission reuses its output buffer. One focused test
+repair reuses the core and policy results and completes the remaining units.
+
+
+Layout/docking foundation result. The affected core and all five policy/core
+units passed on the retained Linux profile. The two policy units cover both
+features. The overview tests check stale placement admission and dispatch.
+Keep the foundation in the feature branch while wiring layout and docking
+consumers. The combined mixed-monitor run remains queued with #221/#223.
+[Foundation evidence](verification/VERIFICATION-2026-11-11-PLACEMENT-FOUNDATION.md).
+
+Layout/docking command checkpoint. Wire explicit WorkspaceLayout columns,
+master-stack and floating, and named same-session WorkspaceDock Capture and
+Restore, through a shared guarded placement path. Preserve newer geometry,
+honor constrained sizes and retain client pixels during dock moves. The
+profile persistence, cross-restart matching and panel/settings fields remain
+open. Reuse the foundation build and prior policy and theme evidence.
+Run one affected core build, its changed workspace unit, command metadata
+unit and a single Xorg dummy mixed-monitor scene for #220/#221/#222/#223.
+Capture the shared scene. Budget one run and one diagnosed correction in
+twelve minutes of owned lab time.
+The first run stopped in the affected build because the new command sources
+need execution-context declarations before the command table header. Retry
+only this checkpoint with the corrected include order and the existing build.
+The affected Linux ARM64 build, workspace core unit and Go metadata unit
+passed with 34 prior commands reused. The mixed Slate scene reached the
+two-output topology at scales 1× and 2× and confirmed the primary strut.
+The columns assertion then timed out before any completed cases or captures.
+Retain the passing build and units for a fixture-only diagnostic run. The
+fixture now saves both geometry samples and attempts an early failure
+capture. All four issue qualifications remain open.
+[Mixed checkpoint evidence](verification/VERIFICATION-2026-11-11-WORKSPACE-MIXED.md).
+The columns timeout was traced to the new guard treating the legacy
+rectangle comparator's zero result for identical coordinates as false.
+With the owner's request to continue, compare the four fields directly
+and run the affected core build and the shared Xorg scene. Reuse the
+passing workspace core and Go metadata units. Lead owns execution in the
+same Linux ARM64 guest. Allow one run and one diagnosed correction within
+twelve minutes of owned lab time. Capture columns and the overview after
+replug. Persistent profiles, restart matching and full release gates
+remain separate. The resumed scene observed two valid columns and a
+hinted window left in its original geometry. Its nearest-grid width
+rounded one pixel above the cell. Retry the constrained size once below
+the rounding midpoint and keep the final cell bounds guard. Rebuild
+only the core and rerun the same scene as the diagnosed correction.
+That run passed the first five cases and captured columns. The unplug
+oracle incorrectly required cached workspace rows and the committed
+active topology to contain the same names. After preserving that result,
+run one fixture-only checkpoint against the exact passing core build.
+Select active workspace rows by the committed topology and keep the
+independent overview assertions. Reuse all passing builds and units.
+Stop after this owned Xorg scene and record any remaining failure.
+The fixture-only run passed six of nine cases. Overview refresh
+after unplug passed, and dock fallback reported three placements.
+The pixel assertion used sizes from before a preceding ordinary
+cross-scale move. The fixture now records immediate pre-restore and
+post-restore geometry. Keep the passing binary and columns screenshot.
+Fallback, scratchpad summon and replug assertions await the next run.
+Owner cadence update. Complete the accepted feature batch before running
+the shared acceptance checks. Capture the finished feature after the
+assertions pass, with intermediate captures limited to debugging.
+For this batch the remaining question is fallback pixel preservation,
+scratchpad summon and replug restore. Run the existing combined scene
+once in the owned Linux ARM64 guest, reuse the exact core and passing
+checks, and allow one diagnosed correction. Lead owns review and PR
+preparation. Full platform qualification remains at the release gate.
+Final combined scene passed all nine cases using the same core binary.
+Retain the final post-replug capture and integrate the command slice
+as one PR after review. Remaining issue-level acceptance stays tracked.
+
+
+
+
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

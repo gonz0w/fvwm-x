@@ -5,6 +5,8 @@
 #include "libs/cJSON.h"
 
 struct fmodule;
+struct FvwmWindow;
+bool workspace_window_is_application(const struct FvwmWindow *fw);
 struct scratchpad_plan {
 	uintptr_t owner;
 	char name[33], serial[17];

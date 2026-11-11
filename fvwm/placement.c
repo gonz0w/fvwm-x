@@ -2533,6 +2533,7 @@ void CMD_PlaceAgain(F_CMD_ARGS)
 	{
 		window_style style;
 		initial_window_options_t win_opts;
+		struct monitor *old_monitor = fw->m;
 		position start = { -1, -1 };
 		position end;
 
@@ -2544,6 +2545,8 @@ void CMD_PlaceAgain(F_CMD_ARGS)
 		attr_g.height = attr.height;
 		setup_window_placement(
 			exc->w.fw, &style, &attr_g, &win_opts, PLACE_AGAIN);
+		if (fw->m != old_monitor)
+			placement_revision_advance(fw);
 		end.x = attr_g.x;
 		end.y = attr_g.y;
 		AnimatedMoveFvwmWindow(

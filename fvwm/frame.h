@@ -65,6 +65,8 @@ void frame_move_resize(
 void frame_setup_window(
 	FvwmWindow *fw, int x, int y, int w, int h,
 	Bool do_send_configure_notify);
+/* Move the frame with its viewport without changing virtual placement. */
+void frame_translate_viewport(FvwmWindow *fw, int x, int y);
 void frame_setup_window_app_request(
 	FvwmWindow *fw, int x, int y, int w, int h,
 	Bool do_send_configure_notify);

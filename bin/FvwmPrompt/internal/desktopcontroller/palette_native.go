@@ -86,7 +86,7 @@ func (d *Controller) paletteForm() {
 	lines := []string{`Title "Action palette"`, "Colorset 0", "ItemColorset 12", "CloseCommand SendToModule FvwmDesktop palette-control " + p.token + " close", "Line left", `Text "Find windows, applications, desktops and registered actions"`, "Line left", `Text "Query"`, `InputHex palette_query 32 x`, `Button continue "Filter (F3)" F3`, callback + "filter x$(palette_query:Base64) x$(picks:Base64)", "Line left", `Label windows 64 "Windows: pending"`, "Line left", `Label desktops 64 "Desktops: pending"`, "Line left", `Label applications 64 "Applications: pending"`, "Line left", `Label actions 64 "Actions: pending"`, "Line left", "List picks 64 8", "ListViewport 18 1", "ListVersioned", "ListNotify " + p.native.wait, "Line left", `Button continue "Activate (Enter)" ^M`, callback + "activate x$(palette_query:Base64) x$(picks:Base64)", `Button continue "Refresh (F5)" F5`, callback + "refresh x$(palette_query:Base64) x$(picks:Base64)", `Button continue "Close (Esc)" ^[`, callback + "close", "Line left", `Text "Tab: query/list. Arrows: focus. Space: select. Esc: close."`, `Timeout 3000 "SendToModule FvwmDesktop palette-control ` + p.token + ` close" ""`}
 	if p.overview {
 		lines[0] = `Title "Window and workspace overview"`
-		lines[5] = `Text "Search windows and workspaces; Enter switches/focuses the current selection"`
+		lines[5] = `Text "Search windows and workspaces. Enter activates the selection."`
 		filtered := []string{}
 		for _, line := range lines {
 			if line == "ListViewport 18 1" {
@@ -96,12 +96,12 @@ func (d *Controller) paletteForm() {
 				filtered = append(filtered, line)
 			}
 		}
-		lines = append(filtered, "Line left", `Label marked 64 "Marked: no window"`,
+		lines = append(filtered, "Line left", `Label marked 64 "Marked: no window"`, "Line left",
 			`Button continue "Mark window (F6)" F6`, callback+"mark x$(palette_query:Base64) x$(picks:Base64)",
 			`Button continue "Pointer Move (F7)" F7`, callback+"drag x$(palette_query:Base64) x$(picks:Base64)",
 			"Line left", `Text "Destination page X,Y (zero based)"`, `InputHex overview_page_x 5 x30`, `InputHex overview_page_y 5 x30`,
 			`Button continue "Move marked to workspace/page (F8)" F8`, callback+"move x$(palette_query:Base64) x$(picks:Base64) x$(overview_page_x:Base64) x$(overview_page_y:Base64)",
-			"Line left", `Text "Mark a window, select a workspace, then move. Pointer Move uses the native engine."`)
+			"Line left", `Text "Mark a window, then select its destination workspace."`)
 	}
 	if d.lastDesktop != nil {
 		lines = append(desktopFormMetrics(*d.lastDesktop), lines...)

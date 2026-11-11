@@ -153,6 +153,19 @@ confirms all controls fit in enlarged Classic. #221/#223 remain open for real te
 live transient, identity reuse and mixed topology/scale qualification as
 applicable. [UI evidence and captures](verification/VERIFICATION-2026-11-09-WORKSPACE-UI.md).
 
+Z1 layout repair, 2026-11-11. Move the overview actions below the marked
+label and shorten the help rows. Keep the existing commands and key bindings.
+Rebuild Desktop incrementally, run the overview unit cases and the enlarged
+Classic scene with a decorated-frame bounds assertion and screenshot. Reuse
+the other theme, core, sanitizer and manual evidence. One focused run and one
+diagnosed correction within ten minutes of owned lab time.
+
+Z1 layout repair result. Incremental Desktop, overview units and all eight
+enlarged Classic cases pass. The decorated frame fits within 1440 × 1200,
+and visual inspection confirms the title bar and every overview control fit.
+PR374 is ready for review. The broader #221/#223 qualification maps stay open.
+[Focused result and fresh screenshot](verification/VERIFICATION-2026-11-11-WORKSPACE-LAYOUT.md).
+
 Y2 current result — PR373 expanded #214/#215 checkpoint passes, 2026-11-07.
 Four component-setting stories plus shared invalid-image fallback for three
 consumers are implemented. Five affected Go packages, normal/disabled helper

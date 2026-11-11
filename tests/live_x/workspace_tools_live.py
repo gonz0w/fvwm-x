@@ -392,6 +392,23 @@ def scene(**s):
         marked = wait('actual F6 marks current window', lambda: (v if (v := probe.diagnostic())['open']
             and v['view'].get('marked') else None))
         assert marked['view']['marked']['id'], marked
+        frame = view.named(OVERVIEW)
+        assert frame
+        for _ in range(8):
+            parent = client.parent(frame)
+            if parent == client.root:
+                break
+            frame = parent
+        else:
+            raise AssertionError('overview frame is not a root child')
+        attrs = view.attributes(frame)
+        root = view.attributes(client.root)
+        bounds = dict(x=attrs.x, y=attrs.y, width=attrs.width,
+                      height=attrs.height, border=attrs.border_width,
+                      screen_width=root.width, screen_height=root.height)
+        evidence['overview_frame_bounds'] = bounds
+        assert 0 <= attrs.x and attrs.x + attrs.width + 2*attrs.border_width <= root.width, bounds
+        assert 0 <= attrs.y and attrs.y + attrs.height + 2*attrs.border_width <= root.height, bounds
         s['capture']('workspace-overview-marked.png')
         filtered = filter_query('palette desk five', from_list=True)
         select_single()

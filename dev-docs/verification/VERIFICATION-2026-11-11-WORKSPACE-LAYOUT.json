@@ -1,0 +1,59 @@
+{
+  "plan_sha256": "e3af9b276e4fd7ce47eaecafa7bb5df999939dcdbb567f43a0226a53ceaa0651",
+  "archive_sha256": "f7e1950a4d8161c67fef7fb3b2cf8355333b789a2f0acb69f3c352c6b2610152",
+  "bounds": {
+    "x": 99,
+    "y": 247,
+    "width": 1249,
+    "height": 742,
+    "border": 0,
+    "screen_width": 1440,
+    "screen_height": 1200
+  },
+  "cases": {
+    "literal_terminal_single_launch_and_rapid_toggle_coalescing": true,
+    "summon_center_preserves_size_and_dismiss_restores_focus": true,
+    "literal_application_launch": true,
+    "keyboard_search_and_window_activation": true,
+    "overview_escape_focus_return": true,
+    "keyboard_search_mark_move_to_workspace_page": true,
+    "native_pointer_move_with_observed_geometry": true,
+    "paged_scratchpad_manager_keyboard_and_close": true
+  },
+  "source_sha256": {
+    "tests/live_x/action_palette_live.py": "8b20fc5b116618e07d8b477cf3b4adcf37112df31a206baba72eb0b765bf7532",
+    "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "355d435c347d012fb867d51d5a6ed78f3cc230943a826c8d65adda00e288e6a2",
+    "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+    "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+    "tests/live_x/workspace_tools_live.py": "02d1af116cf0fff913985e2f42eb302037c7d7a71b7ccfa9ec9c471dce13fb5e"
+  },
+  "binary_sha256": {
+    "fvwm3": "0e549d7254705ab3af9aa734ee7bb914cf0ff47b85bc1b97485d7507154efb49",
+    "bin/FvwmPrompt/FvwmDesktop": "4b9de56167b77b413c28d3a03e5a5d0cf079504d766abc3d250756f15d075128"
+  },
+  "screenshot": {
+    "path": "doc/screenshots/workspace-overview-compact-classic-large.png",
+    "sha256": "1896701646f67aaa0821f03ad8dfaf394859f3df1ab13327a730765230d6923c"
+  },
+  "checks": [
+    {
+      "label": "incremental-desktop",
+      "exit": 0
+    },
+    {
+      "label": "overview-tests",
+      "exit": 0
+    },
+    {
+      "label": "native-workspace-tools",
+      "exit": 0
+    }
+  ],
+  "shutdown": {
+    "status": "dispatch and holder passed",
+    "holder_exit": 0,
+    "dispatch_exit": 0
+  }
+}

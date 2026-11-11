@@ -1,0 +1,319 @@
+{
+  "merged_base": "d74b839072c2ab7e2901f354edb38c4345adc1cb",
+  "plan_sha256": "32015825a967e7cb511edf4153d3c9059d0f373d5c62cf548de2f2923bec72bd",
+  "archive_sha256": "d1ec31dbc80b4207d9c4f19495cf9b8f9bda11d5b36bb401e5fd96bb43c958b4",
+  "cases": {
+    "literal_terminal_single_launch_and_rapid_toggle_coalescing": true,
+    "summon_center_preserves_size_and_dismiss_restores_focus": true,
+    "literal_application_launch": true,
+    "keyboard_search_and_window_activation": true,
+    "overview_escape_focus_return": true,
+    "keyboard_search_mark_move_to_workspace_page": true,
+    "overview_keyboard_workspace_activation": true,
+    "native_pointer_move_with_observed_geometry": true,
+    "paged_scratchpad_manager_keyboard_and_close": true,
+    "live_transient_refusal_preserves_window_and_does_not_launch": true,
+    "sticky_refusal_preserves_flags_and_does_not_launch": true,
+    "fullscreen_refusal_preserves_flags_and_does_not_launch": true,
+    "definite_missing_executable_acknowledged": true,
+    "helper_restart_and_forked_delayed_launch_no_duplicate": true,
+    "destroyed_allocation_refuses_stale_action": true,
+    "full_wm_restart_uncertain_unmatched_and_claimable_existing": true
+  },
+  "source_sha256": {
+    "tests/live_x/action_palette_live.py": "8b20fc5b116618e07d8b477cf3b4adcf37112df31a206baba72eb0b765bf7532",
+    "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+    "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "355d435c347d012fb867d51d5a6ed78f3cc230943a826c8d65adda00e288e6a2",
+    "fvwm/module_interface.c": "be86bc67b0759166b3c1e11807aece6115ed0deab4446ef7400ee777128912e6",
+    "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+    "tests/live_x/workspace_tools_live.py": "02ccc45ebaaeeb2b11068718e7749f159ed4d4f6abcab1e9cf32f79861ccd639"
+  },
+  "binary_sha256": {
+    "fvwm3": "0e549d7254705ab3af9aa734ee7bb914cf0ff47b85bc1b97485d7507154efb49",
+    "bin/FvwmPrompt/FvwmDesktop": "4b9de56167b77b413c28d3a03e5a5d0cf079504d766abc3d250756f15d075128"
+  },
+  "overview_move": {
+    "selected": {
+      "binding": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 5,
+        "started": 4,
+        "published": 4,
+        "rejected": 0
+      },
+      "counts": [
+        6,
+        6,
+        0,
+        0
+      ],
+      "native_ready": true,
+      "open": true,
+      "states": [
+        "observed",
+        "observed",
+        "unavailable",
+        "unavailable"
+      ],
+      "visible": 1,
+      "view": {
+        "generation": 4,
+        "marked": null,
+        "mode": "overview",
+        "query": "workspace application",
+        "token": "c61d63048b612881656e95a1cc0c67f7",
+        "total": 12
+      }
+    },
+    "marked": {
+      "binding": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 5,
+        "started": 4,
+        "published": 4,
+        "rejected": 0
+      },
+      "counts": [
+        6,
+        6,
+        0,
+        0
+      ],
+      "native_ready": true,
+      "open": true,
+      "states": [
+        "observed",
+        "observed",
+        "unavailable",
+        "unavailable"
+      ],
+      "visible": 1,
+      "view": {
+        "generation": 4,
+        "marked": {
+          "generation": "00000000000000082278ee630000000a0000000000000012",
+          "id": "00000000000000082278ee630000000a-w-0000000000000007",
+          "index": 1
+        },
+        "mode": "overview",
+        "query": "workspace application",
+        "token": "c61d63048b612881656e95a1cc0c67f7",
+        "total": 12
+      }
+    },
+    "destination": {
+      "binding": {
+        "state": "current",
+        "sources": 1,
+        "identity_bytes": 40,
+        "in_flight": false,
+        "pending": false,
+        "invalidations": 5,
+        "started": 4,
+        "published": 4,
+        "rejected": 0
+      },
+      "counts": [
+        6,
+        6,
+        0,
+        0
+      ],
+      "native_ready": true,
+      "open": true,
+      "states": [
+        "observed",
+        "observed",
+        "unavailable",
+        "unavailable"
+      ],
+      "visible": 1,
+      "view": {
+        "generation": 5,
+        "marked": {
+          "generation": "00000000000000082278ee630000000a0000000000000012",
+          "id": "00000000000000082278ee630000000a-w-0000000000000007",
+          "index": 1
+        },
+        "mode": "overview",
+        "query": "palette desk five",
+        "token": "c61d63048b612881656e95a1cc0c67f7",
+        "total": 12
+      }
+    },
+    "observed": {
+      "id": "00000000000000082278ee630000000a-w-0000000000000007",
+      "index": 1,
+      "kind": "window",
+      "label": "Workspace application",
+      "detail": "Window; desktop 5; screen",
+      "icon": "file",
+      "enabled": true,
+      "desk": 5,
+      "monitor_output": "60",
+      "monitor_role": "231",
+      "page_x": 1,
+      "page_y": 0,
+      "x": 1966,
+      "y": 510,
+      "width": 388,
+      "height": 216,
+      "page_max_x": 0,
+      "page_max_y": 0,
+      "sticky_desks": false,
+      "sticky_pages": false,
+      "iconified": false,
+      "fullscreen": false,
+      "focused": false
+    },
+    "commands": [
+      "Send_Palette 4e57f5930239637eb4a97a2d51bb7169 0000000000000005 00000000000000082278ee630000000a0000000000000012 1 move 11 1 0"
+    ]
+  },
+  "workspace_activation": {
+    "result": {
+      "state": "observed",
+      "scope": "core-monitors",
+      "monitors": [
+        {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 1440,
+            "height": 1200
+          },
+          "pages": {
+            "width": 2,
+            "height": 1
+          },
+          "name": "screen",
+          "desk": 5,
+          "scale_quarters": 4,
+          "work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1440,
+            "height": 1164
+          },
+          "dynamic_work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1440,
+            "height": 1164
+          }
+        }
+      ],
+      "units": "actual-pixels",
+      "desktop_mode": "global",
+      "work_area_freshness": "cached"
+    }
+  },
+  "transient_refusal": {
+    "reply": {
+      "time": 14.823896185,
+      "cookie": "9dea9aad82c00771122f468c0bdc02e8",
+      "serial": "00000000000000c9",
+      "version": 1,
+      "name": "app",
+      "state": "unsupported",
+      "desired_visible": false,
+      "action": "none",
+      "reason": "unsupported",
+      "lease": null,
+      "target": "00000000000000082278ee630000000a-w-0000000000000007"
+    },
+    "before": {
+      "id": "00000000000000082278ee630000000a-w-0000000000000007",
+      "index": 0,
+      "kind": "window",
+      "label": "Workspace application",
+      "detail": "Window; desktop 0; screen",
+      "icon": "file",
+      "enabled": true,
+      "desk": 0,
+      "monitor_output": "60",
+      "monitor_role": "231",
+      "page_x": 0,
+      "page_y": 0,
+      "x": 526,
+      "y": 510,
+      "width": 388,
+      "height": 216,
+      "page_max_x": 0,
+      "page_max_y": 0,
+      "sticky_desks": false,
+      "sticky_pages": false,
+      "iconified": false,
+      "fullscreen": false,
+      "focused": true
+    },
+    "after": {
+      "id": "00000000000000082278ee630000000a-w-0000000000000007",
+      "index": 0,
+      "kind": "window",
+      "label": "Workspace application",
+      "detail": "Window; desktop 0; screen",
+      "icon": "file",
+      "enabled": true,
+      "desk": 0,
+      "monitor_output": "60",
+      "monitor_role": "231",
+      "page_x": 0,
+      "page_y": 0,
+      "x": 526,
+      "y": 510,
+      "width": 388,
+      "height": 216,
+      "page_max_x": 0,
+      "page_max_y": 0,
+      "sticky_desks": false,
+      "sticky_pages": false,
+      "iconified": false,
+      "fullscreen": false,
+      "focused": true
+    }
+  },
+  "terminal_provider": "strict-size-hints fixture",
+  "retained_passes": [
+    "affected-incremental-build",
+    "test-workspace-tools-policy",
+    "test-workspace-tools",
+    "test-palette-policy",
+    "test-action-palette",
+    "affected-go-incremental-build",
+    "desktop-controller-tests",
+    "coordinator-race",
+    "sanitizer-recipe-test-workspace-tools-policy",
+    "sanitize-test-workspace-tools-policy-0",
+    "sanitize-test-workspace-tools-policy-1",
+    "sanitize-test-workspace-tools-policy-2",
+    "sanitize-link-test-workspace-tools-policy",
+    "sanitize-run-test-workspace-tools-policy",
+    "sanitizer-recipe-test-workspace-tools",
+    "sanitize-test-workspace-tools-0",
+    "sanitize-test-workspace-tools-1",
+    "sanitize-test-workspace-tools-2",
+    "sanitize-test-workspace-tools-3",
+    "sanitize-link-test-workspace-tools",
+    "sanitize-run-test-workspace-tools",
+    "render-FvwmDesktop",
+    "native-workspace-tools",
+    "incremental-desktop",
+    "overview-tests",
+    "native-workspace-tools"
+  ],
+  "shutdown": {
+    "status": "dispatch and holder passed",
+    "holder_exit": 0,
+    "dispatch_exit": 0
+  }
+}

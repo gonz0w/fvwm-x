@@ -56,6 +56,7 @@ type Controller struct {
 	session                                  sessionControl
 	palette                                  *paletteView
 	scratchpads                              scratchpadService
+	docking                                  dockingControl
 	inspection                               *inspection
 	inspectionJob                            *inspectionWork
 	inspectionFocusConfigured                bool

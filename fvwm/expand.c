@@ -513,6 +513,40 @@ static signed int expand_vars_extended(
 			goto GOT_STRING;
 		}
 
+		if (strcmp(rest, "panel") == 0 ||
+		    strcmp(rest, "panel_width") == 0)
+		{
+			const char *target = get_metainfo_value(WORKSPACE_PANEL_TARGET);
+			struct monitor *primary = monitor_by_primary();
+			struct monitor *selected = primary;
+			struct monitor *candidate;
+
+			if (workspace_panel_target_valid(target))
+			{
+				RB_FOREACH(candidate, monitors, &monitor_q)
+				{
+					if (candidate->si &&
+					    !(candidate->flags & MONITOR_DISABLED) &&
+					    strcmp(candidate->si->name, target) == 0)
+					{
+						selected = candidate;
+						break;
+					}
+				}
+			}
+			if (!selected)
+				return -1;
+			if (strcmp(rest, "panel") == 0)
+			{
+				string = selected == primary ? "p" : selected->si->name;
+				should_quote = False;
+				goto GOT_STRING;
+			}
+			is_numeric = True;
+			val = selected->si->w;
+			goto GOT_STRING;
+		}
+
 		if (strcmp(rest, "primary") == 0) {
 			struct monitor *m2 = monitor_by_primary();
 

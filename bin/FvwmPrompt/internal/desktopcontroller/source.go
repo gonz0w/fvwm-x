@@ -10,6 +10,7 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/fvwmorg/FvwmPrompt/internal/configsource"
@@ -128,6 +129,13 @@ func (d *Controller) configureMessage(text string, source *configSource, mode co
 			err = d.configureScratchpad(value)
 		} else {
 			_, err = parseScratchpad(value)
+		}
+	} else if key == "dockpaneladapter" {
+		if value != "v1" || source == nil || source.kind != "file" ||
+			filepath.Clean(source.site.path) != filepath.Join(d.root, "desktop.fvwm") {
+			err = errors.New("Docking panel adapter requires the desktop configuration source")
+		} else if mode == applyConfiguration {
+			d.docking.panelAdapter = true
 		}
 	} else if key == "terminal" {
 		if mode == applyConfiguration {

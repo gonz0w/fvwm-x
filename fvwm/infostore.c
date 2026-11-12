@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include <stdio.h>
+#include <string.h>
 #include "fvwm.h"
 #include "externs.h"
 #include "libs/log.h"
@@ -46,6 +47,29 @@ static void delete_metainfo(const char *);
 /* ---------------------------- exported variables (globals) --------------- */
 
 struct meta_infos meta_info_q;
+static uint64_t panel_revision;
+
+uint64_t workspace_panel_revision(void)
+{
+	return panel_revision;
+}
+
+bool workspace_panel_target_valid(const char *name)
+{
+	static const char allowed[] =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+
+	return name && *name && strspn(name, allowed) == strlen(name) &&
+		strspn(name, "0123456789") != strlen(name) &&
+		strcmp(name, "p") != 0 && strcmp(name, "c") != 0 &&
+		strcmp(name, "g") != 0;
+}
+
+static void panel_target_changed(const char *key)
+{
+	if (StrEquals(key, WORKSPACE_PANEL_TARGET) && panel_revision != UINT64_MAX)
+		panel_revision++;
+}
 
 /* ---------------------------- local functions ---------------------------- */
 
@@ -56,6 +80,7 @@ void insert_metainfo(char *key, char *value)
 
 	if (TAILQ_EMPTY(&meta_info_q))
 		TAILQ_INIT(&meta_info_q);
+	panel_target_changed(key);
 
 	TAILQ_FOREACH(mi, &meta_info_q, entry)
 	{
@@ -89,6 +114,7 @@ static void delete_metainfo(const char *key)
 	{
 		if (StrEquals(mi->key, key)) {
 			TAILQ_REMOVE(&meta_info_q, mi, entry);
+			panel_target_changed(mi->key);
 
 			free(mi->key);
 			free(mi->value);
@@ -179,6 +205,7 @@ void CMD_InfoStoreClear(F_CMD_ARGS)
 	TAILQ_FOREACH_SAFE(mi, &meta_info_q, entry, mi2)
 	{
 		TAILQ_REMOVE(&meta_info_q, mi, entry);
+		panel_target_changed(mi->key);
 		free(mi->key);
 		free(mi->value);
 		free(mi);

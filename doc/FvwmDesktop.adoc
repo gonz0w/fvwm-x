@@ -1424,3 +1424,30 @@ capture window thumbnails. It shares the Action palette's bounded
 collection and snapshot lifecycle. Window and workspace changes can make a
 displayed target stale; in that case refresh the view and select it again.
 Closing the overview releases its view without stopping scratchpad monitoring.
+
+== DOCKING PROFILES
+
+Open *Docking profiles* from the System menu, or run
+`SendToModule FvwmDesktop dock`. Open a profile by name, then enter the
+exact RandR connector. Enter a workspace number for an existing desk on
+a per-monitor desktop, or enter `-` to keep the target monitor's current
+workspace. The shipped desktop configuration supports moving its panel
+to the target monitor. The panel uses the primary monitor while its
+assigned monitor is absent.
+
+Add a window by its exact WM_CLASS instance and class and its pixel
+offsets from the target work area's upper-left corner. Choose *Add window*
+for each selector, then *Save*. The profile stores explicit selectors
+and offsets, so it remains usable after FVWM or the X session restarts.
+A missing window is skipped. Multiple windows with the same selector
+make the plan ambiguous.
+
+Choose *Preview* to check the destination, fallback and matching windows.
+Choose *Apply* to consume that preview. Preview again if the topology,
+destination workspace, panel assignment or profile changes. Apply skips
+window allocations that disappeared or moved after preview. Docking keeps
+client pixel dimensions and places frames within the reachable work area
+where their size permits. Restoring a profile does not start programs.
+
+The desktop controller stores profiles as private data files under
+`docking-profiles` in the FVWM user directory.

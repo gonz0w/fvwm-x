@@ -1773,6 +1773,11 @@ monitor which has the mouse pointer.
 +
 "prev" returns the previously focused monitor, or the empty string if there
 isn't one.
+
+$[monitor.panel], $[monitor.panel_width]::
+	Monitor selector and width in pixels used by the
+	shipped desktop panel. The active explicit panel assignment takes
+	precedence over the primary monitor.
 +
 "count" returns the number of active monitors.
 +
@@ -7009,6 +7014,8 @@ specified is used.
 	replaces an existing profile. Up to eight names of at most 32 ASCII
 	letters, digits, underscores or hyphens are available until FVWM restarts.
 	Each profile covers at most 64 windows.
+	For durable profiles and optional desktop panel assignment, see
+	*FvwmDesktop*(1).
 
 === Window Styles
 

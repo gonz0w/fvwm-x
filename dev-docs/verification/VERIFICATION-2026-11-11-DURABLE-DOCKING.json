@@ -1,0 +1,916 @@
+{
+  "issue": 222,
+  "platform": "Linux ARM64, Xorg dummy, Slate dark",
+  "baseline": "fc773f3340040029a45e231cb107e7051c981aee",
+  "first": {
+    "plan_sha256": "6ac527fa23ddef4fae5b0ec6a85bd570c10ef743e546d26f9bc2aa72e681c9b4",
+    "scene_sha256": "0ae37ddf47fc16743bb3d25b18ed91377c42a6563d4714934b54f50a14496c57",
+    "checks": [
+      {
+        "label": "affected-docking-build",
+        "exit": 0
+      },
+      {
+        "label": "docking-policy-unit",
+        "exit": 0
+      },
+      {
+        "label": "docking-module-runtime-unit",
+        "exit": 0
+      },
+      {
+        "label": "docking-controller-unit",
+        "exit": 0
+      },
+      {
+        "label": "native-durable-docking",
+        "exit": 1
+      }
+    ],
+    "reused_checks": 38,
+    "cases": {
+      "desktop_saves_private_data_only_profile": true,
+      "preview_is_read_only": true,
+      "newer_workspace_refuses_plan": true,
+      "newer_panel_assignment_refuses_plan": true,
+      "newer_desktop_settings_refuse_plan": true,
+      "newer_window_move_is_preserved": true,
+      "apply_restores_workspace_panel_and_client_placement": true
+    },
+    "failures": [
+      {
+        "type": "HarnessError",
+        "message": "deadline expired while waiting for committed unplugged_topology",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/action_palette_live.py\", line 550, in run\n    scenario(args=args, profile=profile, runtime=runtime, out=out,\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 342, in scene\n    unplugged = topology('unplugged_topology', {LEFT: 4}, start['epoch'])\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 81, in topology\n    return wait('committed ' + label, committed)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 63, in wait\n    return wait_for_predicate(label, predicate,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\nlive_x_harness.HarnessError: deadline expired while waiting for committed unplugged_topology\n"
+      }
+    ],
+    "cleanup_failures": [],
+    "screenshots": [],
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "correction": {
+    "plan_sha256": "c9af7cdcd7c047e69519bf6a837f315dd1cba73bc989d547c15667bf9c3d6332",
+    "scene_sha256": "7646d41b4b67b615a14ada818d792ae6d491575627118e64a577720879f5a334",
+    "checks": [
+      {
+        "label": "affected-docking-core-rebuild",
+        "exit": 0
+      },
+      {
+        "label": "native-durable-docking",
+        "exit": 1
+      }
+    ],
+    "reused_checks": 42,
+    "cases": {
+      "desktop_saves_private_data_only_profile": true,
+      "preview_is_read_only": true,
+      "newer_workspace_refuses_plan": true,
+      "newer_panel_assignment_refuses_plan": true,
+      "newer_desktop_settings_refuse_plan": true,
+      "newer_window_move_is_preserved": true,
+      "apply_restores_workspace_panel_and_client_placement": true,
+      "topology_change_refuses_plan_and_missing_connector_falls_back": true
+    },
+    "failures": [
+      {
+        "type": "HarnessError",
+        "message": "deadline expired while waiting for actual Slate panel and strut on DUMMY0",
+        "traceback": "Traceback (most recent call last):\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/action_palette_live.py\", line 550, in run\n    scenario(args=args, profile=profile, runtime=runtime, out=out,\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 403, in scene\n    panel_at(LEFT)\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 100, in panel_at\n    return wait('actual Slate panel and strut on ' + output, located)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/workspace_docking_live.py\", line 63, in wait\n    return wait_for_predicate(label, predicate,\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/tmp/fvwm-appearance-a4-20261102-01/src/tests/live_x/live_x_harness.py\", line 397, in wait_for_predicate\n    raise HarnessError(f\"deadline expired while waiting for {label}\")\nlive_x_harness.HarnessError: deadline expired while waiting for actual Slate panel and strut on DUMMY0\n"
+      }
+    ],
+    "cleanup_failures": [],
+    "screenshots": [],
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "final": {
+    "plan_sha256": "075ad6a7c84decc7a689767ffcf288dd1faffa0453ed27bd9c21b6bfa96bb8a6",
+    "scene_sha256": "c493139e1eaec7cb97b844f656c35174f0c9d0bb953f9e2c3d02ca5f2f32b8e6",
+    "checks": [
+      {
+        "label": "native-durable-docking",
+        "exit": 0
+      }
+    ],
+    "reused_checks": 43,
+    "cases": {
+      "desktop_saves_private_data_only_profile": true,
+      "preview_is_read_only": true,
+      "newer_workspace_refuses_plan": true,
+      "newer_panel_assignment_refuses_plan": true,
+      "newer_desktop_settings_refuse_plan": true,
+      "newer_window_move_is_preserved": true,
+      "apply_restores_workspace_panel_and_client_placement": true,
+      "topology_change_refuses_plan_and_missing_connector_falls_back": true,
+      "restart_reloads_profile_and_resolves_current_allocations": true
+    },
+    "failures": [],
+    "cleanup_failures": [],
+    "screenshots": [
+      "workspace-docking.png"
+    ],
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "fixture_sha256": "479930eea4b3a64f5009f54c2b73a43a1c26e83d2b112b99030adb3053895429",
+  "core_sha256": "fe7b1d5aa2ff06ab023c2c1807c15d372fa18273f88e01f354bd7d9c436f9619",
+  "desktop_sha256": "459c84c34fb05cbcb363c1c29e8b3229cfaa3f44060eb14dd75d17cf9c81a8af",
+  "screenshot_sha256": "a88fc0293765efe9cd01cfb2f38140792fbf2fc6949eee63e47c72cea455bafa",
+  "observations": {
+    "initial_mixed_topology": {
+      "epoch": 1,
+      "monitors": {
+        "DUMMY0": {
+          "name": "DUMMY0",
+          "name_atom": 230,
+          "primary": true,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "physical_mm": {
+            "width": 508,
+            "height": 286
+          },
+          "outputs": [
+            78
+          ]
+        },
+        "DUMMY1": {
+          "name": "DUMMY1",
+          "name_atom": 231,
+          "primary": false,
+          "geometry": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "physical_mm": {
+            "width": 169,
+            "height": 135
+          },
+          "outputs": [
+            79
+          ]
+        }
+      },
+      "workspaces": {
+        "DUMMY0": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY0",
+          "desk": 0,
+          "scale_quarters": 4,
+          "work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          },
+          "dynamic_work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          }
+        },
+        "DUMMY1": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY1",
+          "desk": 0,
+          "scale_quarters": 8,
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "dynamic_work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        }
+      }
+    },
+    "published_profile": {
+      "data": {
+        "schema_version": 1,
+        "name": "travel",
+        "connector": "DUMMY1",
+        "desk": 1,
+        "panel": true,
+        "windows": [
+          {
+            "instance": "first",
+            "class": "DockFixture",
+            "offset_x": 130,
+            "offset_y": 0
+          },
+          {
+            "instance": "second",
+            "class": "DockFixture",
+            "offset_x": 640,
+            "offset_y": 270
+          }
+        ]
+      },
+      "sha256": "7a6f1f74574c7c47f6e881d6f16cb6d05c9c181922d93e544af06cd55dc7f425"
+    },
+    "stale_workspace": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000001",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "panel_before": {
+        "area": {
+          "x": 0,
+          "y": 36,
+          "width": 1920,
+          "height": 1044
+        },
+        "size": [
+          1920,
+          36
+        ],
+        "desk": 0
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000002",
+          "apply",
+          "0000000000000001"
+        ],
+        "payload": {
+          "error": {
+            "code": "stale-plan"
+          }
+        }
+      },
+      "notice": "Docking placement changed; preview again"
+    },
+    "stale_panel": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000003",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000004",
+          "apply",
+          "0000000000000003"
+        ],
+        "payload": {
+          "error": {
+            "code": "stale-plan"
+          }
+        }
+      },
+      "notice": "Docking placement changed; preview again"
+    },
+    "stale_settings": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000005",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "notice": "Docking profile or desktop settings changed; preview again"
+    },
+    "connected_apply": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000006",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "manual": {
+        "x": 430,
+        "y": 470,
+        "width": 318,
+        "height": 192
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000007",
+          "apply",
+          "0000000000000006"
+        ],
+        "payload": {
+          "result": {
+            "applied": 1,
+            "skipped": 1,
+            "fallback": false,
+            "panel_applied": true
+          }
+        }
+      },
+      "notice": "Docking applied to 1 windows. 1 skipped. Panel assigned to DUMMY1.",
+      "last_geometry": [
+        {
+          "frame": {
+            "x": 2560,
+            "y": 306,
+            "width": 326,
+            "height": 228
+          },
+          "client": [
+            310,
+            156
+          ]
+        }
+      ],
+      "windows": [
+        {
+          "frame": {
+            "x": 2560,
+            "y": 306,
+            "width": 326,
+            "height": 228
+          },
+          "client": [
+            310,
+            156
+          ]
+        }
+      ],
+      "panel": {
+        "area": {
+          "x": 1920,
+          "y": 36,
+          "width": 1280,
+          "height": 988
+        },
+        "size": [
+          1280,
+          36
+        ],
+        "desk": 1
+      }
+    },
+    "stale_topology": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000008",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "0000000000000009",
+          "apply",
+          "0000000000000008"
+        ],
+        "payload": {
+          "error": {
+            "code": "stale-plan"
+          }
+        }
+      },
+      "notice": "Docking placement changed; preview again"
+    },
+    "unplugged_topology": {
+      "epoch": 2,
+      "monitors": {
+        "DUMMY0": {
+          "name": "DUMMY0",
+          "name_atom": 230,
+          "primary": true,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "physical_mm": {
+            "width": 508,
+            "height": 286
+          },
+          "outputs": [
+            78
+          ]
+        }
+      },
+      "workspaces": {
+        "DUMMY0": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY0",
+          "desk": 0,
+          "scale_quarters": 4,
+          "work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          },
+          "dynamic_work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          }
+        }
+      }
+    },
+    "primary_fallback": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "000000000000000a",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": true,
+            "monitor": "DUMMY0"
+          }
+        }
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "1f23f9ba040e4fe7c51ebb3aa8f91bf7",
+          "000000000000000b",
+          "apply",
+          "000000000000000a"
+        ],
+        "payload": {
+          "result": {
+            "applied": 2,
+            "skipped": 0,
+            "fallback": true,
+            "panel_applied": true
+          }
+        }
+      },
+      "notice": "Docking applied to 2 windows. 0 skipped. Panel assigned to DUMMY0.",
+      "last_geometry": [
+        {
+          "frame": {
+            "x": 130,
+            "y": 36,
+            "width": 318,
+            "height": 192
+          },
+          "client": [
+            310,
+            156
+          ]
+        },
+        {
+          "frame": {
+            "x": 640,
+            "y": 306,
+            "width": 163,
+            "height": 114
+          },
+          "client": [
+            155,
+            78
+          ]
+        }
+      ],
+      "windows": [
+        {
+          "frame": {
+            "x": 130,
+            "y": 36,
+            "width": 318,
+            "height": 192
+          },
+          "client": [
+            310,
+            156
+          ]
+        },
+        {
+          "frame": {
+            "x": 640,
+            "y": 306,
+            "width": 163,
+            "height": 114
+          },
+          "client": [
+            155,
+            78
+          ]
+        }
+      ]
+    },
+    "replugged_topology": {
+      "epoch": 3,
+      "monitors": {
+        "DUMMY0": {
+          "name": "DUMMY0",
+          "name_atom": 230,
+          "primary": true,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "physical_mm": {
+            "width": 508,
+            "height": 286
+          },
+          "outputs": [
+            78
+          ]
+        },
+        "DUMMY1": {
+          "name": "DUMMY1",
+          "name_atom": 231,
+          "primary": false,
+          "geometry": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "physical_mm": {
+            "width": 169,
+            "height": 135
+          },
+          "outputs": [
+            79
+          ]
+        }
+      },
+      "workspaces": {
+        "DUMMY0": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY0",
+          "desk": 1,
+          "scale_quarters": 4,
+          "work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          },
+          "dynamic_work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          }
+        },
+        "DUMMY1": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY1",
+          "desk": 1,
+          "scale_quarters": 8,
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "dynamic_work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        }
+      }
+    },
+    "restart_topology": {
+      "epoch": 1,
+      "monitors": {
+        "DUMMY0": {
+          "name": "DUMMY0",
+          "name_atom": 230,
+          "primary": true,
+          "geometry": {
+            "x": 0,
+            "y": 0,
+            "width": 1920,
+            "height": 1080
+          },
+          "physical_mm": {
+            "width": 508,
+            "height": 286
+          },
+          "outputs": [
+            78
+          ]
+        },
+        "DUMMY1": {
+          "name": "DUMMY1",
+          "name_atom": 231,
+          "primary": false,
+          "geometry": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "physical_mm": {
+            "width": 169,
+            "height": 135
+          },
+          "outputs": [
+            79
+          ]
+        }
+      },
+      "workspaces": {
+        "DUMMY0": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY0",
+          "desk": 1,
+          "scale_quarters": 4,
+          "work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          },
+          "dynamic_work_area": {
+            "x": 0,
+            "y": 36,
+            "width": 1920,
+            "height": 1044
+          }
+        },
+        "DUMMY1": {
+          "viewport": {
+            "x": 0,
+            "y": 0,
+            "width": 3200,
+            "height": 1080
+          },
+          "pages": {
+            "width": 1,
+            "height": 1
+          },
+          "name": "DUMMY1",
+          "desk": 1,
+          "scale_quarters": 8,
+          "work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          },
+          "dynamic_work_area": {
+            "x": 1920,
+            "y": 0,
+            "width": 1280,
+            "height": 1024
+          }
+        }
+      }
+    },
+    "restart_apply": {
+      "preview": {
+        "command": [
+          "Send_Dock",
+          "284e3fd924db975a6a4c0fb40f569bce",
+          "0000000000000001",
+          "prepare"
+        ],
+        "payload": {
+          "result": {
+            "matched": 2,
+            "skipped": 0,
+            "fallback": false,
+            "monitor": "DUMMY1"
+          }
+        }
+      },
+      "apply": {
+        "command": [
+          "Send_Dock",
+          "284e3fd924db975a6a4c0fb40f569bce",
+          "0000000000000002",
+          "apply",
+          "0000000000000001"
+        ],
+        "payload": {
+          "result": {
+            "applied": 2,
+            "skipped": 0,
+            "fallback": false,
+            "panel_applied": true
+          }
+        }
+      },
+      "notice": "Docking applied to 2 windows. 0 skipped. Panel assigned to DUMMY1.",
+      "last_geometry": [
+        {
+          "frame": {
+            "x": 2050,
+            "y": 36,
+            "width": 326,
+            "height": 228
+          },
+          "client": [
+            310,
+            156
+          ]
+        },
+        {
+          "frame": {
+            "x": 2560,
+            "y": 306,
+            "width": 94,
+            "height": 111
+          },
+          "client": [
+            78,
+            39
+          ]
+        }
+      ],
+      "pid": 18,
+      "old_generation": "000000000000000d1ddbf22f000000120000000000000001",
+      "new_generation": "000000000000000f33007f8b000000120000000000000001",
+      "retired": 8388613,
+      "replacement": 8388615,
+      "windows": [
+        {
+          "frame": {
+            "x": 2050,
+            "y": 36,
+            "width": 326,
+            "height": 228
+          },
+          "client": [
+            310,
+            156
+          ]
+        },
+        {
+          "frame": {
+            "x": 2560,
+            "y": 306,
+            "width": 94,
+            "height": 111
+          },
+          "client": [
+            78,
+            39
+          ]
+        }
+      ],
+      "panel": {
+        "area": {
+          "x": 1920,
+          "y": 36,
+          "width": 1280,
+          "height": 988
+        },
+        "size": [
+          1280,
+          36
+        ],
+        "desk": 1
+      }
+    }
+  }
+}

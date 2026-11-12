@@ -6,8 +6,8 @@
 #include "commands.h"
 #include "externs.h"
 #include "screen.h"
-#include "workspace_docking_policy.h"
-#include "workspace_placement.h"
+#include "palette_policy.h"
+#include "workspace_dock.h"
 #include "libs/monitor_types.h"
 #include "libs/Parse.h"
 #include "libs/Strings.h"
@@ -231,6 +231,207 @@ static int translated_origin(int origin, int64_t offset)
 	if (position < INT_MIN)
 		return INT_MIN;
 	return position > INT_MAX ? INT_MAX : (int)position;
+}
+
+static bool selector_matches(const struct workspace_docking_selector *selector,
+	const char *instance, const char *class_name)
+{
+	return strcmp(selector->instance, instance) == 0 &&
+		strcmp(selector->class_name, class_name) == 0;
+}
+
+static enum workspace_dock_status find_durable_window(
+	const struct workspace_docking_selector *selector,
+	const FvwmWindow **window)
+{
+	size_t scanned = 0;
+
+	*window = NULL;
+	for (const FvwmWindow *fw = Scr.FvwmRoot.next; fw; fw = fw->next)
+	{
+		if (++scanned > PALETTE_SCAN_MAX)
+			return WORKSPACE_DOCK_UNAVAILABLE;
+		if (IS_SCHEDULED_FOR_DESTROY(fw) || !fw->class.res_name ||
+		    !fw->class.res_class || fw->class.res_name == NoResource ||
+		    fw->class.res_class == NoClass ||
+		    !selector_matches(selector, fw->class.res_name,
+			fw->class.res_class))
+			continue;
+		/* An ineligible duplicate still makes the selector ambiguous. */
+		if (*window)
+			return WORKSPACE_DOCK_AMBIGUOUS;
+		*window = fw;
+	}
+	return WORKSPACE_DOCK_OK;
+}
+
+static bool valid_profile_input(
+	const struct workspace_dock_profile_input *input)
+{
+	uint64_t role;
+	size_t unused;
+
+	if (!input || input->count > WORKSPACE_DOCKING_WINDOW_MAX ||
+	    (input->has_desk && input->desk < 0) ||
+	    workspace_docking_resolve(input->connector, NULL, 0, &role) !=
+		    WORKSPACE_DOCKING_MISSING)
+		return false;
+	for (size_t i = 0; i < input->count; i++)
+	{
+		const struct workspace_dock_window_input *window =
+			&input->windows[i];
+
+		if (workspace_docking_match_window(&window->selector, NULL, 0,
+		    &unused) != WORKSPACE_DOCKING_MISSING ||
+		    strlen(window->selector.instance) +
+			strlen(window->selector.class_name) >
+				WORKSPACE_DOCK_SELECTOR_WIRE_MAX ||
+		    window->offset_x < -WORKSPACE_DOCK_OFFSET_MAX ||
+		    window->offset_x > WORKSPACE_DOCK_OFFSET_MAX ||
+		    window->offset_y < -WORKSPACE_DOCK_OFFSET_MAX ||
+		    window->offset_y > WORKSPACE_DOCK_OFFSET_MAX)
+			return false;
+		for (size_t j = 0; j < i; j++)
+		{
+			const struct workspace_docking_selector *prior =
+				&input->windows[j].selector;
+
+			if (selector_matches(&window->selector, prior->instance,
+			    prior->class_name))
+				return false;
+		}
+	}
+	return true;
+}
+
+enum workspace_dock_status workspace_dock_prepare(
+	const struct workspace_dock_profile_input *input,
+	struct workspace_dock_plan *plan)
+{
+	if (!plan)
+		return WORKSPACE_DOCK_INVALID;
+	*plan = (struct workspace_dock_plan){0};
+	if (dock_active)
+		return WORKSPACE_DOCK_BUSY;
+	if (!valid_profile_input(input))
+		return WORKSPACE_DOCK_INVALID;
+	if (!resolve_destination(input->connector, &plan->destination,
+	    &plan->primary_fallback))
+	{
+		*plan = (struct workspace_dock_plan){0};
+		return WORKSPACE_DOCK_UNAVAILABLE;
+	}
+	for (size_t i = 0; i < input->count; i++)
+	{
+		const struct workspace_dock_window_input *window =
+			&input->windows[i];
+		struct workspace_dock_plan_entry *entry =
+			&plan->entries[plan->count];
+		const FvwmWindow *fw;
+		enum workspace_dock_status status =
+			find_durable_window(&window->selector, &fw);
+
+		if (status != WORKSPACE_DOCK_OK)
+		{
+			*plan = (struct workspace_dock_plan){0};
+			return status;
+		}
+		if (!workspace_placement_observe(fw, &entry->expected))
+			continue;
+		entry->selector = window->selector;
+		entry->offset_x = window->offset_x;
+		entry->offset_y = window->offset_y;
+		plan->count++;
+	}
+	plan->requested = input->count;
+	plan->desk = input->desk;
+	plan->has_desk = input->has_desk;
+	plan->prepared = true;
+	return WORKSPACE_DOCK_OK;
+}
+
+static enum workspace_dock_status resolve_plan_windows(
+	const struct workspace_dock_plan *plan, bool *live)
+{
+	for (size_t i = 0; i < plan->count; i++)
+	{
+		const struct workspace_dock_plan_entry *entry = &plan->entries[i];
+		const FvwmWindow *fw;
+		enum workspace_dock_status status =
+			find_durable_window(&entry->selector, &fw);
+
+		if (status != WORKSPACE_DOCK_OK)
+			return status;
+		live[i] = fw && fw->palette_identity == entry->expected.identity;
+	}
+	return WORKSPACE_DOCK_OK;
+}
+
+enum workspace_dock_status workspace_dock_apply(
+	struct workspace_dock_plan *plan, struct workspace_dock_result *result,
+	workspace_dock_before_placement before_placement, void *context)
+{
+	bool live[WORKSPACE_DOCKING_WINDOW_MAX] = {false};
+	enum workspace_dock_status status;
+
+	if (!result)
+		return WORKSPACE_DOCK_INVALID;
+	*result = (struct workspace_dock_result){0};
+	if (dock_active)
+		return WORKSPACE_DOCK_BUSY;
+	if (!plan || !plan->prepared ||
+	    plan->requested > WORKSPACE_DOCKING_WINDOW_MAX ||
+	    plan->count > plan->requested)
+		return WORKSPACE_DOCK_INVALID;
+	plan->prepared = false;
+	if (!workspace_placement_destination_is_current(&plan->destination))
+		return WORKSPACE_DOCK_STALE;
+	status = resolve_plan_windows(plan, live);
+	if (status != WORKSPACE_DOCK_OK)
+		return status;
+	dock_active = true;
+	if (plan->has_desk && plan->desk != plan->destination.desk &&
+	    !workspace_placement_select_desk(&plan->destination, plan->desk))
+	{
+		status = WORKSPACE_DOCK_UNAVAILABLE;
+		goto done;
+	}
+	if (before_placement)
+	{
+		if (!before_placement(&plan->destination, context))
+		{
+			status = WORKSPACE_DOCK_UNAVAILABLE;
+			goto done;
+		}
+		if (!workspace_placement_refresh_area(&plan->destination))
+		{
+			status = WORKSPACE_DOCK_STALE;
+			goto done;
+		}
+		status = resolve_plan_windows(plan, live);
+		if (status != WORKSPACE_DOCK_OK)
+			goto done;
+	}
+	for (size_t i = 0; i < plan->count; i++)
+	{
+		const struct workspace_dock_plan_entry *entry = &plan->entries[i];
+		struct workspace_placement_target observed;
+		rectangle frame = entry->expected.frame;
+
+		frame.x = translated_origin(plan->destination.area.x,
+			entry->offset_x);
+		frame.y = translated_origin(plan->destination.area.y,
+			entry->offset_y);
+		if (live[i] && workspace_placement_apply(&entry->expected,
+		    &plan->destination, frame, WORKSPACE_PLACEMENT_DOCK,
+		    &observed))
+			result->applied++;
+	}
+	result->skipped = plan->requested - result->applied;
+	result->primary_fallback = plan->primary_fallback;
+done:
+	dock_active = false;
+	return status;
 }
 
 static bool restore_profile(const char *name)

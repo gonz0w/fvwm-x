@@ -334,6 +334,7 @@ func (d *Controller) systemMenu() {
 	menus = append(menus, desktopsettings.Menu{Name: "SlateSystem", Title: "System", Rows: []desktopsettings.Row{
 		{"Network: " + network, "SendToModule FvwmDesktop network"}, {"Sound", "Popup SlateSound"}, {"Battery: " + battery, "Nop"},
 		{"Calendar", "SendToModule FvwmDesktop calendar"}, {"Display information", "SendToModule FvwmDesktop displays"},
+		{"Docking profiles...", "SendToModule FvwmDesktop dock"},
 		{"Screenshot", "SendToModule FvwmDesktop screenshot"}, {"System monitor", "SendToModule FvwmDesktop monitor"}}})
 	backend := "amixer"
 	if d.system == "OpenBSD" {

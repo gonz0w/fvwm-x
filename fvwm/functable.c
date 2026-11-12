@@ -493,6 +493,9 @@ const func_t func_table[] =
 	CMD_ENT("send_configinfo", CMD_Send_ConfigInfo, F_CONFIG_LIST, 0, 0),
 	/* - Internal, used for module communication */
 
+	CMD_ENT("send_dock", CMD_Send_Dock, F_SEND_DOCK, 0, 0),
+	/* - Internal, bounded durable docking prepare and apply */
+
 	CMD_ENT("send_palette", CMD_Send_Palette, F_SEND_PALETTE, 0, 0),
 	/* - Internal, guarded palette actions and snapshot release */
 

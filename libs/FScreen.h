@@ -135,6 +135,7 @@ int
 monitor_get_all_heights(void);
 void
 monitor_assign_virtual(struct monitor *);
+void monitor_workspace_revision_advance(struct monitor *m);
 void
 monitor_refresh_module(Display *);
 void

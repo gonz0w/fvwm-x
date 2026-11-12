@@ -69,6 +69,9 @@ struct monitor
 		bool is_swapping;
 	} virtual_scr;
 
+	/* Changes to the committed desk or viewport on this monitor. */
+	uint64_t workspace_revision;
+
 	PanFrame PanFrameTop;
 	PanFrame PanFrameLeft;
 	PanFrame PanFrameRight;

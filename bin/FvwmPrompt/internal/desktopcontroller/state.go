@@ -11,6 +11,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -47,7 +48,7 @@ func stateDirectory(path string) (*os.File, error) {
 	}
 	return file, nil
 }
-func privateState(fd int) error {
+func privateState(fd, limit int) error {
 	var info unix.Stat_t
 	if err := unix.Fstat(fd, &info); err != nil {
 		return err
@@ -55,12 +56,12 @@ func privateState(fd int) error {
 	if info.Mode&unix.S_IFMT != unix.S_IFREG || info.Uid != uint32(os.Getuid()) || info.Nlink != 1 || info.Mode&0077 != 0 {
 		return errors.New("Settings file must be a private owned regular file")
 	}
-	if info.Size > 8192 {
-		return errors.New("Settings file exceeds 8192 bytes")
+	if info.Size > int64(limit) {
+		return fmt.Errorf("Settings file exceeds %d bytes", limit)
 	}
 	return nil
 }
-func readState(dir *os.File, name string) ([]byte, *string, error) {
+func readState(dir *os.File, name string, limit int) ([]byte, *string, error) {
 	fd, err := unix.Openat(int(dir.Fd()), name, unix.O_RDONLY|unix.O_NOFOLLOW|unix.O_NONBLOCK|unix.O_CLOEXEC, 0)
 	if errors.Is(err, unix.ENOENT) {
 		return nil, nil, nil
@@ -70,26 +71,30 @@ func readState(dir *os.File, name string) ([]byte, *string, error) {
 	}
 	file := os.NewFile(uintptr(fd), name)
 	defer file.Close()
-	if err = privateState(fd); err != nil {
+	if err = privateState(fd, limit); err != nil {
 		return nil, nil, err
 	}
-	data, err := io.ReadAll(io.LimitReader(file, 8193))
+	data, err := io.ReadAll(io.LimitReader(file, int64(limit)+1))
 	if err != nil {
 		return nil, nil, err
 	}
-	if len(data) > 8192 {
-		return nil, nil, errors.New("Settings file exceeds 8192 bytes")
+	if len(data) > limit {
+		return nil, nil, fmt.Errorf("Settings file exceeds %d bytes", limit)
 	}
 	revision := hash(data)
 	return data, &revision, nil
 }
-func loadSettings(path string) (values, *string, error) {
+func loadPrivateState(path string, limit int) ([]byte, *string, error) {
 	dir, err := stateDirectory(path)
 	if err != nil {
 		return nil, nil, err
 	}
 	defer dir.Close()
-	data, revision, err := readState(dir, filepath.Base(path))
+	return readState(dir, filepath.Base(path), limit)
+}
+
+func loadSettings(path string) (values, *string, error) {
+	data, revision, err := loadPrivateState(path, desktopsettings.StateLimit)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -103,9 +108,6 @@ func sameRevision(a, b *string) bool {
 	return (a == nil && b == nil) || (a != nil && b != nil && *a == *b)
 }
 
-// Replacement is the commit point. All validation, identifiers, encoding and
-// fallible writes finish first; close/cleanup cannot report a later refusal.
-// All operations stay relative to the same opened directory across renames.
 func saveSettings(path string, settings values, expected *string) (*string, error) {
 	checked, err := desktopsettings.Checked(settings)
 	if err != nil {
@@ -116,9 +118,15 @@ func saveSettings(path string, settings values, expected *string) (*string, erro
 	if err != nil {
 		return nil, err
 	}
-	data = append(data, '\n')
-	if len(data) > 8192 {
-		return nil, errors.New("Settings file exceeds 8192 bytes")
+	return savePrivateState(path, ".desktop-state.lock", append(data, '\n'), desktopsettings.StateLimit, expected)
+}
+
+// Replacement is the commit point. All validation, identifiers, encoding and
+// fallible writes finish first; close/cleanup cannot report a later refusal.
+// All operations stay relative to the same opened directory across renames.
+func savePrivateState(path, lockName string, data []byte, limit int, expected *string) (*string, error) {
+	if len(data) > limit {
+		return nil, fmt.Errorf("Settings file exceeds %d bytes", limit)
 	}
 	revision := hash(data)
 	temporary := ".desktop-" + newID(16)
@@ -127,19 +135,19 @@ func saveSettings(path string, settings values, expected *string) (*string, erro
 		return nil, err
 	}
 	defer dir.Close()
-	fd, err := unix.Openat(int(dir.Fd()), ".desktop-state.lock", unix.O_CREAT|unix.O_RDWR|unix.O_NOFOLLOW|unix.O_NONBLOCK|unix.O_CLOEXEC, 0600)
+	fd, err := unix.Openat(int(dir.Fd()), lockName, unix.O_CREAT|unix.O_RDWR|unix.O_NOFOLLOW|unix.O_NONBLOCK|unix.O_CLOEXEC, 0600)
 	if err != nil {
 		return nil, err
 	}
-	lock := os.NewFile(uintptr(fd), ".desktop-state.lock")
+	lock := os.NewFile(uintptr(fd), lockName)
 	defer lock.Close()
-	if err = privateState(fd); err != nil {
+	if err = privateState(fd, limit); err != nil {
 		return nil, err
 	}
 	if err = unix.Flock(fd, unix.LOCK_EX|unix.LOCK_NB); err != nil {
 		return nil, err
 	}
-	_, current, err := readState(dir, filepath.Base(path))
+	_, current, err := readState(dir, filepath.Base(path), limit)
 	if err != nil {
 		return nil, err
 	}

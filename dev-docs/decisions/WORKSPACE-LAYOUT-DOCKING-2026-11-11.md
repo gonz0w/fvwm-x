@@ -74,3 +74,28 @@ Capture one mixed-monitor scene. Reuse the accepted #374 and #377 theme,
 keyboard and placement checks where their inputs remain valid. Physical
 docking, real-terminal provider and actual XID reuse retain their own
 qualification. Schedule the run when both placement consumers are available.
+
+## Durable profiles
+
+Keep the session Capture/Restore commands usable. A durable profile is a
+separate opt-in named record containing a connector, optional desk selection,
+and exact WM_CLASS instance/class pairs with offsets from the work area.
+The profile contains no XIDs, allocation identities, window titles, or
+commands. The desktop controller owns storage under the FVWM user directory
+and compares file revisions when replacing a profile. The core resolves
+connectors and applies window placement.
+
+A restart restore requires an explicit prepare and apply sequence. Prepare
+resolves only unique eligible live matches and binds them to their current
+allocation and placement revisions, the committed destination, and the current
+settings revision. Apply consumes that preparation. Any newer placement,
+settings change, topology change, missing allocation or ambiguous match
+refuses the affected operation. A new prepare is an explicit user action.
+Profiles do not launch applications or run as a side effect of hotplug.
+
+The default Slate panel currently derives its top strut and geometry from
+the primary monitor. Only a separately owned explicit panel assignment can
+be included in a profile. It needs a settings-generation check and a
+reachable fallback. Workspace restore targets an explicit desk on the
+resolved monitor and must honor the current desktop mode. Both operations
+share the prepared restore's freshness checks before sending window moves.

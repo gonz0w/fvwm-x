@@ -6,10 +6,16 @@
 
 #define WORKSPACE_DOCKING_NAME_MAX 256
 #define WORKSPACE_DOCKING_CONNECTOR_MAX 64
+#define WORKSPACE_DOCKING_WINDOW_MAX 64
 
 struct workspace_docking_connector {
 	char name[WORKSPACE_DOCKING_NAME_MAX + 1];
 	uint64_t role;
+};
+
+struct workspace_docking_selector {
+	char instance[WORKSPACE_DOCKING_NAME_MAX + 1];
+	char class_name[WORKSPACE_DOCKING_NAME_MAX + 1];
 };
 
 enum workspace_docking_result {
@@ -28,5 +34,14 @@ enum workspace_docking_result {
 enum workspace_docking_result workspace_docking_resolve(const char *connector,
 	const struct workspace_docking_connector *live, size_t count,
 	uint64_t *role);
+
+/* Match both WM_CLASS fields byte for byte in the supplied candidate list.
+ * A match returns a zero-based index valid for that list. Other results set
+ * *index to SIZE_MAX. Missing, malformed or duplicate matches are refused.
+ */
+enum workspace_docking_result workspace_docking_match_window(
+	const struct workspace_docking_selector *selector,
+	const struct workspace_docking_selector *live, size_t count,
+	size_t *index);
 
 #endif

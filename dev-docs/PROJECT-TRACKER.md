@@ -1,5 +1,66 @@
 # FVWM-X project tracker
 
+## R1 workspace docking profiles — #222
+
+PR378 merged as `fc773f3340040029a45e231cb107e7051c981aee`.
+The reviewed product tree matches canonical main. The intervening PR376
+changes only Temper guidance. The shared #220–#223 scene passed nine cases
+and qualifies the explicit session command slice.
+
+Lead owns the next docking batch on `codex/r1-docking-profiles`.
+Implement opt-in named durable profiles with private data-only publication,
+explicit window matching after restart, and scoped workspace, panel and
+placement restore. Resolve against committed monitor roles and current
+settings generations, keep client pixels and preserve newer manual choices.
+Keep automatic display management and general session snapshots outside
+the batch. Physical docking and full platform qualification have separate
+acceptance. Complete the related implementation before the combined
+checkpoint. Capture finished behavior once and use intermediate screenshots
+only when diagnosing a failure.
+
+Restart matching uses explicit exact class and instance with a unique live
+allocation. Prepare binds the current topology, workspace revision, window
+placement revisions and profile data; apply consumes the prepared state.
+The desktop controller owns the separate private versioned file and its
+compare-and-replace revision. The Slate panel needs an explicit assignment
+owner before its placement can be restored. See the
+[durable contract](decisions/WORKSPACE-LAYOUT-DOCKING-2026-11-11.md).
+
+Local implementation checks passed for the exact-selector C policy and
+desktop controller Go package. No combined runtime run is selected until
+the controller and core restore paths are connected. Then use a single
+incremental Linux build and shared fixture for profile publication, restart,
+fallback, stale workspace/setting/placement refusal and the finished UI.
+Stop on a repeated unexplained failure and retain the exact evidence.
+This delivery wires the System menu profile editor, saved profile
+preview/apply, per-monitor desk restore and the shipped Slate panel adapter.
+It uses one bounded directed core plan, private controller state and the
+panel assignment revision. Run the affected Linux ARM64 build and one
+two-output scene after source integration, retaining the accepted command
+slice evidence. Lead owns the run and signed PR. One diagnosed correction
+is available within the owned guest budget.
+The first combined run passed its build, three unit steps and seven live
+cases. It stopped at the unplug oracle because cached workspace rows
+retain disabled monitors. Join observations to active committed topology.
+Use the exact active panel selector for struts and re-resolve the workspace
+after desk callbacks, requiring its expected single revision advance.
+Rebuild only the core and reuse the Go controller and passing units.
+The correction passed eight cases, including unplug fallback. The
+restart fixture used global mode during saved workspace loading and
+switched to per-monitor after startup, giving both monitors shared
+desk data. Run one distinct restart oracle correction by setting the
+same per-monitor mode in the restart configuration before saved state
+loads. Reuse the exact core, controller and passing units.
+Final result: all nine cases passed with the exact retained binaries.
+The restart case reopened a private profile and resolved the fresh live
+allocation. The final Slate capture is available. Physical docking,
+additional themes and support profiles remain for issue acceptance.
+[Combined evidence](verification/VERIFICATION-2026-11-11-DURABLE-DOCKING.md).
+
+
+
+
+
 ## TEMPER-07 — Economical Temper guidance refresh
 
 Owner: Temper rollout coordinator under Cam's selected existing-adopter update.

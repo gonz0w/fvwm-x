@@ -494,6 +494,13 @@ monitor_get_all_heights(void)
 }
 
 void
+monitor_workspace_revision_advance(struct monitor *m)
+{
+	if (m->workspace_revision != UINT64_MAX)
+		m->workspace_revision++;
+}
+
+void
 monitor_assign_virtual(struct monitor *ref)
 {
 	struct monitor *m;
@@ -506,6 +513,10 @@ monitor_assign_virtual(struct monitor *ref)
 		if (m == ref)
 			continue;
 
+		if (m->virtual_scr.CurrentDesk != ref->virtual_scr.CurrentDesk ||
+		    m->virtual_scr.Vx != ref->virtual_scr.Vx ||
+		    m->virtual_scr.Vy != ref->virtual_scr.Vy)
+			monitor_workspace_revision_advance(m);
 		memcpy(
 		    &m->virtual_scr, &ref->virtual_scr, sizeof(m->virtual_scr));
 	}

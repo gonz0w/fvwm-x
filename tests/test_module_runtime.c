@@ -2,6 +2,8 @@
 #include "fvwm/module_records.h"
 #include "fvwm/appearance_preview.h"
 #include "fvwm/action_palette.h"
+#include "fvwm/workspace_dock.h"
+#include "fvwm/workspace_tools.h"
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -15,7 +17,9 @@ static Bool observe_owner_notifications;
 static fmodule *expected_preview_owner;
 static unsigned owner_notifications;
 static unsigned palette_notifications;
+static unsigned dock_notifications;
 static Bool palette_owner_retired;
+static Bool dock_owner_retired;
 static Bool notified_owner_retired;
 
 /* The preview subsystem is omitted from this fixture. Observe only the
@@ -39,6 +43,21 @@ void action_palette_owner_gone(struct fmodule *owner)
 		assert(owner == expected_preview_owner);
 		palette_notifications++;
 		palette_owner_retired = MOD_IS_RETIRED(owner);
+	}
+}
+
+void scratchpad_owner_gone(struct fmodule *owner)
+{
+	(void)owner;
+}
+
+void workspace_dock_owner_gone(struct fmodule *owner)
+{
+	if (observe_owner_notifications)
+	{
+		assert(owner == expected_preview_owner);
+		dock_notifications++;
+		dock_owner_retired = MOD_IS_RETIRED(owner);
 	}
 }
 
@@ -135,22 +154,27 @@ static void test_owner_notifications(void)
 	expected_preview_owner = module;
 	owner_notifications = 0;
 	palette_notifications = 0;
+	dock_notifications = 0;
 	observe_owner_notifications = True;
 	module_kill(module);
 	assert(owner_notifications == 1 && !notified_owner_retired);
 	assert(palette_notifications == 1 && !palette_owner_retired);
+	assert(dock_notifications == 1 && !dock_owner_retired);
 	assert(MOD_IS_RETIRED(module));
 	module_kill(module);
 	assert(owner_notifications == 1);
 	assert(palette_notifications == 1);
+	assert(dock_notifications == 1);
 	module_cleanup();
 	assert(owner_notifications == 1);
 	assert(palette_notifications == 1);
+	assert(dock_notifications == 1);
 	module->xinputRefs = 0;
 	module_cleanup();
 	/* Final destruction notifies again; preview recovery handles duplicates. */
 	assert(owner_notifications == 2 && notified_owner_retired);
 	assert(palette_notifications == 2 && palette_owner_retired);
+	assert(dock_notifications == 2 && dock_owner_retired);
 	observe_owner_notifications = False;
 	expected_preview_owner = NULL;
 
@@ -158,10 +182,12 @@ static void test_owner_notifications(void)
 	expected_preview_owner = module;
 	owner_notifications = 0;
 	palette_notifications = 0;
+	dock_notifications = 0;
 	observe_owner_notifications = True;
 	module_destroy(module);
 	assert(owner_notifications == 1 && !notified_owner_retired);
 	assert(palette_notifications == 1 && !palette_owner_retired);
+	assert(dock_notifications == 1 && !dock_owner_retired);
 	observe_owner_notifications = False;
 	expected_preview_owner = NULL;
 }

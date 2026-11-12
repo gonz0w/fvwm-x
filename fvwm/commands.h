@@ -186,6 +186,7 @@ enum
 	F_SEND_PREVIEW,
 	F_SEND_PALETTE,
 	F_SEND_SCRATCHPAD,
+	F_SEND_DOCK,
 	F_WORKSPACE_DOCK,
 	F_WORKSPACE_LAYOUT
 };
@@ -333,6 +334,7 @@ void CMD_Send_Query(F_CMD_ARGS);
 void CMD_Send_Preview(F_CMD_ARGS);
 void CMD_Send_Palette(F_CMD_ARGS);
 void CMD_Send_Scratchpad(F_CMD_ARGS);
+void CMD_Send_Dock(F_CMD_ARGS);
 void CMD_WorkspaceDock(F_CMD_ARGS);
 void CMD_WorkspaceLayout(F_CMD_ARGS);
 void CMD_Send_Session(F_CMD_ARGS);

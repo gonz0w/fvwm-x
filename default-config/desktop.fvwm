@@ -69,15 +69,21 @@ AddToFunc SlateDesk
 + I SendToModule SlateBar ChangeButton desk$[desk.n] Colorset 11
 
 # Rebuild the bar on topology changes, without restarting application windows.
-# Only the primary monitor reserves a top edge; other monitors remain free.
+# The explicit assignment follows its monitor while active, otherwise the
+# primary reserves the top edge.
+*FvwmDesktop: DockPanelAdapter v1
+DestroyFunc SlatePanelAssign
+AddToFunc SlatePanelAssign
++ I InfoStoreAdd slate_panel_target $0
++ I SlatePanel
 DestroyFunc SlatePanel
 AddToFunc SlatePanel
 + I SendToModule SlateTray Hide
 + I KillModule FvwmButtons SlateBar
 + I EwmhBaseStruts 0 0 0 0
-+ I EwmhBaseStruts screen $[monitor.primary] 0 0 $[infostore.slate_height] 0
++ I EwmhBaseStruts screen $[monitor.panel] 0 0 $[infostore.slate_height] 0
 + I DestroyModuleConfig SlateBar:*
-+ I *SlateBar: Geometry $[monitor.$[monitor.primary].width]x$[infostore.slate_height]+0+0@p
++ I *SlateBar: Geometry $[monitor.panel_width]x$[infostore.slate_height]+0+0@$[monitor.panel]
 + I *SlateBar: Colorset 10
 + I *SlateBar: ActiveColorset 12
 + I *SlateBar: Rows 1
@@ -86,7 +92,7 @@ AddToFunc SlatePanel
 + I *SlateBar: Frame 0
 + I *SlateBar: Padding 6 0
 + I *SlateBar: Font "$[infostore.slate_font]"
-+ I *SlateBar: StartupAction SendToModule FvwmDesktop refresh $[monitor.$[monitor.primary].width]
++ I *SlateBar: StartupAction SendToModule FvwmDesktop refresh $[monitor.panel_width]
 + I *SlateBar: (12x1, Title "Applications", Action SlateLauncher)
 + I *SlateBar: (3x1, Id desk0, Title "1", Action GotoDesk 0 0)
 + I *SlateBar: (3x1, Id desk1, Title "2", Action GotoDesk 0 1)

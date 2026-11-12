@@ -792,6 +792,12 @@
     "descr": "Internal, used for module communication"
   },
   {
+    "name": "Send_Dock",
+    "cursor": "",
+    "window": 0,
+    "descr": "Internal, bounded durable docking prepare and apply"
+  },
+  {
     "name": "Send_Palette",
     "cursor": "",
     "window": 0,

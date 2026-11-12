@@ -1585,6 +1585,7 @@ void MoveViewport(struct monitor *m, int newx, int newy, Bool grab)
 
 	if (delta.x || delta.y)
 	{
+		monitor_workspace_revision_advance(m);
 		m->virtual_scr.prev_page_x = m->virtual_scr.Vx;
 		m->virtual_scr.prev_page_y = m->virtual_scr.Vy;
 		m->virtual_scr.prev_desk_and_page_page_x = m->virtual_scr.Vx;
@@ -1686,6 +1687,7 @@ void goto_desk(int desk, struct monitor *m)
 
 	UnmapDesk(m, m->virtual_scr.CurrentDesk, True);
 	m->virtual_scr.CurrentDesk = desk;
+	monitor_workspace_revision_advance(m);
 	MapDesk(m, desk, True);
 
 	monitor_assign_virtual(m);

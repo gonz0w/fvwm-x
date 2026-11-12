@@ -11,6 +11,8 @@
 #include "ewmh.h"
 #include "frame.h"
 #include "geometry.h"
+#include "functable_complex.h"
+#include "infostore.h"
 #include "module_list.h"
 #include "move_resize.h"
 #include "screen.h"
@@ -19,6 +21,7 @@
 #include "libs/monitor_types.h"
 #include "libs/monitor_ownership.h"
 #include <limits.h>
+#include <stdio.h>
 
 static bool usable_area(rectangle area)
 {
@@ -35,7 +38,8 @@ bool workspace_placement_destination(const struct monitor *monitor,
 	rectangle area;
 
 	if (!snapshot || !monitor || !monitor->si ||
-	    (monitor->flags & MONITOR_DISABLED) || !monitor->si->name_atom)
+	    (monitor->flags & MONITOR_DISABLED) || !monitor->si->name_atom ||
+	    monitor->workspace_revision == UINT64_MAX)
 		return false;
 	area = (rectangle){monitor->si->x, monitor->si->y,
 		monitor->si->w, monitor->si->h};
@@ -45,6 +49,7 @@ bool workspace_placement_destination(const struct monitor *monitor,
 		return false;
 	*out = (struct workspace_placement_destination){
 		.epoch = snapshot->epoch, .role = monitor->si->name_atom,
+		.workspace_revision = monitor->workspace_revision,
 		.area = area, .desk = monitor->virtual_scr.CurrentDesk,
 		.viewport_x = monitor->virtual_scr.Vx,
 		.viewport_y = monitor->virtual_scr.Vy};
@@ -71,6 +76,16 @@ static struct workspace_placement_target observe(const FvwmWindow *fw)
 		.virtual_y = (int64_t)fw->g.frame.y + fw->m->virtual_scr.Vy,
 		.revision = fw->placement_revision,
 		.frame = fw->g.frame, .desk = fw->Desk};
+}
+
+bool workspace_placement_observe(const FvwmWindow *fw,
+	struct workspace_placement_target *out)
+{
+	*out = (struct workspace_placement_target){0};
+	if (!fw || !eligible(fw))
+		return false;
+	*out = observe(fw);
+	return true;
 }
 
 bool workspace_placement_collect(const struct monitor *monitor,
@@ -117,8 +132,9 @@ static FvwmWindow *find_target(uint64_t identity)
 	return NULL;
 }
 
-static bool destination_is_current(
-	const struct workspace_placement_destination *expected)
+static bool refresh_destination(
+	const struct workspace_placement_destination *expected,
+	struct workspace_placement_destination *current)
 {
 	const monitor_topology_snapshot *snapshot = FScreenGetTopologySnapshot();
 	struct monitor *monitor;
@@ -127,18 +143,100 @@ static bool destination_is_current(
 		return false;
 	RB_FOREACH(monitor, monitors, &monitor_q)
 	{
-		struct workspace_placement_destination current;
-
 		if (!monitor->si || monitor->si->name_atom != expected->role ||
-		    !workspace_placement_destination(monitor, &current))
+		    !workspace_placement_destination(monitor, current))
 			continue;
-		const rectangle *area = &expected->area;
-		return current.desk == expected->desk &&
-			current.viewport_x == expected->viewport_x &&
-			current.viewport_y == expected->viewport_y &&
-			current.area.x == area->x && current.area.y == area->y &&
-			current.area.width == area->width &&
-			current.area.height == area->height;
+		return current->workspace_revision == expected->workspace_revision &&
+			current->desk == expected->desk &&
+			current->viewport_x == expected->viewport_x &&
+			current->viewport_y == expected->viewport_y;
+	}
+	return false;
+}
+
+bool workspace_placement_destination_is_current(
+	const struct workspace_placement_destination *expected)
+{
+	struct workspace_placement_destination current;
+	const rectangle *area = &expected->area;
+
+	return refresh_destination(expected, &current) &&
+		current.area.x == area->x && current.area.y == area->y &&
+		current.area.width == area->width && current.area.height == area->height;
+}
+
+bool workspace_placement_refresh_area(
+	struct workspace_placement_destination *destination)
+{
+	struct workspace_placement_destination current;
+
+	if (!refresh_destination(destination, &current))
+		return false;
+	destination->area = current.area;
+	return true;
+}
+
+bool workspace_placement_select_desk(
+	struct workspace_placement_destination *destination, int desk)
+{
+	struct monitor *monitor;
+	struct workspace_placement_destination expected = *destination;
+	struct workspace_placement_destination current;
+
+	if (desk < 0 || monitor_mode != MONITOR_TRACKING_M ||
+	    is_tracking_shared ||
+	    !workspace_placement_destination_is_current(destination))
+		return false;
+	RB_FOREACH(monitor, monitors, &monitor_q)
+	{
+		if (!monitor->si || monitor->si->name_atom != expected.role ||
+		    (monitor->flags & MONITOR_DISABLED))
+			continue;
+		if ((unsigned int)desk >= monitor->ewmhc.CurrentNumberOfDesktops)
+			return false;
+		if (desk == expected.desk)
+			return true;
+		expected.workspace_revision++;
+		expected.desk = desk;
+		module_config_interaction_begin();
+		goto_desk(desk, monitor);
+		module_config_interaction_end();
+		/* Desk notifications may run module commands before returning. */
+		if (monitor_mode != MONITOR_TRACKING_M || is_tracking_shared ||
+		    !refresh_destination(&expected, &current))
+			return false;
+		*destination = current;
+		return true;
+	}
+	return false;
+}
+
+bool workspace_panel_command(uint64_t revision,
+	const struct workspace_placement_destination *destination,
+	char *command, size_t size)
+{
+	struct monitor *monitor;
+	if (size == 0)
+		return false;
+	*command = '\0';
+	if (revision == UINT64_MAX || revision != workspace_panel_revision() ||
+	    !workspace_placement_destination_is_current(destination) ||
+	    !find_complex_function("SlatePanelAssign") ||
+	    !find_complex_function("SlatePanel"))
+		return false;
+	RB_FOREACH(monitor, monitors, &monitor_q)
+	{
+		const char *name;
+		int length;
+
+		if (!monitor->si || monitor->si->name_atom != destination->role ||
+		    (monitor->flags & MONITOR_DISABLED))
+			continue;
+		name = monitor->si->name;
+		if (!workspace_panel_target_valid(name))
+			return false;
+		length = snprintf(command, size, "SlatePanelAssign %s", name);
+		return length > 0 && (size_t)length < size;
 	}
 	return false;
 }
@@ -176,7 +274,8 @@ bool workspace_placement_apply(const struct workspace_placement_target *expected
 	struct workspace_placement_target current;
 
 	if (!fw || fw->placement_revision != expected->revision ||
-	    fw->Desk != expected->desk || !destination_is_current(destination))
+	    fw->Desk != expected->desk ||
+	    !workspace_placement_destination_is_current(destination))
 		return false;
 	current = observe(fw);
 	if (current.role != expected->role ||

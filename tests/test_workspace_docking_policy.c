@@ -98,11 +98,96 @@ static void test_invalid_facts(void)
 		WORKSPACE_DOCKING_INVALID && role == 0);
 }
 
+static void test_exact_window_selector(void)
+{
+	const struct workspace_docking_selector selector = {"work", "Terminal"};
+	const struct workspace_docking_selector live[] = {
+		{"work", "Editor"},
+		{"home", "Terminal"},
+		{"Work", "Terminal"},
+		{"work", "Terminal"},
+		{"work", "terminal"},
+	};
+	size_t index = 99;
+
+	assert(workspace_docking_match_window(&selector, live, 5, &index) ==
+		WORKSPACE_DOCKING_MATCH && index == 3);
+	assert(workspace_docking_match_window(&selector, live, 3, &index) ==
+		WORKSPACE_DOCKING_MISSING && index == SIZE_MAX);
+	assert(workspace_docking_match_window(&selector, NULL, 0, &index) ==
+		WORKSPACE_DOCKING_MISSING && index == SIZE_MAX);
+	assert(workspace_docking_match_window(&selector, live + 3, 1, &index) ==
+		WORKSPACE_DOCKING_MATCH && index == 0);
+}
+
+static void test_ambiguous_window_selector(void)
+{
+	const struct workspace_docking_selector selector = {"work", "Terminal"};
+	const struct workspace_docking_selector live[] = {
+		{"work", "Terminal"}, {"home", "Terminal"}, {"work", "Terminal"},
+	};
+	size_t index = 99;
+
+	assert(workspace_docking_match_window(&selector, live, 3, &index) ==
+		WORKSPACE_DOCKING_AMBIGUOUS && index == SIZE_MAX);
+}
+
+static void test_window_selector_bounds(void)
+{
+	struct workspace_docking_selector selector = {"work", "Terminal"};
+	struct workspace_docking_selector live[WORKSPACE_DOCKING_WINDOW_MAX];
+	size_t index = 99;
+
+	for (size_t i = 0; i < WORKSPACE_DOCKING_WINDOW_MAX; i++)
+		live[i] = (struct workspace_docking_selector){"home", "Editor"};
+	memset(selector.instance, 'x', WORKSPACE_DOCKING_NAME_MAX);
+	selector.instance[WORKSPACE_DOCKING_NAME_MAX] = '\0';
+	live[WORKSPACE_DOCKING_WINDOW_MAX - 1] = selector;
+	assert(workspace_docking_match_window(&selector, live,
+		WORKSPACE_DOCKING_WINDOW_MAX, &index) ==
+		WORKSPACE_DOCKING_MATCH &&
+		index == WORKSPACE_DOCKING_WINDOW_MAX - 1);
+	assert(workspace_docking_match_window(&selector, live,
+		WORKSPACE_DOCKING_WINDOW_MAX + 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+	selector.instance[WORKSPACE_DOCKING_NAME_MAX] = 'x';
+	assert(workspace_docking_match_window(&selector, live, 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+}
+
+static void test_invalid_window_selectors(void)
+{
+	struct workspace_docking_selector selector = {"work", "Terminal"};
+	struct workspace_docking_selector live[] = {
+		{"work", "Terminal"}, {"", "Editor"},
+	};
+	size_t index = 99;
+
+	assert(workspace_docking_match_window(&selector, live, 1, NULL) ==
+		WORKSPACE_DOCKING_INVALID);
+	assert(workspace_docking_match_window(NULL, live, 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+	assert(workspace_docking_match_window(&selector, NULL, 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+	assert(workspace_docking_match_window(&selector, live, 2, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+	strcpy(selector.class_name, "Terminal\n");
+	assert(workspace_docking_match_window(&selector, live, 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+	selector.class_name[0] = '\0';
+	assert(workspace_docking_match_window(&selector, live, 1, &index) ==
+		WORKSPACE_DOCKING_INVALID && index == SIZE_MAX);
+}
+
 int main(void)
 {
 	test_exact_connector_identity();
 	test_ambiguous_connector();
 	test_input_bounds();
 	test_invalid_facts();
+	test_exact_window_selector();
+	test_ambiguous_window_selector();
+	test_window_selector_bounds();
+	test_invalid_window_selectors();
 	return 0;
 }

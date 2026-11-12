@@ -179,7 +179,7 @@ func Run(options Options) error {
 				} else if packet.kind == nativeEcho {
 					d.paletteNativeReply(text)
 				} else if packet.kind == coreReply {
-					if !d.scratchpadReply(text) && !d.logoutReply(text) && !d.paletteReply(text) {
+					if !d.dockingReply(text) && !d.scratchpadReply(text) && !d.logoutReply(text) && !d.paletteReply(text) {
 						d.preview.reply(text)
 					}
 				} else {

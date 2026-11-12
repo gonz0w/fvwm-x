@@ -109,7 +109,7 @@ func TestStateDirectoryStaysAnchored(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "state"), []byte("wrong"), 0600); err != nil {
 		t.Fatal(err)
 	}
-	data, revision, err := readState(fd, "state")
+	data, revision, err := readState(fd, "state", desktopsettings.StateLimit)
 	if err != nil || data != nil || revision != nil {
 		t.Fatalf("read substituted directory: %s %v", data, err)
 	}

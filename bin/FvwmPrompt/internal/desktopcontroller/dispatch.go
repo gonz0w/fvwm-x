@@ -53,6 +53,10 @@ func (d *Controller) Handle(message string) {
 }
 func (d *Controller) handle(command, argument string) error {
 	switch command {
+	case "dock":
+		return d.startDocking(argument)
+	case "dock-control":
+		return d.dockingAction(argument)
 	case "overview":
 		if argument != "" {
 			return errors.New("overview takes no arguments")
@@ -495,6 +499,7 @@ func (d *Controller) tick() {
 	d.publishThemeReload()
 	d.paletteTick()
 	d.scratchpadTick()
+	d.dockingTick(time.Now())
 	if d.editor != nil && !time.Now().Before(d.editor.deadline) {
 		d.retireEditor()
 	}

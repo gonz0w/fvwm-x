@@ -60,6 +60,10 @@
 #include "session_clients.h"
 #include "action_palette.h"
 #include "workspace_tools.h"
+#include "workspace_dock.h"
+#include "infostore.h"
+#include "libs/json_print_policy.h"
+#include <limits.h>
 #include "colorset.h"
 #include "menustyle.h"
 #include "libs/vpacket.h"
@@ -1422,6 +1426,382 @@ void CMD_Send_Scratchpad(F_CMD_ARGS)
 	}
 reply:
 	send_query_result(module, request.cookie, request.serial, result, error);
+}
+
+#define DOCK_REQUEST_LEASE_MS 30000
+
+_Static_assert(sizeof("Send_Dock  0000000000000000 record   -65535 -65535") -
+	1 + 64 + 2 * WORKSPACE_DOCK_SELECTOR_WIRE_MAX <= MAX_MODULE_INPUT_TEXT_LEN,
+	"docking records must fit one native module input frame");
+
+/* A single durable restore transaction pins only copied facts. The module
+ * record remains valid until its teardown hook retires the transaction.
+ */
+static struct {
+	fmodule *owner;
+	char cookie[65], serial[17];
+	size_t expected_count;
+	uint64_t panel_revision;
+	uint64_t deadline;
+	bool panel;
+	struct workspace_dock_profile_input input;
+	struct workspace_dock_plan plan;
+} dock_request;
+
+void workspace_dock_owner_gone(struct fmodule *owner)
+{
+	if (dock_request.owner == owner)
+		memset(&dock_request, 0, sizeof(dock_request));
+}
+
+static bool dock_now(uint64_t *milliseconds)
+{
+	struct timespec now;
+
+	if (clock_gettime(CLOCK_MONOTONIC, &now) != 0 || now.tv_sec < 0 ||
+	    (uint64_t)now.tv_sec > (UINT64_MAX - DOCK_REQUEST_LEASE_MS - 999) / 1000)
+		return false;
+	*milliseconds = (uint64_t)now.tv_sec * 1000 + now.tv_nsec / 1000000;
+	return true;
+}
+
+static bool dock_serial_valid(const char *serial)
+{
+	return strlen(serial) == 16 &&
+		strspn(serial, "0123456789abcdef") == 16;
+}
+
+static bool dock_text_valid(const char *text)
+{
+	size_t length = strnlen(text, WORKSPACE_DOCKING_NAME_MAX + 1);
+
+	if (!length || length > WORKSPACE_DOCKING_NAME_MAX)
+		return false;
+	for (const unsigned char *p = (const unsigned char *)text; *p;)
+	{
+		size_t step = json_utf8_sequence_length(p);
+
+		if (!step || *p < 32 || *p == 127)
+			return false;
+		p += step;
+	}
+	return true;
+}
+
+static bool dock_decode_hex(const char *hex, char *out)
+{
+	size_t length = strlen(hex);
+	static const char digits[] = "0123456789abcdef";
+
+	if (!length || length > 2 * WORKSPACE_DOCKING_NAME_MAX ||
+	    length % 2 || strspn(hex, digits) != length)
+		return false;
+	for (size_t i = 0; i < length; i += 2)
+	{
+		unsigned int byte = (strchr(digits, hex[i]) - digits) * 16 +
+			(strchr(digits, hex[i + 1]) - digits);
+
+		if (byte < 32 || byte == 127)
+			return false;
+		out[i / 2] = (char)byte;
+	}
+	out[length / 2] = '\0';
+	return dock_text_valid(out);
+}
+
+static bool dock_number(const char *text, int minimum, int maximum, int *out)
+{
+	const char *digits = *text == '-' && minimum < 0 ? text + 1 : text;
+	long value;
+
+	if (!*digits || strspn(digits, "0123456789") != strlen(digits))
+		return false;
+	errno = 0;
+	value = strtol(text, NULL, 10);
+	if (errno || value < minimum || value > maximum)
+		return false;
+	*out = (int)value;
+	return true;
+}
+
+static bool dock_begin(fmodule *module, char **tokens, size_t count,
+	uint64_t now)
+{
+	char connector[WORKSPACE_DOCKING_NAME_MAX + 1];
+	int desk = 0, windows;
+	bool has_desk;
+
+	if (count != 7 || !dock_decode_hex(tokens[3], connector) ||
+	    !dock_number(tokens[5], 0, WORKSPACE_DOCKING_WINDOW_MAX, &windows) ||
+	    (strcmp(tokens[6], "0") != 0 && strcmp(tokens[6], "1") != 0))
+		return false;
+	has_desk = strcmp(tokens[4], "-") != 0;
+	if (has_desk && !dock_number(tokens[4], 0, INT_MAX, &desk))
+		return false;
+	workspace_dock_owner_gone(module);
+	dock_request.owner = module;
+	dock_request.deadline = now + DOCK_REQUEST_LEASE_MS;
+	strcpy(dock_request.cookie, tokens[0]);
+	strcpy(dock_request.serial, tokens[1]);
+	dock_request.expected_count = (size_t)windows;
+	dock_request.panel = strcmp(tokens[6], "1") == 0;
+	strcpy(dock_request.input.connector, connector);
+	dock_request.input.has_desk = has_desk;
+	dock_request.input.desk = desk;
+	return true;
+}
+
+static bool dock_record(char **tokens, size_t count)
+{
+	struct workspace_dock_window_input window = {0};
+	int x, y;
+
+	if (count != 7 || dock_request.plan.prepared ||
+	    dock_request.input.count >= dock_request.expected_count ||
+	    !dock_decode_hex(tokens[3], window.selector.instance) ||
+	    !dock_decode_hex(tokens[4], window.selector.class_name) ||
+	    strlen(window.selector.instance) + strlen(window.selector.class_name) >
+		    WORKSPACE_DOCK_SELECTOR_WIRE_MAX ||
+	    !dock_number(tokens[5], -WORKSPACE_DOCK_OFFSET_MAX,
+		    WORKSPACE_DOCK_OFFSET_MAX, &x) ||
+	    !dock_number(tokens[6], -WORKSPACE_DOCK_OFFSET_MAX,
+		    WORKSPACE_DOCK_OFFSET_MAX, &y))
+		return false;
+	window.offset_x = x;
+	window.offset_y = y;
+	dock_request.input.windows[dock_request.input.count++] = window;
+	return true;
+}
+
+static const char *dock_status_error(enum workspace_dock_status status)
+{
+	switch (status)
+	{
+	case WORKSPACE_DOCK_INVALID: return "invalid-request";
+	case WORKSPACE_DOCK_AMBIGUOUS: return "ambiguous-selector";
+	case WORKSPACE_DOCK_STALE: return "stale-plan";
+	case WORKSPACE_DOCK_BUSY: return "busy";
+	default: return "unavailable";
+	}
+}
+
+static cJSON *dock_counts(const char *count_name, size_t count, size_t skipped,
+	bool fallback)
+{
+	cJSON *result = cJSON_CreateObject();
+
+	if (!result || !cJSON_AddNumberToObject(result, count_name, count) ||
+	    !cJSON_AddNumberToObject(result, "skipped", skipped) ||
+	    !cJSON_AddBoolToObject(result, "fallback", fallback))
+	{
+		cJSON_Delete(result);
+		return NULL;
+	}
+	return result;
+}
+
+static const char *dock_monitor_name(const struct workspace_dock_plan *plan)
+{
+	const monitor_topology_snapshot *snapshot = FScreenGetTopologySnapshot();
+
+	if (!snapshot || snapshot->epoch != plan->destination.epoch)
+		return NULL;
+	for (int i = 0; i < snapshot->monitor_count; i++)
+	{
+		const monitor_topology_monitor *monitor = &snapshot->monitors[i];
+
+		if (monitor->name_atom == plan->destination.role && monitor->name &&
+		    dock_text_valid(monitor->name))
+			return monitor->name;
+	}
+	return NULL;
+}
+
+static cJSON *dock_prepare_reply(const char **error)
+{
+	const struct workspace_dock_plan *plan = &dock_request.plan;
+	const char *monitor;
+	char command[WORKSPACE_DOCKING_NAME_MAX + 32];
+	cJSON *result;
+	enum workspace_dock_status status =
+		workspace_dock_prepare(&dock_request.input, &dock_request.plan);
+
+	if (status != WORKSPACE_DOCK_OK)
+	{
+		*error = dock_status_error(status);
+		return NULL;
+	}
+	if (dock_request.panel)
+	{
+		dock_request.panel_revision = workspace_panel_revision();
+		if (!workspace_panel_command(dock_request.panel_revision,
+		    &plan->destination, command, sizeof(command)))
+		{
+			*error = "unavailable";
+			return NULL;
+		}
+	}
+	result = dock_counts("matched", plan->count,
+		plan->requested - plan->count, plan->primary_fallback);
+	monitor = dock_monitor_name(plan);
+	if (!result || (monitor &&
+	    !cJSON_AddStringToObject(result, "monitor", monitor)))
+	{
+		*error = "unavailable";
+		cJSON_Delete(result);
+		return NULL;
+	}
+	return result;
+}
+
+struct dock_panel_apply {
+	fmodule *module;
+	const exec_context_t *exc;
+	uint64_t revision;
+	bool applied;
+};
+
+static bool dock_apply_panel(
+	const struct workspace_placement_destination *destination, void *context)
+{
+	struct dock_panel_apply *panel = context;
+	char command[WORKSPACE_DOCKING_NAME_MAX + 32];
+	char target[sizeof(command)];
+	const char *assigned;
+
+	if (MOD_IS_RETIRED(panel->module) ||
+	    !workspace_panel_command(panel->revision, destination,
+		    command, sizeof(command)))
+		return false;
+	strcpy(target, command + sizeof("SlatePanelAssign ") - 1);
+	execute_function_override_window(NULL, panel->exc, command, NULL,
+		FUNC_DONT_EXPAND_COMMAND, NULL);
+	assigned = get_metainfo_value(WORKSPACE_PANEL_TARGET);
+	panel->applied = assigned && strcmp(assigned, target) == 0;
+	return panel->applied && !MOD_IS_RETIRED(panel->module);
+}
+
+static cJSON *dock_apply_reply(fmodule *module, const exec_context_t *exc,
+	const char **error)
+{
+	struct workspace_dock_plan plan = dock_request.plan;
+	struct workspace_dock_result applied;
+	struct dock_panel_apply panel = {module, exc, dock_request.panel_revision,
+		false};
+	bool apply_panel = dock_request.panel;
+	char command[WORKSPACE_DOCKING_NAME_MAX + 32];
+	enum workspace_dock_status status;
+	cJSON *result;
+
+	/* Retire the lease before any command or output can reenter. */
+	workspace_dock_owner_gone(module);
+	if (apply_panel &&
+	    (panel.revision != workspace_panel_revision() ||
+	     !workspace_placement_destination_is_current(&plan.destination)))
+	{
+		*error = "stale-plan";
+		return NULL;
+	}
+	if (apply_panel && !workspace_panel_command(panel.revision,
+	    &plan.destination, command, sizeof(command)))
+	{
+		*error = "unavailable";
+		return NULL;
+	}
+	status = workspace_dock_apply(&plan, &applied,
+		apply_panel ? dock_apply_panel : NULL, &panel);
+	if (status != WORKSPACE_DOCK_OK)
+	{
+		*error = dock_status_error(status);
+		return NULL;
+	}
+	*error = "unavailable";
+	result = dock_counts("applied", applied.applied, applied.skipped,
+		applied.primary_fallback);
+	if (result && !cJSON_AddBoolToObject(result, "panel_applied",
+	    panel.applied))
+	{
+		cJSON_Delete(result);
+		result = NULL;
+	}
+	return result;
+}
+
+void CMD_Send_Dock(F_CMD_ARGS)
+{
+	fmodule *module = exc->m.module;
+	char input[MAX_MODULE_INPUT_TEXT_LEN + 1], *tokens[7], *token, *save;
+	size_t count = 0;
+	uint64_t now;
+	const char *error = "invalid-request";
+	cJSON *result = NULL;
+	bool prepare, apply, owner, transaction;
+
+	if (!module || MOD_IS_RETIRED(module) || !action ||
+	    strnlen(action, sizeof(input)) >= sizeof(input))
+		return;
+	strcpy(input, action);
+	for (token = strtok_r(input, " \t\r\n", &save);
+	     token && count < sizeof(tokens) / sizeof(tokens[0]);
+	     token = strtok_r(NULL, " \t\r\n", &save))
+		tokens[count++] = token;
+	if (count < 3 || strlen(tokens[0]) > 64 ||
+	    strspn(tokens[0], "0123456789abcdef-") != strlen(tokens[0]) ||
+	    !dock_serial_valid(tokens[1]))
+		return;
+	prepare = strcmp(tokens[2], "prepare") == 0;
+	apply = strcmp(tokens[2], "apply") == 0;
+	if (!dock_now(&now))
+	{
+		workspace_dock_owner_gone(dock_request.owner);
+		if (prepare || apply)
+			send_query_result(module, tokens[0], tokens[1], NULL,
+				"unavailable");
+		return;
+	}
+	if (dock_request.owner && now >= dock_request.deadline)
+		workspace_dock_owner_gone(dock_request.owner);
+	owner = dock_request.owner == module &&
+		strcmp(tokens[0], dock_request.cookie) == 0;
+	transaction = owner && strcmp(tokens[1], dock_request.serial) == 0;
+
+	if (dock_request.owner && dock_request.owner != module)
+		error = "busy";
+	else if (apply)
+	{
+		if (!token && count == 4 && dock_serial_valid(tokens[3]) &&
+		    strcmp(tokens[1], tokens[3]) != 0)
+		{
+			error = "stale-plan";
+			if (owner && dock_request.plan.prepared &&
+			    strcmp(tokens[3], dock_request.serial) == 0)
+				result = dock_apply_reply(module, exc, &error);
+		}
+	}
+	else if (prepare)
+	{
+		if (!token && count == 3 && transaction &&
+		    !dock_request.plan.prepared &&
+		    dock_request.input.count == dock_request.expected_count)
+			result = dock_prepare_reply(&error);
+		if (result)
+			dock_request.deadline = now + DOCK_REQUEST_LEASE_MS;
+		else if (transaction)
+			workspace_dock_owner_gone(module);
+	}
+	else if (!token && strcmp(tokens[2], "begin") == 0 &&
+	    dock_begin(module, tokens, count, now))
+		return;
+	else if (!token && transaction && strcmp(tokens[2], "record") == 0 &&
+	    dock_record(tokens, count))
+		return;
+	else if (transaction)
+		workspace_dock_owner_gone(module);
+
+	if ((prepare || apply) && !MOD_IS_RETIRED(module))
+		send_query_result(module, tokens[0], tokens[1], result, error);
+	else
+		cJSON_Delete(result);
 }
 
 void CMD_Send_WindowList(F_CMD_ARGS)

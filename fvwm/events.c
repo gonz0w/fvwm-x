@@ -1730,6 +1730,8 @@ monitor_update_ewmh(void)
 			    m->si->name, m->Desktops->next,
 			    mref->Desktops->next);
 
+			if (m->virtual_scr.Vx || m->virtual_scr.Vy)
+				monitor_workspace_revision_advance(m);
 			m->virtual_scr.Vx = 0;
 			m->virtual_scr.Vy = 0;
 

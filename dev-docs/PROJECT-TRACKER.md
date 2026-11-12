@@ -92,6 +92,53 @@ controls fit in both final captures. Native platform product/install/X
 gates and physical docking remain open.
 [Qualification evidence](verification/VERIFICATION-2026-11-11-DOCKING-QUALIFICATION.md).
 
+PR380 merged as `c1f8b956a5195c139fa974ad5b774017d7bd9f8f` with the
+reviewed tree. Lead owns remaining #222 native qualification on
+`codex/r1-docking-native-gates`. Reuse the nine-case theme runs and BSD
+policy/controller units. First stage the retained Linux ARM64 Meson
+build in a private DESTDIR, build missing install targets only, and run
+the nine-case docking scene against staged core, controller, modules and
+data. The staged check uses Xorg dummy and reuses earlier screenshots.
+In the BSD lane, use one isolated stopped-parent FreeBSD ARM64 child for
+current core/controller compilation, a private stage and the existing
+authenticated default-X installed controller scenario. Batch dependent
+checks once per guest, retain diagnostics and allow one diagnosed
+correction per lane. Default-X compatibility and Xorg dummy hotplug
+are separate. Physical connector, dock firmware, and display/input
+behavior need actual hardware and remain open.
+Linux installed docking passed all nine cases with the staged files.
+FreeBSD ARM64 compiled the current installable products and staged them.
+Its authenticated default-X server came up at 800×600. The older desktop
+settings fixture required a wallpaper probe beyond the bottom edge.
+Reuse the exact passing FreeBSD build and stage in a child and run a
+docking-specific scenario on its authenticated display. Use the same
+scenario on the fresh supported OpenBSD ARM64 lane. Reuse the cached
+OpenBSD boot, PNG and Go inputs, with signed package preparation inside
+the disposable guest. Track any package or display constraint separately.
+FreeBSD passed five authenticated docking cases against its exact stage.
+The fresh OpenBSD run completed signed dependency preparation and Meson
+configuration. Its install-target inventory stopped on the logical
+/root alias versus physical /home source path. Retry the same scoped
+gate with a physical guest working directory and anchored evidence paths.
+OpenBSD then built and staged the installed products and brought up
+authenticated Xorg. Its committed single output was a synthetic
+FVWM-X-Root role with no RandR output IDs. The first preview correctly
+reported primary fallback, which the fixture had expected only in the
+mixed-output case. Use the committed output facts for the expectation.
+The fresh-guest launcher retires its per-job key, so a final same-source
+OpenBSD confirmation must use a new guest and private stage.
+The final OpenBSD guest passed its native build, private install and all
+five authenticated docking cases, including synthetic-root fallback.
+Both BSD default-X scenes ran without screenshots. Linux ARM64 installed
+docking passed all nine dummy-output cases. Native AMD64 support gates
+and physical docking remain open.
+[Native qualification](verification/VERIFICATION-2026-11-11-DOCKING-NATIVE.md).
+
+
+
+
+
+
 
 
 

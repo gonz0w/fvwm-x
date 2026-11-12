@@ -162,6 +162,13 @@ def fixture_commands(args, build, source):
         for name, path in paths.items():
             options.extend(['--' + name, str(path.resolve())])
         return [('notify', options)]
+    if getattr(args, 'desktop_docking_only', False):
+        stage = (build / 'install-stage').resolve(strict=True)
+        prefix = (stage / 'usr/local').resolve(strict=True)
+        if not prefix.is_relative_to(stage):
+            raise RuntimeError('Docking install prefix escapes the private stage.')
+        return [('desktop-docking', ['--build', str(build),
+            '--installed-prefix', str(prefix), '--no-screenshot'])]
     if args.desktop_controller_only:
         stage = build / 'install-stage'
         prefix = stage / 'usr/local'
@@ -266,9 +273,10 @@ def run_once(args):
                           'notify': 'notify_live.py',
                           'tray': 'tray_modern_live.py',
                           'complete-preview': 'contrast_resource_live.py',
-                          'desktop-controller': 'desktop_live.py'}[name]
+                          'desktop-controller': 'desktop_live.py',
+                          'desktop-docking': 'workspace_docking_live.py'}[name]
                 native_options = [] if name in (
-                    'desktop-controller', 'notify', 'tray',
+                    'desktop-controller', 'desktop-docking', 'notify', 'tray',
                     'complete-preview') else [
                     '--fvwm', str(build / 'fvwm3'),
                     '--mfl', str(build / 'modules/FvwmMFL/FvwmMFL')]
@@ -279,7 +287,8 @@ def run_once(args):
                 child = runtime.start(name, argv, name + '.log', env)
                 if name in ('tray', 'complete-preview'):
                     tray_fixture = child
-                timeout = (240 if name in ('tray', 'complete-preview') else
+                timeout = (220 if name == 'desktop-docking' else
+                           240 if name in ('tray', 'complete-preview') else
                     300 if name in ('desktop-controller', 'notify') else 90)
                 status = child.wait_until_exit(time.monotonic() + timeout)
                 evidence['fixtures'][name] = {'command': argv, 'status': status}
@@ -415,6 +424,8 @@ if __name__ == '__main__':
     modes.add_argument('--desktop-controller-only', action='store_true',
                         help='Run installed desktop settings checks with '
                              'staged configuration data.')
+    modes.add_argument('--desktop-docking-only', action='store_true',
+                       help='Run installed docking on the authenticated display.')
     modes.add_argument('--directory-only', action='store_true',
                         help='Run only the installed directory menu fixture.')
     modes.add_argument('--xlock-only', action='store_true',

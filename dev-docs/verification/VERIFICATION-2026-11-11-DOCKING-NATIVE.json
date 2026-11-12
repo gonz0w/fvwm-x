@@ -1,0 +1,427 @@
+{
+  "issue": 222,
+  "revision": "c1f8b956a5195c139fa974ad5b774017d7bd9f8f",
+  "linux_arm64": {
+    "plan_sha256": "1a5ad3eade91f2275f76f8c37780effdd025d7e47ac2fcb20cdfdda07e2b669a",
+    "receipt_sha256": "613a6630613dbf4c9cd99d5cbfdc676c07fca0ccca11307d535e9e2f34f523c2",
+    "cases": {
+      "desktop_saves_private_data_only_profile": true,
+      "preview_is_read_only": true,
+      "newer_workspace_refuses_plan": true,
+      "newer_panel_assignment_refuses_plan": true,
+      "newer_desktop_settings_refuse_plan": true,
+      "newer_window_move_is_preserved": true,
+      "apply_restores_workspace_panel_and_client_placement": true,
+      "topology_change_refuses_plan_and_missing_connector_falls_back": true,
+      "restart_reloads_profile_and_resolves_current_allocations": true
+    },
+    "builds": [
+      {
+        "label": "missing-install-targets",
+        "exit": 0
+      },
+      {
+        "label": "private-meson-install",
+        "exit": 0
+      },
+      {
+        "label": "installed-docking",
+        "exit": 0
+      }
+    ],
+    "reused_commands": 45,
+    "missing_install_targets": [
+      "bin/FvwmPrompt/FvwmCommand",
+      "bin/FvwmPrompt/fvwm-clipboard",
+      "bin/FvwmPrompt/fvwm-menu-xlock",
+      "bin/FvwmPrompt/fvwm-pinboard",
+      "bin/FvwmPrompt/fvwm-script-ComExample",
+      "bin/fvwm-clipboard-capture",
+      "bin/fvwm-file-transfer",
+      "bin/fvwm-native-settings",
+      "bin/fvwm-root",
+      "bin/fvwm-settings-portal",
+      "bin/fvwm-startup-launch",
+      "modules/FvwmAnimate/FvwmAnimate",
+      "modules/FvwmAuto/FvwmAuto",
+      "modules/FvwmIdent/FvwmIdent",
+      "modules/FvwmPinboard/FvwmPinboard",
+      "modules/FvwmRearrange/FvwmRearrange"
+    ],
+    "source_sha256": {
+      "tests/live_x/action_palette_live.py": "95d7e9e8d70fcb25f8e895fba9f4ed307afb7234d28f1605ac816c248e9a6e84",
+      "tests/live_x/native_module_proxy.py": "bb06997d4e64c9683f05daad644d03396a3ef65b0b7505f1c08b84dce1adbfdb",
+      "bin/FvwmPrompt/internal/desktopcontroller/palette.go": "cd45001f4b93277652be8bff241626a394cd8661568172c8b5ab48f7e283fc59",
+      "bin/FvwmPrompt/internal/desktopcontroller/palette_native.go": "355d435c347d012fb867d51d5a6ed78f3cc230943a826c8d65adda00e288e6a2",
+      "fvwm/module_interface.c": "b805d7d7e814dc5a88f26297f94b76af797ebaab292519ae3addc2cadaa70d2d",
+      "fvwm/palette_policy.c": "d031df380cd241222d89ba396f632b5cff64684d4cf374002602ff8a17636879",
+      "tests/live_x/workspace_docking_live.py": "44b1426c6ececa7ad0d1e7140d545d7a9e465e0390038c606437c79fc69937f4",
+      "fvwm/workspace_dock.c": "415a7848d7dcb603371bada78255d54f836918927b67fa73bfadf8a529a2b3ac",
+      "fvwm/workspace_placement.c": "78f21f5004691dbea5217b7011aeb4f282f7a8f8d210302af9b541bafb9e701a",
+      "default-config/desktop.fvwm": "677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68",
+      "bin/FvwmPrompt/internal/desktopcontroller/docking.go": "cfd2b972f7dac4beaf48c0c6a0b8eb56adfe8c4de2192fcaafee32bb215f704b",
+      "bin/FvwmPrompt/internal/desktopcontroller/docking_state.go": "9ef1721659fe18d057c49555220c1cc8cb08ff8fe75dbfaeb6b7e1133cf4f542",
+      "tests/live_x/workspace_placement_mixed_live.py": "daed85f34e0a98ed26e0f6287dfe8e656f689ae6c7528698fe88f992459539db"
+    },
+    "installed_binary_sha256": {
+      "bin/fvwm3": "fc42f7fc1255e37efa5360996cf469364d2c773167a73841bb10d5e18866254d",
+      "libexec/fvwm3/1.1.6/FvwmDesktop": "459c84c34fb05cbcb363c1c29e8b3229cfaa3f44060eb14dd75d17cf9c81a8af",
+      "libexec/fvwm3/1.1.6/FvwmForm": "91484330420b0035b70af4db818d8016027eb797fceb88cdf40e11dcd9196438",
+      "libexec/fvwm3/1.1.6/fvwm-desktop-worker": "a5f5c45e6affb9cef9225d9cdf78cc88061f235d6613c3bb2c80a42d4393d92c",
+      "libexec/fvwm3/1.1.6/fvwm-desktop-capture": "7a7455e1d8c8061a5474be1c8acd32713ab136683fbfae3307d29501690fda4e",
+      "libexec/fvwm3/1.1.6/FvwmAnimate": "b347e3e3549601bfca04b9f2f6d08865a2a760d222a87eb3afc4e77e8d190be8",
+      "libexec/fvwm3/1.1.6/FvwmAuto": "e5483ea0da3e9d82c725edbab92a48a790cf1117500b127f19b22a1ee74e616d",
+      "libexec/fvwm3/1.1.6/FvwmBacker": "d440bc8324688605b70ed2c0ea985aff311ce3ca11759de40f6566e7ecc0d747",
+      "libexec/fvwm3/1.1.6/FvwmButtons": "64676be6aaf3bd28b09410cfffb7d042cee905d400d14bd0386046d0c5240fc1",
+      "libexec/fvwm3/1.1.6/FvwmEvent": "a6805d69f1495835f9e03186c4901dc3f092a27c5e25bfea9d11c27d660f8257",
+      "libexec/fvwm3/1.1.6/FvwmIconMan": "72d5db4af8505e8b3c7330132abd1b4947a7117b4d820818ead7ade5a003f05c",
+      "libexec/fvwm3/1.1.6/FvwmIdent": "fa47ace28c5b11f9b2b354953f8d57ff7c9738778f3f229baabc5d293c194e7d",
+      "libexec/fvwm3/1.1.6/FvwmMFL": "fc1e42e488060a96a1ed7bc3f0e978d27c76d8af304f0bdd311ba6de3190671e",
+      "libexec/fvwm3/1.1.6/FvwmNotify": "f502d7e59eb6ec7be9a7fd3e2f0d534a62fced61544f19fbfe8fff4326f12233",
+      "libexec/fvwm3/1.1.6/FvwmPager": "79c149592213c8aafd428d0bdea3572490f5aa6c52a93cae35ce655bd9f8710a",
+      "libexec/fvwm3/1.1.6/FvwmPerl": "96a3202407a8189856bef5be2f164373a6a694069a6fbacf5ce7df7a0856cc1a",
+      "libexec/fvwm3/1.1.6/FvwmPinboard": "5d342c288986fb77785dd724a79555dc111e464cf66d3f36b895bd40f27791e7",
+      "libexec/fvwm3/1.1.6/FvwmRearrange": "eda5b2d2f0d6c56f3322a9312040da3d627eecde3f8f69dc65dc364ee6126968",
+      "libexec/fvwm3/1.1.6/FvwmScript": "4d74ce065406a8a50926743d64f4b2f131223d6dffb0d88524e4c66934bd11af",
+      "libexec/fvwm3/1.1.6/FvwmTalk": "9f9ec93259baf75b1747df4540911c52cbca63f7e72f7d4694f18cab4bee6720",
+      "libexec/fvwm3/1.1.6/FvwmTray": "dfaa61c20f43db8528086ea075cabf08e35c94a4126c82ee2adfcdc4266ee985",
+      "libexec/fvwm3/1.1.6/fvwm-image-svg-worker": "b1beb36b5ba3e4c4e204c61621d9a60e64f77e2e88972a72731b7c9212701fce"
+    },
+    "installed_data_sha256": {
+      "share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+      "share/fvwm3/default-config/config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+      "share/fvwm3/default-config/desktop.fvwm": "677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68",
+      "share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+    },
+    "screenshots": [],
+    "shutdown": [
+      {
+        "container_shutdown": "confirmed"
+      },
+      {
+        "machine_shutdown": "confirmed"
+      }
+    ]
+  },
+  "freebsd_arm64_initial": {
+    "receipt_sha256": "68d1164f5a5e0b8b12c2a50b0fda2a5658d4d1a8e44c10677135478cb4762669",
+    "source": "c1f8b956a5195c139fa974ad5b774017d7bd9f8f",
+    "build_and_install": [
+      {
+        "label": "system",
+        "exit": 0
+      },
+      {
+        "label": "go-version",
+        "exit": 0
+      },
+      {
+        "label": "compiler",
+        "exit": 0
+      },
+      {
+        "label": "configure",
+        "exit": 0
+      },
+      {
+        "label": "native-installed-targets",
+        "exit": 0
+      },
+      {
+        "label": "private-meson-install",
+        "exit": 0
+      },
+      {
+        "label": "installed-core-version",
+        "exit": 0
+      },
+      {
+        "label": "authenticated-default-x",
+        "exit": 1
+      }
+    ],
+    "installed": {
+      "core": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/bin/fvwm3",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/bin/fvwm3",
+        "bytes": 5748760,
+        "mode": 493,
+        "sha256": "7c096e552389fe27827b19561b507853c5a70ef78a119cad0c2d2e7cabfc6226"
+      },
+      "desktop": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop",
+        "bytes": 6760506,
+        "mode": 493,
+        "sha256": "2c0a8c4b5f149bc21cb182a5dbec4c10a9548901ee39c9abd1c70de83f759125"
+      },
+      "worker": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker",
+        "bytes": 6465188,
+        "mode": 493,
+        "sha256": "c3ea25191533fbc64bcec18160d39de9942757514764f07b23da1ab54932eedb"
+      },
+      "capture": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-capture",
+        "bytes": 43248,
+        "mode": 493,
+        "sha256": "93b9d3c0ab2604f3205c8e9f6a6f6a64d65609660e8b9cd3a2275c1a785f210c"
+      },
+      "config": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/config",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/config",
+        "bytes": 2079,
+        "mode": 420,
+        "sha256": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d"
+      },
+      "desktop-config": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/desktop.fvwm",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/desktop.fvwm",
+        "bytes": 9742,
+        "mode": 420,
+        "sha256": "677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68"
+      },
+      "palettes": {
+        "path": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/palettes.json",
+        "realpath": "/root/fvwm-module-waits-20261015/docking-native01-stage/usr/local/share/fvwm3/default-config/palettes.json",
+        "bytes": 1504,
+        "mode": 420,
+        "sha256": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      }
+    },
+    "compiled_targets": [
+      "bin/FvwmPrompt/FvwmCommand",
+      "bin/FvwmPrompt/FvwmDesktop",
+      "bin/FvwmPrompt/FvwmPrompt",
+      "bin/FvwmPrompt/fvwm-clipboard",
+      "bin/FvwmPrompt/fvwm-desktop-worker",
+      "bin/FvwmPrompt/fvwm-file-browser",
+      "bin/FvwmPrompt/fvwm-menu-desktop",
+      "bin/FvwmPrompt/fvwm-menu-directory",
+      "bin/FvwmPrompt/fvwm-menu-xlock",
+      "bin/FvwmPrompt/fvwm-pinboard",
+      "bin/FvwmPrompt/fvwm-script-ComExample",
+      "bin/FvwmPrompt/fvwm-session",
+      "bin/fvwm-clipboard-capture",
+      "bin/fvwm-desktop-capture",
+      "bin/fvwm-file-transfer",
+      "bin/fvwm-image-svg-worker",
+      "bin/fvwm-native-settings",
+      "bin/fvwm-root",
+      "bin/fvwm-session-bus",
+      "bin/fvwm-settings-portal",
+      "bin/fvwm-startup-launch",
+      "fvwm3",
+      "modules/FvwmAnimate/FvwmAnimate",
+      "modules/FvwmAuto/FvwmAuto",
+      "modules/FvwmBacker/FvwmBacker",
+      "modules/FvwmButtons/FvwmButtons",
+      "modules/FvwmEvent/FvwmEvent",
+      "modules/FvwmForm/FvwmForm",
+      "modules/FvwmIconMan/FvwmIconMan",
+      "modules/FvwmIdent/FvwmIdent",
+      "modules/FvwmMFL/FvwmMFL",
+      "modules/FvwmNotify/FvwmNotify",
+      "modules/FvwmPager/FvwmPager",
+      "modules/FvwmPinboard/FvwmPinboard",
+      "modules/FvwmRearrange/FvwmRearrange",
+      "modules/FvwmScript/FvwmScript",
+      "modules/FvwmTray/FvwmTray"
+    ],
+    "parent_unchanged": true,
+    "qemu_exit": 0,
+    "default_x_first_attempt": "Authenticated server came up at 800x600. The legacy desktop settings test waited for a wallpaper probe at y=850."
+  },
+  "freebsd_arm64_default_x": {
+    "plan_sha256": "54a52f2e116de4885279553a76a75c6766661721866f7390989e4b98ea902307",
+    "result_sha256": "29d797518cb62ed905f374d26506d667d7aeddb7116e3df48b7d69595ea42c17",
+    "scene_sha256": "3fd55303a91ea771a63a1b029032bb4d5d2e7e73e3a292830459911a67e50724",
+    "cases": {
+      "desktop_saves_private_data_only_profile": true,
+      "preview_is_read_only": true,
+      "newer_workspace_refuses_plan": true,
+      "newer_window_move_is_preserved": true,
+      "apply_restores_workspace_panel_and_client_placement": true
+    },
+    "installed_binary_sha256": {
+      "bin/fvwm3": "7c096e552389fe27827b19561b507853c5a70ef78a119cad0c2d2e7cabfc6226",
+      "libexec/fvwm3/1.1.6/FvwmDesktop": "2c0a8c4b5f149bc21cb182a5dbec4c10a9548901ee39c9abd1c70de83f759125",
+      "libexec/fvwm3/1.1.6/FvwmForm": "ce7b4097ee981fd9c4dc78544a39fea966508d5832ecda7e083e84e138475991",
+      "libexec/fvwm3/1.1.6/fvwm-desktop-worker": "c3ea25191533fbc64bcec18160d39de9942757514764f07b23da1ab54932eedb",
+      "libexec/fvwm3/1.1.6/fvwm-desktop-capture": "93b9d3c0ab2604f3205c8e9f6a6f6a64d65609660e8b9cd3a2275c1a785f210c",
+      "libexec/fvwm3/1.1.6/FvwmAnimate": "cee769ccc21e33f4843615ae9c502250f4958c2ee68ab99442e71ca411c0f535",
+      "libexec/fvwm3/1.1.6/FvwmAuto": "3db956c00dde8af5191427814c294ea4f088b8d68627f277587ae16809dc323a",
+      "libexec/fvwm3/1.1.6/FvwmBacker": "4c1bde6fa22e206690e1f886aa2b2aad1be1859884ef38053135f75180442e12",
+      "libexec/fvwm3/1.1.6/FvwmButtons": "d9b50db3f82e44cec5033d8250739b3c5910043576210d71d9e42a6f3ee71e4d",
+      "libexec/fvwm3/1.1.6/FvwmEvent": "3536be562798068163206266300938aac68af1783bc31a02b7a090e5e64d7491",
+      "libexec/fvwm3/1.1.6/FvwmIconMan": "e6654bc02babd41eca49398e01df7b9139bc4b31b3022f921e9b023180a352b9",
+      "libexec/fvwm3/1.1.6/FvwmIdent": "a17efa67e6c9395de260227a0ca553f042c82743689c0c14165244d6f453438f",
+      "libexec/fvwm3/1.1.6/FvwmMFL": "7db42e0555ad4c00c8383f2d5a9d65cffdf7745352541688cd49fe515dc6adc0",
+      "libexec/fvwm3/1.1.6/FvwmNotify": "498111fd69dc19bd2f7cc236283e1be9f177c09d0a03b078d3b04790b2ed8cfc",
+      "libexec/fvwm3/1.1.6/FvwmPager": "7bfc3dfd13c0d823199197a8816e153cc4275409b568cb85f3e2964651d3a8c5",
+      "libexec/fvwm3/1.1.6/FvwmPerl": "752f132064c85167aee19a71da7514c2e345f3c723a976bab1adb6ec9fdd0bc1",
+      "libexec/fvwm3/1.1.6/FvwmPinboard": "130881e3a0c5a656dd3109d4453591a9379c1d477b2c367da0b1e19efe06196f",
+      "libexec/fvwm3/1.1.6/FvwmRearrange": "7fbdc4dd5695300bc96b37cb33a2633086bfcf1378e8686335ca3fcf6db64af8",
+      "libexec/fvwm3/1.1.6/FvwmScript": "20cc03143f4584464c6a27b56c8a16120cf33038335ccf5f00ced8ede1f601bd",
+      "libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+      "libexec/fvwm3/1.1.6/FvwmTray": "4eb32b1372ac89fb07913088cd305138676ffa8816c9b0792e9b7eb91df9dada",
+      "libexec/fvwm3/1.1.6/fvwm-image-svg-worker": "d6f2cf817cb3da96c0a20a32d0490a7cb4ffdb2104332388c89323ca15053016"
+    },
+    "installed_data_sha256": {
+      "share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+      "share/fvwm3/default-config/config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+      "share/fvwm3/default-config/desktop.fvwm": "677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68",
+      "share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+    },
+    "qemu_exit": 0,
+    "parent_unchanged": true
+  },
+  "openbsd_arm64": [
+    {
+      "plan_sha256": "de283d24a19117c1ae765451db883d0f7362333391705428c825d8e67cadb6d0",
+      "archive_sha256": "ec3987519a568b223ae4ee871faf8480eb17ccc41e418cb2355b6405f5d9ff69",
+      "qemu_exit": 0,
+      "release": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "status": "failed",
+      "phase": "configure"
+    },
+    {
+      "plan_sha256": "0dc5241d89e5538a562ce9de20b83f58faa0b57dd391470e4cc5a334a13c853a",
+      "archive_sha256": "db987b0ba08e0214b9361e4a290f94714929327b9f9c3764a52488854b0e9ed4",
+      "qemu_exit": 0,
+      "release": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "status": "failed",
+      "phase": "default-x"
+    },
+    {
+      "plan_sha256": "6c11993980d78d9da985463f86a32d2dd98765196762ca29f0a6aa6ed3be07d5",
+      "archive_sha256": "5bc43f06a2347bf9bb89174da668b34510f113185b6dc7a169166a4aee1d1412",
+      "qemu_exit": 0,
+      "release": [
+        "OpenBSD",
+        "8.0",
+        "arm64",
+        "OpenBSD 8.0 (GENERIC.MP) #1: Mon Oct 19 12:58:44 MDT 2026"
+      ],
+      "status": "passed",
+      "phase": "complete",
+      "cases": {
+        "desktop_saves_private_data_only_profile": true,
+        "preview_is_read_only": true,
+        "newer_workspace_refuses_plan": true,
+        "newer_window_move_is_preserved": true,
+        "apply_restores_workspace_panel_and_client_placement": true
+      },
+      "installed_binary_sha256": {
+        "bin/fvwm3": "67b9f77562519d60d42c4636e841089a6efbb47de721b2a37a97d5b9dc3ebf4c",
+        "libexec/fvwm3/1.1.6/FvwmDesktop": "161a7f9f79775093a06454b3b33cb4903d1225e5f3bef75877c36d04f82b8946",
+        "libexec/fvwm3/1.1.6/FvwmForm": "4c602b495062260b72a05dec254fcdfce5b799a622e7603e7843af7c878d3e3b",
+        "libexec/fvwm3/1.1.6/fvwm-desktop-worker": "30e18dc30f8200dc928459ca27b6cdf128e2d50c8d413d2fefcec0506c8d185b",
+        "libexec/fvwm3/1.1.6/fvwm-desktop-capture": "247741bc463bf3218faa4b4fbea25a9f8bc8e369cc20435380df2d4e62634dd6",
+        "libexec/fvwm3/1.1.6/FvwmAnimate": "0cf27d87a296745203df0f22c183575a43a0eff20e61dfcb5f91e1ea3da9c7f4",
+        "libexec/fvwm3/1.1.6/FvwmAuto": "5eb9d5dfca8f6dad9a15c08bd9528b102c4e0545005f70925e7e28e5ef9dfbad",
+        "libexec/fvwm3/1.1.6/FvwmBacker": "20a71ab7887559638efa42063430f7cd65911d5b979d51ec968069bff3454865",
+        "libexec/fvwm3/1.1.6/FvwmButtons": "803ef220d071b9fdf81e2cd3aa3b7fe0a462c903d3031416fec238a1c90aa2ce",
+        "libexec/fvwm3/1.1.6/FvwmEvent": "293eee52aaac73e27753b6a9783f71bbb976e5af692b3d3bdeddb647e217a89a",
+        "libexec/fvwm3/1.1.6/FvwmIconMan": "a5f1ad512309af2e8c2615ab70a9ad7fb947cd806b938b060131d67e7ad42c47",
+        "libexec/fvwm3/1.1.6/FvwmIdent": "464f10ca5910022f390ef182c738ff71ec29e6529e902bd79d0324d62e69ba92",
+        "libexec/fvwm3/1.1.6/FvwmMFL": "3b18315a67af676773d11917347fecf8951d6d42c4f5b9190577d4e4450071f2",
+        "libexec/fvwm3/1.1.6/FvwmPager": "3aa1db11953505bfba1d4164c0c5bd48af425ee7b16b40b0c8acb3fcaad04cf2",
+        "libexec/fvwm3/1.1.6/FvwmPerl": "1b944645e48e7fa435feb1eb3bab00b5a6a8c3aac13167e69513210e0cfdb226",
+        "libexec/fvwm3/1.1.6/FvwmPinboard": "c1e79e52e4e49716a3aa09e02991fe27589a7a62978e4786fdd15bd95652a417",
+        "libexec/fvwm3/1.1.6/FvwmRearrange": "5027e3454161450600c62338d431ccc8cc1f16a8ede904c8925e1b2a1588ce64",
+        "libexec/fvwm3/1.1.6/FvwmScript": "c8ac846f71b21b844ce8d02295e82a6a21a866127a0989c4f9b51df19784e56d",
+        "libexec/fvwm3/1.1.6/FvwmTalk": "0d0c831a216b809c8206f163d69c2ad2b6e183d560fb3d332ae4c1c28fa0ad91",
+        "libexec/fvwm3/1.1.6/FvwmTray": "967880b325ea0282464e49e75fd1fef015b0e29b7cb4502c8ab36f29bc1c2247",
+        "libexec/fvwm3/1.1.6/fvwm-image-svg-worker": "a9aa3510cff3c23d91fb52ffea1a7f6163430c6e7aa79b0fa9364099ac531284"
+      },
+      "installed_data_sha256": {
+        "share/fvwm3/ConfigFvwmDefaults": "5da2867485f5a185061ce79edd84f28966fc0fd3df9c44ed1d184348b26782ce",
+        "share/fvwm3/default-config/config": "69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "share/fvwm3/default-config/desktop.fvwm": "677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68",
+        "share/fvwm3/default-config/palettes.json": "aa6145894b04908768f6556b904e8d139de384d0935c15028d7853662a741d96"
+      },
+      "staged_hashes": [
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/bin/fvwm3) = 67b9f77562519d60d42c4636e841089a6efbb47de721b2a37a97d5b9dc3ebf4c",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmDesktop) = 161a7f9f79775093a06454b3b33cb4903d1225e5f3bef75877c36d04f82b8946",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmForm) = 4c602b495062260b72a05dec254fcdfce5b799a622e7603e7843af7c878d3e3b",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/libexec/fvwm3/1.1.6/FvwmMFL) = 3b18315a67af676773d11917347fecf8951d6d42c4f5b9190577d4e4450071f2",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/libexec/fvwm3/1.1.6/fvwm-desktop-worker) = 30e18dc30f8200dc928459ca27b6cdf128e2d50c8d413d2fefcec0506c8d185b",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/share/fvwm3/default-config/config) = 69448ce68cf81db8e2c815bfe8f79ec530558892a21857017caeb944167f077d",
+        "SHA256 (/home/fvwm-ci/source/builddir-bsd/docking-product/install-stage/usr/local/share/fvwm3/default-config/desktop.fvwm) = 677a86f3952e2daf4d5cfa3af7fad22dad14efb6f4cc1a3bec10000df3a45b68"
+      ],
+      "targets": [
+        "bin/FvwmPrompt/FvwmCommand",
+        "bin/FvwmPrompt/FvwmDesktop",
+        "bin/FvwmPrompt/FvwmPrompt",
+        "bin/FvwmPrompt/fvwm-clipboard",
+        "bin/FvwmPrompt/fvwm-desktop-worker",
+        "bin/FvwmPrompt/fvwm-file-browser",
+        "bin/FvwmPrompt/fvwm-menu-desktop",
+        "bin/FvwmPrompt/fvwm-menu-directory",
+        "bin/FvwmPrompt/fvwm-menu-xlock",
+        "bin/FvwmPrompt/fvwm-pinboard",
+        "bin/FvwmPrompt/fvwm-script-ComExample",
+        "bin/FvwmPrompt/fvwm-session",
+        "bin/fvwm-clipboard-capture",
+        "bin/fvwm-desktop-capture",
+        "bin/fvwm-file-transfer",
+        "bin/fvwm-image-svg-worker",
+        "bin/fvwm-native-settings",
+        "bin/fvwm-root",
+        "bin/fvwm-session-bus",
+        "bin/fvwm-settings-portal",
+        "bin/fvwm-startup-launch",
+        "fvwm3",
+        "modules/FvwmAnimate/FvwmAnimate",
+        "modules/FvwmAuto/FvwmAuto",
+        "modules/FvwmBacker/FvwmBacker",
+        "modules/FvwmButtons/FvwmButtons",
+        "modules/FvwmEvent/FvwmEvent",
+        "modules/FvwmForm/FvwmForm",
+        "modules/FvwmIconMan/FvwmIconMan",
+        "modules/FvwmIdent/FvwmIdent",
+        "modules/FvwmMFL/FvwmMFL",
+        "modules/FvwmPager/FvwmPager",
+        "modules/FvwmPinboard/FvwmPinboard",
+        "modules/FvwmRearrange/FvwmRearrange",
+        "modules/FvwmScript/FvwmScript",
+        "modules/FvwmTray/FvwmTray"
+      ],
+      "default_x": {
+        "display": ":197",
+        "server_status_after_cleanup": 0,
+        "synthetic_role": {
+          "FVWM-X-Root": {
+            "name": "FVWM-X-Root",
+            "name_atom": 248,
+            "primary": true,
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 800,
+              "height": 600
+            },
+            "physical_mm": {
+              "width": 0,
+              "height": 0
+            },
+            "outputs": []
+          }
+        }
+      }
+    }
+  ]
+}

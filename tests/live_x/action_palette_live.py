@@ -271,7 +271,7 @@ class Probe:
         return dict(first, rows=result)
 
 
-def source_receipt(source, build):
+def source_receipt(source, binary_root, binaries):
     paths = ['tests/live_x/action_palette_live.py',
              'tests/live_x/native_module_proxy.py',
              'bin/FvwmPrompt/internal/desktopcontroller/palette.go',
@@ -279,14 +279,69 @@ def source_receipt(source, build):
              'fvwm/module_interface.c', 'fvwm/palette_policy.c']
     return {'source_sha256': {name: hashlib.sha256((source / name).read_bytes()).hexdigest()
                               for name in paths},
-            'binary_sha256': {str(path.relative_to(build)): hashlib.sha256(path.read_bytes()).hexdigest()
-                              for path in (build / 'fvwm3', build / 'bin/FvwmPrompt/FvwmDesktop')}}
+            'binary_sha256': {str(path.relative_to(binary_root)):
+                hashlib.sha256(path.read_bytes()).hexdigest() for path in binaries}}
+
+
+def installed_file(prefix, path, executable=False):
+    resolved = path.resolve(strict=True)
+    if (not resolved.is_relative_to(prefix) or not resolved.is_file() or
+            (executable and not os.access(resolved, os.X_OK))):
+        raise ValueError('Invalid staged desktop input: ' + str(path))
+    return resolved
 
 
 def run(args, profile, run_root, scenario=None, display_initializer=None):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = run_root / profile
     out.mkdir()
+    prefix = getattr(args, 'installed_prefix', None)
+    image_worker = None
+    installed_receipt = {}
+    if prefix is None:
+        core_binary = build / 'fvwm3'
+        desktop_binary = build / 'bin/FvwmPrompt/FvwmDesktop'
+        form_binary = build / 'modules/FvwmForm/FvwmForm'
+        worker_binary = build / 'bin/FvwmPrompt/fvwm-desktop-worker'
+        capture_binary = build / 'bin/fvwm-desktop-capture'
+        defaults = source / 'fvwm/ConfigFvwmDefaults'
+        assets = source / 'default-config'
+        binaries = (core_binary, desktop_binary)
+        binary_root = build
+        module_binaries = ((path.name, path / path.name) for path in (build / 'modules').iterdir()
+                           if path.name != 'FvwmForm' and (path / path.name).is_file())
+    else:
+        prefix = prefix.resolve(strict=True)
+        desktop_paths = list((prefix / 'libexec/fvwm3').glob('*/FvwmDesktop'))
+        if len(desktop_paths) != 1:
+            raise ValueError('Expected one installed FvwmDesktop under ' + str(prefix))
+        module_dir = desktop_paths[0].parent
+        core_binary = installed_file(prefix, prefix / 'bin/fvwm3', executable=True)
+        desktop_binary = installed_file(prefix, desktop_paths[0], executable=True)
+        form_binary = installed_file(prefix, module_dir / 'FvwmForm', executable=True)
+        worker_binary = installed_file(prefix, module_dir / 'fvwm-desktop-worker', executable=True)
+        capture_binary = installed_file(prefix, module_dir / 'fvwm-desktop-capture', executable=True)
+        required_modules = ('FvwmBacker', 'FvwmButtons', 'FvwmEvent')
+        for name in required_modules:
+            installed_file(prefix, module_dir / name, executable=True)
+        module_binaries = [(path.name, installed_file(prefix, path, executable=True))
+                           for path in sorted(module_dir.iterdir())
+                           if path.name.startswith('Fvwm') and path.name not in ('FvwmDesktop', 'FvwmForm')
+                           and path.is_file() and os.access(path, os.X_OK)]
+        binaries = [core_binary, desktop_binary, form_binary, worker_binary, capture_binary]
+        binaries.extend(path for _, path in module_binaries)
+        if (module_dir / 'fvwm-image-svg-worker').exists():
+            image_worker = installed_file(prefix, module_dir / 'fvwm-image-svg-worker', executable=True)
+            binaries.append(image_worker)
+        binary_root = prefix
+        data = prefix / 'share/fvwm3'
+        defaults = installed_file(prefix, data / 'ConfigFvwmDefaults')
+        assets = data / 'default-config'
+        config_inputs = [defaults] + [installed_file(prefix, assets / name)
+            for name in ('config', 'desktop.fvwm', 'palettes.json')]
+        installed_receipt = {'installed_prefix': str(prefix), 'installed_data_sha256': {
+            str(path.relative_to(prefix)): hashlib.sha256(path.read_bytes()).hexdigest()
+            for path in config_inputs}}
     evidence = {'status': 'running', 'profile': profile, 'screenshots': [],
         'failures': [], 'cleanup_failures': [], 'scope': 'native Xvfb/XTest; no physical display, '
         'assistive technology, compositor or kernel wakeup qualification',
@@ -294,7 +349,8 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                         'desktop_status_sampler_seconds': 5},
         'observer_bounds': {'x_tree_nodes': OBSERVER_NODE_BUDGET,
                             'x_tree_depth': OBSERVER_DEPTH_BUDGET,
-                            'fixture_bulk_clients': 520}, **source_receipt(source, build)}
+                            'fixture_bulk_clients': 520}, **source_receipt(source, binary_root, binaries),
+        **installed_receipt}
     with HarnessRuntime(prefix='fvwm-action-palette-') as runtime:
         client, errors, core = None, None, None
         windows, probes = [], []
@@ -356,10 +412,8 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                 ('modules', 'user', 'native-records', 'desktop-workers', 'probe')]
             for path in (modules, user, native, jobs, directory):
                 path.mkdir(mode=0o700)
-            for path in (build / 'modules').iterdir():
-                executable = path / path.name
-                if executable.is_file() and path.name != 'FvwmForm':
-                    (modules / path.name).symlink_to(executable)
+            for name, executable in module_binaries:
+                (modules / name).symlink_to(executable)
             fixture = str(Path(__file__).resolve())
 
             def script(path, arguments, suffix=''):
@@ -367,14 +421,13 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                     fixture, *map(str, arguments)]) + suffix + '\n')
                 path.chmod(0o700)
 
-            for name, binary in [('FvwmDesktop', build / 'bin/FvwmPrompt/FvwmDesktop'),
-                                 ('FvwmForm', build / 'modules/FvwmForm/FvwmForm')]:
+            for name, binary in [('FvwmDesktop', desktop_binary), ('FvwmForm', form_binary)]:
                 script(modules / name, ['--module-proxy', binary, native],
                     ' "$@" 2>>' + shlex.quote(str(runtime.root / (name + '.log'))))
             script(modules / 'PaletteProbe', ['--probe'],
                 ' "$@" 2>>' + shlex.quote(str(runtime.root / 'probe.log')))
             worker = runtime.root / 'desktop-worker'
-            script(worker, ['--desktop-worker', build / 'bin/FvwmPrompt/fvwm-desktop-worker', jobs])
+            script(worker, ['--desktop-worker', worker_binary, jobs])
             marker = runtime.root / 'argv.json'
             apps = runtime.root / 'data/applications'
             apps.mkdir(parents=True)
@@ -399,14 +452,14 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
             local.write_text('*FvwmDesktop: palette ' + palette +
                 '\n*FvwmDesktop: appearance ' + appearance +
                 '\n*FvwmDesktop: motion Off\n*FvwmDesktop: transparency Off\n')
-            assets = source / 'default-config'
             body = (assets / 'config').read_text().replace('$[FVWM_DATADIR]/default-config', str(assets))
             if profile == 'classic-large':
                 body = body.replace('Sans:size=10:antialias=True',
                     'DejaVu Sans Mono:size=18:antialias=True')
             config = runtime.root / 'config'
-            config.write_text('ModulePath ' + str(modules) + '\nRead ' +
-                str(source / 'fvwm/ConfigFvwmDefaults') + '\n' + body +
+            data_override = '' if prefix is None else 'SetEnv FVWM_DATADIR ' + shlex.quote(str(assets.parent)) + '\n'
+            config.write_text('ModulePath ' + str(modules) + '\n' + data_override +
+                'Read ' + shlex.quote(str(defaults)) + '\n' + body +
                 '\nEwmhNumberOfDesktops 6\nDesktopName 4 Palette desk four\n'
                 'DesktopName 5 Palette desk five\nAddToFunc StartFunction I Module PaletteProbe ' +
                 str(directory) + '\n')
@@ -415,9 +468,13 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                 'FVWM_DESKTOP_WORKER': str(worker), 'FVWMMFL_SOCKET_PATH': str(runtime.root),
                 'XDG_DATA_HOME': str(apps.parent), 'XDG_DATA_DIRS': str(runtime.root / 'absent'),
                 'LANG': 'C.UTF-8', 'LC_ALL': 'C.UTF-8'})
+            if prefix is not None:
+                env['FVWM_DESKTOP_CAPTURE'] = str(capture_binary)
+                if image_worker is not None:
+                    env['FVWM_IMAGE_SVG_WORKER'] = str(image_worker)
             evidence.update(display=display, config_sha256=hashlib.sha256(config.read_bytes()).hexdigest(),
                 font='DejaVu Sans Mono 18' if profile == 'classic-large' else 'Sans 10')
-            core = runtime.start('core', [str(build / 'fvwm3'), '-d', display,
+            core = runtime.start('core', [str(core_binary), '-d', display,
                 '-f', str(config), '-v', '-o', '-'], 'core.log', env)
             wait_for_predicate('independent palette native probe', (directory / 'ready.json').exists,
                 time.monotonic() + 12, process=core)
@@ -517,7 +574,7 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                 previous = os.environ.get('DISPLAY')
                 os.environ['DISPLAY'] = display
                 try:
-                    path = Path(NativeCapture(build / 'bin/fvwm-desktop-capture').screenshot(out)
+                    path = Path(NativeCapture(capture_binary).screenshot(out)
                         .removeprefix('Screenshot saved: '))
                     path.replace(out / name)
                     evidence['screenshots'].append(name)
@@ -894,7 +951,7 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
             restart_directory.mkdir(mode=0o700)
             restart_config = runtime.root / 'config-restart'
             restart_config.write_text(config.read_text().replace(str(directory), str(restart_directory)))
-            core = runtime.start('core-restarted', [str(build / 'fvwm3'), '-d', display,
+            core = runtime.start('core-restarted', [str(core_binary), '-d', display,
                 '-f', str(restart_config), '-v', '-o', '-'], 'core-restarted.log', env)
             wait_for_predicate('replacement core directed native probe',
                 (restart_directory / 'ready.json').exists, time.monotonic() + 12, process=core)

@@ -57,6 +57,46 @@ allocation. The final Slate capture is available. Physical docking,
 additional themes and support profiles remain for issue acceptance.
 [Combined evidence](verification/VERIFICATION-2026-11-11-DURABLE-DOCKING.md).
 
+PR379 merged as `2da0ef133503b8b552a4bbed10bb3cd0212a176d`; the
+canonical product tree matches the reviewed head. Lead owns remaining #222
+qualification on `codex/r1-docking-qualification`. Reuse the passing Slate
+scene and its exact Linux ARM64 binaries. Run Dune light and the enlarged
+DejaVu configuration together in the owned Xorg lab, with a final capture
+per passing scene. Cross-compile the desktop controller tests for the six
+Linux and BSD OS/architecture pairs in one batch, and inventory existing
+native BSD reuse separately. Cross-compilation does not qualify native BSD
+execution. No full release matrix or physical dock claim. One owned theme
+run and a diagnosed correction are permitted within the 12-minute lab
+budget. Record any unavailable qualification explicitly.
+Native platform addition: the offline release assets for FreeBSD 15.1
+ARM64 and OpenBSD 8.0 ARM64 are available. Use one sequential campaign
+with two disposable guests, one native C policy unit and six docking
+Go tests per guest. Reuse the cross-built test binaries and keep the
+earlier VM disks untouched. No product build or native X claim follows
+from these unit checks. Bound each owned guest to one attempt.
+FreeBSD's pinned image booted as 15.1-RELEASE-p3 and the first driver
+stopped before test dispatch because it required the unpatched string.
+Keep the first receipt and run a single corrected release identity
+check on a fresh child with the same offline test bundle.
+OpenBSD passed the C policy and three storage tests. Its remaining
+controller tests require the package working directory and the shipped
+palette file, which were omitted from the portable fixture. Combine
+the two diagnosed fixture corrections in one offline continuation.
+Keep the original passing results and run the six controller cases
+with the pinned palette fixture and their package directory.
+Both BSD ARM64 guests passed the native C policy and six Go units and
+shut down cleanly. The Go controller cross-compiled for all six
+support pairs. Dune light and the enlarged configuration each passed
+all nine live cases with the retained Linux ARM64 binaries. The editor
+controls fit in both final captures. Native platform product/install/X
+gates and physical docking remain open.
+[Qualification evidence](verification/VERIFICATION-2026-11-11-DOCKING-QUALIFICATION.md).
+
+
+
+
+
+
 
 
 

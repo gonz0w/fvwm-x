@@ -16,7 +16,7 @@ import stat
 import tempfile
 import time
 
-from action_palette_live import Probe, run
+from action_palette_live import PROFILES, Probe, run
 from live_x_harness import run_required_xrandr, wait_for_predicate
 from native_bindings_live import rows
 from workspace_placement_mixed_live import (LEFT, RIGHT, client_size, contains,
@@ -415,7 +415,29 @@ def scene(**s):
         panel=panel_at(RIGHT))
     assert path.read_bytes() == saved
     cases['restart_reloads_profile_and_resolves_current_allocations'] = True
-    view.wait('FVWM-X')
+
+    # Capture the completed profile editor after the restore cases pass.
+    # Its client and visible child controls must fit the selected screen.
+    edit()
+    editor = view.wait('Docking profile')
+    attributes = view.attributes(editor)
+    assert attributes is not None
+    controls = []
+    for child in view.children(editor):
+        control = view.attributes(child)
+        if control is None or control.map_state != 2:
+            continue
+        bounds = dict(x=control.x, y=control.y, width=control.width,
+            height=control.height)
+        assert bounds['x'] >= 0 and bounds['y'] >= 0 and (
+            bounds['x'] + bounds['width'] <= attributes.width and
+            bounds['y'] + bounds['height'] <= attributes.height), bounds
+        controls.append(bounds)
+    frame = frame_rect(client, editor)
+    assert frame and frame['x'] >= 0 and frame['y'] >= 0
+    assert frame['x'] + frame['width'] <= 3200 and frame['y'] + frame['height'] <= 1080, frame
+    observed['finished_editor'] = dict(frame=frame,
+        client=dict(width=attributes.width, height=attributes.height), controls=controls)
     s['capture']('workspace-docking.png')
 
 
@@ -423,9 +445,12 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--build', type=Path, required=True)
     parser.add_argument('--artifacts-dir', type=Path, required=True)
+    parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=['slate-dark'])
     parser.add_argument('--xorg-config', type=Path,
         default=Path(__file__).with_name('xorg-dummy.conf'))
     args = parser.parse_args()
+    if len(set(args.profiles)) != len(args.profiles):
+        parser.error('each profile may be selected once')
     config = args.xorg_config.resolve(strict=True)
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     root = Path(tempfile.mkdtemp(prefix='workspace-docking-', dir=args.artifacts_dir.resolve()))
@@ -443,17 +468,19 @@ def main():
         raise TimeoutError('workspace docking checkpoint deadline')
 
     previous = signal.signal(signal.SIGALRM, expired)
-    signal.alarm(195)
     try:
-        run(args, 'slate-dark', root, scenario=scene, display_initializer=display_initializer)
-        path = root / 'slate-dark' / 'evidence.json'
-        evidence = json.loads(path.read_text())
-        assert evidence['status'] == 'passed' and not evidence['cleanup_failures'], path
-        assert not evidence['observer_unexpected_x_errors'], path
-        assert evidence['cases'] == dict.fromkeys(CASE_NAMES, True), path
-        assert evidence['screenshots'] == ['workspace-docking.png'], path
-        assert all(code is not None for code in evidence['children_after_cleanup'].values()), path
-        print(path)
+        for profile in args.profiles:
+            signal.alarm(195)
+            run(args, profile, root, scenario=scene, display_initializer=display_initializer)
+            signal.alarm(0)
+            path = root / profile / 'evidence.json'
+            evidence = json.loads(path.read_text())
+            assert evidence['status'] == 'passed' and not evidence['cleanup_failures'], path
+            assert not evidence['observer_unexpected_x_errors'], path
+            assert evidence['cases'] == dict.fromkeys(CASE_NAMES, True), path
+            assert evidence['screenshots'] == ['workspace-docking.png'], path
+            assert all(code is not None for code in evidence['children_after_cleanup'].values()), path
+            print(path, flush=True)
     finally:
         signal.alarm(0)
         signal.signal(signal.SIGALRM, previous)

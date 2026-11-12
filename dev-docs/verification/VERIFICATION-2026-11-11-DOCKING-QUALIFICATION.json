@@ -1,0 +1,311 @@
+{
+  "issue": 222,
+  "revision": "2da0ef133503b8b552a4bbed10bb3cd0212a176d",
+  "theme_plan_sha256": "f987141c8ee12b12f2d3261583c45d79d6a2cbf760efeb1141b4e59ac630bd42",
+  "reused_commands": 44,
+  "core_sha256": "fe7b1d5aa2ff06ab023c2c1807c15d372fa18273f88e01f354bd7d9c436f9619",
+  "desktop_sha256": "459c84c34fb05cbcb363c1c29e8b3229cfaa3f44060eb14dd75d17cf9c81a8af",
+  "themes": {
+    "dune-light": {
+      "cases": {
+        "desktop_saves_private_data_only_profile": true,
+        "preview_is_read_only": true,
+        "newer_workspace_refuses_plan": true,
+        "newer_panel_assignment_refuses_plan": true,
+        "newer_desktop_settings_refuse_plan": true,
+        "newer_window_move_is_preserved": true,
+        "apply_restores_workspace_panel_and_client_placement": true,
+        "topology_change_refuses_plan_and_missing_connector_falls_back": true,
+        "restart_reloads_profile_and_resolves_current_allocations": true
+      },
+      "font": "Sans 10",
+      "editor": {
+        "frame": {
+          "x": 780,
+          "y": 366,
+          "width": 367,
+          "height": 383
+        },
+        "client": {
+          "width": 359,
+          "height": 347
+        },
+        "controls": [
+          {
+            "x": 136,
+            "y": 30,
+            "width": 192,
+            "height": 30
+          },
+          {
+            "x": 210,
+            "y": 65,
+            "width": 87,
+            "height": 30
+          },
+          {
+            "x": 10,
+            "y": 100,
+            "width": 21,
+            "height": 21
+          },
+          {
+            "x": 120,
+            "y": 100,
+            "width": 21,
+            "height": 21
+          },
+          {
+            "x": 157,
+            "y": 146,
+            "width": 192,
+            "height": 30
+          },
+          {
+            "x": 135,
+            "y": 181,
+            "width": 192,
+            "height": 30
+          },
+          {
+            "x": 211,
+            "y": 216,
+            "width": 64,
+            "height": 30
+          },
+          {
+            "x": 285,
+            "y": 216,
+            "width": 64,
+            "height": 30
+          },
+          {
+            "x": 10,
+            "y": 251,
+            "width": 91,
+            "height": 27
+          },
+          {
+            "x": 111,
+            "y": 251,
+            "width": 94,
+            "height": 27
+          },
+          {
+            "x": 10,
+            "y": 283,
+            "width": 44,
+            "height": 27
+          },
+          {
+            "x": 64,
+            "y": 283,
+            "width": 107,
+            "height": 27
+          },
+          {
+            "x": 301,
+            "y": 315,
+            "width": 48,
+            "height": 27
+          }
+        ]
+      },
+      "screenshot_sha256": "b8c75ea24eff9ab4815d59733cc3d183ee1bd0d5d1b9871c09ea248d51ce8ea7",
+      "capture": "workspace-docking-profile-dune-light.png",
+      "observer_errors": []
+    },
+    "classic-large": {
+      "cases": {
+        "desktop_saves_private_data_only_profile": true,
+        "preview_is_read_only": true,
+        "newer_workspace_refuses_plan": true,
+        "newer_panel_assignment_refuses_plan": true,
+        "newer_desktop_settings_refuse_plan": true,
+        "newer_window_move_is_preserved": true,
+        "apply_restores_workspace_panel_and_client_placement": true,
+        "topology_change_refuses_plan_and_missing_connector_falls_back": true,
+        "restart_reloads_profile_and_resolves_current_allocations": true
+      },
+      "font": "DejaVu Sans Mono 18",
+      "editor": {
+        "frame": {
+          "x": 631,
+          "y": 295,
+          "width": 666,
+          "height": 529
+        },
+        "client": {
+          "width": 658,
+          "height": 490
+        },
+        "controls": [
+          {
+            "x": 236,
+            "y": 43,
+            "width": 348,
+            "height": 43
+          },
+          {
+            "x": 404,
+            "y": 91,
+            "width": 152,
+            "height": 43
+          },
+          {
+            "x": 10,
+            "y": 139,
+            "width": 34,
+            "height": 34
+          },
+          {
+            "x": 200,
+            "y": 139,
+            "width": 34,
+            "height": 34
+          },
+          {
+            "x": 264,
+            "y": 211,
+            "width": 348,
+            "height": 43
+          },
+          {
+            "x": 222,
+            "y": 259,
+            "width": 348,
+            "height": 43
+          },
+          {
+            "x": 418,
+            "y": 307,
+            "width": 110,
+            "height": 43
+          },
+          {
+            "x": 538,
+            "y": 307,
+            "width": 110,
+            "height": 43
+          },
+          {
+            "x": 10,
+            "y": 355,
+            "width": 152,
+            "height": 40
+          },
+          {
+            "x": 172,
+            "y": 355,
+            "width": 166,
+            "height": 40
+          },
+          {
+            "x": 10,
+            "y": 400,
+            "width": 68,
+            "height": 40
+          },
+          {
+            "x": 88,
+            "y": 400,
+            "width": 194,
+            "height": 40
+          },
+          {
+            "x": 566,
+            "y": 445,
+            "width": 82,
+            "height": 40
+          }
+        ]
+      },
+      "screenshot_sha256": "9b6b5b13f2195d72bf648aa87a2a8e00933d93f09168e6bdccab50976413f6db",
+      "capture": "workspace-docking-profile-enlarged.png",
+      "observer_errors": []
+    }
+  },
+  "go_cross_compile": {
+    "source": "2da0ef133503b8b552a4bbed10bb3cd0212a176d",
+    "go": "go version go1.27.0 darwin/arm64",
+    "checks": [
+      {
+        "profile": "linux-amd64",
+        "exit": 0,
+        "seconds": 4.25,
+        "sha256": "284b205e61f85fe6b76d893a6aa3f752db421cf14cf65da8b144729bec92c270"
+      },
+      {
+        "profile": "linux-arm64",
+        "exit": 0,
+        "seconds": 4.31,
+        "sha256": "393614098e945ce05366ff6081819161b87b3bd3f463b77b4f9de1a815af8b0d"
+      },
+      {
+        "profile": "freebsd-amd64",
+        "exit": 0,
+        "seconds": 3.87,
+        "sha256": "50a53f9057d013099f0fe40a28c33e95a7944feaddf903204010a49430ceafd8"
+      },
+      {
+        "profile": "freebsd-arm64",
+        "exit": 0,
+        "seconds": 3.96,
+        "sha256": "5dedb28cb02527e693f5085eec43ae75e9601188f0f82d4d1391c073ca751f92"
+      },
+      {
+        "profile": "openbsd-amd64",
+        "exit": 0,
+        "seconds": 3.9,
+        "sha256": "c1214508dfd24703d6431eba05efce7768c481aba9d222aa0356eaa21e84317b"
+      },
+      {
+        "profile": "openbsd-arm64",
+        "exit": 0,
+        "seconds": 4.02,
+        "sha256": "17af3b4983e028677eab4dd8e05cb18159ebc4a1d1b898ee6753712c095ed368"
+      }
+    ]
+  },
+  "bsd_plan_sha256": "e1750651d9d75c54ebc2390c2da4a255210d9dd9e95ea7792fb382adfa170f96",
+  "bsd_native": {
+    "freebsd-arm64": {
+      "system": "FreeBSD freebsd 15.1-RELEASE-p3 FreeBSD 15.1-RELEASE-p3 releng/15.1-n283611-88e7371d9dc2 GENERIC arm64",
+      "compiler": "FreeBSD clang version 19.1.7 (https://github.com/llvm/llvm-project.git llvmorg-19.1.7-0-gcd708029e0b2)",
+      "c_policy_exit": 0,
+      "go_tests": [
+        "TestDockingProfilePublication",
+        "TestDockingProfileRejectsMalformedRecords",
+        "TestDockingProfilePrivateInputs",
+        "TestDockingEditorAndGuardedWire",
+        "TestDockingRefusesChangedRevisionsAndTimeout",
+        "TestDockingPanelRequiresActiveAdapter"
+      ],
+      "go_exit": 0,
+      "qemu_exit": 0,
+      "evidence_sha256": "a01ad4c341688cee7726e35d3e75c9e6a1d26c1a4999c8f2b4ee58dadb3f99d6",
+      "source_archive_sha256": "031d3ecba00882f0592851ffcd4d45e5df97a9fa6c8be7b28a5e659fc627882c",
+      "previous_run_status": "failed",
+      "previous_run_reason": "inline evidence archive missing or outside cap"
+    },
+    "openbsd-arm64": {
+      "system": "OpenBSD openbsd.my.domain 8.0 GENERIC.MP#1 arm64",
+      "compiler": "OpenBSD clang version 22.1.6",
+      "c_policy_exit": 0,
+      "go_tests": [
+        "TestDockingProfilePublication",
+        "TestDockingProfileRejectsMalformedRecords",
+        "TestDockingProfilePrivateInputs",
+        "TestDockingEditorAndGuardedWire",
+        "TestDockingRefusesChangedRevisionsAndTimeout",
+        "TestDockingPanelRequiresActiveAdapter"
+      ],
+      "go_exit": 0,
+      "qemu_exit": 0,
+      "evidence_sha256": "a44747c1cadf1794f0a9307def8b54343681657bc0eb812cd1cb98fd3403bb44",
+      "source_archive_sha256": "6e733bb6261cb7b5f9cc102a489db58902ee9e740fe755b8beca57a6e99df337",
+      "previous_run_status": "failed",
+      "previous_run_reason": "guest gate failed; run and collection logs retained"
+    }
+  }
+}

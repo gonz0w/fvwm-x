@@ -34,11 +34,10 @@ the installed binaries and data. The fixture took no screenshots.
 The fresh stock-image TCG run used reviewed plan
 `b52f99442cc54b5402ea042e67f76d461ec57e450226952835d458e79d5de410`.
 The original timeout returned no phase evidence. On this continuation the
-host stderr file remained empty during execution, so read-only snapshots
-from the owned guest supplied the phase evidence. Upstream PNG testing
+host stderr file was empty during live sampling and flushed when the
+runner exited. Read-only snapshots from the owned guest tracked progress. Upstream PNG testing
 was still running at 19 minutes after boot. All 36 PNG checks then passed
-and Meson configured FVWM-X. Ninja was compiling core objects when last
-sampled. The 1,500-second run deadline expired before the install or X
+and Meson configured FVWM-X. The final stderr records Ninja reaching step 224 of 371. The 1,500-second run deadline expired before the install or X
 check, and the runner stopped QEMU with status 0.
 
 The observed bottleneck was fresh PNG preparation under CPU emulation,
@@ -53,6 +52,7 @@ requirements separately.
 | --- | --- |
 | PNG completion snapshot | `6e25f2277b48a20fd97f6eb3ed8234f483e394025b13e44f9032d5144cbfadf1` |
 | Core compilation snapshot | `77cc91baa8b1154eabfcbbe249df54876062fd227c98e32de0c718db642f4e04` |
+| Final stderr | `fd889fb81b70175de2e0db5e63505fe3ced0011d92947c0892dced3796b6f52e` |
 | Final runner status | `c7f3c5a7cc50e24dd4b439c990cc5a9778ecf5fe07d87877052b869c03d65213` |
 
 ## Physical qualification

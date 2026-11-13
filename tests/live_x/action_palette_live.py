@@ -291,7 +291,8 @@ def installed_file(prefix, path, executable=False):
     return resolved
 
 
-def run(args, profile, run_root, scenario=None, display_initializer=None):
+def run(args, profile, run_root, scenario=None, display_initializer=None,
+        *, direct_worker=False):
     source, build = Path(__file__).resolve().parents[2], args.build.resolve()
     out = run_root / profile
     out.mkdir()
@@ -426,8 +427,10 @@ def run(args, profile, run_root, scenario=None, display_initializer=None):
                     ' "$@" 2>>' + shlex.quote(str(runtime.root / (name + '.log'))))
             script(modules / 'PaletteProbe', ['--probe'],
                 ' "$@" 2>>' + shlex.quote(str(runtime.root / 'probe.log')))
-            worker = runtime.root / 'desktop-worker'
-            script(worker, ['--desktop-worker', worker_binary, jobs])
+            worker = worker_binary
+            if not direct_worker:
+                worker = runtime.root / 'desktop-worker'
+                script(worker, ['--desktop-worker', worker_binary, jobs])
             marker = runtime.root / 'argv.json'
             apps = runtime.root / 'data/applications'
             apps.mkdir(parents=True)

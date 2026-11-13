@@ -194,6 +194,16 @@ Preserve both guest receipts and the staged build evidence. Replan the
 worker startup diagnosis before repeating the X scene.
 [OpenBSD evidence](verification/VERIFICATION-2026-11-13-DOCKING-OPENBSD-AMD64.md).
 
+Lead owns the #222 docking fixture correction on
+`codex/r1-docking-direct-worker`. Point the docking scene directly at the
+installed desktop worker. The test does not use the palette fixture's
+worker fault injection or worker receipts. Keep real catalog publication,
+all docking assertions, staged identities and X authentication. The prior
+guest's runner removed its per-job key, so a fresh owned guest is needed
+if no independently reviewed staged continuation is available. Reuse the
+qualified PNG and other platform results. Keep physical docking open.
+
+
 
 
 

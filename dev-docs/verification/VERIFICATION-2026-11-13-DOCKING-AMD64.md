@@ -53,7 +53,8 @@ The stock-image probe used reviewed plan
 `f4058453f7531a21ec77d4961812dc0c2cd7c54e057273117bcc340effb0a64d`.
 Boot, guest authentication and input transfer completed. The guest script
 reached its 1,500-second deadline before returning an evidence archive.
-QEMU exited normally. Build, install and X results are unavailable and
+The runner stopped QEMU with exit status 0. Build, install and X results
+are unavailable and
 the timeout does not identify a product defect. The stock image probe
 did not enable the separately documented legacy VGA test setting.
 

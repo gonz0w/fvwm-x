@@ -149,7 +149,8 @@ FreeBSD 15.1 AMD64 passed the build, private install and five authenticated
 default-X cases. Debian 13 AMD64 passed the build, private install and nine
 Xorg dummy cases. Both used CPU emulation and retained earlier ARM64 and
 theme evidence. OpenBSD 8.0 AMD64 timed out before returning a guest
-receipt and shut down normally. Pause that lane pending a plan with
+receipt. The runner stopped QEMU with exit status 0. Pause that lane
+pending a plan with
 separate preparation/build diagnostics. Ubuntu 24.04 AMD64 and physical
 dock evidence remain open. Keep compact result archives for review and
 preserve the OpenBSD guest disk while its timeout is unresolved.

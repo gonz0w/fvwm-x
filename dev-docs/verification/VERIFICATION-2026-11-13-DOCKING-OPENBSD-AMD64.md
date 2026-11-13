@@ -37,3 +37,24 @@ The runner stopped QEMU with exit status 0.
 Physical qualification still needs a real dock and two differently scaled
 displays to check unplug/replug during preview, connector identity after
 restart, and panel, window and pointer reachability.
+
+## Direct worker continuation
+
+PR385 ran commit `6ee84269d7a50d6dd06e9c42dcca07b4b73bc10b` with plan
+`1287847a6981176b2a706683662aeb574da347aa64522a781612f489e1819bb4`.
+The docking scene starts the staged worker directly. It retains the real
+catalog publication check and the original docking assertions.
+
+The emulated OpenBSD AMD64 guest validated the retained PNG build, built
+and staged the install targets, and started authenticated default Xenocara.
+The server refused a client without its cookie. All five installed docking
+cases passed, covering private profile publication, read-only preview,
+stale workspace refusal, preservation of a newer manual window move, and
+workspace, panel and window placement restore. No screenshots were taken.
+The guest command and QEMU process each returned status 0.
+
+The archive SHA-256 is
+`927aede4b7e26bdcb12f182948b6920c6e9d21d1aaa342b7a4f4059f161016d1`.
+The status SHA-256 is
+`23a2cb3863b33ad8c1d7056ca6586dedc56ef7fac971750cca1e8a3527fb6cca`.
+Physical docking remains open.

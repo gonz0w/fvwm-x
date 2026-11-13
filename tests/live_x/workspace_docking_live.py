@@ -43,6 +43,12 @@ CASE_NAMES = {
     'topology_change_refuses_plan_and_missing_connector_falls_back',
     'restart_reloads_profile_and_resolves_current_allocations',
 }
+DEFAULT_X_CASE_NAMES = CASE_NAMES - {
+    'newer_panel_assignment_refuses_plan',
+    'newer_desktop_settings_refuse_plan',
+    'topology_change_refuses_plan_and_missing_connector_falls_back',
+    'restart_reloads_profile_and_resolves_current_allocations',
+}
 FORM_TOKEN = re.compile(r'^\*SlateDockingForm: CloseCommand SendToModule FvwmDesktop '
     r'dock-control ([0-9a-f]{32}) close$')
 
@@ -55,6 +61,7 @@ def scene(**s):
     runtime, evidence, probe, core, client, view, native = (s[key] for key in (
         'runtime', 'evidence', 'probe', 'core', 'client', 'view', 'native'))
     display = evidence['display']
+    default_x = s['args'].display is not None
     cases = evidence['cases'] = {}
     observed = evidence['observations'] = {}
     deadline = time.monotonic() + 145
@@ -66,13 +73,17 @@ def scene(**s):
     def workspace():
         return {row['name']: row for row in probe.query('workspaces', limit=8)['result']['monitors']}
 
+    def monitor_snapshot():
+        top = probe.query('topology', limit=8)['result']['topology']
+        monitors = {row['name']: row for row in top['monitors']}
+        # Keep cached workspace rows only for committed active monitors.
+        work = {name: row for name, row in workspace().items() if name in monitors}
+        return dict(epoch=int(top['epoch'], 16), monitors=monitors, workspaces=work)
+
     def topology(label, scales, after=0):
         def committed():
-            top = probe.query('topology', limit=8)['result']['topology']
-            monitors = {row['name']: row for row in top['monitors']}
-            # Keep cached workspace rows only for committed active monitors.
-            work = {name: row for name, row in workspace().items() if name in monitors}
-            result = dict(epoch=int(top['epoch'], 16), monitors=monitors, workspaces=work)
+            result = monitor_snapshot()
+            monitors, work = result['monitors'], result['workspaces']
             observed[label] = result
             if (result['epoch'] > after and set(monitors) == set(work) == set(scales) and
                     monitors[LEFT]['primary'] and
@@ -96,7 +107,15 @@ def scene(**s):
             attrs = view.attributes(bar) if bar is not None else None
             if attrs is None or attrs.width != area['width'] or attrs.height != area['y']:
                 return None
-            return dict(area=area, size=(attrs.width, attrs.height), desk=work[output]['desk'])
+            result = dict(area=area, size=(attrs.width, attrs.height), desk=work[output]['desk'])
+            if default_x:
+                frame = frame_rect(client, bar)
+                if frame is None:
+                    frame = dict(zip(('x', 'y', 'width', 'height'), client.geometry(bar)))
+                if frame != dict(x=area['x'], y=0, width=area['width'], height=area['y']):
+                    return None
+                result['frame'] = frame
+            return result
         return wait('actual Slate panel and strut on ' + output, located)
 
     def set_desk(output, desk):
@@ -179,7 +198,8 @@ def scene(**s):
             return None
         return wait('directed docking ' + action + ' reply', delivered)
 
-    def preview(label, output=RIGHT, fallback=False):
+    def preview(label, output=None, fallback=False):
+        output = destination if output is None else output
         started = callback(edit(), 'preview')
         reply = dock_reply(started, 'prepare')
         observed[label] = dict(preview=reply)
@@ -223,8 +243,8 @@ def scene(**s):
                 frame = rect['frame']
                 if not frame or not contains(area, frame):
                     return None
-                if (frame['x'], frame['y']) != (area['x'] + SELECTORS[i]['offset_x'],
-                        area['y'] + SELECTORS[i]['offset_y']):
+                if (frame['x'], frame['y']) != (area['x'] + selectors[i]['offset_x'],
+                        area['y'] + selectors[i]['offset_y']):
                     return None
             return current
         final = wait('restored geometry on ' + output, placed)
@@ -241,50 +261,83 @@ def scene(**s):
     for window in s['windows'][:]:
         retire(window)
     probe.command('DesktopConfiguration per-monitor')
-    start = topology('initial_mixed_topology', {LEFT: 4, RIGHT: 8})
-    assert start['monitors'][RIGHT]['geometry']['x'] == 1920, start
-    set_desk(LEFT, 0)
-    set_desk(RIGHT, 0)
-    panel_at(LEFT)
+    if default_x:
+        def one_output():
+            snapshot = monitor_snapshot()
+            observed['default_x_topology'] = snapshot
+            monitors, work = snapshot['monitors'], snapshot['workspaces']
+            return snapshot if len(monitors) == 1 and set(monitors) == set(work) else None
+
+        start = wait('committed single default-X output', one_output)
+        home = destination = next(iter(start['monitors']))
+        selectors = [dict(row, offset_x=x, offset_y=y) for row, (x, y) in
+            zip(SELECTORS, ((42, 42), (260, 230)))]
+        positions = [(90, 130), (370, 270)]
+    else:
+        start = topology('initial_mixed_topology', {LEFT: 4, RIGHT: 8})
+        assert start['monitors'][RIGHT]['geometry']['x'] == 1920, start
+        home, destination = LEFT, RIGHT
+        selectors = SELECTORS
+        positions = [(260, 330), (730, 330)]
+        set_desk(home, 0)
+    set_desk(destination, 0)
+    panel_at(home)
     view.pointer.motion(500, 400)
-    windows = [make_client('Docking ' + row['instance'], row, 260 + 470*i, 330)
-               for i, row in enumerate(SELECTORS)]
-    for i, window in enumerate(windows):
-        move(window, 260 + 470*i, 330)
+    windows = [make_client('Docking ' + row['instance'], row, *position)
+               for row, position in zip(selectors, positions)]
+    for window, position in zip(windows, positions):
+        move(window, *position)
     original = measure(windows)
 
     path = s['user'] / 'docking-profiles' / (PROFILE + '.json')
     assert not path.exists()
     token = edit()
-    for selector in SELECTORS:
+    for selector in selectors:
         callback(token, 'add ' + ' '.join(encoded(selector[key])
             for key in ('instance', 'class', 'offset_x', 'offset_y')))
-    started = callback(token, 'save ' + ' '.join((encoded(RIGHT), encoded(TARGET_DESK), 'on')))
+    started = callback(token, 'save ' + ' '.join((encoded(destination), encoded(TARGET_DESK), 'on')))
     assert form_token(started) != token
     wait('profile published by native desktop module', path.is_file)
     saved = path.read_bytes()
-    expected = dict(schema_version=1, name=PROFILE, connector=RIGHT, desk=TARGET_DESK,
-        panel=True, windows=SELECTORS)
+    expected = dict(schema_version=1, name=PROFILE, connector=destination, desk=TARGET_DESK,
+        panel=True, windows=selectors)
     assert json.loads(saved) == expected, saved
     assert stat.S_IMODE(path.stat().st_mode) == 0o600
     assert stat.S_IMODE(path.parent.stat().st_mode) == 0o700
     observed['published_profile'] = dict(data=expected, sha256=hashlib.sha256(saved).hexdigest())
     cases['desktop_saves_private_data_only_profile'] = True
 
+    # Some default servers publish only a synthetic committed root role.
+    # That role has no RandR connector and therefore uses primary fallback.
+    default_x_fallback = default_x and not start['monitors'][destination]['outputs']
     label = 'stale_workspace'
-    token = preview(label)
+    token = preview(label, fallback=default_x_fallback)
     assert measure(windows) == original
-    assert workspace()[RIGHT]['desk'] == 0
-    observed[label]['panel_before'] = panel_at(LEFT)
+    assert workspace()[destination]['desk'] == 0
+    observed[label]['panel_before'] = panel_at(home)
     assert path.read_bytes() == saved
     cases['preview_is_read_only'] = True
-    set_desk(RIGHT, 2)
+    set_desk(destination, 2)
     apply(label, token, stale)
-    assert workspace()[RIGHT]['desk'] == 2
+    assert workspace()[destination]['desk'] == 2
     assert measure(windows) == original
-    panel_at(LEFT)
-    set_desk(RIGHT, 0)
+    panel_at(home)
+    set_desk(destination, 0)
     cases['newer_workspace_refuses_plan'] = True
+
+    if default_x:
+        label = 'connected_apply'
+        token = preview(label, fallback=default_x_fallback)
+        manual = move(windows[0], 130, 320)
+        apply(label, token, result(1, 1, fallback=default_x_fallback))
+        positioned = placement(label, windows[1:], destination, [original[1]['client']], [1])
+        assert frame_rect(client, windows[0]) == manual
+        assert client_size(client, windows[0]) == original[0]['client']
+        assert path.read_bytes() == saved
+        observed[label].update(manual=manual, windows=positioned, panel=panel_at(destination))
+        cases['newer_window_move_is_preserved'] = True
+        cases['apply_restores_workspace_panel_and_client_placement'] = True
+        return
 
     label = 'stale_panel'
     token = preview(label)
@@ -438,12 +491,19 @@ def scene(**s):
     assert frame['x'] + frame['width'] <= 3200 and frame['y'] + frame['height'] <= 1080, frame
     observed['finished_editor'] = dict(frame=frame,
         client=dict(width=attributes.width, height=attributes.height), controls=controls)
-    s['capture']('workspace-docking.png')
+    if not s['args'].no_screenshot:
+        s['capture']('workspace-docking.png')
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument('--build', type=Path, required=True)
+    parser.add_argument('--installed-prefix', type=Path,
+        help='Use the binaries and data under a staged installation prefix.')
+    parser.add_argument('--no-screenshot', action='store_true',
+        help='Check the finished editor bounds without capturing another image.')
+    parser.add_argument('--display',
+        help='Use an existing isolated single-output X display with XAUTHORITY.')
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=['slate-dark'])
     parser.add_argument('--xorg-config', type=Path,
@@ -451,7 +511,16 @@ def main():
     args = parser.parse_args()
     if len(set(args.profiles)) != len(args.profiles):
         parser.error('each profile may be selected once')
-    config = args.xorg_config.resolve(strict=True)
+    if args.display is not None:
+        if args.installed_prefix is None:
+            parser.error('--display requires --installed-prefix')
+        authority = os.environ.get('XAUTHORITY')
+        if not authority or not Path(authority).is_file():
+            parser.error('--display requires a readable XAUTHORITY file')
+        args.no_screenshot = True
+        config = None
+    else:
+        config = args.xorg_config.resolve(strict=True)
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     root = Path(tempfile.mkdtemp(prefix='workspace-docking-', dir=args.artifacts_dir.resolve()))
 
@@ -462,6 +531,9 @@ def main():
                 'bin/FvwmPrompt/internal/desktopcontroller/docking.go',
                 'bin/FvwmPrompt/internal/desktopcontroller/docking_state.go'):
             evidence['source_sha256'][name] = hashlib.sha256((source / name).read_bytes()).hexdigest()
+        if args.display is not None:
+            evidence['scope'] = 'Existing authenticated default Xorg, single output, actual X geometry'
+            return args.display
         return start_display(runtime, evidence, config)
 
     def expired(_signal, _frame):
@@ -477,8 +549,10 @@ def main():
             evidence = json.loads(path.read_text())
             assert evidence['status'] == 'passed' and not evidence['cleanup_failures'], path
             assert not evidence['observer_unexpected_x_errors'], path
-            assert evidence['cases'] == dict.fromkeys(CASE_NAMES, True), path
-            assert evidence['screenshots'] == ['workspace-docking.png'], path
+            expected_cases = DEFAULT_X_CASE_NAMES if args.display is not None else CASE_NAMES
+            assert evidence['cases'] == dict.fromkeys(expected_cases, True), path
+            expected_screenshots = [] if args.no_screenshot else ['workspace-docking.png']
+            assert evidence['screenshots'] == expected_screenshots, path
             assert all(code is not None for code in evidence['children_after_cleanup'].values()), path
             print(path, flush=True)
     finally:

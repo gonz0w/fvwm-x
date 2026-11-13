@@ -253,6 +253,23 @@ class StartupEvidenceTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'inside the install stage'):
                 driver.fixture_commands(args, build, Path('/source'))
 
+    def test_desktop_docking_uses_private_stage(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            build = root / 'build'
+            self.stage_desktop(build)
+            args = self.args(root, server_only=False, desktop_docking_only=True)
+            stage = build / 'install-stage'
+            prefix = stage / 'usr/local'
+            self.assertEqual(driver.fixture_commands(args, build, Path('/source')),
+                [('desktop-docking', ['--build', str(build), '--installed-prefix',
+                    str(prefix), '--no-screenshot'])])
+            outside = root / 'outside'
+            prefix.rename(outside)
+            prefix.symlink_to(outside, target_is_directory=True)
+            with self.assertRaisesRegex(RuntimeError, 'escapes the private stage'):
+                driver.fixture_commands(args, build, Path('/source'))
+
     def test_desktop_controller_uses_authenticated_display_and_staged_data(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()

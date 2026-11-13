@@ -134,6 +134,30 @@ docking passed all nine dummy-output cases. Native AMD64 support gates
 and physical docking remain open.
 [Native qualification](verification/VERIFICATION-2026-11-11-DOCKING-NATIVE.md).
 
+PR381 merged as `02b3548530079c6cbfba2f890bdcc0e6ad87b9b2` with
+the reviewed tree. Lead owns the remaining AMD64 checkpoint on
+`codex/r1-docking-amd64`. Build installable targets, privately stage
+them and run the staged docking scene once per available AMD64 profile.
+Reuse the ARM64, cross-build and theme receipts. Use the retained owned
+guests or pinned release inputs, with separate reviewed execution
+plans. Record CPU emulation and any server or platform limitation.
+Keep hardware docking, screenshots and the full release suite outside
+this batch. Use one attempt per profile plus one diagnosed correction
+within the owned lab bounds. Retain compact results and preserve the
+backing chains until all dependent children are retired.
+FreeBSD 15.1 AMD64 passed the build, private install and five authenticated
+default-X cases. Debian 13 AMD64 passed the build, private install and nine
+Xorg dummy cases. Both used CPU emulation and retained earlier ARM64 and
+theme evidence. OpenBSD 8.0 AMD64 timed out before returning a guest
+receipt. The runner stopped QEMU with exit status 0. Pause that lane
+pending a plan with
+separate preparation/build diagnostics. Ubuntu 24.04 AMD64 and physical
+dock evidence remain open. Keep compact result archives for review and
+preserve the OpenBSD guest disk while its timeout is unresolved.
+[AMD64 qualification](verification/VERIFICATION-2026-11-13-DOCKING-AMD64.md).
+
+
+
 
 
 

@@ -194,6 +194,25 @@ Preserve both guest receipts and the staged build evidence. Replan the
 worker startup diagnosis before repeating the X scene.
 [OpenBSD evidence](verification/VERIFICATION-2026-11-13-DOCKING-OPENBSD-AMD64.md).
 
+Lead owns the #222 docking fixture correction on
+`codex/r1-docking-direct-worker`. Point the docking scene directly at the
+installed desktop worker. The test does not use the palette fixture's
+worker fault injection or worker receipts. Keep real catalog publication,
+all docking assertions, staged identities and X authentication. The prior
+guest's runner removed its per-job key, so a fresh owned guest is needed
+if no independently reviewed staged continuation is available. Reuse the
+qualified PNG and other platform results. Keep physical docking open.
+PR385 passed all five installed docking cases on authenticated default
+Xenocara under AMD64 emulation. Reuse the earlier platform, theme and
+mixed-output evidence. Keep #222 open for physical dock acceptance.
+The next shared closure batch targets #221 and #223 with one Linux
+mixed-scale scene. Reuse the prior theme, virtualization and 16-case
+Slate receipts. Map the remaining frozen criteria before dispatch,
+including a real terminal, live allocation reuse and bounded overview
+updates across topology and scale changes.
+
+
+
 
 
 

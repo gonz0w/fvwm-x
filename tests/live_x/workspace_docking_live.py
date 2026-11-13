@@ -543,7 +543,8 @@ def main():
     try:
         for profile in args.profiles:
             signal.alarm(195)
-            run(args, profile, root, scenario=scene, display_initializer=display_initializer)
+            run(args, profile, root, scenario=scene,
+                display_initializer=display_initializer, direct_worker=True)
             signal.alarm(0)
             path = root / profile / 'evidence.json'
             evidence = json.loads(path.read_text())

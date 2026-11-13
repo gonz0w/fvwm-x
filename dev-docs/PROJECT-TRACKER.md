@@ -156,6 +156,26 @@ dock evidence remain open. Keep compact result archives for review and
 preserve the OpenBSD guest disk while its timeout is unresolved.
 [AMD64 qualification](verification/VERIFICATION-2026-11-13-DOCKING-AMD64.md).
 
+PR382 merged as `b7cdb93baa0a716fb0c4aa8b09024154fd1ef3ba`. Lead owns the
+two remaining AMD64 checks on `codex/r1-docking-amd64-continuation`.
+Use one diagnostic OpenBSD stock-image run with bounded host phase logs
+and one Ubuntu 24.04 AMD64 build, private install and docking scene on
+Xorg dummy. Reuse FreeBSD, Debian, ARM64 and theme results. Both new
+lanes use CPU emulation. Exclude the full release suite and routine
+screenshots. Preserve the earlier OpenBSD timeout evidence, then retain
+compact logs and stage identities from the two active runs. Physical
+dock and display/input behavior remain separate.
+Ubuntu passed the build, staged install and all nine docking cases.
+OpenBSD passed all 36 PNG dependency checks and configured FVWM-X,
+then exceeded the deadline while compiling product targets. The two
+attempts are spent for the fresh-bootstrap recipe. Reuse the previously
+qualified AMD64 PNG prefix with current ABI and loader checks in a
+separate continuation. OpenBSD install/default-X and real dock hardware
+remain open. No new screenshots.
+[Ubuntu and OpenBSD evidence](verification/VERIFICATION-2026-11-13-DOCKING-AMD64-TAIL.md).
+
+
+
 
 
 

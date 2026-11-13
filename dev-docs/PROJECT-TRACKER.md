@@ -174,6 +174,28 @@ separate continuation. OpenBSD install/default-X and real dock hardware
 remain open. No new screenshots.
 [Ubuntu and OpenBSD evidence](verification/VERIFICATION-2026-11-13-DOCKING-AMD64-TAIL.md).
 
+PR383 merged as `475deadec432fbd9cf2c93aeebc34ae845763dee`. Lead owns
+the OpenBSD 8.0 AMD64 continuation on `codex/r1-docking-openbsd-png-reuse`.
+Use a fresh owned guest and the prior qualified PNG cache after checking
+its source, compiler, installed digests, vendor ABI and runtime loader.
+Build installable outputs, stage privately and run the five authenticated
+docking cases with the documented disposable AMD64 default-X fixture.
+Run one reviewed bounded attempt, with one diagnosed correction if needed.
+Reuse Ubuntu, FreeBSD, ARM64 and theme evidence. No full matrix or
+routine screenshots. Preserve timeout receipts and the compact current
+evidence. Real dock and physical display/input qualification remain open.
+The first run rejected three header links in the PNG cache. A reviewed
+correction admitted those exact links, and the retained PNG compiler,
+ABI and loader checks passed. The OpenBSD build and private install
+passed. Authenticated default X came up and refused an unauthenticated
+client. Docking stopped in initial application catalog setup after
+desktop worker deadline failures. The bounded attempts are spent.
+Preserve both guest receipts and the staged build evidence. Replan the
+worker startup diagnosis before repeating the X scene.
+[OpenBSD evidence](verification/VERIFICATION-2026-11-13-DOCKING-OPENBSD-AMD64.md).
+
+
+
 
 
 

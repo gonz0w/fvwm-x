@@ -372,7 +372,8 @@ def scene(**s):
         evidence['scratchpad_main'] = dict(grant=grant, hidden=hidden, shown=shown,
             before=before, after=after, work_area=work,
             terminal_pixels=view.pixels(terminal), application_pixels=view.pixels(application))
-        s['capture']('workspace-scratchpads.png')
+        if not args.no_screenshot:
+            s['capture']('workspace-scratchpads.png')
         cases['literal_application_launch'] = True
 
         overview_open()
@@ -412,7 +413,8 @@ def scene(**s):
         evidence['overview_frame_bounds'] = bounds
         assert 0 <= attrs.x and attrs.x + attrs.width + 2*attrs.border_width <= root.width, bounds
         assert 0 <= attrs.y and attrs.y + attrs.height + 2*attrs.border_width <= root.height, bounds
-        s['capture']('workspace-overview-marked.png')
+        if not args.no_screenshot:
+            s['capture']('workspace-overview-marked.png')
         filtered = filter_query('palette desk five', from_list=True)
         select_single()
         if page_x:
@@ -489,7 +491,8 @@ def scene(**s):
         # A replacement X connection can receive the same window ID.
         wait('replacement manager received app page', lambda: manager_page('app', manager_at))
         focus_form('Scratchpads')
-        s['capture']('workspace-scratchpad-manager.png')
+        if not args.no_screenshot:
+            s['capture']('workspace-scratchpad-manager.png')
         previous_at = time.monotonic()
         view.key('F1')
         wait('manager actual Previous callback', lambda: any(r['direction'] == 'in' and r['time'] >= previous_at
@@ -588,17 +591,34 @@ def scene(**s):
                 uncertain=uncertain, claimed=claimed)
             cases['helper_restart_and_forked_delayed_launch_no_duplicate'] = True
 
-            # A stale target is refused against an actual destroyed allocation.
+            # Keep the old snapshot across destruction and replacement.
             stale = probe.inventory()
             target = next(r for r in stale['rows'] if r['label'] == 'Palette target focus')
             window = view.wait('Palette target focus')
             client.x.XDestroyWindow(client.display, window)
             client.x.XSync(client.display, 0)
             s['windows'].remove(window)
+            replacement = client.x.XCreateSimpleWindow(client.display, client.root,
+                300, 180, 320, 160, 0, 0, 0x384650)
+            assert replacement
+            s['windows'].append(replacement)
+            client.x.XStoreName(client.display, replacement, b'Palette target focus')
+            client.x.XMapWindow(client.display, replacement)
+            client.x.XSync(client.display, 0)
+            wait('replacement is managed',
+                lambda: client.parent(replacement) != client.root)
+            before = view.attributes(replacement)
+            assert before is not None
             refused = probe.exchange('Send_Palette', stale['generation'], str(target['index']), 'drag')
             assert 'error' in refused and refused['error']['code'] in ('stale_target', 'stale_generation'), refused
             probe.release()
+            replacement_row = row('Palette target focus')
+            assert replacement_row['id'] != target['id']
+            after = view.attributes(replacement)
+            assert (after.x, after.y, after.width, after.height) == (
+                before.x, before.y, before.width, before.height)
             evidence['destroyed_overview_target'] = refused
+            evidence['replacement_overview_target'] = replacement_row
             cases['destroyed_allocation_refuses_stale_action'] = True
 
             # Schedule ordinary Restart after this probe's command fence. The
@@ -635,7 +655,9 @@ def scene(**s):
         assert commands and max(len(c.encode()) for c in commands) <= 1000
         evidence['workspace_scene']['command_bounds'] = dict(count=len(commands),
             maximum_bytes=max(len(c.encode()) for c in commands), limit=1000)
-        assert len(evidence['screenshots']) == 3
+        assert len(evidence['screenshots']) == (0 if args.no_screenshot else 3)
+        if args.require_terminal:
+            assert evidence['workspace_scene']['real_terminal_qualified']
     finally:
         # Independent launched clients are not owned by HarnessRuntime's WM
         # process group. Retire only identities and argv recorded by this scene.
@@ -661,6 +683,8 @@ def main():
     parser.add_argument('--build', type=Path)
     parser.add_argument('--artifacts-dir', type=Path)
     parser.add_argument('--profiles', nargs='+', choices=PROFILES, default=list(PROFILES))
+    parser.add_argument('--require-terminal', action='store_true')
+    parser.add_argument('--no-screenshot', action='store_true')
     args = parser.parse_args()
     if args.client:
         assert args.record and args.class_ and args.instance and args.title
@@ -669,6 +693,8 @@ def main():
         return 0
     if args.build is None or args.artifacts_dir is None:
         parser.error('--build and --artifacts-dir are required for the native scene')
+    if args.require_terminal and not os.access('/usr/bin/xterm', os.X_OK):
+        parser.error('--require-terminal requires executable /usr/bin/xterm')
     assert len(set(args.profiles)) == len(args.profiles)
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)
     root = Path(tempfile.mkdtemp(prefix='workspace-tools-', dir=args.artifacts_dir.resolve()))

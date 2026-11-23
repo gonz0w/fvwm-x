@@ -182,7 +182,9 @@ def scene(**s):
             and all(r.get(key) == value for key, value in wanted.items())), None))
 
     def overview_refresh(previous=None):
-        probe.command('SendToModule FvwmDesktop overview')
+        if previous is None:
+            probe.command('SendToModule FvwmDesktop overview')
+
         def ready():
             result = probe.diagnostic()
             if (not result['open'] or not result['native_ready'] or
@@ -440,8 +442,10 @@ def scene(**s):
         observations['overview_replug'] = dict(native=native_enabled,
             desktops=verify_roles(enabled, native_enabled))
         view.wait(OVERVIEW)
-        s['capture']('workspace-placement-mixed.png')
-        assert evidence['screenshots'] == ['workspace-placement-mixed.png']
+        if not s['args'].no_screenshot:
+            s['capture']('workspace-placement-mixed.png')
+        expected = [] if s['args'].no_screenshot else ['workspace-placement-mixed.png']
+        assert evidence['screenshots'] == expected
     finally:
         try:
             observations['retired_fixture_pids'] = stop_clients([launched])
@@ -456,6 +460,7 @@ def main():
     parser.add_argument('--artifacts-dir', type=Path, required=True)
     parser.add_argument('--xorg-config', type=Path,
         default=Path(__file__).with_name('xorg-dummy.conf'))
+    parser.add_argument('--no-screenshot', action='store_true')
     args = parser.parse_args()
     config = args.xorg_config.resolve(strict=True)
     args.artifacts_dir.mkdir(parents=True, exist_ok=True)

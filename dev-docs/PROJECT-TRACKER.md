@@ -211,6 +211,27 @@ Slate receipts. Map the remaining frozen criteria before dispatch,
 including a real terminal, live allocation reuse and bounded overview
 updates across topology and scale changes.
 
+PR385 merged as `8ef2b1844ad6a9eac0525f55bfddec05e675e585`. Lead owns
+the #221/#223 closure batch on `codex/r1-workspace-closure`.
+
+| Issue | Reuse | Remaining acceptance for this batch |
+| --- | --- | --- |
+| #221 scratchpads | The workspace tools policy and Slate follow-up cover literal arguments, one launch across rapid toggles, focus return, refusal, missing executables and restart recovery. The mixed scene already covers summon after simulated unplug with preserved client pixels. | Require the existing terminal scenario to execute xterm. Exercise retirement and replacement of a managed allocation and verify that a stale action leaves the new allocation alone. Combine terminal and mixed-scale checks in the same Linux checkpoint. |
+| #223 overview | Reuse workspace actions and stale target refusal from Slate, the existing virtualization checks, and the mixed scene's committed roles and stale move refusal. | Exercise topology and scale changes while the overview is open. Record bounded publication work and the final committed rows. Verify cleanup and reconcile the remaining support evidence before closing. |
+
+Use the [Slate follow-up](verification/VERIFICATION-2026-11-11-WORKSPACE-FOLLOWUP.md)
+and the [mixed-scene receipts](verification/VERIFICATION-2026-11-11-WORKSPACE-MIXED.md).
+Use one focused Linux checkpoint with the retained build where compatible.
+Retain passing theme captures and keep the physical #222 gate separate.
+Ubuntu 24.04 ARM64 passed both scenes with 16 and nine cases. The real
+xterm and managed replacement passed. Actual XID reuse remains open for
+#221. The open overview followed the committed scale and monitor
+transitions automatically. The publication counters are recorded, and
+the update-volume and resource limits remain open for #223.
+[Focused receipts](verification/VERIFICATION-2026-11-23-WORKSPACE-CLOSURE.md).
+
+
+
 
 
 

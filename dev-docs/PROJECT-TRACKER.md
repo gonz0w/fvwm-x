@@ -230,6 +230,18 @@ transitions automatically. The publication counters are recorded, and
 the update-volume and resource limits remain open for #223.
 [Focused receipts](verification/VERIFICATION-2026-11-23-WORKSPACE-CLOSURE.md).
 
+PR387 merged as `028290537f44729860a3970b4e53aec316f8c485`. Lead owns
+the fixture-only continuation on `codex/r1-workspace-lifetime-bounds`.
+The retained Ubuntu ARM64 build passed 16 workspace and nine mixed
+cases. Both the scratchpad claim and stale overview action were verified
+with a real, reused XID. The mixed overview stayed open and settled
+within its 32-start guard across all three transitions. Keep #221 open
+for remaining affected support-profile acceptance and #223 open for
+resource and support-profile qualification. #222 still needs physical
+docking. Reuse the earlier theme captures.
+[Lifetime and refresh receipts](verification/VERIFICATION-2026-11-24-WORKSPACE-LIFETIME.md).
+
+
 
 
 

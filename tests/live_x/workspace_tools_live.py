@@ -4,7 +4,9 @@
 # the Free Software Foundation; either version 2, or any later version.
 """One combined native scratchpad/overview checkpoint; no historical replay."""
 import argparse
+from contextlib import contextmanager
 import ctypes as C
+from ctypes.util import find_library
 import hashlib
 import json
 import os
@@ -38,6 +40,58 @@ class ClientMessage(C.Structure):
 
 class MessageEvent(C.Union):
     _fields_ = [('message', ClientMessage), ('padding', C.c_long*24)]
+
+
+@contextmanager
+def reusable_window(display, root):
+    """Own one XCB resource ID for two successive test windows."""
+    library = find_library('xcb')
+    assert library, 'same-XID fixture requires libxcb'
+    xcb = C.CDLL(library)
+    xcb.xcb_connect.argtypes = [C.c_char_p, C.c_void_p]
+    xcb.xcb_connect.restype = C.c_void_p
+    xcb.xcb_connection_has_error.argtypes = [C.c_void_p]
+    xcb.xcb_disconnect.argtypes = [C.c_void_p]
+    xcb.xcb_generate_id.argtypes = [C.c_void_p]
+    xcb.xcb_generate_id.restype = C.c_uint32
+    # xcb_void_cookie_t is a struct containing a single unsigned sequence.
+    class Cookie(C.Structure):
+        _fields_ = [('sequence', C.c_uint)]
+
+    xcb.xcb_create_window_checked.argtypes = [C.c_void_p, C.c_uint8,
+        C.c_uint32, C.c_uint32, C.c_int16, C.c_int16, C.c_uint16,
+        C.c_uint16, C.c_uint16, C.c_uint16, C.c_uint32, C.c_uint32, C.c_void_p]
+    xcb.xcb_destroy_window_checked.argtypes = [C.c_void_p, C.c_uint32]
+    xcb.xcb_create_window_checked.restype = Cookie
+    xcb.xcb_destroy_window_checked.restype = Cookie
+    xcb.xcb_request_check.argtypes = [C.c_void_p, Cookie]
+    xcb.xcb_request_check.restype = C.c_void_p
+    libc = C.CDLL(None)
+    libc.free.argtypes = [C.c_void_p]
+    connection = xcb.xcb_connect(display.encode(), None)
+    assert connection
+    try:
+        assert xcb.xcb_connection_has_error(connection) == 0
+        window = xcb.xcb_generate_id(connection)
+        assert window not in (0, 0xffffffff)
+
+        def check(cookie):
+            error = xcb.xcb_request_check(connection, cookie)
+            if error:
+                libc.free(error)
+                raise AssertionError('X server rejected same-XID fixture request')
+            assert xcb.xcb_connection_has_error(connection) == 0
+
+        def create(x, y):
+            check(xcb.xcb_create_window_checked(connection, 0, window, root,
+                x, y, 320, 160, 0, 1, 0, 0, None))
+
+        def destroy():
+            check(xcb.xcb_destroy_window_checked(connection, window))
+
+        yield window, create, destroy
+    finally:
+        xcb.xcb_disconnect(connection)
 
 
 def client_main(args):
@@ -315,6 +369,7 @@ def scene(**s):
         local = s['user']/'local.config'
         local.write_text(local.read_text()+'\n'+term_def+'\n'+app_def+'\n'+late_def+
             '\n*FvwmDesktop: Scratchpad missing FVWMWorkspaceMissing - /fvwm-workspace-fixture-no-such-program\n'
+            '*FvwmDesktop: Scratchpad reuse FVWMWorkspaceReuse reuse /bin/false\n'
             'Key F10 A N SendToModule FvwmDesktop scratchpad term\n'
             'Key F11 A N SendToModule FvwmDesktop scratchpad app\n')
         # The shared scene hook runs after startup. Restart only the owned
@@ -591,35 +646,68 @@ def scene(**s):
                 uncertain=uncertain, claimed=claimed)
             cases['helper_restart_and_forked_delayed_launch_no_duplicate'] = True
 
-            # Keep the old snapshot across destruction and replacement.
-            stale = probe.inventory()
-            target = next(r for r in stale['rows'] if r['label'] == 'Palette target focus')
-            window = view.wait('Palette target focus')
-            client.x.XDestroyWindow(client.display, window)
-            client.x.XSync(client.display, 0)
-            s['windows'].remove(window)
-            replacement = client.x.XCreateSimpleWindow(client.display, client.root,
-                300, 180, 320, 160, 0, 0, 0x384650)
-            assert replacement
-            s['windows'].append(replacement)
-            client.x.XStoreName(client.display, replacement, b'Palette target focus')
-            client.x.XMapWindow(client.display, replacement)
-            client.x.XSync(client.display, 0)
-            wait('replacement is managed',
-                lambda: client.parent(replacement) != client.root)
-            before = view.attributes(replacement)
-            assert before is not None
-            refused = probe.exchange('Send_Palette', stale['generation'], str(target['index']), 'drag')
-            assert 'error' in refused and refused['error']['code'] in ('stale_target', 'stale_generation'), refused
-            probe.release()
-            replacement_row = row('Palette target focus')
-            assert replacement_row['id'] != target['id']
-            after = view.attributes(replacement)
-            assert (after.x, after.y, after.width, after.height) == (
-                before.x, before.y, before.width, before.height)
-            evidence['destroyed_overview_target'] = refused
-            evidence['replacement_overview_target'] = replacement_row
-            cases['destroyed_allocation_refuses_stale_action'] = True
+            # Keep the old snapshot while the same XID is allocated again.
+            title = 'Workspace reused XID'
+            with reusable_window(s['env']['DISPLAY'], client.root) as (window, create, destroy):
+                def map_window(x, y):
+                    create(x, y)
+                    client.x.XSetClassHint.argtypes = [
+                        C.c_void_p, C.c_ulong, C.POINTER(ClassHint)]
+                    hint = ClassHint(b'reuse', b'FVWMWorkspaceReuse')
+                    client.x.XSetClassHint(client.display, window, C.byref(hint))
+                    client.x.XStoreName(client.display, window, title.encode())
+                    client.x.XMapWindow(client.display, window)
+                    client.x.XSync(client.display, 0)
+                    wait('same-XID window is managed',
+                        lambda: client.parent(window) != client.root)
+
+                map_window(140, 120)
+                row(title)
+                started = time.monotonic()
+                view.pointer.motion(20, 20)
+                probe.command('WindowId %d Focus' % prior,
+                              'SendToModule FvwmDesktop scratchpad reuse')
+                first = actual('reuse', started, action='dismissed')
+                row(title, iconified=True)
+                stale = probe.inventory()
+                target = next(r for r in stale['rows'] if r['label'] == title)
+                destroy()
+                map_window(300, 180)
+                before = view.attributes(window)
+                assert before is not None
+                refused = probe.exchange('Send_Palette', stale['generation'],
+                    str(target['index']), 'drag')
+                assert refused.get('error', {}).get('code') == 'stale_target', refused
+                probe.release()
+                replacement = row(title)
+                assert replacement['id'] != target['id']
+                after = view.attributes(window)
+                assert after is not None
+                assert (after.x, after.y, after.width, after.height) == (
+                    before.x, before.y, before.width, before.height)
+                evidence['reused_overview_target'] = dict(xid=window,
+                    old_identity=target['id'], new_identity=replacement['id'],
+                    refusal=refused)
+                started = time.monotonic()
+                probe.command('WindowId %d Focus' % prior,
+                              'SendToModule FvwmDesktop scratchpad reuse')
+                actual('reuse', started, action='dismissed')
+                row(title, iconified=True)
+                started = time.monotonic()
+                probe.command('SendToModule FvwmDesktop scratchpad reuse')
+                second = actual('reuse', started, action='summoned')
+                wait('replacement scratchpad receives focus', lambda: focus_is(window))
+                started = time.monotonic()
+                probe.command('SendToModule FvwmDesktop scratchpad reuse')
+                actual('reuse', started, action='dismissed')
+                wait('replacement dismissal restores focus', lambda: focus_is(prior))
+                assert all(r['action'] != 'launch' for r in replies(native)
+                           if r['name'] == 'reuse')
+                assert first['target'] == target['id']
+                assert second['target'] == replacement['id']
+                evidence['same_xid_scratchpad'] = dict(first=first, replacement=second)
+                evidence['workspace_scene']['actual_xid_reuse_qualified'] = True
+            cases['reused_xid_refuses_stale_action'] = True
 
             # Schedule ordinary Restart after this probe's command fence. The
             # real same-PID exec reads the modified test-owned config and starts

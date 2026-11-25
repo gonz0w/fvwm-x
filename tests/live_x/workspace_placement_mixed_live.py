@@ -192,11 +192,23 @@ def scene(**s):
                 return None
             binding = result['binding']
             if (binding['in_flight'] or binding['pending'] or
-                    (previous is not None and binding['published'] <= previous)):
+                    (previous is not None and
+                     binding['published'] <= previous['binding']['published'])):
                 return None
             assert result['view']['mode'] == 'overview' and result['counts'][2:] == [0, 0]
             return result
-        return wait('overview publishes current topology', ready, 12)
+        result = wait('overview publishes current topology', ready, 12)
+        if previous is not None:
+            assert result['view']['token'] == previous['view']['token']
+            delta = {key: result['binding'][key] - previous['binding'][key]
+                     for key in ('invalidations', 'started', 'published', 'rejected')}
+            assert 0 < delta['published'] <= delta['started'] <= delta['invalidations'], delta
+            assert delta['started'] == delta['published'] + delta['rejected'], delta
+            # The prior run started at most 11 refreshes per transition.
+            # Allow scheduling variation while detecting a refresh storm.
+            assert delta['started'] <= 32, delta
+            observations.setdefault('overview_refresh_work', []).append(delta)
+        return result
 
     def verify_roles(topology, overview):
         inventory = probe.inventory()
@@ -373,7 +385,7 @@ def scene(**s):
         assert refused.get('error', {}).get('code') in (
             'stale_topology', 'stale_placement', 'stale_generation'), refused
         probe.release()
-        native_changed = overview_refresh(native_initial['binding']['published'])
+        native_changed = overview_refresh(native_initial)
         observations['stale_overview_action'] = dict(refusal=refused,
             desktops=verify_roles(changed, native_changed), native_before=native_initial,
             native_after=native_changed)
@@ -383,7 +395,7 @@ def scene(**s):
             '--off', '--fb', '1920x1080'])
         evidence['disabled_randr'] = server_state(runtime, display, 'disabled-randr', LEFT, None)
         disabled = commit('disabled-secondary', LEFT, {LEFT: 4}, changed['epoch'])
-        native_disabled = overview_refresh(native_changed['binding']['published'])
+        native_disabled = overview_refresh(native_changed)
         observations['overview_single_output'] = dict(native=native_disabled,
             desktops=verify_roles(disabled, native_disabled))
         cases['overview_refresh_tracks_remaining_committed_role'] = True
@@ -438,7 +450,7 @@ def scene(**s):
             replacement=replacement_rect, retired_action=old_action, report=replug_report)
         cases['replug_restore_preserves_newer_move_and_skips_retired_allocation'] = True
 
-        native_enabled = overview_refresh(native_disabled['binding']['published'])
+        native_enabled = overview_refresh(native_disabled)
         observations['overview_replug'] = dict(native=native_enabled,
             desktops=verify_roles(enabled, native_enabled))
         view.wait(OVERVIEW)
